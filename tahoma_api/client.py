@@ -84,6 +84,10 @@ class TahomaClient(object):
                 print(result)
 
     async def get_devices(self, refresh=False) -> List[Device]:
+        """
+        Get setup  definition
+        Maximum number of calls per-session : 1 (category: bulk)
+        """
         if self.__devices and refresh == False:
             return self._devices
 
@@ -116,13 +120,17 @@ class TahomaClient(object):
         return response
 
     async def execute_action_group(
-        self, actions: [Command], label="python-tahoma-api", priority=False
+        self, actions: [Command], label="python-tahoma-api", type=None
     ) -> List[Any]:
         """
         Execute a non-persistent action group
         The executed action group does not have to be persisted on the server before use.
         Per-session rate-limit : 50 calls per 24 HOURS period for all operations of the same category (exec)
         """
+        # TODO implement type=geolocated /exec/apply/geolocated
+        # TODO implement type=geolocated /exec/apply/highPriority
+        # TODO implement type=geolocated /exec/apply/internal
+
         payload = {"label": label, "actions": actions}
         response = await self.__make_http_request("POST", f"exec/apply", payload)
 

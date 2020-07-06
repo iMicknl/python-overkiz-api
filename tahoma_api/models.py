@@ -77,3 +77,20 @@ class State:
         self.name = name
         self.value = value
         self.type = type
+
+
+class Command:
+    """Represents an TaHoma Command."""
+
+    __slots__ = (
+        "type",
+        "name",
+        "parameters",
+        "sensitiveParametersIndexes",
+        "authentication",
+        "delay",
+    )
+
+    def __init__(self, name: str, parameters: str, **kwargs: Any):
+        self.name = name
+        self.parameters = parameters
