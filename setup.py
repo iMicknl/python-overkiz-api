@@ -8,7 +8,7 @@ setup(
     version="0.1.0",
     author="Mick Vleeshouwer",
     author_email="mick@imick.nl",
-    description="Python wrapper to interact with SagemCom F@st routers via internal API's.",
+    description="Python wrapper to interact with internal Somfy TaHama API",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/iMicknl/python-tahoma-api",
