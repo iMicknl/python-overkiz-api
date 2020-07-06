@@ -128,8 +128,6 @@ class TahomaClient(object):
 
         return response
 
-    apply_actions
-
     async def __make_http_request(
         self, method: str, endpoint: str, payload: Optional[Any] = None
     ) -> Any:
