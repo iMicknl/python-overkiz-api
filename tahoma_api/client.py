@@ -30,9 +30,9 @@ class TahomaClient(object):
         self.password = password
         self.api_url = api_url
 
-        self._devices = None
-
-        self.__roles = []
+        self.__cookies = None
+        self.__devices = None
+        self.__roles = None
 
     async def login(self):
 
@@ -51,6 +51,7 @@ class TahomaClient(object):
 
                         if "Too many requests" in result["error"]:
                             print(result["error"])
+                            raise Exception
 
                         if (
                             "Your setup cannot be accessed through this application"
@@ -83,25 +84,64 @@ class TahomaClient(object):
                 print(result)
 
     async def get_devices(self, refresh=False) -> List[Device]:
-
-        if self._devices and refresh == False:
+        if self.__devices and refresh == False:
             return self._devices
 
+        response = await self.__make_http_request("GET", "setup/devices")
+
+        devices = [Device(**d) for d in response]
+        self.__devices = devices
+
+        return devices
+
+    async def register_event_listener(self) -> str:
+        """ 
+        Register a new setup event listener on the current session and return a new listener id. 
+        Only one listener may be registered on a given session. 
+        Registering an new listener will invalidate the previous one if any. 
+        Note that registering an event listener drastically reduces the session timeout : listening sessions are expected to call the /events/{listenerId}/fetch API on a regular basis.
+        """
+        response = await self.__make_http_request("POST", "events/register")
+        listener_id = response.get("id")
+
+        return listener_id
+
+    async def fetch_event_listener(self, listener_id: str) -> List[Any]:
+        """
+        Fetch new events from a registered event listener. Fetched events are removed from the listener buffer. Return an empty response if no event is available.
+        Per-session rate-limit : 1 calls per 1 SECONDS period for this particular operation (polling)
+        """
+        response = await self.__make_http_request("POST", f"events/{listener_id}/fetch")
+
+        return response
+
+    async def __make_http_request(
+        self, method: str, endpoint: str, payload: Optional[Any] = None
+    ) -> Any:
+        """Make a request to the TaHoma API"""
         cookies = self.__cookies
+        supported_methods = ["GET", "POST"]
 
-        # TODO add retry logic for unauthorized? 
+        if method not in supported_methods:
+            raise Exception
+
         async with aiohttp.ClientSession() as session:
-            async with session.get(
-                self.api_url + "setup/devices", cookies=cookies
-            ) as response:
+            if method == "GET":
+                async with session.get(
+                    self.api_url + endpoint, cookies=cookies
+                ) as response:
+                    result = await response.json()
 
-                result = await response.json()
+            if method == "POST":
+                async with session.post(
+                    self.api_url + endpoint, cookies=cookies, data=payload
+                ) as response:
+                    result = await response.json()
 
-                # for device in result.items()
+        if response.status == 200:
+            return result
 
-                if response.status is 200:
-                    devices = [Device(**d) for d in result]
-                    self._devices = devices
-
-                    return devices
+        if response.status > 400 and response.status < 500:
+            # implement retry logic
+            print("TODO")
 

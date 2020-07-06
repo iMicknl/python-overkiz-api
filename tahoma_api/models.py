@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional, Union
 # TODO Rewrite camelCase to snake_case
 class Device:
     __slots__ = (
+        "id",
         "creationTime",
         "lastUpdateTime",
         "label",
@@ -12,7 +13,10 @@ class Device:
         "definition",
         "states",
         "dataProperties",
+        "available",
+        "enabled",
         "widgetName",
+        "widget",
         "uiClass",
         "qualifiedName",
         "type",
@@ -24,7 +28,7 @@ class Device:
         label: str,
         deviceURL: str,
         controllableName: str,
-        definition: Dict[List[Any]],
+        # definition: Dict[List[Any]],
         states: List[Dict[str, Any]],
         dataProperties: Optional[List[Dict[str, Any]]] = None,
         widgetName: Optional[str] = None,
@@ -33,7 +37,9 @@ class Device:
         type: str,
         **kwargs: Any
     ):
+        self.id = deviceURL
         self.deviceURL = deviceURL
+        self.label = label
         self.controllableName = controllableName
         self.states = [State(**s) for s in states]
 
