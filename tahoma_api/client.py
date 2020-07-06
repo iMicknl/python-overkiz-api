@@ -27,6 +27,10 @@ class TahomaClient(object):
         self.username = username
         self.password = password
 
+
+        self._devices = None
+
+
         self.__roles = []
 
     async def login(self):
@@ -43,60 +47,58 @@ class TahomaClient(object):
 
                 # 401
                 # {'errorCode': 'AUTHENTICATION_ERROR', 'error': 'Bad credentials'}
+                # {'errorCode': 'AUTHENTICATION_ERROR', 'error': 'Your setup cannot be accessed through this application'}
+                if response.status == 401:
+                    if result['errorCode'] == 'AUTHENTICATION_ERROR':
 
+                        if 'Too many requests' in result['error']:
+                            print(result['error'])
+
+                        if 'Your setup cannot be accessed through this application' in result['error']:
+                            print(result['error'])
+
+                        if 'Bad credentials' in result['error']:
+                            print(result['error'])
+
+                        print(result['error'])
+
+                        return False # todo throw error
+                   
                 # 401
                 # {'errorCode': 'AUTHENTICATION_ERROR', 'error': 'Too many requests, try again later : login with xxx@xxx.tld'}
                 # TODO Add retry logic on too many requests + for debug, log requests + timespans
-
+   
                 # 200
                 # {'success': True, 'roles': [{'name': 'ENDUSER'}]}
-                if (response.status is 200):
+                if response.status == 200:
                     if result['success'] == True:
                         self.__roles = result['roles']
                         self.__cookies = response.cookies
 
                         return True
 
+                # Temp fallbacks
                 print(response.status)
                 print(result)
 
-    async def get_devices(self):
-        
-        cookies = self.__cookies
+    async def get_devices(self, refresh=False):
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(API_URL + 'setup/devices', cookies=cookies) as response:
+        if self._devices is None or refresh == True:
 
-                print(response.status)
-                print(response)
-                
-                result = await response.json()
+            cookies = self.__cookies
 
-                print(result)
-                # 401
-                # {'errorCode': 'AUTHENTICATION_ERROR', 'error': 'Bad credentials'}
+            async with aiohttp.ClientSession() as session:
+                async with session.get(API_URL + 'setup/devices', cookies=cookies) as response:
 
-                # {'success': True, 'roles': [{'name': 'ENDUSER'}]}
-                if (response.status is 200):
-                    if result["success"] == True:
-                        print(result)
+                    result = await response.json()
 
-                # TODO Save cookies
+                    if (response.status is 200):
+                        self._devices = result
 
-    async def get_states(self):
-        
-        cookies = self.__cookies
+                        return result
+                    
+                    # TODO add retry logic for unauthorized?
 
-        async with aiohttp.ClientSession() as session:
-            async with session.get(API_URL + 'setup/devices/states', cookies=cookies) as response:
-
-                print(response.status)                
-                result = await response.json()
-
-                print(result)
-   
-
-
-    
-
-
+                    else:
+                        return []
+                    # TODO Save cookies
