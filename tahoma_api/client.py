@@ -115,6 +115,21 @@ class TahomaClient(object):
 
         return response
 
+    async def execute_action_group(
+        self, actions: [Command], label="python-tahoma-api", priority=False
+    ) -> List[Any]:
+        """
+        Execute a non-persistent action group
+        The executed action group does not have to be persisted on the server before use.
+        Per-session rate-limit : 50 calls per 24 HOURS period for all operations of the same category (exec)
+        """
+        payload = {"label": label, "actions": actions}
+        response = await self.__make_http_request("POST", f"exec/apply", payload)
+
+        return response
+
+    apply_actions
+
     async def __make_http_request(
         self, method: str, endpoint: str, payload: Optional[Any] = None
     ) -> Any:
