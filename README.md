@@ -32,9 +32,9 @@ This package is written for the Home Assistant [ha-tahoma](https://github.com/iM
 * Run `poetry run pre-commit install`
 
 ## PyCharm
-As IDE you can use [PyCharm](https://www.jetbrains.com/pycharm/). 
+As IDE you can use [PyCharm](https://www.jetbrains.com/pycharm/).
 
-Using snap, run `snap install pycharm --classic` to install it. 
+Using snap, run `snap install pycharm --classic` to install it.
 
 For MacOS, run `brew cask install pycharm-ce`
 
