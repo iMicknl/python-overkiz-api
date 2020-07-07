@@ -1,7 +1,8 @@
 from typing import Any, Dict, List, Optional
 
+# pylint: disable=unused-argument, too-many-instance-attributes
 
-# TODO Rewrite camelCase to snake_case
+
 class Device:
     __slots__ = (
         "id",
