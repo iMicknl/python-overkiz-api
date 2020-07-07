@@ -1,5 +1,6 @@
 from typing import Any, Dict, List, Optional, Union
 
+
 # TODO Rewrite camelCase to snake_case
 class Device:
     __slots__ = (

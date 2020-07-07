@@ -1,13 +1,13 @@
 """ Python wrapper for the Tahoma API """
-import aiohttp
-
 import asyncio
-import logging
-import time
 import hashlib
+import json
+import logging
 import math
 import random
-import json
+import time
+
+import aiohttp
 
 from .exceptions import *
 from .models import *
@@ -95,10 +95,10 @@ class TahomaClient(object):
         return devices
 
     async def register_event_listener(self) -> str:
-        """ 
-        Register a new setup event listener on the current session and return a new listener id. 
-        Only one listener may be registered on a given session. 
-        Registering an new listener will invalidate the previous one if any. 
+        """
+        Register a new setup event listener on the current session and return a new listener id.
+        Only one listener may be registered on a given session.
+        Registering an new listener will invalidate the previous one if any.
         Note that registering an event listener drastically reduces the session timeout : listening sessions are expected to call the /events/{listenerId}/fetch API on a regular basis.
         """
         response = await self.__make_http_request("POST", "events/register")
@@ -157,4 +157,3 @@ class TahomaClient(object):
         if response.status > 400 and response.status < 500:
             # implement retry logic
             print("TODO")
-

@@ -1,6 +1,7 @@
 import asyncio
-from tahoma_api import TahomaClient
 import time
+
+from tahoma_api import TahomaClient
 
 username = ""
 password = ""
@@ -25,5 +26,6 @@ async def main():
 
     except Exception as exception:
         print(exception)
+
 
 asyncio.run(main())
