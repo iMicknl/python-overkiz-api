@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pymfy"
-version = "0.9.0"
+version = "0.1.0"
 description = "Python wrapper to interact with internal Somfy TaHoma API"
 authors = ["Mick Vleeshouwer", "Vincent Le Bourlot", "Thibaut Etienne"]
 license = "GPL-3.0-only"
