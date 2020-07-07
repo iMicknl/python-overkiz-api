@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "pymfy"
+version = "0.9.0"
+description = "Python wrapper to interact with internal Somfy TaHoma API"
+authors = ["Mick Vleeshouwer", "Vincent Le Bourlot", "Thibaut Etienne"]
+license = "GPL-3.0-only"
+readme = "README.md"
+homepage = "https://github.com/iMicknl/python-tahoma-api"
+repository = "https://github.com/iMicknl/python-tahoma-api"
+
+[tool.poetry.dependencies]
+python = ">=3.6"
+aiohttp = "^3.6.2"
+
+[tool.poetry.dev-dependencies]
+tox = ">=3.0"
+pytest = ">=4.1"
+pytest-cov = ">=2.8.1"
+pre-commit = ">=1.10"
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
