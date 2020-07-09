@@ -1,29 +1,28 @@
 import asyncio
-from tahoma_api import TahomaClient
 import time
 
-username = ""
-password = ""
+from tahoma_api.client import TahomaClient
+
+# TODO use .env file
+USERNAME = ""
+PASSWORD = ""
 
 
-async def main():
-    client = TahomaClient(username, password)
+async def main() -> None:
+    client = TahomaClient(USERNAME, PASSWORD)
 
-    try:
-        login = await client.login()
-        devices = await client.get_devices()
+    await client.login()
+    devices = await client.get_devices()
 
-        for device in devices:
-            print(f"{device.label} ({device.id})")
+    for device in devices:
+        print(f"{device.label} ({device.id})")
 
-        listener_id = await client.register_event_listener()
+    listener_id = await client.register_event_listener()
 
-        while True:
-            events = await client.fetch_event_listener(listener_id)
-            print(events)
-            time.sleep(2)
+    while True:
+        events = await client.fetch_event_listener(listener_id)
+        print(events)
+        time.sleep(2)
 
-    except Exception as exception:
-        print(exception)
 
 asyncio.run(main())

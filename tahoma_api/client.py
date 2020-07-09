@@ -1,24 +1,17 @@
 """ Python wrapper for the Tahoma API """
+from typing import Any, List, Optional
+
 import aiohttp
 
-import asyncio
-import logging
-import time
-import hashlib
-import math
-import random
-import json
-
-from .exceptions import *
-from .models import *
+from tahoma_api.models import Device
 
 API_URL = "https://tahomalink.com/enduser-mobile-web/enduserAPI/"  # /doc for API doc
 
 
-class TahomaClient(object):
+class TahomaClient:
     """ Interface class for the Tahoma API """
 
-    def __init__(self, username, password, api_url=API_URL):
+    def __init__(self, username: str, password: str, api_url: str = API_URL) -> None:
         """
         Constructor
 
@@ -31,10 +24,10 @@ class TahomaClient(object):
         self.api_url = api_url
 
         self.__cookies = None
-        self.__devices = None
+        self.devices: List[Device] = []
         self.__roles = None
 
-    async def login(self):
+    async def login(self) -> bool:
 
         payload = {"userId": self.username, "userPassword": self.password}
 
@@ -44,8 +37,10 @@ class TahomaClient(object):
                 result = await response.json()
 
                 # 401
-                # {'errorCode': 'AUTHENTICATION_ERROR', 'error': 'Bad credentials'}
-                # {'errorCode': 'AUTHENTICATION_ERROR', 'error': 'Your setup cannot be accessed through this application'}
+                # {'errorCode': 'AUTHENTICATION_ERROR',
+                #  'error': 'Bad credentials'}
+                # {'errorCode': 'AUTHENTICATION_ERROR',
+                #  'error': 'Your setup cannot be accessed through this application'}
                 if response.status == 401:
                     if result["errorCode"] == "AUTHENTICATION_ERROR":
 
@@ -67,13 +62,14 @@ class TahomaClient(object):
                         return False  # todo throw error
 
                 # 401
-                # {'errorCode': 'AUTHENTICATION_ERROR', 'error': 'Too many requests, try again later : login with xxx@xxx.tld'}
+                # {'errorCode': 'AUTHENTICATION_ERROR',
+                #  'error': 'Too many requests, try again later : login with xxx@xxx.tld'}
                 # TODO Add retry logic on too many requests + for debug, log requests + timespans
 
                 # 200
                 # {'success': True, 'roles': [{'name': 'ENDUSER'}]}
                 if response.status == 200:
-                    if result["success"] == True:
+                    if result["success"]:
                         self.__roles = result["roles"]
                         self.__cookies = response.cookies
 
@@ -83,27 +79,28 @@ class TahomaClient(object):
                 print(response.status)
                 print(result)
 
-    async def get_devices(self, refresh=False) -> List[Device]:
-        """
-        Get setup  definition
-        Maximum number of calls per-session : 1 (category: bulk)
-        """
-        if self.__devices and refresh == False:
-            return self._devices
+                return False
+
+    async def get_devices(self, refresh: bool = False) -> List[Device]:
+        if self.devices and not refresh:
+            return self.devices
 
         response = await self.__make_http_request("GET", "setup/devices")
 
         devices = [Device(**d) for d in response]
-        self.__devices = devices
+        self.devices = devices
 
         return devices
 
     async def register_event_listener(self) -> str:
-        """ 
-        Register a new setup event listener on the current session and return a new listener id. 
-        Only one listener may be registered on a given session. 
-        Registering an new listener will invalidate the previous one if any. 
-        Note that registering an event listener drastically reduces the session timeout : listening sessions are expected to call the /events/{listenerId}/fetch API on a regular basis.
+        """
+        Register a new setup event listener on the current session and return a new
+        listener id.
+        Only one listener may be registered on a given session.
+        Registering an new listener will invalidate the previous one if any.
+        Note that registering an event listener drastically reduces the session
+        timeout : listening sessions are expected to call the /events/{listenerId}/fetch
+         API on a regular basis.
         """
         response = await self.__make_http_request("POST", "events/register")
         listener_id = response.get("id")
@@ -112,29 +109,28 @@ class TahomaClient(object):
 
     async def fetch_event_listener(self, listener_id: str) -> List[Any]:
         """
-        Fetch new events from a registered event listener. Fetched events are removed from the listener buffer. Return an empty response if no event is available.
-        Per-session rate-limit : 1 calls per 1 SECONDS period for this particular operation (polling)
+        Fetch new events from a registered event listener. Fetched events are removed
+        from the listener buffer. Return an empty response if no event is available.
+        Per-session rate-limit : 1 calls per 1 SECONDS period for this particular
+        operation (polling)
         """
         response = await self.__make_http_request("POST", f"events/{listener_id}/fetch")
 
         return response
 
-    async def execute_action_group(
-        self, actions: [Command], label="python-tahoma-api", type=None
-    ) -> List[Any]:
-        """
-        Execute a non-persistent action group
-        The executed action group does not have to be persisted on the server before use.
-        Per-session rate-limit : 50 calls per 24 HOURS period for all operations of the same category (exec)
-        """
-        # TODO implement type=geolocated /exec/apply/geolocated
-        # TODO implement type=geolocated /exec/apply/highPriority
-        # TODO implement type=geolocated /exec/apply/internal
-
-        payload = {"label": label, "actions": actions}
-        response = await self.__make_http_request("POST", f"exec/apply", payload)
-
-        return response
+    # async def execute_action_group(
+    #     self, actions: List[Command], label: str = "python-tahoma-api"
+    # ) -> List[Any]:
+    #     """ Execute a non-persistent action group.
+    #     The executed action group does not have to be persisted on the server before
+    #     use.
+    #     Per-session rate-limit : 50 calls per 24 HOURS period for all operations of the
+    #     same category (exec)
+    #     """
+    #     payload = {"label": label, "actions": actions}
+    #     response = await self.__make_http_request("POST", "exec/apply", payload)
+    #
+    #     return response
 
     async def __make_http_request(
         self, method: str, endpoint: str, payload: Optional[Any] = None
@@ -162,7 +158,6 @@ class TahomaClient(object):
         if response.status == 200:
             return result
 
-        if response.status > 400 and response.status < 500:
+        if 400 < response.status < 500:
             # implement retry logic
             print("TODO")
-
