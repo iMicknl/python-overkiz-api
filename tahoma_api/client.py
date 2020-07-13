@@ -2,6 +2,7 @@
 from typing import Any, List, Optional
 
 import aiohttp
+import humps
 
 from tahoma_api.models import Device
 
@@ -154,6 +155,9 @@ class TahomaClient:
                     self.api_url + endpoint, cookies=cookies, data=payload
                 ) as response:
                     result = await response.json()
+
+        # TODO replace by our own library
+        result = humps.decamelize(result)
 
         if response.status == 200:
             return result

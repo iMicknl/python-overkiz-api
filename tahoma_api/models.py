@@ -9,7 +9,7 @@ class Device:
         "creation_time",
         "last_update_time",
         "label",
-        "device_url",
+        "deviceurl",
         "shortcut",
         "controllable_name",
         "definition",
@@ -28,7 +28,7 @@ class Device:
         self,
         *,
         label: str,
-        device_url: str,
+        deviceurl: str,
         controllable_name: str,
         # definition: Dict[List[Any]],
         states: List[Dict[str, Any]],
@@ -39,8 +39,8 @@ class Device:
         type: str,
         **_: Any
     ) -> None:
-        self.id = device_url
-        self.device_url = device_url
+        self.id = deviceurl
+        self.deviceurl = deviceurl
         self.label = label
         self.controllable_name = controllable_name
         self.states = [State(**s) for s in states]
@@ -93,7 +93,7 @@ class Command:
         "type",
         "name",
         "parameters",
-        "sensitiveParametersIndexes",
+        "sensitive_parameters_indexes",
         "authentication",
         "delay",
     )

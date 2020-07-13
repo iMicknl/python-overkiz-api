@@ -261,6 +261,14 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 version = "1.9.0"
 
 [[package]]
+category = "main"
+description = "🐫  Convert strings (and dictionary keys) between snake case, camel case and pascal case in Python. Inspired by Humps for Node"
+name = "pyhumps"
+optional = false
+python-versions = "*"
+version = "1.3.1"
+
+[[package]]
 category = "dev"
 description = "Python parsing module"
 name = "pyparsing"
@@ -428,7 +436,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "2bc9ae3dbd99f59cb2b8c6f8dd332aab9b9abe4f46d7a7fe61334631a32dbe5c"
+content-hash = "4ee94501c23cdc975838a8e2f7d71a85f261940a74a0c9deccf8ed0089a6e059"
 python-versions = ">=3.6"
 
 [metadata.files]
@@ -584,6 +592,10 @@ pre-commit = [
 py = [
     {file = "py-1.9.0-py2.py3-none-any.whl", hash = "sha256:366389d1db726cd2fcfc79732e75410e5fe4d31db13692115529d34069a043c2"},
     {file = "py-1.9.0.tar.gz", hash = "sha256:9ca6883ce56b4e8da7e79ac18787889fa5206c79dcc67fb065376cd2fe03f342"},
+]
+pyhumps = [
+    {file = "pyhumps-1.3.1-py3-none-any.whl", hash = "sha256:32452d75ec3c9e44b845c3591fc54ab4734338fcf88a34d7cb1f42017faeffc3"},
+    {file = "pyhumps-1.3.1.tar.gz", hash = "sha256:71aaf4069eae682274dc7f33dfe24dff1f955bbcaa58f4d83d3853eb775116bc"},
 ]
 pyparsing = [
     {file = "pyparsing-2.4.7-py2.py3-none-any.whl", hash = "sha256:ef9d7589ef3c200abe66653d3f1ab1033c3c419ae9b9bdb1240a85b024efc88b"},
