@@ -31,7 +31,7 @@ class Device:
         label: str,
         deviceurl: str,
         controllable_name: str,
-        # definition: Dict[List[Any]],
+        definition: Any,
         states: List[Dict[str, Any]],
         data_properties: Optional[List[Dict[str, Any]]] = None,
         widget_name: Optional[str] = None,
@@ -41,6 +41,7 @@ class Device:
         **_: Any
     ) -> None:
         self.id = deviceurl
+        self.definition = definition
         self.deviceurl = deviceurl
         self.label = label
         self.controllable_name = controllable_name

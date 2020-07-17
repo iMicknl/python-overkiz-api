@@ -125,6 +125,20 @@ class TahomaClient:
 
         return response
 
+    async def get_current_execution(self, exec_id: str) -> List[Any]:
+        """ Get an action group execution currently running """
+        response = await self.__do_http_request("GET", f"/exec/current/{exec_id}")
+        # TODO Strongly type executions
+
+        return response
+
+    async def get_current_executions(self) -> List[Any]:
+        """ Get all action groups executions currently running """
+        response = await self.__do_http_request("GET", "/exec/current")
+        # TODO Strongly type executions
+
+        return response
+
     async def __do_http_request(
         self, method: str, endpoint: str, payload: Optional[Any] = None
     ) -> Any:
