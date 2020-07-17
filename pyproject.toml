@@ -7,6 +7,10 @@ license = "MIT"
 readme = "README.md"
 homepage = "https://github.com/iMicknl/python-tahoma-api"
 repository = "https://github.com/iMicknl/python-tahoma-api"
+packages = [
+    { include = "tahoma_api" },
+    { include = "tahoma_api/**/*.py" },
+]
 
 [tool.poetry.dependencies]
 python = ">=3.6"

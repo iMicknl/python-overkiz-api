@@ -171,9 +171,7 @@ class TahomaClient:
         # 401
         # {'errorCode': 'AUTHENTICATION_ERROR',
         #  'error': 'Too many requests, try again later : login with xxx@xxx.tld'}
-        # {'errorCode': 'AUTHENTICATION_ERROR',
         #  'error': 'Bad credentials'}
-        # {'errorCode': 'AUTHENTICATION_ERROR',
         #  'error': 'Your setup cannot be accessed through this application'}
         if response.status == 401:
             if result.get("errorCode") == "AUTHENTICATION_ERROR":
