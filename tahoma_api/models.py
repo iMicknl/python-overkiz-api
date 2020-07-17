@@ -9,7 +9,7 @@ class Device:
         "creation_time",
         "last_update_time",
         "label",
-        "device_url",
+        "deviceurl",
         "shortcut",
         "controllable_name",
         "definition",
@@ -28,7 +28,7 @@ class Device:
         self,
         *,
         label: str,
-        device_url: str,
+        deviceurl: str,
         controllable_name: str,
         # definition: Dict[List[Any]],
         states: List[Dict[str, Any]],
@@ -39,8 +39,8 @@ class Device:
         type: str,
         **_: Any
     ) -> None:
-        self.id = device_url
-        self.device_url = device_url
+        self.id = deviceurl
+        self.deviceurl = deviceurl
         self.label = label
         self.controllable_name = controllable_name
         self.states = [State(**s) for s in states]
@@ -84,3 +84,20 @@ class State:
         self.name = name
         self.value = value
         self.type = type
+
+
+class Command:
+    """Represents an TaHoma Command."""
+
+    __slots__ = (
+        "type",
+        "name",
+        "parameters",
+        "sensitive_parameters_indexes",
+        "authentication",
+        "delay",
+    )
+
+    def __init__(self, name: str, parameters: str, **_: Any):
+        self.name = name
+        self.parameters = parameters
