@@ -24,43 +24,47 @@ class TahomaClient:
         self.password = password
         self.api_url = api_url
 
-        self.__cookies = None
         self.devices: List[Device] = []
         self.__roles = None
+
+        self.session = aiohttp.ClientSession(raise_for_status=False)
+
+    async def close(self) -> None:
+        """Close the session."""
+        return await self.session.close()
 
     async def login(self) -> bool:
 
         payload = {"userId": self.username, "userPassword": self.password}
 
-        async with aiohttp.ClientSession() as session:
-            async with session.post(self.api_url + "login", data=payload) as response:
+        async with self.session.post(self.api_url + "login", data=payload) as response:
 
-                result = await response.json()
+            result = await response.json()
 
-                # 401
-                # {'errorCode': 'AUTHENTICATION_ERROR',
-                #  'error': 'Bad credentials'}
-                # {'errorCode': 'AUTHENTICATION_ERROR',
-                #  'error': 'Your setup cannot be accessed through this application'}
-                if response.status == 401:
-                    if result["errorCode"] == "AUTHENTICATION_ERROR":
+            # 401
+            # {'errorCode': 'AUTHENTICATION_ERROR',
+            #  'error': 'Bad credentials'}
+            # {'errorCode': 'AUTHENTICATION_ERROR',
+            #  'error': 'Your setup cannot be accessed through this application'}
+            if response.status == 401:
+                if result["errorCode"] == "AUTHENTICATION_ERROR":
 
-                        if "Too many requests" in result["error"]:
-                            print(result["error"])
-                            raise Exception
+                    if "Too many requests" in result["error"]:
+                        print(result["error"])
+                        raise Exception
 
-                        if (
-                            "Your setup cannot be accessed through this application"
-                            in result["error"]
-                        ):
-                            print(result["error"])
-
-                        if "Bad credentials" in result["error"]:
-                            print(result["error"])
-
+                    if (
+                        "Your setup cannot be accessed through this application"
+                        in result["error"]
+                    ):
                         print(result["error"])
 
-                        return False  # todo throw error
+                    if "Bad credentials" in result["error"]:
+                        print(result["error"])
+
+                    print(result["error"])
+
+                    return False  # todo throw error
 
                 # 401
                 # {'errorCode': 'AUTHENTICATION_ERROR',
@@ -69,18 +73,13 @@ class TahomaClient:
 
                 # 200
                 # {'success': True, 'roles': [{'name': 'ENDUSER'}]}
-                if response.status == 200:
-                    if result["success"]:
-                        self.__roles = result["roles"]
-                        self.__cookies = response.cookies
+            if response.status == 200:
+                if result["success"]:
+                    self.__roles = result["roles"]
 
-                        return True
+                    return True
 
-                # Temp fallbacks
-                print(response.status)
-                print(result)
-
-                return False
+            return False
 
     async def get_devices(self, refresh: bool = False) -> List[Device]:
         if self.devices and not refresh:
@@ -137,24 +136,24 @@ class TahomaClient:
         self, method: str, endpoint: str, payload: Optional[Any] = None
     ) -> Any:
         """Make a request to the TaHoma API"""
-        cookies = self.__cookies
         supported_methods = ["GET", "POST"]
+        result = response = None
 
         if method not in supported_methods:
             raise Exception
 
-        async with aiohttp.ClientSession() as session:
-            if method == "GET":
-                async with session.get(
-                    self.api_url + endpoint, cookies=cookies
-                ) as response:
-                    result = await response.json()
+        if method == "GET":
+            async with self.session.get(self.api_url + endpoint) as response:
+                result = await response.json()
 
-            if method == "POST":
-                async with session.post(
-                    self.api_url + endpoint, cookies=cookies, data=payload
-                ) as response:
-                    result = await response.json()
+        if method == "POST":
+            async with self.session.post(
+                self.api_url + endpoint, data=payload
+            ) as response:
+                result = await response.json()
+
+        if result is None or response is None:
+            return  # TODO throw error
 
         # TODO replace by our own library
         result = humps.decamelize(result)

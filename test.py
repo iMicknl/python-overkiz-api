@@ -12,6 +12,7 @@ async def main() -> None:
     client = TahomaClient(USERNAME, PASSWORD)
 
     await client.login()
+
     devices = await client.get_devices()
 
     for device in devices:
@@ -23,6 +24,9 @@ async def main() -> None:
         events = await client.fetch_event_listener(listener_id)
         print(events)
         time.sleep(2)
+
+    # Make sure you call client.close() when you are done
+    await client.close()
 
 
 asyncio.run(main())
