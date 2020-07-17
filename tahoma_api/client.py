@@ -29,7 +29,7 @@ class TahomaClient:
         self.devices: List[Device] = []
         self.__roles = None
 
-        self.session = aiohttp.ClientSession(raise_for_status=False)
+        self.session = aiohttp.ClientSession()
 
     async def close(self) -> None:
         """Close the session."""
@@ -150,12 +150,12 @@ class TahomaClient:
             raise Exception
 
         if method == "GET":
-            async with self.session.get(self.api_url + endpoint) as response:
+            async with self.session.get(f"{self.api_url}{endpoint}") as response:
                 result = await response.json()
 
         if method == "POST":
             async with self.session.post(
-                self.api_url + endpoint, data=payload
+                f"{self.api_url}{endpoint}", data=payload
             ) as response:
                 result = await response.json()
 
