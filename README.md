@@ -27,13 +27,13 @@ pip install git+https://github.com/iMicknl/python-tahoma-api.git@master#tahoma_a
   ```
   export PATH="~/.pyenv/bin:$PATH"
   eval "$(pyenv init -)"
-  eval "$(pyenv virtualenv-init -)"
   ```
 - Install the required [dependencies](https://github.com/pyenv/pyenv/wiki#suggested-build-environment)
 - Install [poetry](https://python-poetry.org): `curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python`
+
 - Clone this repository
 - `cd python-tahoma-api`
-- Install the required Python version: `pyenv install`
+- Install the required Python version: `pyenv install 3.8.3`
 - Init the project: `poetry install`
 - Run `poetry run pre-commit install`
 
