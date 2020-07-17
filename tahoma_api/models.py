@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Any, Dict, List, Optional
 
 # pylint: disable=unused-argument, too-many-instance-attributes
@@ -6,6 +7,7 @@ from typing import Any, Dict, List, Optional
 class Device:
     __slots__ = (
         "id",
+        "controllable_name",
         "creation_time",
         "last_update_time",
         "label",
@@ -17,7 +19,6 @@ class Device:
         "data_properties",
         "available",
         "enabled",
-        "widget_name",
         "widget",
         "ui_class",
         "qualified_name",
@@ -27,28 +28,46 @@ class Device:
     def __init__(
         self,
         *,
+        available: bool,
         label: str,
         deviceurl: str,
         controllable_name: str,
-        # definition: Dict[List[Any]],
+        definition: Dict[str, Any],
         states: List[Dict[str, Any]],
         data_properties: Optional[List[Dict[str, Any]]] = None,
-        widget_name: Optional[str] = None,
+        widget: Optional[str] = None,
         ui_class: str,
         qualified_name: Optional[str] = None,
         type: str,
         **_: Any
     ) -> None:
         self.id = deviceurl
+        self.available = available
+        self.definition = definition
         self.deviceurl = deviceurl
         self.label = label
         self.controllable_name = controllable_name
-        self.states = [State(**s) for s in states]
+        self.states = states
+        # self.states = [State(**s) for s in states]
         self.data_properties = data_properties
-        self.widget_name = widget_name
+        self.widget = widget
         self.ui_class = ui_class
         self.qualified_name = qualified_name
         self.type = type
+
+
+# class Definition:
+#     __slots__ = (
+#         "commands",
+#         "states",
+#         "widget_name",
+#         "ui_class",
+#         "ui_classifiers" "type",
+#     )
+
+#     def __init__(self, command_name: str, nparams: int, **_: Any) -> None:
+#         self.command_name = command_name
+#         self.nparams = nparams
 
 
 class StateDefinition:
@@ -101,3 +120,9 @@ class Command:
     def __init__(self, name: str, parameters: str, **_: Any):
         self.name = name
         self.parameters = parameters
+
+
+class CommandMode(Enum):
+    high_priority = ("highPriority",)
+    geolocated = ("geolocated",)
+    internal = "internal"
