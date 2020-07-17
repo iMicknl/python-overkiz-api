@@ -1,10 +1,12 @@
 """ Python wrapper for the Tahoma API """
+import urllib.parse
 from typing import Any, List, Optional
 
 import aiohttp
 import humps
 
-from tahoma_api.models import Device
+from tahoma_api.exceptions import BadCredentialsException, TooManyRequestsException
+from tahoma_api.models import Device, State
 
 API_URL = "https://tahomalink.com/enduser-mobile-web/enduserAPI/"  # /doc for API doc
 
@@ -34,52 +36,19 @@ class TahomaClient:
         return await self.session.close()
 
     async def login(self) -> bool:
-
+        """
+        Authenticate and create an API session allowing access to the other operations.
+        Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
+        """
         payload = {"userId": self.username, "userPassword": self.password}
+        response = await self.__make_http_request("POST", "login", payload)
 
-        async with self.session.post(self.api_url + "login", data=payload) as response:
+        if response.get("success"):
+            self.__roles = response.get("roles")
 
-            result = await response.json()
+            return True
 
-            # 401
-            # {'errorCode': 'AUTHENTICATION_ERROR',
-            #  'error': 'Bad credentials'}
-            # {'errorCode': 'AUTHENTICATION_ERROR',
-            #  'error': 'Your setup cannot be accessed through this application'}
-            if response.status == 401:
-                if result["errorCode"] == "AUTHENTICATION_ERROR":
-
-                    if "Too many requests" in result["error"]:
-                        print(result["error"])
-                        raise Exception
-
-                    if (
-                        "Your setup cannot be accessed through this application"
-                        in result["error"]
-                    ):
-                        print(result["error"])
-
-                    if "Bad credentials" in result["error"]:
-                        print(result["error"])
-
-                    print(result["error"])
-
-                    return False  # todo throw error
-
-                # 401
-                # {'errorCode': 'AUTHENTICATION_ERROR',
-                #  'error': 'Too many requests, try again later : login with xxx@xxx.tld'}
-                # TODO Add retry logic on too many requests + for debug, log requests + timespans
-
-                # 200
-                # {'success': True, 'roles': [{'name': 'ENDUSER'}]}
-            if response.status == 200:
-                if result["success"]:
-                    self.__roles = result["roles"]
-
-                    return True
-
-            return False
+        return False
 
     async def get_devices(self, refresh: bool = False) -> List[Device]:
         if self.devices and not refresh:
@@ -91,6 +60,18 @@ class TahomaClient:
         self.devices = devices
 
         return devices
+
+    async def get_state(self, deviceurl: str) -> List[State]:
+        """
+        Retrieve states of requested device
+
+        """
+        response = await self.__make_http_request(
+            "GET", f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/states"
+        )
+        state = [State(**s) for s in response]
+
+        return state
 
     async def register_event_listener(self) -> str:
         """
@@ -161,6 +142,29 @@ class TahomaClient:
         if response.status == 200:
             return result
 
+        # 401
+        # {'errorCode': 'AUTHENTICATION_ERROR',
+        #  'error': 'Too many requests, try again later : login with xxx@xxx.tld'}
+        # {'errorCode': 'AUTHENTICATION_ERROR',
+        #  'error': 'Bad credentials'}
+        # {'errorCode': 'AUTHENTICATION_ERROR',
+        #  'error': 'Your setup cannot be accessed through this application'}
+        if response.status == 401:
+            if result.get("errorCode") == "AUTHENTICATION_ERROR":
+                message = result.get("error")
+
+                if "Too many requests" in message:
+                    raise TooManyRequestsException(message)
+
+                if "Your setup cannot be accessed through this application" in message:
+                    raise Exception(message)
+
+                if "Bad credentials" in message:
+                    raise BadCredentialsException(message)
+
+                raise Exception(message)
+
         if 400 < response.status < 500:
-            # implement retry logic
-            print("TODO")
+            message = result.get("error")
+
+            raise Exception(message)
