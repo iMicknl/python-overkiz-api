@@ -18,7 +18,7 @@ class Device:
         "data_properties",
         "available",
         "enabled",
-        "widget_name",
+        "widget",
         "ui_class",
         "qualified_name",
         "type",
@@ -33,7 +33,7 @@ class Device:
         definition: Dict[str, Any],
         states: List[Dict[str, Any]],
         data_properties: Optional[List[Dict[str, Any]]] = None,
-        widget_name: Optional[str] = None,
+        widget: Optional[str] = None,
         ui_class: str,
         qualified_name: Optional[str] = None,
         type: str,
@@ -46,7 +46,7 @@ class Device:
         self.controllable_name = controllable_name
         self.states = [State(**s) for s in states]
         self.data_properties = data_properties
-        self.widget_name = widget_name
+        self.widget = widget
         self.ui_class = ui_class
         self.qualified_name = qualified_name
         self.type = type
