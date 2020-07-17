@@ -16,13 +16,16 @@ async def main() -> None:
     devices = await client.get_devices()
 
     for device in devices:
-        print(f"{device.label} ({device.id})")
+        state = await client.get_state(device.deviceurl)
+        print(f"{device.label} ({device.id}) - {state}")
 
+    # Create an event listener and poll it
     listener_id = await client.register_event_listener()
 
     while True:
         events = await client.fetch_event_listener(listener_id)
         print(events)
+
         time.sleep(2)
 
     # Make sure you call client.close() when you are done

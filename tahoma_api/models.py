@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Any, Dict, List, Optional
 
 # pylint: disable=unused-argument, too-many-instance-attributes
@@ -101,3 +102,9 @@ class Command:
     def __init__(self, name: str, parameters: str, **_: Any):
         self.name = name
         self.parameters = parameters
+
+
+class CommandMode(Enum):
+    high_priority = ("highPriority",)
+    geolocated = ("geolocated",)
+    internal = "internal"
