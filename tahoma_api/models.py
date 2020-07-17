@@ -98,6 +98,6 @@ class Command:
         "delay",
     )
 
-    def __init__(self, name: str, parameters: str, **kwargs: Any):
+    def __init__(self, name: str, parameters: str, **_: Any):
         self.name = name
         self.parameters = parameters
