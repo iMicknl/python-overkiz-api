@@ -11,13 +11,19 @@ PASSWORD = ""
 async def main() -> None:
     client = TahomaClient(USERNAME, PASSWORD)
 
-    await client.login()
+    try:
+        await client.login()
+    except Exception as exception:  # pylint: disable=broad-except
+        print(exception)
+        return await client.close()
 
     devices = await client.get_devices()
 
     for device in devices:
-        state = await client.get_state(device.deviceurl)
-        print(f"{device.label} ({device.id}) - {state}")
+        print(f"{device.label} ({device.id}) - {device.controllable_name}")
+        print(f"{device.widget} - {device.ui_class}")
+        # print(device.states)
+        # print(device.definition)
 
     # Create an event listener and poll it
     listener_id = await client.register_event_listener()
