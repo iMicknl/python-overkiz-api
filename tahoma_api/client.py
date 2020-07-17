@@ -6,7 +6,7 @@ import aiohttp
 import humps
 
 from tahoma_api.exceptions import BadCredentialsException, TooManyRequestsException
-from tahoma_api.models import Command, CommandMode, Device, State
+from tahoma_api.models import ActionGroupResponse, Command, CommandMode, Device, State
 
 API_URL = "https://tahomalink.com/enduser-mobile-web/enduserAPI/"  # /doc for API doc
 
@@ -103,17 +103,21 @@ class TahomaClient:
 
     async def execute_action_group(
         self,
-        actions: List[Command],
+        device_url: str,
+        commands: List[Command],
         label: str = "python-tahoma-api",
         mode: Optional[CommandMode] = None,
-    ) -> List[Any]:
+    ) -> ActionGroupResponse:
         """ Execute a non-persistent action group.
         The executed action group does not have to be persisted on the server before
         use.
         Per-session rate-limit : 50 calls per 24 HOURS period for all operations of the
         same category (exec)
         """
-        payload = {"label": label, "actions": actions}
+        payload = {
+            "label": label,
+            "actions": [{"device_url": device_url, "commands": commands}],
+        }
         supported_modes = ["geolocated", "highPriority", "internal"]
         endpoint = "exec/apply"
 
@@ -123,12 +127,11 @@ class TahomaClient:
 
         response = await self.__do_http_request("POST", endpoint, payload)
 
-        return response
+        return ActionGroupResponse(response)
 
-    async def get_current_execution(self, exec_id: str) -> List[Any]:
+    async def get_current_execution(self, exec_id: str) -> ActionGroupResponse:
         """ Get an action group execution currently running """
         response = await self.__do_http_request("GET", f"/exec/current/{exec_id}")
-        # TODO Strongly type executions
 
         return response
 

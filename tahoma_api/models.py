@@ -122,6 +122,11 @@ class Command:
         self.parameters = parameters
 
 
+class ActionGroupResponse:
+    def __init__(self, exec_id: str, **_: Any):
+        self.exec_id = exec_id
+
+
 class CommandMode(Enum):
     high_priority = ("highPriority",)
     geolocated = ("geolocated",)
