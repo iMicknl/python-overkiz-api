@@ -47,7 +47,8 @@ class Device:
         self.deviceurl = deviceurl
         self.label = label
         self.controllable_name = controllable_name
-        self.states = [State(**s) for s in states]
+        self.states = states
+        # self.states = [State(**s) for s in states]
         self.data_properties = data_properties
         self.widget = widget
         self.ui_class = ui_class
