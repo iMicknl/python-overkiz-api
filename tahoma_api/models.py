@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Optional
 class Device:
     __slots__ = (
         "id",
+        "controllable_name",
         "creation_time",
         "last_update_time",
         "label",
@@ -27,6 +28,7 @@ class Device:
     def __init__(
         self,
         *,
+        available: bool,
         label: str,
         deviceurl: str,
         controllable_name: str,
@@ -40,6 +42,7 @@ class Device:
         **_: Any
     ) -> None:
         self.id = deviceurl
+        self.available = available
         self.definition = definition
         self.deviceurl = deviceurl
         self.label = label
@@ -50,6 +53,20 @@ class Device:
         self.ui_class = ui_class
         self.qualified_name = qualified_name
         self.type = type
+
+
+# class Definition:
+#     __slots__ = (
+#         "commands",
+#         "states",
+#         "widget_name",
+#         "ui_class",
+#         "ui_classifiers" "type",
+#     )
+
+#     def __init__(self, command_name: str, nparams: int, **_: Any) -> None:
+#         self.command_name = command_name
+#         self.nparams = nparams
 
 
 class StateDefinition:
