@@ -1,12 +1,15 @@
 """ Python wrapper for the Tahoma API """
 import urllib.parse
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 import aiohttp
 import humps
+from aiohttp import ClientResponse
 
 from tahoma_api.exceptions import BadCredentialsException, TooManyRequestsException
 from tahoma_api.models import Command, CommandMode, Device, State
+
+JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
 
 API_URL = "https://tahomalink.com/enduser-mobile-web/enduserAPI/"  # /doc for API doc
 
@@ -41,7 +44,7 @@ class TahomaClient:
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
         payload = {"userId": self.username, "userPassword": self.password}
-        response = await self.__do_http_request("POST", "login", payload)
+        response = await self.__post("login", payload)
 
         if response.get("success"):
             self.__roles = response.get("roles")
@@ -57,9 +60,8 @@ class TahomaClient:
         if self.devices and not refresh:
             return self.devices
 
-        response = await self.__do_http_request("GET", "setup/devices")
-
-        devices = [Device(**d) for d in response]
+        response = await self.__get("setup/devices")
+        devices = [Device(**d) for d in humps.decamelize(response)]
         self.devices = devices
 
         return devices
@@ -68,10 +70,10 @@ class TahomaClient:
         """
         Retrieve states of requested device
         """
-        response = await self.__do_http_request(
-            "GET", f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/states"
+        response = await self.__get(
+            f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/states"
         )
-        state = [State(**s) for s in response]
+        state = [State(**s) for s in humps.decamelize(response)]
 
         return state
 
@@ -85,7 +87,7 @@ class TahomaClient:
         timeout : listening sessions are expected to call the /events/{listenerId}/fetch
         API on a regular basis.
         """
-        response = await self.__do_http_request("POST", "events/register")
+        response = await self.__post("events/register")
         listener_id = response.get("id")
 
         return listener_id
@@ -97,7 +99,7 @@ class TahomaClient:
         Per-session rate-limit : 1 calls per 1 SECONDS period for this particular
         operation (polling)
         """
-        response = await self.__do_http_request("POST", f"events/{listener_id}/fetch")
+        response = await self.__post(f"events/{listener_id}/fetch")
 
         return response
 
@@ -121,58 +123,49 @@ class TahomaClient:
         if mode in supported_modes:
             endpoint = f"{endpoint}/{mode}"
 
-        response = await self.__do_http_request("POST", endpoint, payload)
+        response = await self.__post(endpoint, payload)
 
         return response
 
     async def get_current_execution(self, exec_id: str) -> List[Any]:
         """ Get an action group execution currently running """
-        response = await self.__do_http_request("GET", f"/exec/current/{exec_id}")
+        response = await self.__get(f"/exec/current/{exec_id}")
         # TODO Strongly type executions
 
         return response
 
     async def get_current_executions(self) -> List[Any]:
         """ Get all action groups executions currently running """
-        response = await self.__do_http_request("GET", "/exec/current")
+        response = await self.__get("/exec/current")
         # TODO Strongly type executions
 
         return response
 
-    async def __do_http_request(
-        self, method: str, endpoint: str, payload: Optional[Any] = None
-    ) -> Any:
-        """Make a request to the TaHoma API"""
-        supported_methods = ["GET", "POST"]
-        result = response = None
+    async def __get(self, endpoint: str) -> Any:
+        """ Make a GET request to the TaHoma API """
+        async with self.session.get(f"{self.api_url}{endpoint}") as response:
+            await self.check_response(response)
+            return await response.json()
 
-        if method not in supported_methods:
-            raise Exception
+    async def __post(self, endpoint: str, payload: Optional[JSON] = None,) -> Any:
+        """ Make a POST request to the TaHoma API """
+        async with self.session.post(
+            f"{self.api_url}{endpoint}", data=payload
+        ) as response:
+            await self.check_response(response)
+            return await response.json()
 
-        if method == "GET":
-            async with self.session.get(f"{self.api_url}{endpoint}") as response:
-                result = await response.json()
-
-        if method == "POST":
-            async with self.session.post(
-                f"{self.api_url}{endpoint}", data=payload
-            ) as response:
-                result = await response.json()
-
-        if result is None or response is None:
-            return  # TODO throw error
-
-        # TODO replace by our own library
-        result = humps.decamelize(result)
-
+    @staticmethod
+    async def check_response(response: ClientResponse) -> None:
+        """ Check the response returned by the TaHoma API"""
         if response.status == 200:
-            return result
-
+            return
         # 401
         # {'errorCode': 'AUTHENTICATION_ERROR',
         #  'error': 'Too many requests, try again later : login with xxx@xxx.tld'}
         #  'error': 'Bad credentials'}
         #  'error': 'Your setup cannot be accessed through this application'}
+        result = await response.json()
         if response.status == 401:
             if result.get("errorCode") == "AUTHENTICATION_ERROR":
                 message = result.get("error")
