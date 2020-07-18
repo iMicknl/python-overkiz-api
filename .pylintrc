@@ -1,6 +1,9 @@
 [BASIC]
 good-names=id
 
+[FORMAT]
+max-line-length=88
+
 [LOGGING]
 logging-format-style=fstr
 

@@ -1,9 +1,11 @@
 """ Python wrapper for the Tahoma API """
+import os
 import urllib.parse
 from typing import Any, List, Optional
 
 import aiohttp
 import humps
+from dotenv import load_dotenv
 
 from tahoma_api.exceptions import BadCredentialsException, TooManyRequestsException
 from tahoma_api.models import Command, CommandMode, Device, State
@@ -14,16 +16,26 @@ API_URL = "https://tahomalink.com/enduser-mobile-web/enduserAPI/"  # /doc for AP
 class TahomaClient:
     """ Interface class for the Tahoma API """
 
-    def __init__(self, username: str, password: str, api_url: str = API_URL) -> None:
+    def __init__(
+        self,
+        username: Optional[str] = None,
+        password: Optional[str] = None,
+        api_url: str = API_URL,
+    ) -> None:
         """
         Constructor
 
         :param username: the username for Tahomalink.com
         :param password: the password for Tahomalink.com
+
+        Credentials can be set in .env file. Email and Password will be read from the
+        EMAIL and PASSWORD environment variables.
         """
 
-        self.username = username
-        self.password = password
+        load_dotenv()
+
+        self.username = os.getenv("EMAIL") or username
+        self.password = os.getenv("PASSWORD") or password
         self.api_url = api_url
 
         self.devices: List[Device] = []
@@ -38,7 +50,8 @@ class TahomaClient:
     async def login(self) -> bool:
         """
         Authenticate and create an API session allowing access to the other operations.
-        Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
+        Caller must provide one of
+            [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
         payload = {"userId": self.username, "userPassword": self.password}
         response = await self.__do_http_request("POST", "login", payload)

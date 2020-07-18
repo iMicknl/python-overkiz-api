@@ -3,13 +3,9 @@ import time
 
 from tahoma_api.client import TahomaClient
 
-# TODO use .env file
-USERNAME = ""
-PASSWORD = ""
-
 
 async def main() -> None:
-    client = TahomaClient(USERNAME, PASSWORD)
+    client = TahomaClient()
 
     try:
         await client.login()
