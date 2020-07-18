@@ -33,7 +33,7 @@ class Device:
         deviceurl: str,
         controllable_name: str,
         definition: Dict[str, Any],
-        states: List[Dict[str, Any]],
+        states: Optional[List[Dict[str, Any]]] = None,
         data_properties: Optional[List[Dict[str, Any]]] = None,
         widget: Optional[str] = None,
         ui_class: str,
@@ -43,12 +43,11 @@ class Device:
     ) -> None:
         self.id = deviceurl
         self.available = available
-        self.definition = definition
+        self.definition = Definition(**definition)
         self.deviceurl = deviceurl
         self.label = label
         self.controllable_name = controllable_name
-        self.states = states
-        # self.states = [State(**s) for s in states]
+        self.states = [State(**s) for s in states] if states else None
         self.data_properties = data_properties
         self.widget = widget
         self.ui_class = ui_class
@@ -56,18 +55,22 @@ class Device:
         self.type = type
 
 
-# class Definition:
-#     __slots__ = (
-#         "commands",
-#         "states",
-#         "widget_name",
-#         "ui_class",
-#         "ui_classifiers" "type",
-#     )
+class Definition:
+    __slots__ = ("commands", "states", "widget_name", "ui_class", "qualified_name")
 
-#     def __init__(self, command_name: str, nparams: int, **_: Any) -> None:
-#         self.command_name = command_name
-#         self.nparams = nparams
+    def __init__(
+        self,
+        *,
+        commands: List[Dict[str, Any]],
+        widget_name: str,
+        ui_class: str,
+        qualified_name: str,
+        **_: Any
+    ) -> None:
+        self.commands = [CommandDefinition(**cd) for cd in commands]
+        self.widget_name = widget_name
+        self.ui_class = ui_class
+        self.qualified_name = qualified_name
 
 
 class StateDefinition:
