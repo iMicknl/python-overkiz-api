@@ -33,7 +33,7 @@ pip install git+https://github.com/iMicknl/python-tahoma-api.git@master#tahoma_a
 
 - Clone this repository
 - `cd python-tahoma-api`
-- Install the required Python version: `pyenv install 3.8.3`
+- Install the required Python version: `pyenv install`
 - Init the project: `poetry install`
 - Run `poetry run pre-commit install`
 
