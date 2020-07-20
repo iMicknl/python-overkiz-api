@@ -67,7 +67,7 @@ class Definition:
         self,
         *,
         commands: List[Dict[str, Any]],
-        states: Optional[List[Dict[str, Any]]],
+        states: Optional[List[Dict[str, Any]]] = None,
         widget_name: str,
         ui_class: str,
         qualified_name: str,
