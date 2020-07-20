@@ -36,7 +36,7 @@ class TahomaClient:
 
     async def close(self) -> None:
         """Close the session."""
-        return await self.session.close()
+        await self.session.close()
 
     async def login(self) -> bool:
         """
