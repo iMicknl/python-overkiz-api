@@ -146,7 +146,7 @@ class TahomaClient:
         response = await self.__get("actionGroups")
         return [Scenario(**scenario) for scenario in response]
 
-    async def launch_scenario(self, oid: str) -> str:
+    async def execute_scenario(self, oid: str) -> str:
         """ Execute a scenario """
         response = await self.__post(f"exec/{oid}")
         return response["execId"]
