@@ -31,6 +31,7 @@ class Device:
         *,
         attributes: Optional[List[Dict[str, Any]]] = None,
         available: bool,
+        enabled: bool,
         label: str,
         deviceurl: str,
         controllable_name: str,
@@ -48,6 +49,7 @@ class Device:
         self.available = available
         self.definition = Definition(**definition)
         self.deviceurl = deviceurl
+        self.enabled = enabled
         self.label = label
         self.controllable_name = controllable_name
         self.states = [State(**s) for s in states] if states else None
