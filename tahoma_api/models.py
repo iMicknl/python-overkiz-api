@@ -126,3 +126,11 @@ class CommandMode(Enum):
     high_priority = ("highPriority",)
     geolocated = ("geolocated",)
     internal = "internal"
+
+
+class Scenario:
+    __slots__ = ("label", "oid")
+
+    def __init__(self, label: str, oid: str, **_: Any):
+        self.label = label
+        self.oid = oid

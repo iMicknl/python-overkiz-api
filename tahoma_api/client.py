@@ -7,7 +7,7 @@ import humps
 from aiohttp import ClientResponse
 
 from tahoma_api.exceptions import BadCredentialsException, TooManyRequestsException
-from tahoma_api.models import Command, CommandMode, Device, State
+from tahoma_api.models import Command, CommandMode, Device, Scenario, State
 
 JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
 
@@ -140,6 +140,16 @@ class TahomaClient:
         # TODO Strongly type executions
 
         return response
+
+    async def get_scenarios(self) -> List[Scenario]:
+        """ List the scenarios """
+        response = await self.__get("actionGroups")
+        return [Scenario(**scenario) for scenario in response]
+
+    async def execute_scenario(self, oid: str) -> str:
+        """ Execute a scenario """
+        response = await self.__post(f"exec/{oid}")
+        return response["execId"]
 
     async def __get(self, endpoint: str) -> Any:
         """ Make a GET request to the TaHoma API """
