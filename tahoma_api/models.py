@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Optional
 class Device:
     __slots__ = (
         "id",
+        "attributes",
         "controllable_name",
         "creation_time",
         "last_update_time",
@@ -28,7 +29,9 @@ class Device:
     def __init__(
         self,
         *,
+        attributes: Optional[List[Dict[str, Any]]] = None,
         available: bool,
+        enabled: bool,
         label: str,
         deviceurl: str,
         controllable_name: str,
@@ -42,13 +45,14 @@ class Device:
         **_: Any
     ) -> None:
         self.id = deviceurl
+        self.attributes = [State(**a) for a in attributes] if attributes else None
         self.available = available
-        self.definition = definition
+        self.definition = Definition(**definition)
         self.deviceurl = deviceurl
+        self.enabled = enabled
         self.label = label
         self.controllable_name = controllable_name
-        self.states = states
-        # self.states = [State(**s) for s in states]
+        self.states = [State(**s) for s in states] if states else None
         self.data_properties = data_properties
         self.widget = widget
         self.ui_class = ui_class
@@ -56,18 +60,24 @@ class Device:
         self.type = type
 
 
-# class Definition:
-#     __slots__ = (
-#         "commands",
-#         "states",
-#         "widget_name",
-#         "ui_class",
-#         "ui_classifiers" "type",
-#     )
+class Definition:
+    __slots__ = ("commands", "states", "widget_name", "ui_class", "qualified_name")
 
-#     def __init__(self, command_name: str, nparams: int, **_: Any) -> None:
-#         self.command_name = command_name
-#         self.nparams = nparams
+    def __init__(
+        self,
+        *,
+        commands: List[Dict[str, Any]],
+        states: Optional[List[Dict[str, Any]]] = None,
+        widget_name: str,
+        ui_class: str,
+        qualified_name: str,
+        **_: Any
+    ) -> None:
+        self.commands = [CommandDefinition(**cd) for cd in commands]
+        self.states = [StateDefinition(**sd) for sd in states] if states else None
+        self.widget_name = widget_name
+        self.ui_class = ui_class
+        self.qualified_name = qualified_name
 
 
 class StateDefinition:
@@ -78,7 +88,11 @@ class StateDefinition:
     )
 
     def __init__(
-        self, qualified_name: str, type: str, values: Optional[str], **_: Any
+        self,
+        qualified_name: str,
+        type: str,
+        values: Optional[List[str]] = None,
+        **_: Any
     ) -> None:
         self.qualified_name = qualified_name
         self.type = type
@@ -123,6 +137,69 @@ class CommandMode(Enum):
     high_priority = ("highPriority",)
     geolocated = ("geolocated",)
     internal = "internal"
+
+
+class Event:
+    __slots__ = (
+        "timestamp",
+        "name",
+        "gateway_id",
+        "exec_id",
+        "deviceurl",
+        "device_states",
+        "old_state",
+        "new_state",
+        "owner_key",
+    )
+
+    def __init__(
+        self,
+        timestamp: int,
+        name: str,
+        gateway_id: Optional[str] = None,
+        exec_id: Optional[str] = None,
+        deviceurl: Optional[str] = None,
+        device_states: Optional[List[Dict[str, Any]]] = None,
+        old_state: Optional[str] = None,
+        new_state: Optional[str] = None,
+        **_: Any
+    ):
+        self.timestamp = timestamp
+        self.name = name
+        self.gateway_id = gateway_id
+        self.exec_id = exec_id
+        self.deviceurl = deviceurl
+        self.device_states = (
+            [State(**s) for s in device_states] if device_states else None
+        )
+        self.old_state = old_state
+        self.new_state = new_state
+
+
+class Execution:
+
+    __slots__ = (
+        "id",
+        "description",
+        "owner",
+        "state",
+        "action_group",
+    )
+
+    def __init__(
+        self,
+        id: str,
+        description: str,
+        owner: str,
+        state: str,
+        action_group: List[Dict[str, Any]],
+        **_: Any
+    ):
+        self.id = id
+        self.description = description
+        self.owner = owner
+        self.state = state
+        self.action_group = action_group
 
 
 class Scenario:

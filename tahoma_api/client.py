@@ -7,7 +7,7 @@ import humps
 from aiohttp import ClientResponse
 
 from tahoma_api.exceptions import BadCredentialsException, TooManyRequestsException
-from tahoma_api.models import Command, Device, Scenario, State
+from tahoma_api.models import Command, Device, Event, Execution, Scenario, State
 
 JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
 
@@ -36,7 +36,7 @@ class TahomaClient:
 
     async def close(self) -> None:
         """Close the session."""
-        return await self.session.close()
+        await self.session.close()
 
     async def login(self) -> bool:
         """
@@ -92,7 +92,7 @@ class TahomaClient:
 
         return listener_id
 
-    async def fetch_event_listener(self, listener_id: str) -> List[Any]:
+    async def fetch_event_listener(self, listener_id: str) -> List[Event]:
         """
         Fetch new events from a registered event listener. Fetched events are removed
         from the listener buffer. Return an empty response if no event is available.
@@ -100,22 +100,23 @@ class TahomaClient:
         operation (polling)
         """
         response = await self.__post(f"events/{listener_id}/fetch")
+        events = [Event(**e) for e in humps.decamelize(response)]
 
-        return response
+        return events
 
-    async def get_current_execution(self, exec_id: str) -> List[Any]:
+    async def get_current_execution(self, exec_id: str) -> List[Execution]:
         """ Get an action group execution currently running """
-        response = await self.__get(f"/exec/current/{exec_id}")
-        # TODO Strongly type executions
+        response = await self.__get(f"exec/current/{exec_id}")
+        executions = [Execution(**e) for e in humps.decamelize(response)]
 
-        return response
+        return executions
 
-    async def get_current_executions(self) -> List[Any]:
+    async def get_current_executions(self) -> List[Execution]:
         """ Get all action groups executions currently running """
-        response = await self.__get("/exec/current")
-        # TODO Strongly type executions
+        response = await self.__get("exec/current")
+        executions = [Execution(**e) for e in humps.decamelize(response)]
 
-        return response
+        return executions
 
     async def execute_command(
         self,
