@@ -7,7 +7,7 @@ import humps
 from aiohttp import ClientResponse
 
 from tahoma_api.exceptions import BadCredentialsException, TooManyRequestsException
-from tahoma_api.models import Command, Device, Execution, Scenario, State
+from tahoma_api.models import Command, Device, Event, Execution, Scenario, State
 
 JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
 
@@ -92,7 +92,7 @@ class TahomaClient:
 
         return listener_id
 
-    async def fetch_event_listener(self, listener_id: str) -> List[Any]:
+    async def fetch_event_listener(self, listener_id: str) -> List[Event]:
         """
         Fetch new events from a registered event listener. Fetched events are removed
         from the listener buffer. Return an empty response if no event is available.
@@ -100,8 +100,9 @@ class TahomaClient:
         operation (polling)
         """
         response = await self.__post(f"events/{listener_id}/fetch")
+        events = [Event(**e) for e in humps.decamelize(response)]
 
-        return response
+        return events
 
     async def get_current_execution(self, exec_id: str) -> List[Execution]:
         """ Get an action group execution currently running """

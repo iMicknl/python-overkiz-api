@@ -139,6 +139,43 @@ class CommandMode(Enum):
     internal = "internal"
 
 
+class Event:
+    __slots__ = (
+        "timestamp",
+        "name",
+        "gateway_id",
+        "exec_id",
+        "deviceurl",
+        "device_states",
+        "old_state",
+        "new_state",
+        "owner_key",
+    )
+
+    def __init__(
+        self,
+        timestamp: int,
+        name: str,
+        gateway_id: Optional[str] = None,
+        exec_id: Optional[str] = None,
+        deviceurl: Optional[str] = None,
+        device_states: Optional[List[Dict[str, Any]]] = None,
+        old_state: Optional[str] = None,
+        new_state: Optional[str] = None,
+        **_: Any
+    ):
+        self.timestamp = timestamp
+        self.name = name
+        self.gateway_id = gateway_id
+        self.exec_id = exec_id
+        self.deviceurl = deviceurl
+        self.device_states = (
+            [State(**s) for s in device_states] if device_states else None
+        )
+        self.old_state = old_state
+        self.new_state = new_state
+
+
 class Execution:
 
     __slots__ = (
