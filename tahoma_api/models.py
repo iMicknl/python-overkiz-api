@@ -7,6 +7,7 @@ from typing import Any, Dict, List, Optional
 class Device:
     __slots__ = (
         "id",
+        "attributes",
         "controllable_name",
         "creation_time",
         "last_update_time",
@@ -28,6 +29,7 @@ class Device:
     def __init__(
         self,
         *,
+        attributes: Optional[List[Dict[str, Any]]] = None,
         available: bool,
         label: str,
         deviceurl: str,
@@ -42,8 +44,9 @@ class Device:
         **_: Any
     ) -> None:
         self.id = deviceurl
+        self.attributes = [State(**a) for a in attributes] if attributes else None
         self.available = available
-        self.definition = definition
+        self.definition = Definition(**definition)
         self.deviceurl = deviceurl
         self.label = label
         self.controllable_name = controllable_name
@@ -55,18 +58,24 @@ class Device:
         self.type = type
 
 
-# class Definition:
-#     __slots__ = (
-#         "commands",
-#         "states",
-#         "widget_name",
-#         "ui_class",
-#         "ui_classifiers" "type",
-#     )
+class Definition:
+    __slots__ = ("commands", "states", "widget_name", "ui_class", "qualified_name")
 
-#     def __init__(self, command_name: str, nparams: int, **_: Any) -> None:
-#         self.command_name = command_name
-#         self.nparams = nparams
+    def __init__(
+        self,
+        *,
+        commands: List[Dict[str, Any]],
+        states: Optional[List[Dict[str, Any]]],
+        widget_name: str,
+        ui_class: str,
+        qualified_name: str,
+        **_: Any
+    ) -> None:
+        self.commands = [CommandDefinition(**cd) for cd in commands]
+        self.states = [StateDefinition(**sd) for sd in states] if states else None
+        self.widget_name = widget_name
+        self.ui_class = ui_class
+        self.qualified_name = qualified_name
 
 
 class StateDefinition:
