@@ -105,21 +105,18 @@ class State:
         self.type = type
 
 
-class Command:
+class Command(dict):  # type: ignore
     """Represents an TaHoma Command."""
 
     __slots__ = (
-        "type",
         "name",
         "parameters",
-        "sensitive_parameters_indexes",
-        "authentication",
-        "delay",
     )
 
-    def __init__(self, name: str, parameters: str, **_: Any):
+    def __init__(self, name: str, parameters: Optional[str] = None, **_: Any):
         self.name = name
         self.parameters = parameters
+        dict.__init__(self, name=name, parameters=parameters)
 
 
 class CommandMode(Enum):

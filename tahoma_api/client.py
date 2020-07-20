@@ -7,7 +7,7 @@ import humps
 from aiohttp import ClientResponse
 
 from tahoma_api.exceptions import BadCredentialsException, TooManyRequestsException
-from tahoma_api.models import Command, CommandMode, Device, Scenario, State
+from tahoma_api.models import Command, Device, Scenario, State
 
 JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
 
@@ -44,7 +44,7 @@ class TahomaClient:
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
         payload = {"userId": self.username, "userPassword": self.password}
-        response = await self.__post("login", payload)
+        response = await self.__post("login", data=payload)
 
         if response.get("success"):
             self.__roles = response.get("roles")
@@ -103,30 +103,6 @@ class TahomaClient:
 
         return response
 
-    async def execute_action_group(
-        self,
-        actions: List[Command],
-        label: str = "python-tahoma-api",
-        mode: Optional[CommandMode] = None,
-    ) -> List[Any]:
-        """ Execute a non-persistent action group.
-        The executed action group does not have to be persisted on the server before
-        use.
-        Per-session rate-limit : 50 calls per 24 HOURS period for all operations of the
-        same category (exec)
-        """
-        payload = {"label": label, "actions": actions}
-        supported_modes = ["geolocated", "highPriority", "internal"]
-        endpoint = "exec/apply"
-
-        # TODO Change mode / supported_modes to ENUM
-        if mode in supported_modes:
-            endpoint = f"{endpoint}/{mode}"
-
-        response = await self.__post(endpoint, payload)
-
-        return response
-
     async def get_current_execution(self, exec_id: str) -> List[Any]:
         """ Get an action group execution currently running """
         response = await self.__get(f"/exec/current/{exec_id}")
@@ -140,6 +116,31 @@ class TahomaClient:
         # TODO Strongly type executions
 
         return response
+
+    async def execute_command(
+        self,
+        device_url: str,
+        command: Union[Command, str],
+        label: Optional[str] = "python-tahoma-api",
+    ) -> str:
+        """ Send a command """
+        if isinstance(command, str):
+            command = Command(command)
+        return await self.execute_commands(device_url, [command], label)
+
+    async def execute_commands(
+        self,
+        device_url: str,
+        commands: List[Command],
+        label: Optional[str] = "python-tahoma-api",
+    ) -> str:
+        """ Send several commands in one call """
+        payload = {
+            "label": label,
+            "actions": [{"deviceURL": device_url, "commands": commands}],
+        }
+        response = await self.__post("exec/apply", payload)
+        return response["execId"]
 
     async def get_scenarios(self) -> List[Scenario]:
         """ List the scenarios """
@@ -157,10 +158,12 @@ class TahomaClient:
             await self.check_response(response)
             return await response.json()
 
-    async def __post(self, endpoint: str, payload: Optional[JSON] = None,) -> Any:
+    async def __post(
+        self, endpoint: str, payload: Optional[JSON] = None, data: Optional[JSON] = None
+    ) -> Any:
         """ Make a POST request to the TaHoma API """
         async with self.session.post(
-            f"{self.api_url}{endpoint}", data=payload
+            f"{self.api_url}{endpoint}", data=data, json=payload
         ) as response:
             await self.check_response(response)
             return await response.json()
