@@ -105,14 +105,14 @@ class TahomaClient:
 
     async def get_current_execution(self, exec_id: str) -> List[Execution]:
         """ Get an action group execution currently running """
-        response = await self.__get(f"/exec/current/{exec_id}")
+        response = await self.__get(f"exec/current/{exec_id}")
         executions = [Execution(**e) for e in humps.decamelize(response)]
 
         return executions
 
     async def get_current_executions(self) -> List[Execution]:
         """ Get all action groups executions currently running """
-        response = await self.__get("/exec/current")
+        response = await self.__get("exec/current")
         executions = [Execution(**e) for e in humps.decamelize(response)]
 
         return executions
