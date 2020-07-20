@@ -33,11 +33,11 @@ class Device:
         deviceurl: str,
         controllable_name: str,
         definition: Dict[str, Any],
-        states: List[Dict[str, Any]],
         data_properties: Optional[List[Dict[str, Any]]] = None,
         widget: Optional[str] = None,
         ui_class: str,
         qualified_name: Optional[str] = None,
+        states: Optional[List[Dict[str, Any]]] = None,
         type: str,
         **_: Any
     ) -> None:
