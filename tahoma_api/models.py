@@ -88,7 +88,11 @@ class StateDefinition:
     )
 
     def __init__(
-        self, qualified_name: str, type: str, values: Optional[str], **_: Any
+        self,
+        qualified_name: str,
+        type: str,
+        values: Optional[List[str]] = None,
+        **_: Any
     ) -> None:
         self.qualified_name = qualified_name
         self.type = type
