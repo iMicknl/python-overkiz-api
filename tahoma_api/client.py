@@ -7,7 +7,7 @@ import humps
 from aiohttp import ClientResponse
 
 from tahoma_api.exceptions import BadCredentialsException, TooManyRequestsException
-from tahoma_api.models import Command, Device, Scenario, State
+from tahoma_api.models import Command, Device, Execution, Scenario, State
 
 JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
 
@@ -106,16 +106,16 @@ class TahomaClient:
     async def get_current_execution(self, exec_id: str) -> List[Any]:
         """ Get an action group execution currently running """
         response = await self.__get(f"/exec/current/{exec_id}")
-        # TODO Strongly type executions
+        executions = [Execution(**e) for e in humps.decamelize(response)]
 
-        return response
+        return executions
 
     async def get_current_executions(self) -> List[Any]:
         """ Get all action groups executions currently running """
         response = await self.__get("/exec/current")
-        # TODO Strongly type executions
+        executions = [Execution(**e) for e in humps.decamelize(response)]
 
-        return response
+        return executions
 
     async def execute_command(
         self,

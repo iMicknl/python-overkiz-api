@@ -139,6 +139,32 @@ class CommandMode(Enum):
     internal = "internal"
 
 
+class Execution:
+
+    __slots__ = (
+        "id",
+        "description",
+        "owner",
+        "state",
+        "action_group",
+    )
+
+    def __init__(
+        self,
+        id: str,
+        description: str,
+        owner: str,
+        state: str,
+        action_group: List[Dict[str, Any]],
+        **_: Any
+    ):
+        self.id = id
+        self.description = description
+        self.owner = owner
+        self.state = state
+        self.action_group = action_group
+
+
 class Scenario:
     __slots__ = ("label", "oid")
 
