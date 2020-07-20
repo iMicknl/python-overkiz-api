@@ -117,7 +117,7 @@ class TahomaClient:
 
         return response
 
-    async def send_command(
+    async def execute_command(
         self,
         device_url: str,
         command: Union[Command, str],
@@ -126,9 +126,9 @@ class TahomaClient:
         """ Send a command """
         if isinstance(command, str):
             command = Command(command)
-        return await self.send_commands(device_url, [command], label)
+        return await self.execute_commands(device_url, [command], label)
 
-    async def send_commands(
+    async def execute_commands(
         self,
         device_url: str,
         commands: List[Command],
