@@ -1,6 +1,9 @@
 """ Python wrapper for the Tahoma API """
+from __future__ import annotations
+
 import urllib.parse
-from typing import Any, Dict, List, Optional, Union
+from types import TracebackType
+from typing import Any, Dict, List, Optional, Type, Union
 
 import aiohttp
 import humps
@@ -33,6 +36,17 @@ class TahomaClient:
         self.__roles = None
 
         self.session = aiohttp.ClientSession()
+
+    async def __aenter__(self) -> TahomaClient:
+        return self
+
+    async def __aexit__(
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_value: Optional[BaseException],
+        traceback: Optional[TracebackType],
+    ) -> None:
+        await self.close()
 
     async def close(self) -> None:
         """Close the session."""
