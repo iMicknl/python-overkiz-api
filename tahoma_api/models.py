@@ -1,5 +1,7 @@
+from __future__ import annotations
+
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 # pylint: disable=unused-argument, too-many-instance-attributes
 
@@ -52,7 +54,7 @@ class Device:
         self.enabled = enabled
         self.label = label
         self.controllable_name = controllable_name
-        self.states = [State(**s) for s in states] if states else None
+        self.states = States(states) if states else None
         self.data_properties = data_properties
         self.widget = widget
         self.ui_class = ui_class
@@ -73,7 +75,7 @@ class Definition:
         qualified_name: str,
         **_: Any
     ) -> None:
-        self.commands = [CommandDefinition(**cd) for cd in commands]
+        self.commands = CommandDefinitions(commands)
         self.states = [StateDefinition(**sd) for sd in states] if states else None
         self.widget_name = widget_name
         self.ui_class = ui_class
@@ -110,6 +112,22 @@ class CommandDefinition:
         self.nparams = nparams
 
 
+class CommandDefinitions:
+    def __init__(self, commands: List[Dict[str, Any]]):
+        self._commands = [CommandDefinition(**command) for command in commands]
+
+    def __iter__(self) -> Iterator[CommandDefinition]:
+        return self._commands.__iter__()
+
+    def __contains__(self, name: str) -> bool:
+        return self.__getitem__(name) is not None
+
+    def __getitem__(self, command: str) -> Optional[CommandDefinition]:
+        return next((cd for cd in self._commands if cd.command_name == command), None)
+
+    get = __getitem__
+
+
 class State:
     __slots__ = "name", "value", "type"
 
@@ -117,6 +135,22 @@ class State:
         self.name = name
         self.value = value
         self.type = type
+
+
+class States:
+    def __init__(self, states: List[Dict[str, Any]]) -> None:
+        self._states = [State(**state) for state in states]
+
+    def __iter__(self) -> Iterator[State]:
+        return self._states.__iter__()
+
+    def __contains__(self, name: str) -> bool:
+        return self.__getitem__(name) is not None
+
+    def __getitem__(self, name: str) -> Optional[State]:
+        return next((state for state in self._states if state.name == name), None)
+
+    get = __getitem__
 
 
 class Command(dict):  # type: ignore
