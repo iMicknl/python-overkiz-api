@@ -123,9 +123,9 @@ class CommandDefinitions:
         return self.__getitem__(name) is not None
 
     def __getitem__(self, command: str) -> Optional[CommandDefinition]:
-        return next(
-            (state for state in self._commands if state.command_name == command), None
-        )
+        return next((cd for cd in self._commands if cd.command_name == command), None)
+
+    get = __getitem__
 
 
 class State:
@@ -149,6 +149,8 @@ class States:
 
     def __getitem__(self, name: str) -> Optional[State]:
         return next((state for state in self._states if state.name == name), None)
+
+    get = __getitem__
 
 
 class Command(dict):  # type: ignore
