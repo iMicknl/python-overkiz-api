@@ -75,7 +75,7 @@ class Definition:
         qualified_name: str,
         **_: Any
     ) -> None:
-        self.commands = [CommandDefinition(**cd) for cd in commands]
+        self.commands = CommandDefinitions(commands)
         self.states = [StateDefinition(**sd) for sd in states] if states else None
         self.widget_name = widget_name
         self.ui_class = ui_class
@@ -110,6 +110,22 @@ class CommandDefinition:
     def __init__(self, command_name: str, nparams: int, **_: Any) -> None:
         self.command_name = command_name
         self.nparams = nparams
+
+
+class CommandDefinitions:
+    def __init__(self, commands: List[Dict[str, Any]]):
+        self._commands = [CommandDefinition(**command) for command in commands]
+
+    def __iter__(self) -> Iterator[CommandDefinition]:
+        return self._commands.__iter__()
+
+    def __contains__(self, name: str) -> bool:
+        return self.__getitem__(name) is not None
+
+    def __getitem__(self, command: str) -> Optional[CommandDefinition]:
+        return next(
+            (state for state in self._commands if state.command_name == command), None
+        )
 
 
 class State:
