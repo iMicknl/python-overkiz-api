@@ -4,7 +4,7 @@ name: Publish Python Package (test)
 
 on:
   release:
-    types: [created]
+    types: [created, prereleased]
 
 jobs:
   deploy:
