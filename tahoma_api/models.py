@@ -47,7 +47,7 @@ class Device:
         **_: Any
     ) -> None:
         self.id = deviceurl
-        self.attributes = [State(**a) for a in attributes] if attributes else None
+        self.attributes = States(attributes) if attributes else None
         self.available = available
         self.definition = Definition(**definition)
         self.deviceurl = deviceurl
