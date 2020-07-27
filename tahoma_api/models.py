@@ -125,6 +125,9 @@ class CommandDefinitions:
     def __getitem__(self, command: str) -> Optional[CommandDefinition]:
         return next((cd for cd in self._commands if cd.command_name == command), None)
 
+    def __len__(self) -> int:
+        return len(self._commands)
+
     get = __getitem__
 
 
@@ -149,6 +152,9 @@ class States:
 
     def __getitem__(self, name: str) -> Optional[State]:
         return next((state for state in self._states if state.name == name), None)
+
+    def __len__(self) -> int:
+        return len(self._states)
 
     get = __getitem__
 
