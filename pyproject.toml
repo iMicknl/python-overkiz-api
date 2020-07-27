@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "python-tahoma-api"
-version = "0.1.0"
-description = "Python wrapper to interact with internal Somfy TaHoma API"
+version = "0.2.0"
+description = "Async Python wrapper to interact with internal Somfy TaHoma API"
 authors = ["Mick Vleeshouwer", "Vincent Le Bourlot", "Thibaut Etienne"]
 license = "MIT"
 readme = "README.md"

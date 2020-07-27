@@ -14,7 +14,7 @@ This package is written for the Home Assistant [ha-tahoma](https://github.com/iM
 ## Installation
 
 ```bash
-pip install git+https://github.com/iMicknl/python-tahoma-api.git@master#tahoma_api
+pip install python-tahoma-api
 ```
 
 ## Getting started
