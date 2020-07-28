@@ -118,7 +118,7 @@ class TahomaClient:
 
         return events
 
-    async def get_current_execution(self, exec_id: str) -> List[Execution]:
+    async def get_current_execution(self, exec_id: str) -> Execution:
         """ Get an action group execution currently running """
         response = await self.__get(f"exec/current/{exec_id}")
         execution = Execution(**humps.decamelize(response))
