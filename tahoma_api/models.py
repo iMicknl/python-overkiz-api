@@ -43,7 +43,7 @@ class Device:
         ui_class: str,
         qualified_name: Optional[str] = None,
         states: Optional[List[Dict[str, Any]]] = None,
-        type: str,
+        type: int,
         **_: Any
     ) -> None:
         self.id = deviceurl
@@ -59,7 +59,7 @@ class Device:
         self.widget = widget
         self.ui_class = ui_class
         self.qualified_name = qualified_name
-        self.type = type
+        self.type = ProductType(type)
 
 
 class Definition:
@@ -134,10 +134,10 @@ class CommandDefinitions:
 class State:
     __slots__ = "name", "value", "type"
 
-    def __init__(self, name: str, value: str, type: str, **_: Any):
+    def __init__(self, name: str, value: str, type: int, **_: Any):
         self.name = name
         self.value = value
-        self.type = type
+        self.type = DataType(type)
 
 
 class States:
@@ -248,3 +248,23 @@ class Scenario:
     def __init__(self, label: str, oid: str, **_: Any):
         self.label = label
         self.oid = oid
+
+
+class ProductType(Enum):
+    ACTUATOR = 1
+    SENSOR = 2
+    VIDEO = 3
+    CONTROLLABLE = 4
+    GATEWAY = 5
+    INFRASTRUCTURE_COMPONENT = 6
+
+
+class DataType(Enum):
+    INTEGER = 1
+    FLOAT = 2
+    STRING = 3
+    BLOB = 4
+    DATE = 5
+    BOOLEAN = 6
+    JSON_ARRAY = 10
+    JSON_OBJECT = 11
