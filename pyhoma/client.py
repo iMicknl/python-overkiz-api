@@ -9,8 +9,8 @@ import aiohttp
 import humps
 from aiohttp import ClientResponse
 
-from tahoma.exceptions import BadCredentialsException, TooManyRequestsException
-from tahoma.models import Command, Device, Event, Execution, Scenario, State
+from pyhoma.exceptions import BadCredentialsException, TooManyRequestsException
+from pyhoma.models import Command, Device, Event, Execution, Scenario, State
 
 JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
 
