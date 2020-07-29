@@ -118,6 +118,13 @@ class TahomaClient:
 
         return events
 
+    async def unregister_event_listener(self, listener_id: str) -> None:
+        """
+        Unregister an event listener
+        API response status is always 200, even on unknown listener ids.
+        """
+        await self.__post(f"events/{listener_id}/unregister")
+
     async def get_current_execution(self, exec_id: str) -> Execution:
         """ Get an action group execution currently running """
         response = await self.__get(f"exec/current/{exec_id}")
