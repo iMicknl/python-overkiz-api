@@ -23,7 +23,7 @@ pip install pyhoma
 import asyncio
 import time
 
-from tahoma.client import TahomaClient
+from pyhoma.client import TahomaClient
 
 USERNAME = ""
 PASSWORD = ""
