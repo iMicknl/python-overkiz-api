@@ -34,7 +34,7 @@ class TahomaClient:
 
         self.devices: List[Device] = []
         self.__roles = None
-        self.event_listeners: List[str] = []
+        self.event_listener: Optional[str] = None
 
         self.session = aiohttp.ClientSession()
 
@@ -53,8 +53,8 @@ class TahomaClient:
         """Close the session."""
         await self.session.close()
 
-        for listener_id in self.event_listeners:
-            await self.unregister_event_listener(listener_id)
+        if self.event_listener:
+            await self.unregister_event_listener(self.event_listener)
 
     async def login(self) -> bool:
         """
@@ -107,8 +107,8 @@ class TahomaClient:
         """
         response = await self.__post("events/register")
         listener_id = response.get("id")
+        self.event_listener = listener_id
 
-        self.event_listeners.append(listener_id)
         return listener_id
 
     async def fetch_event_listener(self, listener_id: str) -> List[Event]:
@@ -129,7 +129,7 @@ class TahomaClient:
         API response status is always 200, even on unknown listener ids.
         """
         await self.__post(f"events/{listener_id}/unregister")
-        self.event_listeners.remove(listener_id)
+        self.event_listener = None
 
     async def get_current_execution(self, exec_id: str) -> Execution:
         """ Get an action group execution currently running """
