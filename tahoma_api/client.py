@@ -51,10 +51,10 @@ class TahomaClient:
 
     async def close(self) -> None:
         """Close the session."""
-        await self.session.close()
-
         if self.event_listener:
             await self.unregister_event_listener(self.event_listener)
+
+        await self.session.close()
 
     async def login(self) -> bool:
         """
