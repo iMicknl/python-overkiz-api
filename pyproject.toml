@@ -8,8 +8,7 @@ readme = "README.md"
 homepage = "https://github.com/iMicknl/python-tahoma-api"
 repository = "https://github.com/iMicknl/python-tahoma-api"
 packages = [
-    { include = "tahoma" },
-    { include = "tahoma/**/*.py" },
+    { include = "tahoma" }
 ]
 
 [tool.poetry.dependencies]
