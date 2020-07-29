@@ -14,7 +14,7 @@ This package is written for the Home Assistant [ha-tahoma](https://github.com/iM
 ## Installation
 
 ```bash
-pip install python-tahoma-api
+pip install pyhoma
 ```
 
 ## Getting started
@@ -23,7 +23,7 @@ pip install python-tahoma-api
 import asyncio
 import time
 
-from tahoma_api.client import TahomaClient
+from tahoma.client import TahomaClient
 
 USERNAME = ""
 PASSWORD = ""
@@ -34,7 +34,7 @@ async def main() -> None:
             await client.login()
         except Exception as exception:  # pylint: disable=broad-except
             print(exception)
-            return await client.close()
+            return
 
         devices = await client.get_devices()
 

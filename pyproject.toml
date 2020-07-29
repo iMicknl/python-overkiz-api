@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "python-tahoma-api"
+name = "pyhoma"
 version = "0.2.0"
 description = "Async Python wrapper to interact with internal Somfy TaHoma API"
 authors = ["Mick Vleeshouwer", "Vincent Le Bourlot", "Thibaut Etienne"]
@@ -8,8 +8,8 @@ readme = "README.md"
 homepage = "https://github.com/iMicknl/python-tahoma-api"
 repository = "https://github.com/iMicknl/python-tahoma-api"
 packages = [
-    { include = "tahoma_api" },
-    { include = "tahoma_api/**/*.py" },
+    { include = "tahoma" },
+    { include = "tahoma/**/*.py" },
 ]
 
 [tool.poetry.dependencies]
