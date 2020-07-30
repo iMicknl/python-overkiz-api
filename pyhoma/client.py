@@ -36,7 +36,7 @@ class TahomaClient:
         self.__roles = None
         self.event_listener_id: Optional[str] = None
 
-        self.session = aiohttp.ClientSession()
+        self.session = aiohttp.ClientSession(headers={"Connection": "keep-alive"})
 
     async def __aenter__(self) -> TahomaClient:
         return self
