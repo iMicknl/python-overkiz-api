@@ -134,7 +134,7 @@ class CommandDefinitions:
 class State:
     __slots__ = "name", "value", "type"
 
-    def __init__(self, name: str, value: Optional[str], type: int, **_: Any):
+    def __init__(self, name: str, type: int, value: Optional[str] = None, **_: Any):
         self.name = name
         self.value = value
         self.type = DataType(type)
