@@ -156,11 +156,7 @@ class States:
     def __setitem__(self, name: str, state: State) -> None:
         if self.__contains__(state.name):
             return
-        self._states.append(
-            State(
-                **{s: getattr(state, s) for s in state.__slots__ if hasattr(state, s)}
-            )
-        )
+        self._states.append(state)
 
     def __len__(self) -> int:
         return len(self._states)
