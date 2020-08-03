@@ -134,16 +134,10 @@ class CommandDefinitions:
 class State:
     __slots__ = "name", "value", "type"
 
-    def __init__(self, name: str, type: int, value: str = None, **_: Any):
+    def __init__(self, name: str, value: Optional[str], type: int, **_: Any):
         self.name = name
         self.value = value
         self.type = DataType(type)
-
-    def __getitem__(self, key):
-        return getattr(self, key)
-
-    def __setitem__(self, key, item):
-        self.__setattr__(key, item)
 
 
 class States:
@@ -163,7 +157,9 @@ class States:
         if self.__contains__(state.name):
             return
         self._states.append(
-            State(**{s: getattr(state, s) for s in state.__slots__ if hasattr(state, s)})
+            State(
+                **{s: getattr(state, s) for s in state.__slots__ if hasattr(state, s)}
+            )
         )
 
     def __len__(self) -> int:
