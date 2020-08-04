@@ -154,9 +154,11 @@ class States:
         return next((state for state in self._states if state.name == name), None)
 
     def __setitem__(self, name: str, state: State) -> None:
-        if self.__contains__(state.name):
-            return
-        self._states.append(state)
+        found = self.__getitem__(name)
+        if found is None:
+            self._states.append(state)
+        else:
+            self._states[self._states.index(found)] = state
 
     def __len__(self) -> int:
         return len(self._states)
