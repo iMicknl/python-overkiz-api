@@ -134,7 +134,7 @@ class CommandDefinitions:
 class State:
     __slots__ = "name", "value", "type"
 
-    def __init__(self, name: str, value: str, type: int, **_: Any):
+    def __init__(self, name: str, type: int, value: Optional[str] = None, **_: Any):
         self.name = name
         self.value = value
         self.type = DataType(type)
@@ -152,6 +152,13 @@ class States:
 
     def __getitem__(self, name: str) -> Optional[State]:
         return next((state for state in self._states if state.name == name), None)
+
+    def __setitem__(self, name: str, state: State) -> None:
+        found = self.__getitem__(name)
+        if found is None:
+            self._states.append(state)
+        else:
+            self._states[self._states.index(found)] = state
 
     def __len__(self) -> int:
         return len(self._states)
@@ -260,6 +267,7 @@ class ProductType(Enum):
 
 
 class DataType(Enum):
+    NONE = 0
     INTEGER = 1
     FLOAT = 2
     STRING = 3
