@@ -40,7 +40,7 @@ class Device:
         definition: Dict[str, Any],
         data_properties: Optional[List[Dict[str, Any]]] = None,
         widget: Optional[str] = None,
-        ui_class: str,
+        ui_class: Optional[str] = None,
         qualified_name: Optional[str] = None,
         states: Optional[List[Dict[str, Any]]] = None,
         type: int,
