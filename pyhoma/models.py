@@ -70,7 +70,7 @@ class Definition:
         *,
         commands: List[Dict[str, Any]],
         states: Optional[List[Dict[str, Any]]] = None,
-        widget_name: str,
+        widget_name: Optional[str] = None,
         ui_class: Optional[str] = None,
         qualified_name: str,
         **_: Any
