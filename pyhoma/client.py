@@ -100,7 +100,7 @@ class TahomaClient:
         """
         Retrieve states of requested device
         """
-        response = await self.__get(
+        response = await self.__get_and_retry(
             f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/states"
         )
         state = [State(**s) for s in humps.decamelize(response)]
@@ -145,14 +145,14 @@ class TahomaClient:
 
     async def get_current_execution(self, exec_id: str) -> Execution:
         """ Get an action group execution currently running """
-        response = await self.__get(f"exec/current/{exec_id}")
+        response = await self.__get_and_retry(f"exec/current/{exec_id}")
         execution = Execution(**humps.decamelize(response))
 
         return execution
 
     async def get_current_executions(self) -> List[Execution]:
         """ Get all action groups executions currently running """
-        response = await self.__get("exec/current")
+        response = await self.__get_and_retry("exec/current")
         executions = [Execution(**e) for e in humps.decamelize(response)]
 
         return executions
@@ -183,17 +183,17 @@ class TahomaClient:
             "label": label,
             "actions": [{"deviceURL": device_url, "commands": commands}],
         }
-        response = await self.__post("exec/apply", payload)
+        response = await self.__post_and_retry("exec/apply", payload)
         return response["execId"]
 
     async def get_scenarios(self) -> List[Scenario]:
         """ List the scenarios """
-        response = await self.__get("actionGroups")
+        response = await self.__get_and_retry("actionGroups")
         return [Scenario(**scenario) for scenario in response]
 
     async def execute_scenario(self, oid: str) -> str:
         """ Execute a scenario """
-        response = await self.__post(f"exec/{oid}")
+        response = await self.__post_and_retry(f"exec/{oid}")
         return response["execId"]
 
     async def __get(self, endpoint: str) -> Any:
@@ -201,6 +201,14 @@ class TahomaClient:
         async with self.session.get(f"{self.api_url}{endpoint}") as response:
             await self.check_response(response)
             return await response.json()
+
+    async def __get_and_retry(self, endpoint: str) -> Any:
+        """ Make a GET request to the TaHoma API and retry with a login if not authenticated """
+        try:
+            return await self.__get(endpoint)
+        except NotAuthenticatedException:
+            await self.login()
+            return await self.__get(endpoint)
 
     async def __post(
         self, endpoint: str, payload: Optional[JSON] = None, data: Optional[JSON] = None
@@ -211,6 +219,16 @@ class TahomaClient:
         ) as response:
             await self.check_response(response)
             return await response.json()
+
+    async def __post_and_retry(
+        self, endpoint: str, payload: Optional[JSON] = None, data: Optional[JSON] = None
+    ) -> Any:
+        """ Make a POST request to the TaHoma API and retry with a login if not authenticated """
+        try:
+            return await self.__post(endpoint, payload, data)
+        except NotAuthenticatedException:
+            await self.login()
+            return await self.__post(endpoint, payload, data)
 
     async def __delete(self, endpoint: str) -> None:
         """ Make a DELETE request to the TaHoma API """
