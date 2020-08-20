@@ -14,11 +14,20 @@ from pyhoma.exceptions import (
     NotAuthenticatedException,
     TooManyRequestsException,
 )
-from pyhoma.models import Command, Device, Event, Execution, Scenario, State
+from pyhoma.models import Command, DataType, Device, Event, Execution, Scenario, State
 
 JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
 
 API_URL = "https://tahomalink.com/enduser-mobile-web/enduserAPI/"  # /doc for API doc
+
+TYPES = {
+    DataType.NONE: None,
+    DataType.INTEGER: int,
+    DataType.DATE: int,
+    DataType.STRING: str,
+    DataType.FLOAT: float,
+    DataType.BOOLEAN: bool,
+}
 
 
 class TahomaClient:
@@ -44,7 +53,7 @@ class TahomaClient:
         self.password = password
         self.api_url = api_url
 
-        self.devices: List[Device] = []
+        self._devices: List[Device] = []
         self.event_listener_id: Optional[str] = None
 
         self.session = session if session else ClientSession()
@@ -81,17 +90,52 @@ class TahomaClient:
         return False
 
     async def get_devices(self, refresh: bool = False) -> List[Device]:
-        """
-        List devices
-        """
-        if self.devices and not refresh:
-            return self.devices
+        """ List devices. """
+        if self._devices and not refresh:
+            return self._devices
 
         response = await self.__get("setup/devices")
         devices = [Device(**d) for d in humps.decamelize(response)]
-        self.devices = devices
+        self._devices = devices
 
         return devices
+
+    async def fetch_devices(self) -> List[Device]:
+        """ Return the list of devices updated with fetch_event_listener information. """
+        if not self.event_listener_id:
+            await self.register_event_listener()
+        devices = {device.deviceurl: device for device in await self.get_devices()}
+        try:
+            events = await self.fetch_event_listener()
+            for event in events:
+                self._update_state(devices, event)
+                self._update_available(devices, event)
+            return list(devices.values())
+        except NotAuthenticatedException:
+            await self.login()
+            return await self.get_devices(refresh=True)
+
+    def _update_state(self, devices: Dict[str, Device], event: Event) -> None:
+        if event.name != "DeviceStateChangedEvent" or not event.device_states:
+            return
+        for state in event.device_states:
+            if not event.deviceurl:
+                continue
+            device = devices[event.deviceurl]
+            device.states[state.name] = state  # type: ignore
+            device.states[state.name].value = self._cast_state(state)  # type: ignore
+
+    @staticmethod
+    def _update_available(devices: Dict[str, Device], event: Event) -> None:
+        if event.name == "DeviceAvailableEvent" and event.deviceurl:
+            devices[event.deviceurl].available = True
+
+    @staticmethod
+    def _cast_state(state: State) -> Union[float, int, bool, str, None]:
+        if state.type != DataType.NONE:
+            caster = TYPES[DataType(state.type)]
+            return caster(state.value)  # type: ignore
+        return state.value
 
     async def get_state(self, deviceurl: str) -> List[State]:
         """
