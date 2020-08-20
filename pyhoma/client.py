@@ -45,7 +45,6 @@ class TahomaClient:
         self.api_url = api_url
 
         self.devices: List[Device] = []
-        self.__roles = None
         self.event_listener_id: Optional[str] = None
 
         self.session = session if session else ClientSession()
@@ -64,23 +63,21 @@ class TahomaClient:
     async def close(self) -> None:
         """Close the session."""
         if self.event_listener_id:
-            await self.unregister_event_listener(self.event_listener_id)
+            await self.unregister_event_listener()
 
         await self.session.close()
 
-    async def login(self) -> bool:
+    async def login(self, register: Optional[bool] = True) -> bool:
         """
         Authenticate and create an API session allowing access to the other operations.
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
         payload = {"userId": self.username, "userPassword": self.password}
         response = await self.__post("login", data=payload)
-
-        if response.get("success"):
-            self.__roles = response.get("roles")
-
+        if "success" in response:
+            if register:
+                await self.register_event_listener()
             return True
-
         return False
 
     async def get_devices(self, refresh: bool = False) -> List[Device]:
@@ -107,7 +104,7 @@ class TahomaClient:
 
         return state
 
-    async def register_event_listener(self) -> str:
+    async def register_event_listener(self) -> None:
         """
         Register a new setup event listener on the current session and return a new
         listener id.
@@ -121,26 +118,24 @@ class TahomaClient:
         listener_id = response.get("id")
         self.event_listener_id = listener_id
 
-        return listener_id
-
-    async def fetch_event_listener(self, listener_id: str) -> List[Event]:
+    async def fetch_event_listener(self) -> List[Event]:
         """
         Fetch new events from a registered event listener. Fetched events are removed
         from the listener buffer. Return an empty response if no event is available.
         Per-session rate-limit : 1 calls per 1 SECONDS period for this particular
         operation (polling)
         """
-        response = await self.__post(f"events/{listener_id}/fetch")
+        response = await self.__post(f"events/{self.event_listener_id}/fetch")
         events = [Event(**e) for e in humps.decamelize(response)]
 
         return events
 
-    async def unregister_event_listener(self, listener_id: str) -> None:
+    async def unregister_event_listener(self) -> None:
         """
         Unregister an event listener.
         API response status is always 200, even on unknown listener ids.
         """
-        await self.__post(f"events/{listener_id}/unregister")
+        await self.__post(f"events/{self.event_listener_id}/unregister")
         self.event_listener_id = None
 
     async def get_current_execution(self, exec_id: str) -> Execution:
