@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional, Union
 
 # pylint: disable=unused-argument, too-many-instance-attributes
 
@@ -134,7 +134,13 @@ class CommandDefinitions:
 class State:
     __slots__ = "name", "value", "type"
 
-    def __init__(self, name: str, type: int, value: Optional[str] = None, **_: Any):
+    def __init__(
+        self,
+        name: str,
+        type: int,
+        value: Union[float, int, bool, str, None] = None,
+        **_: Any
+    ):
         self.name = name
         self.value = value
         self.type = DataType(type)
