@@ -20,12 +20,20 @@ API_URL = "https://tahomalink.com/enduser-mobile-web/enduserAPI/"  # /doc for AP
 class TahomaClient:
     """ Interface class for the Tahoma API """
 
-    def __init__(self, username: str, password: str, api_url: str = API_URL) -> None:
+    def __init__(
+        self,
+        username: str,
+        password: str,
+        api_url: str = API_URL,
+        session: aiohttp.ClientSession = None,
+    ) -> None:
         """
         Constructor
 
         :param username: the username for Tahomalink.com
         :param password: the password for Tahomalink.com
+        :param api_url: optional custom api url
+        :param session: optional aiohttp.ClientSession
         """
 
         self.username = username
@@ -36,7 +44,7 @@ class TahomaClient:
         self.__roles = None
         self.event_listener_id: Optional[str] = None
 
-        self.session = aiohttp.ClientSession()
+        self.session = session if session else aiohttp.ClientSession()
 
     async def __aenter__(self) -> TahomaClient:
         return self
