@@ -156,6 +156,10 @@ class TahomaClient:
             command = Command(command)
         return await self.execute_commands(device_url, [command], label)
 
+    async def cancel_command(self, exec_id: str) -> None:
+        """ Cancel a running setup-level execution """
+        await self.__delete(f"/exec/current/setup/{exec_id}")
+
     async def execute_commands(
         self,
         device_url: str,
@@ -193,6 +197,12 @@ class TahomaClient:
         async with self.session.post(
             f"{self.api_url}{endpoint}", data=data, json=payload
         ) as response:
+            await self.check_response(response)
+            return await response.json()
+
+    async def __delete(self, endpoint: str) -> Any:
+        """ Make a POST request to the TaHoma API """
+        async with self.session.delete(f"{self.api_url}{endpoint}") as response:
             await self.check_response(response)
             return await response.json()
 
