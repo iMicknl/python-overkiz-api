@@ -258,6 +258,7 @@ class Scenario:
 
 
 class ProductType(Enum):
+    NONE = 0
     ACTUATOR = 1
     SENSOR = 2
     VIDEO = 3
