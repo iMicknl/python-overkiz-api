@@ -5,9 +5,8 @@ import urllib.parse
 from types import TracebackType
 from typing import Any, Dict, List, Optional, Type, Union
 
-import aiohttp
 import humps
-from aiohttp import ClientResponse
+from aiohttp import ClientResponse, ClientSession
 
 from pyhoma.exceptions import BadCredentialsException, TooManyRequestsException
 from pyhoma.models import Command, Device, Event, Execution, Scenario, State
@@ -20,12 +19,20 @@ API_URL = "https://tahomalink.com/enduser-mobile-web/enduserAPI/"  # /doc for AP
 class TahomaClient:
     """ Interface class for the Tahoma API """
 
-    def __init__(self, username: str, password: str, api_url: str = API_URL) -> None:
+    def __init__(
+        self,
+        username: str,
+        password: str,
+        api_url: str = API_URL,
+        session: ClientSession = None,
+    ) -> None:
         """
         Constructor
 
         :param username: the username for Tahomalink.com
         :param password: the password for Tahomalink.com
+        :param api_url: optional custom api url
+        :param session: optional ClientSession
         """
 
         self.username = username
@@ -36,7 +43,7 @@ class TahomaClient:
         self.__roles = None
         self.event_listener_id: Optional[str] = None
 
-        self.session = aiohttp.ClientSession()
+        self.session = session if session else ClientSession()
 
     async def __aenter__(self) -> TahomaClient:
         return self
