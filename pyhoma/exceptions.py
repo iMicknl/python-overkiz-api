@@ -4,3 +4,7 @@ class TooManyRequestsException(Exception):
 
 class BadCredentialsException(Exception):
     pass
+
+
+class NotAuthenticatedException(Exception):
+    pass

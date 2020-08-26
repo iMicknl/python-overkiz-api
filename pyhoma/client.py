@@ -2,13 +2,18 @@
 from __future__ import annotations
 
 import urllib.parse
+from json import JSONDecodeError
 from types import TracebackType
 from typing import Any, Dict, List, Optional, Type, Union
 
 import humps
 from aiohttp import ClientResponse, ClientSession
 
-from pyhoma.exceptions import BadCredentialsException, TooManyRequestsException
+from pyhoma.exceptions import (
+    BadCredentialsException,
+    NotAuthenticatedException,
+    TooManyRequestsException,
+)
 from pyhoma.models import Command, Device, Event, Execution, Scenario, State
 
 JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
@@ -217,28 +222,29 @@ class TahomaClient:
         """ Check the response returned by the TaHoma API"""
         if response.status == 200:
             return
-        # 401
-        # {'errorCode': 'AUTHENTICATION_ERROR',
-        #  'error': 'Too many requests, try again later : login with xxx@xxx.tld'}
-        #  'error': 'Bad credentials'}
-        #  'error': 'Your setup cannot be accessed through this application'}
-        result = await response.json()
-        if response.status == 401:
-            if result.get("errorCode") == "AUTHENTICATION_ERROR":
-                message = result.get("error")
 
-                if "Too many requests" in message:
-                    raise TooManyRequestsException(message)
+        try:
+            result = await response.json(content_type=None)
+        except JSONDecodeError:
+            result = await response.text()
+            raise Exception(
+                f"Unknown error while requesting {response.url}. {response.status} - {result}"
+            )
 
-                if "Your setup cannot be accessed through this application" in message:
-                    raise Exception(message)
-
-                if "Bad credentials" in message:
-                    raise BadCredentialsException(message)
-
-                raise Exception(message)
-
-        if 400 < response.status < 500:
+        if result.get("errorCode"):
             message = result.get("error")
 
-            raise Exception(message)
+            # {"errorCode": "AUTHENTICATION_ERROR",
+            # "error": "Too many requests, try again later : login with xxx@xxx.tld"}
+            if "Too many requests" in message:
+                raise TooManyRequestsException(message)
+
+            # {"errorCode": "AUTHENTICATION_ERROR", "error": "Bad credentials"}
+            if message == "Bad credentials":
+                raise BadCredentialsException(message)
+
+            # {"errorCode": "RESOURCE_ACCESS_DENIED", "error": "Not authenticated"}
+            if message == "Not authenticated":
+                raise NotAuthenticatedException(message)
+
+            raise Exception(message if message else result)
