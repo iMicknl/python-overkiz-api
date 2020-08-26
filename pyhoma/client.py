@@ -200,11 +200,10 @@ class TahomaClient:
             await self.check_response(response)
             return await response.json()
 
-    async def __delete(self, endpoint: str) -> Any:
+    async def __delete(self, endpoint: str) -> None:
         """ Make a DELETE request to the TaHoma API """
         async with self.session.delete(f"{self.api_url}{endpoint}") as response:
             await self.check_response(response)
-            return await response.json()
 
     @staticmethod
     async def check_response(response: ClientResponse) -> None:
