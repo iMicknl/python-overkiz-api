@@ -73,7 +73,7 @@ class TahomaClient:
 
         await self.session.close()
 
-    async def login(self, register: Optional[bool] = True) -> bool:
+    async def login(self, register_event_listener: Optional[bool] = True) -> bool:
         """
         Authenticate and create an API session allowing access to the other operations.
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
@@ -82,7 +82,7 @@ class TahomaClient:
         response = await self.__post("login", data=payload)
 
         if response.get("success"):
-            if register:
+            if register_event_listener:
                 await self.register_event_listener()
             return True
         return False
