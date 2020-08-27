@@ -6,6 +6,7 @@ from json import JSONDecodeError
 from types import TracebackType
 from typing import Any, Dict, List, Optional, Type, Union
 
+import backoff
 import humps
 from aiohttp import ClientResponse, ClientSession
 
@@ -19,6 +20,10 @@ from pyhoma.models import Command, Device, Event, Execution, Scenario, State
 JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
 
 API_URL = "https://tahomalink.com/enduser-mobile-web/enduserAPI/"  # /doc for API doc
+
+
+async def relogin(invocation: Dict[str, Any]) -> None:
+    await invocation["args"][0].login()
 
 
 class TahomaClient:
@@ -96,6 +101,9 @@ class TahomaClient:
 
         return devices
 
+    @backoff.on_exception(
+        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+    )
     async def get_state(self, deviceurl: str) -> List[State]:
         """
         Retrieve states of requested device
@@ -143,6 +151,9 @@ class TahomaClient:
         await self.__post(f"events/{listener_id}/unregister")
         self.event_listener_id = None
 
+    @backoff.on_exception(
+        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+    )
     async def get_current_execution(self, exec_id: str) -> Execution:
         """ Get an action group execution currently running """
         response = await self.__get(f"exec/current/{exec_id}")
@@ -150,6 +161,9 @@ class TahomaClient:
 
         return execution
 
+    @backoff.on_exception(
+        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+    )
     async def get_current_executions(self) -> List[Execution]:
         """ Get all action groups executions currently running """
         response = await self.__get("exec/current")
@@ -157,6 +171,9 @@ class TahomaClient:
 
         return executions
 
+    @backoff.on_exception(
+        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+    )
     async def execute_command(
         self,
         device_url: str,
@@ -168,10 +185,16 @@ class TahomaClient:
             command = Command(command)
         return await self.execute_commands(device_url, [command], label)
 
+    @backoff.on_exception(
+        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+    )
     async def cancel_command(self, exec_id: str) -> None:
         """ Cancel a running setup-level execution """
         await self.__delete(f"/exec/current/setup/{exec_id}")
 
+    @backoff.on_exception(
+        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+    )
     async def execute_commands(
         self,
         device_url: str,
@@ -186,11 +209,17 @@ class TahomaClient:
         response = await self.__post("exec/apply", payload)
         return response["execId"]
 
+    @backoff.on_exception(
+        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+    )
     async def get_scenarios(self) -> List[Scenario]:
         """ List the scenarios """
         response = await self.__get("actionGroups")
         return [Scenario(**scenario) for scenario in response]
 
+    @backoff.on_exception(
+        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+    )
     async def execute_scenario(self, oid: str) -> str:
         """ Execute a scenario """
         response = await self.__post(f"exec/{oid}")
