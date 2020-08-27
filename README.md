@@ -46,7 +46,7 @@ async def main() -> None:
         listener_id = await client.register_event_listener()
 
         while True:
-            events = await client.fetch_event_listener(listener_id)
+            events = await client.fetch_events()
             print(events)
 
             time.sleep(2)
