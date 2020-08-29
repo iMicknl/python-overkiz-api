@@ -42,9 +42,6 @@ async def main() -> None:
             print(f"{device.label} ({device.id}) - {device.controllable_name}")
             print(f"{device.widget} - {device.ui_class}")
 
-        # Create an event listener and poll it
-        listener_id = await client.register_event_listener()
-
         while True:
             events = await client.fetch_events()
             print(events)

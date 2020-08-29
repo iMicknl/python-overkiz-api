@@ -114,6 +114,15 @@ class TahomaClient:
 
         return state
 
+    @backoff.on_exception(
+        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+    )
+    async def refresh_states(self) -> None:
+        """
+        Ask the box to refresh all devices states for protocols supporting that operation
+        """
+        await self.__post("/setup/devices/states/refresh")
+
     async def register_event_listener(self) -> str:
         """
         Register a new setup event listener on the current session and return a new
