@@ -268,7 +268,7 @@ class TahomaClient:
                 f"Unknown error while requesting {response.url}. {response.status} - {result}"
             )
 
-        if result.get("errorCode"):
+        if result and result.get("errorCode"):
             message = result.get("error")
 
             # {"errorCode": "AUTHENTICATION_ERROR",
