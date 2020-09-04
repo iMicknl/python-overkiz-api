@@ -257,7 +257,7 @@ class TahomaClient:
     @staticmethod
     async def check_response(response: ClientResponse) -> None:
         """ Check the response returned by the TaHoma API"""
-        if response.status == 200:
+        if response.status in [200, 204]:
             return
 
         try:
