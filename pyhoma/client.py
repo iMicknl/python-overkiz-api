@@ -13,6 +13,7 @@ from aiohttp import ClientResponse, ClientSession
 from pyhoma.exceptions import (
     BadCredentialsException,
     NotAuthenticatedException,
+    TooManyExecutionsException,
     TooManyRequestsException,
 )
 from pyhoma.models import Command, Device, Event, Execution, Scenario, State
@@ -283,5 +284,9 @@ class TahomaClient:
             # {"errorCode": "RESOURCE_ACCESS_DENIED", "error": "Not authenticated"}
             if message == "Not authenticated":
                 raise NotAuthenticatedException(message)
+
+            # {"error": "Server busy, please try again later. (Too many executions)"}
+            if message == "Server busy, please try again later. (Too many executions)":
+                raise TooManyExecutionsException(message)
 
             raise Exception(message if message else result)
