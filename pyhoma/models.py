@@ -186,6 +186,7 @@ class CommandMode(Enum):
     internal = "internal"
 
 
+# pylint: disable-msg=too-many-locals
 class Event:
     __slots__ = (
         "timestamp",
@@ -197,12 +198,42 @@ class Event:
         "old_state",
         "new_state",
         "owner_key",
+        "setupoid",
+        "owner_key",
+        "type",
+        "sub_type",
+        "time_to_next_state",
+        "failed_commands",
+        "failure_type_code",
+        "failure_type",
+        "condition_groupoid",
+        "placeoid",
+        "label",
+        "metadata",
+        "camera_id",
+        "deleted_raw_devices_count",
+        "protocol_type",
     )
 
     def __init__(
         self,
         timestamp: int,
         name: EventName,
+        setupoid: Optional[str] = None,
+        owner_key: Optional[str] = None,
+        type: Optional[int] = None,
+        sub_type: Optional[int] = None,
+        time_to_next_state: Optional[int] = None,
+        failed_commands: Optional[List[Dict[str, Any]]] = None,
+        failure_type_code: Optional[int] = None,
+        failure_type: Optional[str] = None,
+        condition_groupoid: Optional[str] = None,
+        placeoid: Optional[str] = None,
+        label: Optional[str] = None,
+        metadata: Optional[Any] = None,
+        camera_id: Optional[str] = None,
+        deleted_raw_devices_count: Optional[Any] = None,
+        protocol_type: Optional[Any] = None,
         gateway_id: Optional[str] = None,
         exec_id: Optional[str] = None,
         deviceurl: Optional[str] = None,
@@ -221,6 +252,21 @@ class Event:
         )
         self.old_state = ExecutionState(old_state) if old_state else None
         self.new_state = ExecutionState(new_state) if new_state else None
+        self.setupoid = setupoid
+        self.owner_key = owner_key
+        self.type = type
+        self.sub_type = sub_type
+        self.time_to_next_state = time_to_next_state
+        self.failed_commands = failed_commands
+        self.failure_type_code = failure_type_code
+        self.failure_type = failure_type
+        self.condition_groupoid = condition_groupoid
+        self.placeoid = placeoid
+        self.label = label
+        self.metadata = metadata
+        self.camera_id = camera_id
+        self.deleted_raw_devices_count = deleted_raw_devices_count
+        self.protocol_type = protocol_type
 
 
 class Execution:
@@ -625,9 +671,16 @@ class FailureType(Enum):
 
 
 class EventName(Enum):
+    ACTION_GROUP_CREATED = "ActionGroupCreatedEvent"
+    ACTION_GROUP_DELETED = "ActionGroupDeletedEvent"
+    ACTION_GROUP_UPDATED = "ActionGroupUpdatedEvent"
     CAMERA_DISCOVERED = "CameraDiscoveredEvent"
     CAMERA_DISCOVER_FAILED = "CameraDiscoverFailedEvent"
     CAMERA_UPLOAD_PHOTO = "CameraUploadPhotoEvent"
+    CONDITION_GROUP_CREATED = "ConditionGroupCreatedEvent"
+    CONDITION_GROUP_DELETED = "ConditionGroupDeletedEvent"
+    CONDITION_GROUP_UPDATED = "ConditionGroupUpdatedEvent"
+    DELAYED_TRIGGER_CANCELLED = "DelayedTriggerCancelledEvent"
     DEVICE_AVAILABLE = "DeviceAvailableEvent"
     DEVICE_CREATED = "DeviceCreatedEvent"
     DEVICE_DELETION_FAILED = "DeviceDeletionFailedEvent"
@@ -638,17 +691,40 @@ class EventName(Enum):
     DEVICE_UPDATED = "DeviceUpdatedEvent"
     DISCOVER_COMPLETE = "DiscoverCompleteEvent"
     DISCOVER_FAILED = "DiscoverFailedEvent"
-    EXECUTION_REGISTERED = "ExecutionRegisteredEvent"
-    EXECUTION_STATE_CHANGED = "ExecutionStateChangedEvent"
+    ELIOT_DISCOVER_GATEWAYS_COMPLETED = "EliotDiscoverGatewaysCompletedEvent"
+    ELIOT_DISCOVER_GATEWAYS_FAILED = "EliotDiscoverGatewaysFailedEvent"
+    ELIOT_DISCOVER_GATEWAY_COMPLETED = "EliotDiscoverGatewayCompletedEvent"
+    ELIOT_DISCOVER_GATEWAY_FAILED = "EliotDiscoverGatewayFailedEvent"
+    ELIOT_REFRESH_CURRENT_TOKEN_COMPLETED = "EliotRefreshCurrentTokenCompletedEvent"
+    ELIOT_REFRESH_CURRENT_TOKEN_FAILED = "EliotRefreshCurrentTokenFailedEvent"
     ENOCEAN_BAD_DEVICE_STIMULATION = "EnOceanBadDeviceStimulationEvent"
     ENOCEAN_KNOWN_DEVICE_FOUND = "EnOceanKnownDeviceFoundEvent"
     ENOCEAN_LEARN_STARTED = "EnOceanLearnStartedEvent"
     ENOCEAN_LEARN_STOPPED = "EnOceanLearnStoppedEvent"
+    EXECUTION_REGISTERED = "ExecutionRegisteredEvent"
+    EXECUTION_STATE_CHANGED = "ExecutionStateChangedEvent"
     GATEWAY_ALIVE = "GatewayAliveEvent"
     GATEWAY_DOWN = "GatewayDownEvent"
     GATEWAY_FUNCTION_CHANGED = "GatewayFunctionChangedEvent"
+    GATEWAY_SYNCHRONIZATION_ENDED = "GatewaySynchronizationEndedEvent"
+    GATEWAY_SYNCHRONIZATION_STARTED = "GatewaySynchronizationStartedEvent"
     INVALID_ADDRESS = "InvalidAddressEvent"
+    IO_CHANGED_KEY = "IOChangedKeyEvent"
+    OPENDOORS_DISCOVER_COMPLETED = "OpenDoorsDiscoverCompletedEvent"
+    OPENDOORS_DISCOVER_FAILED = "OpenDoorsDiscoverFailedEvent"
+    OPENDOORS_GENERATE_OAUTH_TOKENS_COMPLETED = (
+        "OpenDoorsGenerateOAuthTokensCompletedEvent"
+    )
+    OPENDOORS_GENERATE_OAUTH_TOKENS_FAILED = "OpenDoorsGenerateOAuthTokensFailedEvent"
+    PLACE_CREATED = "PlaceCreatedEvent"
+    PLACE_DELETED = "PlaceDeletedEvent"
+    PLACE_UPDATED = "PlaceUpdatedEvent"
+    PURGE_PARTIAL_RAW_DEVICES = "PurgePartialRawDevicesEvent"
     SONOS_GET_TOPOLOGY_SUCCESS = "SonosGetTopologySuccessEvent"
+    TOKEN_CREATED = "TokenCreatedEvent"
+    TOKEN_CREATION_FAILED = "TokenCreationFailedEvent"
+    TOKEN_DELETION_FAILED = "TokenDeletionFailedEvent"
+    TOKEN_REMOVED = "TokenRemovedEvent"
     VALID_ADDRESS = "ValidAddressEvent"
 
 
