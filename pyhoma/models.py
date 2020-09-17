@@ -202,25 +202,25 @@ class Event:
     def __init__(
         self,
         timestamp: int,
-        name: str,
+        name: EventName,
         gateway_id: Optional[str] = None,
         exec_id: Optional[str] = None,
         deviceurl: Optional[str] = None,
         device_states: Optional[List[Dict[str, Any]]] = None,
-        old_state: Optional[str] = None,
-        new_state: Optional[str] = None,
+        old_state: Optional[ExecutionState] = None,
+        new_state: Optional[ExecutionState] = None,
         **_: Any
     ):
         self.timestamp = timestamp
-        self.name = name
+        self.name = EventName(name)
         self.gateway_id = gateway_id
         self.exec_id = exec_id
         self.deviceurl = deviceurl
         self.device_states = (
             [State(**s) for s in device_states] if device_states else None
         )
-        self.old_state = old_state
-        self.new_state = new_state
+        self.old_state = ExecutionState(old_state) if old_state else None
+        self.new_state = ExecutionState(new_state) if new_state else None
 
 
 class Execution:
@@ -622,6 +622,32 @@ class FailureType(Enum):
     PEER_DOWN = 10005
     GATEWAY_BUFFER_OVERFLOW = 10006
     UNKNOWN_DETAILED_ERROR = 10007
+
+
+class EventName(Enum):
+    CAMERA_DISCOVERED_EVENT = "CameraDiscoveredEvent"
+    CAMERA_DISCOVER_FAILED_EVENT = "CameraDiscoverFailedEvent"
+    CAMERA_UPLOAD_PHOTO_EVENT = "CameraUploadPhotoEvent"
+    DEVICE_AVAILABLE_EVENT = "DeviceAvailableEvent"
+    DEVICE_CREATED_EVENT = "DeviceCreatedEvent"
+    DEVICE_DELETION_FAILED_EVENT = "DeviceDeletionFailedEvent"
+    DEVICE_DISABLED_EVENT = "DeviceDisabledEvent"
+    DEVICE_REMOVED_EVENT = "DeviceRemovedEvent"
+    DEVICE_STATE_CHANGED_EVENT = "DeviceStateChangedEvent"
+    DEVICE_UNAVAILABLE_EVENT = "DeviceUnavailableEvent"
+    DEVICE_UPDATED_EVENT = "DeviceUpdatedEvent"
+    DISCOVER_COMPLETE_EVENT = "DiscoverCompleteEvent"
+    DISCOVER_FAILED_EVENT = "DiscoverFailedEvent"
+    ENOCEAN_BAD_DEVICE_STIMULATION_EVENT = "EnOceanBadDeviceStimulationEvent"
+    ENOCEAN_KNOWN_DEVICE_FOUND_EVENT = "EnOceanKnownDeviceFoundEvent"
+    ENOCEAN_LEARN_STARTED_EVENT = "EnOceanLearnStartedEvent"
+    ENOCEAN_LEARN_STOPPED_EVENT = "EnOceanLearnStoppedEvent"
+    GATEWAY_ALIVE_EVENT = "GatewayAliveEvent"
+    GATEWAY_DOWN_EVENT = "GatewayDownEvent"
+    GATEWAY_FUNCTION_CHANGED_EVENT = "GatewayFunctionChangedEvent"
+    INVALID_ADDRESS_EVENT = "InvalidAddressEvent"
+    SONOS_GET_TOPOLOGY_SUCCESS_EVENT = "SonosGetTopologySuccessEvent"
+    VALID_ADDRESS_EVENT = "ValidAddressEvent"
 
 
 class UpdateBoxStatus(Enum):
