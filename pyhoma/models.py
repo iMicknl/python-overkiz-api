@@ -254,11 +254,13 @@ class Event:
         self.new_state = ExecutionState(new_state) if new_state else None
         self.setupoid = setupoid
         self.owner_key = owner_key
-        self.type = type
-        self.sub_type = sub_type
+        self.type = ExecutionType(type) if type else None
+        self.sub_type = ExecutionSubType(sub_type) if sub_type else None
         self.time_to_next_state = time_to_next_state
         self.failed_commands = failed_commands
-        self.failure_type_code = failure_type_code
+        self.failure_type_code = (
+            FailureType(failure_type_code) if failure_type_code else None
+        )
         self.failure_type = failure_type
         self.condition_groupoid = condition_groupoid
         self.placeoid = placeoid
