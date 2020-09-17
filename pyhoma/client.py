@@ -15,7 +15,7 @@ from pyhoma.exceptions import (
     NotAuthenticatedException,
     TooManyRequestsException,
 )
-from pyhoma.models import Command, Device, Event, Execution, Scenario, State
+from pyhoma.models import Command, Device, Event, Execution, Gateway, Scenario, State
 
 JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
 
@@ -50,7 +50,7 @@ class TahomaClient:
         self.api_url = api_url
 
         self.devices: List[Device] = []
-        self.__roles = None
+        self.gateways: List[Gateway] = []
         self.event_listener_id: Optional[str] = None
 
         self.session = session if session else ClientSession()
@@ -99,6 +99,19 @@ class TahomaClient:
         self.devices = devices
 
         return devices
+
+    async def get_gateways(self, refresh: bool = False) -> List[Gateway]:
+        """
+        List gateways
+        """
+        if self.gateways and not refresh:
+            return self.gateways
+
+        response = await self.__get("setup/gateways")
+        gateways = [Gateway(**g) for g in humps.decamelize(response)]
+        self.gateways = gateways
+
+        return gateways
 
     @backoff.on_exception(
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
@@ -244,7 +257,7 @@ class TahomaClient:
     ) -> Any:
         """ Make a POST request to the TaHoma API """
         async with self.session.post(
-            f"{self.api_url}{endpoint}", data=data, json=payload
+            f"{self.api_url}{endpoint}", data=data, json=payload,
         ) as response:
             await self.check_response(response)
             return await response.json()
