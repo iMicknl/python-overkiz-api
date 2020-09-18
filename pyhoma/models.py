@@ -243,7 +243,6 @@ class Event:
         **_: Any
     ):
         self.timestamp = timestamp
-        self.name = EventName(name)
         self.gateway_id = gateway_id
         self.exec_id = exec_id
         self.deviceurl = deviceurl
@@ -254,8 +253,8 @@ class Event:
         self.new_state = ExecutionState(new_state) if new_state else None
         self.setupoid = setupoid
         self.owner_key = owner_key
-        self.type = ExecutionType(type) if type else None
-        self.sub_type = ExecutionSubType(sub_type) if sub_type else None
+        self.type = type
+        self.sub_type = sub_type
         self.time_to_next_state = time_to_next_state
         self.failed_commands = failed_commands
         self.failure_type_code = (
@@ -269,6 +268,11 @@ class Event:
         self.camera_id = camera_id
         self.deleted_raw_devices_count = deleted_raw_devices_count
         self.protocol_type = protocol_type
+
+        try:
+            self.name = EventName(name)
+        except ValueError:
+            self.name = name
 
 
 class Execution:
@@ -703,6 +707,7 @@ class EventName(Enum):
     ENOCEAN_KNOWN_DEVICE_FOUND = "EnOceanKnownDeviceFoundEvent"
     ENOCEAN_LEARN_STARTED = "EnOceanLearnStartedEvent"
     ENOCEAN_LEARN_STOPPED = "EnOceanLearnStoppedEvent"
+    END_USER_LOGIN = "EndUserLoginEvent"
     EXECUTION_REGISTERED = "ExecutionRegisteredEvent"
     EXECUTION_STATE_CHANGED = "ExecutionStateChangedEvent"
     GATEWAY_ALIVE = "GatewayAliveEvent"
@@ -727,6 +732,7 @@ class EventName(Enum):
     TOKEN_CREATION_FAILED = "TokenCreationFailedEvent"
     TOKEN_DELETION_FAILED = "TokenDeletionFailedEvent"
     TOKEN_REMOVED = "TokenRemovedEvent"
+    REFRESH_ALL_DEVICES_STATES_COMPLETED = "RefreshAllDevicesStatesCompletedEvent"
     VALID_ADDRESS = "ValidAddressEvent"
 
 
