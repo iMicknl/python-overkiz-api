@@ -3,6 +3,17 @@ from __future__ import annotations
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
+from pyhoma.enums import (
+    DataType,
+    EventName,
+    ExecutionState,
+    FailureType,
+    GatewaySubType,
+    GatewayType,
+    ProductType,
+    UpdateBoxStatus,
+)
+
 # pylint: disable=unused-argument, too-many-instance-attributes
 
 
@@ -186,6 +197,7 @@ class CommandMode(Enum):
     internal = "internal"
 
 
+# pylint: disable-msg=too-many-locals
 class Event:
     __slots__ = (
         "timestamp",
@@ -197,30 +209,81 @@ class Event:
         "old_state",
         "new_state",
         "owner_key",
+        "setupoid",
+        "owner_key",
+        "type",
+        "sub_type",
+        "time_to_next_state",
+        "failed_commands",
+        "failure_type_code",
+        "failure_type",
+        "condition_groupoid",
+        "placeoid",
+        "label",
+        "metadata",
+        "camera_id",
+        "deleted_raw_devices_count",
+        "protocol_type",
     )
 
     def __init__(
         self,
         timestamp: int,
-        name: str,
+        name: EventName,
+        setupoid: Optional[str] = None,
+        owner_key: Optional[str] = None,
+        type: Optional[int] = None,
+        sub_type: Optional[int] = None,
+        time_to_next_state: Optional[int] = None,
+        failed_commands: Optional[List[Dict[str, Any]]] = None,
+        failure_type_code: Optional[int] = None,
+        failure_type: Optional[str] = None,
+        condition_groupoid: Optional[str] = None,
+        placeoid: Optional[str] = None,
+        label: Optional[str] = None,
+        metadata: Optional[Any] = None,
+        camera_id: Optional[str] = None,
+        deleted_raw_devices_count: Optional[Any] = None,
+        protocol_type: Optional[Any] = None,
         gateway_id: Optional[str] = None,
         exec_id: Optional[str] = None,
         deviceurl: Optional[str] = None,
         device_states: Optional[List[Dict[str, Any]]] = None,
-        old_state: Optional[str] = None,
-        new_state: Optional[str] = None,
+        old_state: Optional[ExecutionState] = None,
+        new_state: Optional[ExecutionState] = None,
         **_: Any
     ):
         self.timestamp = timestamp
-        self.name = name
         self.gateway_id = gateway_id
         self.exec_id = exec_id
         self.deviceurl = deviceurl
         self.device_states = (
             [State(**s) for s in device_states] if device_states else None
         )
-        self.old_state = old_state
-        self.new_state = new_state
+        self.old_state = ExecutionState(old_state) if old_state else None
+        self.new_state = ExecutionState(new_state) if new_state else None
+        self.setupoid = setupoid
+        self.owner_key = owner_key
+        self.type = type
+        self.sub_type = sub_type
+        self.time_to_next_state = time_to_next_state
+        self.failed_commands = failed_commands
+        self.failure_type_code = (
+            FailureType(failure_type_code) if failure_type_code else None
+        )
+        self.failure_type = failure_type
+        self.condition_groupoid = condition_groupoid
+        self.placeoid = placeoid
+        self.label = label
+        self.metadata = metadata
+        self.camera_id = camera_id
+        self.deleted_raw_devices_count = deleted_raw_devices_count
+        self.protocol_type = protocol_type
+
+        try:
+            self.name = EventName(name)
+        except ValueError:
+            self.name = name
 
 
 class Execution:
@@ -257,23 +320,70 @@ class Scenario:
         self.oid = oid
 
 
-class ProductType(Enum):
-    NONE = 0
-    ACTUATOR = 1
-    SENSOR = 2
-    VIDEO = 3
-    CONTROLLABLE = 4
-    GATEWAY = 5
-    INFRASTRUCTURE_COMPONENT = 6
+class Partner:
+    __slots__ = ("activated", "name", "id", "status")
+
+    def __init__(self, activated: bool, name: str, id: str, status: str, **_: Any):
+        self.activated = activated
+        self.name = name
+        self.id = id
+        self.status = status
 
 
-class DataType(Enum):
-    NONE = 0
-    INTEGER = 1
-    FLOAT = 2
-    STRING = 3
-    BLOB = 4
-    DATE = 5
-    BOOLEAN = 6
-    JSON_ARRAY = 10
-    JSON_OBJECT = 11
+class Connectivity:
+    __slots__ = ("status", "protocol_version")
+
+    def __init__(self, status: str, protocol_version: str, **_: Any):
+        self.status = status
+        self.protocol_version = protocol_version
+
+
+class Gateway:
+    __slots__ = (
+        "id",
+        "partners",
+        "functions",
+        "sub_type",
+        "gateway_id",
+        "alive",
+        "mode",
+        "placeoid",
+        "time_reliable",
+        "connectivity",
+        "up_to_date",
+        "update_status",
+        "sync_in_progress",
+        "type",
+    )
+
+    def __init__(
+        self,
+        *,
+        partners: List[Dict[str, Any]],
+        functions: Optional[str],
+        sub_type: GatewaySubType,
+        gateway_id: str,
+        alive: bool,
+        mode: str,
+        placeoid: str,
+        time_reliable: bool,
+        connectivity: Dict[str, Any],
+        up_to_date: bool,
+        update_status: UpdateBoxStatus,
+        sync_in_progress: bool,
+        type: GatewayType,
+        **_: Any
+    ) -> None:
+        self.id = gateway_id
+        self.type = GatewayType(type)
+        self.sub_type = GatewaySubType(sub_type)
+        self.functions = functions
+        self.alive = alive
+        self.mode = mode
+        self.placeoid = placeoid
+        self.time_reliable = time_reliable
+        self.connectivity = Connectivity(*connectivity)
+        self.up_to_date = up_to_date
+        self.update_status = UpdateBoxStatus(update_status)
+        self.sync_in_progress = sync_in_progress
+        self.partners = [Partner(**p) for p in partners]
