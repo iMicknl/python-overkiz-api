@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Optional, Type, Union
 
 import backoff
 import humps
-from aiohttp import ClientResponse, ClientSession
+from aiohttp import ClientResponse, ClientSession, ServerDisconnectedError
 
 from pyhoma.exceptions import (
     BadCredentialsException,
@@ -88,6 +88,12 @@ class TahomaClient:
             return True
         return False
 
+    @backoff.on_exception(
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError),
+        max_tries=2,
+        on_backoff=relogin,
+    )
     async def get_devices(self, refresh: bool = False) -> List[Device]:
         """
         List devices
@@ -101,6 +107,12 @@ class TahomaClient:
 
         return devices
 
+    @backoff.on_exception(
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError),
+        max_tries=2,
+        on_backoff=relogin,
+    )
     async def get_gateways(self, refresh: bool = False) -> List[Gateway]:
         """
         List gateways
@@ -232,7 +244,10 @@ class TahomaClient:
         return response["execId"]
 
     @backoff.on_exception(
-        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError),
+        max_tries=2,
+        on_backoff=relogin,
     )
     async def get_scenarios(self) -> List[Scenario]:
         """ List the scenarios """
