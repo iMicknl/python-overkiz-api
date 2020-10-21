@@ -289,8 +289,6 @@ class Event:
             )
         except ValueError:
             self.failure_type_code = failure_type_code
-            print(failure_type_code)
-            print(failure_type)
 
 
 class Execution:
