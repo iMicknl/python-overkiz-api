@@ -137,7 +137,7 @@ class TahomaClient:
             f"setup/devices/{urllib.parse.quote_plus(deviceurl)}"
         )
 
-        return response['definition']
+        return response["definition"]
 
     @backoff.on_exception(
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
