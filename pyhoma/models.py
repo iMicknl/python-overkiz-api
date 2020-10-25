@@ -236,7 +236,7 @@ class Event:
         sub_type: Optional[int] = None,
         time_to_next_state: Optional[int] = None,
         failed_commands: Optional[List[Dict[str, Any]]] = None,
-        failure_type_code: Optional[int] = None,
+        failure_type_code: Optional[FailureType] = None,
         failure_type: Optional[str] = None,
         condition_groupoid: Optional[str] = None,
         placeoid: Optional[str] = None,
@@ -268,9 +268,7 @@ class Event:
         self.sub_type = sub_type
         self.time_to_next_state = time_to_next_state
         self.failed_commands = failed_commands
-        self.failure_type_code = (
-            FailureType(failure_type_code) if failure_type_code else None
-        )
+
         self.failure_type = failure_type
         self.condition_groupoid = condition_groupoid
         self.placeoid = placeoid
@@ -284,6 +282,13 @@ class Event:
             self.name = EventName(name)
         except ValueError:
             self.name = name
+
+        try:
+            self.failure_type_code = (
+                FailureType(failure_type_code) if failure_type_code else None
+            )
+        except ValueError:
+            self.failure_type_code = failure_type_code
 
 
 class Execution:
