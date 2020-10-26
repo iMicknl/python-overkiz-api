@@ -12,3 +12,7 @@ class BadCredentialsException(Exception):
 
 class NotAuthenticatedException(Exception):
     pass
+
+
+class MaintenanceException(Exception):
+    pass

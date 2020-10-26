@@ -12,6 +12,7 @@ from aiohttp import ClientResponse, ClientSession, ServerDisconnectedError
 
 from pyhoma.exceptions import (
     BadCredentialsException,
+    MaintenanceException,
     NotAuthenticatedException,
     TooManyExecutionsException,
     TooManyRequestsException,
@@ -307,6 +308,8 @@ class TahomaClient:
             result = await response.json(content_type=None)
         except JSONDecodeError:
             result = await response.text()
+            if "Server is down for maintenance" in result:
+                raise MaintenanceException("Server is down for maintenance")
             raise Exception(
                 f"Unknown error while requesting {response.url}. {response.status} - {result}"
             )
