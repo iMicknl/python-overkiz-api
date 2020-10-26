@@ -129,7 +129,7 @@ class TahomaClient:
     @backoff.on_exception(
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
     )
-    async def get_device_definition(self, deviceurl: str) -> JSON:
+    async def get_device_definition(self, deviceurl: str) -> Optional[JSON]:
         """
         Retrieve a particular setup device definition
         """
