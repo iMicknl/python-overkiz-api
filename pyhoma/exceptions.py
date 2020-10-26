@@ -16,3 +16,7 @@ class TooManyExecutionsException(Exception):
 
 class TooManyRequestsException(Exception):
     pass
+
+
+class MaintenanceException(Exception):
+    pass

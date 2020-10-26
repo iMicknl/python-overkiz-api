@@ -13,6 +13,7 @@ from aiohttp import ClientResponse, ClientSession, ServerDisconnectedError
 from pyhoma.exceptions import (
     BadCredentialsException,
     InvalidCommandException,
+    MaintenanceException,
     NotAuthenticatedException,
     TooManyExecutionsException,
     TooManyRequestsException
@@ -126,6 +127,19 @@ class TahomaClient:
         self.gateways = gateways
 
         return gateways
+
+    @backoff.on_exception(
+        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+    )
+    async def get_device_definition(self, deviceurl: str) -> Optional[JSON]:
+        """
+        Retrieve a particular setup device definition
+        """
+        response = await self.__get(
+            f"setup/devices/{urllib.parse.quote_plus(deviceurl)}"
+        )
+
+        return response.get("definition")
 
     @backoff.on_exception(
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
@@ -295,6 +309,8 @@ class TahomaClient:
             result = await response.json(content_type=None)
         except JSONDecodeError:
             result = await response.text()
+            if "Server is down for maintenance" in result:
+                raise MaintenanceException("Server is down for maintenance")
             raise Exception(
                 f"Unknown error while requesting {response.url}. {response.status} - {result}"
             )
