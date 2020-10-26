@@ -16,7 +16,7 @@ from pyhoma.exceptions import (
     MaintenanceException,
     NotAuthenticatedException,
     TooManyExecutionsException,
-    TooManyRequestsException
+    TooManyRequestsException,
 )
 from pyhoma.models import Command, Device, Event, Execution, Gateway, Scenario, State
 
