@@ -1,4 +1,12 @@
-class TooManyRequestsException(Exception):
+class BadCredentialsException(Exception):
+    pass
+
+
+class InvalidCommandException(Exception):
+    pass
+
+
+class NotAuthenticatedException(Exception):
     pass
 
 
@@ -6,11 +14,7 @@ class TooManyExecutionsException(Exception):
     pass
 
 
-class BadCredentialsException(Exception):
-    pass
-
-
-class NotAuthenticatedException(Exception):
+class TooManyRequestsException(Exception):
     pass
 
 

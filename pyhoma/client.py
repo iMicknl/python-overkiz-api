@@ -12,6 +12,7 @@ from aiohttp import ClientResponse, ClientSession, ServerDisconnectedError
 
 from pyhoma.exceptions import (
     BadCredentialsException,
+    InvalidCommandException,
     MaintenanceException,
     NotAuthenticatedException,
     TooManyExecutionsException,
@@ -334,4 +335,8 @@ class TahomaClient:
             if message == "Server busy, please try again later. (Too many executions)":
                 raise TooManyExecutionsException(message)
 
-            raise Exception(message if message else result)
+            # {"error": "UNSUPPORTED_OPERATION", "error": "No such command : ..."}
+            if "No such command" in message:
+                raise InvalidCommandException(message)
+
+        raise Exception(message if message else result)
