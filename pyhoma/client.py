@@ -307,13 +307,13 @@ class TahomaClient:
 
         try:
             result = await response.json(content_type=None)
-        except JSONDecodeError:
+        except JSONDecodeError as error:
             result = await response.text()
             if "Server is down for maintenance" in result:
-                raise MaintenanceException("Server is down for maintenance")
+                raise MaintenanceException("Server is down for maintenance") from error
             raise Exception(
                 f"Unknown error while requesting {response.url}. {response.status} - {result}"
-            )
+            ) from error
 
         if result.get("errorCode"):
             message = result.get("error")
