@@ -289,7 +289,9 @@ class TahomaClient:
     ) -> Any:
         """ Make a POST request to the TaHoma API """
         async with self.session.post(
-            f"{self.api_url}{endpoint}", data=data, json=payload,
+            f"{self.api_url}{endpoint}",
+            data=data,
+            json=payload,
         ) as response:
             await self.check_response(response)
             return await response.json()
