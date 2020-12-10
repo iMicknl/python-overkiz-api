@@ -21,7 +21,7 @@ backoff = "^1.10.0"
 tox = "^3.0"
 pytest = "^4.1"
 pytest-cov = "^2.8.1"
-pre-commit = "^1.10"
+pre-commit = "^2.9"
 black = {version = "^19.10b0", allow-prereleases = true}
 pylint = "^2.6.0"
 isort = "^5.6.4"
