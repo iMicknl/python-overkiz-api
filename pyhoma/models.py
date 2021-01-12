@@ -387,7 +387,7 @@ class Gateway:
         self.mode = mode
         self.placeoid = placeoid
         self.time_reliable = time_reliable
-        self.connectivity = Connectivity(*connectivity)
+        self.connectivity = Connectivity(**connectivity)
         self.up_to_date = up_to_date
         self.update_status = UpdateBoxStatus(update_status)
         self.sync_in_progress = sync_in_progress
