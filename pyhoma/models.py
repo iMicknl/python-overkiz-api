@@ -400,4 +400,3 @@ class Gateway:
             self.sub_type = GatewaySubType(sub_type)
         except ValueError:
             pass
-        
