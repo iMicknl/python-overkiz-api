@@ -364,8 +364,8 @@ class Gateway:
     def __init__(
         self,
         *,
-        partners: List[Dict[str, Any]],
-        functions: Optional[str],
+        partners: Optional[List[Dict[str, Any]]] = None,
+        functions: Optional[str] = None,
         sub_type: GatewaySubType,
         gateway_id: str,
         alive: bool,
@@ -380,8 +380,6 @@ class Gateway:
         **_: Any
     ) -> None:
         self.id = gateway_id
-        self.type = GatewayType(type)
-        self.sub_type = GatewaySubType(sub_type)
         self.functions = functions
         self.alive = alive
         self.mode = mode
@@ -392,3 +390,13 @@ class Gateway:
         self.update_status = UpdateBoxStatus(update_status)
         self.sync_in_progress = sync_in_progress
         self.partners = [Partner(**p) for p in partners]
+
+        try:
+            self.type = GatewayType(type)
+        except ValueError:
+            self.type = type
+
+        try:
+            self.sub_type = GatewaySubType(sub_type)
+        except ValueError:
+            self.sub_type = sub_type
