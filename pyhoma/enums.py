@@ -18,7 +18,7 @@ class GatewayType(Enum):
     TAHOMA_V2 = 29
     KIZBOX_V2_3H = 30
     KIZBOX_V2_2H = 31
-    COZY_TOUCH = 32
+    COZYTOUCH = 32
     TAHOMA_V2_RTS = 41
     VERISURE_ALARM_SYSTEM = 20
     CONNEXOON = 34
