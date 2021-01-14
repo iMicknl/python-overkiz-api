@@ -36,7 +36,6 @@ class GatewayType(Enum):
 
 
 class GatewaySubType(Enum):
-    NONE = 0
     TAHOMA_BASIC = 1
     TAHOMA_BASIC_PLUS = 2
     TAHOMA_PREMIUM = 3

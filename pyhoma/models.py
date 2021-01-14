@@ -366,7 +366,7 @@ class Gateway:
         *,
         partners: Optional[List[Dict[str, Any]]] = None,
         functions: Optional[str] = None,
-        sub_type: GatewaySubType,
+        sub_type: Optional[GatewaySubType],
         gateway_id: str,
         alive: bool,
         mode: str,
@@ -389,7 +389,7 @@ class Gateway:
         self.up_to_date = up_to_date
         self.update_status = UpdateBoxStatus(update_status)
         self.sync_in_progress = sync_in_progress
-        self.partners = [Partner(**p) for p in partners]
+        self.partners = [Partner(**p) for p in partners] if partners else None
 
         try:
             self.type = GatewayType(type)
@@ -399,4 +399,4 @@ class Gateway:
         try:
             self.sub_type = GatewaySubType(sub_type)
         except ValueError:
-            self.sub_type = sub_type
+            self.sub_type = None
