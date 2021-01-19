@@ -399,4 +399,4 @@ class Gateway:
         try:
             self.sub_type = GatewaySubType(sub_type)
         except ValueError:
-            pass
+            self.sub_type = None  # type: ignore
