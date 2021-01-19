@@ -366,7 +366,7 @@ class Gateway:
         *,
         partners: Optional[List[Dict[str, Any]]] = None,
         functions: Optional[str] = None,
-        sub_type: Optional[GatewaySubType] = None,
+        sub_type: GatewaySubType,
         gateway_id: str,
         alive: bool,
         mode: str,
@@ -399,4 +399,4 @@ class Gateway:
         try:
             self.sub_type = GatewaySubType(sub_type)
         except ValueError:
-            pass
+            self.sub_type = sub_type
