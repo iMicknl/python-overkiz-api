@@ -18,7 +18,16 @@ from pyhoma.exceptions import (
     TooManyExecutionsException,
     TooManyRequestsException,
 )
-from pyhoma.models import Command, Device, Event, Execution, Gateway, Scenario, State
+from pyhoma.models import (
+    Command,
+    Device,
+    Event,
+    Execution,
+    Gateway,
+    HistoryExecution,
+    Scenario,
+    State,
+)
 
 JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
 
@@ -127,6 +136,21 @@ class TahomaClient:
         self.gateways = gateways
 
         return gateways
+
+    @backoff.on_exception(
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError),
+        max_tries=2,
+        on_backoff=relogin,
+    )
+    async def get_execution_history(self) -> List[HistoryExecution]:
+        """
+        List execution history
+        """
+        response = await self.__get("history/executions")
+        execution_history = [HistoryExecution(**h) for h in humps.decamelize(response)]
+
+        return execution_history
 
     @backoff.on_exception(
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin

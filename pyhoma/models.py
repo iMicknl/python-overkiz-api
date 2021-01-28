@@ -7,6 +7,8 @@ from pyhoma.enums import (
     DataType,
     EventName,
     ExecutionState,
+    ExecutionSubType,
+    ExecutionType,
     FailureType,
     GatewaySubType,
     GatewayType,
@@ -400,3 +402,87 @@ class Gateway:
             self.sub_type = GatewaySubType(sub_type)
         except ValueError:
             self.sub_type = sub_type
+
+
+class HistoryExecutionCommand:
+    __slots__ = (
+        "deviceurl",
+        "command",
+        "parameters",
+        "rank",
+        "dynamic",
+        "state",
+        "failure_type",
+    )
+
+    def __init__(
+        self,
+        deviceurl: str,
+        command: str,
+        parameters: List[Any],
+        rank: int,
+        dynamic: bool,
+        state: ExecutionState,
+        failure_type: str,
+        **_: Any
+    ) -> None:
+        self.deviceurl = deviceurl
+        self.command = command
+        self.parameters = parameters
+        self.rank = rank
+        self.dynamic = dynamic
+        self.state = ExecutionState(state)
+        self.failure_type = failure_type
+
+
+class HistoryExecution:
+    __slots__ = (
+        "id",
+        "event_time",
+        "owner",
+        "source",
+        "end_time",
+        "effective_start_time",
+        "duration",
+        "label",
+        "type",
+        "state",
+        "failure_type",
+        "commands",
+        "execution_type",
+        "execution_sub_type",
+    )
+
+    def __init__(
+        self,
+        *,
+        id: str,
+        event_time: int,
+        owner: str,
+        source: str,
+        end_time: int,
+        effective_start_time: int,
+        duration: int,
+        label: str,
+        type: str,
+        state: ExecutionState,
+        failure_type: str,
+        commands: List[Dict[str, Any]],
+        execution_type: ExecutionType,
+        execution_sub_type: ExecutionSubType,
+        **_: Any
+    ) -> None:
+        self.id = id
+        self.event_time = event_time
+        self.owner = owner
+        self.source = source
+        self.end_time = end_time
+        self.effective_start_time = effective_start_time
+        self.duration = duration
+        self.label = label
+        self.type = type
+        self.state = ExecutionState(state)
+        self.failure_type = failure_type
+        self.commands = [HistoryExecutionCommand(**hec) for hec in commands]
+        self.execution_type = ExecutionType(execution_type)
+        self.execution_sub_type = ExecutionSubType(execution_sub_type)
