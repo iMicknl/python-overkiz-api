@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
 from pyhoma.enums import (
@@ -191,12 +190,6 @@ class Command(dict):  # type: ignore
         self.name = name
         self.parameters = parameters
         dict.__init__(self, name=name, parameters=parameters)
-
-
-class CommandMode(Enum):
-    high_priority = ("highPriority",)
-    geolocated = ("geolocated",)
-    internal = "internal"
 
 
 # pylint: disable-msg=too-many-locals
