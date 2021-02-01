@@ -4,7 +4,7 @@ from __future__ import annotations
 import urllib.parse
 from json import JSONDecodeError
 from types import TracebackType
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any, Type, Union
 
 import backoff
 import humps
