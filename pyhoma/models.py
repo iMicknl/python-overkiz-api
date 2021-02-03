@@ -365,7 +365,7 @@ class Gateway:
         gateway_id: str,
         alive: Optional[bool] = None,
         mode: str,
-        placeoid: str,
+        placeoid: Optional[str] = None,
         time_reliable: bool,
         connectivity: Dict[str, Any],
         up_to_date: Optional[bool] = None,
