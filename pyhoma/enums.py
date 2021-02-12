@@ -30,6 +30,7 @@ class GatewayType(Enum):
     TAHOMA_V2_RTS = 41
     KIZBOX_MINI_MODBUS = 42
     KIZBOX_MINI_OVP = 43
+    HI_BOX = 44  # Hi Kumo AHP-SMB01 Hi Box (constant added manually)
     CONNEXOON_RTS = 53
     OPENDOORS_LOCK_SYSTEM = 54
     CONNEXOON_RTS_JAPAN = 56
