@@ -15,7 +15,7 @@ from pyhoma.enums import (
     UpdateBoxStatus,
 )
 
-# pylint: disable=unused-argument, too-many-instance-attributes
+# pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
 
 
 class Device:
@@ -38,6 +38,7 @@ class Device:
         "ui_class",
         "qualified_name",
         "type",
+        "placeoid",
     )
 
     def __init__(
@@ -56,6 +57,7 @@ class Device:
         qualified_name: Optional[str] = None,
         states: Optional[List[Dict[str, Any]]] = None,
         type: int,
+        placeoid: str,
         **_: Any
     ) -> None:
         self.id = deviceurl
@@ -72,6 +74,7 @@ class Device:
         self.ui_class = ui_class
         self.qualified_name = qualified_name
         self.type = ProductType(type)
+        self.placeoid = placeoid
 
 
 class Definition:
@@ -479,3 +482,34 @@ class HistoryExecution:
         self.commands = [HistoryExecutionCommand(**hec) for hec in commands]
         self.execution_type = ExecutionType(execution_type)
         self.execution_sub_type = ExecutionSubType(execution_sub_type)
+
+
+class Place:
+    __slots__ = (
+        "id",
+        "creation_time",
+        "last_update_time",
+        "label",
+        "type",
+        "oid",
+        "sub_places",
+    )
+
+    def __init__(
+        self,
+        *,
+        creation_time: int,
+        last_update_time: int,
+        label: str,
+        type: int,
+        oid: str,
+        sub_places: Optional[List[Any]],
+        **_: Any
+    ) -> None:
+        self.id = oid
+        self.creation_time = creation_time
+        self.last_update_time = last_update_time
+        self.label = label
+        self.type = type
+        self.oid = oid
+        self.sub_places = [Place(**p) for p in sub_places] if sub_places else None
