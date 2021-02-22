@@ -25,6 +25,7 @@ from pyhoma.models import (
     Execution,
     Gateway,
     HistoryExecution,
+    Place,
     Scenario,
     State,
 )
@@ -186,7 +187,7 @@ class TahomaClient:
         """
         Ask the box to refresh all devices states for protocols supporting that operation
         """
-        await self.__post("/setup/devices/states/refresh")
+        await self.__post("setup/devices/states/refresh")
 
     async def register_event_listener(self) -> str:
         """
@@ -293,6 +294,18 @@ class TahomaClient:
         """ List the scenarios """
         response = await self.__get("actionGroups")
         return [Scenario(**scenario) for scenario in response]
+
+    @backoff.on_exception(
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError),
+        max_tries=2,
+        on_backoff=relogin,
+    )
+    async def get_places(self) -> Place:
+        """ List the places """
+        response = await self.__get("setup/places")
+        places = Place(**humps.decamelize(response))
+        return places
 
     @backoff.on_exception(
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
