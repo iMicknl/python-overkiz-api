@@ -24,7 +24,7 @@ pytest-cov = "^2.11.1"
 pre-commit = "^2.11"
 black = {version = "^20.8b1", allow-prereleases = true}
 pylint = "^2.6.0"
-isort = "^5.7.0"
+isort = "^5.8.0"
 mypy = "^0.812"
 flake8 = "^3.9.0"
 pyupgrade = "^2.7.4"
