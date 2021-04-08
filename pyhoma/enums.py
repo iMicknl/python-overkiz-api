@@ -401,6 +401,6 @@ class UpdateBoxStatus(Enum):
 
 
 class CommandMode(Enum):
-    high_priority = "highPriority"
-    geolocated = "geolocated"
-    internal = "internal"
+    HIGH_PRIORITY = "highPriority"
+    GEOLOCATED = "geolocated"
+    INTERNAL = "internal"
