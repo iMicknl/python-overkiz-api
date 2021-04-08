@@ -73,6 +73,7 @@ class DataType(Enum):
     BLOB = 4
     DATE = 5
     BOOLEAN = 6
+    PASSWORD = 9
     JSON_ARRAY = 10
     JSON_OBJECT = 11
 
