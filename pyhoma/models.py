@@ -415,11 +415,11 @@ class HistoryExecutionCommand:
         self,
         deviceurl: str,
         command: str,
-        parameters: List[Any],
         rank: int,
         dynamic: bool,
         state: ExecutionState,
         failure_type: str,
+        parameters: Optional[List[Any]] = None,
         **_: Any
     ) -> None:
         self.deviceurl = deviceurl
