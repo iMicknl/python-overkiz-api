@@ -499,7 +499,7 @@ class Place:
         self,
         *,
         creation_time: int,
-        last_update_time: int,
+        last_update_time: Optional[int] = None,
         label: str,
         type: int,
         oid: str,
