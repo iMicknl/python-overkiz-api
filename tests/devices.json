@@ -1,0 +1,3412 @@
+[
+  {
+    "creationTime": 1606817793000,
+    "lastUpdateTime": 1606817793000,
+    "label": "HOMEKIT (stack)",
+    "deviceURL": "homekit://1234-5678-9012/stack",
+    "shortcut": false,
+    "controllableName": "homekit:StackComponent",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "deleteControllers",
+          "nparams": 0
+        }
+      ],
+      "states": [],
+      "dataProperties": [],
+      "widgetName": "HomekitStack",
+      "uiProfiles": [
+        "Specific"
+      ],
+      "uiClass": "ProtocolGateway",
+      "qualifiedName": "homekit:StackComponent",
+      "type": "PROTOCOL_GATEWAY"
+    },
+    "attributes": [
+      {
+        "name": "homekit:SetupCode",
+        "type": 3,
+        "value": "123-45-678"
+      },
+      {
+        "name": "homekit:SetupPayload",
+        "type": 3,
+        "value": "X-HM://1234BPOGAXUSI"
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "fc6c7ff0-5ad6-49b6-a6a4-3816612488d4",
+    "widget": "HomekitStack",
+    "type": 5,
+    "oid": "4af5f3fe-45a0-4388-9f3c-56045e79637d",
+    "uiClass": "ProtocolGateway"
+  },
+  {
+    "creationTime": 1495389062000,
+    "lastUpdateTime": 1495389062000,
+    "label": "Alarm",
+    "deviceURL": "internal://1234-5678-9012/alarm/0",
+    "shortcut": false,
+    "controllableName": "internal:TSKAlarmComponent",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "alarmOff",
+          "nparams": 0
+        },
+        {
+          "commandName": "alarmOn",
+          "nparams": 0
+        },
+        {
+          "commandName": "arm",
+          "nparams": 0
+        },
+        {
+          "commandName": "disarm",
+          "nparams": 0
+        },
+        {
+          "commandName": "getName",
+          "nparams": 0
+        },
+        {
+          "commandName": "off",
+          "nparams": 0
+        },
+        {
+          "commandName": "on",
+          "nparams": 0
+        },
+        {
+          "commandName": "setName",
+          "nparams": 1
+        },
+        {
+          "commandName": "refreshAlarmDelay",
+          "nparams": 0
+        },
+        {
+          "commandName": "refreshCurrentAlarmMode",
+          "nparams": 0
+        },
+        {
+          "commandName": "refreshIntrusionDetected",
+          "nparams": 0
+        },
+        {
+          "commandName": "setAlarmDelay",
+          "nparams": 1
+        },
+        {
+          "commandName": "alarmPartial1",
+          "nparams": 0
+        },
+        {
+          "commandName": "alarmPartial2",
+          "nparams": 0
+        },
+        {
+          "commandName": "setIntrusionDetected",
+          "nparams": 1
+        },
+        {
+          "commandName": "setTargetAlarmMode",
+          "nparams": 1
+        }
+      ],
+      "states": [
+        {
+          "type": "DataState",
+          "qualifiedName": "core:NameState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "internal:AlarmDelayState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "off",
+            "partial1",
+            "partial2",
+            "total"
+          ],
+          "qualifiedName": "internal:CurrentAlarmModeState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "detected",
+            "notDetected",
+            "pending",
+            "sos"
+          ],
+          "qualifiedName": "internal:IntrusionDetectedState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "off",
+            "partial1",
+            "partial2",
+            "sos",
+            "total"
+          ],
+          "qualifiedName": "internal:TargetAlarmModeState"
+        }
+      ],
+      "dataProperties": [],
+      "widgetName": "TSKAlarmController",
+      "uiProfiles": [
+        "Alarm",
+        "Switchable"
+      ],
+      "uiClass": "Alarm",
+      "qualifiedName": "internal:TSKAlarmComponent",
+      "type": "ACTUATOR"
+    },
+    "states": [
+      {
+        "name": "core:NameState",
+        "type": 3,
+        "value": "alarm name"
+      },
+      {
+        "name": "internal:CurrentAlarmModeState",
+        "type": 3,
+        "value": "off"
+      },
+      {
+        "name": "internal:AlarmDelayState",
+        "type": 1,
+        "value": 60
+      },
+      {
+        "name": "internal:TargetAlarmModeState",
+        "type": 3,
+        "value": "off"
+      },
+      {
+        "name": "internal:IntrusionDetectedState",
+        "type": 3,
+        "value": "notDetected"
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "409cf486-5c66-4cc6-8240-aa5685246022",
+    "widget": "TSKAlarmController",
+    "type": 1,
+    "oid": "3b5fa088-2837-45bb-9027-a3a726ec71c8",
+    "uiClass": "Alarm"
+  },
+  {
+    "creationTime": 1495389291000,
+    "lastUpdateTime": 1495389291000,
+    "label": "Bouton sensitif",
+    "deviceURL": "internal://1234-5678-9012/pod/0",
+    "shortcut": false,
+    "controllableName": "internal:PodV2Component",
+    "metadata": "{\"tahoma\":{\"touchButtonFlag\":true}}",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "getName",
+          "nparams": 0
+        },
+        {
+          "commandName": "update",
+          "nparams": 0
+        },
+        {
+          "commandName": "setCountryCode",
+          "nparams": 1
+        },
+        {
+          "commandName": "activateCalendar",
+          "nparams": 0
+        },
+        {
+          "commandName": "deactivateCalendar",
+          "nparams": 0
+        },
+        {
+          "commandName": "refreshBatteryStatus",
+          "nparams": 0
+        },
+        {
+          "commandName": "refreshPodMode",
+          "nparams": 0
+        },
+        {
+          "commandName": "refreshUpdateStatus",
+          "nparams": 0
+        },
+        {
+          "commandName": "setCalendar",
+          "nparams": 1
+        },
+        {
+          "commandName": "setLightingLedPodMode",
+          "nparams": 1
+        },
+        {
+          "commandName": "setPodLedOff",
+          "nparams": 0
+        },
+        {
+          "commandName": "setPodLedOn",
+          "nparams": 0
+        }
+      ],
+      "states": [
+        {
+          "type": "DiscreteState",
+          "values": [
+            "offline",
+            "online"
+          ],
+          "qualifiedName": "core:ConnectivityState"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:CountryCodeState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "pressed",
+            "stop"
+          ],
+          "qualifiedName": "core:CyclicButtonState"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:LocalIPv4AddressState"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:NameState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "internal:BatteryStatusState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "internal:LightingLedPodModeState"
+        }
+      ],
+      "dataProperties": [],
+      "widgetName": "Pod",
+      "uiProfiles": [
+        "UpdatableComponent"
+      ],
+      "uiClass": "Pod",
+      "qualifiedName": "internal:PodV2Component",
+      "type": "ACTUATOR"
+    },
+    "states": [
+      {
+        "name": "core:NameState",
+        "type": 3,
+        "value": "Box"
+      },
+      {
+        "name": "internal:BatteryStatusState",
+        "type": 3,
+        "value": "no"
+      },
+      {
+        "name": "core:CyclicButtonState",
+        "type": 3,
+        "value": "stop"
+      },
+      {
+        "name": "internal:LightingLedPodModeState",
+        "type": 2,
+        "value": 0.2
+      },
+      {
+        "name": "core:CountryCodeState",
+        "type": 3,
+        "value": "FR"
+      },
+      {
+        "name": "core:LocalIPv4AddressState",
+        "type": 3,
+        "value": "192.168.10.126"
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "2a27f9ab-5d4a-45df-b58e-d97e22ad35a9",
+    "widget": "Pod",
+    "type": 1,
+    "oid": "82b004c0-1207-4fb8-ae5c-51b7fa5ea876",
+    "uiClass": "Pod"
+  },
+  {
+    "creationTime": 1495389504000,
+    "lastUpdateTime": 1495389504000,
+    "label": "roller shutter 1",
+    "deviceURL": "io://1234-5678-9012/10077486",
+    "shortcut": false,
+    "controllableName": "io:RollerShutterGenericIOComponent",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "advancedRefresh",
+          "nparams": 1
+        },
+        {
+          "commandName": "close",
+          "nparams": 0
+        },
+        {
+          "commandName": "delayedStopIdentify",
+          "nparams": 1
+        },
+        {
+          "commandName": "down",
+          "nparams": 0
+        },
+        {
+          "commandName": "getName",
+          "nparams": 0
+        },
+        {
+          "commandName": "identify",
+          "nparams": 0
+        },
+        {
+          "commandName": "my",
+          "nparams": 0
+        },
+        {
+          "commandName": "open",
+          "nparams": 0
+        },
+        {
+          "commandName": "refreshMemorized1Position",
+          "nparams": 0
+        },
+        {
+          "commandName": "setClosure",
+          "nparams": 1
+        },
+        {
+          "commandName": "setDeployment",
+          "nparams": 1
+        },
+        {
+          "commandName": "setMemorized1Position",
+          "nparams": 1
+        },
+        {
+          "commandName": "setName",
+          "nparams": 1
+        },
+        {
+          "commandName": "setPosition",
+          "nparams": 1
+        },
+        {
+          "commandName": "setSecuredPosition",
+          "nparams": 1
+        },
+        {
+          "commandName": "startIdentify",
+          "nparams": 0
+        },
+        {
+          "commandName": "stop",
+          "nparams": 0
+        },
+        {
+          "commandName": "stopIdentify",
+          "nparams": 0
+        },
+        {
+          "commandName": "up",
+          "nparams": 0
+        },
+        {
+          "commandName": "wink",
+          "nparams": 1
+        },
+        {
+          "commandName": "keepOneWayControllersAndDeleteNode",
+          "nparams": 0
+        },
+        {
+          "commandName": "pairOneWayController",
+          "nparams": 2
+        },
+        {
+          "commandName": "setConfigState",
+          "nparams": 1
+        },
+        {
+          "commandName": "unpairAllOneWayControllersAndDeleteNode",
+          "nparams": 0
+        },
+        {
+          "commandName": "unpairAllOneWayControllers",
+          "nparams": 0
+        },
+        {
+          "commandName": "unpairOneWayController",
+          "nparams": 2
+        }
+      ],
+      "states": [
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ClosureState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "good",
+            "low",
+            "normal",
+            "verylow"
+          ],
+          "qualifiedName": "core:DiscreteRSSILevelState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:Memorized1PositionState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "false",
+            "true"
+          ],
+          "qualifiedName": "core:MovingState"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:NameState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "closed",
+            "open"
+          ],
+          "qualifiedName": "core:OpenClosedState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:PriorityLockTimerState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:RSSILevelState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:SecuredPositionState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "available",
+            "unavailable"
+          ],
+          "qualifiedName": "core:StatusState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:TargetClosureState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "comfortLevel1",
+            "comfortLevel2",
+            "comfortLevel3",
+            "comfortLevel4",
+            "environmentProtection",
+            "humanProtection",
+            "userLevel1",
+            "userLevel2"
+          ],
+          "qualifiedName": "io:PriorityLockLevelState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "LSC",
+            "SAAC",
+            "SFC",
+            "UPS",
+            "externalGateway",
+            "localUser",
+            "myself",
+            "rain",
+            "security",
+            "temperature",
+            "timer",
+            "user",
+            "wind"
+          ],
+          "qualifiedName": "io:PriorityLockOriginatorState"
+        }
+      ],
+      "dataProperties": [
+        {
+          "value": "500",
+          "qualifiedName": "core:identifyInterval"
+        }
+      ],
+      "widgetName": "PositionableRollerShutter",
+      "uiProfiles": [
+        "StatefulCloseableShutter",
+        "StatefulCloseable",
+        "Closeable",
+        "StatefulOpenClose",
+        "OpenClose"
+      ],
+      "uiClass": "RollerShutter",
+      "qualifiedName": "io:RollerShutterGenericIOComponent",
+      "type": "ACTUATOR"
+    },
+    "states": [
+      {
+        "name": "core:NameState",
+        "type": 3,
+        "value": "Volet d?Axel"
+      },
+      {
+        "name": "core:PriorityLockTimerState",
+        "type": 1,
+        "value": 0
+      },
+      {
+        "name": "core:StatusState",
+        "type": 3,
+        "value": "available"
+      },
+      {
+        "name": "core:DiscreteRSSILevelState",
+        "type": 3,
+        "value": "good"
+      },
+      {
+        "name": "core:RSSILevelState",
+        "type": 2,
+        "value": 82.0
+      },
+      {
+        "name": "core:MovingState",
+        "type": 6,
+        "value": false
+      },
+      {
+        "name": "core:ClosureState",
+        "type": 1,
+        "value": 100
+      },
+      {
+        "name": "core:OpenClosedState",
+        "type": 3,
+        "value": "closed"
+      },
+      {
+        "name": "core:Memorized1PositionState",
+        "type": 1,
+        "value": 86
+      },
+      {
+        "name": "core:TargetClosureState",
+        "type": 1,
+        "value": 100
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "28740e9a-88c0-4815-8c52-fac9cd91a0d0",
+    "widget": "PositionableRollerShutter",
+    "type": 1,
+    "oid": "ebca1376-5a33-4d2b-85b6-af72220687e1",
+    "uiClass": "RollerShutter"
+  },
+  {
+    "creationTime": 1495397303000,
+    "lastUpdateTime": 1495397303000,
+    "label": "Light sensor",
+    "deviceURL": "io://1234-5678-9012/15877678",
+    "shortcut": false,
+    "controllableName": "io:LightIOSystemSensor",
+    "definition": {
+      "commands": [],
+      "states": [
+        {
+          "type": "DiscreteState",
+          "values": [
+            "good",
+            "low",
+            "normal",
+            "verylow"
+          ],
+          "qualifiedName": "core:DiscreteRSSILevelState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:LuminanceState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:RSSILevelState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "dead",
+            "lowBattery",
+            "maintenanceRequired",
+            "noDefect"
+          ],
+          "qualifiedName": "core:SensorDefectState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "available",
+            "unavailable"
+          ],
+          "qualifiedName": "core:StatusState"
+        }
+      ],
+      "dataProperties": [
+        {
+          "value": {
+            "activationDelayMap": {
+              "middle": 0,
+              "lower": 1200,
+              "upper": 300
+            },
+            "referenceStates": [
+              "middle",
+              "lower",
+              "upper"
+            ],
+            "qualifiedName": "io:SunSensorHysteresisBehavior"
+          },
+          "qualifiedName": "core:timeBasedHysteresisBehavior"
+        }
+      ],
+      "widgetName": "LuminanceSensor",
+      "uiProfiles": [
+        "Luminance"
+      ],
+      "uiClass": "LightSensor",
+      "qualifiedName": "io:LightIOSystemSensor",
+      "type": "SENSOR"
+    },
+    "states": [
+      {
+        "name": "core:StatusState",
+        "type": 3,
+        "value": "available"
+      },
+      {
+        "name": "core:DiscreteRSSILevelState",
+        "type": 3,
+        "value": "normal"
+      },
+      {
+        "name": "core:RSSILevelState",
+        "type": 2,
+        "value": 58.0
+      },
+      {
+        "name": "core:LuminanceState",
+        "type": 2,
+        "value": 50.0
+      }
+    ],
+    "attributes": [
+      {
+        "name": "core:MinSensedValue",
+        "type": 1,
+        "value": 50
+      },
+      {
+        "name": "core:MaxSensedValue",
+        "type": 1,
+        "value": 100000
+      },
+      {
+        "name": "core:MeasuredValueType",
+        "type": 3,
+        "value": "core:LuminanceInLux"
+      },
+      {
+        "name": "core:PowerSourceType",
+        "type": 3,
+        "value": "battery"
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "c4cca77f-f6a7-4fb9-9ee6-d97e3e165da9",
+    "widget": "LuminanceSensor",
+    "type": 2,
+    "oid": "73e9a2b9-fb27-4c52-9e6e-0a3326fbbcf4",
+    "uiClass": "LightSensor"
+  },
+  {
+    "creationTime": 1594886697000,
+    "lastUpdateTime": 1594886697000,
+    "label": "Awning",
+    "deviceURL": "io://1234-5678-9012/16009660",
+    "shortcut": false,
+    "controllableName": "io:HorizontalAwningIOComponent",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "advancedRefresh",
+          "nparams": 1
+        },
+        {
+          "commandName": "close",
+          "nparams": 0
+        },
+        {
+          "commandName": "delayedStopIdentify",
+          "nparams": 1
+        },
+        {
+          "commandName": "deploy",
+          "nparams": 0
+        },
+        {
+          "commandName": "down",
+          "nparams": 0
+        },
+        {
+          "commandName": "getName",
+          "nparams": 0
+        },
+        {
+          "commandName": "identify",
+          "nparams": 0
+        },
+        {
+          "commandName": "my",
+          "nparams": 0
+        },
+        {
+          "commandName": "open",
+          "nparams": 0
+        },
+        {
+          "commandName": "refreshMemorized1Position",
+          "nparams": 0
+        },
+        {
+          "commandName": "setClosure",
+          "nparams": 1
+        },
+        {
+          "commandName": "setDeployment",
+          "nparams": 1
+        },
+        {
+          "commandName": "setMemorized1Position",
+          "nparams": 1
+        },
+        {
+          "commandName": "setName",
+          "nparams": 1
+        },
+        {
+          "commandName": "setPosition",
+          "nparams": 1
+        },
+        {
+          "commandName": "setSecuredPosition",
+          "nparams": 1
+        },
+        {
+          "commandName": "startIdentify",
+          "nparams": 0
+        },
+        {
+          "commandName": "stop",
+          "nparams": 0
+        },
+        {
+          "commandName": "stopIdentify",
+          "nparams": 0
+        },
+        {
+          "commandName": "undeploy",
+          "nparams": 0
+        },
+        {
+          "commandName": "up",
+          "nparams": 0
+        },
+        {
+          "commandName": "wink",
+          "nparams": 1
+        },
+        {
+          "commandName": "keepOneWayControllersAndDeleteNode",
+          "nparams": 0
+        },
+        {
+          "commandName": "pairOneWayController",
+          "nparams": 2
+        },
+        {
+          "commandName": "setConfigState",
+          "nparams": 1
+        },
+        {
+          "commandName": "unpairAllOneWayControllersAndDeleteNode",
+          "nparams": 0
+        },
+        {
+          "commandName": "unpairAllOneWayControllers",
+          "nparams": 0
+        },
+        {
+          "commandName": "unpairOneWayController",
+          "nparams": 2
+        }
+      ],
+      "states": [
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:DeploymentState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "good",
+            "low",
+            "normal",
+            "verylow"
+          ],
+          "qualifiedName": "core:DiscreteRSSILevelState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:Memorized1PositionState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "false",
+            "true"
+          ],
+          "qualifiedName": "core:MovingState"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:NameState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "closed",
+            "open"
+          ],
+          "qualifiedName": "core:OpenClosedState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:PriorityLockTimerState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:RSSILevelState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:SecuredPositionState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "available",
+            "unavailable"
+          ],
+          "qualifiedName": "core:StatusState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:TargetClosureState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "comfortLevel1",
+            "comfortLevel2",
+            "comfortLevel3",
+            "comfortLevel4",
+            "environmentProtection",
+            "humanProtection",
+            "userLevel1",
+            "userLevel2"
+          ],
+          "qualifiedName": "io:PriorityLockLevelState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "LSC",
+            "SAAC",
+            "SFC",
+            "UPS",
+            "externalGateway",
+            "localUser",
+            "myself",
+            "rain",
+            "security",
+            "temperature",
+            "timer",
+            "user",
+            "wind"
+          ],
+          "qualifiedName": "io:PriorityLockOriginatorState"
+        }
+      ],
+      "dataProperties": [
+        {
+          "value": "500",
+          "qualifiedName": "core:identifyInterval"
+        }
+      ],
+      "widgetName": "PositionableHorizontalAwning",
+      "uiProfiles": [
+        "StatefulDeployableAwning",
+        "StatefulDeployable",
+        "Deployable",
+        "DeployUndeploy",
+        "StatefulOpenClose",
+        "OpenClose"
+      ],
+      "uiClass": "Awning",
+      "qualifiedName": "io:HorizontalAwningIOComponent",
+      "type": "ACTUATOR"
+    },
+    "states": [
+      {
+        "name": "core:NameState",
+        "type": 3,
+        "value": "Store banne"
+      },
+      {
+        "name": "core:PriorityLockTimerState",
+        "type": 1,
+        "value": 0
+      },
+      {
+        "name": "core:StatusState",
+        "type": 3,
+        "value": "available"
+      },
+      {
+        "name": "core:DiscreteRSSILevelState",
+        "type": 3,
+        "value": "good"
+      },
+      {
+        "name": "core:RSSILevelState",
+        "type": 2,
+        "value": 100.0
+      },
+      {
+        "name": "core:MovingState",
+        "type": 6,
+        "value": false
+      },
+      {
+        "name": "core:DeploymentState",
+        "type": 1,
+        "value": 0
+      },
+      {
+        "name": "core:OpenClosedState",
+        "type": 3,
+        "value": "closed"
+      },
+      {
+        "name": "core:Memorized1PositionState",
+        "type": 1,
+        "value": 105
+      },
+      {
+        "name": "core:TargetClosureState",
+        "type": 1,
+        "value": 0
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "daef20ec-4c45-48f5-9b19-45792e366c90",
+    "widget": "PositionableHorizontalAwning",
+    "type": 1,
+    "oid": "926660f2-4be4-4fd3-a0d1-6fa5eb235e5d",
+    "uiClass": "Awning"
+  },
+  {
+    "creationTime": 1496692116000,
+    "lastUpdateTime": 1496692116000,
+    "label": "GMDE_Zone1",
+    "deviceURL": "io://1234-5678-9012/2398953",
+    "shortcut": false,
+    "controllableName": "io:AtlanticElectricalHeaterIOComponent",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "advancedRefresh",
+          "nparams": 1
+        },
+        {
+          "commandName": "cancelHeatingLevel",
+          "nparams": 1
+        },
+        {
+          "commandName": "delayedStopIdentify",
+          "nparams": 1
+        },
+        {
+          "commandName": "getName",
+          "nparams": 0
+        },
+        {
+          "commandName": "identify",
+          "nparams": 0
+        },
+        {
+          "commandName": "off",
+          "nparams": 0
+        },
+        {
+          "commandName": "refreshHeatingLevel",
+          "nparams": 0
+        },
+        {
+          "commandName": "setHeatingLevel",
+          "nparams": 1
+        },
+        {
+          "commandName": "setHeatingLevelWithTimer",
+          "nparams": 2
+        },
+        {
+          "commandName": "setName",
+          "nparams": 1
+        },
+        {
+          "commandName": "startIdentify",
+          "nparams": 0
+        },
+        {
+          "commandName": "stopIdentify",
+          "nparams": 0
+        },
+        {
+          "commandName": "wink",
+          "nparams": 1
+        },
+        {
+          "commandName": "pairOneWayController",
+          "nparams": 2
+        },
+        {
+          "commandName": "setHeatingLevelForTrigger",
+          "nparams": 1
+        },
+        {
+          "commandName": "unpairAllOneWayControllers",
+          "nparams": 0
+        },
+        {
+          "commandName": "unpairOneWayController",
+          "nparams": 2
+        }
+      ],
+      "states": [
+        {
+          "type": "DiscreteState",
+          "values": [
+            "good",
+            "low",
+            "normal",
+            "verylow"
+          ],
+          "qualifiedName": "core:DiscreteRSSILevelState"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:NameState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "off",
+            "on"
+          ],
+          "qualifiedName": "core:OnOffState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:PriorityLockTimerState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:RSSILevelState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "available",
+            "unavailable"
+          ],
+          "qualifiedName": "core:StatusState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "boost",
+            "comfort",
+            "comfort-1",
+            "comfort-2",
+            "eco",
+            "frostprotection",
+            "off",
+            "secured"
+          ],
+          "qualifiedName": "core:TargetHeatingLevelState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:VersionState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "boost",
+            "comfort",
+            "comfort-1",
+            "comfort-2",
+            "eco",
+            "frostprotection",
+            "off",
+            "secured"
+          ],
+          "qualifiedName": "io:MaximumHeatingLevelState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "comfortLevel1",
+            "comfortLevel2",
+            "comfortLevel3",
+            "comfortLevel4",
+            "environmentProtection",
+            "humanProtection",
+            "userLevel1",
+            "userLevel2"
+          ],
+          "qualifiedName": "io:PriorityLockLevelState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "LSC",
+            "SAAC",
+            "SFC",
+            "UPS",
+            "externalGateway",
+            "localUser",
+            "myself",
+            "rain",
+            "security",
+            "temperature",
+            "timer",
+            "user",
+            "wind"
+          ],
+          "qualifiedName": "io:PriorityLockOriginatorState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "boost",
+            "comfort",
+            "comfort-1",
+            "comfort-2",
+            "eco",
+            "frostprotection",
+            "off",
+            "secured"
+          ],
+          "qualifiedName": "io:TargetHeatingLevelState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "io:TimerForTransitoryStateState"
+        }
+      ],
+      "dataProperties": [
+        {
+          "value": "500",
+          "qualifiedName": "core:identifyInterval"
+        }
+      ],
+      "widgetName": "AtlanticElectricalHeater",
+      "uiProfiles": [
+        "StatefulHeatingLevel",
+        "HeatingLevel"
+      ],
+      "uiClass": "HeatingSystem",
+      "uiClassifiers": [
+        "emitter"
+      ],
+      "qualifiedName": "io:AtlanticElectricalHeaterIOComponent",
+      "type": "ACTUATOR"
+    },
+    "states": [
+      {
+        "name": "core:NameState",
+        "type": 3,
+        "value": "GMDE_Zone1"
+      },
+      {
+        "name": "core:VersionState",
+        "type": 3,
+        "value": "5600022e000020202020"
+      },
+      {
+        "name": "core:PriorityLockTimerState",
+        "type": 1,
+        "value": 0
+      },
+      {
+        "name": "core:OnOffState",
+        "type": 3,
+        "value": "on"
+      },
+      {
+        "name": "io:TargetHeatingLevelState",
+        "type": 3,
+        "value": "comfort"
+      },
+      {
+        "name": "core:TargetHeatingLevelState",
+        "type": 3,
+        "value": "comfort"
+      },
+      {
+        "name": "core:StatusState",
+        "type": 3,
+        "value": "available"
+      },
+      {
+        "name": "core:DiscreteRSSILevelState",
+        "type": 3,
+        "value": "good"
+      },
+      {
+        "name": "core:RSSILevelState",
+        "type": 2,
+        "value": 100.0
+      },
+      {
+        "name": "io:MaximumHeatingLevelState",
+        "type": 3,
+        "value": "unknown"
+      },
+      {
+        "name": "io:TimerForTransitoryStateState",
+        "type": 1,
+        "value": 65535
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "00b32f2b-a7dd-4703-b5ae-8ded763f1d41",
+    "widget": "AtlanticElectricalHeater",
+    "type": 1,
+    "oid": "0e9a71df-9104-4182-99e6-8f1fddd6c2ca",
+    "uiClass": "HeatingSystem"
+  },
+  {
+    "creationTime": 1600767437000,
+    "lastUpdateTime": 1600767437000,
+    "label": "IO (2501373)",
+    "deviceURL": "io://1234-5678-9012/2501373",
+    "shortcut": false,
+    "controllableName": "io:StackComponent",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "discover1WayController",
+          "nparams": 2
+        },
+        {
+          "commandName": "discoverActuators",
+          "nparams": 1
+        },
+        {
+          "commandName": "discoverSensors",
+          "nparams": 1
+        },
+        {
+          "commandName": "discoverSomfyUnsetActuators",
+          "nparams": 0
+        },
+        {
+          "commandName": "joinNetwork",
+          "nparams": 0
+        },
+        {
+          "commandName": "resetNetworkSecurity",
+          "nparams": 0
+        },
+        {
+          "commandName": "shareNetwork",
+          "nparams": 0
+        }
+      ],
+      "states": [],
+      "dataProperties": [],
+      "widgetName": "IOStack",
+      "uiProfiles": [
+        "Specific"
+      ],
+      "uiClass": "ProtocolGateway",
+      "qualifiedName": "io:StackComponent",
+      "type": "PROTOCOL_GATEWAY"
+    },
+    "available": true,
+    "enabled": true,
+    "placeOID": "94bb1ebf-546b-41bd-b3a1-517dd0de05f6",
+    "widget": "IOStack",
+    "type": 5,
+    "oid": "791eec1d-7dee-4c91-8382-304c33bbd8e3",
+    "uiClass": "ProtocolGateway"
+  },
+  {
+    "creationTime": 1496692116000,
+    "lastUpdateTime": 1496692116000,
+    "label": "GMDE_Zone2",
+    "deviceURL": "io://1234-5678-9012/3163480",
+    "shortcut": false,
+    "controllableName": "io:AtlanticElectricalHeaterIOComponent",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "advancedRefresh",
+          "nparams": 1
+        },
+        {
+          "commandName": "cancelHeatingLevel",
+          "nparams": 1
+        },
+        {
+          "commandName": "delayedStopIdentify",
+          "nparams": 1
+        },
+        {
+          "commandName": "getName",
+          "nparams": 0
+        },
+        {
+          "commandName": "identify",
+          "nparams": 0
+        },
+        {
+          "commandName": "off",
+          "nparams": 0
+        },
+        {
+          "commandName": "refreshHeatingLevel",
+          "nparams": 0
+        },
+        {
+          "commandName": "setHeatingLevel",
+          "nparams": 1
+        },
+        {
+          "commandName": "setHeatingLevelWithTimer",
+          "nparams": 2
+        },
+        {
+          "commandName": "setName",
+          "nparams": 1
+        },
+        {
+          "commandName": "startIdentify",
+          "nparams": 0
+        },
+        {
+          "commandName": "stopIdentify",
+          "nparams": 0
+        },
+        {
+          "commandName": "wink",
+          "nparams": 1
+        },
+        {
+          "commandName": "pairOneWayController",
+          "nparams": 2
+        },
+        {
+          "commandName": "setHeatingLevelForTrigger",
+          "nparams": 1
+        },
+        {
+          "commandName": "unpairAllOneWayControllers",
+          "nparams": 0
+        },
+        {
+          "commandName": "unpairOneWayController",
+          "nparams": 2
+        }
+      ],
+      "states": [
+        {
+          "type": "DiscreteState",
+          "values": [
+            "good",
+            "low",
+            "normal",
+            "verylow"
+          ],
+          "qualifiedName": "core:DiscreteRSSILevelState"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:NameState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "off",
+            "on"
+          ],
+          "qualifiedName": "core:OnOffState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:PriorityLockTimerState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:RSSILevelState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "available",
+            "unavailable"
+          ],
+          "qualifiedName": "core:StatusState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "boost",
+            "comfort",
+            "comfort-1",
+            "comfort-2",
+            "eco",
+            "frostprotection",
+            "off",
+            "secured"
+          ],
+          "qualifiedName": "core:TargetHeatingLevelState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:VersionState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "boost",
+            "comfort",
+            "comfort-1",
+            "comfort-2",
+            "eco",
+            "frostprotection",
+            "off",
+            "secured"
+          ],
+          "qualifiedName": "io:MaximumHeatingLevelState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "comfortLevel1",
+            "comfortLevel2",
+            "comfortLevel3",
+            "comfortLevel4",
+            "environmentProtection",
+            "humanProtection",
+            "userLevel1",
+            "userLevel2"
+          ],
+          "qualifiedName": "io:PriorityLockLevelState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "LSC",
+            "SAAC",
+            "SFC",
+            "UPS",
+            "externalGateway",
+            "localUser",
+            "myself",
+            "rain",
+            "security",
+            "temperature",
+            "timer",
+            "user",
+            "wind"
+          ],
+          "qualifiedName": "io:PriorityLockOriginatorState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "boost",
+            "comfort",
+            "comfort-1",
+            "comfort-2",
+            "eco",
+            "frostprotection",
+            "off",
+            "secured"
+          ],
+          "qualifiedName": "io:TargetHeatingLevelState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "io:TimerForTransitoryStateState"
+        }
+      ],
+      "dataProperties": [
+        {
+          "value": "500",
+          "qualifiedName": "core:identifyInterval"
+        }
+      ],
+      "widgetName": "AtlanticElectricalHeater",
+      "uiProfiles": [
+        "StatefulHeatingLevel",
+        "HeatingLevel"
+      ],
+      "uiClass": "HeatingSystem",
+      "uiClassifiers": [
+        "emitter"
+      ],
+      "qualifiedName": "io:AtlanticElectricalHeaterIOComponent",
+      "type": "ACTUATOR"
+    },
+    "states": [
+      {
+        "name": "core:NameState",
+        "type": 3,
+        "value": "GMDE_Zone2"
+      },
+      {
+        "name": "core:VersionState",
+        "type": 3,
+        "value": "5600022e000020202020"
+      },
+      {
+        "name": "core:PriorityLockTimerState",
+        "type": 1,
+        "value": 0
+      },
+      {
+        "name": "core:OnOffState",
+        "type": 3,
+        "value": "on"
+      },
+      {
+        "name": "io:TargetHeatingLevelState",
+        "type": 3,
+        "value": "comfort"
+      },
+      {
+        "name": "core:TargetHeatingLevelState",
+        "type": 3,
+        "value": "comfort"
+      },
+      {
+        "name": "core:StatusState",
+        "type": 3,
+        "value": "available"
+      },
+      {
+        "name": "core:DiscreteRSSILevelState",
+        "type": 3,
+        "value": "good"
+      },
+      {
+        "name": "core:RSSILevelState",
+        "type": 2,
+        "value": 100.0
+      },
+      {
+        "name": "io:MaximumHeatingLevelState",
+        "type": 3,
+        "value": "unknown"
+      },
+      {
+        "name": "io:TimerForTransitoryStateState",
+        "type": 1,
+        "value": 65535
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "59df4ebc-2d70-410d-9bd6-f40d4448a9a2",
+    "widget": "AtlanticElectricalHeater",
+    "type": 1,
+    "oid": "ab9d0861-beac-438e-8463-ab8b0f584dc9",
+    "uiClass": "HeatingSystem"
+  },
+  {
+    "creationTime": 1495389504000,
+    "lastUpdateTime": 1495389504000,
+    "label": "roller shutter 2",
+    "deviceURL": "io://1234-5678-9012/3186908",
+    "shortcut": false,
+    "controllableName": "io:RollerShutterGenericIOComponent",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "advancedRefresh",
+          "nparams": 1
+        },
+        {
+          "commandName": "close",
+          "nparams": 0
+        },
+        {
+          "commandName": "delayedStopIdentify",
+          "nparams": 1
+        },
+        {
+          "commandName": "down",
+          "nparams": 0
+        },
+        {
+          "commandName": "getName",
+          "nparams": 0
+        },
+        {
+          "commandName": "identify",
+          "nparams": 0
+        },
+        {
+          "commandName": "my",
+          "nparams": 0
+        },
+        {
+          "commandName": "open",
+          "nparams": 0
+        },
+        {
+          "commandName": "refreshMemorized1Position",
+          "nparams": 0
+        },
+        {
+          "commandName": "setClosure",
+          "nparams": 1
+        },
+        {
+          "commandName": "setDeployment",
+          "nparams": 1
+        },
+        {
+          "commandName": "setMemorized1Position",
+          "nparams": 1
+        },
+        {
+          "commandName": "setName",
+          "nparams": 1
+        },
+        {
+          "commandName": "setPosition",
+          "nparams": 1
+        },
+        {
+          "commandName": "setSecuredPosition",
+          "nparams": 1
+        },
+        {
+          "commandName": "startIdentify",
+          "nparams": 0
+        },
+        {
+          "commandName": "stop",
+          "nparams": 0
+        },
+        {
+          "commandName": "stopIdentify",
+          "nparams": 0
+        },
+        {
+          "commandName": "up",
+          "nparams": 0
+        },
+        {
+          "commandName": "wink",
+          "nparams": 1
+        },
+        {
+          "commandName": "keepOneWayControllersAndDeleteNode",
+          "nparams": 0
+        },
+        {
+          "commandName": "pairOneWayController",
+          "nparams": 2
+        },
+        {
+          "commandName": "setConfigState",
+          "nparams": 1
+        },
+        {
+          "commandName": "unpairAllOneWayControllersAndDeleteNode",
+          "nparams": 0
+        },
+        {
+          "commandName": "unpairAllOneWayControllers",
+          "nparams": 0
+        },
+        {
+          "commandName": "unpairOneWayController",
+          "nparams": 2
+        }
+      ],
+      "states": [
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ClosureState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "good",
+            "low",
+            "normal",
+            "verylow"
+          ],
+          "qualifiedName": "core:DiscreteRSSILevelState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:Memorized1PositionState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "false",
+            "true"
+          ],
+          "qualifiedName": "core:MovingState"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:NameState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "closed",
+            "open"
+          ],
+          "qualifiedName": "core:OpenClosedState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:PriorityLockTimerState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:RSSILevelState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:SecuredPositionState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "available",
+            "unavailable"
+          ],
+          "qualifiedName": "core:StatusState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:TargetClosureState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "comfortLevel1",
+            "comfortLevel2",
+            "comfortLevel3",
+            "comfortLevel4",
+            "environmentProtection",
+            "humanProtection",
+            "userLevel1",
+            "userLevel2"
+          ],
+          "qualifiedName": "io:PriorityLockLevelState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "LSC",
+            "SAAC",
+            "SFC",
+            "UPS",
+            "externalGateway",
+            "localUser",
+            "myself",
+            "rain",
+            "security",
+            "temperature",
+            "timer",
+            "user",
+            "wind"
+          ],
+          "qualifiedName": "io:PriorityLockOriginatorState"
+        }
+      ],
+      "dataProperties": [
+        {
+          "value": "500",
+          "qualifiedName": "core:identifyInterval"
+        }
+      ],
+      "widgetName": "PositionableRollerShutter",
+      "uiProfiles": [
+        "StatefulCloseableShutter",
+        "StatefulCloseable",
+        "Closeable",
+        "StatefulOpenClose",
+        "OpenClose"
+      ],
+      "uiClass": "RollerShutter",
+      "qualifiedName": "io:RollerShutterGenericIOComponent",
+      "type": "ACTUATOR"
+    },
+    "states": [
+      {
+        "name": "core:NameState",
+        "type": 3,
+        "value": "Volet de la cuis"
+      },
+      {
+        "name": "core:PriorityLockTimerState",
+        "type": 1,
+        "value": 0
+      },
+      {
+        "name": "core:StatusState",
+        "type": 3,
+        "value": "available"
+      },
+      {
+        "name": "core:DiscreteRSSILevelState",
+        "type": 3,
+        "value": "good"
+      },
+      {
+        "name": "core:RSSILevelState",
+        "type": 2,
+        "value": 100.0
+      },
+      {
+        "name": "core:MovingState",
+        "type": 6,
+        "value": false
+      },
+      {
+        "name": "core:ClosureState",
+        "type": 1,
+        "value": 100
+      },
+      {
+        "name": "core:OpenClosedState",
+        "type": 3,
+        "value": "closed"
+      },
+      {
+        "name": "core:Memorized1PositionState",
+        "type": 1,
+        "value": 86
+      },
+      {
+        "name": "core:TargetClosureState",
+        "type": 1,
+        "value": 100
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "b772fc4d-81ec-4885-8a17-e6b624b2e44d",
+    "widget": "PositionableRollerShutter",
+    "type": 1,
+    "oid": "0cd07c25-6ae1-4e05-9f78-317c77de2f47",
+    "uiClass": "RollerShutter"
+  },
+  {
+    "creationTime": 1496693986000,
+    "lastUpdateTime": 1496693986000,
+    "label": "Atlantic",
+    "deviceURL": "io://1234-5678-9012/4468654#1",
+    "shortcut": false,
+    "controllableName": "io:TotalElectricalEnergyConsumptionIOSystemSensor",
+    "definition": {
+      "commands": [],
+      "states": [
+        {
+          "type": "DiscreteState",
+          "values": [
+            "good",
+            "low",
+            "normal",
+            "verylow"
+          ],
+          "qualifiedName": "core:DiscreteRSSILevelState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ElectricEnergyConsumptionState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:RSSILevelState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "dead",
+            "lowBattery",
+            "maintenanceRequired",
+            "noDefect"
+          ],
+          "qualifiedName": "core:SensorDefectState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "available",
+            "unavailable"
+          ],
+          "qualifiedName": "core:StatusState"
+        }
+      ],
+      "dataProperties": [],
+      "widgetName": "CumulativeElectricPowerConsumptionSensor",
+      "uiProfiles": [
+        "ElectricEnergyConsumption"
+      ],
+      "uiClass": "ElectricitySensor",
+      "qualifiedName": "io:TotalElectricalEnergyConsumptionIOSystemSensor",
+      "type": "SENSOR"
+    },
+    "states": [
+      {
+        "name": "core:StatusState",
+        "type": 3,
+        "value": "available"
+      },
+      {
+        "name": "core:DiscreteRSSILevelState",
+        "type": 3,
+        "value": "good"
+      },
+      {
+        "name": "core:RSSILevelState",
+        "type": 2,
+        "value": 100.0
+      },
+      {
+        "name": "core:ElectricEnergyConsumptionState",
+        "type": 1,
+        "value": 21800480
+      }
+    ],
+    "attributes": [
+      {
+        "name": "core:MeasurementCategory",
+        "type": 3,
+        "value": "electric/overall"
+      },
+      {
+        "name": "core:PowerSourceType",
+        "type": 3,
+        "value": "mainSupply"
+      },
+      {
+        "name": "core:MeasuredValueType",
+        "type": 3,
+        "value": "core:ElectricalEnergyInWh"
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "7a73a82f-04c4-43fc-86f5-eb8935c5ac09",
+    "widget": "CumulativeElectricPowerConsumptionSensor",
+    "measurementCategory": "ELECTRIC_OVERALL",
+    "type": 2,
+    "oid": "3afcd9da-bd90-40bd-a6ef-d8a467426702",
+    "uiClass": "ElectricitySensor"
+  },
+  {
+    "creationTime": 1496694038000,
+    "lastUpdateTime": 1496694038000,
+    "label": "Atlantic-8",
+    "deviceURL": "io://1234-5678-9012/4468654#10",
+    "shortcut": false,
+    "controllableName": "io:EnergyConsumptionSensorsHeatPumpComponent",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "advancedRefresh",
+          "nparams": 1
+        },
+        {
+          "commandName": "setDerogationOnOffState",
+          "nparams": 1
+        },
+        {
+          "commandName": "setConfigurationServices",
+          "nparams": 1
+        }
+      ],
+      "states": [
+        {
+          "type": "DiscreteState",
+          "values": [
+            "off",
+            "on"
+          ],
+          "qualifiedName": "core:DerogationOnOffState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "available",
+            "unavailable"
+          ],
+          "qualifiedName": "core:StatusState"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "io:ConfigurationServicesState"
+        }
+      ],
+      "dataProperties": [],
+      "widgetName": "AtlanticMultiMeterElectricHeatPump",
+      "uiProfiles": [
+        "Specific"
+      ],
+      "uiClass": "ElectricitySensor",
+      "qualifiedName": "io:EnergyConsumptionSensorsHeatPumpComponent",
+      "type": "ACTUATOR"
+    },
+    "states": [
+      {
+        "name": "io:ConfigurationServicesState",
+        "type": 3,
+        "value": "config2"
+      },
+      {
+        "name": "core:StatusState",
+        "type": 3,
+        "value": "available"
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "0e1e738a-ae7b-4b4d-998b-227d8a33eb44",
+    "widget": "AtlanticMultiMeterElectricHeatPump",
+    "type": 1,
+    "oid": "7aad6829-9546-4e8d-8bb7-0d478933d482",
+    "uiClass": "ElectricitySensor"
+  },
+  {
+    "creationTime": 1496693987000,
+    "lastUpdateTime": 1496693987000,
+    "label": "Atlantic-1",
+    "deviceURL": "io://1234-5678-9012/4468654#2",
+    "shortcut": false,
+    "controllableName": "io:HeatingElectricalEnergyConsumptionSensor",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "advancedRefresh",
+          "nparams": 1
+        },
+        {
+          "commandName": "getSensorName",
+          "nparams": 0
+        },
+        {
+          "commandName": "putSensorName",
+          "nparams": 1
+        }
+      ],
+      "states": [
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff0State"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff1State"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff2State"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff3State"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff4State"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff5State"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "good",
+            "low",
+            "normal",
+            "verylow"
+          ],
+          "qualifiedName": "core:DiscreteRSSILevelState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ElectricEnergyConsumptionState"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:NameState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:RSSILevelState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "dead",
+            "lowBattery",
+            "maintenanceRequired",
+            "noDefect"
+          ],
+          "qualifiedName": "core:SensorDefectState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "available",
+            "unavailable"
+          ],
+          "qualifiedName": "core:StatusState"
+        }
+      ],
+      "dataProperties": [],
+      "widgetName": "CumulativeElectricPowerConsumptionSensor",
+      "uiProfiles": [
+        "ElectricEnergyConsumption"
+      ],
+      "uiClass": "ElectricitySensor",
+      "qualifiedName": "io:HeatingElectricalEnergyConsumptionSensor",
+      "type": "SENSOR"
+    },
+    "states": [
+      {
+        "name": "core:StatusState",
+        "type": 3,
+        "value": "available"
+      },
+      {
+        "name": "core:DiscreteRSSILevelState",
+        "type": 3,
+        "value": "good"
+      },
+      {
+        "name": "core:RSSILevelState",
+        "type": 2,
+        "value": 100.0
+      },
+      {
+        "name": "core:ElectricEnergyConsumptionState",
+        "type": 1,
+        "value": 7091685
+      },
+      {
+        "name": "core:ConsumptionTariff0State",
+        "type": 1,
+        "value": 7091685
+      }
+    ],
+    "attributes": [
+      {
+        "name": "core:MeasurementCategory",
+        "type": 3,
+        "value": "electric/heatingSystem"
+      },
+      {
+        "name": "core:PowerSourceType",
+        "type": 3,
+        "value": "mainSupply"
+      },
+      {
+        "name": "core:MeasuredValueType",
+        "type": 3,
+        "value": "core:ElectricalEnergyInWh"
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "5ac4fe89-2d7c-40b7-8080-ce24b2ced8c7",
+    "widget": "CumulativeElectricPowerConsumptionSensor",
+    "measurementCategory": "ELECTRIC_HEATING_SYSTEM",
+    "type": 2,
+    "oid": "e93afac8-9153-46ce-829e-3e72c6efa5ae",
+    "uiClass": "ElectricitySensor"
+  },
+  {
+    "creationTime": 1496693987000,
+    "lastUpdateTime": 1496693987000,
+    "label": "Atlantic-2",
+    "deviceURL": "io://1234-5678-9012/4468654#3",
+    "shortcut": false,
+    "controllableName": "io:DHWElectricalEnergyConsumptionSensor",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "advancedRefresh",
+          "nparams": 1
+        },
+        {
+          "commandName": "getSensorName",
+          "nparams": 0
+        },
+        {
+          "commandName": "putSensorName",
+          "nparams": 1
+        }
+      ],
+      "states": [
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff0State"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff1State"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff2State"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff3State"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff4State"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff5State"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "good",
+            "low",
+            "normal",
+            "verylow"
+          ],
+          "qualifiedName": "core:DiscreteRSSILevelState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ElectricEnergyConsumptionState"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:NameState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:RSSILevelState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "dead",
+            "lowBattery",
+            "maintenanceRequired",
+            "noDefect"
+          ],
+          "qualifiedName": "core:SensorDefectState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "available",
+            "unavailable"
+          ],
+          "qualifiedName": "core:StatusState"
+        }
+      ],
+      "dataProperties": [],
+      "widgetName": "CumulativeElectricPowerConsumptionSensor",
+      "uiProfiles": [
+        "ElectricEnergyConsumption"
+      ],
+      "uiClass": "ElectricitySensor",
+      "qualifiedName": "io:DHWElectricalEnergyConsumptionSensor",
+      "type": "SENSOR"
+    },
+    "states": [
+      {
+        "name": "core:StatusState",
+        "type": 3,
+        "value": "available"
+      },
+      {
+        "name": "core:DiscreteRSSILevelState",
+        "type": 3,
+        "value": "good"
+      },
+      {
+        "name": "core:RSSILevelState",
+        "type": 2,
+        "value": 100.0
+      },
+      {
+        "name": "core:ElectricEnergyConsumptionState",
+        "type": 1,
+        "value": 1840961
+      },
+      {
+        "name": "core:ConsumptionTariff0State",
+        "type": 1,
+        "value": 1840961
+      }
+    ],
+    "attributes": [
+      {
+        "name": "core:MeasurementCategory",
+        "type": 3,
+        "value": "electric/dhw"
+      },
+      {
+        "name": "core:PowerSourceType",
+        "type": 3,
+        "value": "mainSupply"
+      },
+      {
+        "name": "core:MeasuredValueType",
+        "type": 3,
+        "value": "core:ElectricalEnergyInWh"
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "c7a7c56e-64cb-4fdd-8b16-7d0e57b773dd",
+    "widget": "CumulativeElectricPowerConsumptionSensor",
+    "measurementCategory": "ELECTRIC_DHW",
+    "type": 2,
+    "oid": "98966559-b203-450b-91a0-9eec1976d76c",
+    "uiClass": "ElectricitySensor"
+  },
+  {
+    "creationTime": 1496693987000,
+    "lastUpdateTime": 1496693987000,
+    "label": "Atlantic-3",
+    "deviceURL": "io://1234-5678-9012/4468654#5",
+    "shortcut": false,
+    "controllableName": "io:PlugsElectricalEnergyConsumptionSensor",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "advancedRefresh",
+          "nparams": 1
+        },
+        {
+          "commandName": "getSensorName",
+          "nparams": 0
+        },
+        {
+          "commandName": "putSensorName",
+          "nparams": 1
+        }
+      ],
+      "states": [
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff0State"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff1State"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff2State"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff3State"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff4State"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff5State"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "good",
+            "low",
+            "normal",
+            "verylow"
+          ],
+          "qualifiedName": "core:DiscreteRSSILevelState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ElectricEnergyConsumptionState"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:NameState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:RSSILevelState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "dead",
+            "lowBattery",
+            "maintenanceRequired",
+            "noDefect"
+          ],
+          "qualifiedName": "core:SensorDefectState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "available",
+            "unavailable"
+          ],
+          "qualifiedName": "core:StatusState"
+        }
+      ],
+      "dataProperties": [],
+      "widgetName": "CumulativeElectricPowerConsumptionSensor",
+      "uiProfiles": [
+        "ElectricEnergyConsumption"
+      ],
+      "uiClass": "ElectricitySensor",
+      "qualifiedName": "io:PlugsElectricalEnergyConsumptionSensor",
+      "type": "SENSOR"
+    },
+    "states": [
+      {
+        "name": "core:StatusState",
+        "type": 3,
+        "value": "available"
+      },
+      {
+        "name": "core:DiscreteRSSILevelState",
+        "type": 3,
+        "value": "good"
+      },
+      {
+        "name": "core:RSSILevelState",
+        "type": 2,
+        "value": 100.0
+      },
+      {
+        "name": "core:ElectricEnergyConsumptionState",
+        "type": 1,
+        "value": 6415618
+      },
+      {
+        "name": "core:ConsumptionTariff0State",
+        "type": 1,
+        "value": 6415618
+      }
+    ],
+    "attributes": [
+      {
+        "name": "core:MeasurementCategory",
+        "type": 3,
+        "value": "electric/outlet"
+      },
+      {
+        "name": "core:PowerSourceType",
+        "type": 3,
+        "value": "mainSupply"
+      },
+      {
+        "name": "core:MeasuredValueType",
+        "type": 3,
+        "value": "core:ElectricalEnergyInWh"
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "232a2203-051f-455c-be01-3a38b6f4dbf9",
+    "widget": "CumulativeElectricPowerConsumptionSensor",
+    "measurementCategory": "ELECTRIC_OUTLET",
+    "type": 2,
+    "oid": "70d937bf-95ac-48bb-a86a-a8b44652a193",
+    "uiClass": "ElectricitySensor"
+  },
+  {
+    "creationTime": 1496693987000,
+    "lastUpdateTime": 1496693987000,
+    "label": "Atlantic-4",
+    "deviceURL": "io://1234-5678-9012/4468654#6",
+    "shortcut": false,
+    "controllableName": "io:OtherElectricalEnergyConsumptionSensor",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "advancedRefresh",
+          "nparams": 1
+        },
+        {
+          "commandName": "getSensorName",
+          "nparams": 0
+        },
+        {
+          "commandName": "putSensorName",
+          "nparams": 1
+        }
+      ],
+      "states": [
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff0State"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff1State"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff2State"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff3State"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff4State"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ConsumptionTariff5State"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "good",
+            "low",
+            "normal",
+            "verylow"
+          ],
+          "qualifiedName": "core:DiscreteRSSILevelState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ElectricEnergyConsumptionState"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:NameState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:RSSILevelState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "dead",
+            "lowBattery",
+            "maintenanceRequired",
+            "noDefect"
+          ],
+          "qualifiedName": "core:SensorDefectState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "available",
+            "unavailable"
+          ],
+          "qualifiedName": "core:StatusState"
+        }
+      ],
+      "dataProperties": [],
+      "widgetName": "CumulativeElectricPowerConsumptionSensor",
+      "uiProfiles": [
+        "ElectricEnergyConsumption"
+      ],
+      "uiClass": "ElectricitySensor",
+      "qualifiedName": "io:OtherElectricalEnergyConsumptionSensor",
+      "type": "SENSOR"
+    },
+    "states": [
+      {
+        "name": "core:StatusState",
+        "type": 3,
+        "value": "available"
+      },
+      {
+        "name": "core:DiscreteRSSILevelState",
+        "type": 3,
+        "value": "good"
+      },
+      {
+        "name": "core:RSSILevelState",
+        "type": 2,
+        "value": 100.0
+      },
+      {
+        "name": "core:ElectricEnergyConsumptionState",
+        "type": 1,
+        "value": 6823761
+      },
+      {
+        "name": "core:ConsumptionTariff0State",
+        "type": 1,
+        "value": 6823761
+      }
+    ],
+    "attributes": [
+      {
+        "name": "core:MeasurementCategory",
+        "type": 3,
+        "value": "electric/unknown"
+      },
+      {
+        "name": "core:PowerSourceType",
+        "type": 3,
+        "value": "mainSupply"
+      },
+      {
+        "name": "core:MeasuredValueType",
+        "type": 3,
+        "value": "core:ElectricalEnergyInWh"
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "bf1ca37e-b418-4b74-b40e-448ce5c4bec8",
+    "widget": "CumulativeElectricPowerConsumptionSensor",
+    "measurementCategory": "ELECTRIC_UNKNOWN",
+    "type": 2,
+    "oid": "03aac51c-1f1a-4e74-a45b-8e24c4e68f4b",
+    "uiClass": "ElectricitySensor"
+  },
+  {
+    "creationTime": 1496693986000,
+    "lastUpdateTime": 1496693986000,
+    "label": "Atlantic-5",
+    "deviceURL": "io://1234-5678-9012/4468654#7",
+    "shortcut": false,
+    "controllableName": "io:DomesticHotWaterTankComponent",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "advancedRefresh",
+          "nparams": 1
+        },
+        {
+          "commandName": "refreshForceHeatingMode",
+          "nparams": 0
+        },
+        {
+          "commandName": "setForceHeating",
+          "nparams": 1
+        }
+      ],
+      "states": [
+        {
+          "type": "DiscreteState",
+          "values": [
+            "available",
+            "unavailable"
+          ],
+          "qualifiedName": "core:StatusState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "off",
+            "on"
+          ],
+          "qualifiedName": "io:AllowForceHeatingState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "off",
+            "on"
+          ],
+          "qualifiedName": "io:ForceHeatingState"
+        }
+      ],
+      "dataProperties": [],
+      "widgetName": "DomesticHotWaterTank",
+      "uiProfiles": [
+        "Specific"
+      ],
+      "uiClass": "WaterHeatingSystem",
+      "qualifiedName": "io:DomesticHotWaterTankComponent",
+      "type": "ACTUATOR"
+    },
+    "states": [
+      {
+        "name": "io:AllowForceHeatingState",
+        "type": 3,
+        "value": "off"
+      },
+      {
+        "name": "core:StatusState",
+        "type": 3,
+        "value": "available"
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "dab60b62-14ff-49ac-a59d-e99015ad21f0",
+    "widget": "DomesticHotWaterTank",
+    "type": 1,
+    "oid": "ccc2f6a5-56d3-4164-b84a-1f2dd9dd3893",
+    "uiClass": "WaterHeatingSystem"
+  },
+  {
+    "creationTime": 1496693986000,
+    "lastUpdateTime": 1496693986000,
+    "label": "Atlantic-6",
+    "deviceURL": "io://1234-5678-9012/4468654#8",
+    "shortcut": false,
+    "controllableName": "io:ElectricityMeterComponent",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "advancedRefresh",
+          "nparams": 1
+        },
+        {
+          "commandName": "setElectricalContractIntensity",
+          "nparams": 1
+        }
+      ],
+      "states": [
+        {
+          "type": "DataState",
+          "qualifiedName": "core:CurrentTariffNumberState"
+        },
+        {
+          "type": "ContinuousState",
+          "qualifiedName": "core:ElectricalContractIntensityState"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:ElectricalContractNameState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "French blue electronic meter",
+            "French linky meter",
+            "Mechanical meter"
+          ],
+          "qualifiedName": "core:ElectricalMeterTypeState"
+        },
+        {
+          "type": "DiscreteState",
+          "values": [
+            "available",
+            "unavailable"
+          ],
+          "qualifiedName": "core:StatusState"
+        }
+      ],
+      "dataProperties": [],
+      "widgetName": "AtlanticMultiMeterElectricSensor",
+      "uiProfiles": [
+        "Specific"
+      ],
+      "uiClass": "ElectricitySensor",
+      "qualifiedName": "io:ElectricityMeterComponent",
+      "type": "ACTUATOR"
+    },
+    "states": [
+      {
+        "name": "core:StatusState",
+        "type": 3,
+        "value": "available"
+      },
+      {
+        "name": "core:ElectricalContractNameState",
+        "type": 3,
+        "value": "BASE"
+      },
+      {
+        "name": "core:ElectricalMeterTypeState",
+        "type": 1,
+        "value": 1
+      },
+      {
+        "name": "core:CurrentTariffNumberState",
+        "type": 1,
+        "value": 0
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "09f3700f-7f19-4378-904e-ad1374849a3d",
+    "widget": "AtlanticMultiMeterElectricSensor",
+    "type": 1,
+    "oid": "d39104e5-169c-4ec0-a45e-e652b272e9f3",
+    "uiClass": "ElectricitySensor"
+  },
+  {
+    "creationTime": 1496693986000,
+    "lastUpdateTime": 1496693986000,
+    "label": "Atlantic-7",
+    "deviceURL": "io://1234-5678-9012/4468654#9",
+    "shortcut": false,
+    "controllableName": "io:EnergyConsumptionSensorsConfigurationComponent",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "advancedRefresh",
+          "nparams": 1
+        },
+        {
+          "commandName": "activateHeatPumpMode",
+          "nparams": 0
+        }
+      ],
+      "states": [
+        {
+          "type": "DiscreteState",
+          "values": [
+            "available",
+            "unavailable"
+          ],
+          "qualifiedName": "core:StatusState"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "io:HeatPumpActiveState"
+        }
+      ],
+      "dataProperties": [],
+      "widgetName": "AtlanticMultiMeterElectricConfiguration",
+      "uiProfiles": [
+        "Specific"
+      ],
+      "uiClass": "ElectricitySensor",
+      "qualifiedName": "io:EnergyConsumptionSensorsConfigurationComponent",
+      "type": "ACTUATOR"
+    },
+    "states": [
+      {
+        "name": "core:StatusState",
+        "type": 3,
+        "value": "available"
+      },
+      {
+        "name": "io:HeatPumpActiveState",
+        "type": 3,
+        "value": "on"
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "b627cfd0-781a-4c14-9acc-db1948f12886",
+    "widget": "AtlanticMultiMeterElectricConfiguration",
+    "type": 1,
+    "oid": "8f2b26fd-835d-443f-8af2-2b02b6e3fd06",
+    "uiClass": "ElectricitySensor"
+  },
+  {
+    "creationTime": 1593599401000,
+    "lastUpdateTime": 1593599401000,
+    "label": "OGP (00000BE8)",
+    "deviceURL": "ogp://1234-5678-9012/00000BE8",
+    "shortcut": false,
+    "controllableName": "ogp:Bridge",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "sendPrivate",
+          "nparams": 1
+        }
+      ],
+      "states": [
+        {
+          "type": "DataState",
+          "qualifiedName": "core:Private10State"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:Private1State"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:Private2State"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:Private3State"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:Private4State"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:Private5State"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:Private6State"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:Private7State"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:Private8State"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:Private9State"
+        }
+      ],
+      "dataProperties": [],
+      "widgetName": "DynamicBridge",
+      "uiProfiles": [
+        "Specific"
+      ],
+      "uiClass": "ProtocolGateway",
+      "qualifiedName": "ogp:Bridge",
+      "type": "ACTUATOR"
+    },
+    "attributes": [
+      {
+        "name": "ogp:Features",
+        "type": 10,
+        "value": [
+          {
+            "name": "private"
+          }
+        ]
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "3514825c-f14e-4c0c-a72f-8ec709f27908",
+    "widget": "DynamicBridge",
+    "type": 1,
+    "oid": "43e93b89-5777-48bf-a429-d7715b20ab9a",
+    "uiClass": "ProtocolGateway"
+  },
+  {
+    "creationTime": 1593599401000,
+    "lastUpdateTime": 1593599401000,
+    "label": "OGP Siegenia Bridge",
+    "deviceURL": "ogp://1234-5678-9012/039575E9",
+    "shortcut": false,
+    "controllableName": "ogp:Bridge",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "discover",
+          "nparams": 0
+        },
+        {
+          "commandName": "identify",
+          "nparams": 0
+        },
+        {
+          "commandName": "setName",
+          "nparams": 1
+        }
+      ],
+      "states": [
+        {
+          "type": "DiscreteState",
+          "values": [
+            "available",
+            "unavailable"
+          ],
+          "qualifiedName": "core:AvailabilityState"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:NameState"
+        }
+      ],
+      "dataProperties": [],
+      "widgetName": "DynamicBridge",
+      "uiProfiles": [
+        "Specific"
+      ],
+      "uiClass": "ProtocolGateway",
+      "qualifiedName": "ogp:Bridge",
+      "type": "ACTUATOR"
+    },
+    "states": [
+      {
+        "name": "core:NameState",
+        "type": 3,
+        "value": "OGP Siegenia Bridge"
+      }
+    ],
+    "attributes": [
+      {
+        "name": "core:Manufacturer",
+        "type": 3,
+        "value": "Overkiz"
+      },
+      {
+        "name": "ogp:Features",
+        "type": 10,
+        "value": [
+          {
+            "name": "discovery"
+          },
+          {
+            "name": "identification"
+          }
+        ]
+      },
+      {
+        "name": "core:Technology",
+        "type": 3,
+        "value": "Siegenia"
+      },
+      {
+        "name": "core:ManufacturerReference",
+        "type": 3,
+        "value": "OGP Siegenia Bridge"
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "5917dcba-f708-46f8-aaea-c76d8013aca1",
+    "widget": "DynamicBridge",
+    "type": 1,
+    "oid": "0be8de79-0054-42d3-811c-db54631d0fad",
+    "uiClass": "ProtocolGateway"
+  },
+  {
+    "creationTime": 1593599401000,
+    "lastUpdateTime": 1593599401000,
+    "label": "OGP Intesis Bridge",
+    "deviceURL": "ogp://1234-5678-9012/09E45393",
+    "shortcut": false,
+    "controllableName": "ogp:Bridge",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "discover",
+          "nparams": 0
+        },
+        {
+          "commandName": "identify",
+          "nparams": 0
+        },
+        {
+          "commandName": "setName",
+          "nparams": 1
+        }
+      ],
+      "states": [
+        {
+          "type": "DiscreteState",
+          "values": [
+            "available",
+            "unavailable"
+          ],
+          "qualifiedName": "core:AvailabilityState"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:NameState"
+        }
+      ],
+      "dataProperties": [],
+      "widgetName": "DynamicBridge",
+      "uiProfiles": [
+        "Specific"
+      ],
+      "uiClass": "ProtocolGateway",
+      "qualifiedName": "ogp:Bridge",
+      "type": "ACTUATOR"
+    },
+    "states": [
+      {
+        "name": "core:NameState",
+        "type": 3,
+        "value": "OGP Intesis Bridge"
+      }
+    ],
+    "attributes": [
+      {
+        "name": "core:ManufacturerReference",
+        "type": 3,
+        "value": "OGP Intesis Bridge"
+      },
+      {
+        "name": "core:Technology",
+        "type": 3,
+        "value": "Intesis"
+      },
+      {
+        "name": "core:Manufacturer",
+        "type": 3,
+        "value": "Overkiz"
+      },
+      {
+        "name": "ogp:Features",
+        "type": 10,
+        "value": [
+          {
+            "name": "discovery"
+          },
+          {
+            "name": "identification"
+          }
+        ]
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "167403c9-7639-4aaf-8487-f15522449b85",
+    "widget": "DynamicBridge",
+    "type": 1,
+    "oid": "52d72bf0-3b97-4079-9726-4878928559c5",
+    "uiClass": "ProtocolGateway"
+  },
+  {
+    "creationTime": 1572089633000,
+    "lastUpdateTime": 1572089633000,
+    "label": "Salon",
+    "deviceURL": "upnpcontrol://1234-5678-9012/uuid:RINCON_000E582D045801400",
+    "shortcut": false,
+    "controllableName": "upnpcontrol:SonosConnectComponent",
+    "definition": {
+      "commands": [
+        {
+          "commandName": "getMute",
+          "nparams": 0
+        },
+        {
+          "commandName": "getVolume",
+          "nparams": 0
+        },
+        {
+          "commandName": "mute",
+          "nparams": 0
+        },
+        {
+          "commandName": "next",
+          "nparams": 0
+        },
+        {
+          "commandName": "pause",
+          "nparams": 0
+        },
+        {
+          "commandName": "play",
+          "nparams": 0
+        },
+        {
+          "commandName": "previous",
+          "nparams": 0
+        },
+        {
+          "commandName": "rewind",
+          "nparams": 0
+        },
+        {
+          "commandName": "setVolume",
+          "nparams": 1
+        },
+        {
+          "commandName": "stop",
+          "nparams": 0
+        },
+        {
+          "commandName": "unmute",
+          "nparams": 0
+        },
+        {
+          "commandName": "getAllPlayingInfo",
+          "nparams": 0
+        },
+        {
+          "commandName": "getCurrentTransportActions",
+          "nparams": 0
+        },
+        {
+          "commandName": "getGroupMute",
+          "nparams": 0
+        },
+        {
+          "commandName": "getGroupVolume",
+          "nparams": 0
+        },
+        {
+          "commandName": "getMediaInfo",
+          "nparams": 0
+        },
+        {
+          "commandName": "getPositionInfo",
+          "nparams": 0
+        },
+        {
+          "commandName": "getSonosFavorites",
+          "nparams": 0
+        },
+        {
+          "commandName": "getSonosPlaylist",
+          "nparams": 0
+        },
+        {
+          "commandName": "getTransportInfo",
+          "nparams": 0
+        },
+        {
+          "commandName": "muteGroup",
+          "nparams": 0
+        },
+        {
+          "commandName": "playURI",
+          "nparams": 2
+        },
+        {
+          "commandName": "setGroupVolume",
+          "nparams": 1
+        },
+        {
+          "commandName": "unmuteGroup",
+          "nparams": 0
+        }
+      ],
+      "states": [
+        {
+          "type": "DiscreteState",
+          "values": [
+            "forward",
+            "pause",
+            "playing",
+            "rewind",
+            "stop"
+          ],
+          "qualifiedName": "core:PlayState"
+        }
+      ],
+      "dataProperties": [],
+      "widgetName": "MediaRenderer",
+      "uiProfiles": [
+        "StoppableMusicPlayer",
+        "MusicPlayer",
+        "VolumeControl"
+      ],
+      "uiClass": "MusicPlayer",
+      "qualifiedName": "upnpcontrol:SonosConnectComponent",
+      "type": "ACTUATOR"
+    },
+    "attributes": [
+      {
+        "name": "core:ModelName",
+        "type": 3,
+        "value": "Sonos Connect"
+      },
+      {
+        "name": "core:PortNumber",
+        "type": 3,
+        "value": "1400"
+      },
+      {
+        "name": "core:IPAddress",
+        "type": 3,
+        "value": "192.168.2.173"
+      },
+      {
+        "name": "upnpcontrol:SonosZoneName",
+        "type": 3,
+        "value": "Salon"
+      },
+      {
+        "name": "upnpcontrol:Coordinator",
+        "type": 3,
+        "value": "true"
+      },
+      {
+        "name": "core:GroupId",
+        "type": 3,
+        "value": "RINCON_000E582D045801400:879560656"
+      }
+    ],
+    "available": true,
+    "enabled": true,
+    "placeOID": "6b71a7e3-3c62-4100-8ee4-1056e956501a",
+    "widget": "MediaRenderer",
+    "type": 1,
+    "oid": "040b07d0-8895-491d-a36e-13856a61e00b",
+    "uiClass": "MusicPlayer"
+  }
+]
