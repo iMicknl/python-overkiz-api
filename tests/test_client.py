@@ -19,7 +19,7 @@ class TestTahomaClient:
     @pytest.mark.asyncio
     async def test_get_devices_basic(self, api):
         with open(os.path.join(CURRENT_DIR, "devices.json")) as raw_devices:
-            resp = MockResponse(raw_devices.read(), 200)
+            resp = MockResponse(raw_devices.read())
 
         with patch.object(aiohttp.ClientSession, "get", return_value=resp):
             devices = await api.get_devices()
@@ -27,7 +27,7 @@ class TestTahomaClient:
 
 
 class MockResponse:
-    def __init__(self, text, status):
+    def __init__(self, text, status = 200):
         self._text = text
         self.status = status
 
