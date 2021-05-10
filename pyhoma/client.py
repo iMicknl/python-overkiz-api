@@ -40,7 +40,7 @@ async def relogin(invocation: dict[str, Any]) -> None:
 
 
 class TahomaClient:
-    """ Interface class for the Tahoma API """
+    """Interface class for the Tahoma API"""
 
     def __init__(
         self,
@@ -229,7 +229,7 @@ class TahomaClient:
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
     )
     async def get_current_execution(self, exec_id: str) -> Execution:
-        """ Get an action group execution currently running """
+        """Get an action group execution currently running"""
         response = await self.__get(f"exec/current/{exec_id}")
         execution = Execution(**humps.decamelize(response))
 
@@ -239,7 +239,7 @@ class TahomaClient:
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
     )
     async def get_current_executions(self) -> list[Execution]:
-        """ Get all action groups executions currently running """
+        """Get all action groups executions currently running"""
         response = await self.__get("exec/current")
         executions = [Execution(**e) for e in humps.decamelize(response)]
 
@@ -255,7 +255,7 @@ class TahomaClient:
         command: Command | str,
         label: str | None = "python-tahoma-api",
     ) -> str:
-        """ Send a command """
+        """Send a command"""
         if isinstance(command, str):
             command = Command(command)
         return await self.execute_commands(device_url, [command], label)
@@ -264,7 +264,7 @@ class TahomaClient:
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
     )
     async def cancel_command(self, exec_id: str) -> None:
-        """ Cancel a running setup-level execution """
+        """Cancel a running setup-level execution"""
         await self.__delete(f"/exec/current/setup/{exec_id}")
 
     @backoff.on_exception(
@@ -276,7 +276,7 @@ class TahomaClient:
         commands: list[Command],
         label: str | None = "python-tahoma-api",
     ) -> str:
-        """ Send several commands in one call """
+        """Send several commands in one call"""
         payload = {
             "label": label,
             "actions": [{"deviceURL": device_url, "commands": commands}],
@@ -291,7 +291,7 @@ class TahomaClient:
         on_backoff=relogin,
     )
     async def get_scenarios(self) -> list[Scenario]:
-        """ List the scenarios """
+        """List the scenarios"""
         response = await self.__get("actionGroups")
         return [Scenario(**scenario) for scenario in response]
 
@@ -302,7 +302,7 @@ class TahomaClient:
         on_backoff=relogin,
     )
     async def get_places(self) -> Place:
-        """ List the places """
+        """List the places"""
         response = await self.__get("setup/places")
         places = Place(**humps.decamelize(response))
         return places
@@ -311,12 +311,12 @@ class TahomaClient:
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
     )
     async def execute_scenario(self, oid: str) -> str:
-        """ Execute a scenario """
+        """Execute a scenario"""
         response = await self.__post(f"exec/{oid}")
         return response["execId"]
 
     async def __get(self, endpoint: str) -> Any:
-        """ Make a GET request to the TaHoma API """
+        """Make a GET request to the TaHoma API"""
         async with self.session.get(f"{self.api_url}{endpoint}") as response:
             await self.check_response(response)
             return await response.json()
@@ -324,7 +324,7 @@ class TahomaClient:
     async def __post(
         self, endpoint: str, payload: JSON | None = None, data: JSON | None = None
     ) -> Any:
-        """ Make a POST request to the TaHoma API """
+        """Make a POST request to the TaHoma API"""
         async with self.session.post(
             f"{self.api_url}{endpoint}",
             data=data,
@@ -334,13 +334,13 @@ class TahomaClient:
             return await response.json()
 
     async def __delete(self, endpoint: str) -> None:
-        """ Make a DELETE request to the TaHoma API """
+        """Make a DELETE request to the TaHoma API"""
         async with self.session.delete(f"{self.api_url}{endpoint}") as response:
             await self.check_response(response)
 
     @staticmethod
     async def check_response(response: ClientResponse) -> None:
-        """ Check the response returned by the TaHoma API"""
+        """Check the response returned by the TaHoma API"""
         if response.status in [200, 204]:
             return
 
