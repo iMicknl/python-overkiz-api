@@ -27,7 +27,7 @@ class TestTahomaClient:
 
 
 class MockResponse:
-    def __init__(self, text, status = 200):
+    def __init__(self, text, status=200):
         self._text = text
         self.status = status
 
