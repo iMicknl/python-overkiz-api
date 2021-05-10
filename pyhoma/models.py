@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Any, Iterator
 
 from pyhoma.enums import (
     DataType,
@@ -44,18 +44,18 @@ class Device:
     def __init__(
         self,
         *,
-        attributes: Optional[List[Dict[str, Any]]] = None,
+        attributes: list[dict[str, Any]] | None = None,
         available: bool,
         enabled: bool,
         label: str,
         deviceurl: str,
         controllable_name: str,
-        definition: Dict[str, Any],
-        data_properties: Optional[List[Dict[str, Any]]] = None,
-        widget: Optional[str] = None,
-        ui_class: Optional[str] = None,
-        qualified_name: Optional[str] = None,
-        states: Optional[List[Dict[str, Any]]] = None,
+        definition: dict[str, Any],
+        data_properties: list[dict[str, Any]] | None = None,
+        widget: str | None = None,
+        ui_class: str | None = None,
+        qualified_name: str | None = None,
+        states: list[dict[str, Any]] | None = None,
         type: int,
         placeoid: str,
         **_: Any
@@ -83,10 +83,10 @@ class Definition:
     def __init__(
         self,
         *,
-        commands: List[Dict[str, Any]],
-        states: Optional[List[Dict[str, Any]]] = None,
-        widget_name: Optional[str] = None,
-        ui_class: Optional[str] = None,
+        commands: list[dict[str, Any]],
+        states: list[dict[str, Any]] | None = None,
+        widget_name: str | None = None,
+        ui_class: str | None = None,
         qualified_name: str,
         **_: Any
     ) -> None:
@@ -105,11 +105,7 @@ class StateDefinition:
     )
 
     def __init__(
-        self,
-        qualified_name: str,
-        type: str,
-        values: Optional[List[str]] = None,
-        **_: Any
+        self, qualified_name: str, type: str, values: list[str] | None = None, **_: Any
     ) -> None:
         self.qualified_name = qualified_name
         self.type = type
@@ -128,7 +124,7 @@ class CommandDefinition:
 
 
 class CommandDefinitions:
-    def __init__(self, commands: List[Dict[str, Any]]):
+    def __init__(self, commands: list[dict[str, Any]]):
         self._commands = [CommandDefinition(**command) for command in commands]
 
     def __iter__(self) -> Iterator[CommandDefinition]:
@@ -137,7 +133,7 @@ class CommandDefinitions:
     def __contains__(self, name: str) -> bool:
         return self.__getitem__(name) is not None
 
-    def __getitem__(self, command: str) -> Optional[CommandDefinition]:
+    def __getitem__(self, command: str) -> CommandDefinition | None:
         return next((cd for cd in self._commands if cd.command_name == command), None)
 
     def __len__(self) -> int:
@@ -149,14 +145,14 @@ class CommandDefinitions:
 class State:
     __slots__ = "name", "value", "type"
 
-    def __init__(self, name: str, type: int, value: Optional[str] = None, **_: Any):
+    def __init__(self, name: str, type: int, value: str | None = None, **_: Any):
         self.name = name
         self.value = value
         self.type = DataType(type)
 
 
 class States:
-    def __init__(self, states: List[Dict[str, Any]]) -> None:
+    def __init__(self, states: list[dict[str, Any]]) -> None:
         self._states = [State(**state) for state in states]
 
     def __iter__(self) -> Iterator[State]:
@@ -165,7 +161,7 @@ class States:
     def __contains__(self, name: str) -> bool:
         return self.__getitem__(name) is not None
 
-    def __getitem__(self, name: str) -> Optional[State]:
+    def __getitem__(self, name: str) -> State | None:
         return next((state for state in self._states if state.name == name), None)
 
     def __setitem__(self, name: str, state: State) -> None:
@@ -189,7 +185,7 @@ class Command(dict):  # type: ignore
         "parameters",
     )
 
-    def __init__(self, name: str, parameters: Optional[str] = None, **_: Any):
+    def __init__(self, name: str, parameters: str | None = None, **_: Any):
         self.name = name
         self.parameters = parameters
         dict.__init__(self, name=name, parameters=parameters)
@@ -228,27 +224,27 @@ class Event:
         self,
         timestamp: int,
         name: EventName,
-        setupoid: Optional[str] = None,
-        owner_key: Optional[str] = None,
-        type: Optional[int] = None,
-        sub_type: Optional[int] = None,
-        time_to_next_state: Optional[int] = None,
-        failed_commands: Optional[List[Dict[str, Any]]] = None,
-        failure_type_code: Optional[FailureType] = None,
-        failure_type: Optional[str] = None,
-        condition_groupoid: Optional[str] = None,
-        placeoid: Optional[str] = None,
-        label: Optional[str] = None,
-        metadata: Optional[Any] = None,
-        camera_id: Optional[str] = None,
-        deleted_raw_devices_count: Optional[Any] = None,
-        protocol_type: Optional[Any] = None,
-        gateway_id: Optional[str] = None,
-        exec_id: Optional[str] = None,
-        deviceurl: Optional[str] = None,
-        device_states: Optional[List[Dict[str, Any]]] = None,
-        old_state: Optional[ExecutionState] = None,
-        new_state: Optional[ExecutionState] = None,
+        setupoid: str | None = None,
+        owner_key: str | None = None,
+        type: int | None = None,
+        sub_type: int | None = None,
+        time_to_next_state: int | None = None,
+        failed_commands: list[dict[str, Any]] | None = None,
+        failure_type_code: FailureType | None = None,
+        failure_type: str | None = None,
+        condition_groupoid: str | None = None,
+        placeoid: str | None = None,
+        label: str | None = None,
+        metadata: Any | None = None,
+        camera_id: str | None = None,
+        deleted_raw_devices_count: Any | None = None,
+        protocol_type: Any | None = None,
+        gateway_id: str | None = None,
+        exec_id: str | None = None,
+        deviceurl: str | None = None,
+        device_states: list[dict[str, Any]] | None = None,
+        old_state: ExecutionState | None = None,
+        new_state: ExecutionState | None = None,
         **_: Any
     ):
         self.timestamp = timestamp
@@ -305,7 +301,7 @@ class Execution:
         description: str,
         owner: str,
         state: str,
-        action_group: List[Dict[str, Any]],
+        action_group: list[dict[str, Any]],
         **_: Any
     ):
         self.id = id
@@ -362,16 +358,16 @@ class Gateway:
     def __init__(
         self,
         *,
-        partners: Optional[List[Dict[str, Any]]] = None,
-        functions: Optional[str] = None,
+        partners: list[dict[str, Any]] | None = None,
+        functions: str | None = None,
         sub_type: GatewaySubType,
         gateway_id: str,
-        alive: Optional[bool] = None,
+        alive: bool | None = None,
         mode: str,
-        placeoid: Optional[str] = None,
+        placeoid: str | None = None,
         time_reliable: bool,
-        connectivity: Dict[str, Any],
-        up_to_date: Optional[bool] = None,
+        connectivity: dict[str, Any],
+        up_to_date: bool | None = None,
         update_status: UpdateBoxStatus,
         sync_in_progress: bool,
         type: GatewayType,
@@ -419,7 +415,7 @@ class HistoryExecutionCommand:
         dynamic: bool,
         state: ExecutionState,
         failure_type: str,
-        parameters: Optional[List[Any]] = None,
+        parameters: list[Any] | None = None,
         **_: Any
     ) -> None:
         self.deviceurl = deviceurl
@@ -463,7 +459,7 @@ class HistoryExecution:
         type: str,
         state: ExecutionState,
         failure_type: str,
-        commands: List[Dict[str, Any]],
+        commands: list[dict[str, Any]],
         execution_type: ExecutionType,
         execution_sub_type: ExecutionSubType,
         **_: Any
@@ -499,11 +495,11 @@ class Place:
         self,
         *,
         creation_time: int,
-        last_update_time: Optional[int] = None,
+        last_update_time: int | None = None,
         label: str,
         type: int,
         oid: str,
-        sub_places: Optional[List[Any]],
+        sub_places: list[Any] | None,
         **_: Any
     ) -> None:
         self.id = oid

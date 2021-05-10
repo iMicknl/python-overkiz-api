@@ -4,7 +4,7 @@ from __future__ import annotations
 import urllib.parse
 from json import JSONDecodeError
 from types import TracebackType
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any, Dict, List, Union
 
 import backoff
 import humps
@@ -35,7 +35,7 @@ JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
 API_URL = "https://tahomalink.com/enduser-mobile-web/enduserAPI/"  # /doc for API doc
 
 
-async def relogin(invocation: Dict[str, Any]) -> None:
+async def relogin(invocation: dict[str, Any]) -> None:
     await invocation["args"][0].login()
 
 
@@ -62,9 +62,9 @@ class TahomaClient:
         self.password = password
         self.api_url = api_url
 
-        self.devices: List[Device] = []
-        self.gateways: List[Gateway] = []
-        self.event_listener_id: Optional[str] = None
+        self.devices: list[Device] = []
+        self.gateways: list[Gateway] = []
+        self.event_listener_id: str | None = None
 
         self.session = session if session else ClientSession()
 
@@ -73,9 +73,9 @@ class TahomaClient:
 
     async def __aexit__(
         self,
-        exc_type: Optional[Type[BaseException]],
-        exc_value: Optional[BaseException],
-        traceback: Optional[TracebackType],
+        exc_type: type[BaseException] | None,
+        exc_value: BaseException | None,
+        traceback: TracebackType | None,
     ) -> None:
         await self.close()
 
@@ -86,7 +86,7 @@ class TahomaClient:
 
         await self.session.close()
 
-    async def login(self, register_event_listener: Optional[bool] = True) -> bool:
+    async def login(self, register_event_listener: bool | None = True) -> bool:
         """
         Authenticate and create an API session allowing access to the other operations.
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
@@ -106,7 +106,7 @@ class TahomaClient:
         max_tries=2,
         on_backoff=relogin,
     )
-    async def get_devices(self, refresh: bool = False) -> List[Device]:
+    async def get_devices(self, refresh: bool = False) -> list[Device]:
         """
         List devices
         """
@@ -125,7 +125,7 @@ class TahomaClient:
         max_tries=2,
         on_backoff=relogin,
     )
-    async def get_gateways(self, refresh: bool = False) -> List[Gateway]:
+    async def get_gateways(self, refresh: bool = False) -> list[Gateway]:
         """
         List gateways
         """
@@ -144,7 +144,7 @@ class TahomaClient:
         max_tries=2,
         on_backoff=relogin,
     )
-    async def get_execution_history(self) -> List[HistoryExecution]:
+    async def get_execution_history(self) -> list[HistoryExecution]:
         """
         List execution history
         """
@@ -156,7 +156,7 @@ class TahomaClient:
     @backoff.on_exception(
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
     )
-    async def get_device_definition(self, deviceurl: str) -> Optional[JSON]:
+    async def get_device_definition(self, deviceurl: str) -> JSON | None:
         """
         Retrieve a particular setup device definition
         """
@@ -169,7 +169,7 @@ class TahomaClient:
     @backoff.on_exception(
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
     )
-    async def get_state(self, deviceurl: str) -> List[State]:
+    async def get_state(self, deviceurl: str) -> list[State]:
         """
         Retrieve states of requested device
         """
@@ -205,7 +205,7 @@ class TahomaClient:
 
         return listener_id
 
-    async def fetch_events(self) -> List[Event]:
+    async def fetch_events(self) -> list[Event]:
         """
         Fetch new events from a registered event listener. Fetched events are removed
         from the listener buffer. Return an empty response if no event is available.
@@ -238,7 +238,7 @@ class TahomaClient:
     @backoff.on_exception(
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
     )
-    async def get_current_executions(self) -> List[Execution]:
+    async def get_current_executions(self) -> list[Execution]:
         """ Get all action groups executions currently running """
         response = await self.__get("exec/current")
         executions = [Execution(**e) for e in humps.decamelize(response)]
@@ -252,8 +252,8 @@ class TahomaClient:
     async def execute_command(
         self,
         device_url: str,
-        command: Union[Command, str],
-        label: Optional[str] = "python-tahoma-api",
+        command: Command | str,
+        label: str | None = "python-tahoma-api",
     ) -> str:
         """ Send a command """
         if isinstance(command, str):
@@ -273,8 +273,8 @@ class TahomaClient:
     async def execute_commands(
         self,
         device_url: str,
-        commands: List[Command],
-        label: Optional[str] = "python-tahoma-api",
+        commands: list[Command],
+        label: str | None = "python-tahoma-api",
     ) -> str:
         """ Send several commands in one call """
         payload = {
@@ -290,7 +290,7 @@ class TahomaClient:
         max_tries=2,
         on_backoff=relogin,
     )
-    async def get_scenarios(self) -> List[Scenario]:
+    async def get_scenarios(self) -> list[Scenario]:
         """ List the scenarios """
         response = await self.__get("actionGroups")
         return [Scenario(**scenario) for scenario in response]
@@ -322,7 +322,7 @@ class TahomaClient:
             return await response.json()
 
     async def __post(
-        self, endpoint: str, payload: Optional[JSON] = None, data: Optional[JSON] = None
+        self, endpoint: str, payload: JSON | None = None, data: JSON | None = None
     ) -> Any:
         """ Make a POST request to the TaHoma API """
         async with self.session.post(
