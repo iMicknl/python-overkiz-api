@@ -27,7 +27,7 @@ pylint = "^2.8.2"
 isort = "^5.8.0"
 mypy = "^0.812"
 flake8 = "^3.9.2"
-pyupgrade = "^2.7.4"
+pyupgrade = "^2.16.0"
 pytest-asyncio = "^0.15.1"
 
 
