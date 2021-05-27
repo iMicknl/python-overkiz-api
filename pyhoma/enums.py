@@ -17,6 +17,7 @@ class GatewayType(Enum):
     TAHOMA = 15
     VERISURE_ALARM_SYSTEM = 20
     KIZBOX_MINI = 21
+    HI_BOX = 22  # Hi Kumo Hi Box (constant added manually)
     KIZBOX_V2 = 24
     MYFOX_ALARM_SYSTEM = 25
     KIZBOX_MINI_VMBUS = 27
