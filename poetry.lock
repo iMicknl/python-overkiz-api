@@ -445,7 +445,7 @@ testing = ["fields", "hunter", "process-tests (==2.0.2)", "six", "pytest-xdist",
 
 [[package]]
 name = "pyupgrade"
-version = "2.18.1"
+version = "2.19.0"
 description = "A tool to automatically upgrade syntax for newer versions."
 category = "dev"
 optional = false
@@ -588,7 +588,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4.0"
-content-hash = "96a4ed6030cb5fd7ca5bcfe262e257992c82a6aefee4422d867268a01e655eae"
+content-hash = "6d806193cd0f205e5acb15fc83c6f0ed7f6dddd8d7efd41249379339ffe569f7"
 
 [metadata.files]
 aiohttp = [
@@ -912,8 +912,8 @@ pytest-cov = [
     {file = "pytest_cov-2.12.0-py2.py3-none-any.whl", hash = "sha256:95d4933dcbbacfa377bb60b29801daa30d90c33981ab2a79e9ab4452c165066e"},
 ]
 pyupgrade = [
-    {file = "pyupgrade-2.18.1-py2.py3-none-any.whl", hash = "sha256:d4066fbe134ea161e0c23eb2923d609bc6949c9d50725f2fe0ec91d0eadea21c"},
-    {file = "pyupgrade-2.18.1.tar.gz", hash = "sha256:b6ac3aa12c494dbd237be1baf61ef32d51d0098130fa95374dc8c851fe4c795d"},
+    {file = "pyupgrade-2.19.0-py2.py3-none-any.whl", hash = "sha256:a73c1ac1311070ac2be0b94624849462cd0987590a406e646b1dc90272070b1a"},
+    {file = "pyupgrade-2.19.0.tar.gz", hash = "sha256:94f6c2dded39a88ac215261608fa180e21dd38a5351247d7ed40ec10d53a6ca3"},
 ]
 pyyaml = [
     {file = "PyYAML-5.4.1-cp27-cp27m-macosx_10_9_x86_64.whl", hash = "sha256:3b2b1824fe7112845700f815ff6a489360226a5609b96ec2190a45e62a9fc922"},
