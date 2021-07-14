@@ -401,6 +401,7 @@ class UpdateBoxStatus(Enum):
     READY_TO_UPDATE_LOCALLY = "READY_TO_UPDATE_LOCALLY"
     UP_TO_DATE = "UP_TO_DATE"
     UNKNOWN = "UNKNOWN"
+    UPDATING = "UPDATING"
 
 
 class CommandMode(Enum):
