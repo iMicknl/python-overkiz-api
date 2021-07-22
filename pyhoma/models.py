@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Any, Iterator
 
 from pyhoma.enums import (
@@ -509,3 +510,12 @@ class Place:
         self.type = type
         self.oid = oid
         self.sub_places = [Place(**p) for p in sub_places] if sub_places else None
+
+
+@dataclass
+class OverkizHub:
+    """Class to describe an Overkiz hub."""
+
+    endpoint: str
+    name: str
+    manufacturer: str
