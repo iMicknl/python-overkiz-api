@@ -519,4 +519,3 @@ class OverkizHub:
     endpoint: str
     name: str
     manufacturer: str
- 
