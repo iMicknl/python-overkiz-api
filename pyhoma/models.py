@@ -62,14 +62,14 @@ class Device:
         **_: Any
     ) -> None:
         self.id = deviceurl
-        self.attributes = States(attributes) if attributes else None
+        self.attributes = States(attributes) if attributes else []
         self.available = available
         self.definition = Definition(**definition)
         self.deviceurl = deviceurl
         self.enabled = enabled
         self.label = label
         self.controllable_name = controllable_name
-        self.states = States(states) if states else None
+        self.states = States(states) if states else []
         self.data_properties = data_properties
         self.widget = widget
         self.ui_class = ui_class
@@ -92,7 +92,7 @@ class Definition:
         **_: Any
     ) -> None:
         self.commands = CommandDefinitions(commands)
-        self.states = [StateDefinition(**sd) for sd in states] if states else None
+        self.states = [StateDefinition(**sd) for sd in states] if states else []
         self.widget_name = widget_name
         self.ui_class = ui_class
         self.qualified_name = qualified_name
@@ -253,7 +253,7 @@ class Event:
         self.exec_id = exec_id
         self.deviceurl = deviceurl
         self.device_states = (
-            [State(**s) for s in device_states] if device_states else None
+            [State(**s) for s in device_states] if device_states else []
         )
         self.old_state = ExecutionState(old_state) if old_state else None
         self.new_state = ExecutionState(new_state) if new_state else None
@@ -384,7 +384,7 @@ class Gateway:
         self.up_to_date = up_to_date
         self.update_status = UpdateBoxStatus(update_status)
         self.sync_in_progress = sync_in_progress
-        self.partners = [Partner(**p) for p in partners] if partners else None
+        self.partners = [Partner(**p) for p in partners] if partners else []
 
         try:
             self.type = GatewayType(type)
@@ -509,7 +509,7 @@ class Place:
         self.label = label
         self.type = type
         self.oid = oid
-        self.sub_places = [Place(**p) for p in sub_places] if sub_places else None
+        self.sub_places = [Place(**p) for p in sub_places] if sub_places else []
 
 
 @dataclass
@@ -519,3 +519,4 @@ class OverkizHub:
     endpoint: str
     name: str
     manufacturer: str
+ 
