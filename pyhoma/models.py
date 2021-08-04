@@ -513,8 +513,8 @@ class Place:
 
 
 @dataclass
-class OverkizHub:
-    """Class to describe an Overkiz hub."""
+class OverkizServer:
+    """Class to describe an Overkiz server."""
 
     endpoint: str
     name: str
