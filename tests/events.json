@@ -1,0 +1,422 @@
+[
+    {
+        "timestamp": 1631130645998,
+        "gatewayId": "9876-1234-8767",
+        "name": "GatewaySynchronizationEndedEvent"
+    },
+    {
+        "timestamp": 1631130646182,
+        "gatewayId": "9876-1234-8767",
+        "protocolType": 22,
+        "name": "RefreshAllDevicesStatesCompletedEvent"
+    },
+    {
+        "timestamp": 1631130646544,
+        "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+        "deviceURL": "io://9876-1234-8767/4468654#1",
+        "deviceStates": [
+            {
+                "name": "core:ElectricEnergyConsumptionState",
+                "type": 1,
+                "value": "23247220"
+            }
+        ],
+        "name": "DeviceStateChangedEvent"
+    },
+    {
+        "timestamp": 1631130646544,
+        "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+        "deviceURL": "io://9876-1234-8767/4468654#2",
+        "deviceStates": [
+            {
+                "name": "core:ConsumptionTariff4State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff3State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff1State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff2State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff5State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff0State",
+                "type": 1,
+                "value": "7139031"
+            },
+            {
+                "name": "core:ConsumptionTariff4State",
+                "type": 0
+            },
+            {
+                "name": "core:ElectricEnergyConsumptionState",
+                "type": 1,
+                "value": "7139031"
+            },
+            {
+                "name": "core:ConsumptionTariff3State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff1State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff2State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff5State",
+                "type": 0
+            }
+        ],
+        "name": "DeviceStateChangedEvent"
+    },
+    {
+        "timestamp": 1631130646544,
+        "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+        "deviceURL": "io://9876-1234-8767/4468654#3",
+        "deviceStates": [
+            {
+                "name": "core:ConsumptionTariff2State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff5State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff1State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff4State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff3State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff2State",
+                "type": 0
+            },
+            {
+                "name": "core:ElectricEnergyConsumptionState",
+                "type": 1,
+                "value": "1960648"
+            },
+            {
+                "name": "core:ConsumptionTariff5State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff1State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff4State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff0State",
+                "type": 1,
+                "value": "1960648"
+            },
+            {
+                "name": "core:ConsumptionTariff3State",
+                "type": 0
+            }
+        ],
+        "name": "DeviceStateChangedEvent"
+    },
+    {
+        "timestamp": 1631130646545,
+        "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+        "deviceURL": "io://9876-1234-8767/4468654#5",
+        "deviceStates": [
+            {
+                "name": "core:ConsumptionTariff2State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff1State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff5State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff3State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff4State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff2State",
+                "type": 0
+            },
+            {
+                "name": "core:ElectricEnergyConsumptionState",
+                "type": 1,
+                "value": "7009837"
+            },
+            {
+                "name": "core:ConsumptionTariff1State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff0State",
+                "type": 1,
+                "value": "7009837"
+            },
+            {
+                "name": "core:ConsumptionTariff5State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff3State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff4State",
+                "type": 0
+            }
+        ],
+        "name": "DeviceStateChangedEvent"
+    },
+    {
+        "timestamp": 1631130646545,
+        "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+        "deviceURL": "io://9876-1234-8767/4468654#6",
+        "deviceStates": [
+            {
+                "name": "core:ConsumptionTariff4State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff3State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff2State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff5State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff1State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff4State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff0State",
+                "type": 1,
+                "value": "7538042"
+            },
+            {
+                "name": "core:ConsumptionTariff3State",
+                "type": 0
+            },
+            {
+                "name": "core:ElectricEnergyConsumptionState",
+                "type": 1,
+                "value": "7538042"
+            },
+            {
+                "name": "core:ConsumptionTariff2State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff5State",
+                "type": 0
+            },
+            {
+                "name": "core:ConsumptionTariff1State",
+                "type": 0
+            }
+        ],
+        "name": "DeviceStateChangedEvent"
+    },
+    {
+        "timestamp": 1631130760744,
+        "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+        "execId": "c6f83624-ac10-3e01-653e-2b025fee956d",
+        "label": "Volet salon - Régler à 43% - TaHoma PC",
+        "metadata": "",
+        "type": 1,
+        "subType": 1,
+        "actions": [
+            {
+                "deviceURL": "io://9876-1234-8767/11212197",
+                "commands": [
+                    {
+                        "name": "setClosure",
+                        "parameters": [
+                            {
+                                "type": 1,
+                                "value": "43"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "source": "mobile:pc",
+        "owner": "foo@domain.com",
+        "name": "ExecutionRegisteredEvent"
+    },
+    {
+        "timestamp": 1631130760744,
+        "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+        "execId": "c6f83624-ac10-3e01-653e-2b025fee956d",
+        "newState": "NOT_TRANSMITTED",
+        "ownerKey": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+        "type": 1,
+        "subType": 1,
+        "oldState": "INITIALIZED",
+        "timeToNextState": 0,
+        "name": "ExecutionStateChangedEvent"
+    },
+    {
+        "timestamp": 1631130760744,
+        "gatewayId": "9876-1234-8767",
+        "name": "GatewaySynchronizationStartedEvent"
+    },
+    {
+        "timestamp": 1631130760746,
+        "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+        "execId": "c6f83624-ac10-3e01-653e-2b025fee956d",
+        "newState": "TRANSMITTED",
+        "ownerKey": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+        "type": 1,
+        "subType": 1,
+        "oldState": "NOT_TRANSMITTED",
+        "timeToNextState": 0,
+        "name": "ExecutionStateChangedEvent"
+    },
+    {
+        "timestamp": 1631130760747,
+        "gatewayId": "9876-1234-8767",
+        "name": "GatewaySynchronizationEndedEvent"
+    },
+    {
+        "timestamp": 1631130761531,
+        "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+        "deviceURL": "io://9876-1234-8767/11212197",
+        "deviceStates": [
+            {
+                "name": "core:TargetClosureState",
+                "type": 1,
+                "value": "43"
+            },
+            {
+                "name": "core:MovingState",
+                "type": 6,
+                "value": "true"
+            },
+            {
+                "name": "io:PriorityLockOriginatorState",
+                "type": 0
+            },
+            {
+                "name": "core:PriorityLockTimerState",
+                "type": 1,
+                "value": "0"
+            },
+            {
+                "name": "io:PriorityLockLevelState",
+                "type": 0
+            }
+        ],
+        "name": "DeviceStateChangedEvent"
+    },
+    {
+        "timestamp": 1631130761533,
+        "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+        "execId": "c6f83624-ac10-3e01-653e-2b025fee956d",
+        "newState": "IN_PROGRESS",
+        "ownerKey": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+        "type": 1,
+        "subType": 1,
+        "oldState": "TRANSMITTED",
+        "timeToNextState": 0,
+        "name": "ExecutionStateChangedEvent"
+    },
+    {
+        "timestamp": 1631130831672,
+        "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+        "deviceURL": "io://9876-1234-8767/11212197",
+        "deviceStates": [
+            {
+                "name": "core:ManufacturerSettingsState",
+                "type": 0
+            },
+            {
+                "name": "core:ClosureState",
+                "type": 1,
+                "value": "2"
+            },
+            {
+                "name": "core:OpenClosedState",
+                "type": 3,
+                "value": "open"
+            },
+            {
+                "name": "core:ClosureState",
+                "type": 1,
+                "value": "1"
+            },
+            {
+                "name": "core:OpenClosedState",
+                "type": 3,
+                "value": "open"
+            },
+            {
+                "name": "core:ClosureState",
+                "type": 1,
+                "value": "0"
+            },
+            {
+                "name": "core:OpenClosedState",
+                "type": 3,
+                "value": "open"
+            },
+            {
+                "name": "core:MovingState",
+                "type": 6,
+                "value": "false"
+            }
+        ],
+        "name": "DeviceStateChangedEvent"
+    },
+    {
+        "timestamp": 1631130831675,
+        "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+        "execId": "c6f92fec-ac10-3e01-653e-2b02a81b76f3",
+        "newState": "COMPLETED",
+        "ownerKey": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+        "type": 1,
+        "subType": 1,
+        "oldState": "IN_PROGRESS",
+        "timeToNextState": -1,
+        "name": "ExecutionStateChangedEvent"
+    }
+]
