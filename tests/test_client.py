@@ -25,6 +25,15 @@ class TestTahomaClient:
             devices = await api.get_devices()
             assert len(devices) == 23
 
+    @pytest.mark.asyncio
+    async def test_fetch_events_basic(self, api):
+        with open(os.path.join(CURRENT_DIR, "events.json")) as raw_events:
+            resp = MockResponse(raw_events.read())
+
+        with patch.object(aiohttp.ClientSession, "post", return_value=resp):
+            events = await api.fetch_events()
+            assert len(events) == 16
+
 
 class MockResponse:
     def __init__(self, text, status=200):
