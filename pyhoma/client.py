@@ -13,7 +13,9 @@ from aiohttp import ClientResponse, ClientSession, ServerDisconnectedError
 from pyhoma.exceptions import (
     BadCredentialsException,
     InvalidCommandException,
+    InvalidEventListenerIdException,
     MaintenanceException,
+    NoRegisteredEventListenerException,
     NotAuthenticatedException,
     TooManyExecutionsException,
     TooManyRequestsException,
@@ -37,6 +39,10 @@ API_URL = "https://tahomalink.com/enduser-mobile-web/enduserAPI/"  # /doc for AP
 
 async def relogin(invocation: dict[str, Any]) -> None:
     await invocation["args"][0].login()
+
+
+async def refresh_listener(invocation: dict[str, Any]) -> None:
+    await invocation["args"][0].register_event_listener()
 
 
 class TahomaClient:
@@ -205,6 +211,12 @@ class TahomaClient:
 
         return listener_id
 
+    @backoff.on_exception(
+        backoff.expo,
+        (InvalidEventListenerIdException, NoRegisteredEventListenerException),
+        max_tries=2,
+        on_backoff=refresh_listener,
+    )
     async def fetch_events(self) -> list[Event]:
         """
         Fetch new events from a registered event listener. Fetched events are removed
@@ -377,5 +389,13 @@ class TahomaClient:
             # {"error": "UNSUPPORTED_OPERATION", "error": "No such command : ..."}
             if "No such command" in message:
                 raise InvalidCommandException(message)
+
+            # {'errorCode': 'UNSPECIFIED_ERROR', 'error': 'Invalid event listener id : ...'}
+            if "Invalid event listener id" in message:
+                raise InvalidEventListenerIdException(message)
+
+            # {'errorCode': 'UNSPECIFIED_ERROR', 'error': 'No registered event listener'}
+            if message == "No registered event listener":
+                raise NoRegisteredEventListenerException(message)
 
         raise Exception(message if message else result)
