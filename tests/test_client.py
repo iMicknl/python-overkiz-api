@@ -18,7 +18,9 @@ class TestTahomaClient:
 
     @pytest.mark.asyncio
     async def test_get_devices_basic(self, api):
-        with open(os.path.join(CURRENT_DIR, "devices.json")) as raw_devices:
+        with open(
+            os.path.join(CURRENT_DIR, "devices.json"), encoding="utf-8"
+        ) as raw_devices:
             resp = MockResponse(raw_devices.read())
 
         with patch.object(aiohttp.ClientSession, "get", return_value=resp):
@@ -27,7 +29,9 @@ class TestTahomaClient:
 
     @pytest.mark.asyncio
     async def test_fetch_events_basic(self, api):
-        with open(os.path.join(CURRENT_DIR, "events.json")) as raw_events:
+        with open(
+            os.path.join(CURRENT_DIR, "events.json"), encoding="utf-8"
+        ) as raw_events:
             resp = MockResponse(raw_events.read())
 
         with patch.object(aiohttp.ClientSession, "post", return_value=resp):
