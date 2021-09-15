@@ -62,14 +62,14 @@ class Device:
         **_: Any
     ) -> None:
         self.id = deviceurl
-        self.attributes = States(attributes) if attributes else []
+        self.attributes = States(attributes)
         self.available = available
         self.definition = Definition(**definition)
         self.deviceurl = deviceurl
         self.enabled = enabled
         self.label = label
         self.controllable_name = controllable_name
-        self.states = States(states) if states else []
+        self.states = States(states)
         self.data_properties = data_properties
         self.widget = widget
         self.ui_class = ui_class
@@ -153,8 +153,11 @@ class State:
 
 
 class States:
-    def __init__(self, states: list[dict[str, Any]]) -> None:
-        self._states = [State(**state) for state in states]
+    def __init__(self, states: list[dict[str, Any]] | None = None) -> None:
+        if states:
+            self._states = [State(**state) for state in states]
+        else:
+            self._states = []
 
     def __iter__(self) -> Iterator[State]:
         return self._states.__iter__()
