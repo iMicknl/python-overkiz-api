@@ -47,6 +47,8 @@ class TahomaClient:
         username: str,
         password: str,
         api_url: str = API_URL,
+        api_token: str = None,
+        is_local: bool = False,
         session: ClientSession = None,
     ) -> None:
         """
@@ -61,12 +63,21 @@ class TahomaClient:
         self.username = username
         self.password = password
         self.api_url = api_url
+        self.api_token = api_token
+        self.is_local = is_local
 
         self.devices: list[Device] = []
         self.gateways: list[Gateway] = []
         self.event_listener_id: str | None = None
 
         self.session = session if session else ClientSession()
+        self.headers = {}
+
+        if self.api_token:
+            self.is_local = True
+            self.headers.update ({
+                "X-Auth-Token": self.api_token
+            })
 
     async def __aenter__(self) -> TahomaClient:
         return self
@@ -91,6 +102,11 @@ class TahomaClient:
         Authenticate and create an API session allowing access to the other operations.
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
+        if self.is_local:
+            if register_event_listener:
+                await self.register_event_listener()
+            return True
+
         payload = {"userId": self.username, "userPassword": self.password}
         response = await self.__post("login", data=payload)
 
@@ -114,6 +130,19 @@ class TahomaClient:
             return self.devices
 
         response = await self.__get("setup/devices")
+
+        if self.is_local:
+            new_response = []
+            for device in response:
+
+                device.update({
+                    'deviceurl': device['deviceURL'],
+                    'uiClass': device['definition']['uiClass']
+                })
+
+                new_response.append(device)
+            response = new_response
+
         devices = [Device(**d) for d in humps.decamelize(response)]
         self.devices = devices
 
@@ -317,7 +346,10 @@ class TahomaClient:
 
     async def __get(self, endpoint: str) -> Any:
         """Make a GET request to the TaHoma API"""
-        async with self.session.get(f"{self.api_url}{endpoint}") as response:
+        async with self.session.get(
+            f"{self.api_url}{endpoint}",
+            headers=self.headers
+        ) as response:
             await self.check_response(response)
             return await response.json()
 
@@ -329,13 +361,17 @@ class TahomaClient:
             f"{self.api_url}{endpoint}",
             data=data,
             json=payload,
+            headers=self.headers
         ) as response:
             await self.check_response(response)
             return await response.json()
 
     async def __delete(self, endpoint: str) -> None:
         """Make a DELETE request to the TaHoma API"""
-        async with self.session.delete(f"{self.api_url}{endpoint}") as response:
+        async with self.session.delete(
+            f"{self.api_url}{endpoint}",
+            headers=self.headers
+        ) as response:
             await self.check_response(response)
 
     @staticmethod

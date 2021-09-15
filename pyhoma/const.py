@@ -46,4 +46,9 @@ SUPPORTED_SERVERS = {
         endpoint="https://ha201-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Somfy",
     ),
+    "somfy_local": OverkizServer(
+        name="Somfy (Local)",
+        endpoint="/enduser-mobile-web/1/enduserAPI/",
+        manufacturer="Somfy",
+    ),
 }

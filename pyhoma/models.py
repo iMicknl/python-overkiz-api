@@ -58,7 +58,7 @@ class Device:
         qualified_name: str | None = None,
         states: list[dict[str, Any]] | None = None,
         type: int,
-        placeoid: str,
+        placeoid: str | None = None,
         **_: Any
     ) -> None:
         self.id = deviceurl
@@ -88,7 +88,7 @@ class Definition:
         states: list[dict[str, Any]] | None = None,
         widget_name: str | None = None,
         ui_class: str | None = None,
-        qualified_name: str,
+        qualified_name: str | None = None,
         **_: Any
     ) -> None:
         self.commands = CommandDefinitions(commands)
@@ -106,7 +106,7 @@ class StateDefinition:
     )
 
     def __init__(
-        self, qualified_name: str, type: str, values: list[str] | None = None, **_: Any
+        self, qualified_name: str = None, type: str = None, values: list[str] | None = None, **_: Any
     ) -> None:
         self.qualified_name = qualified_name
         self.type = type
@@ -361,17 +361,17 @@ class Gateway:
         *,
         partners: list[dict[str, Any]] | None = None,
         functions: str | None = None,
-        sub_type: GatewaySubType,
+        sub_type: GatewaySubType | None = None,
         gateway_id: str,
         alive: bool | None = None,
-        mode: str,
+        mode: str | None = None,
         placeoid: str | None = None,
-        time_reliable: bool,
+        time_reliable: bool | None = None,
         connectivity: dict[str, Any],
         up_to_date: bool | None = None,
-        update_status: UpdateBoxStatus,
-        sync_in_progress: bool,
-        type: GatewayType,
+        update_status: UpdateBoxStatus | str = "UNKNOWN",
+        sync_in_progress: bool | None = None,
+        type: GatewayType | None = None,
         **_: Any
     ) -> None:
         self.id = gateway_id
