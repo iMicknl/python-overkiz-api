@@ -354,6 +354,7 @@ class Gateway:
     partners: list[Partner]
     functions: str | None = None
     sub_type: GatewaySubType
+    id: str
     gateway_id: str
     alive: bool | None = None
     mode: str
@@ -494,6 +495,7 @@ class Place:
     last_update_time: int | None = None
     label: str
     type: int
+    id: str
     oid: str
     sub_places: list[Place]
 
