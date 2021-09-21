@@ -20,3 +20,11 @@ class TooManyRequestsException(Exception):
 
 class MaintenanceException(Exception):
     pass
+
+
+class InvalidEventListenerIdException(Exception):
+    pass
+
+
+class NoRegisteredEventListenerException(Exception):
+    pass
