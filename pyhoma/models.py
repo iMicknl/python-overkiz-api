@@ -1,7 +1,9 @@
 from __future__ import annotations
 
-from dataclasses import dataclass
+import re
 from typing import Any, Iterator
+
+import attr
 
 from pyhoma.enums import (
     DataType,
@@ -19,28 +21,31 @@ from pyhoma.enums import (
 # pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
 
 
+def obfuscate_id(id: str | None) -> str:
+    return re.sub(r"\d+-", "****-", str(id))
+
+
+def obfuscate_email(email: str | None) -> str:
+    return re.sub(r"(.).*@.*(.\..*)", r"\1****@****\2", str(email))
+
+
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
 class Device:
-    __slots__ = (
-        "id",
-        "attributes",
-        "controllable_name",
-        "creation_time",
-        "last_update_time",
-        "label",
-        "deviceurl",
-        "shortcut",
-        "controllable_name",
-        "definition",
-        "states",
-        "data_properties",
-        "available",
-        "enabled",
-        "widget",
-        "ui_class",
-        "qualified_name",
-        "type",
-        "placeoid",
-    )
+    id: str = attr.ib(repr=False)
+    attributes: States
+    available: bool
+    enabled: bool
+    label: str
+    deviceurl: str = attr.ib(repr=obfuscate_id)
+    controllable_name: str
+    definition: Definition
+    data_properties: list[dict[str, Any]] | None = None
+    widget: str | None = None
+    ui_class: str | None = None
+    qualified_name: str | None = None
+    states: States
+    type: ProductType
+    placeoid: str
 
     def __init__(
         self,
@@ -59,7 +64,7 @@ class Device:
         states: list[dict[str, Any]] | None = None,
         type: int,
         placeoid: str,
-        **_: Any
+        **_: Any,
     ) -> None:
         self.id = deviceurl
         self.attributes = States(attributes)
@@ -78,32 +83,12 @@ class Device:
         self.placeoid = placeoid
 
 
-class Definition:
-    __slots__ = ("commands", "states", "widget_name", "ui_class", "qualified_name")
-
-    def __init__(
-        self,
-        *,
-        commands: list[dict[str, Any]],
-        states: list[dict[str, Any]] | None = None,
-        widget_name: str | None = None,
-        ui_class: str | None = None,
-        qualified_name: str,
-        **_: Any
-    ) -> None:
-        self.commands = CommandDefinitions(commands)
-        self.states = [StateDefinition(**sd) for sd in states] if states else []
-        self.widget_name = widget_name
-        self.ui_class = ui_class
-        self.qualified_name = qualified_name
-
-
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
 class StateDefinition:
-    __slots__ = (
-        "qualified_name",
-        "type",
-        "values",
-    )
+
+    qualified_name: str
+    type: str
+    values: list[str] | None = None
 
     def __init__(
         self, qualified_name: str, type: str, values: list[str] | None = None, **_: Any
@@ -113,18 +98,45 @@ class StateDefinition:
         self.values = values
 
 
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+class Definition:
+    commands: CommandDefinitions
+    states: list[StateDefinition]
+    widget_name: str | None = None
+    ui_class: str | None = None
+    qualified_name: str
+
+    def __init__(
+        self,
+        *,
+        commands: list[dict[str, Any]],
+        states: list[dict[str, Any]] | None = None,
+        widget_name: str | None = None,
+        ui_class: str | None = None,
+        qualified_name: str,
+        **_: Any,
+    ) -> None:
+        self.commands = CommandDefinitions(commands)
+        self.states = [StateDefinition(**sd) for sd in states] if states else []
+        self.widget_name = widget_name
+        self.ui_class = ui_class
+        self.qualified_name = qualified_name
+
+
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
 class CommandDefinition:
-    __slots__ = (
-        "command_name",
-        "nparams",
-    )
+    command_name: str
+    nparams: int
 
     def __init__(self, command_name: str, nparams: int, **_: Any) -> None:
         self.command_name = command_name
         self.nparams = nparams
 
 
+@attr.s(auto_attribs=True, init=False, slots=True)
 class CommandDefinitions:
+    _commands: list[CommandDefinition]
+
     def __init__(self, commands: list[dict[str, Any]]):
         self._commands = [CommandDefinition(**command) for command in commands]
 
@@ -143,8 +155,11 @@ class CommandDefinitions:
     get = __getitem__
 
 
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
 class State:
-    __slots__ = "name", "value", "type"
+    name: str
+    type: DataType
+    value: str | None = None
 
     def __init__(self, name: str, type: int, value: str | None = None, **_: Any):
         self.name = name
@@ -152,7 +167,10 @@ class State:
         self.type = DataType(type)
 
 
+@attr.s(auto_attribs=True, init=False, slots=True)
 class States:
+    _states: list[State]
+
     def __init__(self, states: list[dict[str, Any]] | None = None) -> None:
         if states:
             self._states = [State(**state) for state in states]
@@ -184,51 +202,44 @@ class States:
 class Command(dict):  # type: ignore
     """Represents an TaHoma Command."""
 
-    __slots__ = (
-        "name",
-        "parameters",
-    )
-
-    def __init__(self, name: str, parameters: str | None = None, **_: Any):
+    def __init__(self, name: str, parameters: list[str] | None = None, **_: Any):
         self.name = name
         self.parameters = parameters
         dict.__init__(self, name=name, parameters=parameters)
 
 
 # pylint: disable-msg=too-many-locals
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
 class Event:
-    __slots__ = (
-        "timestamp",
-        "name",
-        "gateway_id",
-        "exec_id",
-        "deviceurl",
-        "device_states",
-        "old_state",
-        "new_state",
-        "owner_key",
-        "setupoid",
-        "owner_key",
-        "type",
-        "sub_type",
-        "time_to_next_state",
-        "failed_commands",
-        "failure_type_code",
-        "failure_type",
-        "condition_groupoid",
-        "placeoid",
-        "label",
-        "metadata",
-        "camera_id",
-        "deleted_raw_devices_count",
-        "protocol_type",
-    )
+    timestamp: int
+    name: EventName
+    setupoid: str | None = attr.ib(repr=obfuscate_id, default=None)
+    owner_key: str | None = attr.ib(repr=obfuscate_id, default=None)
+    type: int | None = None
+    sub_type: int | None = None
+    time_to_next_state: int | None = None
+    failed_commands: list[dict[str, Any]] | None = None
+    failure_type_code: FailureType | None = None
+    failure_type: str | None = None
+    condition_groupoid: str | None = None
+    placeoid: str | None = None
+    label: str | None = None
+    metadata: Any | None = None
+    camera_id: str | None = None
+    deleted_raw_devices_count: Any | None = None
+    protocol_type: Any | None = None
+    gateway_id: str | None = attr.ib(repr=obfuscate_id, default=None)
+    exec_id: str | None = None
+    deviceurl: str | None = attr.ib(repr=obfuscate_id, default=None)
+    device_states: list[State]
+    old_state: ExecutionState | None = None
+    new_state: ExecutionState | None = None
 
     def __init__(
         self,
         timestamp: int,
         name: EventName,
-        setupoid: str | None = None,
+        setupoid: str | None = attr.ib(repr=obfuscate_id, default=None),
         owner_key: str | None = None,
         type: int | None = None,
         sub_type: int | None = None,
@@ -249,7 +260,7 @@ class Event:
         device_states: list[dict[str, Any]] | None = None,
         old_state: ExecutionState | None = None,
         new_state: ExecutionState | None = None,
-        **_: Any
+        **_: Any,
     ):
         self.timestamp = timestamp
         self.gateway_id = gateway_id
@@ -289,15 +300,13 @@ class Event:
             self.failure_type_code = failure_type_code
 
 
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
 class Execution:
-
-    __slots__ = (
-        "id",
-        "description",
-        "owner",
-        "state",
-        "action_group",
-    )
+    id: str
+    description: str
+    owner: str = attr.ib(repr=obfuscate_email)
+    state: str
+    action_group: list[dict[str, Any]]
 
     def __init__(
         self,
@@ -306,7 +315,7 @@ class Execution:
         owner: str,
         state: str,
         action_group: list[dict[str, Any]],
-        **_: Any
+        **_: Any,
     ):
         self.id = id
         self.description = description
@@ -315,16 +324,22 @@ class Execution:
         self.action_group = action_group
 
 
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
 class Scenario:
-    __slots__ = ("label", "oid")
+    label: str
+    oid: str = attr.ib(repr=obfuscate_id)
 
     def __init__(self, label: str, oid: str, **_: Any):
         self.label = label
         self.oid = oid
 
 
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
 class Partner:
-    __slots__ = ("activated", "name", "id", "status")
+    activated: bool
+    name: str
+    id: str = attr.ib(repr=obfuscate_id)
+    status: str
 
     def __init__(self, activated: bool, name: str, id: str, status: str, **_: Any):
         self.activated = activated
@@ -333,31 +348,32 @@ class Partner:
         self.status = status
 
 
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
 class Connectivity:
-    __slots__ = ("status", "protocol_version")
+    status: str
+    protocol_version: str
 
     def __init__(self, status: str, protocol_version: str, **_: Any):
         self.status = status
         self.protocol_version = protocol_version
 
 
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
 class Gateway:
-    __slots__ = (
-        "id",
-        "partners",
-        "functions",
-        "sub_type",
-        "gateway_id",
-        "alive",
-        "mode",
-        "placeoid",
-        "time_reliable",
-        "connectivity",
-        "up_to_date",
-        "update_status",
-        "sync_in_progress",
-        "type",
-    )
+    partners: list[Partner]
+    functions: str | None = None
+    sub_type: GatewaySubType
+    id: str = attr.ib(repr=obfuscate_id)
+    gateway_id: str
+    alive: bool | None = None
+    mode: str
+    placeoid: str | None = None
+    time_reliable: bool
+    connectivity: Connectivity
+    up_to_date: bool | None = None
+    update_status: UpdateBoxStatus
+    sync_in_progress: bool
+    type: GatewayType
 
     def __init__(
         self,
@@ -375,7 +391,7 @@ class Gateway:
         update_status: UpdateBoxStatus,
         sync_in_progress: bool,
         type: GatewayType,
-        **_: Any
+        **_: Any,
     ) -> None:
         self.id = gateway_id
         self.functions = functions
@@ -400,16 +416,15 @@ class Gateway:
             self.sub_type = sub_type
 
 
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
 class HistoryExecutionCommand:
-    __slots__ = (
-        "deviceurl",
-        "command",
-        "parameters",
-        "rank",
-        "dynamic",
-        "state",
-        "failure_type",
-    )
+    deviceurl: str = attr.ib(repr=obfuscate_id)
+    command: str
+    rank: int
+    dynamic: bool
+    state: ExecutionState
+    failure_type: str
+    parameters: list[Any] | None = None
 
     def __init__(
         self,
@@ -420,7 +435,7 @@ class HistoryExecutionCommand:
         state: ExecutionState,
         failure_type: str,
         parameters: list[Any] | None = None,
-        **_: Any
+        **_: Any,
     ) -> None:
         self.deviceurl = deviceurl
         self.command = command
@@ -431,23 +446,22 @@ class HistoryExecutionCommand:
         self.failure_type = failure_type
 
 
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
 class HistoryExecution:
-    __slots__ = (
-        "id",
-        "event_time",
-        "owner",
-        "source",
-        "end_time",
-        "effective_start_time",
-        "duration",
-        "label",
-        "type",
-        "state",
-        "failure_type",
-        "commands",
-        "execution_type",
-        "execution_sub_type",
-    )
+    id: str
+    event_time: int
+    owner: str = attr.ib(repr=obfuscate_email)
+    source: str
+    end_time: int
+    effective_start_time: int
+    duration: int
+    label: str
+    type: str
+    state: ExecutionState
+    failure_type: str
+    commands: list[HistoryExecutionCommand]
+    execution_type: ExecutionType
+    execution_sub_type: ExecutionSubType
 
     def __init__(
         self,
@@ -466,7 +480,7 @@ class HistoryExecution:
         commands: list[dict[str, Any]],
         execution_type: ExecutionType,
         execution_sub_type: ExecutionSubType,
-        **_: Any
+        **_: Any,
     ) -> None:
         self.id = id
         self.event_time = event_time
@@ -484,16 +498,15 @@ class HistoryExecution:
         self.execution_sub_type = ExecutionSubType(execution_sub_type)
 
 
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
 class Place:
-    __slots__ = (
-        "id",
-        "creation_time",
-        "last_update_time",
-        "label",
-        "type",
-        "oid",
-        "sub_places",
-    )
+    creation_time: int
+    last_update_time: int | None = None
+    label: str
+    type: int
+    id: str
+    oid: str
+    sub_places: list[Place]
 
     def __init__(
         self,
@@ -504,7 +517,7 @@ class Place:
         type: int,
         oid: str,
         sub_places: list[Any] | None,
-        **_: Any
+        **_: Any,
     ) -> None:
         self.id = oid
         self.creation_time = creation_time
@@ -515,10 +528,10 @@ class Place:
         self.sub_places = [Place(**p) for p in sub_places] if sub_places else []
 
 
-@dataclass
+@attr.s(auto_attribs=True, slots=True, kw_only=True)
 class OverkizServer:
     """Class to describe an Overkiz server."""
 
-    endpoint: str
     name: str
+    endpoint: str
     manufacturer: str
