@@ -21,11 +21,11 @@ from pyhoma.enums import (
 # pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
 
 
-def offuscate_id(id: str | None) -> str:
+def obfuscate_id(id: str | None) -> str:
     return re.sub(r"\d+-", "****-", str(id))
 
 
-def offuscate_email(email: str | None) -> str:
+def obfuscate_email(email: str | None) -> str:
     return re.sub(r"(.).*@.*(.\..*)", r"\1****@****\2", str(email))
 
 
@@ -36,7 +36,7 @@ class Device:
     available: bool
     enabled: bool
     label: str
-    deviceurl: str = attr.ib(repr=offuscate_id)
+    deviceurl: str = attr.ib(repr=obfuscate_id)
     controllable_name: str
     definition: Definition
     data_properties: list[dict[str, Any]] | None = None
@@ -213,8 +213,8 @@ class Command(dict):  # type: ignore
 class Event:
     timestamp: int
     name: EventName
-    setupoid: str | None = attr.ib(repr=offuscate_id, default=None)
-    owner_key: str | None = attr.ib(repr=offuscate_id, default=None)
+    setupoid: str | None = attr.ib(repr=obfuscate_id, default=None)
+    owner_key: str | None = attr.ib(repr=obfuscate_id, default=None)
     type: int | None = None
     sub_type: int | None = None
     time_to_next_state: int | None = None
@@ -228,9 +228,9 @@ class Event:
     camera_id: str | None = None
     deleted_raw_devices_count: Any | None = None
     protocol_type: Any | None = None
-    gateway_id: str | None = attr.ib(repr=offuscate_id, default=None)
+    gateway_id: str | None = attr.ib(repr=obfuscate_id, default=None)
     exec_id: str | None = None
-    deviceurl: str | None = attr.ib(repr=offuscate_id, default=None)
+    deviceurl: str | None = attr.ib(repr=obfuscate_id, default=None)
     device_states: list[State]
     old_state: ExecutionState | None = None
     new_state: ExecutionState | None = None
@@ -239,7 +239,7 @@ class Event:
         self,
         timestamp: int,
         name: EventName,
-        setupoid: str | None = attr.ib(repr=offuscate_id, default=None),
+        setupoid: str | None = attr.ib(repr=obfuscate_id, default=None),
         owner_key: str | None = None,
         type: int | None = None,
         sub_type: int | None = None,
@@ -304,7 +304,7 @@ class Event:
 class Execution:
     id: str
     description: str
-    owner: str = attr.ib(repr=offuscate_email)
+    owner: str = attr.ib(repr=obfuscate_email)
     state: str
     action_group: list[dict[str, Any]]
 
@@ -327,7 +327,7 @@ class Execution:
 @attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
 class Scenario:
     label: str
-    oid: str = attr.ib(repr=offuscate_id)
+    oid: str = attr.ib(repr=obfuscate_id)
 
     def __init__(self, label: str, oid: str, **_: Any):
         self.label = label
@@ -338,7 +338,7 @@ class Scenario:
 class Partner:
     activated: bool
     name: str
-    id: str = attr.ib(repr=offuscate_id)
+    id: str = attr.ib(repr=obfuscate_id)
     status: str
 
     def __init__(self, activated: bool, name: str, id: str, status: str, **_: Any):
@@ -363,7 +363,7 @@ class Gateway:
     partners: list[Partner]
     functions: str | None = None
     sub_type: GatewaySubType
-    id: str = attr.ib(repr=offuscate_id)
+    id: str = attr.ib(repr=obfuscate_id)
     gateway_id: str
     alive: bool | None = None
     mode: str
@@ -418,7 +418,7 @@ class Gateway:
 
 @attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
 class HistoryExecutionCommand:
-    deviceurl: str = attr.ib(repr=offuscate_id)
+    deviceurl: str = attr.ib(repr=obfuscate_id)
     command: str
     rank: int
     dynamic: bool
@@ -450,7 +450,7 @@ class HistoryExecutionCommand:
 class HistoryExecution:
     id: str
     event_time: int
-    owner: str = attr.ib(repr=offuscate_email)
+    owner: str = attr.ib(repr=obfuscate_email)
     source: str
     end_time: int
     effective_start_time: int
