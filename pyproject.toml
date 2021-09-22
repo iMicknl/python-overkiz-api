@@ -22,7 +22,7 @@ tox = "^3.24"
 pytest = "^6.2"
 pytest-cov = "^2.12.1"
 pre-commit = "^2.15"
-black = {version = "^21.8b0", allow-prereleases = true}
+black = {version = "^21.9b0", allow-prereleases = true}
 pylint = "^2.9.6"
 isort = "^5.9.3"
 mypy = "^0.910"
