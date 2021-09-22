@@ -202,7 +202,7 @@ class States:
 class Command(dict):  # type: ignore
     """Represents an TaHoma Command."""
 
-    def __init__(self, name: str, parameters: str | None = None, **_: Any):
+    def __init__(self, name: str, parameters: list[str] | None = None, **_: Any):
         self.name = name
         self.parameters = parameters
         dict.__init__(self, name=name, parameters=parameters)
