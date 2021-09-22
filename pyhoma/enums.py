@@ -326,6 +326,7 @@ class EventName(Enum):
     CAMERA_DISCOVERED = "CameraDiscoveredEvent"
     CAMERA_DISCOVER_FAILED = "CameraDiscoverFailedEvent"
     CAMERA_UPLOAD_PHOTO = "CameraUploadPhotoEvent"
+    COMMAND_EXECUTION_STATE_CHANGE = "CommandExecutionStateChangedEvent"
     CONDITION_GROUP_CREATED = "ConditionGroupCreatedEvent"
     CONDITION_GROUP_DELETED = "ConditionGroupDeletedEvent"
     CONDITION_GROUP_UPDATED = "ConditionGroupUpdatedEvent"
