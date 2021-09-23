@@ -42,7 +42,6 @@ class Device:
     data_properties: list[dict[str, Any]] | None = None
     widget: str | None = None
     ui_class: str | None = None
-    qualified_name: str | None = None
     states: States
     type: ProductType
     placeoid: str
@@ -60,7 +59,6 @@ class Device:
         data_properties: list[dict[str, Any]] | None = None,
         widget: str | None = None,
         ui_class: str | None = None,
-        qualified_name: str | None = None,
         states: list[dict[str, Any]] | None = None,
         type: int,
         placeoid: str,
@@ -78,7 +76,6 @@ class Device:
         self.data_properties = data_properties
         self.widget = widget
         self.ui_class = ui_class
-        self.qualified_name = qualified_name
         self.type = ProductType(type)
         self.placeoid = placeoid
 
