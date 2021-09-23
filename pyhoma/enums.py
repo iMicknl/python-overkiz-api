@@ -42,6 +42,7 @@ class GatewayType(Enum):
     SMARTLY_MINIBOX_RAILDIN = 66
     TAHOMA_BEE = 67
     TAHOMA_RAIL_DIN = 72
+    NEXITY_RAIL_DIN = 74
     ELIOT = 77
     WISER = 88
 
