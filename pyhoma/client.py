@@ -10,6 +10,7 @@ import backoff
 import humps
 from aiohttp import ClientResponse, ClientSession, ServerDisconnectedError
 
+from pyhoma.const import SUPPORTED_SERVERS
 from pyhoma.exceptions import (
     BadCredentialsException,
     InvalidCommandException,
@@ -34,7 +35,7 @@ from pyhoma.models import (
 
 JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
 
-API_URL = "https://tahomalink.com/enduser-mobile-web/enduserAPI/"  # /doc for API doc
+DEFAULT_SERVER = SUPPORTED_SERVERS["somfy_europe"]
 
 
 async def relogin(invocation: dict[str, Any]) -> None:
@@ -51,8 +52,8 @@ class TahomaClient:
     def __init__(
         self,
         username: str,
-        password: str,
-        api_url: str = API_URL,
+        password: str | None,
+        api_url: str = DEFAULT_SERVER.endpoint,
         session: ClientSession = None,
     ) -> None:
         """
@@ -92,18 +93,27 @@ class TahomaClient:
 
         await self.session.close()
 
-    async def login(self, register_event_listener: bool | None = True) -> bool:
+    async def login(
+        self, register_event_listener: bool | None = True, sso_token: str | None = None
+    ) -> bool:
         """
         Authenticate and create an API session allowing access to the other operations.
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
-        payload = {"userId": self.username, "userPassword": self.password}
+        if sso_token:
+            payload = {"userId": self.username, "ssoToken": sso_token}
+        elif self.password:
+            payload = {"userId": self.username, "userPassword": self.password}
+        else:
+            raise Exception("sso_token or password is required to login.")
+
         response = await self.__post("login", data=payload)
 
         if response.get("success"):
             if register_event_listener:
                 await self.register_event_listener()
             return True
+
         return False
 
     @backoff.on_exception(
