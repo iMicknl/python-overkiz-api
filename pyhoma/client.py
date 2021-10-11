@@ -114,7 +114,7 @@ class TahomaClient:
         # CozyTouch authentication using jwt
         if self.api_url == SUPPORTED_SERVERS["atlantic_cozytouch"].endpoint:
             jwt = await self.cozytouch_login()
-            jwt.strip('"')  # Remove surrounding quotes
+            jwt = jwt.strip('"')  # Remove surrounding quotes
             payload = {"jwt": jwt}
 
         # Nexity authentication using ssoToken
