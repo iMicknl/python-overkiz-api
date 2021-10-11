@@ -1,5 +1,9 @@
 from pyhoma.models import OverkizServer
 
+COZYTOUCH_CLIENT_ID = (
+    "czduc0RZZXdWbjVGbVV4UmlYN1pVSUM3ZFI4YTphSDEzOXZmbzA1ZGdqeDJkSFVSQkFTbmhCRW9h"
+)
+
 SUPPORTED_SERVERS = {
     "atlantic_cozytouch": OverkizServer(
         name="Atlantic Cozytouch",

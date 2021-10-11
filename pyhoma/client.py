@@ -8,9 +8,9 @@ from typing import Any, Dict, List, Union
 
 import backoff
 import humps
-from aiohttp import ClientResponse, ClientSession, ServerDisconnectedError, FormData
+from aiohttp import ClientResponse, ClientSession, FormData, ServerDisconnectedError
 
-from pyhoma.const import SUPPORTED_SERVERS
+from pyhoma.const import COZYTOUCH_CLIENT_ID, SUPPORTED_SERVERS
 from pyhoma.exceptions import (
     BadCredentialsException,
     InvalidCommandException,
@@ -52,7 +52,7 @@ class TahomaClient:
     def __init__(
         self,
         username: str,
-        password: str | None,
+        password: str,
         api_url: str = DEFAULT_SERVER.endpoint,
         session: ClientSession = None,
     ) -> None:
@@ -94,7 +94,8 @@ class TahomaClient:
         await self.session.close()
 
     async def login(
-        self, register_event_listener: bool | None = True,
+        self,
+        register_event_listener: bool | None = True,
     ) -> bool:
         """
         Authenticate and create an API session allowing access to the other operations.
@@ -102,13 +103,16 @@ class TahomaClient:
         """
 
         # CozyTouch authentication using jwt
-        if (self.api_url == SUPPORTED_SERVERS["cozytouch"].endpoint)
-            payload = {"jwt": await cozytouch_login()}
+        if self.api_url == SUPPORTED_SERVERS["atlantic_cozytouch"].endpoint:
+            jwt = await self.cozytouch_login()
+            jwt.strip('"')  # Remove surrounding quotes
+            payload = {"jwt": jwt}
 
         # Nexity authentication using ssoToken
-        else if (self.api_url == SUPPORTED_SERVERS["nexity"].endpoint)
-            
+        elif self.api_url == SUPPORTED_SERVERS["nexity"].endpoint:
+
             # TODO Nexity logic
+            sso_token = ""
             payload = {"userId": self.username, "ssoToken": sso_token}
 
         # Regular authentication using userId+userPassword
@@ -124,21 +128,42 @@ class TahomaClient:
 
         return False
 
-    async def cozytouch_login() -> str:
-
-        # Request token
+    async def cozytouch_login(self) -> str:
+        """
+        Authenticate via CozyTouch identity and acquire JWT token.
+        """
+        # Request access token
         async with self.session.post(
-                    "https://api.groupe-atlantic.com/token",
-                    data=FormData({"grant_type": "password", "username": self.username, "password": self.password}),
-                    header={"Authorization": "Basic czduc0RZZXdWbjVGbVV4UmlYN1pVSUM3ZFI4YTphSDEzOXZmbzA1ZGdqeDJkSFVSQkFTbmhCRW9h", "Content-Type": "application/x-www-form-urlencoded"},
-                ) as response:
-                    print(response)
+            "https://api.groupe-atlantic.com/token",
+            data=FormData(
+                {
+                    "grant_type": "password",
+                    "username": self.username,
+                    "password": self.password,
+                }
+            ),
+            headers={
+                "Authorization": f"Basic {COZYTOUCH_CLIENT_ID}",
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+        ) as response:
+            token = await response.json()
 
-        raise Exception()
+            if token["token_type"] != "bearer":
+                raise Exception("TODO: no bearer")
 
-        # Request JWT
+        # Request jwt
+        async with self.session.get(
+            "https://api.groupe-atlantic.com/gacoma/gacomawcfservice/accounts/jwt",
+            headers={"Authorization": f"Bearer {token['access_token']}"},
+        ) as response:
+            jwt = await response.text()
 
-        # Return JWT or exception
+            # Return JWT or exception
+            if not jwt:
+                raise Exception("TODO: no jwt")
+
+            return jwt
 
     @backoff.on_exception(
         backoff.expo,
