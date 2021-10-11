@@ -7,10 +7,19 @@ from types import TracebackType
 from typing import Any, Dict, List, Union
 
 import backoff
+import boto3
 import humps
 from aiohttp import ClientResponse, ClientSession, FormData, ServerDisconnectedError
+from botocore.config import Config
+from warrant.aws_srp import AWSSRP
 
-from pyhoma.const import COZYTOUCH_CLIENT_ID, SUPPORTED_SERVERS
+from pyhoma.const import (
+    COZYTOUCH_CLIENT_ID,
+    NEXITY_COGNITO_CLIENT_ID,
+    NEXITY_COGNITO_REGION,
+    NEXITY_COGNITO_USER_POOL,
+    SUPPORTED_SERVERS,
+)
 from pyhoma.exceptions import (
     BadCredentialsException,
     InvalidCommandException,
@@ -110,10 +119,9 @@ class TahomaClient:
 
         # Nexity authentication using ssoToken
         elif self.api_url == SUPPORTED_SERVERS["nexity"].endpoint:
-
-            # TODO Nexity logic
-            sso_token = ""
-            payload = {"userId": self.username, "ssoToken": sso_token}
+            sso_token = await self.nexity_login()
+            user_id = urllib.parse.quote(self.username)  # URL encode username
+            payload = {"userId": user_id, "ssoToken": sso_token}
 
         # Regular authentication using userId+userPassword
         else:
@@ -164,6 +172,38 @@ class TahomaClient:
                 raise Exception("TODO: no jwt")
 
             return jwt
+
+    async def nexity_login(self) -> str:
+        """
+        Authenticate via Nexity identity and acquire SSO token.
+        """
+        # Request access token
+        client = boto3.client(
+            "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
+        )
+        aws = AWSSRP(
+            username=self.username,
+            password=self.password,
+            pool_id=NEXITY_COGNITO_USER_POOL,
+            client_id=NEXITY_COGNITO_CLIENT_ID,
+            client=client,
+        )
+
+        tokens = aws.authenticate_user()
+        id_token = tokens["AuthenticationResult"]["IdToken"]
+
+        async with self.session.get(
+            "https://api.egn.prd.aws-nexity.fr/deploy/api/v1/domotic/token",
+            headers={
+                "Authorization": id_token,
+            },
+        ) as response:
+            token = await response.json()
+
+            if not token["token"]:
+                raise Exception("TODO: no token")
+
+            return token
 
     @backoff.on_exception(
         backoff.expo,
