@@ -8,7 +8,7 @@ from typing import Any, Dict, List, Union
 
 import backoff
 import humps
-from aiohttp import ClientResponse, ClientSession, ServerDisconnectedError
+from aiohttp import ClientResponse, ClientSession, ServerDisconnectedError, FormData
 
 from pyhoma.const import SUPPORTED_SERVERS
 from pyhoma.exceptions import (
@@ -47,7 +47,7 @@ async def refresh_listener(invocation: dict[str, Any]) -> None:
 
 
 class TahomaClient:
-    """Interface class for the Tahoma API"""
+    """Interface class for the Overkiz API"""
 
     def __init__(
         self,
@@ -94,18 +94,26 @@ class TahomaClient:
         await self.session.close()
 
     async def login(
-        self, register_event_listener: bool | None = True, sso_token: str | None = None
+        self, register_event_listener: bool | None = True,
     ) -> bool:
         """
         Authenticate and create an API session allowing access to the other operations.
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
-        if sso_token:
+
+        # CozyTouch authentication using jwt
+        if (self.api_url == SUPPORTED_SERVERS["cozytouch"].endpoint)
+            payload = {"jwt": await cozytouch_login()}
+
+        # Nexity authentication using ssoToken
+        else if (self.api_url == SUPPORTED_SERVERS["nexity"].endpoint)
+            
+            # TODO Nexity logic
             payload = {"userId": self.username, "ssoToken": sso_token}
-        elif self.password:
-            payload = {"userId": self.username, "userPassword": self.password}
+
+        # Regular authentication using userId+userPassword
         else:
-            raise Exception("sso_token or password is required to login.")
+            payload = {"userId": self.username, "userPassword": self.password}
 
         response = await self.__post("login", data=payload)
 
@@ -115,6 +123,22 @@ class TahomaClient:
             return True
 
         return False
+
+    async def cozytouch_login() -> str:
+
+        # Request token
+        async with self.session.post(
+                    "https://api.groupe-atlantic.com/token",
+                    data=FormData({"grant_type": "password", "username": self.username, "password": self.password}),
+                    header={"Authorization": "Basic czduc0RZZXdWbjVGbVV4UmlYN1pVSUM3ZFI4YTphSDEzOXZmbzA1ZGdqeDJkSFVSQkFTbmhCRW9h", "Content-Type": "application/x-www-form-urlencoded"},
+                ) as response:
+                    print(response)
+
+        raise Exception()
+
+        # Request JWT
+
+        # Return JWT or exception
 
     @backoff.on_exception(
         backoff.expo,
