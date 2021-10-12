@@ -120,8 +120,8 @@ class TahomaClient:
         # Nexity authentication using ssoToken
         elif self.api_url == SUPPORTED_SERVERS["nexity"].endpoint:
             sso_token = await self.nexity_login()
-            user_id = urllib.parse.quote(self.username)  # URL encode username
-            payload = {"userId": user_id, "ssoToken": sso_token}
+            user_id = self.username.replace("@", "_-_")  # Replace @ for _-_
+            payload = {"ssoToken": sso_token, "userId": user_id}
 
         # Regular authentication using userId+userPassword
         else:
@@ -192,6 +192,8 @@ class TahomaClient:
         tokens = aws.authenticate_user()
         id_token = tokens["AuthenticationResult"]["IdToken"]
 
+        print(id_token)
+
         async with self.session.get(
             "https://api.egn.prd.aws-nexity.fr/deploy/api/v1/domotic/token",
             headers={
@@ -200,10 +202,13 @@ class TahomaClient:
         ) as response:
             token = await response.json()
 
+            print(token)
+            print("\n")
+
             if not token["token"]:
                 raise Exception("TODO: no token")
 
-            return token
+            return token["token"]
 
     @backoff.on_exception(
         backoff.expo,
