@@ -205,7 +205,7 @@ class TahomaClient:
             print(token)
             print("\n")
 
-            if not token["token"]:
+            if "token" not in token:
                 raise Exception("TODO: no token")
 
             return token["token"]
