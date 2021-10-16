@@ -14,7 +14,9 @@ from botocore.config import Config
 from warrant.aws_srp import AWSSRP
 
 from pyhoma.const import (
+    COZYTOUCH_ATLANTIC_API,
     COZYTOUCH_CLIENT_ID,
+    NEXITY_API,
     NEXITY_COGNITO_CLIENT_ID,
     NEXITY_COGNITO_REGION,
     NEXITY_COGNITO_USER_POOL,
@@ -22,9 +24,12 @@ from pyhoma.const import (
 )
 from pyhoma.exceptions import (
     BadCredentialsException,
+    CozyTouchBadCredentialsException,
+    CozyTouchServiceException,
     InvalidCommandException,
     InvalidEventListenerIdException,
     MaintenanceException,
+    NexityBadCredentialsException,
     NoRegisteredEventListenerException,
     NotAuthenticatedException,
     TooManyExecutionsException,
@@ -142,7 +147,7 @@ class TahomaClient:
         """
         # Request access token
         async with self.session.post(
-            "https://api.groupe-atlantic.com/token",
+            COZYTOUCH_ATLANTIC_API + "/token",
             data=FormData(
                 {
                     "grant_type": "password",
@@ -157,19 +162,23 @@ class TahomaClient:
         ) as response:
             token = await response.json()
 
-            if token["token_type"] != "bearer":
-                raise Exception("TODO: no bearer")
+            # {'error': 'invalid_grant',
+            # 'error_description': 'Provided Authorization Grant is invalid.'}
+            if "error" in token and token["error"] == "invalid_grant":
+                raise CozyTouchBadCredentialsException(token["error_description"])
 
-        # Request jwt
+            if "token_type" not in token:
+                raise CozyTouchServiceException("No CozyTouch token provided.")
+
+        # Request JWT
         async with self.session.get(
-            "https://api.groupe-atlantic.com/gacoma/gacomawcfservice/accounts/jwt",
+            COZYTOUCH_ATLANTIC_API + "/gacoma/gacomawcfservice/accounts/jwt",
             headers={"Authorization": f"Bearer {token['access_token']}"},
         ) as response:
             jwt = await response.text()
 
-            # Return JWT or exception
             if not jwt:
-                raise Exception("TODO: no jwt")
+                raise CozyTouchServiceException("No JWT token provided.")
 
             return jwt
 
@@ -189,21 +198,20 @@ class TahomaClient:
             client=client,
         )
 
-        tokens = aws.authenticate_user()
+        try:
+            tokens = aws.authenticate_user()
+        except Exception as error:
+            raise NexityBadCredentialsException() from error
+
         id_token = tokens["AuthenticationResult"]["IdToken"]
 
-        print(id_token)
-
         async with self.session.get(
-            "https://api.egn.prd.aws-nexity.fr/deploy/api/v1/domotic/token",
+            NEXITY_API + "/deploy/api/v1/domotic/token",
             headers={
                 "Authorization": id_token,
             },
         ) as response:
             token = await response.json()
-
-            print(token)
-            print("\n")
 
             if "token" not in token:
                 raise Exception("TODO: no token")
