@@ -30,6 +30,7 @@ from pyhoma.exceptions import (
     InvalidEventListenerIdException,
     MaintenanceException,
     NexityBadCredentialsException,
+    NexityServiceException,
     NoRegisteredEventListenerException,
     NotAuthenticatedException,
     TooManyExecutionsException,
@@ -119,7 +120,6 @@ class TahomaClient:
         # CozyTouch authentication using jwt
         if self.api_url == SUPPORTED_SERVERS["atlantic_cozytouch"].endpoint:
             jwt = await self.cozytouch_login()
-            jwt = jwt.strip('"')  # Remove surrounding quotes
             payload = {"jwt": jwt}
 
         # Nexity authentication using ssoToken
@@ -180,6 +180,8 @@ class TahomaClient:
             if not jwt:
                 raise CozyTouchServiceException("No JWT token provided.")
 
+            jwt = jwt.strip('"')  # Remove surrounding quotes
+
             return jwt
 
     async def nexity_login(self) -> str:
@@ -214,7 +216,7 @@ class TahomaClient:
             token = await response.json()
 
             if "token" not in token:
-                raise Exception("TODO: no token")
+                raise NexityServiceException("No Nexity SSO token provided.")
 
             return token["token"]
 

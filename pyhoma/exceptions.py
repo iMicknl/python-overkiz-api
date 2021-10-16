@@ -35,6 +35,10 @@ class NexityBadCredentialsException(Exception):
     pass
 
 
+class NexityServiceException(Exception):
+    pass
+
+
 # CozyTouch
 class CozyTouchBadCredentialsException(Exception):
     pass
