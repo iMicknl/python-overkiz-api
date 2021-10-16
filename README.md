@@ -23,26 +23,14 @@ pip install pyhoma
 import asyncio
 import time
 
+from pyhoma.const import SUPPORTED_SERVERS
 from pyhoma.client import TahomaClient
-
-SUPPORTED_ENDPOINTS = {
-    "Cozytouch": "https://ha110-1.overkiz.com/enduser-mobile-web/enduserAPI/",
-    "eedomus": "https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/",
-    "Hi Kumo": "https://ha117-1.overkiz.com/enduser-mobile-web/enduserAPI/",
-    "Rexel Energeasy Connect": "https://ha112-1.overkiz.com/enduser-mobile-web/enduserAPI/",
-    "Somfy Connexoon IO": "https://tahomalink.com/enduser-mobile-web/enduserAPI/",
-    "Somfy Connexoon RTS": "https://ha201-1.overkiz.com/enduser-mobile-web/enduserAPI/",
-    "Somfy TaHoma": "https://tahomalink.com/enduser-mobile-web/enduserAPI/",
-    "Somfy (Australia)": "https://ha201-1.overkiz.com/enduser-mobile-web/enduserAPI/",
-    "Somfy (Europe)": "https://tahomalink.com/enduser-mobile-web/enduserAPI/",
-    "Somfy (North America)": "https://ha401-1.overkiz.com/enduser-mobile-web/enduserAPI/",
-}
 
 USERNAME = ""
 PASSWORD = ""
 
 async def main() -> None:
-    async with TahomaClient(USERNAME, PASSWORD, api_url=SUPPORTED_ENDPOINTS["Somfy (Europe)"]) as client:
+    async with TahomaClient(USERNAME, PASSWORD, server=SUPPORTED_SERVERS["somfy_europe"]) as client:
         try:
             await client.login()
         except Exception as exception:  # pylint: disable=broad-except

@@ -27,14 +27,13 @@ from pyhoma.models import (
     Execution,
     Gateway,
     HistoryExecution,
+    OverkizServer,
     Place,
     Scenario,
     State,
 )
 
 JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
-
-API_URL = "https://tahomalink.com/enduser-mobile-web/enduserAPI/"  # /doc for API doc
 
 
 async def relogin(invocation: dict[str, Any]) -> None:
@@ -52,7 +51,7 @@ class TahomaClient:
         self,
         username: str,
         password: str,
-        api_url: str = API_URL,
+        server: OverkizServer,
         session: ClientSession = None,
     ) -> None:
         """
@@ -66,7 +65,7 @@ class TahomaClient:
 
         self.username = username
         self.password = password
-        self.api_url = api_url
+        self.server = server
 
         self.devices: list[Device] = []
         self.gateways: list[Gateway] = []
@@ -327,27 +326,27 @@ class TahomaClient:
         response = await self.__post(f"exec/{oid}")
         return response["execId"]
 
-    async def __get(self, endpoint: str) -> Any:
+    async def __get(self, path: str) -> Any:
         """Make a GET request to the TaHoma API"""
-        async with self.session.get(f"{self.api_url}{endpoint}") as response:
+        async with self.session.get(f"{self.server.endpoint}{path}") as response:
             await self.check_response(response)
             return await response.json()
 
     async def __post(
-        self, endpoint: str, payload: JSON | None = None, data: JSON | None = None
+        self, path: str, payload: JSON | None = None, data: JSON | None = None
     ) -> Any:
         """Make a POST request to the TaHoma API"""
         async with self.session.post(
-            f"{self.api_url}{endpoint}",
+            f"{self.server.endpoint}{path}",
             data=data,
             json=payload,
         ) as response:
             await self.check_response(response)
             return await response.json()
 
-    async def __delete(self, endpoint: str) -> None:
+    async def __delete(self, path: str) -> None:
         """Make a DELETE request to the TaHoma API"""
-        async with self.session.delete(f"{self.api_url}{endpoint}") as response:
+        async with self.session.delete(f"{self.server.endpoint}{path}") as response:
             await self.check_response(response)
 
     @staticmethod
