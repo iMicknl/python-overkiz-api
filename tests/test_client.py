@@ -7,6 +7,7 @@ import pytest
 from pytest import fixture
 
 from pyhoma.client import TahomaClient
+from pyhoma.models import OverkizServer
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -14,7 +15,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 class TestTahomaClient:
     @fixture
     def api(self):
-        return TahomaClient("username", "password")
+        return TahomaClient("username", "password", OverkizServer())
 
     @pytest.mark.asyncio
     async def test_get_devices_basic(self, api):
