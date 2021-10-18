@@ -283,18 +283,8 @@ class Event:
         self.camera_id = camera_id
         self.deleted_raw_devices_count = deleted_raw_devices_count
         self.protocol_type = protocol_type
-
-        try:
-            self.name = EventName(name)
-        except ValueError:
-            self.name = name
-
-        try:
-            self.failure_type_code = (
-                FailureType(failure_type_code) if failure_type_code else None
-            )
-        except ValueError:
-            self.failure_type_code = failure_type_code
+        self.name = name
+        self.failure_type_code = failure_type_code
 
 
 @attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
@@ -401,16 +391,8 @@ class Gateway:
         self.update_status = UpdateBoxStatus(update_status)
         self.sync_in_progress = sync_in_progress
         self.partners = [Partner(**p) for p in partners] if partners else []
-
-        try:
-            self.type = GatewayType(type)
-        except ValueError:
-            self.type = type
-
-        try:
-            self.sub_type = GatewaySubType(sub_type)
-        except ValueError:
-            self.sub_type = sub_type
+        self.type = type
+        self.sub_type = sub_type
 
 
 @attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
