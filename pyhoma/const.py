@@ -35,7 +35,7 @@ SUPPORTED_SERVERS = {
         name="Rexel Energeasy Connect",
         endpoint="https://ha112-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Rexel",
-        configuration_url=None,
+        configuration_url="https://utilisateur.energeasyconnect.com/user/#/zone/equipements",
     ),
     "somfy_europe": OverkizServer(  # uses https://ha101-1.overkiz.com
         name="Somfy (Europe)",
