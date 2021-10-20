@@ -7,14 +7,30 @@ from types import TracebackType
 from typing import Any, Dict, List, Union
 
 import backoff
+import boto3
 import humps
-from aiohttp import ClientResponse, ClientSession, ServerDisconnectedError
+from aiohttp import ClientResponse, ClientSession, FormData, ServerDisconnectedError
+from botocore.config import Config
+from warrant.aws_srp import AWSSRP
 
+from pyhoma.const import (
+    COZYTOUCH_ATLANTIC_API,
+    COZYTOUCH_CLIENT_ID,
+    NEXITY_API,
+    NEXITY_COGNITO_CLIENT_ID,
+    NEXITY_COGNITO_REGION,
+    NEXITY_COGNITO_USER_POOL,
+    SUPPORTED_SERVERS,
+)
 from pyhoma.exceptions import (
     BadCredentialsException,
+    CozyTouchBadCredentialsException,
+    CozyTouchServiceException,
     InvalidCommandException,
     InvalidEventListenerIdException,
     MaintenanceException,
+    NexityBadCredentialsException,
+    NexityServiceException,
     NoRegisteredEventListenerException,
     NotAuthenticatedException,
     TooManyExecutionsException,
@@ -35,7 +51,6 @@ from pyhoma.models import (
 
 JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
 
-
 async def relogin(invocation: dict[str, Any]) -> None:
     await invocation["args"][0].login()
 
@@ -45,7 +60,7 @@ async def refresh_listener(invocation: dict[str, Any]) -> None:
 
 
 class TahomaClient:
-    """Interface class for the Tahoma API"""
+    """Interface class for the Overkiz API"""
 
     def __init__(
         self,
@@ -91,19 +106,117 @@ class TahomaClient:
 
         await self.session.close()
 
-    async def login(self, register_event_listener: bool | None = True) -> bool:
+    async def login(
+        self,
+        register_event_listener: bool | None = True,
+    ) -> bool:
         """
         Authenticate and create an API session allowing access to the other operations.
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
-        payload = {"userId": self.username, "userPassword": self.password}
+
+        # CozyTouch authentication using jwt
+        if self.api_url == SUPPORTED_SERVERS["atlantic_cozytouch"].endpoint:
+            jwt = await self.cozytouch_login()
+            payload = {"jwt": jwt}
+
+        # Nexity authentication using ssoToken
+        elif self.api_url == SUPPORTED_SERVERS["nexity"].endpoint:
+            sso_token = await self.nexity_login()
+            user_id = self.username.replace("@", "_-_")  # Replace @ for _-_
+            payload = {"ssoToken": sso_token, "userId": user_id}
+
+        # Regular authentication using userId+userPassword
+        else:
+            payload = {"userId": self.username, "userPassword": self.password}
+
         response = await self.__post("login", data=payload)
 
         if response.get("success"):
             if register_event_listener:
                 await self.register_event_listener()
             return True
+
         return False
+
+    async def cozytouch_login(self) -> str:
+        """
+        Authenticate via CozyTouch identity and acquire JWT token.
+        """
+        # Request access token
+        async with self.session.post(
+            COZYTOUCH_ATLANTIC_API + "/token",
+            data=FormData(
+                {
+                    "grant_type": "password",
+                    "username": self.username,
+                    "password": self.password,
+                }
+            ),
+            headers={
+                "Authorization": f"Basic {COZYTOUCH_CLIENT_ID}",
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+        ) as response:
+            token = await response.json()
+
+            # {'error': 'invalid_grant',
+            # 'error_description': 'Provided Authorization Grant is invalid.'}
+            if "error" in token and token["error"] == "invalid_grant":
+                raise CozyTouchBadCredentialsException(token["error_description"])
+
+            if "token_type" not in token:
+                raise CozyTouchServiceException("No CozyTouch token provided.")
+
+        # Request JWT
+        async with self.session.get(
+            COZYTOUCH_ATLANTIC_API + "/gacoma/gacomawcfservice/accounts/jwt",
+            headers={"Authorization": f"Bearer {token['access_token']}"},
+        ) as response:
+            jwt = await response.text()
+
+            if not jwt:
+                raise CozyTouchServiceException("No JWT token provided.")
+
+            jwt = jwt.strip('"')  # Remove surrounding quotes
+
+            return jwt
+
+    async def nexity_login(self) -> str:
+        """
+        Authenticate via Nexity identity and acquire SSO token.
+        """
+        # Request access token
+        client = boto3.client(
+            "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
+        )
+        aws = AWSSRP(
+            username=self.username,
+            password=self.password,
+            pool_id=NEXITY_COGNITO_USER_POOL,
+            client_id=NEXITY_COGNITO_CLIENT_ID,
+            client=client,
+        )
+
+        try:
+            tokens = aws.authenticate_user()
+        except Exception as error:
+            raise NexityBadCredentialsException() from error
+
+        id_token = tokens["AuthenticationResult"]["IdToken"]
+
+        async with self.session.get(
+            NEXITY_API + "/deploy/api/v1/domotic/token",
+            headers={
+                "Authorization": id_token,
+            },
+        ) as response:
+            token = await response.json()
+
+            if "token" not in token:
+                raise NexityServiceException("No Nexity SSO token provided.")
+
+            return token["token"]
 
     @backoff.on_exception(
         backoff.expo,
