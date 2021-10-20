@@ -532,3 +532,4 @@ class OverkizServer:
     name: str
     endpoint: str
     manufacturer: str
+    configuration_url: str | None
