@@ -1,7 +1,7 @@
-from enum import Enum
+from enum import Enum, IntEnum
 
 
-class ProductType(Enum):
+class ProductType(IntEnum):
     NONE = 0
     ACTUATOR = 1
     SENSOR = 2
@@ -11,7 +11,7 @@ class ProductType(Enum):
     INFRASTRUCTURE_COMPONENT = 6
 
 
-class GatewayType(Enum):
+class GatewayType(IntEnum):
     VIRTUAL_KIZBOX = 0
     KIZBOX_V1 = 2
     TAHOMA = 15
@@ -47,7 +47,7 @@ class GatewayType(Enum):
     WISER = 88
 
 
-class GatewaySubType(Enum):
+class GatewaySubType(IntEnum):
     TAHOMA_BASIC = 1
     TAHOMA_BASIC_PLUS = 2
     TAHOMA_PREMIUM = 3
@@ -67,7 +67,7 @@ class GatewaySubType(Enum):
     TAHOMA_BOX_C_IO = 12
 
 
-class DataType(Enum):
+class DataType(IntEnum):
     NONE = 0
     INTEGER = 1
     FLOAT = 2
@@ -80,7 +80,7 @@ class DataType(Enum):
     JSON_OBJECT = 11
 
 
-class ExecutionType(Enum):
+class ExecutionType(str, Enum):
     IMMEDIATE_EXECUTION = "Immediate execution"
     DELAYED_EXECUTION = "Delayed execution"
     TECHNICAL_EXECUTION = "Technical execution"
@@ -89,7 +89,7 @@ class ExecutionType(Enum):
     RAW_TRIGGER_GATEWAY = "Raw trigger (Gateway)"
 
 
-class ExecutionState(Enum):
+class ExecutionState(str, Enum):
     INITIALIZED = "INITIALIZED"
     NOT_TRANSMITTED = "NOT_TRANSMITTED"
     TRANSMITTED = "TRANSMITTED"
@@ -100,7 +100,7 @@ class ExecutionState(Enum):
     QUEUED_SERVER_SIDE = "QUEUED_SERVER_SIDE"
 
 
-class ExecutionSubType(Enum):
+class ExecutionSubType(str, Enum):
     ACTION_GROUP = "ACTION_GROUP"
     ACTION_GROUP_SEQUENCE = "ACTION_GROUP_SEQUENCE"
     DAWN_TRIGGER = "DAWN_TRIGGER"
@@ -115,7 +115,7 @@ class ExecutionSubType(Enum):
     TIME_TRIGGER = "TIME_TRIGGER"
 
 
-class FailureType(Enum):
+class FailureType(IntEnum):
     NO_FAILURE = 0
     NON_EXECUTING = 11
     ERROR_WHILE_EXECUTING = 12
@@ -316,7 +316,7 @@ class FailureType(Enum):
     UNKNOWN_DETAILED_ERROR = 10007
 
 
-class EventName(Enum):
+class EventName(str, Enum):
     ACTION_GROUP_CREATED = "ActionGroupCreatedEvent"
     ACTION_GROUP_DELETED = "ActionGroupDeletedEvent"
     ACTION_GROUP_UPDATED = "ActionGroupUpdatedEvent"
@@ -397,7 +397,7 @@ class EventName(Enum):
     ZIGBEE_REFRESH_NETWORK_COMPLETED = "ZigbeeRefreshNetworkCompletedEvent"
 
 
-class UpdateBoxStatus(Enum):
+class UpdateBoxStatus(str, Enum):
     NOT_UPDATABLE = "NOT_UPDATABLE"
     READY_TO_UPDATE = "READY_TO_UPDATE"
     READY_TO_BE_UPDATED_BY_SERVER = "READY_TO_BE_UPDATED_BY_SERVER"
@@ -407,13 +407,13 @@ class UpdateBoxStatus(Enum):
     UPDATING = "UPDATING"
 
 
-class CommandMode(Enum):
+class CommandMode(str, Enum):
     HIGH_PRIORITY = "highPriority"
     GEOLOCATED = "geolocated"
     INTERNAL = "internal"
 
 
-class UiWidget(Enum):
+class UiWidget(str, Enum):
     # From /reference/ui/widgets
     AIR_FLOW_SENSOR = "AirFlowSensor"
     AIR_QUALITY_SENSOR = "AirQualitySensor"
