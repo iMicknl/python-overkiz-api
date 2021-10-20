@@ -434,7 +434,7 @@ class HistoryExecution:
     end_time: int
     effective_start_time: int
     duration: int
-    label: str
+    label: str | None = None
     type: str
     state: ExecutionState
     failure_type: str
@@ -452,7 +452,7 @@ class HistoryExecution:
         end_time: int,
         effective_start_time: int,
         duration: int,
-        label: str,
+        label: str | None = None,
         type: str,
         state: ExecutionState,
         failure_type: str,
