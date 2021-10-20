@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyhoma"
-version = "0.5.21"
+version = "0.5.22"
 description = "Async Python wrapper to interact with internal Somfy TaHoma API, or other OverKiz API's."
 authors = ["Mick Vleeshouwer", "Vincent Le Bourlot", "Thibaut Etienne"]
 license = "MIT"
