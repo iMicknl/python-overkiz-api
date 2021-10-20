@@ -36,7 +36,7 @@ class Device:
     available: bool
     enabled: bool
     label: str
-    deviceurl: str = attr.ib(repr=obfuscate_id)
+    device_url: str = attr.ib(repr=obfuscate_id)
     controllable_name: str
     definition: Definition
     data_properties: list[dict[str, Any]] | None = None
@@ -44,7 +44,7 @@ class Device:
     ui_class: str | None = None
     states: States
     type: ProductType
-    placeoid: str
+    place_oid: str
 
     def __init__(
         self,
@@ -53,7 +53,7 @@ class Device:
         available: bool,
         enabled: bool,
         label: str,
-        deviceurl: str,
+        device_url: str,
         controllable_name: str,
         definition: dict[str, Any],
         data_properties: list[dict[str, Any]] | None = None,
@@ -61,14 +61,14 @@ class Device:
         ui_class: str | None = None,
         states: list[dict[str, Any]] | None = None,
         type: int,
-        placeoid: str,
+        place_oid: str,
         **_: Any,
     ) -> None:
-        self.id = deviceurl
+        self.id = device_url
         self.attributes = States(attributes)
         self.available = available
         self.definition = Definition(**definition)
-        self.deviceurl = deviceurl
+        self.device_url = device_url
         self.enabled = enabled
         self.label = label
         self.controllable_name = controllable_name
@@ -77,7 +77,7 @@ class Device:
         self.widget = widget
         self.ui_class = ui_class
         self.type = ProductType(type)
-        self.placeoid = placeoid
+        self.place_oid = place_oid
 
 
 @attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
@@ -219,7 +219,7 @@ class Event:
     failure_type_code: FailureType | None = None
     failure_type: str | None = None
     condition_groupoid: str | None = None
-    placeoid: str | None = None
+    place_oid: str | None = None
     label: str | None = None
     metadata: Any | None = None
     camera_id: str | None = None
@@ -227,7 +227,7 @@ class Event:
     protocol_type: Any | None = None
     gateway_id: str | None = attr.ib(repr=obfuscate_id, default=None)
     exec_id: str | None = None
-    deviceurl: str | None = attr.ib(repr=obfuscate_id, default=None)
+    device_url: str | None = attr.ib(repr=obfuscate_id, default=None)
     device_states: list[State]
     old_state: ExecutionState | None = None
     new_state: ExecutionState | None = None
@@ -245,7 +245,7 @@ class Event:
         failure_type_code: FailureType | None = None,
         failure_type: str | None = None,
         condition_groupoid: str | None = None,
-        placeoid: str | None = None,
+        place_oid: str | None = None,
         label: str | None = None,
         metadata: Any | None = None,
         camera_id: str | None = None,
@@ -253,7 +253,7 @@ class Event:
         protocol_type: Any | None = None,
         gateway_id: str | None = None,
         exec_id: str | None = None,
-        deviceurl: str | None = None,
+        device_url: str | None = None,
         device_states: list[dict[str, Any]] | None = None,
         old_state: ExecutionState | None = None,
         new_state: ExecutionState | None = None,
@@ -262,7 +262,7 @@ class Event:
         self.timestamp = timestamp
         self.gateway_id = gateway_id
         self.exec_id = exec_id
-        self.deviceurl = deviceurl
+        self.device_url = device_url
         self.device_states = (
             [State(**s) for s in device_states] if device_states else []
         )
@@ -277,7 +277,7 @@ class Event:
 
         self.failure_type = failure_type
         self.condition_groupoid = condition_groupoid
-        self.placeoid = placeoid
+        self.place_oid = place_oid
         self.label = label
         self.metadata = metadata
         self.camera_id = camera_id
@@ -364,7 +364,7 @@ class Gateway:
     gateway_id: str
     alive: bool | None = None
     mode: str
-    placeoid: str | None = None
+    place_oid: str | None = None
     time_reliable: bool
     connectivity: Connectivity
     up_to_date: bool | None = None
@@ -381,7 +381,7 @@ class Gateway:
         gateway_id: str,
         alive: bool | None = None,
         mode: str,
-        placeoid: str | None = None,
+        place_oid: str | None = None,
         time_reliable: bool,
         connectivity: dict[str, Any],
         up_to_date: bool | None = None,
@@ -394,7 +394,7 @@ class Gateway:
         self.functions = functions
         self.alive = alive
         self.mode = mode
-        self.placeoid = placeoid
+        self.place_oid = place_oid
         self.time_reliable = time_reliable
         self.connectivity = Connectivity(**connectivity)
         self.up_to_date = up_to_date
@@ -415,7 +415,7 @@ class Gateway:
 
 @attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
 class HistoryExecutionCommand:
-    deviceurl: str = attr.ib(repr=obfuscate_id)
+    device_url: str = attr.ib(repr=obfuscate_id)
     command: str
     rank: int
     dynamic: bool
@@ -425,7 +425,7 @@ class HistoryExecutionCommand:
 
     def __init__(
         self,
-        deviceurl: str,
+        device_url: str,
         command: str,
         rank: int,
         dynamic: bool,
@@ -434,7 +434,7 @@ class HistoryExecutionCommand:
         parameters: list[Any] | None = None,
         **_: Any,
     ) -> None:
-        self.deviceurl = deviceurl
+        self.device_url = device_url
         self.command = command
         self.parameters = parameters
         self.rank = rank
