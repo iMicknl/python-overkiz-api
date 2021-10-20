@@ -1,5 +1,15 @@
 from pyhoma.models import OverkizServer
 
+COZYTOUCH_ATLANTIC_API = "https://api.groupe-atlantic.com"
+COZYTOUCH_CLIENT_ID = (
+    "czduc0RZZXdWbjVGbVV4UmlYN1pVSUM3ZFI4YTphSDEzOXZmbzA1ZGdqeDJkSFVSQkFTbmhCRW9h"
+)
+
+NEXITY_API = "https://api.egn.prd.aws-nexity.fr"
+NEXITY_COGNITO_CLIENT_ID = "3mca95jd5ase5lfde65rerovok"
+NEXITY_COGNITO_USER_POOL = "eu-west-1_wj277ucoI"
+NEXITY_COGNITO_REGION = "eu-west-1"
+
 SUPPORTED_SERVERS = {
     "atlantic_cozytouch": OverkizServer(
         name="Atlantic Cozytouch",
