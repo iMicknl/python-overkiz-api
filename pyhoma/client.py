@@ -51,6 +51,7 @@ from pyhoma.models import (
 
 JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
 
+
 async def relogin(invocation: dict[str, Any]) -> None:
     await invocation["args"][0].login()
 
@@ -74,7 +75,7 @@ class TahomaClient:
 
         :param username: the username for Tahomalink.com
         :param password: the password for Tahomalink.com
-        :param api_url: optional custom api url
+        :param server: OverkizServer
         :param session: optional ClientSession
         """
 
@@ -116,12 +117,12 @@ class TahomaClient:
         """
 
         # CozyTouch authentication using jwt
-        if self.api_url == SUPPORTED_SERVERS["atlantic_cozytouch"].endpoint:
+        if self.server == SUPPORTED_SERVERS["atlantic_cozytouch"]:
             jwt = await self.cozytouch_login()
             payload = {"jwt": jwt}
 
         # Nexity authentication using ssoToken
-        elif self.api_url == SUPPORTED_SERVERS["nexity"].endpoint:
+        elif self.server == SUPPORTED_SERVERS["nexity"]:
             sso_token = await self.nexity_login()
             user_id = self.username.replace("@", "_-_")  # Replace @ for _-_
             payload = {"ssoToken": sso_token, "userId": user_id}
