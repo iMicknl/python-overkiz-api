@@ -43,14 +43,13 @@ from pyhoma.models import (
     Execution,
     Gateway,
     HistoryExecution,
+    OverkizServer,
     Place,
     Scenario,
     State,
 )
 
 JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
-
-DEFAULT_SERVER = SUPPORTED_SERVERS["somfy_europe"]
 
 
 async def relogin(invocation: dict[str, Any]) -> None:
@@ -68,7 +67,7 @@ class TahomaClient:
         self,
         username: str,
         password: str,
-        api_url: str = DEFAULT_SERVER.endpoint,
+        server: OverkizServer,
         session: ClientSession = None,
     ) -> None:
         """
@@ -76,13 +75,13 @@ class TahomaClient:
 
         :param username: the username for Tahomalink.com
         :param password: the password for Tahomalink.com
-        :param api_url: optional custom api url
+        :param server: OverkizServer
         :param session: optional ClientSession
         """
 
         self.username = username
         self.password = password
-        self.api_url = api_url
+        self.server = server
 
         self.devices: list[Device] = []
         self.gateways: list[Gateway] = []
@@ -118,12 +117,12 @@ class TahomaClient:
         """
 
         # CozyTouch authentication using jwt
-        if self.api_url == SUPPORTED_SERVERS["atlantic_cozytouch"].endpoint:
+        if self.server == SUPPORTED_SERVERS["atlantic_cozytouch"]:
             jwt = await self.cozytouch_login()
             payload = {"jwt": jwt}
 
         # Nexity authentication using ssoToken
-        elif self.api_url == SUPPORTED_SERVERS["nexity"].endpoint:
+        elif self.server == SUPPORTED_SERVERS["nexity"]:
             sso_token = await self.nexity_login()
             user_id = self.username.replace("@", "_-_")  # Replace @ for _-_
             payload = {"ssoToken": sso_token, "userId": user_id}
@@ -441,27 +440,27 @@ class TahomaClient:
         response = await self.__post(f"exec/{oid}")
         return response["execId"]
 
-    async def __get(self, endpoint: str) -> Any:
+    async def __get(self, path: str) -> Any:
         """Make a GET request to the TaHoma API"""
-        async with self.session.get(f"{self.api_url}{endpoint}") as response:
+        async with self.session.get(f"{self.server.endpoint}{path}") as response:
             await self.check_response(response)
             return await response.json()
 
     async def __post(
-        self, endpoint: str, payload: JSON | None = None, data: JSON | None = None
+        self, path: str, payload: JSON | None = None, data: JSON | None = None
     ) -> Any:
         """Make a POST request to the TaHoma API"""
         async with self.session.post(
-            f"{self.api_url}{endpoint}",
+            f"{self.server.endpoint}{path}",
             data=data,
             json=payload,
         ) as response:
             await self.check_response(response)
             return await response.json()
 
-    async def __delete(self, endpoint: str) -> None:
+    async def __delete(self, path: str) -> None:
         """Make a DELETE request to the TaHoma API"""
-        async with self.session.delete(f"{self.api_url}{endpoint}") as response:
+        async with self.session.delete(f"{self.server.endpoint}{path}") as response:
             await self.check_response(response)
 
     @staticmethod
