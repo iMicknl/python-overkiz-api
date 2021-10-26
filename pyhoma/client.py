@@ -1,6 +1,7 @@
 """ Python wrapper for the Tahoma API """
 from __future__ import annotations
 
+import asyncio
 import urllib.parse
 from json import JSONDecodeError
 from types import TracebackType
@@ -200,7 +201,8 @@ class TahomaClient:
         )
 
         try:
-            tokens = aws.authenticate_user()
+            loop = asyncio.get_event_loop()
+            tokens = await loop.run_in_executor(None, aws.authenticate_user)
         except Exception as error:
             raise NexityBadCredentialsException() from error
 
