@@ -6,6 +6,7 @@ logging-format-style=new
 
 [MESSAGES CONTROL]
 disable=
+     logging-fstring-interpolation,
      missing-module-docstring,
      missing-class-docstring,
      missing-function-docstring,

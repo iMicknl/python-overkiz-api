@@ -1,4 +1,7 @@
+import logging
 from enum import Enum, IntEnum
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class ProductType(IntEnum):
@@ -48,7 +51,8 @@ class GatewayType(IntEnum):
     WISER = 88
 
     @classmethod
-    def _missing_(cls, _):  # type: ignore
+    def _missing_(cls, value):  # type: ignore
+        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
         return cls.UNKNOWN
 
 
@@ -73,7 +77,8 @@ class GatewaySubType(IntEnum):
     TAHOMA_BOX_C_IO = 12
 
     @classmethod
-    def _missing_(cls, _):  # type: ignore
+    def _missing_(cls, value):  # type: ignore
+        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
         return cls.UNKNOWN
 
 
@@ -327,7 +332,8 @@ class FailureType(IntEnum):
     UNKNOWN_DETAILED_ERROR = 10007
 
     @classmethod
-    def _missing_(cls, _):  # type: ignore
+    def _missing_(cls, value):  # type: ignore
+        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
         return cls.UNKNOWN
 
 
@@ -413,7 +419,8 @@ class EventName(str, Enum):
     ZIGBEE_REFRESH_NETWORK_COMPLETED = "ZigbeeRefreshNetworkCompletedEvent"
 
     @classmethod
-    def _missing_(cls, _):  # type: ignore
+    def _missing_(cls, value):  # type: ignore
+        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
         return cls.UNKNOWN
 
 
