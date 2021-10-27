@@ -31,7 +31,7 @@ class NoRegisteredEventListenerException(Exception):
 
 
 # Nexity
-class NexityBadCredentialsException(Exception):
+class NexityBadCredentialsException(BadCredentialsException):
     pass
 
 
@@ -40,7 +40,7 @@ class NexityServiceException(Exception):
 
 
 # CozyTouch
-class CozyTouchBadCredentialsException(Exception):
+class CozyTouchBadCredentialsException(BadCredentialsException):
     pass
 
 

@@ -188,10 +188,16 @@ class TahomaClient:
         """
         Authenticate via Nexity identity and acquire SSO token.
         """
+        loop = asyncio.get_event_loop()
+
         # Request access token
-        client = boto3.client(
-            "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
+        client = await loop.run_in_executor(
+            None,
+            lambda: boto3.client(
+                "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
+            ),
         )
+
         aws = AWSSRP(
             username=self.username,
             password=self.password,
@@ -201,7 +207,6 @@ class TahomaClient:
         )
 
         try:
-            loop = asyncio.get_event_loop()
             tokens = await loop.run_in_executor(None, aws.authenticate_user)
         except Exception as error:
             raise NexityBadCredentialsException() from error
