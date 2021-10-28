@@ -338,7 +338,7 @@ class FailureType(IntEnum):
 
 
 class EventName(str, Enum):
-    UNKNOWN = "UnknownEvent"
+    UNKNOWN = "Unknown"
     ACTION_GROUP_CREATED = "ActionGroupCreatedEvent"
     ACTION_GROUP_DELETED = "ActionGroupDeletedEvent"
     ACTION_GROUP_UPDATED = "ActionGroupUpdatedEvent"
