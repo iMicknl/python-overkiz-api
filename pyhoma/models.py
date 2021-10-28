@@ -351,7 +351,7 @@ class Connectivity:
 class Gateway:
     partners: list[Partner]
     functions: str | None = None
-    sub_type: GatewaySubType
+    sub_type: GatewaySubType | None = None
     id: str = attr.ib(repr=obfuscate_id)
     gateway_id: str
     alive: bool | None = None
@@ -369,7 +369,7 @@ class Gateway:
         *,
         partners: list[dict[str, Any]] | None = None,
         functions: str | None = None,
-        sub_type: GatewaySubType,
+        sub_type: GatewaySubType | None = None,
         gateway_id: str,
         alive: bool | None = None,
         mode: str,
@@ -394,7 +394,7 @@ class Gateway:
         self.sync_in_progress = sync_in_progress
         self.partners = [Partner(**p) for p in partners] if partners else []
         self.type = GatewayType(type)
-        self.sub_type = GatewaySubType(sub_type)
+        self.sub_type = GatewaySubType(sub_type) if sub_type else None
 
 
 @attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
