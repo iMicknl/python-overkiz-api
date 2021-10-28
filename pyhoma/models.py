@@ -283,8 +283,10 @@ class Event:
         self.camera_id = camera_id
         self.deleted_raw_devices_count = deleted_raw_devices_count
         self.protocol_type = protocol_type
-        self.name = name
-        self.failure_type_code = failure_type_code
+        self.name = EventName(name)
+        self.failure_type_code = (
+            None if failure_type_code is None else FailureType(failure_type_code)
+        )
 
 
 @attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
@@ -349,7 +351,7 @@ class Connectivity:
 class Gateway:
     partners: list[Partner]
     functions: str | None = None
-    sub_type: GatewaySubType
+    sub_type: GatewaySubType | None = None
     id: str = attr.ib(repr=obfuscate_id)
     gateway_id: str
     alive: bool | None = None
@@ -367,7 +369,7 @@ class Gateway:
         *,
         partners: list[dict[str, Any]] | None = None,
         functions: str | None = None,
-        sub_type: GatewaySubType,
+        sub_type: GatewaySubType | None = None,
         gateway_id: str,
         alive: bool | None = None,
         mode: str,
@@ -391,8 +393,8 @@ class Gateway:
         self.update_status = UpdateBoxStatus(update_status)
         self.sync_in_progress = sync_in_progress
         self.partners = [Partner(**p) for p in partners] if partners else []
-        self.type = type
-        self.sub_type = sub_type
+        self.type = GatewayType(type)
+        self.sub_type = GatewaySubType(sub_type) if sub_type else None
 
 
 @attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)

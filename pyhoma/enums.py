@@ -1,4 +1,7 @@
+import logging
 from enum import Enum, IntEnum
+
+_LOGGER = logging.getLogger(__name__)
 
 
 class ProductType(IntEnum):
@@ -12,6 +15,7 @@ class ProductType(IntEnum):
 
 
 class GatewayType(IntEnum):
+    UNKNOWN = -1
     VIRTUAL_KIZBOX = 0
     KIZBOX_V1 = 2
     TAHOMA = 15
@@ -46,8 +50,14 @@ class GatewayType(IntEnum):
     ELIOT = 77
     WISER = 88
 
+    @classmethod
+    def _missing_(cls, value):  # type: ignore
+        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
+        return cls.UNKNOWN
+
 
 class GatewaySubType(IntEnum):
+    UNKNOWN = -1
     TAHOMA_BASIC = 1
     TAHOMA_BASIC_PLUS = 2
     TAHOMA_PREMIUM = 3
@@ -65,6 +75,11 @@ class GatewaySubType(IntEnum):
     TAHOMA_SECURITY_SHORT_CHANNEL = 15
     TAHOMA_SECURITY_PRO = 16
     TAHOMA_BOX_C_IO = 12
+
+    @classmethod
+    def _missing_(cls, value):  # type: ignore
+        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
+        return cls.UNKNOWN
 
 
 class DataType(IntEnum):
@@ -116,6 +131,7 @@ class ExecutionSubType(str, Enum):
 
 
 class FailureType(IntEnum):
+    UNKNOWN = -1
     NO_FAILURE = 0
     NON_EXECUTING = 11
     ERROR_WHILE_EXECUTING = 12
@@ -315,8 +331,14 @@ class FailureType(IntEnum):
     GATEWAY_BUFFER_OVERFLOW = 10006
     UNKNOWN_DETAILED_ERROR = 10007
 
+    @classmethod
+    def _missing_(cls, value):  # type: ignore
+        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
+        return cls.UNKNOWN
+
 
 class EventName(str, Enum):
+    UNKNOWN = "Unknown"
     ACTION_GROUP_CREATED = "ActionGroupCreatedEvent"
     ACTION_GROUP_DELETED = "ActionGroupDeletedEvent"
     ACTION_GROUP_UPDATED = "ActionGroupUpdatedEvent"
@@ -395,6 +417,11 @@ class EventName(str, Enum):
     ZIGBEE_LEAVE_NETWORK_COMPLETED = "ZigbeeLeaveNetworkCompletedEvent"
     ZIGBEE_LEAVE_NETWORK_FAILED = "ZigbeeLeaveNetworkFailedEvent"
     ZIGBEE_REFRESH_NETWORK_COMPLETED = "ZigbeeRefreshNetworkCompletedEvent"
+
+    @classmethod
+    def _missing_(cls, value):  # type: ignore
+        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
+        return cls.UNKNOWN
 
 
 class UpdateBoxStatus(str, Enum):
