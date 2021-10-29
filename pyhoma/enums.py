@@ -55,6 +55,10 @@ class GatewayType(IntEnum):
         _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
         return cls.UNKNOWN
 
+    @property
+    def beautify_name(self) -> str:
+        return self.name.replace("_", " ").title()
+
 
 class GatewaySubType(IntEnum):
     UNKNOWN = -1
@@ -80,6 +84,10 @@ class GatewaySubType(IntEnum):
     def _missing_(cls, value):  # type: ignore
         _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
         return cls.UNKNOWN
+
+    @property
+    def beautify_name(self) -> str:
+        return self.name.replace("_", " ").title()
 
 
 class DataType(IntEnum):
