@@ -73,16 +73,63 @@ class Setup:
 class Location:
     creation_time: str
     last_update_time: str
+    city: str
+    country: str
+    postal_code: str
+    address_line1: str
+    address_line2: str
+    timezone: str
+    longitude: str
+    latitude: str
+    twilight_mode: int
+    twilight_angle: str
+    twilight_city: str
+    summer_solstice_dusk_minutes: str
+    winter_solstice_dusk_minutes: str
+    twilight_offset_enabled: bool
+    dawn_offset: int
+    dusk_offset: int
 
     def __init__(
         self,
         *,
         creation_time: str,
         last_update_time: str,
+        city: str,
+        country: str,
+        postal_code: str,
+        address_line1: str,
+        address_line2: str,
+        timezone: str,
+        longitude: str,
+        latitude: str,
+        twilight_mode: int,
+        twilight_angle: str,
+        twilight_city: str,
+        summer_solstice_dusk_minutes: str,
+        winter_solstice_dusk_minutes: str,
+        twilight_offset_enabled: bool,
+        dawn_offset: int,
+        dusk_offset: int,
         **_: Any,
     ) -> None:
         self.creation_time = creation_time
         self.last_update_time = last_update_time
+        self.country = country
+        self.postal_code = postal_code
+        self.address_line1 = address_line1
+        self.address_line2 = address_line2
+        self.timezone = timezone
+        self.longitude = longitude
+        self.latitude = latitude
+        self.twilight_mode = twilight_mode
+        self.twilight_angle = twilight_angle
+        self.twilight_city = twilight_city
+        self.summer_solstice_dusk_minutes = summer_solstice_dusk_minutes
+        self.winter_solstice_dusk_minutes = winter_solstice_dusk_minutes
+        self.twilight_offset_enabled = twilight_offset_enabled
+        self.dawn_offset = dawn_offset
+        self.dusk_offset = dusk_offset
 
 
 @attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
