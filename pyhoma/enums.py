@@ -51,6 +51,7 @@ class GatewayType(IntEnum):
     NEXITY_RAIL_DIN = 74
     ELIOT = 77
     WISER = 88
+    TAHOMA_SWITCH = 98
 
     @classmethod
     def _missing_(cls, value):  # type: ignore
