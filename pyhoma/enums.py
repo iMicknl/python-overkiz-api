@@ -1,9 +1,10 @@
 import logging
-from enum import Enum, IntEnum
+from enum import Enum, IntEnum, unique
 
 _LOGGER = logging.getLogger(__name__)
 
 
+@unique
 class ProductType(IntEnum):
     NONE = 0
     ACTUATOR = 1
@@ -14,6 +15,7 @@ class ProductType(IntEnum):
     INFRASTRUCTURE_COMPONENT = 6
 
 
+@unique
 class GatewayType(IntEnum):
     UNKNOWN = -1
     VIRTUAL_KIZBOX = 0
@@ -60,6 +62,7 @@ class GatewayType(IntEnum):
         return self.name.replace("_", " ").title()
 
 
+@unique
 class GatewaySubType(IntEnum):
     UNKNOWN = -1
     TAHOMA_BASIC = 1
@@ -78,7 +81,7 @@ class GatewaySubType(IntEnum):
     TAHOMA_PRO = 14
     TAHOMA_SECURITY_SHORT_CHANNEL = 15
     TAHOMA_SECURITY_PRO = 16
-    TAHOMA_BOX_C_IO = 12
+    # TAHOMA_BOX_C_IO = 12 That’s probably 17, but tahomalink.com says it’s 12
 
     @classmethod
     def _missing_(cls, value):  # type: ignore
@@ -90,6 +93,7 @@ class GatewaySubType(IntEnum):
         return self.name.replace("_", " ").title()
 
 
+@unique
 class DataType(IntEnum):
     NONE = 0
     INTEGER = 1
@@ -103,6 +107,7 @@ class DataType(IntEnum):
     JSON_OBJECT = 11
 
 
+@unique
 class ExecutionType(str, Enum):
     IMMEDIATE_EXECUTION = "Immediate execution"
     DELAYED_EXECUTION = "Delayed execution"
@@ -112,6 +117,7 @@ class ExecutionType(str, Enum):
     RAW_TRIGGER_GATEWAY = "Raw trigger (Gateway)"
 
 
+@unique
 class ExecutionState(str, Enum):
     INITIALIZED = "INITIALIZED"
     NOT_TRANSMITTED = "NOT_TRANSMITTED"
@@ -123,6 +129,7 @@ class ExecutionState(str, Enum):
     QUEUED_SERVER_SIDE = "QUEUED_SERVER_SIDE"
 
 
+@unique
 class ExecutionSubType(str, Enum):
     ACTION_GROUP = "ACTION_GROUP"
     ACTION_GROUP_SEQUENCE = "ACTION_GROUP_SEQUENCE"
@@ -138,6 +145,7 @@ class ExecutionSubType(str, Enum):
     TIME_TRIGGER = "TIME_TRIGGER"
 
 
+@unique
 class FailureType(IntEnum):
     UNKNOWN = -1
     NO_FAILURE = 0
@@ -345,6 +353,7 @@ class FailureType(IntEnum):
         return cls.UNKNOWN
 
 
+@unique
 class EventName(str, Enum):
     UNKNOWN = "Unknown"
     ACTION_GROUP_CREATED = "ActionGroupCreatedEvent"
@@ -432,6 +441,7 @@ class EventName(str, Enum):
         return cls.UNKNOWN
 
 
+@unique
 class UpdateBoxStatus(str, Enum):
     NOT_UPDATABLE = "NOT_UPDATABLE"
     READY_TO_UPDATE = "READY_TO_UPDATE"
@@ -442,12 +452,14 @@ class UpdateBoxStatus(str, Enum):
     UPDATING = "UPDATING"
 
 
+@unique
 class CommandMode(str, Enum):
     HIGH_PRIORITY = "highPriority"
     GEOLOCATED = "geolocated"
     INTERNAL = "internal"
 
 
+@unique
 class UiWidget(str, Enum):
     # From /reference/ui/widgets
     AIR_FLOW_SENSOR = "AirFlowSensor"
