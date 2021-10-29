@@ -30,6 +30,62 @@ def obfuscate_email(email: str | None) -> str:
 
 
 @attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+class Setup:
+    creation_time: str
+    last_update_time: str
+    id: str
+    location: Location
+    gateways: list[Gateway]
+    devices: list[Device]
+    zones: list[Any]  # unknown
+    reseller_delegation_type: str
+    oid: str
+    root_place: Place
+
+    def __init__(
+        self,
+        *,
+        creation_time: str,
+        last_update_time: str,
+        id: str = attr.ib(repr=obfuscate_id, default=None),  # TODO fix
+        location: dict[str, Any],
+        gateways: list[dict[str, Any]],
+        devices: list[dict[str, Any]],
+        zones: list[Any],
+        reseller_delegation_type: str,
+        oid: str,
+        root_place: dict[str, Any],
+        **_: Any,
+    ) -> None:
+        self.id = id
+        self.creation_time = creation_time
+        self.last_update_time = last_update_time
+        self.location = Location(**location)
+        self.gateways = [Gateway(**g) for g in gateways]
+        self.devices = [Device(**d) for d in devices]
+        self.zones = zones
+        self.reseller_delegation_type = reseller_delegation_type
+        self.oid = oid
+        self.root_place = Place(**root_place)
+
+
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+class Location:
+    creation_time: str
+    last_update_time: str
+
+    def __init__(
+        self,
+        *,
+        creation_time: str,
+        last_update_time: str,
+        **_: Any,
+    ) -> None:
+        self.creation_time = creation_time
+        self.last_update_time = last_update_time
+
+
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
 class Device:
     id: str = attr.ib(repr=False)
     attributes: States
@@ -205,7 +261,6 @@ class Command(dict):  # type: ignore
         dict.__init__(self, name=name, parameters=parameters)
 
 
-# pylint: disable-msg=too-many-locals
 @attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
 class Event:
     timestamp: int

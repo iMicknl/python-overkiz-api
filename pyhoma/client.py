@@ -47,6 +47,7 @@ from pyhoma.models import (
     OverkizServer,
     Place,
     Scenario,
+    Setup,
     State,
 )
 
@@ -59,6 +60,9 @@ async def relogin(invocation: dict[str, Any]) -> None:
 
 async def refresh_listener(invocation: dict[str, Any]) -> None:
     await invocation["args"][0].register_event_listener()
+
+
+# pylint: disable=too-many-instance-attributes
 
 
 class TahomaClient:
@@ -84,6 +88,7 @@ class TahomaClient:
         self.password = password
         self.server = server
 
+        self.setup: Setup | None = None
         self.devices: list[Device] = []
         self.gateways: list[Gateway] = []
         self.event_listener_id: str | None = None
@@ -225,6 +230,26 @@ class TahomaClient:
                 raise NexityServiceException("No Nexity SSO token provided.")
 
             return token["token"]
+
+    @backoff.on_exception(
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError),
+        max_tries=2,
+        on_backoff=relogin,
+    )
+    async def get_setup(self, refresh: bool = False) -> Setup:
+        """
+        Retrieve full setup
+        """
+        if self.setup and not refresh:
+            return self.setup
+
+        response = await self.__get("setup")
+        setup = Setup(**humps.decamelize(response))
+
+        self.setup = setup
+
+        return setup
 
     @backoff.on_exception(
         backoff.expo,
