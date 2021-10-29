@@ -22,7 +22,7 @@ from pyhoma.enums import (
 
 
 def obfuscate_id(id: str | None) -> str:
-    return re.sub(r"\d+-", "****-", str(id))
+    return re.sub(r"\d+-", "(SETUP)?****-", str(id))
 
 
 def obfuscate_email(email: str | None) -> str:
