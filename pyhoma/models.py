@@ -29,6 +29,10 @@ def obfuscate_email(email: str | None) -> str:
     return re.sub(r"(.).*@.*(.\..*)", r"\1****@****\2", str(email))
 
 
+def mask(input: str | None) -> str:
+    return re.sub(r"[\p{L}_.-]++", "*", str(input))
+
+
 @attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
 class Setup:
     creation_time: str
@@ -73,14 +77,14 @@ class Setup:
 class Location:
     creation_time: str
     last_update_time: str
-    city: str
-    country: str
-    postal_code: str
-    address_line1: str
-    address_line2: str
+    city: str = attr.ib(repr=mask, default=None)
+    country: str = attr.ib(repr=mask, default=None)
+    postal_code: str = attr.ib(repr=mask, default=None)
+    address_line1: str = attr.ib(repr=mask, default=None)
+    address_line2: str = attr.ib(repr=mask, default=None)
     timezone: str
-    longitude: str
-    latitude: str
+    longitude: str = attr.ib(repr=mask, default=None)
+    latitude: str = attr.ib(repr=mask, default=None)
     twilight_mode: int
     twilight_angle: str
     twilight_city: str
@@ -95,14 +99,14 @@ class Location:
         *,
         creation_time: str,
         last_update_time: str,
-        city: str,
-        country: str,
-        postal_code: str,
-        address_line1: str,
-        address_line2: str,
+        city: str = attr.ib(repr=mask, default=None),
+        country: str = attr.ib(repr=mask, default=None),
+        postal_code: str = attr.ib(repr=mask, default=None),
+        address_line1: str = attr.ib(repr=mask, default=None),
+        address_line2: str = attr.ib(repr=mask, default=None),
         timezone: str,
-        longitude: str,
-        latitude: str,
+        longitude: str = attr.ib(repr=mask, default=None),
+        latitude: str = attr.ib(repr=mask, default=None),
         twilight_mode: int,
         twilight_angle: str,
         twilight_city: str,
@@ -115,6 +119,7 @@ class Location:
     ) -> None:
         self.creation_time = creation_time
         self.last_update_time = last_update_time
+        self.city = city
         self.country = country
         self.postal_code = postal_code
         self.address_line1 = address_line1
