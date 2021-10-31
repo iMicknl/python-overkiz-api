@@ -247,7 +247,10 @@ class TahomaClient:
         response = await self.__get("setup")
         setup = Setup(**humps.decamelize(response))
 
+        # Cache response
         self.setup = setup
+        self.gateways = setup.gateways
+        self.devices = setup.devices
 
         return setup
 
@@ -266,7 +269,11 @@ class TahomaClient:
 
         response = await self.__get("setup/devices")
         devices = [Device(**d) for d in humps.decamelize(response)]
+
+        # Cache response
         self.devices = devices
+        if self.setup:
+            self.setup.devices = devices
 
         return devices
 
@@ -285,7 +292,11 @@ class TahomaClient:
 
         response = await self.__get("setup/gateways")
         gateways = [Gateway(**g) for g in humps.decamelize(response)]
+
+        # Cache response
         self.gateways = gateways
+        if self.setup:
+            self.setup.gateways = gateways
 
         return gateways
 

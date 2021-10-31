@@ -65,6 +65,7 @@ class TestTahomaClient:
             setup = await client.get_setup()
 
             assert len(setup.devices) == device_count
+            assert len(setup.gateways) == 1
 
 
 class MockResponse:
