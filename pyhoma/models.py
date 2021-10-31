@@ -30,7 +30,7 @@ def obfuscate_email(email: str | None) -> str:
 
 
 def mask(input: str | None) -> str:
-    return re.sub(r"[\p{L}_.-]++", "*", str(input))
+    return re.sub(r"[a-zA-Z0-9_.-]*", "*", str(input))
 
 
 @attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
