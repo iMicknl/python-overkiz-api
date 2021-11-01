@@ -41,7 +41,7 @@ class Setup:
     location: Location
     gateways: list[Gateway]
     devices: list[Device]
-    zones: list[Any]  # unknown
+    zones: list[Zone]
     reseller_delegation_type: str
     oid: str
     root_place: Place
@@ -56,7 +56,7 @@ class Setup:
         location: dict[str, Any],
         gateways: list[dict[str, Any]],
         devices: list[dict[str, Any]],
-        zones: list[Any],
+        zones: list[dict[str, Any]],
         reseller_delegation_type: str,
         oid: str,
         root_place: dict[str, Any],
@@ -69,7 +69,7 @@ class Setup:
         self.location = Location(**location)
         self.gateways = [Gateway(**g) for g in gateways]
         self.devices = [Device(**d) for d in devices]
-        self.zones = zones
+        self.zones = [Zone(**z) for z in zones]
         self.reseller_delegation_type = reseller_delegation_type
         self.oid = oid
         self.root_place = Place(**root_place)
@@ -633,6 +633,57 @@ class Feature:
     ) -> None:
         self.name = name
         self.source = source
+
+
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+class ZoneItem:
+    item_type: str
+    device_oid: str
+    device_url: str
+
+    def __init__(
+        self,
+        *,
+        item_type: str,
+        device_oid: str,
+        device_url: str,
+        **_: Any,
+    ) -> None:
+        self.item_type = item_type
+        self.device_oid = device_oid
+        self.device_url = device_url
+
+
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+class Zone:
+    creation_time: str
+    last_update_time: str
+    label: str
+    type: int
+    items: list[ZoneItem] | None
+    external_oid: str
+    metadata: str
+    oid: str
+
+    def __init__(
+        self,
+        *,
+        last_update_time: str,
+        label: str,
+        type: int,
+        items: list[dict[str, Any]] | None,
+        external_oid: str,
+        metadata: str,
+        oid: str,
+        **_: Any,
+    ) -> None:
+        self.last_update_time = last_update_time
+        self.label = label
+        self.type = type
+        self.items = [ZoneItem(**z) for z in items] if items else []
+        self.external_oid = external_oid
+        self.metadata = metadata
+        self.oid = oid
 
 
 @attr.s(auto_attribs=True, slots=True, kw_only=True)
