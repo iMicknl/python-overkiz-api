@@ -45,6 +45,7 @@ class Setup:
     reseller_delegation_type: str
     oid: str
     root_place: Place
+    features: list[Feature] | None = None
 
     def __init__(
         self,
@@ -59,6 +60,7 @@ class Setup:
         reseller_delegation_type: str,
         oid: str,
         root_place: dict[str, Any],
+        features: list[dict[str, Any]] | None = None,
         **_: Any,
     ) -> None:
         self.id = id
@@ -71,6 +73,7 @@ class Setup:
         self.reseller_delegation_type = reseller_delegation_type
         self.oid = oid
         self.root_place = Place(**root_place)
+        self.features = [Feature(**f) for f in features] if features else None
 
 
 @attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
@@ -614,6 +617,22 @@ class Place:
         self.type = type
         self.oid = oid
         self.sub_places = [Place(**p) for p in sub_places] if sub_places else []
+
+
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+class Feature:
+    name: str
+    source: str
+
+    def __init__(
+        self,
+        *,
+        name: str,
+        source: str,
+        **_: Any,
+    ) -> None:
+        self.name = name
+        self.source = source
 
 
 @attr.s(auto_attribs=True, slots=True, kw_only=True)

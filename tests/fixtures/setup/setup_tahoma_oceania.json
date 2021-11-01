@@ -176,7 +176,7 @@
         {
             "creationTime": 1613676516000,
             "lastUpdateTime": 1613676516000,
-            "label": "หน้าต่างม้วนแม่บ้าน",
+            "label": "*",
             "deviceURL": "rts://1234-1234-6362/16730022",
             "shortcut": false,
             "controllableName": "rts:RollerShutterRTSComponent",
@@ -257,7 +257,7 @@
         {
             "creationTime": 1613676640000,
             "lastUpdateTime": 1613676640000,
-            "label": "ประตูม้วนครัว",
+            "label": "*",
             "deviceURL": "rts://1234-1234-6362/16749917",
             "shortcut": false,
             "controllableName": "rts:RollerShutterRTSComponent",
