@@ -5,6 +5,7 @@ from typing import Any, Iterator
 
 import attr
 
+from pyhoma.enum.gateway import GatewaySubType, GatewayType
 from pyhoma.enums import (
     DataType,
     EventName,
@@ -12,8 +13,6 @@ from pyhoma.enums import (
     ExecutionSubType,
     ExecutionType,
     FailureType,
-    GatewaySubType,
-    GatewayType,
     ProductType,
     UpdateBoxStatus,
 )
