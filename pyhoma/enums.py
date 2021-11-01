@@ -3,6 +3,8 @@ from enum import Enum, IntEnum, unique
 
 _LOGGER = logging.getLogger(__name__)
 
+# pylint: disable=too-many-lines
+
 
 @unique
 class ProductType(IntEnum):
@@ -883,6 +885,8 @@ class OverkizState(str, Enum):
     INTERNAL_CURRENT_ALARM_MODE = "internal:CurrentAlarmModeState"
     INTERNAL_INTRUSION_DETECTED = "internal:IntrusionDetectedState"
     INTERNAL_TARGET_ALARM_MODE = "internal:TargetAlarmModeState"
+    IO_DHW_ABSENCE_MODE = "io:DHWAbsenceModeState"
+    IO_DHW_BOOST_MODE = "io:DHWBoostModeState"
     IO_DHW_MODE = "io:DHWModeState"
     IO_ELECTRIC_BOOSTER_OPERATING_TIME = "io:ElectricBoosterOperatingTimeState"
     IO_FORCE_HEATING_STATE = "io:ForceHeatingState"
@@ -920,6 +924,7 @@ class OverkizCommandParam(str, Enum):
     AUTO = "auto"
     AUTO_MODE = "autoMode"
     AVAILABLE = "available"
+    BOOST = "boost"
     CLOSED = "closed"
     DEAD = "dead"
     DETECTED = "detected"
@@ -940,6 +945,7 @@ class OverkizCommandParam(str, Enum):
     PENDING = "pending"
     PEDESTRIAN = "pedestrian"
     PERSON_INSIDE = "personInside"
+    PROG = "prog"
     RELAUNCH = "relaunch"
     STANDARD = "standard"
     STOP = "stop"
@@ -976,7 +982,9 @@ class OverkizCommand(str, Enum):
     OPEN_SLATS = "openSlats"
     PARTIAL = "partial"
     RING_WITH_SINGLE_SIMPLE_SEQUENCE = "ringWithSingleSimpleSequence"
+    SET_ABSENCE_MODE = "setAbsenceMode"
     SET_ALARM_STATUS = "setAlarmStatus"
+    SET_BOOST_MODE = "setBoostMode"
     SET_CLOSURE = "setClosure"
     SET_CLOSURE_AND_LINEAR_SPEED = "setClosureAndLinearSpeed"
     SET_CONTROL_DHW = "setControlDHW"
