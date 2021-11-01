@@ -239,7 +239,20 @@ class TahomaClient:
     )
     async def get_setup(self, refresh: bool = False) -> Setup:
         """
-        Retrieve full setup
+        Get all data about the connected user setup
+            -> gateways data (serial number, activation state, ...): <gateways/gateway>
+            -> setup location: <location>
+            -> house places (rooms and floors): <place>
+            -> setup devices: <devices>
+
+        A gateway may be in different modes (mode) regarding to the activated functions (functions).
+        A house may be composed of several floors and rooms. The house, floors and rooms are viewed as a place.
+        Devices in the house are grouped by type called uiClass. Each device has an associated widget.
+        The widget is used to control or to know the device state, whatever the device protocol (controllable): IO, RTS, X10, ... .
+        A device can be either an actuator (type=1) or a sensor (type=2).
+        Data of one or several devices can be also get by setting the device(s) url as request parameter.
+
+        Per-session rate-limit : 1 calls per 1d period for this particular operation (bulk-load)
         """
         if self.setup and not refresh:
             return self.setup
@@ -263,6 +276,7 @@ class TahomaClient:
     async def get_devices(self, refresh: bool = False) -> list[Device]:
         """
         List devices
+        Per-session rate-limit : 1 calls per 1d period for this particular operation (bulk-load)
         """
         if self.devices and not refresh:
             return self.devices
@@ -285,7 +299,8 @@ class TahomaClient:
     )
     async def get_gateways(self, refresh: bool = False) -> list[Gateway]:
         """
-        List gateways
+        Get every gateways of a connected user setup
+        Per-session rate-limit : 1 calls per 1d period for this particular operation (bulk-load)
         """
         if self.gateways and not refresh:
             return self.gateways
