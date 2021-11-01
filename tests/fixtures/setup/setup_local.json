@@ -28,7 +28,7 @@
                 {
                     "type": 3,
                     "name": "core:NameState",
-                    "value": "Box"
+                    "value": "*"
                 },
                 {
                     "type": 3,
@@ -41,7 +41,7 @@
                     "value": "192.168.150.8"
                 }
             ],
-            "label": "Box",
+            "label": "*",
             "subsystemId": 0,
             "attributes": [],
             "enabled": true,
@@ -151,7 +151,7 @@
                     "type": 11,
                     "name": "core:ManufacturerSettingsState",
                     "value": {
-                        "current_position": 0
+                        "currentPosition": 0
                     }
                 },
                 {
@@ -172,7 +172,7 @@
                 {
                     "type": 3,
                     "name": "core:NameState",
-                    "value": "Zonnescherm"
+                    "value": "*"
                 },
                 {
                     "type": 1,
@@ -180,7 +180,7 @@
                     "value": 105
                 }
             ],
-            "label": "Zonnescherm",
+            "label": "*",
             "subsystemId": 0,
             "attributes": [
                 {
@@ -381,7 +381,7 @@
             "synced": true,
             "type": 5,
             "states": [],
-            "label": "IO (16516299)",
+            "label": "* (*)",
             "subsystemId": 0,
             "attributes": [
                 {

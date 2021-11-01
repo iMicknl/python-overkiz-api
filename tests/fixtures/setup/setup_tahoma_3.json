@@ -107,12 +107,12 @@
                 {
                     "name": "homekit:SetupPayload",
                     "type": 3,
-                    "value": "X-HM://0024JANF9M8YK"
+                    "value": "*://*"
                 },
                 {
                     "name": "homekit:SetupCode",
                     "type": 3,
-                    "value": "644-36-245"
+                    "value": "*"
                 }
             ],
             "available": true,
@@ -252,7 +252,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "alarm name"
+                    "value": "* *"
                 },
                 {
                     "name": "internal:CurrentAlarmModeState",
@@ -393,7 +393,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Box"
+                    "value": "*"
                 },
                 {
                     "name": "internal:BatteryStatusState",
@@ -634,7 +634,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Garage 308"
+                    "value": "* *"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -936,7 +936,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Volet M&C"
+                    "value": "* *&*"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -1275,7 +1275,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Salle à manger"
+                    "value": "* à *"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -1614,7 +1614,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Baie vitree"
+                    "value": "* *"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -1953,7 +1953,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Volet salon"
+                    "value": "* *"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -2210,7 +2210,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Prise SDB M&C"
+                    "value": "* * *&*"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -2562,7 +2562,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Grand volet salo"
+                    "value": "* * *"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -2821,7 +2821,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Alarme"
+                    "value": "*"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -3118,7 +3118,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Grand volet cuis"
+                    "value": "* * *"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -3413,7 +3413,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Garage Megane"
+                    "value": "* *"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -3633,7 +3633,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Prise SDB Louis"
+                    "value": "* * *"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -3925,7 +3925,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Volet Louis"
+                    "value": "* *"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -4264,7 +4264,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Petit volet cuis"
+                    "value": "* * *"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -4603,7 +4603,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Volet Bureau"
+                    "value": "* *"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -4860,7 +4860,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Prise imprimante"
+                    "value": "* *"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -5157,7 +5157,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Volet Leo"
+                    "value": "* *"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -5380,7 +5380,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "OGP Siegenia Bridge"
+                    "value": "* * *"
                 }
             ],
             "attributes": [
@@ -5469,7 +5469,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "OGP Intesis Bridge"
+                    "value": "* * *"
                 }
             ],
             "attributes": [

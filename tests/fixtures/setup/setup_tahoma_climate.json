@@ -70,12 +70,12 @@
                 {
                     "name": "homekit:SetupPayload",
                     "type": 3,
-                    "value": "X-HM://0024XW9DK32H4"
+                    "value": "*://*"
                 },
                 {
                     "name": "homekit:SetupCode",
                     "type": 3,
-                    "value": "889-59-096"
+                    "value": "*"
                 }
             ],
             "available": true,
@@ -215,7 +215,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "alarm name"
+                    "value": "* *"
                 },
                 {
                     "name": "internal:CurrentAlarmModeState",
@@ -356,7 +356,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Box"
+                    "value": "*"
                 },
                 {
                     "name": "internal:BatteryStatusState",
@@ -761,7 +761,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Zone Control"
+                    "value": "* *"
                 },
                 {
                     "name": "core:VersionState",
@@ -1732,7 +1732,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "bureau"
+                    "value": "*"
                 },
                 {
                     "name": "core:HeatingOnOffState",
@@ -2242,7 +2242,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Salon / SaM"
+                    "value": "* / *"
                 },
                 {
                     "name": "core:HeatingOnOffState",
@@ -2752,7 +2752,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Cabanon"
+                    "value": "*"
                 },
                 {
                     "name": "core:HeatingOnOffState",
@@ -3253,7 +3253,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Parents"
+                    "value": "*"
                 },
                 {
                     "name": "core:HeatingOnOffState",
@@ -3754,7 +3754,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Anastasia"
+                    "value": "*"
                 },
                 {
                     "name": "core:HeatingOnOffState",
@@ -4173,7 +4173,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "SOLUS io"
+                    "value": "* *"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -4362,7 +4362,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "OGP Siegenia Bridge"
+                    "value": "* * *"
                 }
             ],
             "attributes": [
@@ -4451,7 +4451,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "OGP Intesis Bridge"
+                    "value": "* * *"
                 }
             ],
             "attributes": [

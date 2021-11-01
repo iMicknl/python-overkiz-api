@@ -147,7 +147,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Box"
+                    "value": "*"
                 },
                 {
                     "name": "internal:LightingLedPodModeState",

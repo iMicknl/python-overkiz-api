@@ -78,7 +78,7 @@
                 {
                     "name": "homekit:SetupCode",
                     "type": 3,
-                    "value": "123-12-123"
+                    "value": "*"
                 }
             ],
             "available": true,
@@ -218,7 +218,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "alarm name"
+                    "value": "* *"
                 },
                 {
                     "name": "internal:CurrentAlarmModeState",
@@ -359,7 +359,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Box"
+                    "value": "*"
                 },
                 {
                     "name": "internal:BatteryStatusState",
@@ -713,7 +713,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Zipscreen woonka"
+                    "value": "* *"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -1051,7 +1051,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Verlichting perg"
+                    "value": "* *"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -1372,7 +1372,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Zipscreen slaapk"
+                    "value": "* *"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -1740,7 +1740,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Zipscreen pergol"
+                    "value": "* *"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -2060,7 +2060,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "Lamellendak perg"
+                    "value": "* *"
                 },
                 {
                     "name": "core:PriorityLockTimerState",
@@ -2256,7 +2256,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "OGP Siegenia Bridge"
+                    "value": "* * *"
                 }
             ],
             "attributes": [
@@ -2345,7 +2345,7 @@
                 {
                     "name": "core:NameState",
                     "type": 3,
-                    "value": "OGP Intesis Bridge"
+                    "value": "* * *"
                 }
             ],
             "attributes": [
