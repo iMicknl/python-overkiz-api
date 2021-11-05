@@ -426,7 +426,7 @@ class EventName(str, Enum):
     TOKEN_CREATION_FAILED = "TokenCreationFailedEvent"
     TOKEN_DELETION_FAILED = "TokenDeletionFailedEvent"
     TOKEN_REMOVED = "TokenRemovedEvent"
-    PUSH_SUBSCRIPTION_CREATED = "PushSubscriptionCreatedEvent" 
+    PUSH_SUBSCRIPTION_CREATED = "PushSubscriptionCreatedEvent"
     VALID_ADDRESS = "ValidAddressEvent"
     ZIGBEE_BIND_NETWORK_COMPLETED = "ZigbeeBindNetworkCompletedEvent"
     ZIGBEE_BIND_NETWORK_FAILED = "ZigbeeBindNetworkFailedEvent"
