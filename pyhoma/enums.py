@@ -6,6 +6,7 @@ _LOGGER = logging.getLogger(__name__)
 
 @unique
 class ProductType(IntEnum):
+    UNKNOWN = -1
     NONE = 0
     ACTUATOR = 1
     SENSOR = 2
@@ -13,6 +14,7 @@ class ProductType(IntEnum):
     CONTROLLABLE = 4
     GATEWAY = 5
     INFRASTRUCTURE_COMPONENT = 6
+    GROUP = 7
 
 
 @unique
