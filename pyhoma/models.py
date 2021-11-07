@@ -621,39 +621,17 @@ class Place:
         self.sub_places = [Place(**p) for p in sub_places] if sub_places else []
 
 
-@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+@attr.s(auto_attribs=True, slots=True, kw_only=True)
 class Feature:
     name: str
     source: str
 
-    def __init__(
-        self,
-        *,
-        name: str,
-        source: str,
-        **_: Any,
-    ) -> None:
-        self.name = name
-        self.source = source
 
-
-@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+@attr.s(auto_attribs=True, slots=True, kw_only=True)
 class ZoneItem:
     item_type: str
     device_oid: str
     device_url: str
-
-    def __init__(
-        self,
-        *,
-        item_type: str,
-        device_oid: str,
-        device_url: str,
-        **_: Any,
-    ) -> None:
-        self.item_type = item_type
-        self.device_oid = device_oid
-        self.device_url = device_url
 
 
 @attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
