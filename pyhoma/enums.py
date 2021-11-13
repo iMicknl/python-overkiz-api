@@ -6,7 +6,6 @@ _LOGGER = logging.getLogger(__name__)
 
 @unique
 class ProductType(IntEnum):
-    UNKNOWN = -1
     NONE = 0
     ACTUATOR = 1
     SENSOR = 2
@@ -422,6 +421,7 @@ class EventName(str, Enum):
     REFRESH_ALL_DEVICES_STATES_COMPLETED = "RefreshAllDevicesStatesCompletedEvent"
     SETUP_JOB_COMPLETED = "SetupJobCompletedEvent"
     SETUP_JOB_FAILED = "SetupJobFailedEvent"
+    SETUP_TRIGGER_TRIGGERED = "SetupTriggerTriggeredEvent"
     SOMFY_PROTECT_GET_SITES_COMPLETED = "SomfyProtectGetSitesCompletedEvent"
     SONOS_GET_TOPOLOGY_SUCCESS = "SonosGetTopologySuccessEvent"
     TOKEN_CREATED = "TokenCreatedEvent"
