@@ -13,6 +13,7 @@ class ProductType(IntEnum):
     CONTROLLABLE = 4
     GATEWAY = 5
     INFRASTRUCTURE_COMPONENT = 6
+    GROUP = 7
 
 
 @unique
@@ -420,6 +421,7 @@ class EventName(str, Enum):
     REFRESH_ALL_DEVICES_STATES_COMPLETED = "RefreshAllDevicesStatesCompletedEvent"
     SETUP_JOB_COMPLETED = "SetupJobCompletedEvent"
     SETUP_JOB_FAILED = "SetupJobFailedEvent"
+    SETUP_TRIGGER_TRIGGERED = "SetupTriggerTriggeredEvent"
     SOMFY_PROTECT_GET_SITES_COMPLETED = "SomfyProtectGetSitesCompletedEvent"
     SONOS_GET_TOPOLOGY_SUCCESS = "SonosGetTopologySuccessEvent"
     TOKEN_CREATED = "TokenCreatedEvent"
