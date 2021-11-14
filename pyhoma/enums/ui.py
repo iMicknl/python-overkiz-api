@@ -55,7 +55,7 @@ class UIClass(str, Enum):
     SUN_INTENSITY_SENSOR = "SunIntensitySensor"
     SUN_SENSOR = "SunSensor"
     SWIMMING_POOL = "SwimmingPool"
-    SWINGING_SHUTTERR = "SwingingShutter"
+    SWINGING_SHUTTER = "SwingingShutter"
     TEMPERATURE_SENSOR = "TemperatureSensor"
     THERMAL_ENERGY_SENSOR = "ThermalEnergySensor"
     THIRD_PARTY_GATEWAY = "ThirdPartyGateway"
