@@ -1,5 +1,5 @@
 import logging
-from enum import IntEnum, unique
+from enum import Enum, IntEnum, unique
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -81,3 +81,14 @@ class GatewaySubType(IntEnum):
     @property
     def beautify_name(self) -> str:
         return self.name.replace("_", " ").title()
+
+
+@unique
+class UpdateBoxStatus(str, Enum):
+    NOT_UPDATABLE = "NOT_UPDATABLE"
+    READY_TO_UPDATE = "READY_TO_UPDATE"
+    READY_TO_BE_UPDATED_BY_SERVER = "READY_TO_BE_UPDATED_BY_SERVER"
+    READY_TO_UPDATE_LOCALLY = "READY_TO_UPDATE_LOCALLY"
+    UP_TO_DATE = "UP_TO_DATE"
+    UNKNOWN = "UNKNOWN"
+    UPDATING = "UPDATING"

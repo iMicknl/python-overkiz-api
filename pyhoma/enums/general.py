@@ -31,44 +31,6 @@ class DataType(IntEnum):
 
 
 @unique
-class ExecutionType(str, Enum):
-    IMMEDIATE_EXECUTION = "Immediate execution"
-    DELAYED_EXECUTION = "Delayed execution"
-    TECHNICAL_EXECUTION = "Technical execution"
-    PLANNING = "Planning"
-    RAW_TRIGGER_SERVER = "Raw trigger (Server)"
-    RAW_TRIGGER_GATEWAY = "Raw trigger (Gateway)"
-
-
-@unique
-class ExecutionState(str, Enum):
-    INITIALIZED = "INITIALIZED"
-    NOT_TRANSMITTED = "NOT_TRANSMITTED"
-    TRANSMITTED = "TRANSMITTED"
-    IN_PROGRESS = "IN_PROGRESS"
-    COMPLETED = "COMPLETED"
-    FAILED = "FAILED"
-    QUEUED_GATEWAY_SIDE = "QUEUED_GATEWAY_SIDE"
-    QUEUED_SERVER_SIDE = "QUEUED_SERVER_SIDE"
-
-
-@unique
-class ExecutionSubType(str, Enum):
-    ACTION_GROUP = "ACTION_GROUP"
-    ACTION_GROUP_SEQUENCE = "ACTION_GROUP_SEQUENCE"
-    DAWN_TRIGGER = "DAWN_TRIGGER"
-    DUSK_TRIGGER = "DUSK_TRIGGER"
-    DISCRETE_TRIGGER_USER = "DISCRETE_TRIGGER_USER"
-    GENERIC_COMMAND_SCHEDULING = "GENERIC_COMMAND_SCHEDULING"
-    IFT_CONDITION = "IFT_CONDITION"
-    INTERNAL = "INTERNAL"
-    MANUAL_CONTROL = "MANUAL_CONTROL"
-    NO_ERROR = "NO_ERROR"
-    P2P_COMMAND_REGULATION = "P2P_COMMAND_REGULATION"
-    TIME_TRIGGER = "TIME_TRIGGER"
-
-
-@unique
 class FailureType(IntEnum):
     UNKNOWN = -1
     NO_FAILURE = 0
@@ -364,21 +326,3 @@ class EventName(str, Enum):
     def _missing_(cls, value):  # type: ignore
         _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
         return cls.UNKNOWN
-
-
-@unique
-class UpdateBoxStatus(str, Enum):
-    NOT_UPDATABLE = "NOT_UPDATABLE"
-    READY_TO_UPDATE = "READY_TO_UPDATE"
-    READY_TO_BE_UPDATED_BY_SERVER = "READY_TO_BE_UPDATED_BY_SERVER"
-    READY_TO_UPDATE_LOCALLY = "READY_TO_UPDATE_LOCALLY"
-    UP_TO_DATE = "UP_TO_DATE"
-    UNKNOWN = "UNKNOWN"
-    UPDATING = "UPDATING"
-
-
-@unique
-class CommandMode(str, Enum):
-    HIGH_PRIORITY = "highPriority"
-    GEOLOCATED = "geolocated"
-    INTERNAL = "internal"
