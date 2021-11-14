@@ -99,7 +99,7 @@ class UIWidget(str, Enum):
     BALLAST = "Ballast"
     BATTERY_SENSOR = "BatterySensor"
     BIOCLIMATIC_PERGOLA = "BioclimaticPergola"
-    CO_2_SENSOR = "CO2Sensor"
+    CO2_SENSOR = "CO2Sensor"
     COSENSOR = "COSensor"
     CAR_BUTTON_SENSOR = "CarButtonSensor"
     CAR_LOCK = "CarLock"
@@ -224,7 +224,7 @@ class UIWidget(str, Enum):
     INVALID = "Invalid"
     JSWCAMERA = "JSWCamera"
     KIZ_OTHERM_BRIDGE = "KizOThermBridge"
-    KIZ_OTHERM_V_2_BRIDGE = "KizOThermV2Bridge"
+    KIZ_OTHERM_V2_BRIDGE = "KizOThermV2Bridge"
     LOCK_UNLOCK_DOOR_LOCK_WITH_UNKNOWN_POSITION = (
         "LockUnlockDoorLockWithUnknownPosition"
     )
@@ -242,15 +242,15 @@ class UIWidget(str, Enum):
     ON_OFF_LIGHT = "OnOffLight"
     ON_OFF_REMOTECONTROLLER = "OnOffRemotecontroller"
     OPEN_CLOSE_GATE = "OpenCloseGate"
-    OPEN_CLOSE_GATE_4_T = "OpenCloseGate4T"
+    OPEN_CLOSE_GATE_4T = "OpenCloseGate4T"
     OPEN_CLOSE_GATE_WITH_PEDESTRIAN_POSITION = "OpenCloseGateWithPedestrianPosition"
     OPEN_CLOSE_SLIDING_GARAGE_DOOR = "OpenCloseSlidingGarageDoor"
-    OPEN_CLOSE_SLIDING_GARAGE_DOOR_4_T = "OpenCloseSlidingGarageDoor4T"
+    OPEN_CLOSE_SLIDING_GARAGE_DOOR_4T = "OpenCloseSlidingGarageDoor4T"
     OPEN_CLOSE_SLIDING_GARAGE_DOOR_WITH_PEDESTRIAN_POSITION = (
         "OpenCloseSlidingGarageDoorWithPedestrianPosition"
     )
     OPEN_CLOSE_SLIDING_GATE = "OpenCloseSlidingGate"
-    OPEN_CLOSE_SLIDING_GATE_4_T = "OpenCloseSlidingGate4T"
+    OPEN_CLOSE_SLIDING_GATE_4T = "OpenCloseSlidingGate4T"
     OPEN_CLOSE_SLIDING_GATE_WITH_PEDESTRIAN_POSITION = (
         "OpenCloseSlidingGateWithPedestrianPosition"
     )
@@ -270,7 +270,7 @@ class UIWidget(str, Enum):
     POSITIONABLE_EXTERIOR_VENETIAN_BLIND_WITH_WP = (
         "PositionableExteriorVenetianBlindWithWP"
     )
-    POSITIONABLE_EXTERIOR_VENETIAN_BLIND_WITH_WP_2 = (
+    POSITIONABLE_EXTERIOR_VENETIAN_BLIND_WITH_WP2 = (
         "PositionableExteriorVenetianBlindWithWP2"
     )
     POSITIONABLE_GARAGE_DOOR = "PositionableGarageDoor"
@@ -308,7 +308,7 @@ class UIWidget(str, Enum):
     RTD_INDOOR_SIREN = "RTDIndoorSiren"
     RTD_OUTDOOR_SIREN = "RTDOutdoorSiren"
     RTS_GENERIC = "RTSGeneric"
-    RTS_GENERIC_4_T = "RTSGeneric4T"
+    RTS_GENERIC_4T = "RTSGeneric4T"
     RTS_THERMOSTAT = "RTSThermostat"
     RAIN_SENSOR = "RainSensor"
     RELATIVE_HUMIDITY_SENSOR = "RelativeHumiditySensor"
@@ -359,7 +359,7 @@ class UIWidget(str, Enum):
     UP_DOWN_EXTERIOR_SCREEN = "UpDownExteriorScreen"
     UP_DOWN_EXTERIOR_VENETIAN_BLIND = "UpDownExteriorVenetianBlind"
     UP_DOWN_GARAGE_DOOR = "UpDownGarageDoor"
-    UP_DOWN_GARAGE_DOOR_4_T = "UpDownGarageDoor4T"
+    UP_DOWN_GARAGE_DOOR_4T = "UpDownGarageDoor4T"
     UP_DOWN_GARAGE_DOOR_WITH_VENTILATION_POSITION = (
         "UpDownGarageDoorWithVentilationPosition"
     )
