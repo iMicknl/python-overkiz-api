@@ -1,5 +1,4 @@
-from pyhoma.enum.gateway import GatewaySubType, GatewayType
-from pyhoma.enums import EventName, FailureType
+from pyhoma.enums import EventName, FailureType, GatewaySubType, GatewayType
 
 
 class TestGatewayType:
