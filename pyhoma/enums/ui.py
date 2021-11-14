@@ -305,11 +305,11 @@ class UIWidget(str, Enum):
     PROGRAMMABLE_AND_PROTECTABLE_THERMOSTAT_SET_POINT = (
         "ProgrammableAndProtectableThermostatSetPoint"
     )
-    RTDINDOOR_SIREN = "RTDIndoorSiren"
-    RTDOUTDOOR_SIREN = "RTDOutdoorSiren"
-    RTSGENERIC = "RTSGeneric"
-    RTSGENERIC_4_T = "RTSGeneric4T"
-    RTSTHERMOSTAT = "RTSThermostat"
+    RTD_INDOOR_SIREN = "RTDIndoorSiren"
+    RTD_OUTDOOR_SIREN = "RTDOutdoorSiren"
+    RTS_GENERIC = "RTSGeneric"
+    RTS_GENERIC_4_T = "RTSGeneric4T"
+    RTS_THERMOSTAT = "RTSThermostat"
     RAIN_SENSOR = "RainSensor"
     RELATIVE_HUMIDITY_SENSOR = "RelativeHumiditySensor"
     REMOTE_CONTROLLER_ONE_WAY = "RemoteControllerOneWay"
