@@ -290,7 +290,7 @@ class EventName(str, Enum):
     GATEWAY_MODE_CHANGED = "GatewayModeChangedEvent"
     GATEWAY_SYNCHRONIZATION_ENDED = "GatewaySynchronizationEndedEvent"
     GATEWAY_SYNCHRONIZATION_STARTED = "GatewaySynchronizationStartedEvent"
-    GROUP_TRIGGERED_EVENT = "GroupTriggeredEvent"
+    GROUP_TRIGGERED = "GroupTriggeredEvent"
     INVALID_ADDRESS = "InvalidAddressEvent"
     IO_CHANGED_KEY = "IOChangedKeyEvent"
     OPENDOORS_DISCOVER_COMPLETED = "OpenDoorsDiscoverCompletedEvent"
