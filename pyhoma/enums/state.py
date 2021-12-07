@@ -14,6 +14,7 @@ class OverkizAttribute(str, Enum):
 class OverkizState(str, Enum):
     """Device states used by Overkiz."""
 
+    CORE_ASSEMBLY_STATE = "core:AssemblyState"
     CORE_AVAILABILITY = "core:AvailabilityState"
     CORE_BATTERY = "core:BatteryState"
     CORE_BATTERY_LEVEL = "core:BatteryLevelState"
@@ -110,6 +111,7 @@ class OverkizState(str, Enum):
     IO_MEMORIZED_SIMPLE_VOLUME = "io:MemorizedSimpleVolumeState"
     IO_MIDDLE_WATER_TEMPERATURE = "io:MiddleWaterTemperatureState"
     IO_MODEL = "io:ModelState"
+    IO_OPERATING_MODE_CAPABILITIES = "io:OperatingModeCapabilitiesState"
     IO_OUTLET_ENGINE = "io:OutletEngineState"
     IO_PRIORITY_LOCK_LEVEL = "io:PriorityLockLevelState"
     IO_PRIORITY_LOCK_ORIGINATOR = "io:PriorityLockOriginatorState"
