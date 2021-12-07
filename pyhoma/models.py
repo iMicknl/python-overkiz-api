@@ -22,11 +22,122 @@ from pyhoma.enums import (
 
 
 def obfuscate_id(id: str | None) -> str:
-    return re.sub(r"\d+-", "****-", str(id))
+    return re.sub(r"(SETUP)?\d+-", "****-", str(id))
 
 
 def obfuscate_email(email: str | None) -> str:
     return re.sub(r"(.).*@.*(.\..*)", r"\1****@****\2", str(email))
+
+
+def mask(input: str) -> str:
+    return re.sub(r"[a-zA-Z0-9_.-]*", "*", str(input))
+
+
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+class Setup:
+    creation_time: str
+    last_update_time: str
+    id: str = attr.ib(repr=obfuscate_id, default=None)
+    location: Location
+    gateways: list[Gateway]
+    devices: list[Device]
+    zones: list[Zone]
+    reseller_delegation_type: str
+    oid: str
+    root_place: Place
+    features: list[Feature] | None = None
+
+    def __init__(
+        self,
+        *,
+        creation_time: str,
+        last_update_time: str,
+        id: str = attr.ib(repr=obfuscate_id, default=None),
+        location: dict[str, Any],
+        gateways: list[dict[str, Any]],
+        devices: list[dict[str, Any]],
+        zones: list[dict[str, Any]],
+        reseller_delegation_type: str,
+        oid: str,
+        root_place: dict[str, Any],
+        features: list[dict[str, Any]] | None = None,
+        **_: Any,
+    ) -> None:
+        self.id = id
+        self.creation_time = creation_time
+        self.last_update_time = last_update_time
+        self.location = Location(**location)
+        self.gateways = [Gateway(**g) for g in gateways]
+        self.devices = [Device(**d) for d in devices]
+        self.zones = [Zone(**z) for z in zones]
+        self.reseller_delegation_type = reseller_delegation_type
+        self.oid = oid
+        self.root_place = Place(**root_place)
+        self.features = [Feature(**f) for f in features] if features else None
+
+
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+class Location:
+    creation_time: str
+    last_update_time: str
+    city: str = attr.ib(repr=mask, default=None)
+    country: str = attr.ib(repr=mask, default=None)
+    postal_code: str = attr.ib(repr=mask, default=None)
+    address_line1: str = attr.ib(repr=mask, default=None)
+    address_line2: str = attr.ib(repr=mask, default=None)
+    timezone: str
+    longitude: str = attr.ib(repr=mask, default=None)
+    latitude: str = attr.ib(repr=mask, default=None)
+    twilight_mode: int
+    twilight_angle: str
+    twilight_city: str
+    summer_solstice_dusk_minutes: str
+    winter_solstice_dusk_minutes: str
+    twilight_offset_enabled: bool
+    dawn_offset: int
+    dusk_offset: int
+
+    def __init__(
+        self,
+        *,
+        creation_time: str,
+        last_update_time: str,
+        city: str = attr.ib(repr=mask, default=None),
+        country: str = attr.ib(repr=mask, default=None),
+        postal_code: str = attr.ib(repr=mask, default=None),
+        address_line1: str = attr.ib(repr=mask, default=None),
+        address_line2: str = attr.ib(repr=mask, default=None),
+        timezone: str,
+        longitude: str = attr.ib(repr=mask, default=None),
+        latitude: str = attr.ib(repr=mask, default=None),
+        twilight_mode: int,
+        twilight_angle: str,
+        twilight_city: str,
+        summer_solstice_dusk_minutes: str,
+        winter_solstice_dusk_minutes: str,
+        twilight_offset_enabled: bool,
+        dawn_offset: int,
+        dusk_offset: int,
+        **_: Any,
+    ) -> None:
+        self.creation_time = creation_time
+        self.last_update_time = last_update_time
+        self.city = city
+        self.country = country
+        self.postal_code = postal_code
+        self.address_line1 = address_line1
+        self.address_line2 = address_line2
+        self.timezone = timezone
+        self.longitude = longitude
+        self.latitude = latitude
+        self.twilight_mode = twilight_mode
+        self.twilight_angle = twilight_angle
+        self.twilight_city = twilight_city
+        self.summer_solstice_dusk_minutes = summer_solstice_dusk_minutes
+        self.winter_solstice_dusk_minutes = winter_solstice_dusk_minutes
+        self.twilight_offset_enabled = twilight_offset_enabled
+        self.dawn_offset = dawn_offset
+        self.dusk_offset = dusk_offset
 
 
 @attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
@@ -205,7 +316,6 @@ class Command(dict):  # type: ignore
         dict.__init__(self, name=name, parameters=parameters)
 
 
-# pylint: disable-msg=too-many-locals
 @attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
 class Event:
     timestamp: int
@@ -507,6 +617,51 @@ class Place:
         self.type = type
         self.oid = oid
         self.sub_places = [Place(**p) for p in sub_places] if sub_places else []
+
+
+@attr.s(auto_attribs=True, slots=True, kw_only=True)
+class Feature:
+    name: str
+    source: str
+
+
+@attr.s(auto_attribs=True, slots=True, kw_only=True)
+class ZoneItem:
+    item_type: str
+    device_oid: str
+    device_url: str
+
+
+@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+class Zone:
+    creation_time: str
+    last_update_time: str
+    label: str
+    type: int
+    items: list[ZoneItem] | None
+    external_oid: str
+    metadata: str
+    oid: str
+
+    def __init__(
+        self,
+        *,
+        last_update_time: str,
+        label: str,
+        type: int,
+        items: list[dict[str, Any]] | None,
+        external_oid: str,
+        metadata: str,
+        oid: str,
+        **_: Any,
+    ) -> None:
+        self.last_update_time = last_update_time
+        self.label = label
+        self.type = type
+        self.items = [ZoneItem(**z) for z in items] if items else []
+        self.external_oid = external_oid
+        self.metadata = metadata
+        self.oid = oid
 
 
 @attr.s(auto_attribs=True, slots=True, kw_only=True)
