@@ -4,7 +4,6 @@ import re
 from typing import Any, Iterator
 
 import attr
-
 from pyhoma.enums import (
     DataType,
     EventName,

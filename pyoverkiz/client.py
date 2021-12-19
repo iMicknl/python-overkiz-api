@@ -12,8 +12,6 @@ import boto3
 import humps
 from aiohttp import ClientResponse, ClientSession, FormData, ServerDisconnectedError
 from botocore.config import Config
-from warrant.aws_srp import AWSSRP
-
 from pyhoma.const import (
     COZYTOUCH_ATLANTIC_API,
     COZYTOUCH_CLIENT_ID,
@@ -50,6 +48,7 @@ from pyhoma.models import (
     Setup,
     State,
 )
+from warrant.aws_srp import AWSSRP
 
 JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
 
