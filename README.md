@@ -5,16 +5,28 @@
     <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a>
 </p>
 
-An updated and async version of the original [tahoma-api](https://github.com/philklei/tahoma-api) by [@philklei](https://github.com/philklei). The aim of this wrapper is to offer an easy to consume Python wrapper for the internal API's used by tahomalink.com, or other vendors which use the OverKiz platform.
+A fully async and easy to use API client for the (internal) OverKiz API. You can use this client to interact with smart devices connected to the OverKiz platform, used by various vendors like Somfy TaHoma and Atlantic Cozytouch.
 
-Somfy TaHoma has an official API, which can be consumed via the [Somfy-open-api](https://github.com/tetienne/somfy-open-api). Unfortunately only a few device classes are supported via the official API, thus the need for this wrapper.
+Somfy TaHoma has an official API, which can be consumed via the [Somfy-open-api](https://github.com/tetienne/somfy-open-api). Unfortunately only a few device classes are supported via the official API, thus the need for this API client.
 
-This package is written for the Home Assistant [ha-tahoma](https://github.com/iMicknl/ha-tahoma) integration, but could be used by any Python project interacting with Somfy TaHoma devices.
+This package is written for the Home Assistant [ha-tahoma](https://github.com/iMicknl/ha-tahoma) integration, but could be used by any Python project interacting with OverKiz hubs.
+
+## Supported hubs
+
+- Atlantic Cozytouch
+- Hitachi Hi Kumo
+- Nexity Eugénie
+- Rexel Energeasy Connect
+- Somfy Connexoon IO
+- Somfy Connexoon RTS
+- Somfy TaHoma
+- Somfy TaHoma Switch
+- Thermor Cozytouch
 
 ## Installation
 
 ```bash
-pip install pyhoma
+pip install pyoverkiz
 ```
 
 ## Getting started
@@ -69,7 +81,7 @@ asyncio.run(main())
 - Clone this repository
 - `cd python-overkiz-api`
 - Install the required Python version: `pyenv install`
-- Init the project: `poetry install`
+- Init the project: `poetry install`
 - Run `poetry run pre-commit install`
 
 ## PyCharm
