@@ -1,7 +1,7 @@
-# Somfy TaHoma / OverKiz
+# Python client for OverKiz API
 
 <p align=center>
-    <a href="https://github.com/iMicknl/python-tahoma-api/actions"><img src="https://github.com/iMicknl/python-tahoma-api/workflows/CI/badge.svg"/></a>
+    <a href="https://github.com/iMicknl/python-overkiz-api/actions"><img src="https://github.com/iMicknl/python-overkiz-api/workflows/CI/badge.svg"/></a>
     <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a>
 </p>
 
@@ -67,7 +67,7 @@ asyncio.run(main())
 - Install [poetry](https://python-poetry.org): `curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python`
 
 - Clone this repository
-- `cd python-tahoma-api`
+- `cd python-overkiz-api`
 - Install the required Python version: `pyenv install`
 - Init the project: `poetry install`
 - Run `poetry run pre-commit install`
@@ -80,6 +80,6 @@ Using snap, run `snap install pycharm --classic` to install it.
 
 For MacOS, run `brew cask install pycharm-ce`
 
-Once launched, don't create a new project, but open an existing one and select the **python-tahoma-api** folder.
+Once launched, don't create a new project, but open an existing one and select the **python-overkiz-api** folder.
 
-Go to _File | Settings | Project: nre-tag | Project Interpreter_. Your interpreter must look like `<whatever>/python-tahoma-api/.venv/bin/python`
+Go to _File | Settings | Project: nre-tag | Project Interpreter_. Your interpreter must look like `<whatever>/python-overkiz-api/.venv/bin/python`

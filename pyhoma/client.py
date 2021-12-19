@@ -436,7 +436,7 @@ class TahomaClient:
         self,
         device_url: str,
         command: Command | str,
-        label: str | None = "python-tahoma-api",
+        label: str | None = "python-overkiz-api",
     ) -> str:
         """Send a command"""
         if isinstance(command, str):
@@ -457,7 +457,7 @@ class TahomaClient:
         self,
         device_url: str,
         commands: list[Command],
-        label: str | None = "python-tahoma-api",
+        label: str | None = "python-overkiz-api",
     ) -> str:
         """Send several commands in one call"""
         payload = {

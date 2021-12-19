@@ -1,14 +1,14 @@
 [tool.poetry]
-name = "pyhoma"
+name = "pyoverkiz"
 version = "0.7.2"
-description = "Async Python wrapper to interact with internal Somfy TaHoma API, or other OverKiz API's."
+description = "Async Python client to interact with internal OverKiz API (e.g. used by Somfy TaHoma)."
 authors = ["Mick Vleeshouwer", "Vincent Le Bourlot", "Thibaut Etienne"]
 license = "MIT"
 readme = "README.md"
-homepage = "https://github.com/iMicknl/python-tahoma-api"
-repository = "https://github.com/iMicknl/python-tahoma-api"
+homepage = "https://github.com/iMicknl/python-overkiz-api"
+repository = "https://github.com/iMicknl/python-overkiz-api"
 packages = [
-    { include = "pyhoma" }
+    { include = "pyoverkiz" }
 ]
 
 [tool.poetry.dependencies]
