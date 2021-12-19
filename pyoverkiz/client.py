@@ -1,4 +1,4 @@
-""" Python wrapper for the Tahoma API """
+""" Python wrapper for the OverKiz API """
 from __future__ import annotations
 
 import asyncio
@@ -78,8 +78,8 @@ class OverkizClient:
         """
         Constructor
 
-        :param username: the username for Tahomalink.com
-        :param password: the password for Tahomalink.com
+        :param username: the username
+        :param password: the password
         :param server: OverkizServer
         :param session: optional ClientSession
         """
@@ -499,7 +499,7 @@ class OverkizClient:
         return response["execId"]
 
     async def __get(self, path: str) -> Any:
-        """Make a GET request to the TaHoma API"""
+        """Make a GET request to the OverKiz API"""
         async with self.session.get(f"{self.server.endpoint}{path}") as response:
             await self.check_response(response)
             return await response.json()
@@ -507,7 +507,7 @@ class OverkizClient:
     async def __post(
         self, path: str, payload: JSON | None = None, data: JSON | None = None
     ) -> Any:
-        """Make a POST request to the TaHoma API"""
+        """Make a POST request to the OverKiz API"""
         async with self.session.post(
             f"{self.server.endpoint}{path}",
             data=data,
@@ -517,13 +517,13 @@ class OverkizClient:
             return await response.json()
 
     async def __delete(self, path: str) -> None:
-        """Make a DELETE request to the TaHoma API"""
+        """Make a DELETE request to the OverKiz API"""
         async with self.session.delete(f"{self.server.endpoint}{path}") as response:
             await self.check_response(response)
 
     @staticmethod
     async def check_response(response: ClientResponse) -> None:
-        """Check the response returned by the TaHoma API"""
+        """Check the response returned by the OverKiz API"""
         if response.status in [200, 204]:
             return
 

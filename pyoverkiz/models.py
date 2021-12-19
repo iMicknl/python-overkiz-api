@@ -308,7 +308,7 @@ class States:
 
 
 class Command(dict):  # type: ignore
-    """Represents an TaHoma Command."""
+    """Represents an OverKiz Command."""
 
     def __init__(self, name: str, parameters: list[str] | None = None, **_: Any):
         self.name = name
