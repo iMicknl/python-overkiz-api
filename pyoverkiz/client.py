@@ -12,7 +12,9 @@ import boto3
 import humps
 from aiohttp import ClientResponse, ClientSession, FormData, ServerDisconnectedError
 from botocore.config import Config
-from pyhoma.const import (
+from warrant.aws_srp import AWSSRP
+
+from pyoverkiz.const import (
     COZYTOUCH_ATLANTIC_API,
     COZYTOUCH_CLIENT_ID,
     NEXITY_API,
@@ -21,7 +23,7 @@ from pyhoma.const import (
     NEXITY_COGNITO_USER_POOL,
     SUPPORTED_SERVERS,
 )
-from pyhoma.exceptions import (
+from pyoverkiz.exceptions import (
     BadCredentialsException,
     CozyTouchBadCredentialsException,
     CozyTouchServiceException,
@@ -35,7 +37,7 @@ from pyhoma.exceptions import (
     TooManyExecutionsException,
     TooManyRequestsException,
 )
-from pyhoma.models import (
+from pyoverkiz.models import (
     Command,
     Device,
     Event,
@@ -48,7 +50,6 @@ from pyhoma.models import (
     Setup,
     State,
 )
-from warrant.aws_srp import AWSSRP
 
 JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
 
@@ -64,7 +65,7 @@ async def refresh_listener(invocation: dict[str, Any]) -> None:
 # pylint: disable=too-many-instance-attributes
 
 
-class TahomaClient:
+class OverkizClient:
     """Interface class for the Overkiz API"""
 
     def __init__(
@@ -94,7 +95,7 @@ class TahomaClient:
 
         self.session = session if session else ClientSession()
 
-    async def __aenter__(self) -> TahomaClient:
+    async def __aenter__(self) -> OverkizClient:
         return self
 
     async def __aexit__(

@@ -4,7 +4,8 @@ import re
 from typing import Any, Iterator
 
 import attr
-from pyhoma.enums import (
+
+from pyoverkiz.enums import (
     DataType,
     EventName,
     ExecutionState,

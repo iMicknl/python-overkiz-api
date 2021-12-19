@@ -23,14 +23,14 @@ pip install pyhoma
 import asyncio
 import time
 
-from pyhoma.const import SUPPORTED_SERVERS
-from pyhoma.client import TahomaClient
+from pyoverkiz.const import SUPPORTED_SERVERS
+from pyoverkiz.client import OverkizClient
 
 USERNAME = ""
 PASSWORD = ""
 
 async def main() -> None:
-    async with TahomaClient(USERNAME, PASSWORD, server=SUPPORTED_SERVERS["somfy_europe"]) as client:
+    async with OverkizClient(USERNAME, PASSWORD, server=SUPPORTED_SERVERS["somfy_europe"]) as client:
         try:
             await client.login()
         except Exception as exception:  # pylint: disable=broad-except
