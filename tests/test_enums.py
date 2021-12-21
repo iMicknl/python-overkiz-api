@@ -1,4 +1,4 @@
-from pyhoma.enums import EventName, FailureType, GatewaySubType, GatewayType
+from pyoverkiz.enums import EventName, FailureType, GatewaySubType, GatewayType
 
 
 class TestGatewayType:

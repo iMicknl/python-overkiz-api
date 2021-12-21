@@ -1,7 +1,7 @@
 import humps
 
-from pyhoma.enums import DataType
-from pyhoma.models import Device, States
+from pyoverkiz.enums import DataType
+from pyoverkiz.models import Device, States
 
 RAW_STATES = [
     {"name": "core:NameState", "type": 3, "value": "alarm name"},

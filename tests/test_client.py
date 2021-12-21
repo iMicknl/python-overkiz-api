@@ -6,16 +6,16 @@ import aiohttp
 import pytest
 from pytest import fixture
 
-from pyhoma.client import TahomaClient
-from pyhoma.const import SUPPORTED_SERVERS
+from pyoverkiz.client import OverkizClient
+from pyoverkiz.const import SUPPORTED_SERVERS
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
-class TestTahomaClient:
+class TestOverkizClient:
     @fixture
     def client(self):
-        return TahomaClient("username", "password", SUPPORTED_SERVERS["somfy_europe"])
+        return OverkizClient("username", "password", SUPPORTED_SERVERS["somfy_europe"])
 
     @pytest.mark.asyncio
     async def test_get_devices_basic(self, client):

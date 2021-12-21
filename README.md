@@ -1,24 +1,33 @@
-# Deprecation Notice
-**`pyhoma` is deprecated. Please use `pyoverkiz` 1.0 which is backwards compatible. See https://github.com/iMicknl/python-overkiz-api.**
-
-
-# Somfy TaHoma / OverKiz
+# Python client for OverKiz API
 
 <p align=center>
-    <a href="https://github.com/iMicknl/python-tahoma-api/actions"><img src="https://github.com/iMicknl/python-tahoma-api/workflows/CI/badge.svg"/></a>
+    <a href="https://github.com/iMicknl/python-overkiz-api/actions"><img src="https://github.com/iMicknl/python-overkiz-api/workflows/CI/badge.svg"/></a>
     <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a>
 </p>
 
-An updated and async version of the original [tahoma-api](https://github.com/philklei/tahoma-api) by [@philklei](https://github.com/philklei). The aim of this wrapper is to offer an easy to consume Python wrapper for the internal API's used by tahomalink.com, or other vendors which use the OverKiz platform.
+A fully async and easy to use API client for the (internal) OverKiz API. You can use this client to interact with smart devices connected to the OverKiz platform, used by various vendors like Somfy TaHoma and Atlantic Cozytouch.
 
-Somfy TaHoma has an official API, which can be consumed via the [Somfy-open-api](https://github.com/tetienne/somfy-open-api). Unfortunately only a few device classes are supported via the official API, thus the need for this wrapper.
+This package is written for the Home Assistant [ha-tahoma](https://github.com/iMicknl/ha-tahoma) integration, but could be used by any Python project interacting with OverKiz hubs.
 
-This package is written for the Home Assistant [ha-tahoma](https://github.com/iMicknl/ha-tahoma) integration, but could be used by any Python project interacting with Somfy TaHoma devices.
+> Somfy TaHoma has an official API, which can be consumed via the [somfy-open-api](https://github.com/tetienne/somfy-open-api). Unfortunately only a few device classes are supported via the official API, thus the need for this API client.
+
+
+## Supported hubs
+
+- Atlantic Cozytouch
+- Hitachi Hi Kumo
+- Nexity Eugénie
+- Rexel Energeasy Connect
+- Somfy Connexoon IO
+- Somfy Connexoon RTS
+- Somfy TaHoma
+- Somfy TaHoma Switch
+- Thermor Cozytouch
 
 ## Installation
 
 ```bash
-pip install pyhoma
+pip install pyoverkiz
 ```
 
 ## Getting started
@@ -27,14 +36,14 @@ pip install pyhoma
 import asyncio
 import time
 
-from pyhoma.const import SUPPORTED_SERVERS
-from pyhoma.client import TahomaClient
+from pyoverkiz.const import SUPPORTED_SERVERS
+from pyoverkiz.client import OverkizClient
 
 USERNAME = ""
 PASSWORD = ""
 
 async def main() -> None:
-    async with TahomaClient(USERNAME, PASSWORD, server=SUPPORTED_SERVERS["somfy_europe"]) as client:
+    async with OverkizClient(USERNAME, PASSWORD, server=SUPPORTED_SERVERS["somfy_europe"]) as client:
         try:
             await client.login()
         except Exception as exception:  # pylint: disable=broad-except
@@ -71,9 +80,9 @@ asyncio.run(main())
 - Install [poetry](https://python-poetry.org): `curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python`
 
 - Clone this repository
-- `cd python-tahoma-api`
+- `cd python-overkiz-api`
 - Install the required Python version: `pyenv install`
-- Init the project: `poetry install`
+- Init the project: `poetry install`
 - Run `poetry run pre-commit install`
 
 ## PyCharm
@@ -84,6 +93,6 @@ Using snap, run `snap install pycharm --classic` to install it.
 
 For MacOS, run `brew cask install pycharm-ce`
 
-Once launched, don't create a new project, but open an existing one and select the **python-tahoma-api** folder.
+Once launched, don't create a new project, but open an existing one and select the **python-overkiz-api** folder.
 
-Go to _File | Settings | Project: nre-tag | Project Interpreter_. Your interpreter must look like `<whatever>/python-tahoma-api/.venv/bin/python`
+Go to _File | Settings | Project: nre-tag | Project Interpreter_. Your interpreter must look like `<whatever>/python-overkiz-api/.venv/bin/python`

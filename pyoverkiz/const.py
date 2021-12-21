@@ -1,4 +1,4 @@
-from pyhoma.models import OverkizServer
+from pyoverkiz.models import OverkizServer
 
 COZYTOUCH_ATLANTIC_API = "https://api.groupe-atlantic.com"
 COZYTOUCH_CLIENT_ID = (

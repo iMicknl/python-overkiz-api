@@ -1,4 +1,4 @@
-""" Python wrapper for the Tahoma API """
+""" Python wrapper for the OverKiz API """
 from __future__ import annotations
 
 import asyncio
@@ -14,7 +14,7 @@ from aiohttp import ClientResponse, ClientSession, FormData, ServerDisconnectedE
 from botocore.config import Config
 from warrant.aws_srp import AWSSRP
 
-from pyhoma.const import (
+from pyoverkiz.const import (
     COZYTOUCH_ATLANTIC_API,
     COZYTOUCH_CLIENT_ID,
     NEXITY_API,
@@ -23,7 +23,7 @@ from pyhoma.const import (
     NEXITY_COGNITO_USER_POOL,
     SUPPORTED_SERVERS,
 )
-from pyhoma.exceptions import (
+from pyoverkiz.exceptions import (
     BadCredentialsException,
     CozyTouchBadCredentialsException,
     CozyTouchServiceException,
@@ -37,7 +37,7 @@ from pyhoma.exceptions import (
     TooManyExecutionsException,
     TooManyRequestsException,
 )
-from pyhoma.models import (
+from pyoverkiz.models import (
     Command,
     Device,
     Event,
@@ -65,7 +65,7 @@ async def refresh_listener(invocation: dict[str, Any]) -> None:
 # pylint: disable=too-many-instance-attributes
 
 
-class TahomaClient:
+class OverkizClient:
     """Interface class for the Overkiz API"""
 
     def __init__(
@@ -78,8 +78,8 @@ class TahomaClient:
         """
         Constructor
 
-        :param username: the username for Tahomalink.com
-        :param password: the password for Tahomalink.com
+        :param username: the username
+        :param password: the password
         :param server: OverkizServer
         :param session: optional ClientSession
         """
@@ -95,7 +95,7 @@ class TahomaClient:
 
         self.session = session if session else ClientSession()
 
-    async def __aenter__(self) -> TahomaClient:
+    async def __aenter__(self) -> OverkizClient:
         return self
 
     async def __aexit__(
@@ -436,7 +436,7 @@ class TahomaClient:
         self,
         device_url: str,
         command: Command | str,
-        label: str | None = "python-tahoma-api",
+        label: str | None = "python-overkiz-api",
     ) -> str:
         """Send a command"""
         if isinstance(command, str):
@@ -457,7 +457,7 @@ class TahomaClient:
         self,
         device_url: str,
         commands: list[Command],
-        label: str | None = "python-tahoma-api",
+        label: str | None = "python-overkiz-api",
     ) -> str:
         """Send several commands in one call"""
         payload = {
@@ -499,7 +499,7 @@ class TahomaClient:
         return response["execId"]
 
     async def __get(self, path: str) -> Any:
-        """Make a GET request to the TaHoma API"""
+        """Make a GET request to the OverKiz API"""
         async with self.session.get(f"{self.server.endpoint}{path}") as response:
             await self.check_response(response)
             return await response.json()
@@ -507,7 +507,7 @@ class TahomaClient:
     async def __post(
         self, path: str, payload: JSON | None = None, data: JSON | None = None
     ) -> Any:
-        """Make a POST request to the TaHoma API"""
+        """Make a POST request to the OverKiz API"""
         async with self.session.post(
             f"{self.server.endpoint}{path}",
             data=data,
@@ -517,13 +517,13 @@ class TahomaClient:
             return await response.json()
 
     async def __delete(self, path: str) -> None:
-        """Make a DELETE request to the TaHoma API"""
+        """Make a DELETE request to the OverKiz API"""
         async with self.session.delete(f"{self.server.endpoint}{path}") as response:
             await self.check_response(response)
 
     @staticmethod
     async def check_response(response: ClientResponse) -> None:
-        """Check the response returned by the TaHoma API"""
+        """Check the response returned by the OverKiz API"""
         if response.status in [200, 204]:
             return
 
