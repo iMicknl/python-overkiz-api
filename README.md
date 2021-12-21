@@ -1,3 +1,7 @@
+# Deprecation Notice
+**`pyhoma` is deprecated. Please use `pyoverkiz` 1.0 which is backwards compatible. See https://github.com/iMicknl/python-overkiz-api.**
+
+
 # Somfy TaHoma / OverKiz
 
 <p align=center>
