@@ -279,7 +279,7 @@ class State:
 class States:
     _states: list[State]
 
-    def __init__(self, states: list[dict[str, Any]] | None = None) -> None:
+    def __init__(self, states: list[dict[str, str]] | None = None) -> None:
         if states:
             self._states = [State(**state) for state in states]
         else:
