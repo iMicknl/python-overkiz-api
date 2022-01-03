@@ -5,7 +5,7 @@ import asyncio
 import urllib.parse
 from json import JSONDecodeError
 from types import TracebackType
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Union, cast
 
 import backoff
 import boto3
@@ -73,7 +73,7 @@ class OverkizClient:
         username: str,
         password: str,
         server: OverkizServer,
-        session: ClientSession = None,
+        session: ClientSession | None = None,
     ) -> None:
         """
         Constructor
@@ -229,7 +229,7 @@ class OverkizClient:
             if "token" not in token:
                 raise NexityServiceException("No Nexity SSO token provided.")
 
-            return token["token"]
+            return cast(str, token["token"])
 
     @backoff.on_exception(
         backoff.expo,
@@ -377,7 +377,7 @@ class OverkizClient:
         API on a regular basis.
         """
         response = await self.__post("events/register")
-        listener_id = response.get("id")
+        listener_id = cast(str, response.get("id"))
         self.event_listener_id = listener_id
 
         return listener_id
@@ -465,7 +465,7 @@ class OverkizClient:
             "actions": [{"deviceURL": device_url, "commands": commands}],
         }
         response = await self.__post("exec/apply", payload)
-        return response["execId"]
+        return cast(str, response["execId"])
 
     @backoff.on_exception(
         backoff.expo,
@@ -496,7 +496,7 @@ class OverkizClient:
     async def execute_scenario(self, oid: str) -> str:
         """Execute a scenario"""
         response = await self.__post(f"exec/{oid}")
-        return response["execId"]
+        return cast(str, response["execId"])
 
     async def __get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API"""

@@ -307,7 +307,7 @@ class States:
     get = __getitem__
 
 
-class Command(dict):  # type: ignore
+class Command(dict):
     """Represents an OverKiz Command."""
 
     def __init__(self, name: str, parameters: list[str] | None = None, **_: Any):
