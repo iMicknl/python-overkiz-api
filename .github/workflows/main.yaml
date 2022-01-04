@@ -23,16 +23,17 @@ jobs:
         with:
           python-version: "${{ matrix.python-version }}"
 
-      - name: Install and set up Poetry
+      - name: Bootstrap poetry
         run: |
-          curl -o get-poetry.py https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py
-          python get-poetry.py -y
+          curl -sL https://install.python-poetry.org | python - -y
+
+      - name: Update PATH
+        run: echo "$HOME/.local/bin" >> $GITHUB_PATH
 
       - name: "Install tox"
         run: |
           python -m pip install --upgrade pip
           python -m pip install --upgrade tox tox-gh-actions
+
       - name: "Run tox targets for ${{ matrix.python-version }}"
-        run: |
-          source $HOME/.poetry/env
-          python -m tox
+        run: python -m tox
