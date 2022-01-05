@@ -10,7 +10,6 @@ repository = "https://github.com/iMicknl/python-overkiz-api"
 packages = [
     { include = "pyoverkiz" }
 ]
-include = ["pyoverkiz/py.typed"]
 
 
 [tool.poetry.dependencies]
