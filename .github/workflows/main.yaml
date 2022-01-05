@@ -32,4 +32,4 @@ jobs:
 
       - name: "Run tox targets for ${{ matrix.python-version }}"
         run: |
-          python -m tox
+          python3 -m tox
