@@ -30,6 +30,10 @@ jobs:
         run: |
           poetry install -v
 
-      - name: "Run tox targets for ${{ matrix.python-version }}"
-        run: |
-          tox
+    - name: Install tox dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install tox tox-gh-actions
+
+    - name: Test with tox
+      run: tox
