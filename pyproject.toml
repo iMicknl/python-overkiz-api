@@ -18,7 +18,7 @@ pyhumps = "^3.0.2"
 backoff = "^1.10.0"
 attrs = "^21.2.0"
 boto3 = "^1.18.59"
-warrant = "^0.6.1"
+warrant-lite = "^1.0.4"
 
 [tool.poetry.dev-dependencies]
 tox = "^3.24"
