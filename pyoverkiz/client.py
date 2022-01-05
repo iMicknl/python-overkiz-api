@@ -196,11 +196,8 @@ class OverkizClient:
         loop = asyncio.get_event_loop()
 
         # Request access token
-        client = await loop.run_in_executor(
-            None,
-            lambda: boto3.client(
-                "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
-            ),
+        client = boto3.client(
+            "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
         )
 
         aws = WarrantLite(
