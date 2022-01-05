@@ -29,16 +29,10 @@ def func1(data):
     for key, value in data.items():
         # print(str(key) + '->' + str(value))
 
-        if key == "deviceurl":
-            key = "deviceURL"
-
-        if key == "placeoid":
-            key = "placeOID"
-
-        if key in ["gateway_id", "gatewayId", "id", "device_url", "deviceurl", "deviceURL"]:
+        if key in ["gatewayId", "id", "deviceURL"]:
             data[key] = obfuscate_id(value)
 
-        if key in ["label", "city", "country", "postal_code", "postalCode", "address_line1", "addressLine1", "address_line2", "addressLine2", "longitude", "latitude"]:
+        if key in ["label", "city", "country", "postalCode", "addressLine1", "addressLine2", "longitude", "latitude"]:
             data[key] = mask(value)
 
         if value in ["core:NameState", "homekit:SetupCode", "homekit:SetupPayload"]:
@@ -74,7 +68,6 @@ for filename in glob.glob(os.path.join("tests/fixtures/setup", '*.json')):
 
         try:
             input = json.loads(input_file.read())
-            input = humps.camelize(input)
             output = func1(input)
         except Exception as exception:
             print(f"Error while masking: {filename}")
