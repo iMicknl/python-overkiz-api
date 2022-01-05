@@ -267,9 +267,15 @@ class CommandDefinitions:
 class State:
     name: str
     type: DataType
-    value: str | None = None
+    value: None | int | float | str | bool
 
-    def __init__(self, name: str, type: int, value: str | None = None, **_: Any):
+    def __init__(
+        self,
+        name: str,
+        type: int,
+        value: None | int | float | str | bool = None,
+        **_: Any,
+    ):
         self.name = name
         self.value = value
         self.type = DataType(type)
@@ -307,7 +313,7 @@ class States:
     get = __getitem__
 
 
-class Command(dict):  # type: ignore
+class Command(dict):
     """Represents an OverKiz Command."""
 
     def __init__(self, name: str, parameters: list[str] | None = None, **_: Any):

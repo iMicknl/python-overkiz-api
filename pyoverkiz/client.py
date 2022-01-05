@@ -5,7 +5,7 @@ import asyncio
 import urllib.parse
 from json import JSONDecodeError
 from types import TracebackType
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Union, cast
 
 import backoff
 import boto3
@@ -68,12 +68,21 @@ async def refresh_listener(invocation: dict[str, Any]) -> None:
 class OverkizClient:
     """Interface class for the Overkiz API"""
 
+    username: str
+    password: str
+    server: OverkizServer
+    setup: Setup | None
+    devices: list[Device]
+    gateways: list[Gateway]
+    event_listener_id: str | None
+    session: ClientSession
+
     def __init__(
         self,
         username: str,
         password: str,
         server: OverkizServer,
-        session: ClientSession = None,
+        session: ClientSession | None = None,
     ) -> None:
         """
         Constructor
@@ -196,13 +205,9 @@ class OverkizClient:
         loop = asyncio.get_event_loop()
 
         # Request access token
-        client = await loop.run_in_executor(
-            None,
-            lambda: boto3.client(
-                "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
-            ),
+        client = boto3.client(
+            "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
         )
-
         aws = WarrantLite(
             username=self.username,
             password=self.password,
@@ -229,7 +234,7 @@ class OverkizClient:
             if "token" not in token:
                 raise NexityServiceException("No Nexity SSO token provided.")
 
-            return token["token"]
+            return cast(str, token["token"])
 
     @backoff.on_exception(
         backoff.expo,
@@ -337,7 +342,7 @@ class OverkizClient:
         """
         Retrieve a particular setup device definition
         """
-        response = await self.__get(
+        response: dict = await self.__get(
             f"setup/devices/{urllib.parse.quote_plus(deviceurl)}"
         )
 
@@ -377,7 +382,7 @@ class OverkizClient:
         API on a regular basis.
         """
         response = await self.__post("events/register")
-        listener_id = response.get("id")
+        listener_id = cast(str, response.get("id"))
         self.event_listener_id = listener_id
 
         return listener_id
@@ -441,7 +446,10 @@ class OverkizClient:
         """Send a command"""
         if isinstance(command, str):
             command = Command(command)
-        return await self.execute_commands(device_url, [command], label)
+
+        response: str = await self.execute_commands(device_url, [command], label)
+
+        return response
 
     @backoff.on_exception(
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
@@ -464,8 +472,8 @@ class OverkizClient:
             "label": label,
             "actions": [{"deviceURL": device_url, "commands": commands}],
         }
-        response = await self.__post("exec/apply", payload)
-        return response["execId"]
+        response: dict = await self.__post("exec/apply", payload)
+        return cast(str, response["execId"])
 
     @backoff.on_exception(
         backoff.expo,
@@ -496,7 +504,7 @@ class OverkizClient:
     async def execute_scenario(self, oid: str) -> str:
         """Execute a scenario"""
         response = await self.__post(f"exec/{oid}")
-        return response["execId"]
+        return cast(str, response["execId"])
 
     async def __get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API"""
