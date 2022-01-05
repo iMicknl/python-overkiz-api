@@ -43,6 +43,7 @@ class TestOverkizClient:
         "fixture_name, device_count",
         [
             ("setup_cozytouch.json", 12),
+            ("setup_cozytouch2.json", 15),
             ("setup_hi_kumo.json", 3),
             ("setup_hi_kumo2.json", 3),
             ("setup_nexity.json", 18),
@@ -52,6 +53,8 @@ class TestOverkizClient:
             ("setup_tahoma_oceania.json", 3),
             ("setup_tahoma_pro.json", 12),
             ("setup_hue_and_low_speed.json", 40),
+            ("setup_tahoma_siren_io.json", 11),
+            ("setup_tahoma_siren_rtd.json", 31),
         ],
     )
     @pytest.mark.asyncio
