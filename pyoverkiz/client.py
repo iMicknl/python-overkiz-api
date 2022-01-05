@@ -12,7 +12,7 @@ import boto3
 import humps
 from aiohttp import ClientResponse, ClientSession, FormData, ServerDisconnectedError
 from botocore.config import Config
-from warrant.aws_srp import AWSSRP
+from warrant_lite import WarrantLite
 
 from pyoverkiz.const import (
     COZYTOUCH_ATLANTIC_API,
@@ -203,7 +203,7 @@ class OverkizClient:
             ),
         )
 
-        aws = AWSSRP(
+        aws = WarrantLite(
             username=self.username,
             password=self.password,
             pool_id=NEXITY_COGNITO_USER_POOL,
