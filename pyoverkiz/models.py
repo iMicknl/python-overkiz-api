@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 from typing import Any, Iterator
 
-import attr
+from attr import define, field
 
 from pyoverkiz.enums import (
     DataType,
@@ -33,11 +33,11 @@ def mask(input: str) -> str:
     return re.sub(r"[a-zA-Z0-9_.-]*", "*", str(input))
 
 
-@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+@define(init=False, kw_only=True)
 class Setup:
     creation_time: str
     last_update_time: str
-    id: str = attr.ib(repr=obfuscate_id, default=None)
+    id: str = field(repr=obfuscate_id, default=None)
     location: Location
     gateways: list[Gateway]
     devices: list[Device]
@@ -52,7 +52,7 @@ class Setup:
         *,
         creation_time: str,
         last_update_time: str,
-        id: str = attr.ib(repr=obfuscate_id, default=None),
+        id: str = field(repr=obfuscate_id, default=None),
         location: dict[str, Any],
         gateways: list[dict[str, Any]],
         devices: list[dict[str, Any]],
@@ -76,18 +76,18 @@ class Setup:
         self.features = [Feature(**f) for f in features] if features else None
 
 
-@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+@define(init=False, kw_only=True)
 class Location:
     creation_time: str
     last_update_time: str
-    city: str = attr.ib(repr=mask, default=None)
-    country: str = attr.ib(repr=mask, default=None)
-    postal_code: str = attr.ib(repr=mask, default=None)
-    address_line1: str = attr.ib(repr=mask, default=None)
-    address_line2: str = attr.ib(repr=mask, default=None)
+    city: str = field(repr=mask, default=None)
+    country: str = field(repr=mask, default=None)
+    postal_code: str = field(repr=mask, default=None)
+    address_line1: str = field(repr=mask, default=None)
+    address_line2: str = field(repr=mask, default=None)
     timezone: str
-    longitude: str = attr.ib(repr=mask, default=None)
-    latitude: str = attr.ib(repr=mask, default=None)
+    longitude: str = field(repr=mask, default=None)
+    latitude: str = field(repr=mask, default=None)
     twilight_mode: int
     twilight_angle: str
     twilight_city: str
@@ -102,14 +102,14 @@ class Location:
         *,
         creation_time: str,
         last_update_time: str,
-        city: str = attr.ib(repr=mask, default=None),
-        country: str = attr.ib(repr=mask, default=None),
-        postal_code: str = attr.ib(repr=mask, default=None),
-        address_line1: str = attr.ib(repr=mask, default=None),
-        address_line2: str = attr.ib(repr=mask, default=None),
+        city: str = field(repr=mask, default=None),
+        country: str = field(repr=mask, default=None),
+        postal_code: str = field(repr=mask, default=None),
+        address_line1: str = field(repr=mask, default=None),
+        address_line2: str = field(repr=mask, default=None),
         timezone: str,
-        longitude: str = attr.ib(repr=mask, default=None),
-        latitude: str = attr.ib(repr=mask, default=None),
+        longitude: str = field(repr=mask, default=None),
+        latitude: str = field(repr=mask, default=None),
         twilight_mode: int,
         twilight_angle: str,
         twilight_city: str,
@@ -140,14 +140,14 @@ class Location:
         self.dusk_offset = dusk_offset
 
 
-@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+@define(init=False, kw_only=True)
 class Device:
-    id: str = attr.ib(repr=False)
+    id: str = field(repr=False)
     attributes: States
     available: bool
     enabled: bool
     label: str
-    device_url: str = attr.ib(repr=obfuscate_id)
+    device_url: str = field(repr=obfuscate_id)
     controllable_name: str
     definition: Definition
     data_properties: list[dict[str, Any]] | None = None
@@ -191,7 +191,7 @@ class Device:
         self.place_oid = place_oid
 
 
-@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+@define(init=False, kw_only=True)
 class StateDefinition:
 
     qualified_name: str
@@ -206,7 +206,7 @@ class StateDefinition:
         self.values = values
 
 
-@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+@define(init=False, kw_only=True)
 class Definition:
     commands: CommandDefinitions
     states: list[StateDefinition]
@@ -231,7 +231,7 @@ class Definition:
         self.qualified_name = qualified_name
 
 
-@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+@define(init=False, kw_only=True)
 class CommandDefinition:
     command_name: str
     nparams: int
@@ -241,7 +241,7 @@ class CommandDefinition:
         self.nparams = nparams
 
 
-@attr.s(auto_attribs=True, init=False, slots=True)
+@define(init=False)
 class CommandDefinitions:
     _commands: list[CommandDefinition]
 
@@ -263,7 +263,7 @@ class CommandDefinitions:
     get = __getitem__
 
 
-@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+@define(init=False, kw_only=True)
 class State:
     name: str
     type: DataType
@@ -275,7 +275,7 @@ class State:
         self.type = DataType(type)
 
 
-@attr.s(auto_attribs=True, init=False, slots=True)
+@define(init=False)
 class States:
     _states: list[State]
 
@@ -316,12 +316,12 @@ class Command(dict):  # type: ignore
         dict.__init__(self, name=name, parameters=parameters)
 
 
-@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+@define(init=False, kw_only=True)
 class Event:
     timestamp: int
     name: EventName
-    setupoid: str | None = attr.ib(repr=obfuscate_id, default=None)
-    owner_key: str | None = attr.ib(repr=obfuscate_id, default=None)
+    setupoid: str | None = field(repr=obfuscate_id, default=None)
+    owner_key: str | None = field(repr=obfuscate_id, default=None)
     type: int | None = None
     sub_type: int | None = None
     time_to_next_state: int | None = None
@@ -335,9 +335,9 @@ class Event:
     camera_id: str | None = None
     deleted_raw_devices_count: Any | None = None
     protocol_type: Any | None = None
-    gateway_id: str | None = attr.ib(repr=obfuscate_id, default=None)
+    gateway_id: str | None = field(repr=obfuscate_id, default=None)
     exec_id: str | None = None
-    device_url: str | None = attr.ib(repr=obfuscate_id, default=None)
+    device_url: str | None = field(repr=obfuscate_id, default=None)
     device_states: list[State]
     old_state: ExecutionState | None = None
     new_state: ExecutionState | None = None
@@ -346,7 +346,7 @@ class Event:
         self,
         timestamp: int,
         name: EventName,
-        setupoid: str | None = attr.ib(repr=obfuscate_id, default=None),
+        setupoid: str | None = field(repr=obfuscate_id, default=None),
         owner_key: str | None = None,
         type: int | None = None,
         sub_type: int | None = None,
@@ -399,11 +399,11 @@ class Event:
         )
 
 
-@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+@define(init=False, kw_only=True)
 class Execution:
     id: str
     description: str
-    owner: str = attr.ib(repr=obfuscate_email)
+    owner: str = field(repr=obfuscate_email)
     state: str
     action_group: list[dict[str, Any]]
 
@@ -423,21 +423,21 @@ class Execution:
         self.action_group = action_group
 
 
-@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+@define(init=False, kw_only=True)
 class Scenario:
     label: str
-    oid: str = attr.ib(repr=obfuscate_id)
+    oid: str = field(repr=obfuscate_id)
 
     def __init__(self, label: str, oid: str, **_: Any):
         self.label = label
         self.oid = oid
 
 
-@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+@define(init=False, kw_only=True)
 class Partner:
     activated: bool
     name: str
-    id: str = attr.ib(repr=obfuscate_id)
+    id: str = field(repr=obfuscate_id)
     status: str
 
     def __init__(self, activated: bool, name: str, id: str, status: str, **_: Any):
@@ -447,7 +447,7 @@ class Partner:
         self.status = status
 
 
-@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+@define(init=False, kw_only=True)
 class Connectivity:
     status: str
     protocol_version: str
@@ -457,12 +457,12 @@ class Connectivity:
         self.protocol_version = protocol_version
 
 
-@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+@define(init=False, kw_only=True)
 class Gateway:
     partners: list[Partner]
     functions: str | None = None
     sub_type: GatewaySubType | None = None
-    id: str = attr.ib(repr=obfuscate_id)
+    id: str = field(repr=obfuscate_id)
     gateway_id: str
     alive: bool | None = None
     mode: str
@@ -507,9 +507,9 @@ class Gateway:
         self.sub_type = GatewaySubType(sub_type) if sub_type else None
 
 
-@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+@define(init=False, kw_only=True)
 class HistoryExecutionCommand:
-    device_url: str = attr.ib(repr=obfuscate_id)
+    device_url: str = field(repr=obfuscate_id)
     command: str
     rank: int
     dynamic: bool
@@ -537,11 +537,11 @@ class HistoryExecutionCommand:
         self.failure_type = failure_type
 
 
-@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+@define(init=False, kw_only=True)
 class HistoryExecution:
     id: str
     event_time: int
-    owner: str = attr.ib(repr=obfuscate_email)
+    owner: str = field(repr=obfuscate_email)
     source: str
     end_time: int
     effective_start_time: int
@@ -589,7 +589,7 @@ class HistoryExecution:
         self.execution_sub_type = ExecutionSubType(execution_sub_type)
 
 
-@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+@define(init=False, kw_only=True)
 class Place:
     creation_time: int
     last_update_time: int | None = None
@@ -619,20 +619,20 @@ class Place:
         self.sub_places = [Place(**p) for p in sub_places] if sub_places else []
 
 
-@attr.s(auto_attribs=True, slots=True, kw_only=True)
+@define(kw_only=True)
 class Feature:
     name: str
     source: str
 
 
-@attr.s(auto_attribs=True, slots=True, kw_only=True)
+@define(kw_only=True)
 class ZoneItem:
     item_type: str
     device_oid: str
     device_url: str
 
 
-@attr.s(auto_attribs=True, init=False, slots=True, kw_only=True)
+@define(init=False, kw_only=True)
 class Zone:
     creation_time: str
     last_update_time: str
@@ -664,7 +664,7 @@ class Zone:
         self.oid = oid
 
 
-@attr.s(auto_attribs=True, slots=True, kw_only=True)
+@define(kw_only=True)
 class OverkizServer:
     """Class to describe an Overkiz server."""
 
