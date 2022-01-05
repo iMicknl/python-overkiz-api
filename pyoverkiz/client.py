@@ -199,7 +199,6 @@ class OverkizClient:
         client = boto3.client(
             "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
         )
-
         aws = WarrantLite(
             username=self.username,
             password=self.password,
@@ -334,7 +333,7 @@ class OverkizClient:
         """
         Retrieve a particular setup device definition
         """
-        response = await self.__get(
+        response: dict = await self.__get(
             f"setup/devices/{urllib.parse.quote_plus(deviceurl)}"
         )
 
@@ -438,7 +437,10 @@ class OverkizClient:
         """Send a command"""
         if isinstance(command, str):
             command = Command(command)
-        return await self.execute_commands(device_url, [command], label)
+
+        response: str = await self.execute_commands(device_url, [command], label)
+
+        return response
 
     @backoff.on_exception(
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
@@ -461,7 +463,7 @@ class OverkizClient:
             "label": label,
             "actions": [{"deviceURL": device_url, "commands": commands}],
         }
-        response = await self.__post("exec/apply", payload)
+        response: dict = await self.__post("exec/apply", payload)
         return cast(str, response["execId"])
 
     @backoff.on_exception(
