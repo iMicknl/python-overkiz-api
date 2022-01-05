@@ -316,7 +316,12 @@ class States:
 class Command(dict):
     """Represents an OverKiz Command."""
 
-    def __init__(self, name: str, parameters: list[str] | None = None, **_: Any):
+    name: str
+    parameters: list[str | int | float] | None
+
+    def __init__(
+        self, name: str, parameters: list[str | int | float] | None = None, **_: Any
+    ):
         self.name = name
         self.parameters = parameters
         dict.__init__(self, name=name, parameters=parameters)
