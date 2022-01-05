@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from pyoverkiz.models import OverkizServer
 
 COZYTOUCH_ATLANTIC_API = "https://api.groupe-atlantic.com"
@@ -10,7 +12,7 @@ NEXITY_COGNITO_CLIENT_ID = "3mca95jd5ase5lfde65rerovok"
 NEXITY_COGNITO_USER_POOL = "eu-west-1_wj277ucoI"
 NEXITY_COGNITO_REGION = "eu-west-1"
 
-SUPPORTED_SERVERS = {
+SUPPORTED_SERVERS: dict[str, OverkizServer] = {
     "atlantic_cozytouch": OverkizServer(
         name="Atlantic Cozytouch",
         endpoint="https://ha110-1.overkiz.com/enduser-mobile-web/enduserAPI/",

@@ -68,6 +68,15 @@ async def refresh_listener(invocation: dict[str, Any]) -> None:
 class OverkizClient:
     """Interface class for the Overkiz API"""
 
+    username: str
+    password: str
+    server: OverkizServer
+    setup: Setup | None
+    devices: list[Device]
+    gateways: list[Gateway]
+    event_listener_id: str | None
+    session: ClientSession
+
     def __init__(
         self,
         username: str,
