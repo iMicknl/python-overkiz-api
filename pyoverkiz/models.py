@@ -267,7 +267,7 @@ class CommandDefinitions:
 class State:
     name: str
     type: DataType
-    value: str | None = None
+    value: None | int | float | str | bool
 
     def __init__(
         self,
