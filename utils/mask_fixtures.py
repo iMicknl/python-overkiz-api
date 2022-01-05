@@ -1,13 +1,10 @@
 from __future__ import annotations
-from collections import abc
 
-import re
+import glob
 import json
 import os
-import glob
-import humps
-
-# list_not_to_mask = ["id"]
+import re
+from typing import Any
 
 
 def obfuscate_id(id: str | None) -> str:
@@ -22,7 +19,7 @@ def mask(input: str | None) -> str:
     return re.sub(r"[a-zA-Z0-9_.-]+", "*", str(input))
 
 
-def func1(data):
+def func1(data: Any) -> Any:
 
     mask_next_value = False
 
@@ -32,7 +29,16 @@ def func1(data):
         if key in ["gatewayId", "id", "deviceURL"]:
             data[key] = obfuscate_id(value)
 
-        if key in ["label", "city", "country", "postalCode", "addressLine1", "addressLine2", "longitude", "latitude"]:
+        if key in [
+            "label",
+            "city",
+            "country",
+            "postalCode",
+            "addressLine1",
+            "addressLine2",
+            "longitude",
+            "latitude",
+        ]:
             data[key] = mask(value)
 
         if value in ["core:NameState", "homekit:SetupCode", "homekit:SetupPayload"]:
@@ -43,13 +49,13 @@ def func1(data):
             mask_next_value = False
 
         # Mask homekit:SetupCode and homekit:SetupPayload
-        if type(value) == dict:
+        if isinstance(value, dict):
             func1(value)
-        elif type(value) == list:
+        elif isinstance(value, list):
             for val in value:
-                if type(val) == str:
+                if isinstance(val, str):
                     pass
-                elif type(val) == list:
+                elif isinstance(val, list):
                     pass
                 else:
                     func1(val)
@@ -57,22 +63,19 @@ def func1(data):
     return data
 
 
-list_not_to_mask = []
-
-
 # only process .JSON files in folder.
-for filename in glob.glob(os.path.join("tests/fixtures/setup", '*.json')):
-    with open(filename, encoding='utf-8', mode='r') as input_file:
+for filename in glob.glob(os.path.join("tests/fixtures/setup", "*.json")):
+    with open(filename, encoding="utf-8") as input_file:
 
         print(f"Masking {filename}")
 
         try:
-            input = json.loads(input_file.read())
-            output = func1(input)
-        except Exception as exception:
+            file = json.loads(input_file.read())
+            output = func1(file)
+        except Exception as exception:  # pylint: disable=broad-except
             print(f"Error while masking: {filename}")
             print(exception)
             continue
 
-        with open(filename, encoding='utf-8', mode='w') as output_file:
+        with open(filename, encoding="utf-8", mode="w") as output_file:
             json.dump(output, output_file, ensure_ascii=False, indent=4)
