@@ -8,6 +8,7 @@ from pytest import fixture
 
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.const import SUPPORTED_SERVERS
+from pyoverkiz.enums import DataType
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -38,6 +39,23 @@ class TestOverkizClient:
         with patch.object(aiohttp.ClientSession, "post", return_value=resp):
             events = await client.fetch_events()
             assert len(events) == 16
+
+    @pytest.mark.asyncio
+    async def test_fetch_events_casting(self, client):
+        with open(
+            os.path.join(CURRENT_DIR, "events.json"), encoding="utf-8"
+        ) as raw_events:
+            resp = MockResponse(raw_events.read())
+
+        with patch.object(aiohttp.ClientSession, "post", return_value=resp):
+            events = await client.fetch_events()
+            assert len(events) == 16
+
+            # check if str to integer cast was succesfull
+            int_state_event = events[2].device_states[0]
+            assert int_state_event.value == 23247220
+            assert isinstance(int_state_event.value, int)
+            assert int_state_event.type == DataType.INTEGER
 
     @pytest.mark.parametrize(
         "fixture_name, device_count",
