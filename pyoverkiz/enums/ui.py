@@ -1,4 +1,7 @@
+import logging
 from enum import Enum, unique
+
+_LOGGER = logging.getLogger(__name__)
 
 
 @unique
@@ -69,6 +72,13 @@ class UIClass(str, Enum):
     WIND_SENSOR = "WindSensor"
     WINDOW = "Window"
     WINDOW_HANDLE = "WindowHandle"
+
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls, value):  # type: ignore
+        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
+        return cls.UNKNOWN
 
 
 @unique
@@ -394,3 +404,10 @@ class UIWidget(str, Enum):
     ZWAVE_TRANSCEIVER = "ZWaveTransceiver"
     ZIGBEE_NETWORK = "ZigbeeNetwork"
     ZIGBEE_STACK = "ZigbeeStack"
+
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls, value):  # type: ignore
+        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
+        return cls.UNKNOWN
