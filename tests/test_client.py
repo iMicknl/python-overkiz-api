@@ -49,7 +49,6 @@ class TestOverkizClient:
 
         with patch.object(aiohttp.ClientSession, "post", return_value=resp):
             events = await client.fetch_events()
-            assert len(events) == 16
 
             # check if str to integer cast was succesfull
             int_state_event = events[2].device_states[0]
