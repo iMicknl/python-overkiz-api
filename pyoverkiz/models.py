@@ -15,6 +15,8 @@ from pyoverkiz.enums import (
     GatewaySubType,
     GatewayType,
     ProductType,
+    UIClass,
+    UIWidget,
     UpdateBoxStatus,
 )
 
@@ -151,8 +153,8 @@ class Device:
     controllable_name: str
     definition: Definition
     data_properties: list[dict[str, Any]] | None = None
-    widget: str | None = None
-    ui_class: str | None = None
+    widget: UIWidget
+    ui_class: UIClass
     states: States
     type: ProductType
     place_oid: str
@@ -168,8 +170,8 @@ class Device:
         controllable_name: str,
         definition: dict[str, Any],
         data_properties: list[dict[str, Any]] | None = None,
-        widget: str | None = None,
-        ui_class: str | None = None,
+        widget: str,
+        ui_class: str,
         states: list[dict[str, Any]] | None = None,
         type: int,
         place_oid: str,
@@ -185,8 +187,8 @@ class Device:
         self.controllable_name = controllable_name
         self.states = States(states)
         self.data_properties = data_properties
-        self.widget = widget
-        self.ui_class = ui_class
+        self.widget = UIWidget(widget)
+        self.ui_class = UIClass(ui_class)
         self.type = ProductType(type)
         self.place_oid = place_oid
 
