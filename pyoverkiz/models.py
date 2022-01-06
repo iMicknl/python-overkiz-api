@@ -15,9 +15,9 @@ from pyoverkiz.enums import (
     GatewaySubType,
     GatewayType,
     ProductType,
-    UpdateBoxStatus,
-    UIWidget,
     UIClass,
+    UIWidget,
+    UpdateBoxStatus,
 )
 
 # pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
@@ -170,8 +170,8 @@ class Device:
         controllable_name: str,
         definition: dict[str, Any],
         data_properties: list[dict[str, Any]] | None = None,
-        widget: UIWidget
-        ui_class: UIClass
+        widget: str,
+        ui_class: str,
         states: list[dict[str, Any]] | None = None,
         type: int,
         place_oid: str,
