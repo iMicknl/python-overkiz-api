@@ -19,7 +19,7 @@ from pyoverkiz.enums import (
     UIWidget,
     UpdateBoxStatus,
 )
-from pyoverkiz.types import DATA_TYPE_TO_PYTHON, OverkizStateType
+from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 
 # pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
 
@@ -270,13 +270,13 @@ class CommandDefinitions:
 class State:
     name: str
     type: DataType
-    value: OverkizStateType
+    value: StateType
 
     def __init__(
         self,
         name: str,
         type: int,
-        value: OverkizStateType = None,
+        value: StateType = None,
         **_: Any,
     ):
         self.name = name
@@ -295,11 +295,7 @@ class EventState(State):
     ):
         super().__init__(name, type, value, **_)
 
-        if self.type == DataType.NONE:
-            self.value = value
-        else:
-            cast_to_python = DATA_TYPE_TO_PYTHON[self.type]
-            self.value = cast_to_python(self.value)
+        self.value = DATA_TYPE_TO_PYTHON[self.type](self.value)
 
 
 @define(init=False)
