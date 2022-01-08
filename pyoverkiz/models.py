@@ -295,7 +295,10 @@ class EventState(State):
     ):
         super().__init__(name, type, value, **_)
 
-        self.value = DATA_TYPE_TO_PYTHON[self.type](self.value)
+        # Overkiz returns all state values as a string
+        # We cast them here based on the data type provided by Overkiz
+        if self.type in DATA_TYPE_TO_PYTHON:
+            self.value = DATA_TYPE_TO_PYTHON[self.type](self.value)
 
 
 @define(init=False)
