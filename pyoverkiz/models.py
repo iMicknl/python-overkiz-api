@@ -19,6 +19,7 @@ from pyoverkiz.enums import (
     UIWidget,
     UpdateBoxStatus,
 )
+from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 
 # pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
 
@@ -269,18 +270,35 @@ class CommandDefinitions:
 class State:
     name: str
     type: DataType
-    value: None | int | float | str | bool
+    value: StateType
 
     def __init__(
         self,
         name: str,
         type: int,
-        value: None | int | float | str | bool = None,
+        value: StateType = None,
         **_: Any,
     ):
         self.name = name
         self.value = value
         self.type = DataType(type)
+
+
+@define(init=False, kw_only=True)
+class EventState(State):
+    def __init__(
+        self,
+        name: str,
+        type: int,
+        value: str | None = None,
+        **_: Any,
+    ):
+        super().__init__(name, type, value, **_)
+
+        # Overkiz returns all state values as a string
+        # We cast them here based on the data type provided by Overkiz
+        if self.type in DATA_TYPE_TO_PYTHON:
+            self.value = DATA_TYPE_TO_PYTHON[self.type](self.value)
 
 
 @define(init=False)
@@ -351,7 +369,7 @@ class Event:
     gateway_id: str | None = field(repr=obfuscate_id, default=None)
     exec_id: str | None = None
     device_url: str | None = field(repr=obfuscate_id, default=None)
-    device_states: list[State]
+    device_states: list[EventState]
     old_state: ExecutionState | None = None
     new_state: ExecutionState | None = None
 
@@ -387,7 +405,7 @@ class Event:
         self.exec_id = exec_id
         self.device_url = device_url
         self.device_states = (
-            [State(**s) for s in device_states] if device_states else []
+            [EventState(**s) for s in device_states] if device_states else []
         )
         self.old_state = ExecutionState(old_state) if old_state else None
         self.new_state = ExecutionState(new_state) if new_state else None
