@@ -43,6 +43,7 @@ class OverkizCommand(str, Enum):
     SET_CONTROL_DHW = "setControlDHW"
     SET_CONTROL_DHW_SETTING_TEMPERATURE = "setControlDHWSettingTemperature"
     SET_CURRENT_OPERATING_MODE = "setCurrentOperatingMode"
+    SET_OPERATING_MODE = "setOperatingMode"
     SET_DEPLOYMENT = "setDeployment"
     SET_DEROGATION = "setDerogation"
     SET_DHW_MODE = "setDHWMode"
@@ -121,6 +122,8 @@ class OverkizCommandParam(str, Enum):
     VERY_LOW = "verylow"
     ZONE_1 = "zone1"
     ZONE_2 = "zone2"
+    HEATING = "heating"
+    COOLING = "cooling"
 
 
 @unique
