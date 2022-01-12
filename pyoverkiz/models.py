@@ -39,7 +39,7 @@ def mask(input: str) -> str:
 @define(init=False, kw_only=True)
 class Setup:
     creation_time: str
-    last_update_time: str
+    last_update_time: str | None = None
     id: str = field(repr=obfuscate_id, default=None)
     location: Location
     gateways: list[Gateway]
@@ -54,7 +54,7 @@ class Setup:
         self,
         *,
         creation_time: str,
-        last_update_time: str,
+        last_update_time: str | None = None,
         id: str = field(repr=obfuscate_id, default=None),
         location: dict[str, Any],
         gateways: list[dict[str, Any]],
