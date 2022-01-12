@@ -106,6 +106,7 @@ class TestOverkizClient:
             ("setup_hue_and_low_speed.json", 40),
             ("setup_tahoma_siren_io.json", 11),
             ("setup_tahoma_siren_rtd.json", 31),
+            ("setup_tahoma_be.json", 15),
         ],
     )
     @pytest.mark.asyncio
