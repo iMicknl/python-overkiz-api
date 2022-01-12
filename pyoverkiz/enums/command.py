@@ -53,6 +53,7 @@ class OverkizCommand(str, Enum):
     SET_INTENSITY = "setIntensity"
     SET_MEMORIZED_1_POSITION = "setMemorized1Position"
     SET_MEMORIZED_SIMPLE_VOLUME = "setMemorizedSimpleVolume"
+    SET_OPERATING_MODE = "setOperatingMode"
     SET_ORIENTATION = "setOrientation"
     SET_PEDESTRIAN_POSITION = "setPedestrianPosition"
     SET_RGB = "setRGB"
@@ -84,6 +85,7 @@ class OverkizCommandParam(str, Enum):
     BOOST = "boost"
     COMFORT = "comfort"
     CLOSED = "closed"
+    COOLING = "cooling"
     DEAD = "dead"
     DETECTED = "detected"
     DISARMED = "disarmed"
@@ -93,6 +95,7 @@ class OverkizCommandParam(str, Enum):
     FROSTPROTECTION = "frostprotection"
     FULL = "full"
     GEOFENCING_MODE = "geofencingMode"
+    HEATING = "heating"
     HIGH = "high"
     HIGH_DEMAND = "high demand"  # not a typo...
     HIGHEST = "highest"
