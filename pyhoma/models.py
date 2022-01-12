@@ -226,7 +226,7 @@ class Event:
 
     def __init__(
         self,
-        timestamp: int,
+        timestamp: int | None = None,
         name: EventName,
         setupoid: str | None = None,
         owner_key: str | None = None,
