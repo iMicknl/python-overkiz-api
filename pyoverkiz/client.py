@@ -21,6 +21,9 @@ from pyoverkiz.const import (
     NEXITY_COGNITO_CLIENT_ID,
     NEXITY_COGNITO_REGION,
     NEXITY_COGNITO_USER_POOL,
+    SOMFY_API,
+    SOMFY_CLIENT_ID,
+    SOMFY_CLIENT_SECRET,
     SUPPORTED_SERVERS,
 )
 from pyoverkiz.exceptions import (
@@ -34,6 +37,8 @@ from pyoverkiz.exceptions import (
     NexityServiceException,
     NoRegisteredEventListenerException,
     NotAuthenticatedException,
+    SomfyBadCredentialsException,
+    SomfyServiceException,
     TooManyExecutionsException,
     TooManyRequestsException,
 )
@@ -131,6 +136,11 @@ class OverkizClient:
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
 
+        # Somfy TaHoma authentication using access_token
+        if self.server == SUPPORTED_SERVERS["somfy_europe"]:
+            access_token = await self.somfy_tahoma_login()
+            payload = {"accessToken": access_token}
+
         # CozyTouch authentication using jwt
         if self.server == SUPPORTED_SERVERS["atlantic_cozytouch"]:
             jwt = await self.cozytouch_login()
@@ -154,6 +164,36 @@ class OverkizClient:
             return True
 
         return False
+
+    async def somfy_tahoma_login(self) -> str:
+        """
+        Authenticate via Somfy identity and acquire access_token.
+        """
+        # Request access token
+        async with self.session.post(
+            SOMFY_API + "/oauth/oauth/v2/token",
+            data=FormData(
+                {
+                    "grant_type": "password",
+                    "username": self.username,
+                    "password": self.password,
+                    "client_id": SOMFY_CLIENT_ID,
+                    "client_secret": SOMFY_CLIENT_SECRET,
+                }
+            ),
+            headers={
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+        ) as response:
+            token = await response.json()
+            # { "message": "error.invalid.grant", "data": [], "uid": "xxx" }
+            if "message" in token and token["message"] == "error.invalid.grant":
+                raise SomfyBadCredentialsException(token["message"])
+
+            if "access_token" not in token:
+                raise SomfyServiceException("No Somfy access token provided.")
+
+            return str(token["access_token"])
 
     async def cozytouch_login(self) -> str:
         """
