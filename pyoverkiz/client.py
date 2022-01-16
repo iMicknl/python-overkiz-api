@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import asyncio
-import logging
 import urllib.parse
 from json import JSONDecodeError
 from types import TracebackType
@@ -57,7 +56,6 @@ from pyoverkiz.models import (
     State,
 )
 
-_LOGGER = logging.getLogger(__name__)
 JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
 
 
@@ -141,7 +139,6 @@ class OverkizClient:
         # Somfy TaHoma authentication using access_token
         if self.server == SUPPORTED_SERVERS["somfy_europe"]:
             access_token = await self.somfy_tahoma_login()
-            _LOGGER.debug("Using Somfy OAuth login")
             payload = {"accessToken": access_token}
 
         # CozyTouch authentication using jwt
