@@ -508,7 +508,8 @@ class Event:
         self.protocol_type = protocol_type
         self.name = EventName(name)
         self.failure_type_code = (
-            None if failure_type_code is None else FailureType(failure_type_code)
+            None if failure_type_code is None else FailureType(
+                failure_type_code)
         )
 
 
@@ -614,7 +615,8 @@ class Gateway:
         self.time_reliable = time_reliable
         self.connectivity = Connectivity(**connectivity)
         self.up_to_date = up_to_date
-        self.update_status = UpdateBoxStatus(update_status) if update_status else None
+        self.update_status = UpdateBoxStatus(
+            update_status) if update_status else None
         self.sync_in_progress = sync_in_progress
         self.partners = [Partner(**p) for p in partners] if partners else []
         self.type = GatewayType(type) if type else None
