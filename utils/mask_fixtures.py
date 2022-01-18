@@ -4,7 +4,7 @@ import glob
 import json
 import os
 
-from pyoverkiz.utils import mask_json
+from pyoverkiz.obfuscate import obfuscate_sensitive_data
 
 # only process .JSON files in folder.
 for filename in glob.glob(os.path.join("tests/fixtures/setup", "*.json")):
@@ -14,7 +14,7 @@ for filename in glob.glob(os.path.join("tests/fixtures/setup", "*.json")):
 
         try:
             file = json.loads(input_file.read())
-            output = mask_json(file)
+            output = obfuscate_sensitive_data(file)
         except Exception as exception:  # pylint: disable=broad-except
             print(f"Error while masking: {filename}")
             print(exception)

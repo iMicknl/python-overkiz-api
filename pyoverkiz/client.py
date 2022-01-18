@@ -50,8 +50,8 @@ from pyoverkiz.models import (
     Setup,
     State,
 )
+from pyoverkiz.obfuscate import obfuscate_sensitive_data
 from pyoverkiz.types import JSON
-from pyoverkiz.utils import mask_json
 
 
 async def relogin(invocation: dict[str, Any]) -> None:
@@ -290,7 +290,7 @@ class OverkizClient:
         This data will be masked to not return any confidential or PII data.
         """
         response = await self.__get("setup")
-        setup = mask_json(response)
+        setup = obfuscate_sensitive_data(response)
 
         return setup
 

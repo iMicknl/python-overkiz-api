@@ -18,8 +18,8 @@ from pyoverkiz.enums import (
     UIWidget,
     UpdateBoxStatus,
 )
+from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
-from pyoverkiz.utils import mask, obfuscate_email, obfuscate_id
 
 # pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
 
@@ -71,14 +71,14 @@ class Setup:
 class Location:
     creation_time: str
     last_update_time: str
-    city: str = field(repr=mask, default=None)
-    country: str = field(repr=mask, default=None)
-    postal_code: str = field(repr=mask, default=None)
-    address_line1: str = field(repr=mask, default=None)
-    address_line2: str = field(repr=mask, default=None)
+    city: str = field(repr=obfuscate_string, default=None)
+    country: str = field(repr=obfuscate_string, default=None)
+    postal_code: str = field(repr=obfuscate_string, default=None)
+    address_line1: str = field(repr=obfuscate_string, default=None)
+    address_line2: str = field(repr=obfuscate_string, default=None)
     timezone: str
-    longitude: str = field(repr=mask, default=None)
-    latitude: str = field(repr=mask, default=None)
+    longitude: str = field(repr=obfuscate_string, default=None)
+    latitude: str = field(repr=obfuscate_string, default=None)
     twilight_mode: int
     twilight_angle: str
     twilight_city: str
@@ -93,14 +93,14 @@ class Location:
         *,
         creation_time: str,
         last_update_time: str,
-        city: str = field(repr=mask, default=None),
-        country: str = field(repr=mask, default=None),
-        postal_code: str = field(repr=mask, default=None),
-        address_line1: str = field(repr=mask, default=None),
-        address_line2: str = field(repr=mask, default=None),
+        city: str = field(repr=obfuscate_string, default=None),
+        country: str = field(repr=obfuscate_string, default=None),
+        postal_code: str = field(repr=obfuscate_string, default=None),
+        address_line1: str = field(repr=obfuscate_string, default=None),
+        address_line2: str = field(repr=obfuscate_string, default=None),
         timezone: str,
-        longitude: str = field(repr=mask, default=None),
-        latitude: str = field(repr=mask, default=None),
+        longitude: str = field(repr=obfuscate_string, default=None),
+        latitude: str = field(repr=obfuscate_string, default=None),
         twilight_mode: int,
         twilight_angle: str,
         twilight_city: str,
