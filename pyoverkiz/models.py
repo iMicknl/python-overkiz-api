@@ -358,8 +358,8 @@ class Command(dict):
 
 @define(init=False, kw_only=True)
 class Event:
-    timestamp: int
     name: EventName
+    timestamp: int | None
     setupoid: str | None = field(repr=obfuscate_id, default=None)
     owner_key: str | None = field(repr=obfuscate_id, default=None)
     type: int | None = None
@@ -384,8 +384,8 @@ class Event:
 
     def __init__(
         self,
-        timestamp: int,
         name: EventName,
+        timestamp: int | None = None,
         setupoid: str | None = field(repr=obfuscate_id, default=None),
         owner_key: str | None = None,
         type: int | None = None,
