@@ -7,6 +7,7 @@ import pytest
 from pytest import fixture
 
 from pyoverkiz.client import OverkizClient
+from pyoverkiz.clients.simple_client import SimpleClient
 from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.enums import DataType
 
@@ -16,7 +17,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 class TestOverkizClient:
     @fixture
     def client(self):
-        return OverkizClient("username", "password", SUPPORTED_SERVERS["somfy_europe"])
+        return SimpleClient("username", "password", SUPPORTED_SERVERS["somfy_europe"])
 
     @pytest.mark.asyncio
     async def test_get_devices_basic(self, client):

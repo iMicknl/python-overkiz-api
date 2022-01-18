@@ -1,44 +1,26 @@
 """ Python wrapper for the OverKiz API """
 from __future__ import annotations
 
-import asyncio
 import urllib.parse
 from json import JSONDecodeError
 from types import TracebackType
 from typing import Any, Dict, List, Union, cast
 
 import backoff
-import boto3
 import humps
-from aiohttp import ClientResponse, ClientSession, FormData, ServerDisconnectedError
-from botocore.config import Config
-from warrant_lite import WarrantLite
+from aiohttp import ClientResponse, ClientSession, ServerDisconnectedError
 
-from pyoverkiz.const import (
-    COZYTOUCH_ATLANTIC_API,
-    COZYTOUCH_CLIENT_ID,
-    NEXITY_API,
-    NEXITY_COGNITO_CLIENT_ID,
-    NEXITY_COGNITO_REGION,
-    NEXITY_COGNITO_USER_POOL,
-    SOMFY_API,
-    SOMFY_CLIENT_ID,
-    SOMFY_CLIENT_SECRET,
-    SUPPORTED_SERVERS,
-)
+from pyoverkiz.clients.atlantic_cozytouch_client import AtlanticCozytouchClient
+from pyoverkiz.clients.nexity_client import NexityClient
+from pyoverkiz.clients.simple_client import SimpleClient
+from pyoverkiz.clients.somfy_client import SomfyEuropeClient
 from pyoverkiz.exceptions import (
     BadCredentialsException,
-    CozyTouchBadCredentialsException,
-    CozyTouchServiceException,
     InvalidCommandException,
     InvalidEventListenerIdException,
     MaintenanceException,
-    NexityBadCredentialsException,
-    NexityServiceException,
     NoRegisteredEventListenerException,
     NotAuthenticatedException,
-    SomfyBadCredentialsException,
-    SomfyServiceException,
     TooManyExecutionsException,
     TooManyRequestsException,
 )
@@ -82,11 +64,14 @@ class OverkizClient:
     event_listener_id: str | None
     session: ClientSession
 
+    @staticmethod
+    def get_client(server: OverkizServer) -> OverkizClient:
+        return CLIENTS.get(server, SimpleClient)
+
     def __init__(
         self,
         username: str,
         password: str,
-        server: OverkizServer,
         session: ClientSession | None = None,
     ) -> None:
         """
@@ -94,13 +79,11 @@ class OverkizClient:
 
         :param username: the username
         :param password: the password
-        :param server: OverkizServer
         :param session: optional ClientSession
         """
 
         self.username = username
         self.password = password
-        self.server = server
 
         self.setup: Setup | None = None
         self.devices: list[Device] = []
@@ -126,155 +109,6 @@ class OverkizClient:
             await self.unregister_event_listener()
 
         await self.session.close()
-
-    async def login(
-        self,
-        register_event_listener: bool | None = True,
-    ) -> bool:
-        """
-        Authenticate and create an API session allowing access to the other operations.
-        Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
-        """
-
-        # Somfy TaHoma authentication using access_token
-        if self.server == SUPPORTED_SERVERS["somfy_europe"]:
-            access_token = await self.somfy_tahoma_login()
-            payload = {"accessToken": access_token}
-
-        # CozyTouch authentication using jwt
-        if self.server == SUPPORTED_SERVERS["atlantic_cozytouch"]:
-            jwt = await self.cozytouch_login()
-            payload = {"jwt": jwt}
-
-        # Nexity authentication using ssoToken
-        elif self.server == SUPPORTED_SERVERS["nexity"]:
-            sso_token = await self.nexity_login()
-            user_id = self.username.replace("@", "_-_")  # Replace @ for _-_
-            payload = {"ssoToken": sso_token, "userId": user_id}
-
-        # Regular authentication using userId+userPassword
-        else:
-            payload = {"userId": self.username, "userPassword": self.password}
-
-        response = await self.__post("login", data=payload)
-
-        if response.get("success"):
-            if register_event_listener:
-                await self.register_event_listener()
-            return True
-
-        return False
-
-    async def somfy_tahoma_login(self) -> str:
-        """
-        Authenticate via Somfy identity and acquire access_token.
-        """
-        # Request access token
-        async with self.session.post(
-            SOMFY_API + "/oauth/oauth/v2/token",
-            data=FormData(
-                {
-                    "grant_type": "password",
-                    "username": self.username,
-                    "password": self.password,
-                    "client_id": SOMFY_CLIENT_ID,
-                    "client_secret": SOMFY_CLIENT_SECRET,
-                }
-            ),
-            headers={
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-        ) as response:
-            token = await response.json()
-            # { "message": "error.invalid.grant", "data": [], "uid": "xxx" }
-            if "message" in token and token["message"] == "error.invalid.grant":
-                raise SomfyBadCredentialsException(token["message"])
-
-            if "access_token" not in token:
-                raise SomfyServiceException("No Somfy access token provided.")
-
-            return str(token["access_token"])
-
-    async def cozytouch_login(self) -> str:
-        """
-        Authenticate via CozyTouch identity and acquire JWT token.
-        """
-        # Request access token
-        async with self.session.post(
-            COZYTOUCH_ATLANTIC_API + "/token",
-            data=FormData(
-                {
-                    "grant_type": "password",
-                    "username": self.username,
-                    "password": self.password,
-                }
-            ),
-            headers={
-                "Authorization": f"Basic {COZYTOUCH_CLIENT_ID}",
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-        ) as response:
-            token = await response.json()
-
-            # {'error': 'invalid_grant',
-            # 'error_description': 'Provided Authorization Grant is invalid.'}
-            if "error" in token and token["error"] == "invalid_grant":
-                raise CozyTouchBadCredentialsException(token["error_description"])
-
-            if "token_type" not in token:
-                raise CozyTouchServiceException("No CozyTouch token provided.")
-
-        # Request JWT
-        async with self.session.get(
-            COZYTOUCH_ATLANTIC_API + "/gacoma/gacomawcfservice/accounts/jwt",
-            headers={"Authorization": f"Bearer {token['access_token']}"},
-        ) as response:
-            jwt = await response.text()
-
-            if not jwt:
-                raise CozyTouchServiceException("No JWT token provided.")
-
-            jwt = jwt.strip('"')  # Remove surrounding quotes
-
-            return jwt
-
-    async def nexity_login(self) -> str:
-        """
-        Authenticate via Nexity identity and acquire SSO token.
-        """
-        loop = asyncio.get_event_loop()
-
-        # Request access token
-        client = boto3.client(
-            "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
-        )
-        aws = WarrantLite(
-            username=self.username,
-            password=self.password,
-            pool_id=NEXITY_COGNITO_USER_POOL,
-            client_id=NEXITY_COGNITO_CLIENT_ID,
-            client=client,
-        )
-
-        try:
-            tokens = await loop.run_in_executor(None, aws.authenticate_user)
-        except Exception as error:
-            raise NexityBadCredentialsException() from error
-
-        id_token = tokens["AuthenticationResult"]["IdToken"]
-
-        async with self.session.get(
-            NEXITY_API + "/deploy/api/v1/domotic/token",
-            headers={
-                "Authorization": id_token,
-            },
-        ) as response:
-            token = await response.json()
-
-            if "token" not in token:
-                raise NexityServiceException("No Nexity SSO token provided.")
-
-            return cast(str, token["token"])
 
     @backoff.on_exception(
         backoff.expo,

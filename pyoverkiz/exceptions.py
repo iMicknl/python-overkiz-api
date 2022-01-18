@@ -28,30 +28,3 @@ class InvalidEventListenerIdException(Exception):
 
 class NoRegisteredEventListenerException(Exception):
     pass
-
-
-# Nexity
-class NexityBadCredentialsException(BadCredentialsException):
-    pass
-
-
-class NexityServiceException(Exception):
-    pass
-
-
-# CozyTouch
-class CozyTouchBadCredentialsException(BadCredentialsException):
-    pass
-
-
-class CozyTouchServiceException(Exception):
-    pass
-
-
-# Somfy
-class SomfyBadCredentialsException(BadCredentialsException):
-    pass
-
-
-class SomfyServiceException(Exception):
-    pass

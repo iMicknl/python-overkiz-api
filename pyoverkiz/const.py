@@ -1,4 +1,8 @@
 from __future__ import annotations
+from pyoverkiz.client import OverkizClient
+from pyoverkiz.clients.atlantic_cozytouch_client import AtlanticCozytouchClient
+from pyoverkiz.clients.nexity_client import NexityClient
+from pyoverkiz.clients.somfy_client import SomfyEuropeClient
 
 from pyoverkiz.models import OverkizServer
 
@@ -71,4 +75,10 @@ SUPPORTED_SERVERS: dict[str, OverkizServer] = {
         manufacturer="Somfy",
         configuration_url=None,
     ),
+}
+
+CLIENTS: dict[str, OverkizClient] = {
+    "somfy_europe": SomfyEuropeClient,
+    "atlantic_cozytouch": AtlanticCozytouchClient,
+    "nexity": NexityClient,
 }
