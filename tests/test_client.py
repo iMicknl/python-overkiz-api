@@ -110,6 +110,7 @@ class TestOverkizClient:
             ("setup_tahoma_siren_io.json", 11),
             ("setup_tahoma_siren_rtd.json", 31),
             ("setup_tahoma_be.json", 15),
+            ("setup_local.json", 3),
         ],
     )
     @pytest.mark.asyncio

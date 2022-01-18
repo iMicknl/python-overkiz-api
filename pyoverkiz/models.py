@@ -27,44 +27,44 @@ from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 
 @define(init=False, kw_only=True)
 class Setup:
-    creation_time: str
+    creation_time: str | None = None
     last_update_time: str | None = None
     id: str = field(repr=obfuscate_id, default=None)
-    location: Location
+    location: Location | None = None
     gateways: list[Gateway]
     devices: list[Device]
-    zones: list[Zone]
-    reseller_delegation_type: str
-    oid: str
-    root_place: Place
+    zones: list[Zone] | None = None
+    reseller_delegation_type: str | None = None
+    oid: str | None = None
+    root_place: Place | None = None
     features: list[Feature] | None = None
 
     def __init__(
         self,
         *,
-        creation_time: str,
+        creation_time: str | None = None,
         last_update_time: str | None = None,
         id: str = field(repr=obfuscate_id, default=None),
-        location: dict[str, Any],
+        location: dict[str, Any] | None = None,
         gateways: list[dict[str, Any]],
         devices: list[dict[str, Any]],
-        zones: list[dict[str, Any]],
-        reseller_delegation_type: str,
-        oid: str,
-        root_place: dict[str, Any],
+        zones: list[dict[str, Any]] | None = None,
+        reseller_delegation_type: str | None = None,
+        oid: str | None = None,
+        root_place: dict[str, Any] | None = None,
         features: list[dict[str, Any]] | None = None,
         **_: Any,
     ) -> None:
         self.id = id
         self.creation_time = creation_time
         self.last_update_time = last_update_time
-        self.location = Location(**location)
+        self.location = Location(**location) if location else None
         self.gateways = [Gateway(**g) for g in gateways]
         self.devices = [Device(**d) for d in devices]
-        self.zones = [Zone(**z) for z in zones]
+        self.zones = [Zone(**z) for z in zones] if zones else None
         self.reseller_delegation_type = reseller_delegation_type
         self.oid = oid
-        self.root_place = Place(**root_place)
+        self.root_place = Place(**root_place) if root_place else None
         self.features = [Feature(**f) for f in features] if features else None
 
 
@@ -147,7 +147,7 @@ class Device:
     ui_class: UIClass
     states: States
     type: ProductType
-    place_oid: str
+    place_oid: str | None = None
     protocol: Protocol = field(init=False, repr=False)
 
     def __init__(
@@ -161,11 +161,12 @@ class Device:
         controllable_name: str,
         definition: dict[str, Any],
         data_properties: list[dict[str, Any]] | None = None,
-        widget: str,
-        ui_class: str,
+        widget: str | None = None,
+        widget_name: str | None = None,
+        ui_class: str | None = None,
         states: list[dict[str, Any]] | None = None,
         type: int,
-        place_oid: str,
+        place_oid: str | None = None,
         **_: Any,
     ) -> None:
         self.id = device_url
@@ -178,26 +179,43 @@ class Device:
         self.controllable_name = controllable_name
         self.states = States(states)
         self.data_properties = data_properties
-        self.widget = UIWidget(widget)
-        self.ui_class = UIClass(ui_class)
         self.type = ProductType(type)
         self.place_oid = place_oid
         self.protocol = Protocol(self.device_url.split(":")[0])
+
+        if ui_class:
+            self.ui_class = UIClass(ui_class)
+        elif self.definition.ui_class:
+            self.ui_class = UIClass(self.definition.ui_class)
+
+        if widget:
+            self.widget = UIWidget(widget)
+        elif widget_name:
+            self.widget = UIWidget(widget_name)
 
 
 @define(init=False, kw_only=True)
 class StateDefinition:
 
     qualified_name: str
-    type: str
+    type: str | None = None
     values: list[str] | None = None
 
     def __init__(
-        self, qualified_name: str, type: str, values: list[str] | None = None, **_: Any
+        self,
+        name: str | None = None,
+        qualified_name: str | None = None,
+        type: str | None = None,
+        values: list[str] | None = None,
+        **_: Any,
     ) -> None:
-        self.qualified_name = qualified_name
         self.type = type
         self.values = values
+
+        if qualified_name:
+            self.qualified_name = qualified_name
+        elif name:
+            self.qualified_name = name
 
 
 @define(init=False, kw_only=True)
@@ -206,7 +224,7 @@ class Definition:
     states: list[StateDefinition]
     widget_name: str | None = None
     ui_class: str | None = None
-    qualified_name: str
+    qualified_name: str | None = None
 
     def __init__(
         self,
@@ -215,7 +233,7 @@ class Definition:
         states: list[dict[str, Any]] | None = None,
         widget_name: str | None = None,
         ui_class: str | None = None,
-        qualified_name: str,
+        qualified_name: str | None = None,
         **_: Any,
     ) -> None:
         self.commands = CommandDefinitions(commands)
@@ -417,7 +435,8 @@ class Event:
         self.protocol_type = protocol_type
         self.name = EventName(name)
         self.failure_type_code = (
-            None if failure_type_code is None else FailureType(failure_type_code)
+            None if failure_type_code is None else FailureType(
+                failure_type_code)
         )
 
 
@@ -487,14 +506,14 @@ class Gateway:
     id: str = field(repr=obfuscate_id)
     gateway_id: str = field(repr=obfuscate_id)
     alive: bool | None = None
-    mode: str
+    mode: str | None = None
     place_oid: str | None = None
-    time_reliable: bool
+    time_reliable: bool | None = None
     connectivity: Connectivity
     up_to_date: bool | None = None
-    update_status: UpdateBoxStatus
-    sync_in_progress: bool
-    type: GatewayType
+    update_status: UpdateBoxStatus | None = None
+    sync_in_progress: bool | None = None
+    type: GatewayType | None = None
 
     def __init__(
         self,
@@ -504,14 +523,14 @@ class Gateway:
         sub_type: GatewaySubType | None = None,
         gateway_id: str,
         alive: bool | None = None,
-        mode: str,
+        mode: str | None = None,
         place_oid: str | None = None,
-        time_reliable: bool,
+        time_reliable: bool | None = None,
         connectivity: dict[str, Any],
         up_to_date: bool | None = None,
-        update_status: UpdateBoxStatus,
-        sync_in_progress: bool,
-        type: GatewayType,
+        update_status: UpdateBoxStatus | None = None,
+        sync_in_progress: bool | None = None,
+        type: GatewayType | None = None,
         **_: Any,
     ) -> None:
         self.id = gateway_id
@@ -523,10 +542,11 @@ class Gateway:
         self.time_reliable = time_reliable
         self.connectivity = Connectivity(**connectivity)
         self.up_to_date = up_to_date
-        self.update_status = UpdateBoxStatus(update_status)
+        self.update_status = UpdateBoxStatus(
+            update_status) if update_status else None
         self.sync_in_progress = sync_in_progress
         self.partners = [Partner(**p) for p in partners] if partners else []
-        self.type = GatewayType(type)
+        self.type = GatewayType(type) if type else None
         self.sub_type = GatewaySubType(sub_type) if sub_type else None
 
 
