@@ -16,3 +16,5 @@ DATA_TYPE_TO_PYTHON: dict[DataType, Callable[[Any], StateType]] = {
     DataType.JSON_ARRAY: json.loads,
     DataType.JSON_OBJECT: json.loads,
 }
+
+JSON = Union[Dict[str, Any], List[Dict[str, Any]]]

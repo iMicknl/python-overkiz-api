@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import re
 from typing import Any, Iterator
 
 from attr import define, field
@@ -20,20 +19,9 @@ from pyoverkiz.enums import (
     UpdateBoxStatus,
 )
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
+from pyoverkiz.utils import mask, obfuscate_email, obfuscate_id
 
 # pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
-
-
-def obfuscate_id(id: str | None) -> str:
-    return re.sub(r"(SETUP)?\d+-", "****-", str(id))
-
-
-def obfuscate_email(email: str | None) -> str:
-    return re.sub(r"(.).*@.*(.\..*)", r"\1****@****\2", str(email))
-
-
-def mask(input: str) -> str:
-    return re.sub(r"[a-zA-Z0-9_.-]*", "*", str(input))
 
 
 @define(init=False, kw_only=True)
