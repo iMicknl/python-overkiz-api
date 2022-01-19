@@ -5,7 +5,7 @@ import asyncio
 import urllib.parse
 from json import JSONDecodeError
 from types import TracebackType
-from typing import Any, Dict, List, Union, cast
+from typing import Any, cast
 
 import backoff
 import boto3
@@ -50,8 +50,8 @@ from pyoverkiz.models import (
     Setup,
     State,
 )
-
-JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
+from pyoverkiz.obfuscate import obfuscate_sensitive_data
+from pyoverkiz.types import JSON
 
 
 async def relogin(invocation: dict[str, Any]) -> None:
@@ -263,6 +263,7 @@ class OverkizClient:
             return self.setup
 
         response = await self.__get("setup")
+
         setup = Setup(**humps.decamelize(response))
 
         # Cache response
@@ -271,6 +272,26 @@ class OverkizClient:
         self.devices = setup.devices
 
         return setup
+
+    @backoff.on_exception(
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError),
+        max_tries=2,
+        on_backoff=relogin,
+    )
+    async def get_diagnostic_data(self) -> JSON:
+        """
+        Get all data about the connected user setup
+            -> gateways data (serial number, activation state, ...): <gateways/gateway>
+            -> setup location: <location>
+            -> house places (rooms and floors): <place>
+            -> setup devices: <devices>
+
+        This data will be masked to not return any confidential or PII data.
+        """
+        response = await self.__get("setup")
+
+        return obfuscate_sensitive_data(response)
 
     @backoff.on_exception(
         backoff.expo,
