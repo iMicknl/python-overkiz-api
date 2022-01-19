@@ -94,9 +94,10 @@ class TestOverkizClient:
         "fixture_name, device_count",
         [
             ("setup_cozytouch.json", 12),
-            ("setup_cozytouch2.json", 15),
+            ("setup_cozytouch_2.json", 15),
+            ("setup_cozytouch_3.json", 15),
             ("setup_hi_kumo.json", 3),
-            ("setup_hi_kumo2.json", 3),
+            ("setup_hi_kumo_2.json", 3),
             ("setup_nexity.json", 18),
             ("setup_rexel.json", 18),
             ("setup_tahoma_3.json", 39),
