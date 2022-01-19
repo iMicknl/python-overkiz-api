@@ -1,11 +1,8 @@
 from aiohttp import FormData
+
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.const import SOMFY_API, SOMFY_CLIENT_ID, SOMFY_CLIENT_SECRET
-from pyoverkiz.exceptions import (
-    BadCredentialsException,
-    SomfyBadCredentialsException,
-    SomfyServiceException,
-)
+from pyoverkiz.exceptions import BadCredentialsException
 
 
 class SomfyEuropeClient(OverkizClient):

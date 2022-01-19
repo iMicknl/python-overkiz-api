@@ -10,10 +10,6 @@ import backoff
 import humps
 from aiohttp import ClientResponse, ClientSession, ServerDisconnectedError
 
-from pyoverkiz.clients.atlantic_cozytouch_client import AtlanticCozytouchClient
-from pyoverkiz.clients.nexity_client import NexityClient
-from pyoverkiz.clients.simple_client import SimpleClient
-from pyoverkiz.clients.somfy_client import SomfyEuropeClient
 from pyoverkiz.exceptions import (
     BadCredentialsException,
     InvalidCommandException,
@@ -63,10 +59,6 @@ class OverkizClient:
     gateways: list[Gateway]
     event_listener_id: str | None
     session: ClientSession
-
-    @staticmethod
-    def get_client(server: OverkizServer) -> OverkizClient:
-        return CLIENTS.get(server, SimpleClient)
 
     def __init__(
         self,

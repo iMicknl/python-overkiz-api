@@ -1,10 +1,12 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Iterator
+from typing import Any, Iterator, TypeVar
 
 from attr import define, field
 
+from pyoverkiz.client import OverkizClient
+from pyoverkiz.clients.simple_client import SimpleClient
 from pyoverkiz.enums import (
     DataType,
     EventName,
@@ -695,6 +697,9 @@ class Zone:
         self.oid = oid
 
 
+T = TypeVar("T", bound="OverkizClient")
+
+
 @define(kw_only=True)
 class OverkizServer:
     """Class to describe an Overkiz server."""
@@ -703,3 +708,4 @@ class OverkizServer:
     endpoint: str
     manufacturer: str
     configuration_url: str | None
+    client_class: type[T] = SimpleClient

@@ -1,9 +1,8 @@
 from __future__ import annotations
-from pyoverkiz.client import OverkizClient
+
 from pyoverkiz.clients.atlantic_cozytouch_client import AtlanticCozytouchClient
 from pyoverkiz.clients.nexity_client import NexityClient
 from pyoverkiz.clients.somfy_client import SomfyEuropeClient
-
 from pyoverkiz.models import OverkizServer
 
 COZYTOUCH_ATLANTIC_API = "https://api.groupe-atlantic.com"
@@ -26,6 +25,7 @@ SUPPORTED_SERVERS: dict[str, OverkizServer] = {
         endpoint="https://ha110-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Atlantic",
         configuration_url=None,
+        client_class=AtlanticCozytouchClient,
     ),
     "hi_kumo_asia": OverkizServer(
         name="Hitachi Hi Kumo (Asia)",
@@ -50,6 +50,7 @@ SUPPORTED_SERVERS: dict[str, OverkizServer] = {
         endpoint="https://ha106-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Nexity",
         configuration_url=None,
+        client_class=NexityClient,
     ),
     "rexel": OverkizServer(
         name="Rexel Energeasy Connect",
@@ -62,6 +63,7 @@ SUPPORTED_SERVERS: dict[str, OverkizServer] = {
         endpoint="https://tahomalink.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Somfy",
         configuration_url="https://www.tahomalink.com",
+        client_class=SomfyEuropeClient,
     ),
     "somfy_america": OverkizServer(
         name="Somfy (North America)",
@@ -75,10 +77,4 @@ SUPPORTED_SERVERS: dict[str, OverkizServer] = {
         manufacturer="Somfy",
         configuration_url=None,
     ),
-}
-
-CLIENTS: dict[str, OverkizClient] = {
-    "somfy_europe": SomfyEuropeClient,
-    "atlantic_cozytouch": AtlanticCozytouchClient,
-    "nexity": NexityClient,
 }

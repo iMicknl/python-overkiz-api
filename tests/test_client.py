@@ -6,7 +6,6 @@ import aiohttp
 import pytest
 from pytest import fixture
 
-from pyoverkiz.client import OverkizClient
 from pyoverkiz.clients.simple_client import SimpleClient
 from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.enums import DataType

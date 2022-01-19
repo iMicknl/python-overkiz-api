@@ -1,4 +1,5 @@
 from aiohttp import FormData
+
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.const import COZYTOUCH_ATLANTIC_API, COZYTOUCH_CLIENT_ID
 from pyoverkiz.exceptions import BadCredentialsException
