@@ -290,9 +290,8 @@ class OverkizClient:
         This data will be masked to not return any confidential or PII data.
         """
         response = await self.__get("setup")
-        setup = obfuscate_sensitive_data(response)
 
-        return setup
+        return obfuscate_sensitive_data(response)
 
     @backoff.on_exception(
         backoff.expo,
