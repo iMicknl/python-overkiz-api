@@ -1,0 +1,37 @@
+[
+    {
+        "deviceURL": "io://1234-5678-1234/5928357",
+        "deviceStates": [
+            {
+                "type": 11,
+                "name": "core:ManufacturerSettingsState",
+                "value": {
+                    "current_position": 0
+                }
+            }
+        ],
+        "name": "DeviceStateChangedEvent"
+    },
+    {
+        "deviceURL": "io://1234-5678-1234/5928357",
+        "deviceStates": [
+            {
+                "type": 1,
+                "name": "core:TargetClosureState",
+                "value": 100
+            }
+        ],
+        "name": "DeviceStateChangedEvent"
+    },
+    {
+        "deviceURL": "io://1234-5678-1234/5928357",
+        "deviceStates": [
+            {
+                "type": 6,
+                "name": "core:MovingState",
+                "value": true
+            }
+        ],
+        "name": "DeviceStateChangedEvent"
+    }
+]
