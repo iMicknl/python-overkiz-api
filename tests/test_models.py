@@ -1,7 +1,8 @@
 import humps
+import pytest
 
 from pyoverkiz.enums import DataType
-from pyoverkiz.models import Device, States
+from pyoverkiz.models import Device, State, States
 
 RAW_STATES = [
     {"name": "core:NameState", "type": 3, "value": "alarm name"},
@@ -91,3 +92,41 @@ class TestStates:
         states = States(RAW_STATES)
         state = states.get("FooState")
         assert not state
+
+
+class TestState:
+    def test_int_value(self):
+        state = State(name="state", type=DataType.INTEGER, value=1)
+        assert state.value_as_int == 1
+
+    def test_bad_int_value(self):
+        state = State(name="state", type=DataType.BOOLEAN, value=False)
+        with pytest.raises(TypeError):
+            assert state.value_as_int
+
+    def test_float_value(self):
+        state = State(name="state", type=DataType.FLOAT, value=1.0)
+        assert state.value_as_float == 1.0
+
+    def test_bad_float_value(self):
+        state = State(name="state", type=DataType.BOOLEAN, value=False)
+        with pytest.raises(TypeError):
+            assert state.value_as_float
+
+    def test_bool_value(self):
+        state = State(name="state", type=DataType.BOOLEAN, value=True)
+        assert state.value_as_bool
+
+    def test_bad_bool_value(self):
+        state = State(name="state", type=DataType.INTEGER, value=1)
+        with pytest.raises(TypeError):
+            assert state.value_as_bool
+
+    def test_str_value(self):
+        state = State(name="state", type=DataType.STRING, value="foo")
+        assert state.value_as_str == "foo"
+
+    def test_bad_str_value(self):
+        state = State(name="state", type=DataType.BOOLEAN, value=False)
+        with pytest.raises(TypeError):
+            assert state.value_as_str
