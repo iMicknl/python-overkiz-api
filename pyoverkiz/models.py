@@ -274,6 +274,22 @@ class State:
         self.value = value
         self.type = DataType(type)
 
+    @property
+    def value_as_int(self) -> int:
+        return int(self.value)
+
+    @property
+    def value_as_float(self) -> float:
+        return float(self.value)
+
+    @property
+    def value_as_bool(self) -> bool:
+        return bool(self.value)
+
+    @property
+    def value_as_str(self) -> str:
+        return str(self.value)
+
 
 @define(init=False, kw_only=True)
 class EventState(State):
