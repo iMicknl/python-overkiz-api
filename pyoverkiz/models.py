@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Iterator
+from typing import Any, Iterator, cast
 
 from attr import define, field
 
@@ -276,19 +276,27 @@ class State:
 
     @property
     def value_as_int(self) -> int:
-        return int(self.value)
+        if self.type == DataType.INTEGER:
+            return cast(int, self.value)
+        raise TypeError(f"{self.name} is not an integer")
 
     @property
     def value_as_float(self) -> float:
-        return float(self.value)
+        if self.type == DataType.FLOAT:
+            return cast(float, self.value)
+        raise TypeError(f"{self.name} is not a float")
 
     @property
     def value_as_bool(self) -> bool:
-        return bool(self.value)
+        if self.type == DataType.BOOLEAN:
+            return bool(self.value)
+        raise TypeError(f"{self.name} is not a boolean")
 
     @property
     def value_as_str(self) -> str:
-        return str(self.value)
+        if self.type == DataType.STRING:
+            return str(self.value)
+        raise TypeError(f"{self.name} is not a string")
 
 
 @define(init=False, kw_only=True)
