@@ -40,6 +40,7 @@ class GatewayType(IntEnum):
     TAHOMA_RAIL_DIN = 72
     NEXITY_RAIL_DIN = 74
     ELIOT = 77
+    COZYTOUCH_SAUTER = 83
     WISER = 88
     TAHOMA_SWITCH = 98
     COZYTOUCH_V2 = 105
