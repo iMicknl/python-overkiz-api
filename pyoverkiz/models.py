@@ -21,6 +21,8 @@ from pyoverkiz.enums import (
 )
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 
+from .auth import OverkizAuthentication
+
 # pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
 
 
@@ -703,3 +705,4 @@ class OverkizServer:
     endpoint: str
     manufacturer: str
     configuration_url: str | None
+    authentication: OverkizAuthentication
