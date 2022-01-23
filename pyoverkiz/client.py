@@ -56,6 +56,7 @@ from pyoverkiz.models import (
     Setup,
     State,
 )
+from pyoverkiz.types import CloudAuth, LocalAuth, OverkizAuth
 
 JSON = Union[Dict[str, Any], List[Dict[str, Any]]]
 
@@ -74,8 +75,7 @@ async def refresh_listener(invocation: dict[str, Any]) -> None:
 class OverkizClient:
     """Interface class for the Overkiz API"""
 
-    username: str
-    password: str
+    auth: OverkizAuth
     server: OverkizServer
     setup: Setup | None
     devices: list[Device]
@@ -87,10 +87,14 @@ class OverkizClient:
     _expires_in: datetime.datetime | None = None
     _access_token: str | None = None
 
+    username: str | None = None
+    password: str | None = None
+    api_token: str | None = None
+
+
     def __init__(
         self,
-        username: str,
-        password: str,
+        auth: OverkizAuth,
         server: OverkizServer,
         session: ClientSession | None = None,
     ) -> None:
@@ -103,8 +107,7 @@ class OverkizClient:
         :param session: optional ClientSession
         """
 
-        self.username = username
-        self.password = password
+        self.auth = auth
         self.server = server
 
         self.setup: Setup | None = None
@@ -113,6 +116,16 @@ class OverkizClient:
         self.event_listener_id: str | None = None
 
         self.session = session if session else ClientSession()
+
+        if isinstance(self.auth, CloudAuth):
+            self.username = self.auth.username
+            self.password = self.auth.password
+            print(self.username)
+
+        if isinstance(self.auth, LocalAuth):
+            self.host = self.auth.host
+            self.password = self.auth.password
+
 
     async def __aenter__(self) -> OverkizClient:
         return self
@@ -148,6 +161,10 @@ class OverkizClient:
                 await self.register_event_listener()
 
             return True
+
+        # Local authentication
+        if self.api_token:
+            payload = {"accessToken": self.api_token}
 
         # CozyTouch authentication using jwt
         if self.server == SUPPORTED_SERVERS["atlantic_cozytouch"]:
@@ -616,6 +633,9 @@ class OverkizClient:
 
             headers["Authorization"] = f"Bearer {self._access_token}"
 
+        if self.api_token:
+            headers["X-Auth-Token"] = self.api_token
+
         async with self.session.get(
             f"{self.server.endpoint}{path}", headers=headers
         ) as response:
@@ -642,6 +662,9 @@ class OverkizClient:
                 print(self._access_token)
 
             headers["Authorization"] = f"Bearer {self._access_token}"
+
+        if self.api_token:
+            headers["X-Auth-Token"] = self.api_token
 
         async with self.session.post(
             f"{self.server.endpoint}{path}", data=data, json=payload, headers=headers
@@ -704,3 +727,12 @@ class OverkizClient:
                 raise NoRegisteredEventListenerException(message)
 
         raise Exception(message if message else result)
+
+
+    def create_local_server(host: str, manufacturer: str = "Somfy", configuration_url: str | None = None, name: str = "Local"):
+        return OverkizServer(
+            name=name,
+            endpoint=host + "/enduser-mobile-web/1/enduserAPI/",
+            manufacturer=manufacturer,
+            configuration_url=None,
+        )
