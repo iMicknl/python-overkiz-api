@@ -203,8 +203,6 @@ class OverkizClient:
                 seconds=token["expires_in"]
             )
 
-            print(type(self._expires_in))
-
             return self._access_token
 
     async def somfy_tahoma_refresh_token(self, refresh_token: str) -> str:
@@ -606,7 +604,6 @@ class OverkizClient:
                 self._refresh_token and
                 self._expires_in <= datetime.datetime.now()
             ):
-                print("Token expired")
                 self.somfy_tahoma_refresh_token(self._refresh_token)
 
             headers["Authorization"] = f"Bearer {self._access_token}"
@@ -629,7 +626,6 @@ class OverkizClient:
                 self._refresh_token and
                 self._expires_in <= datetime.datetime.now()
             ):
-                print("Token expired")
                 self.somfy_tahoma_refresh_token(self._refresh_token)
 
             headers["Authorization"] = f"Bearer {self._access_token}"
