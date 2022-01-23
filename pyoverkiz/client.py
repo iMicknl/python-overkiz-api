@@ -265,8 +265,7 @@ class OverkizClient:
             # {'error': 'invalid_grant',
             # 'error_description': 'Provided Authorization Grant is invalid.'}
             if "error" in token and token["error"] == "invalid_grant":
-                raise CozyTouchBadCredentialsException(
-                    token["error_description"])
+                raise CozyTouchBadCredentialsException(token["error_description"])
 
             if "token_type" not in token:
                 raise CozyTouchServiceException("No CozyTouch token provided.")
@@ -418,8 +417,7 @@ class OverkizClient:
         List execution history
         """
         response = await self.__get("history/executions")
-        execution_history = [HistoryExecution(
-            **h) for h in humps.decamelize(response)]
+        execution_history = [HistoryExecution(**h) for h in humps.decamelize(response)]
 
         return execution_history
 
@@ -600,9 +598,9 @@ class OverkizClient:
 
         if self.server == SUPPORTED_SERVERS["somfy_europe"]:
             if (
-                self._expires_in and
-                self._refresh_token and
-                self._expires_in <= datetime.datetime.now()
+                self._expires_in
+                and self._refresh_token
+                and self._expires_in <= datetime.datetime.now()
             ):
                 self.somfy_tahoma_refresh_token(self._refresh_token)
 
@@ -622,9 +620,9 @@ class OverkizClient:
 
         if self.server == SUPPORTED_SERVERS["somfy_europe"] and path != "login":
             if (
-                self._expires_in and
-                self._refresh_token and
-                self._expires_in <= datetime.datetime.now()
+                self._expires_in
+                and self._refresh_token
+                and self._expires_in <= datetime.datetime.now()
             ):
                 self.somfy_tahoma_refresh_token(self._refresh_token)
 
@@ -652,8 +650,7 @@ class OverkizClient:
         except JSONDecodeError as error:
             result = await response.text()
             if "Server is down for maintenance" in result:
-                raise MaintenanceException(
-                    "Server is down for maintenance") from error
+                raise MaintenanceException("Server is down for maintenance") from error
             raise Exception(
                 f"Unknown error while requesting {response.url}. {response.status} - {result}"
             ) from error
