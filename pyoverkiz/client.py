@@ -91,7 +91,6 @@ class OverkizClient:
     password: str | None = None
     api_token: str | None = None
 
-
     def __init__(
         self,
         auth: OverkizAuth,
@@ -125,7 +124,6 @@ class OverkizClient:
         if isinstance(self.auth, LocalAuth):
             self.host = self.auth.host
             self.password = self.auth.password
-
 
     async def __aenter__(self) -> OverkizClient:
         return self
@@ -287,8 +285,7 @@ class OverkizClient:
             # {'error': 'invalid_grant',
             # 'error_description': 'Provided Authorization Grant is invalid.'}
             if "error" in token and token["error"] == "invalid_grant":
-                raise CozyTouchBadCredentialsException(
-                    token["error_description"])
+                raise CozyTouchBadCredentialsException(token["error_description"])
 
             if "token_type" not in token:
                 raise CozyTouchServiceException("No CozyTouch token provided.")
@@ -440,8 +437,7 @@ class OverkizClient:
         List execution history
         """
         response = await self.__get("history/executions")
-        execution_history = [HistoryExecution(
-            **h) for h in humps.decamelize(response)]
+        execution_history = [HistoryExecution(**h) for h in humps.decamelize(response)]
 
         return execution_history
 
@@ -625,9 +621,9 @@ class OverkizClient:
 
         if self.server == SUPPORTED_SERVERS["somfy_europe"]:
             if (
-                self._expires_in and
-                self._refresh_token and
-                self._expires_in <= datetime.datetime.now()
+                self._expires_in
+                and self._refresh_token
+                and self._expires_in <= datetime.datetime.now()
             ):
                 await self.somfy_tahoma_refresh_token(self._refresh_token)
 
@@ -652,9 +648,9 @@ class OverkizClient:
 
         if self.server == SUPPORTED_SERVERS["somfy_europe"] and path != "login":
             if (
-                self._expires_in and
-                self._refresh_token and
-                self._expires_in <= datetime.datetime.now()
+                self._expires_in
+                and self._refresh_token
+                and self._expires_in <= datetime.datetime.now()
             ):
                 print(self._access_token)
                 print("Token expired, getting new token")
@@ -688,8 +684,7 @@ class OverkizClient:
         except JSONDecodeError as error:
             result = await response.text()
             if "Server is down for maintenance" in result:
-                raise MaintenanceException(
-                    "Server is down for maintenance") from error
+                raise MaintenanceException("Server is down for maintenance") from error
             raise Exception(
                 f"Unknown error while requesting {response.url}. {response.status} - {result}"
             ) from error
@@ -728,11 +723,15 @@ class OverkizClient:
 
         raise Exception(message if message else result)
 
-
-    def create_local_server(host: str, manufacturer: str = "Somfy", configuration_url: str | None = None, name: str = "Local"):
+    def create_local_server(
+        host: str,
+        manufacturer: str = "Somfy",
+        configuration_url: str | None = None,
+        name: str = "Local",
+    ):
         return OverkizServer(
             name=name,
             endpoint=host + "/enduser-mobile-web/1/enduserAPI/",
             manufacturer=manufacturer,
-            configuration_url=None,
+            configuration_url=configuration_url,
         )
