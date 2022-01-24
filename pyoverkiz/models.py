@@ -482,7 +482,7 @@ class Gateway:
     functions: str | None = None
     sub_type: GatewaySubType | None = None
     id: str = field(repr=obfuscate_id)
-    gateway_id: str
+    gateway_id: str = field(repr=obfuscate_id)
     alive: bool | None = None
     mode: str
     place_oid: str | None = None
@@ -512,6 +512,7 @@ class Gateway:
         **_: Any,
     ) -> None:
         self.id = gateway_id
+        self.gateway_id = gateway_id
         self.functions = functions
         self.alive = alive
         self.mode = mode
