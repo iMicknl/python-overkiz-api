@@ -42,6 +42,7 @@ class GatewayType(IntEnum):
     ELIOT = 77
     WISER = 88
     TAHOMA_SWITCH = 98
+    COZYTOUCH_V2 = 105
 
     @classmethod
     def _missing_(cls, value):  # type: ignore
