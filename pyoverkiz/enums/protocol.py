@@ -3,7 +3,11 @@ from enum import Enum, unique
 
 @unique
 class Protocol(str, Enum):
-    # From /reference/protocolTypes
+    """Protocol used by Overkiz.
+
+    Values have been retrieved from /reference/protocolTypes
+    """
+
     IO = "io"
     RTS = "rts"
     RTD = "rtd"
