@@ -512,6 +512,7 @@ class Gateway:
         **_: Any,
     ) -> None:
         self.id = gateway_id
+        self.gateway_id = gateway_id
         self.functions = functions
         self.alive = alive
         self.mode = mode
