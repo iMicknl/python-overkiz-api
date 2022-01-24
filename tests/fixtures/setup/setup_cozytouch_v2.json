@@ -53,7 +53,7 @@
                 }
              ],
              "dataProperties":[
-                
+
              ],
              "qualifiedName":"internal:PodV3Component",
              "states":[
@@ -169,7 +169,7 @@
                 }
              ],
              "dataProperties":[
-                
+
              ],
              "qualifiedName":"internal:WifiComponent",
              "states":[
@@ -1277,7 +1277,7 @@
                 }
              ],
              "dataProperties":[
-                
+
              ],
              "qualifiedName":"io:DHWCumulatedElectricalEnergyConsumptionIOSystemDeviceSensor",
              "states":[
@@ -1414,11 +1414,11 @@
                 }
              ],
              "dataProperties":[
-                
+
              ],
              "qualifiedName":"io:StackComponent",
              "states":[
-                
+
              ],
              "type":"PROTOCOL_GATEWAY",
              "uiClass":"ProtocolGateway",
@@ -1440,7 +1440,7 @@
        }
     ],
     "features":[
-       
+
     ],
     "gateways":[
        {
@@ -1516,11 +1516,11 @@
        "lastUpdateTime":1634918922000,
        "oid":"61435d6a-4ba6-4c96-b7b5-105bb31d3b87",
        "subPlaces":[
-          
+
        ],
        "type":0
     },
     "zones":[
-       
+
     ]
  }
