@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import asyncio
+import datetime
 import urllib.parse
 from json import JSONDecodeError
 from types import TracebackType
@@ -21,6 +22,9 @@ from pyoverkiz.const import (
     NEXITY_COGNITO_CLIENT_ID,
     NEXITY_COGNITO_REGION,
     NEXITY_COGNITO_USER_POOL,
+    SOMFY_API,
+    SOMFY_CLIENT_ID,
+    SOMFY_CLIENT_SECRET,
     SUPPORTED_SERVERS,
 )
 from pyoverkiz.exceptions import (
@@ -34,6 +38,8 @@ from pyoverkiz.exceptions import (
     NexityServiceException,
     NoRegisteredEventListenerException,
     NotAuthenticatedException,
+    SomfyBadCredentialsException,
+    SomfyServiceException,
     TooManyExecutionsException,
     TooManyRequestsException,
 )
@@ -76,6 +82,10 @@ class OverkizClient:
     gateways: list[Gateway]
     event_listener_id: str | None
     session: ClientSession
+
+    _refresh_token: str | None = None
+    _expires_in: datetime.datetime | None = None
+    _access_token: str | None = None
 
     def __init__(
         self,
@@ -130,6 +140,14 @@ class OverkizClient:
         Authenticate and create an API session allowing access to the other operations.
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
+        # Somfy TaHoma authentication using access_token
+        if self.server == SUPPORTED_SERVERS["somfy_europe"]:
+            await self.somfy_tahoma_get_access_token()
+
+            if register_event_listener:
+                await self.register_event_listener()
+
+            return True
 
         # CozyTouch authentication using jwt
         if self.server == SUPPORTED_SERVERS["atlantic_cozytouch"]:
@@ -154,6 +172,79 @@ class OverkizClient:
             return True
 
         return False
+
+    async def somfy_tahoma_get_access_token(self) -> str:
+        """
+        Authenticate via Somfy identity and acquire access_token.
+        """
+        # Request access token
+        async with self.session.post(
+            SOMFY_API + "/oauth/oauth/v2/token",
+            data=FormData(
+                {
+                    "grant_type": "password",
+                    "username": self.username,
+                    "password": self.password,
+                    "client_id": SOMFY_CLIENT_ID,
+                    "client_secret": SOMFY_CLIENT_SECRET,
+                }
+            ),
+            headers={
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+        ) as response:
+            token = await response.json()
+
+            # { "message": "error.invalid.grant", "data": [], "uid": "xxx" }
+            if "message" in token and token["message"] == "error.invalid.grant":
+                raise SomfyBadCredentialsException(token["message"])
+
+            if "access_token" not in token:
+                raise SomfyServiceException("No Somfy access token provided.")
+
+            self._access_token = cast(str, token["access_token"])
+            self._refresh_token = token["refresh_token"]
+            self._expires_in = datetime.datetime.now() + datetime.timedelta(
+                seconds=token["expires_in"] - 5
+            )
+
+            return self._access_token
+
+    async def somfy_tahoma_refresh_token(self, refresh_token: str) -> str:
+        """
+        To get a new access token, the refresh token is needed. The refresh_token will be valid 14 days.
+        """
+        # &grant_type=refresh_token&refresh_token=REFRESH_TOKEN
+        # Request access token
+        async with self.session.post(
+            SOMFY_API + "/oauth/oauth/v2/token",
+            data=FormData(
+                {
+                    "grant_type": "refresh_token",
+                    "refresh_token": refresh_token,
+                    "client_id": SOMFY_CLIENT_ID,
+                    "client_secret": SOMFY_CLIENT_SECRET,
+                }
+            ),
+            headers={
+                "Content-Type": "application/x-www-form-urlencoded",
+            },
+        ) as response:
+            token = await response.json()
+            # { "message": "error.invalid.grant", "data": [], "uid": "xxx" }
+            if "message" in token and token["message"] == "error.invalid.grant":
+                raise SomfyBadCredentialsException(token["message"])
+
+            if "access_token" not in token:
+                raise SomfyServiceException("No Somfy access token provided.")
+
+            self._access_token = cast(str, token["access_token"])
+            self._refresh_token = token["refresh_token"]
+            self._expires_in = datetime.datetime.now() + datetime.timedelta(
+                seconds=token["expires_in"] - 5
+            )
+
+            return self._access_token
 
     async def cozytouch_login(self) -> str:
         """
@@ -409,6 +500,9 @@ class OverkizClient:
         return listener_id
 
     @backoff.on_exception(
+        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+    )
+    @backoff.on_exception(
         backoff.expo,
         (InvalidEventListenerIdException, NoRegisteredEventListenerException),
         max_tries=2,
@@ -529,7 +623,15 @@ class OverkizClient:
 
     async def __get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API"""
-        async with self.session.get(f"{self.server.endpoint}{path}") as response:
+        headers = {}
+
+        if self.server == SUPPORTED_SERVERS["somfy_europe"]:
+            await self._refresh_somfy_tahoma_token_if_expired()
+            headers["Authorization"] = f"Bearer {self._access_token}"
+
+        async with self.session.get(
+            f"{self.server.endpoint}{path}", headers=headers
+        ) as response:
             await self.check_response(response)
             return await response.json()
 
@@ -537,17 +639,29 @@ class OverkizClient:
         self, path: str, payload: JSON | None = None, data: JSON | None = None
     ) -> Any:
         """Make a POST request to the OverKiz API"""
+        headers = {}
+
+        if self.server == SUPPORTED_SERVERS["somfy_europe"] and path != "login":
+            await self._refresh_somfy_tahoma_token_if_expired()
+            headers["Authorization"] = f"Bearer {self._access_token}"
+
         async with self.session.post(
-            f"{self.server.endpoint}{path}",
-            data=data,
-            json=payload,
+            f"{self.server.endpoint}{path}", data=data, json=payload, headers=headers
         ) as response:
             await self.check_response(response)
             return await response.json()
 
     async def __delete(self, path: str) -> None:
         """Make a DELETE request to the OverKiz API"""
-        async with self.session.delete(f"{self.server.endpoint}{path}") as response:
+        headers = {}
+
+        if self.server == SUPPORTED_SERVERS["somfy_europe"]:
+            await self._refresh_somfy_tahoma_token_if_expired()
+            headers["Authorization"] = f"Bearer {self._access_token}"
+
+        async with self.session.delete(
+            f"{self.server.endpoint}{path}", headers=headers
+        ) as response:
             await self.check_response(response)
 
     @staticmethod
@@ -599,3 +713,15 @@ class OverkizClient:
                 raise NoRegisteredEventListenerException(message)
 
         raise Exception(message if message else result)
+
+    async def _refresh_somfy_tahoma_token_if_expired(self) -> None:
+        """Check if token is expired and request a new one."""
+        if (
+            self._expires_in
+            and self._refresh_token
+            and self._expires_in <= datetime.datetime.now()
+        ):
+            await self.somfy_tahoma_refresh_token(self._refresh_token)
+
+            if self.event_listener_id:
+                await self.register_event_listener()

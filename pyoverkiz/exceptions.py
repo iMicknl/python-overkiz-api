@@ -46,3 +46,12 @@ class CozyTouchBadCredentialsException(BadCredentialsException):
 
 class CozyTouchServiceException(Exception):
     pass
+
+
+# Somfy
+class SomfyBadCredentialsException(BadCredentialsException):
+    pass
+
+
+class SomfyServiceException(Exception):
+    pass
