@@ -242,10 +242,6 @@ class OverkizClient:
             self._expires_in = datetime.datetime.now() + datetime.timedelta(
                 seconds=int(token["expires_in"]) - 5
             )
-            print(token)
-
-            if self.event_listener_id:
-                await self.register_event_listener()
 
             return self._access_token
 
@@ -608,13 +604,7 @@ class OverkizClient:
         headers = {}
 
         if self.server == SUPPORTED_SERVERS["somfy_europe"]:
-            if (
-                self._expires_in
-                and self._refresh_token
-                and self._expires_in <= datetime.datetime.now()
-            ):
-                await self.somfy_tahoma_refresh_token(self._refresh_token)
-
+            await self._refresh_somfy_tahoma_token_if_expired()
             headers["Authorization"] = f"Bearer {self._access_token}"
 
         async with self.session.get(
@@ -629,19 +619,8 @@ class OverkizClient:
         """Make a POST request to the OverKiz API"""
         headers = {}
 
-        print(self._expires_in, datetime.datetime.now())
-
         if self.server == SUPPORTED_SERVERS["somfy_europe"] and path != "login":
-            if (
-                self._expires_in
-                and self._refresh_token
-                and self._expires_in <= datetime.datetime.now()
-            ):
-                print(self._access_token)
-                print("Token expired, getting new token")
-                await self.somfy_tahoma_refresh_token(self._refresh_token)
-                print(self._access_token)
-
+            await self._refresh_somfy_tahoma_token_if_expired()
             headers["Authorization"] = f"Bearer {self._access_token}"
 
         async with self.session.post(
@@ -655,13 +634,7 @@ class OverkizClient:
         headers = {}
 
         if self.server == SUPPORTED_SERVERS["somfy_europe"]:
-            if (
-                self._expires_in
-                and self._refresh_token
-                and self._expires_in <= datetime.datetime.now()
-            ):
-                await self.somfy_tahoma_refresh_token(self._refresh_token)
-
+            await self._refresh_somfy_tahoma_token_if_expired()
             headers["Authorization"] = f"Bearer {self._access_token}"
 
         async with self.session.delete(
@@ -718,3 +691,21 @@ class OverkizClient:
                 raise NoRegisteredEventListenerException(message)
 
         raise Exception(message if message else result)
+
+    async def _refresh_somfy_tahoma_token_if_expired(self):
+        """Check if token is expired and request a new one."""
+        print("Expires: " + self._expires_in, "Now: " + datetime.datetime.now())
+
+        if (
+                self._expires_in
+                and self._refresh_token
+                and self._expires_in <= datetime.datetime.now()
+        ):
+            print(self._access_token)
+            print("Token expired, getting new token")
+            await self.somfy_tahoma_refresh_token(self._refresh_token)
+            print(self._access_token)
+
+            if self.event_listener_id:
+                await self.register_event_listener()
+                print("Registered new event listener")
