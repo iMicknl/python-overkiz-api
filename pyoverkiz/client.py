@@ -204,7 +204,7 @@ class OverkizClient:
             self._access_token = str(token["access_token"])
             self._refresh_token = str(token["refresh_token"])
             self._expires_in = datetime.datetime.now() + datetime.timedelta(
-                seconds=token["expires_in"]
+                seconds=int(token["expires_in"]) - 5
             )
 
             return self._access_token
