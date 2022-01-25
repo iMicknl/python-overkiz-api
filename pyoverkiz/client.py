@@ -694,7 +694,7 @@ class OverkizClient:
 
     async def _refresh_somfy_tahoma_token_if_expired(self):
         """Check if token is expired and request a new one."""
-        print("Expires: " + self._expires_in, "Now: " + datetime.datetime.now())
+        print("Expires: ", self._expires_in, "Now: ", datetime.datetime.now())
 
         if (
                 self._expires_in
