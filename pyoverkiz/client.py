@@ -194,6 +194,7 @@ class OverkizClient:
             },
         ) as response:
             token = await response.json()
+
             # { "message": "error.invalid.grant", "data": [], "uid": "xxx" }
             if "message" in token and token["message"] == "error.invalid.grant":
                 raise SomfyBadCredentialsException(token["message"])
@@ -201,10 +202,10 @@ class OverkizClient:
             if "access_token" not in token:
                 raise SomfyServiceException("No Somfy access token provided.")
 
-            self._access_token = str(token["access_token"])
-            self._refresh_token = str(token["refresh_token"])
+            self._access_token = cast(str, token["access_token"])
+            self._refresh_token = token["refresh_token"]
             self._expires_in = datetime.datetime.now() + datetime.timedelta(
-                seconds=int(token["expires_in"]) - 5
+                seconds=token["expires_in"] - 5
             )
 
             return self._access_token
@@ -237,10 +238,10 @@ class OverkizClient:
             if "access_token" not in token:
                 raise SomfyServiceException("No Somfy access token provided.")
 
-            self._access_token = str(token["access_token"])
-            self._refresh_token = str(token["refresh_token"])
+            self._access_token = cast(str, token["access_token"])
+            self._refresh_token = token["refresh_token"]
             self._expires_in = datetime.datetime.now() + datetime.timedelta(
-                seconds=int(token["expires_in"]) - 5
+                seconds=token["expires_in"] - 5
             )
 
             return self._access_token
@@ -692,20 +693,14 @@ class OverkizClient:
 
         raise Exception(message if message else result)
 
-    async def _refresh_somfy_tahoma_token_if_expired(self):
+    async def _refresh_somfy_tahoma_token_if_expired(self) -> None:
         """Check if token is expired and request a new one."""
-        print("Expires: ", self._expires_in, "Now: ", datetime.datetime.now())
-
         if (
-                self._expires_in
-                and self._refresh_token
-                and self._expires_in <= datetime.datetime.now()
+            self._expires_in
+            and self._refresh_token
+            and self._expires_in <= datetime.datetime.now()
         ):
-            print(self._access_token)
-            print("Token expired, getting new token")
             await self.somfy_tahoma_refresh_token(self._refresh_token)
-            print(self._access_token)
 
             if self.event_listener_id:
                 await self.register_event_listener()
-                print("Registered new event listener")
