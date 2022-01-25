@@ -18,6 +18,7 @@ from pyoverkiz.enums import (
     UIWidget,
     UpdateBoxStatus,
 )
+from pyoverkiz.enums.protocol import Protocol
 from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 
@@ -147,6 +148,7 @@ class Device:
     states: States
     type: ProductType
     place_oid: str
+    protocol: Protocol = field(init=False, repr=False)
 
     def __init__(
         self,
@@ -180,6 +182,7 @@ class Device:
         self.ui_class = UIClass(ui_class)
         self.type = ProductType(type)
         self.place_oid = place_oid
+        self.protocol = Protocol(self.device_url.split(":")[0])
 
 
 @define(init=False, kw_only=True)
