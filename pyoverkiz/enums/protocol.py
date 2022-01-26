@@ -33,3 +33,4 @@ class Protocol(str, Enum):
     OGP = "ogp"
     HOMEKIT = "homekit"
     AUGUST = "august"
+    HLRR_WIFI = "hlrrwifi"
