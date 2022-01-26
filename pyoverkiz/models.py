@@ -138,7 +138,7 @@ class Device:
     attributes: States
     available: bool
     enabled: bool
-    label: str
+    label: str = field(repr=obfuscate_string)
     device_url: str = field(repr=obfuscate_id)
     controllable_name: str
     definition: Definition
@@ -447,7 +447,7 @@ class Execution:
 
 @define(init=False, kw_only=True)
 class Scenario:
-    label: str
+    label: str = field(repr=obfuscate_string)
     oid: str = field(repr=obfuscate_id)
 
     def __init__(self, label: str, oid: str, **_: Any):
