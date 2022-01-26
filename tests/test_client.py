@@ -100,6 +100,7 @@ class TestOverkizClient:
             ("setup_hi_kumo.json", 3),
             ("setup_hi_kumo_2.json", 3),
             ("setup_nexity.json", 18),
+            ("setup_nexity_2.json", 17),
             ("setup_rexel.json", 18),
             ("setup_tahoma_3.json", 39),
             ("setup_tahoma_climate.json", 19),

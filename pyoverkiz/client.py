@@ -295,10 +295,14 @@ class OverkizClient:
         """
         loop = asyncio.get_event_loop()
 
+        def _get_client() -> boto3.session.Session.client:
+            return boto3.client(
+                "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
+            )
+
         # Request access token
-        client = boto3.client(
-            "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
-        )
+        client = await loop.run_in_executor(None, _get_client)
+
         aws = WarrantLite(
             username=self.username,
             password=self.password,
