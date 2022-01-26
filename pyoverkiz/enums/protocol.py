@@ -1,4 +1,7 @@
+import logging
 from enum import Enum, unique
+
+_LOGGER = logging.getLogger(__name__)
 
 
 @unique
@@ -8,6 +11,7 @@ class Protocol(str, Enum):
     Values have been retrieved from /reference/protocolTypes
     """
 
+    UNKNOWN = "unknown"
     IO = "io"
     RTS = "rts"
     RTD = "rtd"
@@ -34,3 +38,8 @@ class Protocol(str, Enum):
     HOMEKIT = "homekit"
     AUGUST = "august"
     HLRR_WIFI = "hlrrwifi"
+
+    @classmethod
+    def _missing_(cls, value):  # type: ignore
+        _LOGGER.warning(f"Unsupported protocol {value} has been returned for {cls}")
+        return cls.UNKNOWN
