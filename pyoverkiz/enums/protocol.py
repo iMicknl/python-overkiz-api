@@ -38,6 +38,7 @@ class Protocol(str, Enum):
     HOMEKIT = "homekit"
     AUGUST = "august"
     HLRR_WIFI = "hlrrwifi"
+    RTN = "rtn"
 
     @classmethod
     def _missing_(cls, value):  # type: ignore
