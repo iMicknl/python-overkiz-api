@@ -217,6 +217,9 @@ class OverkizClient:
         if self.server != SUPPORTED_SERVERS["somfy_europe"]:
             return
 
+        if not self._refresh_token:
+            raise ValueError("No refresh token provided. Login method must be used.")
+
         # &grant_type=refresh_token&refresh_token=REFRESH_TOKEN
         # Request access token
         async with self.session.post(
