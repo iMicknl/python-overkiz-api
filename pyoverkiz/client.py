@@ -128,7 +128,6 @@ class OverkizClient:
     async def close(self) -> None:
         """Close the session."""
         if self.event_listener_id:
-            await self._refresh_token_if_expired()
             await self.unregister_event_listener()
 
         await self.session.close()
