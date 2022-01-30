@@ -210,10 +210,16 @@ class OverkizClient:
 
             return self._access_token
 
-    async def somfy_tahoma_refresh_token(self, refresh_token: str) -> str:
+    async def refresh_token(self) -> None:
         """
-        To get a new access token, the refresh token is needed. The refresh_token will be valid 14 days.
+        Update the access and the refresh token. The refresh token will be valid 14 days.
         """
+        if self.server != SUPPORTED_SERVERS["somfy_europe"]:
+            return
+
+        if not self._refresh_token:
+            raise ValueError("No refresh token provided. Login method must be used.")
+
         # &grant_type=refresh_token&refresh_token=REFRESH_TOKEN
         # Request access token
         async with self.session.post(
@@ -221,7 +227,7 @@ class OverkizClient:
             data=FormData(
                 {
                     "grant_type": "refresh_token",
-                    "refresh_token": refresh_token,
+                    "refresh_token": self._refresh_token,
                     "client_id": SOMFY_CLIENT_ID,
                     "client_secret": SOMFY_CLIENT_SECRET,
                 }
@@ -243,8 +249,6 @@ class OverkizClient:
             self._expires_in = datetime.datetime.now() + datetime.timedelta(
                 seconds=token["expires_in"] - 5
             )
-
-            return self._access_token
 
     async def cozytouch_login(self) -> str:
         """
@@ -519,6 +523,7 @@ class OverkizClient:
         Per-session rate-limit : 1 calls per 1 SECONDS period for this particular
         operation (polling)
         """
+        await self._refresh_token_if_expired()
         response = await self.__post(f"events/{self.event_listener_id}/fetch")
         events = [Event(**e) for e in humps.decamelize(response)]
 
@@ -529,6 +534,7 @@ class OverkizClient:
         Unregister an event listener.
         API response status is always 200, even on unknown listener ids.
         """
+        await self._refresh_token_if_expired()
         await self.__post(f"events/{self.event_listener_id}/unregister")
         self.event_listener_id = None
 
@@ -629,8 +635,8 @@ class OverkizClient:
         """Make a GET request to the OverKiz API"""
         headers = {}
 
-        if self.server == SUPPORTED_SERVERS["somfy_europe"]:
-            await self._refresh_somfy_tahoma_token_if_expired()
+        await self._refresh_token_if_expired()
+        if self._access_token:
             headers["Authorization"] = f"Bearer {self._access_token}"
 
         async with self.session.get(
@@ -645,8 +651,8 @@ class OverkizClient:
         """Make a POST request to the OverKiz API"""
         headers = {}
 
-        if self.server == SUPPORTED_SERVERS["somfy_europe"] and path != "login":
-            await self._refresh_somfy_tahoma_token_if_expired()
+        if path != "login" and self._access_token:
+            await self._refresh_token_if_expired()
             headers["Authorization"] = f"Bearer {self._access_token}"
 
         async with self.session.post(
@@ -659,8 +665,9 @@ class OverkizClient:
         """Make a DELETE request to the OverKiz API"""
         headers = {}
 
-        if self.server == SUPPORTED_SERVERS["somfy_europe"]:
-            await self._refresh_somfy_tahoma_token_if_expired()
+        await self._refresh_token_if_expired()
+
+        if self._access_token:
             headers["Authorization"] = f"Bearer {self._access_token}"
 
         async with self.session.delete(
@@ -718,14 +725,14 @@ class OverkizClient:
 
         raise Exception(message if message else result)
 
-    async def _refresh_somfy_tahoma_token_if_expired(self) -> None:
+    async def _refresh_token_if_expired(self) -> None:
         """Check if token is expired and request a new one."""
         if (
             self._expires_in
             and self._refresh_token
             and self._expires_in <= datetime.datetime.now()
         ):
-            await self.somfy_tahoma_refresh_token(self._refresh_token)
+            await self.refresh_token()
 
             if self.event_listener_id:
                 await self.register_event_listener()
