@@ -71,7 +71,7 @@ class Setup:
 @define(init=False, kw_only=True)
 class Location:
     creation_time: str
-    last_update_time: str
+    last_update_time: str | None = None
     city: str = field(repr=obfuscate_string, default=None)
     country: str = field(repr=obfuscate_string, default=None)
     postal_code: str = field(repr=obfuscate_string, default=None)
@@ -93,7 +93,7 @@ class Location:
         self,
         *,
         creation_time: str,
-        last_update_time: str,
+        last_update_time: str | None = None,
         city: str = field(repr=obfuscate_string, default=None),
         country: str = field(repr=obfuscate_string, default=None),
         postal_code: str = field(repr=obfuscate_string, default=None),
