@@ -22,6 +22,7 @@ class Protocol(str, Enum):
     CAMERA = "camera"
     OVP = "ovp"
     MODBUS = "modbus"
+    MODBUSLINK = "modbuslink"
     HUE = "hue"
     VERISURE = "verisure"
     INTERNAL = "internal"
