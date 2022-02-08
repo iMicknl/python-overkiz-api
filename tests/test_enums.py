@@ -6,7 +6,12 @@ class TestGatewayType:
         assert GatewayType(99) == GatewayType.UNKNOWN
 
     def test_beautify_name(self):
-        assert GatewayType.TAHOMA_V2.beautify_name == "Tahoma V2"
+        assert GatewayType.TAHOMA_V2.beautify_name == "TaHoma V2"
+        assert (
+            GatewayType.CONNEXOON_RTS_AUSTRALIA.beautify_name
+            == "Connexoon RTS Australia"
+        )
+        assert GatewayType.COZYTOUCH_V2.beautify_name == "Cozytouch V2"
 
 
 class TestGatewaySubType:
@@ -14,7 +19,7 @@ class TestGatewaySubType:
         assert GatewaySubType(99) == GatewaySubType.UNKNOWN
 
     def test_beautify_name(self):
-        assert GatewaySubType.TAHOMA_SECURITY_PRO.beautify_name == "Tahoma Security Pro"
+        assert GatewaySubType.TAHOMA_SECURITY_PRO.beautify_name == "TaHoma Security Pro"
 
 
 class TestEventName:
