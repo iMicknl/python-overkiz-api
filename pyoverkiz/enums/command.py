@@ -81,6 +81,7 @@ class OverkizCommand(str, Enum):
 class OverkizCommandParam(str, Enum):
     """Parameter used by Overkiz commands and/or states."""
 
+    A = "A"
     ABSENCE = "absence"
     ARMED = "armed"
     ARMED_DAY = "armedDay"
@@ -89,8 +90,10 @@ class OverkizCommandParam(str, Enum):
     AUTO = "auto"
     AUTO_MODE = "autoMode"
     AVAILABLE = "available"
+    B = "B"
     BOOST = "boost"
     COMFORT = "comfort"
+    C = "C"
     CLOSE = "close"
     CLOSED = "closed"
     COOLING = "cooling"
