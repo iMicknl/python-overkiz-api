@@ -22,6 +22,7 @@ class OverkizCommand(str, Enum):
     DOWN = "down"
     GET_NAME = "getName"
     GLOBAL_CONTROL = "globalControl"
+    GO_TO_ALIAS = "goToAlias"
     IDENTIFY = "identify"
     LOCK = "lock"
     MEMORIZED_VOLUME = "memorizedVolume"
