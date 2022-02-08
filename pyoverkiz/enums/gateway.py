@@ -43,6 +43,7 @@ class GatewayType(IntEnum):
     COZYTOUCH_SAUTER = 83
     WISER = 88
     TAHOMA_SWITCH = 98
+    SOMFY_CONNECTIVITY_KIT = 99
     COZYTOUCH_V2 = 105
 
     @classmethod
