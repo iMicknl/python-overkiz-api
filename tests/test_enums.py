@@ -3,7 +3,7 @@ from pyoverkiz.enums import EventName, FailureType, GatewaySubType, GatewayType
 
 class TestGatewayType:
     def test_missing(self):
-        assert GatewayType(99) == GatewayType.UNKNOWN
+        assert GatewayType(102) == GatewayType.UNKNOWN
 
     def test_beautify_name(self):
         assert GatewayType.TAHOMA_V2.beautify_name == "Tahoma V2"
