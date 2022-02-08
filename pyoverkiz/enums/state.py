@@ -53,7 +53,7 @@ class OverkizState(str, Enum):
     CORE_LOCKED_UNLOCKED = "core:LockedUnlockedState"
     CORE_LUMINANCE = "core:LuminanceState"
     CORE_MANUFACTURER_NAME = "core:ManufacturerNameState"
-    CORE_MAXIMAL_SHOWER_MANUAL_MODE_STATE = "core:MaximalShowerManualModeState"
+    CORE_MAXIMAL_SHOWER_MANUAL_MODE = "core:MaximalShowerManualModeState"
     CORE_MAXIMAL_TEMPERATURE_MANUAL_MODE = "core:MaximalTemperatureManualModeState"
     CORE_MAXIMUM_TEMPERATURE = "core:MaximumTemperatureState"
     CORE_MEMORIZED_1_POSITION = "core:Memorized1PositionState"
