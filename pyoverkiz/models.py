@@ -306,6 +306,22 @@ class State:
             return cast(str, self.value)
         raise TypeError(f"{self.name} is not a string")
 
+    @property
+    def value_as_dict(self) -> dict[str, Any] | None:
+        if self.type == DataType.NONE:
+            return None
+        if self.type == DataType.JSON_OBJECT:
+            return cast(dict[str, Any], self.value)
+        raise TypeError(f"{self.name} is not a JSON object")
+
+    @property
+    def value_as_list(self) -> list[Any] | None:
+        if self.type == DataType.NONE:
+            return None
+        if self.type == DataType.JSON_ARRAY:
+            return cast(list[Any], self.value)
+        raise TypeError(f"{self.name} is not an array")
+
 
 @define(init=False, kw_only=True)
 class EventState(State):

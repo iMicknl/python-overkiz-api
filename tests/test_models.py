@@ -130,3 +130,21 @@ class TestState:
         state = State(name="state", type=DataType.BOOLEAN, value=False)
         with pytest.raises(TypeError):
             assert state.value_as_str
+
+    def test_dict_value(self):
+        state = State(name="state", type=DataType.JSON_OBJECT, value={"foo": "bar"})
+        assert state.value_as_dict == {"foo": "bar"}
+
+    def test_bad_dict_value(self):
+        state = State(name="state", type=DataType.BOOLEAN, value=False)
+        with pytest.raises(TypeError):
+            assert state.value_as_dict
+
+    def test_list_value(self):
+        state = State(name="state", type=DataType.JSON_ARRAY, value=[1, 2])
+        assert state.value_as_list == [1, 2]
+
+    def test_bad_list_value(self):
+        state = State(name="state", type=DataType.BOOLEAN, value=False)
+        with pytest.raises(TypeError):
+            assert state.value_as_list

@@ -5,7 +5,7 @@ from typing import Any, Callable, Dict, List, Union
 
 from pyoverkiz.enums import DataType
 
-StateType = Union[str, int, float, bool, Dict[Any, Any], List[Any], None]
+StateType = Union[str, int, float, bool, Dict[str, Any], List[Any], None]
 
 
 DATA_TYPE_TO_PYTHON: dict[DataType, Callable[[Any], StateType]] = {
