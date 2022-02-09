@@ -295,7 +295,7 @@ class State:
         if self.type == DataType.NONE:
             return None
         if self.type == DataType.BOOLEAN:
-            return bool(self.value)
+            return cast(bool, self.value)
         raise TypeError(f"{self.name} is not a boolean")
 
     @property
@@ -303,7 +303,7 @@ class State:
         if self.type == DataType.NONE:
             return None
         if self.type == DataType.STRING:
-            return str(self.value)
+            return cast(str, self.value)
         raise TypeError(f"{self.name} is not a string")
 
 
