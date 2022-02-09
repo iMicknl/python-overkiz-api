@@ -311,7 +311,7 @@ class State:
         if self.type == DataType.NONE:
             return None
         if self.type == DataType.JSON_OBJECT:
-            return cast(dict[str, Any], self.value)
+            return cast(dict, self.value)
         raise TypeError(f"{self.name} is not a JSON object")
 
     @property
@@ -319,7 +319,7 @@ class State:
         if self.type == DataType.NONE:
             return None
         if self.type == DataType.JSON_ARRAY:
-            return cast(list[Any], self.value)
+            return cast(list, self.value)
         raise TypeError(f"{self.name} is not an array")
 
 
