@@ -18,6 +18,10 @@ class TooManyRequestsException(Exception):
     pass
 
 
+class TooManyConcurrentRequestsException(Exception):
+    pass
+
+
 class MaintenanceException(Exception):
     pass
 
@@ -27,6 +31,10 @@ class InvalidEventListenerIdException(Exception):
 
 
 class NoRegisteredEventListenerException(Exception):
+    pass
+
+
+class SessionAndBearerInSameRequestException(Exception):
     pass
 
 
