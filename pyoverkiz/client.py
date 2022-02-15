@@ -38,8 +38,10 @@ from pyoverkiz.exceptions import (
     NexityServiceException,
     NoRegisteredEventListenerException,
     NotAuthenticatedException,
+    SessionAndBearerInSameRequestException,
     SomfyBadCredentialsException,
     SomfyServiceException,
+    TooManyConcurrentRequestsException,
     TooManyExecutionsException,
     TooManyRequestsException,
 )
@@ -68,7 +70,7 @@ async def refresh_listener(invocation: dict[str, Any]) -> None:
     await invocation["args"][0].register_event_listener()
 
 
-# pylint: disable=too-many-instance-attributes
+# pylint: disable=too-many-instance-attributes, too-many-branches
 
 
 class OverkizClient:
@@ -722,6 +724,13 @@ class OverkizClient:
             # {'errorCode': 'UNSPECIFIED_ERROR', 'error': 'No registered event listener'}
             if message == "No registered event listener":
                 raise NoRegisteredEventListenerException(message)
+
+            # {"errorCode": "RESOURCE_ACCESS_DENIED",  "error": "too many concurrent requests"}
+            if message == "too many concurrent requests":
+                raise TooManyConcurrentRequestsException(message)
+
+            if message == "Cannot use JSESSIONID and bearer token in same request":
+                raise SessionAndBearerInSameRequestException(message)
 
         raise Exception(message if message else result)
 
