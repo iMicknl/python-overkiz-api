@@ -287,6 +287,7 @@ class EventName(str, Enum):
     GATEWAY_ALIVE = "GatewayAliveEvent"
     GATEWAY_BOOT = "GatewayBootEvent"
     GATEWAY_DOWN = "GatewayDownEvent"
+    GATEWAY_FIRMWARE_UPDATED = "GatewayFirmwareUpdatedEvent"
     GATEWAY_FUNCTION_CHANGED = "GatewayFunctionChangedEvent"
     GATEWAY_MODE_CHANGED = "GatewayModeChangedEvent"
     GATEWAY_SYNCHRONIZATION_ENDED = "GatewaySynchronizationEndedEvent"
