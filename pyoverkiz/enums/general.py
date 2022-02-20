@@ -383,7 +383,6 @@ class EventName(str, Enum):
     SOMFY_THERMOSTAT_TOKENS_GENERATION_SUCCESS = (
         "SomfyThermostatGenerateOAuthTokensCompletedEvent"
     )
-    SONOS_GET_TOPOLOGY_CHANGED = "SonosTopologyChangedEvent"
     SONOS_GET_TOPOLOGY_FAILED = "SonosGetTopologyFailedEvent"
     SONOS_GET_TOPOLOGY_SUCCESS = "SonosGetTopologySuccessEvent"
     SONOS_TOPOLOGY_CHANGED = "SonosTopologyChangedEvent"
