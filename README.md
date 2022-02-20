@@ -14,6 +14,7 @@ This package is written for the Home Assistant [ha-tahoma](https://github.com/iM
 ## Supported hubs
 
 - Atlantic Cozytouch
+- Bouygues Flexom
 - Hitachi Hi Kumo
 - Nexity Eugénie
 - Rexel Energeasy Connect
@@ -22,7 +23,6 @@ This package is written for the Home Assistant [ha-tahoma](https://github.com/iM
 - Somfy TaHoma
 - Somfy TaHoma Switch
 - Thermor Cozytouch
-- Bouygues Flexom
 
 ## Installation
 
