@@ -22,7 +22,7 @@ This package is written for the Home Assistant [ha-tahoma](https://github.com/iM
 - Somfy TaHoma
 - Somfy TaHoma Switch
 - Thermor Cozytouch
-- Bouygue Flexom
+- Bouygues Flexom
 
 ## Installation
 

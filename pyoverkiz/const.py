@@ -74,7 +74,7 @@ SUPPORTED_SERVERS: dict[str, OverkizServer] = {
     "flexom": OverkizServer(
         name="Flexom",
         endpoint="https://ha108-1.overkiz.com/enduser-mobile-web/enduserAPI/",
-        manufacturer="Bouygue",
+        manufacturer="Bouygues",
         configuration_url=None,
     ),
 }
