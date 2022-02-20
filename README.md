@@ -11,10 +11,10 @@ This package is written for the Home Assistant [ha-tahoma](https://github.com/iM
 
 > Somfy TaHoma has an official API, which can be consumed via the [somfy-open-api](https://github.com/tetienne/somfy-open-api). Unfortunately only a few device classes are supported via the official API, thus the need for this API client.
 
-
 ## Supported hubs
 
 - Atlantic Cozytouch
+- Bouygues Flexom
 - Hitachi Hi Kumo
 - Nexity Eugénie
 - Rexel Energeasy Connect
