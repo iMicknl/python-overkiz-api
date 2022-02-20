@@ -23,6 +23,12 @@ SUPPORTED_SERVERS: dict[str, OverkizServer] = {
         manufacturer="Atlantic",
         configuration_url=None,
     ),
+    "flexom": OverkizServer(
+        name="Flexom",
+        endpoint="https://ha108-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+        manufacturer="Bouygues",
+        configuration_url=None,
+    ),
     "hi_kumo_asia": OverkizServer(
         name="Hitachi Hi Kumo (Asia)",
         endpoint="https://ha203-1.overkiz.com/enduser-mobile-web/enduserAPI/",
@@ -69,12 +75,6 @@ SUPPORTED_SERVERS: dict[str, OverkizServer] = {
         name="Somfy (Oceania)",
         endpoint="https://ha201-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Somfy",
-        configuration_url=None,
-    ),
-    "flexom": OverkizServer(
-        name="Flexom",
-        endpoint="https://ha108-1.overkiz.com/enduser-mobile-web/enduserAPI/",
-        manufacturer="Bouygues",
         configuration_url=None,
     ),
 }
