@@ -119,6 +119,7 @@ class OverkizCommandParam(str, Enum):
     LOW_BATTERY = "lowBattery"
     LOCAL_USER = "localUser"
     LOCKED = "locked"
+    LOW_SPEED = "lowspeed"
     LSC = "LSC"
     MAINTENANCE_REQUIRED = "maintenanceRequired"
     MANU = "manu"
