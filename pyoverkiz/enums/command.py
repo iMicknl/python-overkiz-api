@@ -70,7 +70,7 @@ class OverkizCommand(str, Enum):
     SET_SECURED_POSITION_TEMPERATURE = "setSecuredPositionTemperature"
     SET_TARGET_ALARM_MODE = "setTargetAlarmMode"
     SET_TARGET_TEMPERATURE = "setTargetTemperature"
-    SET_VENTILATIN_MODE = "setVentilationMode"
+    SET_VENTILATION_MODE = "setVentilationMode"
     SET_VENTILATION_CONFIGURATION_MODE = "setVentilationConfigurationMode"
     STANDARD = "standard"
     STOP = "stop"
