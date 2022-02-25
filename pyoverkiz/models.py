@@ -662,8 +662,8 @@ class Zone:
     label: str
     type: int
     items: list[ZoneItem] | None
-    external_oid: str
-    metadata: str
+    external_oid: str | None
+    metadata: str | None
     oid: str
 
     def __init__(
@@ -673,8 +673,8 @@ class Zone:
         label: str,
         type: int,
         items: list[dict[str, Any]] | None,
-        external_oid: str,
-        metadata: str,
+        external_oid: str | None = None,
+        metadata: str | None = None,
         oid: str,
         **_: Any,
     ) -> None:
