@@ -21,12 +21,13 @@ class OverkizState(str, Enum):
     CORE_BATTERY_LEVEL = "core:BatteryLevelState"
     CORE_BLUE_COLOR_INTENSITY = "core:BlueColorIntensityState"
     CORE_BOOST_MODE_DURATION_STATE = "core:BoostModeDurationState"
+    CORE_BOOST_ON_OFF = "core:BoostOnOffState"
     CORE_CLOSURE = "core:ClosureState"
     CORE_CLOSURE_OR_ROCKER_POSITION = "core:ClosureOrRockerPositionState"
     CORE_CLOUD_DEVICE_STATUS = "core:CloudDeviceStatusState"
-    CORE_CO_CONCENTRATION = "core:COConcentrationState"
     CORE_CO2_CONCENTRATION = "core:CO2ConcentrationState"
     CORE_COMFORT_ROOM_TEMPERATURE = "core:ComfortRoomTemperatureState"
+    CORE_COMFORT_TARGET_DWH_TEMPERATURE = "core:ComfortTargetDHWTemperatureState"
     CORE_CONSUMPTION_TARIFF1 = "core:ConsumptionTariff1State"
     CORE_CONSUMPTION_TARIFF2 = "core:ConsumptionTariff2State"
     CORE_CONSUMPTION_TARIFF3 = "core:ConsumptionTariff3State"
@@ -37,12 +38,18 @@ class OverkizState(str, Enum):
     CORE_CONSUMPTION_TARIFF8 = "core:ConsumptionTariff8State"
     CORE_CONSUMPTION_TARIFF9 = "core:ConsumptionTariff9State"
     CORE_CONTACT = "core:ContactState"
+    CORE_CO_CONCENTRATION = "core:COConcentrationState"
     CORE_DEPLOYMENT = "core:DeploymentState"
+    CORE_DEROGATED_TARGET_TEMPERATURE = "core:DerogatedTargetTemperatureState"
     CORE_DEROGATED_TARGET_TEMPERATURE_STATE = "core:DerogatedTargetTemperatureState"
+    CORE_DEROGATION_ACTIVATION = "core:DerogationActivationState"
     CORE_DEROGATION_ACTIVATION_STATE = "core:DerogationActivationState"
+    CORE_DHW_DEROGATION_AVAILABILITY = "core:DHWDerogationAvailabilityState"
     CORE_DHW_TEMPERATURE = "core:DHWTemperatureState"
     CORE_DISCRETE_RSSI_LEVEL = "core:DiscreteRSSILevelState"
+    CORE_DWH_ON_OFF = "core:DHWOnOffState"
     CORE_ECO_ROOM_TEMPERATURE = "core:EcoRoomTemperatureState"
+    CORE_ECO_TARGET_DWH_TEMPERATURE = "core:EcoTargetDHWTemperatureState"
     CORE_ELECTRIC_ENERGY_CONSUMPTION = "core:ElectricEnergyConsumptionState"
     CORE_ELECTRIC_POWER_CONSUMPTION = "core:ElectricPowerConsumptionState"
     CORE_EXPECTED_NUMBER_OF_SHOWER = "core:ExpectedNumberOfShowerState"
@@ -61,17 +68,17 @@ class OverkizState(str, Enum):
     CORE_MANUFACTURER_NAME = "core:ManufacturerNameState"
     CORE_MAXIMAL_SHOWER_MANUAL_MODE = "core:MaximalShowerManualModeState"
     CORE_MAXIMAL_TEMPERATURE_MANUAL_MODE = "core:MaximalTemperatureManualModeState"
-    CORE_MAXIMUM_TEMPERATURE = "core:MaximumTemperatureState"
     CORE_MAXIMUM_HEATING_TARGET_TEMPERATURE = (
         "core:MaximumHeatingTargetTemperatureState"
     )
+    CORE_MAXIMUM_TEMPERATURE = "core:MaximumTemperatureState"
     CORE_MEMORIZED_1_POSITION = "core:Memorized1PositionState"
     CORE_MINIMAL_SHOWER_MANUAL_MODE = "core:MinimalShowerManualModeState"
     CORE_MINIMAL_TEMPERATURE_MANUAL_MODE = "core:MinimalTemperatureManualModeState"
-    CORE_MINIMUM_TEMPERATURE = "core:MinimumTemperatureState"
     CORE_MINIMUM_HEATING_TARGET_TEMPERATURE = (
         "core:MinimumHeatingTargetTemperatureState"
     )
+    CORE_MINIMUM_TEMPERATURE = "core:MinimumTemperatureState"
     CORE_MODEL = "core:ModelState"
     CORE_MOVING = "core:MovingState"
     CORE_NAME = "core:NameState"
@@ -101,6 +108,7 @@ class OverkizState(str, Enum):
     CORE_STATUS = "core:StatusState"
     CORE_SUN_ENERGY = "core:SunEnergyState"
     CORE_TARGET_CLOSURE = "core:TargetClosureState"
+    CORE_TARGET_DWH_TEMPERATURE = "core:TargetDHWTemperatureState"
     CORE_TARGET_TEMPERATURE = "core:TargetTemperatureState"
     CORE_TEMPERATURE = "core:TemperatureState"
     CORE_THERMAL_ENERGY_CONSUMPTION = "core:ThermalEnergyConsumptionState"
@@ -135,6 +143,9 @@ class OverkizState(str, Enum):
     IO_MODEL = "io:ModelState"
     IO_OPERATING_MODE_CAPABILITIES = "io:OperatingModeCapabilitiesState"
     IO_OUTLET_ENGINE = "io:OutletEngineState"
+    IO_PASS_APCDHW_CONFIGURATION = "io:PassAPCDHWConfigurationState"
+    IO_PASS_APCDHW_PROFILE = "io:PassAPCDHWProfileState"
+    IO_PASS_APCDWH_MODE = "io:PassAPCDHWModeState"
     IO_PASS_APC_HEATING_MODE = "io:PassAPCHeatingModeState"
     IO_PASS_APC_OPERATING_MODE = "io:PassAPCOperatingModeState"
     IO_PRIORITY_LOCK_LEVEL = "io:PriorityLockLevelState"
@@ -145,13 +156,13 @@ class OverkizState(str, Enum):
     IO_VENTILATION_CONFIGURATION_MODE = "io:VentilationConfigurationModeState"
     IO_VENTILATION_MODE = "io:VentilationModeState"
     IO_VIBRATION_DETECTED = "io:VibrationDetectedState"
-    MODBUS_CONTROL_DHW = "modbus:ControlDHWState"
-    MODBUS_CONTROL_DHW_SETTING_TEMPERATURE = "modbus:ControlDHWSettingTemperatureState"
-    MODBUS_DHW_MODE = "modbus:DHWModeState"
     MODBUSLINK_DHW_ABSENCE_MODE = "modbuslink:DHWAbsenceModeState"
     MODBUSLINK_DHW_BOOST_MODE = "modbuslink:DHWBoostModeState"
     MODBUSLINK_DHW_MODE = "modbuslink:DHWModeState"
     MODBUSLINK_MIDDLE_WATER_TEMPERATURE = "modbuslink:MiddleWaterTemperatureState"
+    MODBUS_CONTROL_DHW = "modbus:ControlDHWState"
+    MODBUS_CONTROL_DHW_SETTING_TEMPERATURE = "modbus:ControlDHWSettingTemperatureState"
+    MODBUS_DHW_MODE = "modbus:DHWModeState"
     MYFOX_ALARM_STATUS = "myfox:AlarmStatusState"
     MYFOX_ALERT_TRESPASS = "myfox:AlertTrespassState"
     MYFOX_SHUTTER_STATUS = "myfox:ShutterStatusState"
@@ -159,11 +170,11 @@ class OverkizState(str, Enum):
     OVP_HEATING_TEMPERATURE_INTERFACE_ACTIVE_MODE = (
         "ovp:HeatingTemperatureInterfaceActiveModeState"
     )
-    OVP_HEATING_TEMPERATURE_INTERFACE_SETPOINT_MODE = (
-        "ovp:HeatingTemperatureInterfaceSetPointModeState"
-    )
     OVP_HEATING_TEMPERATURE_INTERFACE_OPERATING_MODE = (
         "ovp:HeatingTemperatureInterfaceOperatingModeState"
+    )
+    OVP_HEATING_TEMPERATURE_INTERFACE_SETPOINT_MODE = (
+        "ovp:HeatingTemperatureInterfaceSetPointModeState"
     )
     OVP_LEAVE_HOME = "ovp:LeaveHomeState"
     OVP_MAIN_OPERATION = "ovp:MainOperationState"
@@ -177,4 +188,20 @@ class OverkizState(str, Enum):
     RTDS_CONTROLLER_ORIGINATOR = "rtds:ControllerOriginatorState"
     RTDS_CONTROLLER_SENSING = "rtds:ControllerSensingState"
     RTDS_CONTROLLER_SIREN = "rtds:ControllerSirenState"
+    SOMFY_THERMOSTAT_AT_HOME_TARGET_TEMPERATURE = (
+        "somfythermostat:AtHomeTargetTemperatureState"
+    )
+    SOMFY_THERMOSTAT_AWAY_MODE_TARGET_TEMPERATURE = (
+        "somfythermostat:AwayModeTargetTemperatureState"
+    )
+    SOMFY_THERMOSTAT_DEROGATION_HEATING_MODE = (
+        "somfythermostat:DerogationHeatingModeState"
+    )
+    SOMFY_THERMOSTAT_FREEZE_MODE_TARGET_TEMPERATURE = (
+        "somfythermostat:FreezeModeTargetTemperatureState"
+    )
+    SOMFY_THERMOSTAT_HEATING_MODE = "somfythermostat:HeatingModeState"
+    SOMFY_THERMOSTAT_SLEEPING_MODE_TARGET_TEMPERATURE = (
+        "somfythermostat:SleepingModeTargetTemperatureState"
+    )
     VERISURE_ALARM_PANEL_MAIN_ARM_TYPE = "verisure:AlarmPanelMainArmTypeState"
