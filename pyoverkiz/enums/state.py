@@ -51,6 +51,8 @@ class OverkizState(str, Enum):
     CORE_GAS_CONSUMPTION = "core:GasConsumptionState"
     CORE_GAS_DETECTION = "core:GasDetectionState"
     CORE_GREEN_COLOR_INTENSITY = "core:GreenColorIntensityState"
+    CORE_HEATING_ON_OFF = "core:HeatingOnOffState"
+    CORE_HEATING_TARGET_TEMPERATURE = "core:HeatingTargetTemperatureState"
     CORE_INTRUSION = "core:IntrusionState"
     CORE_LEVEL = "core:LevelState"
     CORE_LIGHT_INTENSITY = "core:LightIntensityState"
@@ -60,10 +62,16 @@ class OverkizState(str, Enum):
     CORE_MAXIMAL_SHOWER_MANUAL_MODE = "core:MaximalShowerManualModeState"
     CORE_MAXIMAL_TEMPERATURE_MANUAL_MODE = "core:MaximalTemperatureManualModeState"
     CORE_MAXIMUM_TEMPERATURE = "core:MaximumTemperatureState"
+    CORE_MAXIMUM_HEATING_TARGET_TEMPERATURE = (
+        "core:MaximumHeatingTargetTemperatureState"
+    )
     CORE_MEMORIZED_1_POSITION = "core:Memorized1PositionState"
     CORE_MINIMAL_SHOWER_MANUAL_MODE = "core:MinimalShowerManualModeState"
     CORE_MINIMAL_TEMPERATURE_MANUAL_MODE = "core:MinimalTemperatureManualModeState"
     CORE_MINIMUM_TEMPERATURE = "core:MinimumTemperatureState"
+    CORE_MINIMUM_HEATING_TARGET_TEMPERATURE = (
+        "core:MinimumHeatingTargetTemperatureState"
+    )
     CORE_MODEL = "core:ModelState"
     CORE_MOVING = "core:MovingState"
     CORE_NAME = "core:NameState"
@@ -127,6 +135,7 @@ class OverkizState(str, Enum):
     IO_MODEL = "io:ModelState"
     IO_OPERATING_MODE_CAPABILITIES = "io:OperatingModeCapabilitiesState"
     IO_OUTLET_ENGINE = "io:OutletEngineState"
+    IO_PASS_APC_HEATING_MODE = "io:PassAPCHeatingModeState"
     IO_PASS_APC_OPERATING_MODE = "io:PassAPCOperatingModeState"
     IO_PRIORITY_LOCK_LEVEL = "io:PriorityLockLevelState"
     IO_PRIORITY_LOCK_ORIGINATOR = "io:PriorityLockOriginatorState"
