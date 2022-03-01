@@ -68,6 +68,7 @@ class OverkizCommand(str, Enum):
     SET_MEMORIZED_SIMPLE_VOLUME = "setMemorizedSimpleVolume"
     SET_OPERATING_MODE = "setOperatingMode"
     SET_ORIENTATION = "setOrientation"
+    SET_PASS_APC_OPERATING_MODE = "setPassAPCOperatingMode"
     SET_PEDESTRIAN_POSITION = "setPedestrianPosition"
     SET_RGB = "setRGB"
     SET_SECURED_POSITION_TEMPERATURE = "setSecuredPositionTemperature"

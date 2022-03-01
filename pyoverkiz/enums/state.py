@@ -127,6 +127,7 @@ class OverkizState(str, Enum):
     IO_MODEL = "io:ModelState"
     IO_OPERATING_MODE_CAPABILITIES = "io:OperatingModeCapabilitiesState"
     IO_OUTLET_ENGINE = "io:OutletEngineState"
+    IO_PASS_APC_OPERATING_MODE = "io:PassAPCOperatingModeState"
     IO_PRIORITY_LOCK_LEVEL = "io:PriorityLockLevelState"
     IO_PRIORITY_LOCK_ORIGINATOR = "io:PriorityLockOriginatorState"
     IO_SENSOR_ROOM = "io:SensorRoomState"
