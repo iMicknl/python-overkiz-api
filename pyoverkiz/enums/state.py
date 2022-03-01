@@ -52,6 +52,7 @@ class OverkizState(str, Enum):
     CORE_GAS_DETECTION = "core:GasDetectionState"
     CORE_GREEN_COLOR_INTENSITY = "core:GreenColorIntensityState"
     CORE_INTRUSION = "core:IntrusionState"
+    CORE_LEVEL = "core:LevelState"
     CORE_LIGHT_INTENSITY = "core:LightIntensityState"
     CORE_LOCKED_UNLOCKED = "core:LockedUnlockedState"
     CORE_LUMINANCE = "core:LuminanceState"
