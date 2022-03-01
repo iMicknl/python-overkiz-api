@@ -7,6 +7,9 @@ class OverkizAttribute(str, Enum):
 
     CORE_FIRMWARE_REVISION = "core:FirmwareRevision"
     CORE_MANUFACTURER = "core:Manufacturer"
+    CORE_MAX_SETTABLE_VALUE = "core:MaxSettableValue"
+    CORE_MEASURED_VALUE_TYPE = "core:MeasuredValueType"
+    CORE_MIN_SETTABLE_VALUE = "core:MinSettableValue"
     HOMEKIT_SETUP_CODE = "homekit:SetupCode"
 
 
