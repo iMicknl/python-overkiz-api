@@ -108,6 +108,7 @@ class OverkizCommandParam(str, Enum):
     CLOSED = "closed"
     COMFORT = "comfort"
     COOLING = "cooling"
+    DAY_OFF = "day-off"
     DEAD = "dead"
     DETECTED = "detected"
     DISARMED = "disarmed"
@@ -124,6 +125,7 @@ class OverkizCommandParam(str, Enum):
     HIGH = "high"
     HIGH_DEMAND = "high demand"  # not a typo...
     HIGHEST = "highest"
+    HOLIDAYS = "holidays"
     INTERNAL = "internal"
     LOCAL_USER = "localUser"
     LOCKED = "locked"

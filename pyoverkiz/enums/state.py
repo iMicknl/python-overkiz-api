@@ -160,6 +160,7 @@ class OverkizState(str, Enum):
     OVP_MODE_CHANGE = "ovp:ModeChangeState"
     OVP_ROOM_TEMPERATURE = "ovp:RoomTemperatureState"
     OVP_SWING = "ovp:SwingState"
+    RAMSES_RAMSES_OPERATING_MODE = "ramses:RAMSESOperatingModeState"
     RTDS_CONTROLLER_BATTERY = "rtds:ControllerBatteryState"
     RTDS_CONTROLLER_BIP = "rtds:ControllerBipState"
     RTDS_CONTROLLER_ORDER_TYPE = "rtds:ControllerOrderTypeState"
