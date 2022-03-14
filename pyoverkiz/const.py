@@ -63,7 +63,7 @@ SUPPORTED_SERVERS: dict[str, OverkizServer] = {
         name="SIMU (LiveIn2)",
         endpoint="https://tahomalink.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Somfy",
-        configuration_url="https://www.tahomalink.com",
+        configuration_url=None,
     ),
     "somfy_europe": OverkizServer(  # uses https://ha101-1.overkiz.com
         name="Somfy (Europe)",
