@@ -59,6 +59,12 @@ SUPPORTED_SERVERS: dict[str, OverkizServer] = {
         manufacturer="Rexel",
         configuration_url="https://utilisateur.energeasyconnect.com/user/#/zone/equipements",
     ),
+    "simu_livein2": OverkizServer(  # uses https://ha101-1.overkiz.com
+        name="SIMU (LiveIn2)",
+        endpoint="https://tahomalink.com/enduser-mobile-web/enduserAPI/",
+        manufacturer="Somfy",
+        configuration_url=None,
+    ),
     "somfy_europe": OverkizServer(  # uses https://ha101-1.overkiz.com
         name="Somfy (Europe)",
         endpoint="https://tahomalink.com/enduser-mobile-web/enduserAPI/",

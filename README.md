@@ -18,6 +18,7 @@ This package is written for the Home Assistant [ha-tahoma](https://github.com/iM
 - Hitachi Hi Kumo
 - Nexity Eugénie
 - Rexel Energeasy Connect
+- Simu (LiveIn2)
 - Somfy Connexoon IO
 - Somfy Connexoon RTS
 - Somfy TaHoma
