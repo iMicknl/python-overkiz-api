@@ -38,6 +38,10 @@ class SessionAndBearerInSameRequestException(Exception):
     pass
 
 
+class TooManyAttemptsBannedException(Exception):
+    pass
+
+
 # Nexity
 class NexityBadCredentialsException(BadCredentialsException):
     pass

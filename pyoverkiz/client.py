@@ -41,6 +41,7 @@ from pyoverkiz.exceptions import (
     SessionAndBearerInSameRequestException,
     SomfyBadCredentialsException,
     SomfyServiceException,
+    TooManyAttemptsBannedException,
     TooManyConcurrentRequestsException,
     TooManyExecutionsException,
     TooManyRequestsException,
@@ -733,6 +734,12 @@ class OverkizClient:
 
             if message == "Cannot use JSESSIONID and bearer token in same request":
                 raise SessionAndBearerInSameRequestException(message)
+
+            if (
+                message
+                == "Too many attempts with an invalid token, temporarily banned."
+            ):
+                raise TooManyAttemptsBannedException(message)
 
         raise Exception(message if message else result)
 
