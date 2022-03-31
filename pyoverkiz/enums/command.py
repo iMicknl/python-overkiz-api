@@ -90,7 +90,7 @@ class OverkizCommand(str, Enum):
     SET_TARGET_ALARM_MODE = "setTargetAlarmMode"
     SET_TARGET_TEMPERATURE = "setTargetTemperature"
     SET_TOWEL_DRYER_TEMPORARY_STATE = "setTowelDryerTemporaryState"
-    SET_TOWER_DRYER_OPERATING_MODE = "setTowelDryerOperatingMode"
+    SET_TOWEL_DRYER_OPERATING_MODE = "setTowelDryerOperatingMode"
     SET_VENTILATION_CONFIGURATION_MODE = "setVentilationConfigurationMode"
     SET_VENTILATION_MODE = "setVentilationMode"
     STANDARD = "standard"
