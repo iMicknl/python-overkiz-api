@@ -1,4 +1,11 @@
-from pyoverkiz.enums import EventName, FailureType, GatewaySubType, GatewayType
+from pyoverkiz.enums import (
+    EventName,
+    ExecutionSubType,
+    ExecutionType,
+    FailureType,
+    GatewaySubType,
+    GatewayType,
+)
 
 
 class TestGatewayType:
@@ -30,3 +37,13 @@ class TestEventName:
 class TestFailureType:
     def test_missing(self):
         assert FailureType(99) == FailureType.UNKNOWN
+
+
+class TestExecutionType:
+    def test_missing(self):
+        assert ExecutionType("test") == ExecutionType.UNKNOWN
+
+
+class TestExecutionSubType:
+    def test_missing(self):
+        assert ExecutionSubType("test") == ExecutionSubType.UNKNOWN
