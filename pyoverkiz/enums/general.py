@@ -231,6 +231,7 @@ class FailureType(IntEnum):
     PEER_DOWN = 10005
     GATEWAY_BUFFER_OVERFLOW = 10006
     UNKNOWN_DETAILED_ERROR = 10007
+    TIME_OUT_ON_COMMAND_PROGRESS = 20003
 
     @classmethod
     def _missing_(cls, value):  # type: ignore
