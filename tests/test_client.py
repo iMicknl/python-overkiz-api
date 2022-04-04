@@ -33,7 +33,7 @@ class TestOverkizClient:
         "fixture_name, event_length",
         [
             ("events.json", 16),
-            # ("local_events.json", 3),
+            ("local_events.json", 3),
         ],
     )
     @pytest.mark.asyncio
