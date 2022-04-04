@@ -54,11 +54,7 @@ class TestOverkizClient:
         "fixture_name, event_length",
         [
             ("events.json", 16),
-            << << << < HEAD
             ("local_events.json", 3),
-            == == == =
-            # ("local_events.json", 3),
-            >>>>>> > c921bed(Add local event tests)
         ],
     )
     @pytest.mark.asyncio
