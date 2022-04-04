@@ -94,12 +94,15 @@ class OverkizClient:
     _refresh_token: str | None = None
     _expires_in: datetime.datetime | None = None
     _access_token: str | None = None
+    _local_access_token: str | None = None
+    _is_local: bool = False
 
     def __init__(
         self,
         username: str,
         password: str,
         server: OverkizServer,
+        token: str | None = None,
         session: ClientSession | None = None,
     ) -> None:
         """
@@ -121,6 +124,10 @@ class OverkizClient:
         self.event_listener_id: str | None = None
 
         self.session = session if session else ClientSession()
+
+        if "/enduser-mobile-web/1/enduserAPI/" in server.endpoint:
+            self._is_local = True
+            self._local_access_token = token
 
     async def __aenter__(self) -> OverkizClient:
         return self
@@ -148,6 +155,13 @@ class OverkizClient:
         Authenticate and create an API session allowing access to the other operations.
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
+        # Local authentication
+        # TODO check which endpoint can be used to validate the token!
+        if self._is_local:
+            if register_event_listener:
+                await self.register_event_listener()
+            return True
+
         # Somfy TaHoma authentication using access_token
         if self.server == SUPPORTED_SERVERS["somfy_europe"]:
             await self.somfy_tahoma_get_access_token()
@@ -717,6 +731,10 @@ class OverkizClient:
         if self._access_token:
             headers["Authorization"] = f"Bearer {self._access_token}"
 
+        # TODO check what is the definitive header
+        if self._local_access_token:
+            headers["X-Auth-Token"] = f"Bearer {self._access_token}"
+
         async with self.session.get(
             f"{self.server.endpoint}{path}", headers=headers
         ) as response:
@@ -733,6 +751,10 @@ class OverkizClient:
             await self._refresh_token_if_expired()
             headers["Authorization"] = f"Bearer {self._access_token}"
 
+        # TODO check what is the definitive header
+        if self._local_access_token:
+            headers["X-Auth-Token"] = f"Bearer {self._access_token}"
+
         async with self.session.post(
             f"{self.server.endpoint}{path}", data=data, json=payload, headers=headers
         ) as response:
@@ -747,6 +769,10 @@ class OverkizClient:
 
         if self._access_token:
             headers["Authorization"] = f"Bearer {self._access_token}"
+
+        # TODO check what is the definitive header
+        if self._local_access_token:
+            headers["X-Auth-Token"] = f"Bearer {self._access_token}"
 
         async with self.session.delete(
             f"{self.server.endpoint}{path}", headers=headers
