@@ -66,10 +66,18 @@ class TestOverkizClient:
             assert isinstance(int_state_event.value, int)
             assert int_state_event.type == DataType.INTEGER
 
+    @pytest.mark.parametrize(
+        "fixture_name",
+        [
+            ("events.json"),
+            ("local_events.json"),
+        ],
+    )
     @pytest.mark.asyncio
-    async def test_fetch_events_casting(self, client):
+    async def test_fetch_events_casting(self, client, fixture_name: str):
         with open(
-            os.path.join(CURRENT_DIR, "fixtures/event/events.json"), encoding="utf-8"
+            os.path.join(CURRENT_DIR, "fixtures/event/" + fixture_name),
+            encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
 
