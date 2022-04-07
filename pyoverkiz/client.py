@@ -693,7 +693,7 @@ class OverkizClient:
     )
     async def delete_local_token(self, gateway_id: str, uuid: str) -> bool:
         """
-        Get all gateway tokens with the given scope
+        Delete a token
         Access scope : Full enduser API access (enduser/*)
         """
         await self.__delete(f"/config/{gateway_id}/local/tokens/{uuid}")
