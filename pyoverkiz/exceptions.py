@@ -46,6 +46,14 @@ class TooManyAttemptsBannedException(Exception):
     pass
 
 
+class InvalidTokenException(Exception):
+    pass
+
+
+class NotSuchTokenException(Exception):
+    pass
+
+
 # Nexity
 class NexityBadCredentialsException(BadCredentialsException):
     pass
