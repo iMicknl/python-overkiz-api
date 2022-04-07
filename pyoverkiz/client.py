@@ -34,6 +34,7 @@ from pyoverkiz.exceptions import (
     InvalidCommandException,
     InvalidEventListenerIdException,
     MaintenanceException,
+    MissingAuthorizationTokenException,
     NexityBadCredentialsException,
     NexityServiceException,
     NoRegisteredEventListenerException,
@@ -711,6 +712,10 @@ class OverkizClient:
             # {"errorCode": "RESOURCE_ACCESS_DENIED", "error": "Not authenticated"}
             if message == "Not authenticated":
                 raise NotAuthenticatedException(message)
+
+            # {"error":"Missing authorization token.","errorCode":"RESOURCE_ACCESS_DENIED"}
+            if message == "Missing authorization token.":
+                raise MissingAuthorizationTokenException(message)
 
             # {"error": "Server busy, please try again later. (Too many executions)"}
             if message == "Server busy, please try again later. (Too many executions)":

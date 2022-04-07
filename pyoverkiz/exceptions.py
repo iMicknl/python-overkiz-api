@@ -26,6 +26,10 @@ class MaintenanceException(Exception):
     pass
 
 
+class MissingAuthorizationTokenException(Exception):
+    pass
+
+
 class InvalidEventListenerIdException(Exception):
     pass
 
