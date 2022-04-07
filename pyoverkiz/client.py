@@ -33,11 +33,14 @@ from pyoverkiz.exceptions import (
     CozyTouchServiceException,
     InvalidCommandException,
     InvalidEventListenerIdException,
+    InvalidTokenException,
     MaintenanceException,
+    MissingAuthorizationTokenException,
     NexityBadCredentialsException,
     NexityServiceException,
     NoRegisteredEventListenerException,
     NotAuthenticatedException,
+    NotSuchTokenException,
     SessionAndBearerInSameRequestException,
     SomfyBadCredentialsException,
     SomfyServiceException,
@@ -53,6 +56,7 @@ from pyoverkiz.models import (
     Execution,
     Gateway,
     HistoryExecution,
+    LocalToken,
     OverkizServer,
     Place,
     Scenario,
@@ -629,6 +633,74 @@ class OverkizClient:
         return places
 
     @backoff.on_exception(
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError),
+        max_tries=2,
+        on_backoff=relogin,
+    )
+    async def generate_local_token(self, gateway_id: str) -> str:
+        """
+        Generates a new token
+        Access scope : Full enduser API access (enduser/*)
+        """
+        response = await self.__get(f"/config/{gateway_id}/local/tokens/generate")
+
+        return cast(str, response["token"])
+
+    @backoff.on_exception(
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError),
+        max_tries=2,
+        on_backoff=relogin,
+    )
+    async def activate_local_token(
+        self, gateway_id: str, token: str, label: str, scope: str = "devmode"
+    ) -> str:
+        """
+        Create a token
+        Access scope : Full enduser API access (enduser/*)
+        """
+        response = await self.__post(
+            f"/config/{gateway_id}/local/tokens",
+            {"label": label, "token": token, "scope": scope},
+        )
+
+        return cast(str, response["requestId"])
+
+    @backoff.on_exception(
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError),
+        max_tries=2,
+        on_backoff=relogin,
+    )
+    async def get_local_tokens(
+        self, gateway_id: str, scope: str = "devmode"
+    ) -> list[LocalToken]:
+        """
+        Get all gateway tokens with the given scope
+        Access scope : Full enduser API access (enduser/*)
+        """
+        response = await self.__get(f"/config/{gateway_id}/local/tokens/{scope}")
+        local_tokens = [LocalToken(**lt) for lt in humps.decamelize(response)]
+
+        return local_tokens
+
+    @backoff.on_exception(
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError),
+        max_tries=2,
+        on_backoff=relogin,
+    )
+    async def delete_local_token(self, gateway_id: str, uuid: str) -> bool:
+        """
+        Delete a token
+        Access scope : Full enduser API access (enduser/*)
+        """
+        await self.__delete(f"/config/{gateway_id}/local/tokens/{uuid}")
+
+        return True
+
+    @backoff.on_exception(
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
     )
     async def execute_scenario(self, oid: str) -> str:
@@ -712,6 +784,10 @@ class OverkizClient:
             if message == "Not authenticated":
                 raise NotAuthenticatedException(message)
 
+            # {"error":"Missing authorization token.","errorCode":"RESOURCE_ACCESS_DENIED"}
+            if message == "Missing authorization token.":
+                raise MissingAuthorizationTokenException(message)
+
             # {"error": "Server busy, please try again later. (Too many executions)"}
             if message == "Server busy, please try again later. (Too many executions)":
                 raise TooManyExecutionsException(message)
@@ -740,6 +816,12 @@ class OverkizClient:
                 == "Too many attempts with an invalid token, temporarily banned."
             ):
                 raise TooManyAttemptsBannedException(message)
+
+            if "Invalid token : " in message:
+                raise InvalidTokenException(message)
+
+            if "Not such token with UUID: " in message:
+                raise NotSuchTokenException(message)
 
         raise Exception(message if message else result)
 

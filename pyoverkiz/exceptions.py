@@ -26,6 +26,10 @@ class MaintenanceException(Exception):
     pass
 
 
+class MissingAuthorizationTokenException(Exception):
+    pass
+
+
 class InvalidEventListenerIdException(Exception):
     pass
 
@@ -39,6 +43,14 @@ class SessionAndBearerInSameRequestException(Exception):
 
 
 class TooManyAttemptsBannedException(Exception):
+    pass
+
+
+class InvalidTokenException(Exception):
+    pass
+
+
+class NotSuchTokenException(Exception):
     pass
 
 
