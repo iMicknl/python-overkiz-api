@@ -51,6 +51,7 @@ from pyoverkiz.exceptions import (
     TooManyExecutionsException,
     TooManyRequestsException,
     UnknownUserException,
+    UnknownObjectException,
 )
 from pyoverkiz.models import (
     Command,
@@ -137,6 +138,7 @@ class OverkizClient:
                 cafile=os.path.dirname(os.path.realpath(__file__))
                 + "/overkiz-root-ca-2048.crt"
             )
+            self._ssl_context = None
 
     async def __aenter__(self) -> OverkizClient:
         return self
@@ -165,10 +167,13 @@ class OverkizClient:
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
         # Local authentication
-        # TODO check which endpoint can be used to validate the token!
         if self._is_local:
             if register_event_listener:
                 await self.register_event_listener()
+            else:
+                # Call a simple endpoint to verify if our token is correct
+                await self.get_api_version()
+
             return True
 
         # Somfy TaHoma authentication using access_token
@@ -594,6 +599,15 @@ class OverkizClient:
 
         return executions
 
+    @backoff.on_exception(
+        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+    )
+    async def get_api_version(self) -> str:
+        """Get the API version (local only)"""
+        response = await self.__get("apiVersion")
+
+        return cast(str, response["protocolVersion"])
+
     @backoff.on_exception(backoff.expo, TooManyExecutionsException, max_tries=10)
     @backoff.on_exception(
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
@@ -670,7 +684,7 @@ class OverkizClient:
         Generates a new token
         Access scope : Full enduser API access (enduser/*)
         """
-        response = await self.__get(f"/config/{gateway_id}/local/tokens/generate")
+        response = await self.__get(f"config/{gateway_id}/local/tokens/generate")
 
         return cast(str, response["token"])
 
@@ -688,7 +702,7 @@ class OverkizClient:
         Access scope : Full enduser API access (enduser/*)
         """
         response = await self.__post(
-            f"/config/{gateway_id}/local/tokens",
+            f"config/{gateway_id}/local/tokens",
             {"label": label, "token": token, "scope": scope},
         )
 
@@ -707,7 +721,7 @@ class OverkizClient:
         Get all gateway tokens with the given scope
         Access scope : Full enduser API access (enduser/*)
         """
-        response = await self.__get(f"/config/{gateway_id}/local/tokens/{scope}")
+        response = await self.__get(f"config/{gateway_id}/local/tokens/{scope}")
         local_tokens = [LocalToken(**lt) for lt in humps.decamelize(response)]
 
         return local_tokens
@@ -723,7 +737,7 @@ class OverkizClient:
         Delete a token
         Access scope : Full enduser API access (enduser/*)
         """
-        await self.__delete(f"/config/{gateway_id}/local/tokens/{uuid}")
+        await self.__delete(f"config/{gateway_id}/local/tokens/{uuid}")
 
         return True
 
@@ -853,8 +867,15 @@ class OverkizClient:
             if "Not such token with UUID: " in message:
                 raise NotSuchTokenException(message)
 
+
+<< << << < HEAD
             if "Unknown user :" in message:
                 raise UnknownUserException(message)
+== == == =
+            # {"error":"Unknown object.","errorCode":"UNSPECIFIED_ERROR"}
+            if message == "Unknown object.":
+                raise UnknownObjectException(message)
+>>>>>> > 562d327(Add Unknown Object exception)
 
         raise Exception(message if message else result)
 

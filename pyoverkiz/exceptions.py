@@ -62,6 +62,10 @@ class UnknownUserException(BaseOverkizException):
     pass
 
 
+class UnknownObjectException(BaseOverkizException):
+    pass
+
+
 # Nexity
 class NexityBadCredentialsException(BadCredentialsException):
     pass
