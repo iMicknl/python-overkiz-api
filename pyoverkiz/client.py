@@ -147,6 +147,12 @@ class OverkizClient:
         else:
             self.api_type = APIType.CLOUD
 
+            # TODO To avoid security issue, add the following authority to
+            # your HTTPS client trust store: https://ca.overkiz.com/overkiz-root-ca-2048.crt
+            # sslcontext = ssl.create_default_context(
+            #     cafile="overkiz-root-ca-2048.crt"
+            # )
+
     async def __aenter__(self) -> OverkizClient:
         return self
 
