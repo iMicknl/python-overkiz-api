@@ -29,21 +29,31 @@ class TestOverkizClient:
             devices = await client.get_devices()
             assert len(devices) == 23
 
+    @pytest.mark.parametrize(
+        "fixture_name, event_length",
+        [
+            ("events.json", 16),
+            ("local_events.json", 3),
+        ],
+    )
     @pytest.mark.asyncio
-    async def test_fetch_events_basic(self, client):
+    async def test_fetch_events_basic(
+        self, client, fixture_name: str, event_length: int
+    ):
         with open(
-            os.path.join(CURRENT_DIR, "events.json"), encoding="utf-8"
+            os.path.join(CURRENT_DIR, "fixtures/event/" + fixture_name),
+            encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
 
         with patch.object(aiohttp.ClientSession, "post", return_value=resp):
             events = await client.fetch_events()
-            assert len(events) == 16
+            assert len(events) == event_length
 
     @pytest.mark.asyncio
     async def test_fetch_events_simple_cast(self, client):
         with open(
-            os.path.join(CURRENT_DIR, "events.json"), encoding="utf-8"
+            os.path.join(CURRENT_DIR, "fixtures/event/events.json"), encoding="utf-8"
         ) as raw_events:
             resp = MockResponse(raw_events.read())
 
@@ -56,10 +66,18 @@ class TestOverkizClient:
             assert isinstance(int_state_event.value, int)
             assert int_state_event.type == DataType.INTEGER
 
+    @pytest.mark.parametrize(
+        "fixture_name",
+        [
+            ("events.json"),
+            ("local_events.json"),
+        ],
+    )
     @pytest.mark.asyncio
-    async def test_fetch_events_casting(self, client):
+    async def test_fetch_events_casting(self, client, fixture_name: str):
         with open(
-            os.path.join(CURRENT_DIR, "events.json"), encoding="utf-8"
+            os.path.join(CURRENT_DIR, "fixtures/event/" + fixture_name),
+            encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
 
@@ -110,6 +128,7 @@ class TestOverkizClient:
             ("setup_tahoma_siren_io.json", 11),
             ("setup_tahoma_siren_rtd.json", 31),
             ("setup_tahoma_be.json", 15),
+            ("setup_local.json", 3),
         ],
     )
     @pytest.mark.asyncio
