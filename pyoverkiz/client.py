@@ -3,6 +3,8 @@ from __future__ import annotations
 
 import asyncio
 import datetime
+import os
+import ssl
 import urllib.parse
 from json import JSONDecodeError
 from types import TracebackType
@@ -94,8 +96,8 @@ class OverkizClient:
     _refresh_token: str | None = None
     _expires_in: datetime.datetime | None = None
     _access_token: str | None = None
-    _local_access_token: str | None = None
     _is_local: bool = False
+    _ssl_context: ssl.SSLContext | None = None
 
     def __init__(
         self,
@@ -127,13 +129,14 @@ class OverkizClient:
 
         if "/enduser-mobile-web/1/enduserAPI/" in server.endpoint:
             self._is_local = True
-            self._local_access_token = token
+            self._access_token = token
 
-            # TODO To avoid security issue, add the following authority to
+            # To avoid security issue, add the following authority to
             # your HTTPS client trust store: https://ca.overkiz.com/overkiz-root-ca-2048.crt
-            # sslcontext = ssl.create_default_context(
-            #     cafile="overkiz-root-ca-2048.crt"
-            # )
+            self._ssl_context = ssl.create_default_context(
+                cafile=os.path.dirname(os.path.realpath(__file__))
+                + "/overkiz-root-ca-2048.crt"
+            )
 
     async def __aenter__(self) -> OverkizClient:
         return self
@@ -740,12 +743,10 @@ class OverkizClient:
         if self._access_token:
             headers["Authorization"] = f"Bearer {self._access_token}"
 
-        # TODO check what is the definitive header
-        if self._local_access_token:
-            headers["X-Auth-Token"] = f"Bearer {self._access_token}"
-
         async with self.session.get(
-            f"{self.server.endpoint}{path}", headers=headers
+            f"{self.server.endpoint}{path}",
+            headers=headers,
+            ssl_context=self._ssl_context,
         ) as response:
             await self.check_response(response)
             return await response.json()
@@ -759,10 +760,6 @@ class OverkizClient:
         if path != "login" and self._access_token:
             await self._refresh_token_if_expired()
             headers["Authorization"] = f"Bearer {self._access_token}"
-
-        # TODO check what is the definitive header
-        if self._local_access_token:
-            headers["X-Auth-Token"] = f"Bearer {self._access_token}"
 
         async with self.session.post(
             f"{self.server.endpoint}{path}", data=data, json=payload, headers=headers
@@ -778,10 +775,6 @@ class OverkizClient:
 
         if self._access_token:
             headers["Authorization"] = f"Bearer {self._access_token}"
-
-        # TODO check what is the definitive header
-        if self._local_access_token:
-            headers["X-Auth-Token"] = f"Bearer {self._access_token}"
 
         async with self.session.delete(
             f"{self.server.endpoint}{path}", headers=headers
