@@ -64,6 +64,7 @@ from pyoverkiz.exceptions import (
     TooManyRequestsException,
     UnknownObjectException,
     UnknownUserException,
+    UnknownObjectException,
 )
 from pyoverkiz.models import (
     Command,
@@ -155,6 +156,7 @@ class OverkizClient:
             )
         else:
             self.api_type = APIType.CLOUD
+            self._ssl_context = None
 
     async def __aenter__(self) -> OverkizClient:
         return self
@@ -190,6 +192,8 @@ class OverkizClient:
                 # Call a simple endpoint to verify if our token is correct
                 # Since local API does not have a /login endpoint
                 await self.get_gateways()
+
+            return True
 
         # Somfy TaHoma authentication using access_token
         if self.server == SUPPORTED_SERVERS[Server.SOMFY_EUROPE]:
