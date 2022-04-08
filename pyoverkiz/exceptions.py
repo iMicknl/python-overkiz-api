@@ -79,3 +79,7 @@ class SomfyBadCredentialsException(BadCredentialsException):
 
 class SomfyServiceException(Exception):
     pass
+
+
+class UnknownException(Exception):
+    pass

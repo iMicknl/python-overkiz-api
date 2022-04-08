@@ -48,6 +48,7 @@ from pyoverkiz.exceptions import (
     TooManyConcurrentRequestsException,
     TooManyExecutionsException,
     TooManyRequestsException,
+    UnknownException,
 )
 from pyoverkiz.models import (
     Command,
@@ -119,7 +120,7 @@ class OverkizClient:
         self.gateways: list[Gateway] = []
         self.event_listener_id: str | None = None
 
-        self.session = session if session else ClientSession()
+        self.session = session or ClientSession()
 
     async def __aenter__(self) -> OverkizClient:
         return self
@@ -186,7 +187,7 @@ class OverkizClient:
         """
         # Request access token
         async with self.session.post(
-            SOMFY_API + "/oauth/oauth/v2/token",
+            f"{SOMFY_API}/oauth/oauth/v2/token",
             data=FormData(
                 {
                     "grant_type": "password",
@@ -230,7 +231,7 @@ class OverkizClient:
         # &grant_type=refresh_token&refresh_token=REFRESH_TOKEN
         # Request access token
         async with self.session.post(
-            SOMFY_API + "/oauth/oauth/v2/token",
+            f"{SOMFY_API}/oauth/oauth/v2/token",
             data=FormData(
                 {
                     "grant_type": "refresh_token",
@@ -263,7 +264,7 @@ class OverkizClient:
         """
         # Request access token
         async with self.session.post(
-            COZYTOUCH_ATLANTIC_API + "/token",
+            f"{COZYTOUCH_ATLANTIC_API}/token",
             data=FormData(
                 {
                     "grant_type": "password",
@@ -288,7 +289,7 @@ class OverkizClient:
 
         # Request JWT
         async with self.session.get(
-            COZYTOUCH_ATLANTIC_API + "/gacoma/gacomawcfservice/accounts/jwt",
+            f"{COZYTOUCH_ATLANTIC_API}/gacoma/gacomawcfservice/accounts/jwt",
             headers={"Authorization": f"Bearer {token['access_token']}"},
         ) as response:
             jwt = await response.text()
@@ -298,7 +299,7 @@ class OverkizClient:
 
             jwt = jwt.strip('"')  # Remove surrounding quotes
 
-            return jwt
+            return str(jwt)
 
     async def nexity_login(self) -> str:
         """
@@ -458,9 +459,7 @@ class OverkizClient:
         List execution history
         """
         response = await self.__get("history/executions")
-        execution_history = [HistoryExecution(**h) for h in humps.decamelize(response)]
-
-        return execution_history
+        return [HistoryExecution(**h) for h in humps.decamelize(response)]
 
     @backoff.on_exception(
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
@@ -485,9 +484,7 @@ class OverkizClient:
         response = await self.__get(
             f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/states"
         )
-        state = [State(**s) for s in humps.decamelize(response)]
-
-        return state
+        return [State(**s) for s in humps.decamelize(response)]
 
     @backoff.on_exception(
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
@@ -534,9 +531,7 @@ class OverkizClient:
         """
         await self._refresh_token_if_expired()
         response = await self.__post(f"events/{self.event_listener_id}/fetch")
-        events = [Event(**e) for e in humps.decamelize(response)]
-
-        return events
+        return [Event(**e) for e in humps.decamelize(response)]
 
     async def unregister_event_listener(self) -> None:
         """
@@ -553,9 +548,7 @@ class OverkizClient:
     async def get_current_execution(self, exec_id: str) -> Execution:
         """Get an action group execution currently running"""
         response = await self.__get(f"exec/current/{exec_id}")
-        execution = Execution(**humps.decamelize(response))
-
-        return execution
+        return Execution(**humps.decamelize(response))
 
     @backoff.on_exception(
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
@@ -563,9 +556,7 @@ class OverkizClient:
     async def get_current_executions(self) -> list[Execution]:
         """Get all action groups executions currently running"""
         response = await self.__get("exec/current")
-        executions = [Execution(**e) for e in humps.decamelize(response)]
-
-        return executions
+        return [Execution(**e) for e in humps.decamelize(response)]
 
     @backoff.on_exception(backoff.expo, TooManyExecutionsException, max_tries=10)
     @backoff.on_exception(
@@ -629,8 +620,7 @@ class OverkizClient:
     async def get_places(self) -> Place:
         """List the places"""
         response = await self.__get("setup/places")
-        places = Place(**humps.decamelize(response))
-        return places
+        return Place(**humps.decamelize(response))
 
     @backoff.on_exception(
         backoff.expo,
@@ -681,9 +671,7 @@ class OverkizClient:
         Access scope : Full enduser API access (enduser/*)
         """
         response = await self.__get(f"/config/{gateway_id}/local/tokens/{scope}")
-        local_tokens = [LocalToken(**lt) for lt in humps.decamelize(response)]
-
-        return local_tokens
+        return [LocalToken(**lt) for lt in humps.decamelize(response)]
 
     @backoff.on_exception(
         backoff.expo,
@@ -764,7 +752,7 @@ class OverkizClient:
             result = await response.text()
             if "Server is down for maintenance" in result:
                 raise MaintenanceException("Server is down for maintenance") from error
-            raise Exception(
+            raise UnknownException(
                 f"Unknown error while requesting {response.url}. {response.status} - {result}"
             ) from error
 
@@ -823,7 +811,7 @@ class OverkizClient:
             if "Not such token with UUID: " in message:
                 raise NotSuchTokenException(message)
 
-        raise Exception(message if message else result)
+        raise UnknownException(message or result)
 
     async def _refresh_token_if_expired(self) -> None:
         """Check if token is expired and request a new one."""
