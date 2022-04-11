@@ -28,6 +28,7 @@ from pyoverkiz.const import (
     SUPPORTED_SERVERS,
 )
 from pyoverkiz.exceptions import (
+    AccessDeniedToGatewayException,
     BadCredentialsException,
     CozyTouchBadCredentialsException,
     CozyTouchServiceException,
@@ -857,6 +858,10 @@ class OverkizClient:
             # {"error":"Unknown object.","errorCode":"UNSPECIFIED_ERROR"}
             if message == "Unknown object.":
                 raise UnknownObjectException(message)
+
+            # {'errorCode': 'RESOURCE_ACCESS_DENIED', 'error': 'Access denied to gateway #1234-5678-1234 for action ADD_TOKEN'}
+            if "Access denied to gateway" in message:
+                raise AccessDeniedToGatewayException(message)
 
         raise Exception(message if message else result)
 

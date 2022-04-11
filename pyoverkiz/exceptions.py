@@ -66,6 +66,10 @@ class UnknownObjectException(BaseOverkizException):
     pass
 
 
+class AccessDeniedToGatewayException(BaseOverkizException):
+    pass
+
+
 # Nexity
 class NexityBadCredentialsException(BadCredentialsException):
     pass
