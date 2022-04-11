@@ -48,6 +48,7 @@ from pyoverkiz.exceptions import (
     TooManyConcurrentRequestsException,
     TooManyExecutionsException,
     TooManyRequestsException,
+    UnknownUserException,
 )
 from pyoverkiz.models import (
     Command,
@@ -822,6 +823,9 @@ class OverkizClient:
 
             if "Not such token with UUID: " in message:
                 raise NotSuchTokenException(message)
+
+            if "Unknown user :" in message:
+                raise UnknownUserException(message)
 
         raise Exception(message if message else result)
 
