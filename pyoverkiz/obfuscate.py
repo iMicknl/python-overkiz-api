@@ -19,7 +19,7 @@ def obfuscate_email(email: str | None) -> str:
 
 def obfuscate_string(input: str) -> str:
     """Mask string"""
-    return re.sub(r"[a-zA-Z0-9_.-]*", "*", str(input))
+    return re.sub(r"[a-zA-Z0-9_.-]*", "*", input)
 
 
 def obfuscate_sensitive_data(data: dict[str, Any]) -> JSON:

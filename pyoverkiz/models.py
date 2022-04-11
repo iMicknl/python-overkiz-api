@@ -316,10 +316,7 @@ class States:
     _states: list[State]
 
     def __init__(self, states: list[dict[str, Any]] | None = None) -> None:
-        if states:
-            self._states = [State(**state) for state in states]
-        else:
-            self._states = []
+        self._states = [State(**state) for state in states] if states else []
 
     def __iter__(self) -> Iterator[State]:
         return self._states.__iter__()
