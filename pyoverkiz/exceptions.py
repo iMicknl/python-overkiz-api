@@ -1,56 +1,64 @@
-class BadCredentialsException(Exception):
+class BaseOverkizException(Exception):
     pass
 
 
-class InvalidCommandException(Exception):
+class BadCredentialsException(BaseOverkizException):
     pass
 
 
-class NotAuthenticatedException(Exception):
+class InvalidCommandException(BaseOverkizException):
     pass
 
 
-class TooManyExecutionsException(Exception):
+class NotAuthenticatedException(BaseOverkizException):
     pass
 
 
-class TooManyRequestsException(Exception):
+class TooManyExecutionsException(BaseOverkizException):
     pass
 
 
-class TooManyConcurrentRequestsException(Exception):
+class TooManyRequestsException(BaseOverkizException):
     pass
 
 
-class MaintenanceException(Exception):
+class TooManyConcurrentRequestsException(BaseOverkizException):
     pass
 
 
-class MissingAuthorizationTokenException(Exception):
+class MaintenanceException(BaseOverkizException):
     pass
 
 
-class InvalidEventListenerIdException(Exception):
+class MissingAuthorizationTokenException(BaseOverkizException):
     pass
 
 
-class NoRegisteredEventListenerException(Exception):
+class InvalidEventListenerIdException(BaseOverkizException):
     pass
 
 
-class SessionAndBearerInSameRequestException(Exception):
+class NoRegisteredEventListenerException(BaseOverkizException):
     pass
 
 
-class TooManyAttemptsBannedException(Exception):
+class SessionAndBearerInSameRequestException(BaseOverkizException):
     pass
 
 
-class InvalidTokenException(Exception):
+class TooManyAttemptsBannedException(BaseOverkizException):
     pass
 
 
-class NotSuchTokenException(Exception):
+class InvalidTokenException(BaseOverkizException):
+    pass
+
+
+class NotSuchTokenException(BaseOverkizException):
+    pass
+
+
+class UnknownUserException(BaseOverkizException):
     pass
 
 
@@ -59,7 +67,7 @@ class NexityBadCredentialsException(BadCredentialsException):
     pass
 
 
-class NexityServiceException(Exception):
+class NexityServiceException(BaseOverkizException):
     pass
 
 
@@ -68,7 +76,7 @@ class CozyTouchBadCredentialsException(BadCredentialsException):
     pass
 
 
-class CozyTouchServiceException(Exception):
+class CozyTouchServiceException(BaseOverkizException):
     pass
 
 
@@ -77,5 +85,5 @@ class SomfyBadCredentialsException(BadCredentialsException):
     pass
 
 
-class SomfyServiceException(Exception):
+class SomfyServiceException(BaseOverkizException):
     pass
