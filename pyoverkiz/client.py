@@ -28,6 +28,7 @@ from pyoverkiz.const import (
     SUPPORTED_SERVERS,
 )
 from pyoverkiz.exceptions import (
+    AccessDeniedToGatewayException,
     BadCredentialsException,
     CozyTouchBadCredentialsException,
     CozyTouchServiceException,
@@ -48,6 +49,7 @@ from pyoverkiz.exceptions import (
     TooManyConcurrentRequestsException,
     TooManyExecutionsException,
     TooManyRequestsException,
+    UnknownObjectException,
     UnknownUserException,
 )
 from pyoverkiz.models import (
@@ -100,6 +102,7 @@ class OverkizClient:
         username: str,
         password: str,
         server: OverkizServer,
+        token: str | None = None,
         session: ClientSession | None = None,
     ) -> None:
         """
@@ -114,6 +117,7 @@ class OverkizClient:
         self.username = username
         self.password = password
         self.server = server
+        self._access_token = token
 
         self.setup: Setup | None = None
         self.devices: list[Device] = []
@@ -148,6 +152,16 @@ class OverkizClient:
         Authenticate and create an API session allowing access to the other operations.
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
+        # Local authentication
+        if "/enduser-mobile-web/1/enduserAPI/" in self.server.endpoint:
+            if register_event_listener:
+                await self.register_event_listener()
+            else:
+                # Call a simple endpoint to verify if our token is correct
+                await self.get_gateways()
+
+            return True
+
         # Somfy TaHoma authentication using access_token
         if self.server == SUPPORTED_SERVERS["somfy_europe"]:
             await self.somfy_tahoma_get_access_token()
@@ -568,6 +582,15 @@ class OverkizClient:
 
         return executions
 
+    @backoff.on_exception(
+        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+    )
+    async def get_api_version(self) -> str:
+        """Get the API version (local only)"""
+        response = await self.__get("apiVersion")
+
+        return cast(str, response["protocolVersion"])
+
     @backoff.on_exception(backoff.expo, TooManyExecutionsException, max_tries=10)
     @backoff.on_exception(
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
@@ -644,7 +667,7 @@ class OverkizClient:
         Generates a new token
         Access scope : Full enduser API access (enduser/*)
         """
-        response = await self.__get(f"/config/{gateway_id}/local/tokens/generate")
+        response = await self.__get(f"config/{gateway_id}/local/tokens/generate")
 
         return cast(str, response["token"])
 
@@ -662,7 +685,7 @@ class OverkizClient:
         Access scope : Full enduser API access (enduser/*)
         """
         response = await self.__post(
-            f"/config/{gateway_id}/local/tokens",
+            f"config/{gateway_id}/local/tokens",
             {"label": label, "token": token, "scope": scope},
         )
 
@@ -681,7 +704,7 @@ class OverkizClient:
         Get all gateway tokens with the given scope
         Access scope : Full enduser API access (enduser/*)
         """
-        response = await self.__get(f"/config/{gateway_id}/local/tokens/{scope}")
+        response = await self.__get(f"config/{gateway_id}/local/tokens/{scope}")
         local_tokens = [LocalToken(**lt) for lt in humps.decamelize(response)]
 
         return local_tokens
@@ -697,7 +720,7 @@ class OverkizClient:
         Delete a token
         Access scope : Full enduser API access (enduser/*)
         """
-        await self.__delete(f"/config/{gateway_id}/local/tokens/{uuid}")
+        await self.__delete(f"config/{gateway_id}/local/tokens/{uuid}")
 
         return True
 
@@ -718,7 +741,8 @@ class OverkizClient:
             headers["Authorization"] = f"Bearer {self._access_token}"
 
         async with self.session.get(
-            f"{self.server.endpoint}{path}", headers=headers
+            f"{self.server.endpoint}{path}",
+            headers=headers,
         ) as response:
             await self.check_response(response)
             return await response.json()
@@ -826,6 +850,14 @@ class OverkizClient:
 
             if "Unknown user :" in message:
                 raise UnknownUserException(message)
+
+            # {"error":"Unknown object.","errorCode":"UNSPECIFIED_ERROR"}
+            if message == "Unknown object.":
+                raise UnknownObjectException(message)
+
+            # {'errorCode': 'RESOURCE_ACCESS_DENIED', 'error': 'Access denied to gateway #1234-5678-1234 for action ADD_TOKEN'}
+            if "Access denied to gateway" in message:
+                raise AccessDeniedToGatewayException(message)
 
         raise Exception(message if message else result)
 
