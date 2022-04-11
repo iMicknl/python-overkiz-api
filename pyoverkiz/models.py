@@ -190,8 +190,8 @@ class Device:
 
         if widget:
             self.widget = UIWidget(widget)
-        elif widget_name:
-            self.widget = UIWidget(widget_name)
+        elif self.definition.widget_name:
+            self.widget = UIWidget(self.definition.widget_name)
 
 
 @define(init=False, kw_only=True)
