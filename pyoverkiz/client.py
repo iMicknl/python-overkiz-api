@@ -147,8 +147,8 @@ class OverkizClient:
         if LOCAL_API_PATH in self.server.endpoint:
             self.api_type = APIType.LOCAL
 
-            # To avoid security issue, add the following authority to
-            # your HTTPS client trust store: https://ca.overkiz.com/overkiz-root-ca-2048.crt
+            # To avoid security issues, we add the following authority to
+            # our HTTPS client trust store: https://ca.overkiz.com/overkiz-root-ca-2048.crt
             self._ssl_context = ssl.create_default_context(
                 cafile=os.path.dirname(os.path.realpath(__file__))
                 + "/overkiz-root-ca-2048.crt"
@@ -877,7 +877,11 @@ class OverkizClient:
             headers["Authorization"] = f"Bearer {self._access_token}"
 
         async with self.session.post(
-            f"{self.server.endpoint}{path}", data=data, json=payload, headers=headers
+            f"{self.server.endpoint}{path}",
+            data=data,
+            json=payload,
+            headers=headers,
+            ssl_context=self._ssl_context,
         ) as response:
             await self.check_response(response)
             return await response.json()
@@ -892,7 +896,9 @@ class OverkizClient:
             headers["Authorization"] = f"Bearer {self._access_token}"
 
         async with self.session.delete(
-            f"{self.server.endpoint}{path}", headers=headers
+            f"{self.server.endpoint}{path}",
+            headers=headers,
+            ssl_context=self._ssl_context,
         ) as response:
             await self.check_response(response)
 
