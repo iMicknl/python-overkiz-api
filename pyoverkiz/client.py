@@ -64,7 +64,6 @@ from pyoverkiz.exceptions import (
     TooManyRequestsException,
     UnknownObjectException,
     UnknownUserException,
-    UnknownObjectException,
 )
 from pyoverkiz.models import (
     Command,
