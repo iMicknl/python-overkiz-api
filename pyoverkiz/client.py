@@ -3,8 +3,6 @@ from __future__ import annotations
 
 import asyncio
 import datetime
-import os
-import ssl
 import urllib.parse
 from json import JSONDecodeError
 from types import TracebackType
@@ -50,8 +48,8 @@ from pyoverkiz.exceptions import (
     TooManyConcurrentRequestsException,
     TooManyExecutionsException,
     TooManyRequestsException,
-    UnknownUserException,
     UnknownObjectException,
+    UnknownUserException,
 )
 from pyoverkiz.models import (
     Command,
@@ -98,7 +96,6 @@ class OverkizClient:
     _expires_in: datetime.datetime | None = None
     _access_token: str | None = None
     _is_local: bool = False
-    _ssl_context: ssl.SSLContext | None = None
 
     def __init__(
         self,
@@ -131,14 +128,6 @@ class OverkizClient:
         if "/enduser-mobile-web/1/enduserAPI/" in server.endpoint:
             self._is_local = True
             self._access_token = token
-
-            # To avoid security issue, add the following authority to
-            # your HTTPS client trust store: https://ca.overkiz.com/overkiz-root-ca-2048.crt
-            self._ssl_context = ssl.create_default_context(
-                cafile=os.path.dirname(os.path.realpath(__file__))
-                + "/overkiz-root-ca-2048.crt"
-            )
-            self._ssl_context = None
 
     async def __aenter__(self) -> OverkizClient:
         return self
@@ -757,7 +746,6 @@ class OverkizClient:
         async with self.session.get(
             f"{self.server.endpoint}{path}",
             headers=headers,
-            ssl_context=self._ssl_context,
         ) as response:
             await self.check_response(response)
             return await response.json()
@@ -863,15 +851,12 @@ class OverkizClient:
             if "Not such token with UUID: " in message:
                 raise NotSuchTokenException(message)
 
-
-<< << << < HEAD
             if "Unknown user :" in message:
                 raise UnknownUserException(message)
-== == == =
+
             # {"error":"Unknown object.","errorCode":"UNSPECIFIED_ERROR"}
             if message == "Unknown object.":
                 raise UnknownObjectException(message)
->>>>>> > 562d327(Add Unknown Object exception)
 
         raise Exception(message if message else result)
 
