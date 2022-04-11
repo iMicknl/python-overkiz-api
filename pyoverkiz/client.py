@@ -96,7 +96,6 @@ class OverkizClient:
     _refresh_token: str | None = None
     _expires_in: datetime.datetime | None = None
     _access_token: str | None = None
-    _is_local: bool = False
 
     def __init__(
         self,
@@ -118,6 +117,7 @@ class OverkizClient:
         self.username = username
         self.password = password
         self.server = server
+        self._access_token = token
 
         self.setup: Setup | None = None
         self.devices: list[Device] = []
@@ -125,10 +125,6 @@ class OverkizClient:
         self.event_listener_id: str | None = None
 
         self.session = session if session else ClientSession()
-
-        if "/enduser-mobile-web/1/enduserAPI/" in server.endpoint:
-            self._is_local = True
-            self._access_token = token
 
     async def __aenter__(self) -> OverkizClient:
         return self
@@ -157,7 +153,7 @@ class OverkizClient:
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
         # Local authentication
-        if self._is_local:
+        if "/enduser-mobile-web/1/enduserAPI/" in self.server.endpoint:
             if register_event_listener:
                 await self.register_event_listener()
             else:
