@@ -146,7 +146,6 @@ class OverkizClient:
 
         if LOCAL_API_PATH in self.server.endpoint:
             self.api_type = APIType.LOCAL
-
             # To avoid security issues, we add the following authority to
             # our HTTPS client trust store: https://ca.overkiz.com/overkiz-root-ca-2048.crt
             self._ssl_context = ssl.create_default_context(
