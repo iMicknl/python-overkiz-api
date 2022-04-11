@@ -112,7 +112,6 @@ class OverkizClient:
     _refresh_token: str | None = None
     _expires_in: datetime.datetime | None = None
     _access_token: str | None = None
-    _is_local: bool = False
     _ssl_context: ssl.SSLContext | None = None
 
     def __init__(
