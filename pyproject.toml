@@ -16,7 +16,7 @@ packages = [
 python = ">=3.7,<4.0"
 aiohttp = "^3.6.1"
 pyhumps = "^3.0.2"
-backoff = "^1.10.0"
+backoff = ">=1.10,<3.0"
 attrs = "^21.2.0"
 boto3 = "^1.18.59"
 warrant-lite = "^1.0.4"
