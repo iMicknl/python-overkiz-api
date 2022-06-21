@@ -118,6 +118,7 @@ class OverkizState(str, Enum):
     CORE_TARGET_TEMPERATURE = "core:TargetTemperatureState"
     CORE_TEMPERATURE = "core:TemperatureState"
     CORE_THERMAL_ENERGY_CONSUMPTION = "core:ThermalEnergyConsumptionState"
+    CORE_THREE_WAY_HANDLE_DIRECTION = "core:ThreeWayHandleDirectionState"
     CORE_V40_WATER_VOLUME_ESTIMATION = "core:V40WaterVolumeEstimationState"
     CORE_VIBRATION = "core:VibrationState"
     CORE_WATER_CONSUMPTION = "core:WaterConsumptionState"
