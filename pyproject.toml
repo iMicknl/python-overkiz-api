@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyoverkiz"
-version = "1.4.1"
+version = "1.4.2"
 description = "Async Python client to interact with internal OverKiz API (e.g. used by Somfy TaHoma)."
 authors = ["Mick Vleeshouwer", "Vincent Le Bourlot", "Thibaut Etienne"]
 license = "MIT"
