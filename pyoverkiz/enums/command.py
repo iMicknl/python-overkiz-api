@@ -212,6 +212,7 @@ class OverkizCommandParam(str, Enum):
     STANDBY = "standby"
     STOP = "stop"
     SUDDEN_DROP_MODE = "suddenDropMode"
+    TILT = "tilt"
     TOTAL = "total"
     UNDETECTED = "undetected"
     UPS = "UPS"
