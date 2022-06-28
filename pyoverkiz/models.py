@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Iterator
+from typing import Any, Iterator, cast
 
 from attr import define, field
 
@@ -291,6 +291,54 @@ class State:
         self.name = name
         self.value = value
         self.type = DataType(type)
+
+    @property
+    def value_as_int(self) -> int | None:
+        if self.type == DataType.NONE:
+            return None
+        if self.type == DataType.INTEGER:
+            return cast(int, self.value)
+        raise TypeError(f"{self.name} is not an integer")
+
+    @property
+    def value_as_float(self) -> float | None:
+        if self.type == DataType.NONE:
+            return None
+        if self.type == DataType.FLOAT:
+            return cast(float, self.value)
+        raise TypeError(f"{self.name} is not a float")
+
+    @property
+    def value_as_bool(self) -> bool | None:
+        if self.type == DataType.NONE:
+            return None
+        if self.type == DataType.BOOLEAN:
+            return cast(bool, self.value)
+        raise TypeError(f"{self.name} is not a boolean")
+
+    @property
+    def value_as_str(self) -> str | None:
+        if self.type == DataType.NONE:
+            return None
+        if self.type == DataType.STRING:
+            return cast(str, self.value)
+        raise TypeError(f"{self.name} is not a string")
+
+    @property
+    def value_as_dict(self) -> dict[str, Any] | None:
+        if self.type == DataType.NONE:
+            return None
+        if self.type == DataType.JSON_OBJECT:
+            return cast(dict, self.value)
+        raise TypeError(f"{self.name} is not a JSON object")
+
+    @property
+    def value_as_list(self) -> list[Any] | None:
+        if self.type == DataType.NONE:
+            return None
+        if self.type == DataType.JSON_ARRAY:
+            return cast(list, self.value)
+        raise TypeError(f"{self.name} is not an array")
 
 
 @define(init=False, kw_only=True)
