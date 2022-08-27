@@ -258,6 +258,7 @@ class EventName(str, Enum):
     CONDITION_GROUP_DELETED = "ConditionGroupDeletedEvent"
     CONDITION_GROUP_UPDATED = "ConditionGroupUpdatedEvent"
     DELAYED_TRIGGER_CANCELLED = "DelayedTriggerCancelledEvent"
+    DELAYED_TRIGGER_SET_EVENT = "DelayedTriggerSetEvent"
     DEVICE_ATTRIBUTE_CHANGED = "DeviceAttributeChangedEvent"
     DEVICE_AVAILABLE = "DeviceAvailableEvent"
     DEVICE_CREATED = "DeviceCreatedEvent"
