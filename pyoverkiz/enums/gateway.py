@@ -40,6 +40,7 @@ class GatewayType(IntEnum):
     TAHOMA_BEE = 67
     TAHOMA_RAIL_DIN = 72
     NEXITY_RAIL_DIN = 74
+    TAHOMA_BEECON = 75
     ELIOT = 77
     COZYTOUCH_SAUTER = 83
     WISER = 88
