@@ -313,7 +313,7 @@ class OverkizClient:
 
             jwt = jwt.strip('"')  # Remove surrounding quotes
 
-            return jwt
+            return cast(str, jwt)
 
     async def nexity_login(self) -> str:
         """
@@ -736,7 +736,7 @@ class OverkizClient:
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
     )
     async def execute_scheduled_scenario(self, oid: str, timestamp: int) -> str:
-        """ Execute a scheduled scenario """
+        """Execute a scheduled scenario"""
         response = await self.__post(f"exec/schedule/{oid}/{timestamp}")
         return cast(str, response["triggerId"])
 
