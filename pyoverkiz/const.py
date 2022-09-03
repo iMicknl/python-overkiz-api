@@ -86,7 +86,7 @@ SUPPORTED_SERVERS: dict[str, OverkizServer] = {
     "ubiwizz": OverkizServer(
         name="Ubiwizz",
         endpoint="https://ha129-1.overkiz.com/enduser-mobile-web/enduserAPI/",
-        manufacturer="Ubiwizz",
+        manufacturer="Decelect",
         configuration_url=None,
     ),
 }
