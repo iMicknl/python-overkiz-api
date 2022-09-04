@@ -23,6 +23,12 @@ SUPPORTED_SERVERS: dict[str, OverkizServer] = {
         manufacturer="Atlantic",
         configuration_url=None,
     ),
+    "brandt": OverkizServer(
+        name="Brandt Smart Control",
+        endpoint="https://ha3-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+        manufacturer="Brandt",
+        configuration_url=None,
+    ),
     "flexom": OverkizServer(
         name="Flexom",
         endpoint="https://ha108-1.overkiz.com/enduser-mobile-web/enduserAPI/",
