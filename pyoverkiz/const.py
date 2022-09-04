@@ -35,6 +35,12 @@ SUPPORTED_SERVERS: dict[str, OverkizServer] = {
         manufacturer="Bouygues",
         configuration_url=None,
     ),
+    "hexaom_hexaconnect": OverkizServer(
+        name="Hexaom HexaConnect",
+        endpoint="https://ha5-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+        manufacturer="Hexaom",
+        configuration_url=None,
+    ),
     "hi_kumo_asia": OverkizServer(
         name="Hitachi Hi Kumo (Asia)",
         endpoint="https://ha203-1.overkiz.com/enduser-mobile-web/enduserAPI/",
