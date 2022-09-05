@@ -95,4 +95,10 @@ SUPPORTED_SERVERS: dict[str, OverkizServer] = {
         manufacturer="Somfy",
         configuration_url=None,
     ),
+    "ubiwizz": OverkizServer(
+        name="Ubiwizz",
+        endpoint="https://ha129-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+        manufacturer="Decelect",
+        configuration_url=None,
+    ),
 }
