@@ -23,10 +23,22 @@ SUPPORTED_SERVERS: dict[str, OverkizServer] = {
         manufacturer="Atlantic",
         configuration_url=None,
     ),
+    "brandt": OverkizServer(
+        name="Brandt Smart Control",
+        endpoint="https://ha3-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+        manufacturer="Brandt",
+        configuration_url=None,
+    ),
     "flexom": OverkizServer(
         name="Flexom",
         endpoint="https://ha108-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Bouygues",
+        configuration_url=None,
+    ),
+    "hexaom_hexaconnect": OverkizServer(
+        name="Hexaom HexaConnect",
+        endpoint="https://ha5-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+        manufacturer="Hexaom",
         configuration_url=None,
     ),
     "hi_kumo_asia": OverkizServer(
@@ -81,6 +93,12 @@ SUPPORTED_SERVERS: dict[str, OverkizServer] = {
         name="Somfy (Oceania)",
         endpoint="https://ha201-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Somfy",
+        configuration_url=None,
+    ),
+    "ubiwizz": OverkizServer(
+        name="Ubiwizz",
+        endpoint="https://ha129-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+        manufacturer="Decelect",
         configuration_url=None,
     ),
 }
