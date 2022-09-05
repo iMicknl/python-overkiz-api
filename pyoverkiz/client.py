@@ -313,7 +313,7 @@ class OverkizClient:
 
             jwt = jwt.strip('"')  # Remove surrounding quotes
 
-            return cast(str, jwt)
+            return jwt
 
     async def nexity_login(self) -> str:
         """
