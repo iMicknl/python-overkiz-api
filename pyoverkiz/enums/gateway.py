@@ -28,6 +28,7 @@ class GatewayType(IntEnum):
     KIZBOX_MINI_OVP = 43
     HI_BOX = 44  # Hi Kumo AHP-SMB01 Hi Box (constant added manually)
     HATTARA_RAIL_DIN = 47
+    WIZZ_BOX = 52
     CONNEXOON_RTS = 53
     OPENDOORS_LOCK_SYSTEM = 54
     CONNEXOON_RTS_JAPAN = 56
