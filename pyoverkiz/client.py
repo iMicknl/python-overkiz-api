@@ -732,6 +732,14 @@ class OverkizClient:
         response = await self.__post(f"exec/{oid}")
         return cast(str, response["execId"])
 
+    @backoff.on_exception(
+        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+    )
+    async def execute_scheduled_scenario(self, oid: str, timestamp: int) -> str:
+        """Execute a scheduled scenario"""
+        response = await self.__post(f"exec/schedule/{oid}/{timestamp}")
+        return cast(str, response["triggerId"])
+
     async def __get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API"""
         headers = {}
