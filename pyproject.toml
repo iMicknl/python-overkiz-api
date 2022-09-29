@@ -24,7 +24,7 @@ warrant-lite = "^1.0.4"
 [tool.poetry.dev-dependencies]
 tox = "^3.26"
 pytest = "^7.1"
-pytest-cov = "^3.0.0"
+pytest-cov = "^4.0.0"
 pre-commit = "^2.20"
 black = {version = "^22.8", allow-prereleases = true}
 pylint = "^2.13.9"
