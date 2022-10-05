@@ -610,7 +610,10 @@ class OverkizClient:
         return response
 
     @backoff.on_exception(
-        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError),
+        max_tries=2,
+        on_backoff=relogin,
     )
     async def cancel_command(self, exec_id: str) -> None:
         """Cancel a running setup-level execution"""
@@ -733,7 +736,10 @@ class OverkizClient:
         return cast(str, response["execId"])
 
     @backoff.on_exception(
-        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError),
+        max_tries=2,
+        on_backoff=relogin,
     )
     async def execute_scheduled_scenario(self, oid: str, timestamp: int) -> str:
         """Execute a scheduled scenario"""
