@@ -4,6 +4,7 @@ from __future__ import annotations
 import asyncio
 import datetime
 import urllib.parse
+from collections.abc import Mapping
 from json import JSONDecodeError
 from types import TracebackType
 from typing import Any, cast
@@ -70,11 +71,11 @@ from pyoverkiz.obfuscate import obfuscate_sensitive_data
 from pyoverkiz.types import JSON
 
 
-async def relogin(invocation: dict[str, Any]) -> None:
+async def relogin(invocation: Mapping[str, Any]) -> None:
     await invocation["args"][0].login()
 
 
-async def refresh_listener(invocation: dict[str, Any]) -> None:
+async def refresh_listener(invocation: Mapping[str, Any]) -> None:
     await invocation["args"][0].register_event_listener()
 
 
