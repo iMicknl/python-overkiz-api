@@ -48,6 +48,7 @@ class GatewayType(IntEnum):
     TAHOMA_SWITCH = 98
     SOMFY_CONNECTIVITY_KIT = 99
     COZYTOUCH_V2 = 105
+    TAHOMA_RAIL_DIN_V2 = 108
 
     @classmethod
     def _missing_(cls, value):  # type: ignore
