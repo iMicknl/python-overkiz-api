@@ -190,7 +190,7 @@ class Device:
         self.type = ProductType(type)
         self.place_oid = place_oid
 
-        match = re.search(DEVICE_REGEX, self.device_url)
+        match = re.search(DEVICE_REGEX, device_url)
 
         self.protocol = Protocol(match.group('protocol'))
         self.gateway_id = match.group('gatewayId')
