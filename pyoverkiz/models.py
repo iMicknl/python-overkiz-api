@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 from typing import Any, Iterator, cast
 
 from attr import define, field
@@ -23,6 +25,8 @@ from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 
 # pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
+
+DEVICE_REGEX = r'(?P<protocol>[a-zA-Z]+)://(?P<gatewayId>\d\d\d\d-\d\d\d\d-\d\d\d\d+)/(?P<deviceAddress>\w+)(#(?P<subsystemId>\d+))?'
 
 
 @define(init=False, kw_only=True)
@@ -140,6 +144,10 @@ class Device:
     enabled: bool
     label: str = field(repr=obfuscate_string)
     device_url: str = field(repr=obfuscate_id)
+    gateway_id: str = field(repr=obfuscate_id)
+    device_address: str = field(repr=obfuscate_id)
+    subsystem_id: int | None = None
+    is_sub_device: bool = False
     controllable_name: str
     definition: Definition
     data_properties: list[dict[str, Any]] | None = None
@@ -181,7 +189,17 @@ class Device:
         self.data_properties = data_properties
         self.type = ProductType(type)
         self.place_oid = place_oid
-        self.protocol = Protocol(self.device_url.split(":")[0])
+
+        match = re.search(DEVICE_REGEX, self.device_url)
+
+        self.protocol = Protocol(match.group('protocol'))
+        self.gateway_id = match.group('gatewayId')
+        self.device_address = match.group('deviceAddress')
+
+        if match.group('subsystemId'):
+            self.subsystem_id = int(match.group('subsystemId'))
+            if self.subsystem_id > 1:
+                self.is_sub_device = True
 
         if ui_class:
             self.ui_class = UIClass(ui_class)
