@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import humps
 import pytest
 
@@ -58,86 +60,100 @@ RAW_DEVICES = {
     "uiClass": "RollerShutter",
 }
 
-RAW_DEVICES_SUB = {**RAW_DEVICES, **{"deviceURL": "io://1234-5678-9012/10077486#8"}}
-
-RAW_DEVICES_HUE = {
-    **RAW_DEVICES,
-    **{"deviceURL": "hue://1234-1234-4411/001788676dde/lights/10"},
-}
-
-RAW_DEVICES_UPNP = {
-    **RAW_DEVICES,
-    **{"deviceURL": "upnpcontrol://1234-1234-4411/uuid:RINCON_000E586B571601400"},
-}
-
-RAW_DEVICES_ZIGBEE = {
-    **RAW_DEVICES,
-    **{"deviceURL": "zigbee://1234-1234-1234/9876/1"},
-}
-
-RAW_DEVICES_ZIGBEE_SUB = {
-    **RAW_DEVICES,
-    **{"deviceURL": "zigbee://1234-1234-1234/9876/1#2"},
-}
-
-
 STATE = "core:NameState"
 
 
 class TestDevice:
-    def test_base_url_parsing(self):
-        hump_device = humps.decamelize(RAW_DEVICES)
+    @pytest.mark.parametrize(
+        "device_url, protocol, gateway_id, device_address, subsystem_id, is_sub_device",
+        [
+            (
+                "io://1234-5678-9012/10077486",
+                Protocol.IO,
+                "1234-5678-9012",
+                "10077486",
+                None,
+                False,
+            ),
+            (
+                "io://1234-5678-9012/10077486#8",
+                Protocol.IO,
+                "1234-5678-9012",
+                "10077486",
+                8,
+                True,
+            ),
+            (
+                "hue://1234-1234-4411/001788676dde/lights/10",
+                Protocol.HUE,
+                "1234-1234-4411",
+                "001788676dde/lights/10",
+                None,
+                False,
+            ),
+            (
+                "hue://1234-1234-4411/001788676dde/lights/10#5",
+                Protocol.HUE,
+                "1234-1234-4411",
+                "001788676dde/lights/10",
+                5,
+                True,
+            ),
+            (
+                "upnpcontrol://1234-1234-4411/uuid:RINCON_000E586B571601400",
+                Protocol.UPNP_CONTROL,
+                "1234-1234-4411",
+                "uuid:RINCON_000E586B571601400",
+                None,
+                False,
+            ),
+            (
+                "upnpcontrol://1234-1234-4411/uuid:RINCON_000E586B571601400#7",
+                Protocol.UPNP_CONTROL,
+                "1234-1234-4411",
+                "uuid:RINCON_000E586B571601400",
+                7,
+                True,
+            ),
+            (
+                "zigbee://1234-1234-1234/9876/1",
+                Protocol.ZIGBEE,
+                "1234-1234-1234",
+                "9876/1",
+                None,
+                False,
+            ),
+            (
+                "zigbee://1234-1234-1234/9876/1#2",
+                Protocol.ZIGBEE,
+                "1234-1234-1234",
+                "9876/1",
+                2,
+                True,
+            ),
+        ],
+    )
+    def test_base_url_parsing(
+        self,
+        device_url: str,
+        protocol: Protocol,
+        gateway_id: str,
+        device_address: str,
+        subsystem_id: int | None,
+        is_sub_device: bool,
+    ):
+        test_device = {
+            **RAW_DEVICES,
+            **{"deviceURL": device_url},
+        }
+        hump_device = humps.decamelize(test_device)
         device = Device(**hump_device)
-        assert device.protocol == Protocol.IO
-        assert device.gateway_id == "1234-5678-9012"
-        assert device.device_address == "10077486"
-        assert device.subsystem_id is None
-        assert not device.is_sub_device
 
-    def test_base_url_parsing_sub(self):
-        hump_device = humps.decamelize(RAW_DEVICES_SUB)
-        device = Device(**hump_device)
-        assert device.protocol == Protocol.IO
-        assert device.gateway_id == "1234-5678-9012"
-        assert device.device_address == "10077486"
-        assert device.subsystem_id == 8
-        assert device.is_sub_device
-
-    def test_base_url_hue(self):
-        hump_device = humps.decamelize(RAW_DEVICES_HUE)
-        device = Device(**hump_device)
-        assert device.protocol == Protocol.HUE
-        assert device.gateway_id == "1234-1234-4411"
-        assert device.device_address == "001788676dde/lights/10"
-        assert device.subsystem_id is None
-        assert not device.is_sub_device
-
-    def test_base_url_upnp(self):
-        hump_device = humps.decamelize(RAW_DEVICES_UPNP)
-        device = Device(**hump_device)
-        assert device.protocol == Protocol.UPNP_CONTROL
-        assert device.gateway_id == "1234-1234-4411"
-        assert device.device_address == "uuid:RINCON_000E586B571601400"
-        assert device.subsystem_id is None
-        assert not device.is_sub_device
-
-    def test_base_url_zigbee(self):
-        hump_device = humps.decamelize(RAW_DEVICES_ZIGBEE)
-        device = Device(**hump_device)
-        assert device.protocol == Protocol.ZIGBEE
-        assert device.gateway_id == "1234-1234-1234"
-        assert device.device_address == "9876/1"
-        assert device.subsystem_id is None
-        assert not device.is_sub_device
-
-    def test_base_url_zigbee_sub(self):
-        hump_device = humps.decamelize(RAW_DEVICES_ZIGBEE_SUB)
-        device = Device(**hump_device)
-        assert device.protocol == Protocol.ZIGBEE
-        assert device.gateway_id == "1234-1234-1234"
-        assert device.device_address == "9876/1"
-        assert device.subsystem_id == 2
-        assert device.is_sub_device
+        assert device.protocol == protocol
+        assert device.gateway_id == gateway_id
+        assert device.device_address == device_address
+        assert device.subsystem_id == subsystem_id
+        assert device.is_sub_device == is_sub_device
 
     def test_none_states(self):
         hump_device = humps.decamelize(RAW_DEVICES)
