@@ -128,7 +128,7 @@ class TestDevice:
         assert device.gateway_id == '1234-5678-9012'
         assert device.device_address == '2674159'
         assert device.subsystem_id == 8
-        assert not device.is_sub_device
+        assert device.is_sub_device
 
     def test_none_states(self):
         hump_device = humps.decamelize(RAW_DEVICES)
