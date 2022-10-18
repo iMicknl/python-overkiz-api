@@ -200,8 +200,7 @@ class Device:
         self.is_sub_device = False
         if match.group("subsystemId"):
             self.subsystem_id = int(match.group("subsystemId"))
-            if self.subsystem_id > 1:
-                self.is_sub_device = True
+              self.is_sub_device = self.subsystem_id > 1
 
         if ui_class:
             self.ui_class = UIClass(ui_class)
