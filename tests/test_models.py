@@ -78,7 +78,7 @@ class TestDevice:
         device = Device(**hump_device)
         assert device.protocol == Protocol.IO
         assert device.gateway_id == "1234-5678-9012"
-        assert device.device_address == "2674159"
+        assert device.device_address == "10077486"
         assert device.subsystem_id == 8
         assert device.is_sub_device
 

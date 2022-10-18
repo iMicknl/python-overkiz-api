@@ -25,7 +25,9 @@ from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 
 # pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
 
-DEVICE_REGEX = r"(?P<protocol>[a-zA-Z]+)://(?P<gatewayId>\d\d\d\d-\d\d\d\d-\d\d\d\d+)/(?P<deviceAddress>\w+)(#(?P<subsystemId>\d+))?"
+DEVICE_URL_RE = (
+    r"(?P<protocol>.+)://(?P<gatewayId>.+/(?P<deviceAddress>.+)(#(?P<subsystemId>\d+))?"
+)
 
 
 @define(init=False, kw_only=True)
@@ -189,7 +191,7 @@ class Device:
         self.type = ProductType(type)
         self.place_oid = place_oid
 
-        match = re.search(DEVICE_REGEX, device_url)
+        match = re.search(DEVICE_URL_RE, device_url)
 
         self.subsystem_id = None
         self.is_sub_device = False
