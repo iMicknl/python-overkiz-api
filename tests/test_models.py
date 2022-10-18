@@ -200,8 +200,7 @@ class TestState:
             assert state.value_as_str
 
     def test_dict_value(self):
-        state = State(name="state", type=DataType.JSON_OBJECT,
-                      value={"foo": "bar"})
+        state = State(name="state", type=DataType.JSON_OBJECT, value={"foo": "bar"})
         assert state.value_as_dict == {"foo": "bar"}
 
     def test_bad_dict_value(self):
