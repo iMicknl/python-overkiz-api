@@ -190,17 +190,17 @@ class Device:
         self.place_oid = place_oid
 
         match = re.search(DEVICE_REGEX, device_url)
-        assert match is not None
-
-        self.protocol = Protocol(match.group("protocol"))
-        self.gateway_id = match.group("gatewayId")
-        self.device_address = match.group("deviceAddress")
 
         self.subsystem_id = None
         self.is_sub_device = False
-        if match.group("subsystemId"):
-            self.subsystem_id = int(match.group("subsystemId"))
-              self.is_sub_device = self.subsystem_id > 1
+        if match:
+            self.protocol = Protocol(match.group("protocol"))
+            self.gateway_id = match.group("gatewayId")
+            self.device_address = match.group("deviceAddress")
+
+            if match.group("subsystemId"):
+                self.subsystem_id = int(match.group("subsystemId"))
+                self.is_sub_device = self.subsystem_id > 1
 
         if ui_class:
             self.ui_class = UIClass(ui_class)

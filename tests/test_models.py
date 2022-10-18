@@ -58,53 +58,7 @@ RAW_DEVICES = {
     "uiClass": "RollerShutter",
 }
 
-RAW_DEVICES_SUB = {
-    "creationTime": 1495389504000,
-    "lastUpdateTime": 1495389504000,
-    "label": "Heater",
-    "deviceURL": "io://1234-5678-9012/2674159#8",
-    "shortcut": False,
-    "controllableName": "io:AtlanticPassAPCHeatingAndCoolingZoneComponent",
-    "definition": {
-        "commands": [
-            {"commandName": "close", "nparams": 0},
-            {"commandName": "open", "nparams": 0},
-        ],
-        "states": [
-            {"type": "ContinuousState", "qualifiedName": "core:ClosureState"},
-            {
-                "type": "DiscreteState",
-                "values": ["good", "low", "normal", "verylow"],
-                "qualifiedName": "core:DiscreteRSSILevelState",
-            },
-            {
-                "type": "ContinuousState",
-                "qualifiedName": "core:Memorized1PositionState",
-            },
-        ],
-        "dataProperties": [{"value": "500", "qualifiedName": "core:identifyInterval"}],
-        "widgetName": "PositionableRollerShutter",
-        "uiProfiles": [
-            "StatefulCloseableShutter",
-            "Closeable",
-        ],
-        "uiClass": "RollerShutter",
-        "qualifiedName": "io:RollerShutterGenericIOComponent",
-        "type": "ACTUATOR",
-    },
-    "states": [
-        {"name": "core:StatusState", "type": 3, "value": "available"},
-        {"name": "core:DiscreteRSSILevelState", "type": 3, "value": "good"},
-        {"name": "core:ClosureState", "type": 1, "value": 100},
-    ],
-    "available": True,
-    "enabled": True,
-    "placeOID": "28750a0f-79c0-4815-8c52-fac9de92a0e1",
-    "widget": "PositionableRollerShutter",
-    "type": 1,
-    "oid": "ebca1376-5a33-4d2b-85b6-df73220687a2",
-    "uiClass": "RollerShutter",
-}
+RAW_DEVICES_SUB = {**RAW_DEVICES, **{"deviceURL": "io://1234-5678-9012/10077486#8"}}
 
 STATE = "core:NameState"
 
@@ -112,7 +66,6 @@ STATE = "core:NameState"
 class TestDevice:
     def test_base_url_parsing(self):
         hump_device = humps.decamelize(RAW_DEVICES)
-        del hump_device["states"]
         device = Device(**hump_device)
         assert device.protocol == Protocol.IO
         assert device.gateway_id == "1234-5678-9012"
@@ -122,7 +75,6 @@ class TestDevice:
 
     def test_base_url_parsing_sub(self):
         hump_device = humps.decamelize(RAW_DEVICES_SUB)
-        del hump_device["states"]
         device = Device(**hump_device)
         assert device.protocol == Protocol.IO
         assert device.gateway_id == "1234-5678-9012"
