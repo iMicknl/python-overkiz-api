@@ -1,7 +1,7 @@
 import humps
 import pytest
 
-from pyoverkiz.enums import DataType
+from pyoverkiz.enums import DataType, Protocol
 from pyoverkiz.models import Device, State, States
 
 RAW_STATES = [
@@ -58,10 +58,78 @@ RAW_DEVICES = {
     "uiClass": "RollerShutter",
 }
 
+RAW_DEVICES_SUB = {
+    "creationTime": 1495389504000,
+    "lastUpdateTime": 1495389504000,
+    "label": "Heater",
+    "deviceURL": "io://1234-5678-9012/2674159#8",
+    "shortcut": False,
+    "controllableName": "io:AtlanticPassAPCHeatingAndCoolingZoneComponent",
+    "definition": {
+        "commands": [
+            {"commandName": "close", "nparams": 0},
+            {"commandName": "open", "nparams": 0},
+        ],
+        "states": [
+            {"type": "ContinuousState", "qualifiedName": "core:ClosureState"},
+            {
+                "type": "DiscreteState",
+                "values": ["good", "low", "normal", "verylow"],
+                "qualifiedName": "core:DiscreteRSSILevelState",
+            },
+            {
+                "type": "ContinuousState",
+                "qualifiedName": "core:Memorized1PositionState",
+            },
+        ],
+        "dataProperties": [{"value": "500", "qualifiedName": "core:identifyInterval"}],
+        "widgetName": "PositionableRollerShutter",
+        "uiProfiles": [
+            "StatefulCloseableShutter",
+            "Closeable",
+        ],
+        "uiClass": "RollerShutter",
+        "qualifiedName": "io:RollerShutterGenericIOComponent",
+        "type": "ACTUATOR",
+    },
+    "states": [
+        {"name": "core:StatusState", "type": 3, "value": "available"},
+        {"name": "core:DiscreteRSSILevelState", "type": 3, "value": "good"},
+        {"name": "core:ClosureState", "type": 1, "value": 100},
+    ],
+    "available": True,
+    "enabled": True,
+    "placeOID": "28750a0f-79c0-4815-8c52-fac9de92a0e1",
+    "widget": "PositionableRollerShutter",
+    "type": 1,
+    "oid": "ebca1376-5a33-4d2b-85b6-df73220687a2",
+    "uiClass": "RollerShutter",
+}
+
 STATE = "core:NameState"
 
 
 class TestDevice:
+    def test_base_url_parsing(self):
+        hump_device = humps.decamelize(RAW_DEVICES)
+        del hump_device["states"]
+        device = Device(**hump_device)
+        assert device.protocol == Protocol.IO
+        assert device.gateway_id == '1234-5678-9012'
+        assert device.device_address == '10077486'
+        assert device.subsystem_id is None
+        assert not device.is_sub_device
+
+    def test_base_url_parsing_sub(self):
+        hump_device = humps.decamelize(RAW_DEVICES_SUB)
+        del hump_device["states"]
+        device = Device(**hump_device)
+        assert device.protocol == Protocol.IO
+        assert device.gateway_id == '1234-5678-9012'
+        assert device.device_address == '2674159'
+        assert device.subsystem_id == 8
+        assert not device.is_sub_device
+
     def test_none_states(self):
         hump_device = humps.decamelize(RAW_DEVICES)
         del hump_device["states"]
@@ -132,7 +200,8 @@ class TestState:
             assert state.value_as_str
 
     def test_dict_value(self):
-        state = State(name="state", type=DataType.JSON_OBJECT, value={"foo": "bar"})
+        state = State(name="state", type=DataType.JSON_OBJECT,
+                      value={"foo": "bar"})
         assert state.value_as_dict == {"foo": "bar"}
 
     def test_bad_dict_value(self):
