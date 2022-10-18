@@ -190,6 +190,7 @@ class Device:
         self.type = ProductType(type)
         self.place_oid = place_oid
 
+        # Split <protocol>://<gatewayId>/<deviceAddress>[#<subsystemId>] into multiple variables
         match = re.search(DEVICE_URL_RE, device_url)
 
         self.subsystem_id = None
