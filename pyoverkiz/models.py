@@ -193,6 +193,9 @@ class Device:
         # Split <protocol>://<gatewayId>/<deviceAddress>[#<subsystemId>] into multiple variables
         match = re.search(DEVICE_URL_RE, device_url)
 
+        self.subsystem_id = None
+        self.is_sub_device = False
+
         if match:
             self.protocol = Protocol(match.group("protocol"))
             self.gateway_id = match.group("gatewayId")
