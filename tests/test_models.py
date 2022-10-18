@@ -60,6 +60,16 @@ RAW_DEVICES = {
 
 RAW_DEVICES_SUB = {**RAW_DEVICES, **{"deviceURL": "io://1234-5678-9012/10077486#8"}}
 
+RAW_DEVICES_HUE = {
+    **RAW_DEVICES,
+    **{"deviceURL": "hue://1234-1234-4411/001788676dde/lights/10"},
+}
+
+RAW_DEVICES_UPNP = {
+    **RAW_DEVICES,
+    **{"deviceURL": "upnpcontrol://1234-1234-4411/uuid:RINCON_000E586B571601400"},
+}
+
 STATE = "core:NameState"
 
 
@@ -81,6 +91,24 @@ class TestDevice:
         assert device.device_address == "10077486"
         assert device.subsystem_id == 8
         assert device.is_sub_device
+
+    def test_base_url_hue(self):
+        hump_device = humps.decamelize(RAW_DEVICES_HUE)
+        device = Device(**hump_device)
+        assert device.protocol == Protocol.HUE
+        assert device.gateway_id == "1234-1234-4411"
+        assert device.device_address == "001788676dde/lights/10"
+        assert device.subsystem_id is None
+        assert not device.is_sub_device
+
+    def test_base_url_upnp(self):
+        hump_device = humps.decamelize(RAW_DEVICES_UPNP)
+        device = Device(**hump_device)
+        assert device.protocol == Protocol.UPNP_CONTROL
+        assert device.gateway_id == "1234-1234-4411"
+        assert device.device_address == "uuid:RINCON_000E586B571601400"
+        assert device.subsystem_id is None
+        assert not device.is_sub_device
 
     def test_none_states(self):
         hump_device = humps.decamelize(RAW_DEVICES)
