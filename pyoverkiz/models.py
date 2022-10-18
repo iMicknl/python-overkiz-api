@@ -25,7 +25,7 @@ from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 
 # pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
 
-DEVICE_REGEX = r'(?P<protocol>[a-zA-Z]+)://(?P<gatewayId>\d\d\d\d-\d\d\d\d-\d\d\d\d+)/(?P<deviceAddress>\w+)(#(?P<subsystemId>\d+))?'
+DEVICE_REGEX = r"(?P<protocol>[a-zA-Z]+)://(?P<gatewayId>\d\d\d\d-\d\d\d\d-\d\d\d\d+)/(?P<deviceAddress>\w+)(#(?P<subsystemId>\d+))?"
 
 
 @define(init=False, kw_only=True)
@@ -191,14 +191,14 @@ class Device:
 
         match = re.search(DEVICE_REGEX, device_url)
 
-        self.protocol = Protocol(match.group('protocol'))
-        self.gateway_id = match.group('gatewayId')
-        self.device_address = match.group('deviceAddress')
+        self.protocol = Protocol(match.group("protocol"))
+        self.gateway_id = match.group("gatewayId")
+        self.device_address = match.group("deviceAddress")
 
         self.subsystem_id = None
         self.is_sub_device = False
-        if match.group('subsystemId'):
-            self.subsystem_id = int(match.group('subsystemId'))
+        if match.group("subsystemId"):
+            self.subsystem_id = int(match.group("subsystemId"))
             if self.subsystem_id > 1:
                 self.is_sub_device = True
 
