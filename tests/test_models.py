@@ -70,6 +70,17 @@ RAW_DEVICES_UPNP = {
     **{"deviceURL": "upnpcontrol://1234-1234-4411/uuid:RINCON_000E586B571601400"},
 }
 
+RAW_DEVICES_ZIGBEE = {
+    **RAW_DEVICES,
+    **{"deviceURL": "zigbee://1234-1234-1234/9876/1"},
+}
+
+RAW_DEVICES_ZIGBEE_SUB = {
+    **RAW_DEVICES,
+    **{"deviceURL": "zigbee://1234-1234-1234/9876/1#2"},
+}
+
+
 STATE = "core:NameState"
 
 
@@ -109,6 +120,24 @@ class TestDevice:
         assert device.device_address == "uuid:RINCON_000E586B571601400"
         assert device.subsystem_id is None
         assert not device.is_sub_device
+
+    def test_base_url_zigbee(self):
+        hump_device = humps.decamelize(RAW_DEVICES_ZIGBEE)
+        device = Device(**hump_device)
+        assert device.protocol == Protocol.ZIGBEE
+        assert device.gateway_id == "1234-1234-1234"
+        assert device.device_address == "9876/1"
+        assert device.subsystem_id is None
+        assert not device.is_sub_device
+
+    def test_base_url_zigbee_sub(self):
+        hump_device = humps.decamelize(RAW_DEVICES_ZIGBEE_SUB)
+        device = Device(**hump_device)
+        assert device.protocol == Protocol.ZIGBEE
+        assert device.gateway_id == "1234-1234-1234"
+        assert device.device_address == "9876/1"
+        assert device.subsystem_id == 2
+        assert device.is_sub_device
 
     def test_none_states(self):
         hump_device = humps.decamelize(RAW_DEVICES)
