@@ -25,6 +25,7 @@ from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 
 # pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
 
+# <protocol>://<gatewayId>/<deviceAddress>[#<subsystemId>]
 DEVICE_URL_RE = r"(?P<protocol>.+)://(?P<gatewayId>\d{4}-\d{4}-\d{4})/(?P<deviceAddress>[^#]+)(#(?P<subsystemId>\d+))?"
 
 
