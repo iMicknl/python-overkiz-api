@@ -195,6 +195,8 @@ class Device:
         self.gateway_id = match.group('gatewayId')
         self.device_address = match.group('deviceAddress')
 
+        self.subsystem_id = None
+        self.is_sub_device = False
         if match.group('subsystemId'):
             self.subsystem_id = int(match.group('subsystemId'))
             if self.subsystem_id > 1:
