@@ -116,7 +116,7 @@
              ],
              "widgetName":"Pod"
           },
-          "deviceURL":"internal://****-****-5643/pod/0",
+          "deviceURL":"internal://1234-5678-5643/pod/0",
           "enabled":true,
           "label":"**",
           "lastUpdateTime":1634918957000,
@@ -193,7 +193,7 @@
              ],
              "widgetName":"Wifi"
           },
-          "deviceURL":"internal://****-****-5643/wifi/0",
+          "deviceURL":"internal://1234-5678-5643/wifi/0",
           "enabled":true,
           "label":"** *(**/**)*",
           "lastUpdateTime":1634918957000,
@@ -913,7 +913,7 @@
              ],
              "widgetName":"DomesticHotWaterProduction"
           },
-          "deviceURL":"io://****-****-5643/109286#1",
+          "deviceURL":"io://1234-5678-5643/109286#1",
           "enabled":true,
           "label":"** **",
           "lastUpdateTime":1634919131000,
@@ -1341,7 +1341,7 @@
              ],
              "widgetName":"CumulativeElectricPowerConsumptionSensor"
           },
-          "deviceURL":"io://****-****-5643/109286#2",
+          "deviceURL":"io://1234-5678-5643/109286#2",
           "enabled":true,
           "label":"** *(**#**)*",
           "lastUpdateTime":1634919131000,
@@ -1427,7 +1427,7 @@
              ],
              "widgetName":"IOStack"
           },
-          "deviceURL":"io://****-****-5643/5705986",
+          "deviceURL":"io://1234-5678-5643/5705986",
           "enabled":true,
           "label":"** *(**)*",
           "lastUpdateTime":1634919123000,
@@ -1450,7 +1450,7 @@
              "status":"OK"
           },
           "functions":"INTERNET_AUTHORIZATION,SCENARIO_DOWNLOAD,SCENARIO_AUTO_LAUNCHING,SCENARIO_TELECO_LAUNCHING,INTERNET_UPLOAD,INTERNET_UPDATE,TRIGGERS_SENSORS",
-          "gatewayId":"****-****-5643",
+          "gatewayId":"1234-5678-5643",
           "mode":"ACTIVE",
           "placeOID":"61435d6a-4ba6-4c96-b7b5-105bb31d3b87",
           "subType":0,
@@ -1461,7 +1461,7 @@
           "updateStatus":"UP_TO_DATE"
        }
     ],
-    "id":"SETUP-****-****-5643",
+    "id":"SETUP-1234-5678-5643",
     "lastUpdateTime":1634918922000,
     "location":{
        "addressLine1":"**",

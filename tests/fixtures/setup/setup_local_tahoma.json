@@ -5,12 +5,12 @@
                 "status": "OK",
                 "protocolVersion": "2022.1.4-26"
             },
-            "gatewayId": "****-****-3293"
+            "gatewayId": "1234-5678-3293"
         }
     ],
     "devices": [
         {
-            "deviceURL": "io://****-****-3293/5770898",
+            "deviceURL": "io://1234-5678-3293/5770898",
             "available": true,
             "synced": true,
             "type": 1,
@@ -272,7 +272,7 @@
             }
         },
         {
-            "deviceURL": "io://****-****-3293/3541212",
+            "deviceURL": "io://1234-5678-3293/3541212",
             "available": true,
             "synced": true,
             "type": 1,
@@ -534,7 +534,7 @@
             }
         },
         {
-            "deviceURL": "io://****-****-3293/7614902",
+            "deviceURL": "io://1234-5678-3293/7614902",
             "available": true,
             "synced": true,
             "type": 1,
@@ -742,7 +742,7 @@
             }
         },
         {
-            "deviceURL": "io://****-****-3293/16483707",
+            "deviceURL": "io://1234-5678-3293/16483707",
             "available": true,
             "synced": true,
             "type": 5,
@@ -804,7 +804,7 @@
             }
         },
         {
-            "deviceURL": "internal://****-****-3293/alarm/0",
+            "deviceURL": "internal://1234-5678-3293/alarm/0",
             "available": true,
             "synced": true,
             "type": 1,
@@ -934,7 +934,7 @@
             }
         },
         {
-            "deviceURL": "io://****-****-3293/5353900",
+            "deviceURL": "io://1234-5678-3293/5353900",
             "available": true,
             "synced": true,
             "type": 1,
@@ -1196,7 +1196,7 @@
             }
         },
         {
-            "deviceURL": "internal://****-****-3293/pod/0",
+            "deviceURL": "internal://1234-5678-3293/pod/0",
             "available": true,
             "synced": true,
             "type": 1,
@@ -1320,7 +1320,7 @@
             }
         },
         {
-            "deviceURL": "io://****-****-3293/5046564",
+            "deviceURL": "io://1234-5678-3293/5046564",
             "available": true,
             "synced": true,
             "type": 1,
