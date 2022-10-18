@@ -15,7 +15,7 @@ class MeasuredValueType(str, Enum):
     ELECTRIC_CURRENT_IN_AMPERE = "core:ElectricCurrentInAmpere"
     ELECTRIC_CURRENT_IN_MILLI_AMPERE = "core:ElectricCurrentInMilliAmpere"
     ENERGY_IN_CAL = "core:EnergyInCal"
-    ENERGY_INK_CAL = "core:EnergyInkCal"
+    ENERGY_IN_KCAL = "core:EnergyInkCal"
     FLOW_IN_LITRE_PER_SECOND = "core:FlowInLitrePerSecond"
     FLOW_IN_METER_CUBE_PER_HOUR = "core:FlowInMeterCubePerHour"
     FLOW_IN_METER_CUBE_PER_SECOND = "core:FlowInMeterCubePerSecond"
