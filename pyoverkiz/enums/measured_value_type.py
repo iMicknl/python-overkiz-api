@@ -8,7 +8,7 @@ class MeasuredValueType(str, Enum):
     ABSOLUTE_VALUE = "core:AbsoluteValue"
     ANGLE_IN_DEGREES = "core:AngleInDegrees"
     ANGULAR_SPEED_IN_DEGREES_PER_SECOND = "core:AngularSpeedInDegreesPerSecond"
-    ELECTRICAL_ENERGY_IN_K_WH = "core:ElectricalEnergyInKWh"
+    ELECTRICAL_ENERGY_IN_KWH = "core:ElectricalEnergyInKWh"
     ELECTRICAL_ENERGY_IN_WH = "core:ElectricalEnergyInWh"
     ELECTRICAL_POWER_IN_KW = "core:ElectricalPowerInKW"
     ELECTRICAL_POWER_IN_W = "core:ElectricalPowerInW"
