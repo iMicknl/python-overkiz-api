@@ -10,6 +10,9 @@ class OverkizAttribute(str, Enum):
     CORE_MAX_SETTABLE_VALUE = "core:MaxSettableValue"
     CORE_MEASURED_VALUE_TYPE = "core:MeasuredValueType"
     CORE_MIN_SETTABLE_VALUE = "core:MinSettableValue"
+    CORE_ELECTRIC_POWER_CONSUMPTION_STATE_MEASURED_VALUE_TYPE = (
+        "core:ElectricPowerConsumptionStateMeasuredValueType"
+    )
     HOMEKIT_SETUP_CODE = "homekit:SetupCode"
 
 
