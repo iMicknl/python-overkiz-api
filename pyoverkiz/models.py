@@ -82,7 +82,7 @@ class Location:
     latitude: str = field(repr=obfuscate_string, default=None)
     twilight_mode: int
     twilight_angle: str
-    twilight_city: str
+    twilight_city: str = field(repr=obfuscate_string, default=None)
     summer_solstice_dusk_minutes: str
     winter_solstice_dusk_minutes: str
     twilight_offset_enabled: bool
@@ -104,7 +104,7 @@ class Location:
         latitude: str = field(repr=obfuscate_string, default=None),
         twilight_mode: int,
         twilight_angle: str,
-        twilight_city: str,
+        twilight_city: str = field(repr=obfuscate_string, default=None),
         summer_solstice_dusk_minutes: str,
         winter_solstice_dusk_minutes: str,
         twilight_offset_enabled: bool,
