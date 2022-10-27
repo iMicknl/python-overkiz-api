@@ -22,7 +22,7 @@ boto3 = "^1.18.59"
 warrant-lite = "^1.0.4"
 
 [tool.poetry.dev-dependencies]
-tox = "^3.26"
+tox = "^3.27"
 pytest = "^7.1"
 pytest-cov = "^4.0.0"
 pre-commit = "^2.20"
