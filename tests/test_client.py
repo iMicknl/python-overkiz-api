@@ -147,6 +147,11 @@ class TestOverkizClient:
             assert len(setup.devices) == device_count
             assert len(setup.gateways) == 1
 
+            for device in setup.devices:
+                assert device.gateway_id
+                assert device.device_address
+                assert device.protocol
+
 
 class MockResponse:
     def __init__(self, text, status=200):
