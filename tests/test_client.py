@@ -120,6 +120,7 @@ class TestOverkizClient:
             ("setup_nexity.json", 18),
             ("setup_nexity_2.json", 17),
             ("setup_rexel.json", 18),
+            ("setup_tahoma_1.json", 1),
             ("setup_tahoma_3.json", 39),
             ("setup_tahoma_climate.json", 19),
             ("setup_tahoma_oceania.json", 3),

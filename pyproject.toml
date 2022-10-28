@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pyoverkiz"
-version = "1.5.5"
+version = "1.5.6"
 description = "Async Python client to interact with internal OverKiz API (e.g. used by Somfy TaHoma)."
 authors = ["Mick Vleeshouwer", "Vincent Le Bourlot", "Thibaut Etienne"]
 license = "MIT"
@@ -22,8 +22,8 @@ boto3 = "^1.18.59"
 warrant-lite = "^1.0.4"
 
 [tool.poetry.dev-dependencies]
-tox = "^3.26"
-pytest = "^7.1"
+tox = "^3.27"
+pytest = "^7.2"
 pytest-cov = "^4.0.0"
 pre-commit = "^2.20"
 black = {version = "^22.10", allow-prereleases = true}
@@ -32,7 +32,7 @@ isort = "^5.10.1"
 mypy = "^0.982"
 flake8 = "^5.0.4"
 pyupgrade = "^3.1.0"
-pytest-asyncio = "^0.19.0"
+pytest-asyncio = "^0.20.1"
 
 
 [build-system]
