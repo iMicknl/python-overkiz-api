@@ -1,6 +1,6 @@
 {
     "creationTime": 1434967047000,
-    "id": "SETUP-****-****-8044",
+    "id": "SETUP-1234-1234-8044",
     "location": {
         "creationTime": 1434967050000,
         "city": "** ** ** **",
@@ -22,7 +22,7 @@
     },
     "gateways": [
         {
-            "gatewayId": "****-****-8044",
+            "gatewayId": "1234-1234-8044",
             "type": 15,
             "subType": 13,
             "autoUpdateEnabled": false,
@@ -44,7 +44,7 @@
             "creationTime": 1666682200000,
             "lastUpdateTime": 1666682200000,
             "label": "** **",
-            "deviceURL": "rtd://****-****-8044/770015",
+            "deviceURL": "rtd://1234-1234-8044/770015",
             "shortcut": false,
             "controllableName": "rtd:AlarmRTDComponent",
             "definition": {
