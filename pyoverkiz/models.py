@@ -144,6 +144,7 @@ class Device:
     enabled: bool
     label: str = field(repr=obfuscate_string)
     device_url: str = field(repr=obfuscate_id)
+    base_device_url: str = field(repr=obfuscate_id)
     gateway_id: str = field(repr=obfuscate_id)
     device_address: str = field(repr=obfuscate_id)
     subsystem_id: int | None = None
@@ -200,6 +201,10 @@ class Device:
             self.protocol = Protocol(match.group("protocol"))
             self.gateway_id = match.group("gatewayId")
             self.device_address = match.group("deviceAddress")
+
+            self.base_device_url = (
+                self.protocol + "://" + self.gateway_id + "/" + self.device_address
+            )
 
             if match.group("subsystemId"):
                 self.subsystem_id = int(match.group("subsystemId"))

@@ -151,6 +151,7 @@ class TestOverkizClient:
                 assert device.gateway_id
                 assert device.device_address
                 assert device.protocol
+                assert device.base_device_url
 
 
 class MockResponse:
