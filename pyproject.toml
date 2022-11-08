@@ -29,7 +29,7 @@ pre-commit = "^2.20"
 black = {version = "^22.10", allow-prereleases = true}
 pylint = "^2.13.9"
 isort = "^5.10.1"
-mypy = "^0.982"
+mypy = "^0.990"
 flake8 = "^5.0.4"
 pyupgrade = "^3.2.0"
 pytest-asyncio = "^0.20.1"
