@@ -635,7 +635,7 @@ pycryptodome = ["pyasn1", "pycryptodome (>=3.3.1,<4.0.0)"]
 
 [[package]]
 name = "pyupgrade"
-version = "3.2.0"
+version = "3.2.1"
 description = "A tool to automatically upgrade syntax for newer versions."
 category = "dev"
 optional = false
@@ -861,7 +861,7 @@ testing = ["func-timeout", "jaraco.itertools", "pytest (>=6)", "pytest-black (>=
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7,<4.0"
-content-hash = "9cf8633b0cce48d047b0fd76a47460e02fb6f2cea35e1c1e837dbb406017e04c"
+content-hash = "5ec15e0c309391aaf8c7c4c4bd1a56919406caa6cb36eaae7ea38b9f3fcc2af0"
 
 [metadata.files]
 aiohttp = [
@@ -1432,8 +1432,8 @@ python-jose = [
     {file = "python_jose-3.3.0-py2.py3-none-any.whl", hash = "sha256:9b1376b023f8b298536eedd47ae1089bcdb848f1535ab30555cd92002d78923a"},
 ]
 pyupgrade = [
-    {file = "pyupgrade-3.2.0-py2.py3-none-any.whl", hash = "sha256:2aa6c40e49ea5a350e6e45b8c7847b1741aef274a35d4f0b2bf91731ec8ab796"},
-    {file = "pyupgrade-3.2.0.tar.gz", hash = "sha256:70e1ac1e6b34a90fb21f5cada1907ef035b12dfc1d9f13cefd367acf3b530310"},
+    {file = "pyupgrade-3.2.1-py2.py3-none-any.whl", hash = "sha256:a33650cc912253076dd99b7725c826d579d3b069f352ae10e34de6e46194f566"},
+    {file = "pyupgrade-3.2.1.tar.gz", hash = "sha256:61b69c0e89fca476082f5df04f72d48bdb49a662a0d74b19269e95b750b80ebe"},
 ]
 pyyaml = [
     {file = "PyYAML-6.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:d4db7c7aef085872ef65a8fd7d6d09a14ae91f691dec3e87ee5ee0539d516f53"},
