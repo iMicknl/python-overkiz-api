@@ -127,6 +127,7 @@ class OverkizState(str, Enum):
     CORE_VIBRATION = "core:VibrationState"
     CORE_WATER_CONSUMPTION = "core:WaterConsumptionState"
     CORE_WATER_DETECTION = "core:WaterDetectionState"
+    CORE_WATER_TARGET_TEMPERATURE = "core:WaterTargetTemperatureState"
     CORE_WEATHER_STATUS = "core:WeatherStatusState"
     CORE_WIND_SPEED = "core:WindSpeedState"
     HLRRWIFI_FAN_SPEED = "hlrrwifi:FanSpeedState"
