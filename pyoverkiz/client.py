@@ -304,7 +304,7 @@ class OverkizClient:
 
         # Request JWT
         async with self.session.get(
-            COZYTOUCH_ATLANTIC_API + "/gacoma/gacomawcfservice/accounts/jwt",
+            COZYTOUCH_ATLANTIC_API + "/magellan/accounts/jwt",
             headers={"Authorization": f"Bearer {token['access_token']}"},
         ) as response:
             jwt = await response.text()
