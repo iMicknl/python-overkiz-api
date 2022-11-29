@@ -283,7 +283,7 @@ class OverkizClient:
             data=FormData(
                 {
                     "grant_type": "password",
-                    "username": self.username,
+                    "username": "GA-PRIVATEPERSON/" + self.username,
                     "password": self.password,
                 }
             ),
