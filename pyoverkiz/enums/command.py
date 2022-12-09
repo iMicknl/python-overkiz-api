@@ -157,7 +157,7 @@ class OverkizCommandParam(str, Enum):
     EXTERNAL = "external"
     EXTERNAL_GATEWAY = "externalGateway"
     EXTERNAL_SCHEDULING = "externalScheduling"
-    EXTERNAL_SET_POINT = "externalSetpoint"
+    EXTERNAL_SETPOINT = "externalSetpoint"
     FAN = "fan"
     FREE = "free"
     FREEZE_MODE = "freezeMode"
