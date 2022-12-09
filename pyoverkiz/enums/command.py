@@ -156,6 +156,7 @@ class OverkizCommandParam(str, Enum):
     ENERGY_DEMAND_STATUS = "energyDemandStatus"
     EXTERNAL = "external"
     EXTERNAL_GATEWAY = "externalGateway"
+    EXTERNAL_SCHEDULING = "externalScheduling"
     EXTERNAL_SET_POINT = "externalSetpoint"
     FAN = "fan"
     FREE = "free"
