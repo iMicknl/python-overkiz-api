@@ -113,6 +113,7 @@ class OverkizCommand(str, Enum):
     UNINSTALLED = "uninstalled"
     UNLOCK = "unlock"
     UP = "up"
+    UPDATE = "update"
     WINK = "wink"
 
 
@@ -155,6 +156,7 @@ class OverkizCommandParam(str, Enum):
     ENERGY_DEMAND_STATUS = "energyDemandStatus"
     EXTERNAL = "external"
     EXTERNAL_GATEWAY = "externalGateway"
+    EXTERNAL_SET_POINT = "externalSetpoint"
     FAN = "fan"
     FREE = "free"
     FREEZE_MODE = "freezeMode"
