@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from pyoverkiz.models import OverkizServer
 
-COZYTOUCH_ATLANTIC_API = "https://api.groupe-atlantic.com"
+COZYTOUCH_ATLANTIC_API = "https://apis.groupe-atlantic.com"
 COZYTOUCH_CLIENT_ID = (
-    "czduc0RZZXdWbjVGbVV4UmlYN1pVSUM3ZFI4YTphSDEzOXZmbzA1ZGdqeDJkSFVSQkFTbmhCRW9h"
+    "Q3RfMUpWeVRtSUxYOEllZkE3YVVOQmpGblpVYToyRWNORHpfZHkzNDJVSnFvMlo3cFNKTnZVdjBh"
 )
 
 NEXITY_API = "https://api.egn.prd.aws-nexity.fr"
