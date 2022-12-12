@@ -26,7 +26,7 @@ from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 # pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
 
 # <protocol>://<gatewayId>/<deviceAddress>[#<subsystemId>]
-DEVICE_URL_RE = r"(?P<protocol>.+)://(?P<gatewayId>\d{4}-\d{4}-\d{4})/(?P<deviceAddress>[^#]+)(#(?P<subsystemId>\d+))?"
+DEVICE_URL_RE = r"(?P<protocol>.+)://(?P<gatewayId>[^/]+)/(?P<deviceAddress>[^#]+)(#(?P<subsystemId>\d+))?"
 
 
 @define(init=False, kw_only=True)
@@ -144,8 +144,8 @@ class Device:
     enabled: bool
     label: str = field(repr=obfuscate_string)
     device_url: str = field(repr=obfuscate_id)
-    gateway_id: str = field(repr=obfuscate_id)
-    device_address: str = field(repr=obfuscate_id)
+    gateway_id: str | None = field(repr=obfuscate_id)
+    device_address: str | None = field(repr=obfuscate_id)
     subsystem_id: int | None = None
     is_sub_device: bool = False
     controllable_name: str
@@ -156,7 +156,7 @@ class Device:
     states: States
     type: ProductType
     place_oid: str | None = None
-    protocol: Protocol = field(init=False, repr=False)
+    protocol: Protocol | None = field(init=False, repr=False)
 
     def __init__(
         self,
@@ -190,11 +190,14 @@ class Device:
         self.type = ProductType(type)
         self.place_oid = place_oid
 
-        # Split <protocol>://<gatewayId>/<deviceAddress>[#<subsystemId>] into multiple variables
-        match = re.search(DEVICE_URL_RE, device_url)
-
+        self.protocol = None
+        self.gateway_id = None
+        self.device_address = None
         self.subsystem_id = None
         self.is_sub_device = False
+
+        # Split <protocol>://<gatewayId>/<deviceAddress>[#<subsystemId>] into multiple variables
+        match = re.search(DEVICE_URL_RE, device_url)
 
         if match:
             self.protocol = Protocol(match.group("protocol"))
