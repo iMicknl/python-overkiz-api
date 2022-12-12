@@ -144,8 +144,8 @@ class Device:
     enabled: bool
     label: str = field(repr=obfuscate_string)
     device_url: str = field(repr=obfuscate_id)
-    gateway_id: str = field(repr=obfuscate_id)
-    device_address: str = field(repr=obfuscate_id)
+    gateway_id: str | None = field(repr=obfuscate_id)
+    device_address: str | None = field(repr=obfuscate_id)
     subsystem_id: int | None = None
     is_sub_device: bool = False
     controllable_name: str
@@ -156,7 +156,7 @@ class Device:
     states: States
     type: ProductType
     place_oid: str | None = None
-    protocol: Protocol = field(init=False, repr=False)
+    protocol: Protocol | None = field(init=False, repr=False)
 
     def __init__(
         self,
@@ -190,7 +190,7 @@ class Device:
         self.type = ProductType(type)
         self.place_oid = place_oid
 
-        self.protocol = Protocol.UNKNOWN
+        self.protocol = None
         self.gateway_id = None
         self.device_address = None
         self.subsystem_id = None
@@ -509,8 +509,7 @@ class Event:
         self.protocol_type = protocol_type
         self.name = EventName(name)
         self.failure_type_code = (
-            None if failure_type_code is None else FailureType(
-                failure_type_code)
+            None if failure_type_code is None else FailureType(failure_type_code)
         )
 
 
@@ -616,8 +615,7 @@ class Gateway:
         self.time_reliable = time_reliable
         self.connectivity = Connectivity(**connectivity)
         self.up_to_date = up_to_date
-        self.update_status = UpdateBoxStatus(
-            update_status) if update_status else None
+        self.update_status = UpdateBoxStatus(update_status) if update_status else None
         self.sync_in_progress = sync_in_progress
         self.partners = [Partner(**p) for p in partners] if partners else []
         self.type = GatewayType(type) if type else None
