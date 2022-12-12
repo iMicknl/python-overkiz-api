@@ -150,7 +150,7 @@ class TestDevice:
             # Wrong device urls:
             (
                 "foo://whatever-blah/12",
-                None,
+                Protocol.UNKNOWN,
                 "whatever-blah",
                 "12",
                 None,
@@ -158,7 +158,7 @@ class TestDevice:
             ),
             (
                 "foo://whatever",
-                None,
+                Protocol.UNKNOWN,
                 None,
                 None,
                 None,
@@ -258,7 +258,8 @@ class TestState:
             assert state.value_as_str
 
     def test_dict_value(self):
-        state = State(name="state", type=DataType.JSON_OBJECT, value={"foo": "bar"})
+        state = State(name="state", type=DataType.JSON_OBJECT,
+                      value={"foo": "bar"})
         assert state.value_as_dict == {"foo": "bar"}
 
     def test_bad_dict_value(self):
