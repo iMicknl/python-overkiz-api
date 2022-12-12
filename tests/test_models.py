@@ -147,6 +147,23 @@ class TestDevice:
                 1,
                 False,
             ),
+            # Wrong device urls:
+            (
+                "foo://whatever-blah/12",
+                None,
+                "whatever-blah",
+                "12",
+                None,
+                False,
+            ),
+            (
+                "foo://whatever",
+                None,
+                None,
+                None,
+                None,
+                False,
+            ),
         ],
     )
     def test_base_url_parsing(
