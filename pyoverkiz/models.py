@@ -190,11 +190,14 @@ class Device:
         self.type = ProductType(type)
         self.place_oid = place_oid
 
-        # Split <protocol>://<gatewayId>/<deviceAddress>[#<subsystemId>] into multiple variables
-        match = re.search(DEVICE_URL_RE, device_url)
-
+        self.protocol = Protocol.UNKNOWN
+        self.gateway_id = None
+        self.device_address = None
         self.subsystem_id = None
         self.is_sub_device = False
+
+        # Split <protocol>://<gatewayId>/<deviceAddress>[#<subsystemId>] into multiple variables
+        match = re.search(DEVICE_URL_RE, device_url)
 
         if match:
             self.protocol = Protocol(match.group("protocol"))
@@ -506,7 +509,8 @@ class Event:
         self.protocol_type = protocol_type
         self.name = EventName(name)
         self.failure_type_code = (
-            None if failure_type_code is None else FailureType(failure_type_code)
+            None if failure_type_code is None else FailureType(
+                failure_type_code)
         )
 
 
@@ -612,7 +616,8 @@ class Gateway:
         self.time_reliable = time_reliable
         self.connectivity = Connectivity(**connectivity)
         self.up_to_date = up_to_date
-        self.update_status = UpdateBoxStatus(update_status) if update_status else None
+        self.update_status = UpdateBoxStatus(
+            update_status) if update_status else None
         self.sync_in_progress = sync_in_progress
         self.partners = [Partner(**p) for p in partners] if partners else []
         self.type = GatewayType(type) if type else None
