@@ -100,6 +100,7 @@ class OverkizCommand(str, Enum):
     SET_PASS_APC_OPERATING_MODE = "setPassAPCOperatingMode"
     SET_PEDESTRIAN_POSITION = "setPedestrianPosition"
     SET_RGB = "setRGB"
+    SET_SCHEDULING_TYPE = "setSchedulingType"
     SET_SECURED_POSITION_TEMPERATURE = "setSecuredPositionTemperature"
     SET_TARGET_ALARM_MODE = "setTargetAlarmMode"
     SET_TARGET_TEMPERATURE = "setTargetTemperature"
