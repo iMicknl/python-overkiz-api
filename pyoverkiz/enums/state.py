@@ -187,12 +187,16 @@ class OverkizState(str, Enum):
     MODBUSLINK_DHW_CAPACITY = "modbuslink:DHWCapacityState"
     MODBUSLINK_DHW_ERROR = "modbuslink:DHWErrorState"
     MODBUSLINK_DHW_MODE = "modbuslink:DHWModeState"
-    MODBUSLINK_ELECTRIC_BOOSTER_OPERATING_TIME = "modbuslink:ElectricBoosterOperatingTimeState"
+    MODBUSLINK_ELECTRIC_BOOSTER_OPERATING_TIME = (
+        "modbuslink:ElectricBoosterOperatingTimeState"
+    )
     MODBUSLINK_HEAT_PUMP_OPERATING_TIME = "modbuslink:HeatPumpOperatingTimeState"
     MODBUSLINK_IHM_TYPE = "modbuslink:IHMTypeState"
     MODBUSLINK_MANUFACTURER = "modbuslink:ManufacturerState"
     MODBUSLINK_MIDDLE_WATER_TEMPERATURE = "modbuslink:MiddleWaterTemperatureState"
-    MODBUSLINK_NUMBER_CONTROL_SHOWER_REQUEST = "modbuslink:NumberControlShowerRequestState"
+    MODBUSLINK_NUMBER_CONTROL_SHOWER_REQUEST = (
+        "modbuslink:NumberControlShowerRequestState"
+    )
     MODBUSLINK_OPERATING_RANGE = "modbuslink:OperatingRangeState"
     MODBUSLINK_POWER_HEAT_ELECTRICAL = "modbuslink:PowerHeatElectricalState"
     MODBUSLINK_POWER_HEAT_PUMP = "modbuslink:PowerHeatPumpState"
