@@ -780,16 +780,6 @@ class Zone:
 
 
 @define(kw_only=True)
-class OverkizServer:
-    """Class to describe an Overkiz server."""
-
-    name: str
-    endpoint: str
-    manufacturer: str
-    configuration_url: str | None
-
-
-@define(kw_only=True)
 class LocalToken:
     label: str
     gateway_id: str = field(repr=obfuscate_id, default=None)
