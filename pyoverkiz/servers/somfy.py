@@ -128,6 +128,5 @@ class SomfyServer(OverkizServer):
         ):
             await self.refresh_token()
 
-            # TODO
-            # if self.event_listener_id:
-            #     await self.register_event_listener()
+            if self.event_listener_id:
+                await self.register_event_listener()

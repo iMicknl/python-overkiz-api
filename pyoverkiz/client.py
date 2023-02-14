@@ -55,7 +55,6 @@ class OverkizClient:
     setup: Setup | None
     devices: list[Device]
     gateways: list[Gateway]
-    event_listener_id: str | None
     session: ClientSession
 
     _refresh_token: str | None = None
@@ -86,7 +85,6 @@ class OverkizClient:
         self.setup: Setup | None = None
         self.devices: list[Device] = []
         self.gateways: list[Gateway] = []
-        self.event_listener_id: str | None = None
 
     async def __aenter__(self) -> OverkizClient:
         return self
@@ -101,8 +99,8 @@ class OverkizClient:
 
     async def close(self) -> None:
         """Close the session."""
-        if self.event_listener_id:
-            await self.unregister_event_listener()
+        if self.server.event_listener_id:
+            await self.server.unregister_event_listener()
 
         await self.server.session.close()
 
@@ -286,11 +284,7 @@ class OverkizClient:
         timeout : listening sessions are expected to call the /events/{listenerId}/fetch
         API on a regular basis.
         """
-        response = await self.server.post("events/register")
-        listener_id = cast(str, response.get("id"))
-        self.event_listener_id = listener_id
-
-        return listener_id
+        return await self.server.register_event_listener()
 
     @backoff.on_exception(backoff.expo, TooManyConcurrentRequestsException, max_tries=5)
     @backoff.on_exception(
@@ -309,7 +303,9 @@ class OverkizClient:
         Per-session rate-limit : 1 calls per 1 SECONDS period for this particular
         operation (polling)
         """
-        response = await self.server.post(f"events/{self.event_listener_id}/fetch")
+        response = await self.server.post(
+            f"events/{self.server.event_listener_id}/fetch"
+        )
         events = [Event(**e) for e in humps.decamelize(response)]
 
         return events
@@ -319,8 +315,7 @@ class OverkizClient:
         Unregister an event listener.
         API response status is always 200, even on unknown listener ids.
         """
-        await self.server.post(f"events/{self.event_listener_id}/unregister")
-        self.event_listener_id = None
+        return await self.server.unregister_event_listener()
 
     @backoff.on_exception(
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin

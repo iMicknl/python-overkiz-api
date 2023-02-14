@@ -2,10 +2,11 @@ from __future__ import annotations
 
 from abc import ABC, abstractmethod
 from json import JSONDecodeError
-from typing import Any
+from typing import Any, cast
 
 from aiohttp import ClientResponse, ClientSession
 from attr import define
+from attrs import field
 
 from pyoverkiz.exceptions import (
     AccessDeniedToGatewayException,
@@ -37,8 +38,8 @@ class OverkizServer(ABC):
     endpoint: str
     manufacturer: str
     session: ClientSession
-
     configuration_url: str | None
+    event_listener_id: str | None = field(default=None, init=False)
 
     @abstractmethod
     async def login(self, username: str, password: str) -> bool:
@@ -167,3 +168,27 @@ class OverkizServer(ABC):
                 raise AccessDeniedToGatewayException(message)
 
         raise Exception(message if message else result)
+
+    async def register_event_listener(self) -> str:
+        """
+        Register a new setup event listener on the current session and return a new
+        listener id.
+        Only one listener may be registered on a given session.
+        Registering an new listener will invalidate the previous one if any.
+        Note that registering an event listener drastically reduces the session
+        timeout : listening sessions are expected to call the /events/{listenerId}/fetch
+        API on a regular basis.
+        """
+        response = await self.post("events/register")
+        listener_id = cast(str, response.get("id"))
+        self.event_listener_id = listener_id
+
+        return listener_id
+
+    async def unregister_event_listener(self) -> None:
+        """
+        Unregister an event listener.
+        API response status is always 200, even on unknown listener ids.
+        """
+        await self.post(f"events/{self.event_listener_id}/unregister")
+        self.event_listener_id = None
