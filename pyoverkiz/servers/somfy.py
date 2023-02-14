@@ -5,10 +5,13 @@ from typing import Any, cast
 
 from aiohttp import FormData
 
-from pyoverkiz.const import SOMFY_API, SOMFY_CLIENT_ID, SOMFY_CLIENT_SECRET
 from pyoverkiz.exceptions import SomfyBadCredentialsException, SomfyServiceException
 from pyoverkiz.servers.overkiz_server import OverkizServer
 from pyoverkiz.types import JSON
+
+SOMFY_API = "https://accounts.somfy.com"
+SOMFY_CLIENT_ID = "0d8e920c-1478-11e7-a377-02dd59bd3041_1ewvaqmclfogo4kcsoo0c8k4kso884owg08sg8c40sk4go4ksg"
+SOMFY_CLIENT_SECRET = "12k73w1n540g8o4cokg0cw84cog840k84cwggscwg884004kgk"
 
 
 class SomfyServer(OverkizServer):

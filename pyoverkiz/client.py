@@ -9,19 +9,12 @@ from typing import Any, cast
 
 import backoff
 import humps
+from aiohttp import ClientSession, ServerDisconnectedError
 
-from pyoverkiz.const import (
-    SOMFY_API,
-    SOMFY_CLIENT_ID,
-    SOMFY_CLIENT_SECRET,
-    SUPPORTED_SERVERS,
-)
 from pyoverkiz.exceptions import (
     InvalidEventListenerIdException,
     NoRegisteredEventListenerException,
     NotAuthenticatedException,
-    SomfyBadCredentialsException,
-    SomfyServiceException,
     TooManyConcurrentRequestsException,
     TooManyExecutionsException,
 )
@@ -39,12 +32,7 @@ from pyoverkiz.models import (
     State,
 )
 from pyoverkiz.obfuscate import obfuscate_sensitive_data
-from pyoverkiz.servers.overkiz_server import (
-    ClientSession,
-    FormData,
-    OverkizServer,
-    ServerDisconnectedError,
-)
+from pyoverkiz.servers.overkiz_server import OverkizServer
 from pyoverkiz.types import JSON
 
 

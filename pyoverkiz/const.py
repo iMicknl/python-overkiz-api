@@ -1,20 +1,6 @@
 from __future__ import annotations
 
-from pyoverkiz.models import OverkizServer
-
-COZYTOUCH_ATLANTIC_API = "https://apis.groupe-atlantic.com"
-COZYTOUCH_CLIENT_ID = (
-    "Q3RfMUpWeVRtSUxYOEllZkE3YVVOQmpGblpVYToyRWNORHpfZHkzNDJVSnFvMlo3cFNKTnZVdjBh"
-)
-
-NEXITY_API = "https://api.egn.prd.aws-nexity.fr"
-NEXITY_COGNITO_CLIENT_ID = "3mca95jd5ase5lfde65rerovok"
-NEXITY_COGNITO_USER_POOL = "eu-west-1_wj277ucoI"
-NEXITY_COGNITO_REGION = "eu-west-1"
-
-SOMFY_API = "https://accounts.somfy.com"
-SOMFY_CLIENT_ID = "0d8e920c-1478-11e7-a377-02dd59bd3041_1ewvaqmclfogo4kcsoo0c8k4kso884owg08sg8c40sk4go4ksg"
-SOMFY_CLIENT_SECRET = "12k73w1n540g8o4cokg0cw84cog840k84cwggscwg884004kgk"
+from pyoverkiz.servers.overkiz_server import OverkizServer
 
 SUPPORTED_SERVERS: dict[str, OverkizServer] = {
     "atlantic_cozytouch": OverkizServer(

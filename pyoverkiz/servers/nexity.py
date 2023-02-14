@@ -1,26 +1,19 @@
 from __future__ import annotations
 
 import asyncio
-
 from typing import cast
 
 import boto3
-
 from botocore.config import Config
 from warrant_lite import WarrantLite
 
-from pyoverkiz.const import (
-    NEXITY_API,
-    NEXITY_COGNITO_CLIENT_ID,
-    NEXITY_COGNITO_REGION,
-    NEXITY_COGNITO_USER_POOL,
-)
-from pyoverkiz.exceptions import (
-    NexityBadCredentialsException,
-    NexityServiceException,
-)
-
+from pyoverkiz.exceptions import NexityBadCredentialsException, NexityServiceException
 from pyoverkiz.servers.overkiz_server import OverkizServer
+
+NEXITY_API = "https://api.egn.prd.aws-nexity.fr"
+NEXITY_COGNITO_CLIENT_ID = "3mca95jd5ase5lfde65rerovok"
+NEXITY_COGNITO_USER_POOL = "eu-west-1_wj277ucoI"
+NEXITY_COGNITO_REGION = "eu-west-1"
 
 
 class NexityServer(OverkizServer):

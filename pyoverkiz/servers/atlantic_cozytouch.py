@@ -1,14 +1,17 @@
 from __future__ import annotations
 
-
 from aiohttp import FormData
-from pyoverkiz.const import COZYTOUCH_ATLANTIC_API, COZYTOUCH_CLIENT_ID
+
 from pyoverkiz.exceptions import (
     CozyTouchBadCredentialsException,
     CozyTouchServiceException,
 )
-
 from pyoverkiz.servers.overkiz_server import OverkizServer
+
+COZYTOUCH_ATLANTIC_API = "https://apis.groupe-atlantic.com"
+COZYTOUCH_CLIENT_ID = (
+    "Q3RfMUpWeVRtSUxYOEllZkE3YVVOQmpGblpVYToyRWNORHpfZHkzNDJVSnFvMlo3cFNKTnZVdjBh"
+)
 
 
 class AtlanticCozytouch(OverkizServer):
