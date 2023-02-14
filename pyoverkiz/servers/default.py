@@ -1,7 +1,7 @@
 from pyoverkiz.servers.overkiz_server import OverkizServer
 
 
-class NexityServer(OverkizServer):
+class DefaultServer(OverkizServer):
     async def login(self, username: str, password: str) -> bool:
         """
         Authenticate and create an API session allowing access to the other operations.
