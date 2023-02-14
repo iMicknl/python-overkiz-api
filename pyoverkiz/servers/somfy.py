@@ -21,7 +21,7 @@ class SomfyServer(OverkizServer):
     _expires_in: datetime.datetime | None = None
 
     @property
-    def _headers(self):
+    def _headers(self) -> dict[str, str]:
         return {"Authorization": f"Bearer {self._access_token}"}
 
     async def get(self, path: str) -> Any:

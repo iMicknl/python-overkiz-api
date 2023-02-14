@@ -42,6 +42,6 @@ class Protocol(str, Enum):
     RTN = "rtn"
 
     @classmethod
-    def _missing_(cls, value):  # type: ignore
+    def _missing_(cls, value):  # type: ignore[no-untyped-def]
         _LOGGER.warning(f"Unsupported protocol {value} has been returned for {cls}")
         return cls.UNKNOWN

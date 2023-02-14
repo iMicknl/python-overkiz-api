@@ -59,9 +59,6 @@ class AtlanticCozytouch(OverkizServer):
 
         payload = {"jwt": jwt}
 
-        response = await self.post("login", data=payload)
+        post_response = await self.post("login", data=payload)
 
-        if response.get("success"):
-            return True
-
-        return False
+        return "success" in post_response

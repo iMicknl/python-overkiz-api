@@ -44,11 +44,10 @@ async def refresh_listener(invocation: Mapping[str, Any]) -> None:
     await invocation["args"][0].register_event_listener()
 
 
-# pylint: disable=too-many-instance-attributes, too-many-branches
-
-
 class OverkizClient:
     """Interface class for the Overkiz API"""
+
+    # pylint: disable=too-many-instance-attributes
 
     username: str
     password: str
@@ -69,7 +68,6 @@ class OverkizClient:
         password: str,
         server: OverkizServer,
         token: str | None = None,
-        session: ClientSession | None = None,
     ) -> None:
         """
         Constructor
@@ -90,8 +88,6 @@ class OverkizClient:
         self.gateways: list[Gateway] = []
         self.event_listener_id: str | None = None
 
-        self.session = session if session else ClientSession()
-
     async def __aenter__(self) -> OverkizClient:
         return self
 
@@ -108,7 +104,7 @@ class OverkizClient:
         if self.event_listener_id:
             await self.unregister_event_listener()
 
-        await self.session.close()
+        await self.server.session.close()
 
     async def login(
         self,

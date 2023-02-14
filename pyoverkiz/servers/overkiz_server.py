@@ -45,7 +45,7 @@ class OverkizServer(ABC):
         """Login to the server."""
 
     @property
-    def _headers(self):
+    def _headers(self) -> dict[str, str]:
         return {}
 
     async def get(self, path: str) -> Any:
@@ -84,6 +84,9 @@ class OverkizServer(ABC):
     @staticmethod
     async def check_response(response: ClientResponse) -> None:
         """Check the response returned by the OverKiz API"""
+
+        # pylint: disable=too-many-branches
+
         if response.status in [200, 204]:
             return
 

@@ -46,12 +46,10 @@ class NexityServer(OverkizServer):
         except Exception as error:
             raise NexityBadCredentialsException() from error
 
-        id_token = tokens["AuthenticationResult"]["IdToken"]
-
         async with self.session.get(
             NEXITY_API + "/deploy/api/v1/domotic/token",
             headers={
-                "Authorization": id_token,
+                "Authorization": tokens["AuthenticationResult"]["IdToken"],
             },
         ) as response:
             token = await response.json()
@@ -64,9 +62,6 @@ class NexityServer(OverkizServer):
         user_id = username.replace("@", "_-_")  # Replace @ for _-_
         payload = {"ssoToken": sso_token, "userId": user_id}
 
-        response = await self.server.post("login", data=payload)
+        post_response = await self.post("login", data=payload)
 
-        if response.get("success"):
-            return True
-
-        return False
+        return "success" in post_response

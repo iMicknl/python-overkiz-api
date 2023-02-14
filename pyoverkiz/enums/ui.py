@@ -76,7 +76,7 @@ class UIClass(str, Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls, value):  # type: ignore
+    def _missing_(cls, value):  # type: ignore[no-untyped-def]
         _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
         return cls.UNKNOWN
 
@@ -408,6 +408,6 @@ class UIWidget(str, Enum):
     UNKNOWN = "unknown"
 
     @classmethod
-    def _missing_(cls, value):  # type: ignore
+    def _missing_(cls, value):  # type: ignore[no-untyped-def]
         _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
         return cls.UNKNOWN
