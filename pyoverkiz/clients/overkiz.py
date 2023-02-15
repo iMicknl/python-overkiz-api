@@ -62,8 +62,8 @@ async def refresh_listener(invocation: Mapping[str, Any]) -> None:
 class OverkizClient(ABC):
     """Abstract class for the Overkiz API"""
 
-    # username: str
-    # password: str = field(repr=lambda _: "***")
+    username: str
+    password: str = field(repr=lambda _: "***")
     name: str
     endpoint: str
     manufacturer: str
@@ -74,9 +74,6 @@ class OverkizClient(ABC):
     devices: list[Device] = field(factory=list, init=False)
     gateways: list[Gateway] = field(factory=list, init=False)
 
-    # TODO: Add support for registering event listener
-    #
-
     @abstractmethod
     async def _login(
         self,
@@ -85,14 +82,12 @@ class OverkizClient(ABC):
     ) -> bool:
         """Login to the server."""
 
-    async def login(
-        self, username: str, password: str, register_event_listener: bool = True
-    ) -> bool:
+    async def login(self, register_event_listener: bool = True) -> bool:
         """
         Authenticate and create an API session allowing access to the other operations.
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
-        if await self._login(username, password):
+        if await self._login(self.username, self.password):
             if register_event_listener:
                 await self.register_event_listener()
         return False

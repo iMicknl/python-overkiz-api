@@ -15,7 +15,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 class TestOverkizClient:
     @fixture
     def client(self):
-        return SUPPORTED_SERVERS["somfy_europe"](aiohttp.ClientSession())
+        return SUPPORTED_SERVERS["somfy_europe"]("foo", "pass", aiohttp.ClientSession())
 
     @pytest.mark.asyncio
     async def test_get_devices_basic(self, client):
