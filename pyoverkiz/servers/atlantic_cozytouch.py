@@ -15,7 +15,7 @@ COZYTOUCH_CLIENT_ID = (
 
 
 class AtlanticCozytouch(OverkizServer):
-    async def login(self, username: str, password: str) -> bool:
+    async def _login(self, username: str, password: str) -> bool:
         """
         Authenticate and create an API session allowing access to the other operations.
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]

@@ -38,7 +38,6 @@ import asyncio
 import time
 
 from pyoverkiz.const import SUPPORTED_SERVERS
-from pyoverkiz.client import OverkizClient
 from aiohttp import ClientSession
 
 USERNAME = ""
@@ -49,9 +48,9 @@ async def main() -> None:
 
     session = ClientSession()
     server = SUPPORTED_SERVERS["somfy_europe"](session)
-    async with OverkizClient(USERNAME, PASSWORD, server=server) as client:
+    async with server as client:
         try:
-            await client.login()
+            await client.login(USERNAME, PASSWORD)
         except Exception as exception:  # pylint: disable=broad-except
             print(exception)
             return
@@ -69,7 +68,6 @@ async def main() -> None:
             time.sleep(2)
 
 
-asyncio.run(main())
 asyncio.run(main())
 ```
 

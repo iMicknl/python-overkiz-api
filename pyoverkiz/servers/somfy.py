@@ -43,7 +43,7 @@ class SomfyServer(OverkizServer):
         await self._refresh_token_if_expired()
         return await super().delete(path)
 
-    async def login(self, username: str, password: str) -> bool:
+    async def _login(self, username: str, password: str) -> bool:
         """
         Authenticate and create an API session allowing access to the other operations.
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
