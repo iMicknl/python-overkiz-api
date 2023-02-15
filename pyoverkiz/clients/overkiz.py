@@ -96,18 +96,25 @@ class OverkizClient(ABC):
     def _headers(self) -> dict[str, str]:
         return {}
 
-    async def get(self, path: str) -> Any:
+    async def get(
+        self,
+        path: str,
+        ssl: bool = True,
+    ) -> Any:
         """Make a GET request to the OverKiz API"""
 
         async with self.session.get(
-            f"{self.endpoint}{path}",
-            headers=self._headers,
+            f"{self.endpoint}{path}", headers=self._headers, ssl=ssl
         ) as response:
             await self.check_response(response)
             return await response.json()
 
     async def post(
-        self, path: str, payload: JSON | None = None, data: JSON | None = None
+        self,
+        path: str,
+        payload: JSON | None = None,
+        data: JSON | None = None,
+        ssl: bool = True,
     ) -> Any:
         """Make a POST request to the OverKiz API"""
 
@@ -116,16 +123,20 @@ class OverkizClient(ABC):
             data=data,
             json=payload,
             headers=self._headers,
+            ssl=ssl,
         ) as response:
             await self.check_response(response)
             return await response.json()
 
-    async def delete(self, path: str) -> None:
+    async def delete(
+        self,
+        path: str,
+        ssl: bool = True,
+    ) -> None:
         """Make a DELETE request to the OverKiz API"""
 
         async with self.session.delete(
-            f"{self.endpoint}{path}",
-            headers=self._headers,
+            f"{self.endpoint}{path}", headers=self._headers, ssl=ssl
         ) as response:
             await self.check_response(response)
 
@@ -459,6 +470,7 @@ class OverkizClient(ABC):
         Access scope : Full enduser API access (enduser/*)
         """
         response = await self.get(f"config/{gateway_id}/local/tokens/generate")
+        print(response)
 
         return cast(str, response["token"])
 

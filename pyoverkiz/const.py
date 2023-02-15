@@ -9,6 +9,7 @@ from pyoverkiz.clients.default import DefaultClient
 from pyoverkiz.clients.nexity import NexityClient
 from pyoverkiz.clients.overkiz import OverkizClient
 from pyoverkiz.clients.somfy import SomfyClient
+from pyoverkiz.clients.somfy_local import SomfyLocalClient
 
 SUPPORTED_SERVERS: dict[str, Callable[[str, str, ClientSession], OverkizClient]] = {
     "atlantic_cozytouch": lambda username, password, session: AtlanticCozytouchClient(
@@ -109,6 +110,15 @@ SUPPORTED_SERVERS: dict[str, Callable[[str, str, ClientSession], OverkizClient]]
         session=session,
         username=username,
         password=password,
+    ),
+    "somfy_europe_local": lambda gateway_id, token, session: SomfyLocalClient(
+        name="Somfy Local(Europe)",
+        endpoint=f"https://gateway-{gateway_id}.local:8443/enduser-mobile-web/1/enduserAPI/",
+        manufacturer="Somfy",
+        configuration_url=None,
+        session=session,
+        username=gateway_id,  # not used
+        password=token,
     ),
     "somfy_america": lambda username, password, session: DefaultClient(
         name="Somfy (North America)",
