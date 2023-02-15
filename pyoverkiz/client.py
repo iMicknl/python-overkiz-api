@@ -1,7 +1,6 @@
 """ Python wrapper for the OverKiz API """
 from __future__ import annotations
 
-import datetime
 import urllib.parse
 from collections.abc import Mapping
 from types import TracebackType
@@ -9,7 +8,7 @@ from typing import Any, cast
 
 import backoff
 import humps
-from aiohttp import ClientSession, ServerDisconnectedError
+from aiohttp import ServerDisconnectedError
 
 from pyoverkiz.exceptions import (
     InvalidEventListenerIdException,
@@ -55,18 +54,12 @@ class OverkizClient:
     setup: Setup | None
     devices: list[Device]
     gateways: list[Gateway]
-    session: ClientSession
-
-    _refresh_token: str | None = None
-    _expires_in: datetime.datetime | None = None
-    _access_token: str | None = None
 
     def __init__(
         self,
         username: str,
         password: str,
         server: OverkizServer,
-        token: str | None = None,
     ) -> None:
         """
         Constructor
@@ -74,13 +67,11 @@ class OverkizClient:
         :param username: the username
         :param password: the password
         :param server: OverkizServer
-        :param session: optional ClientSession
         """
 
         self.username = username
         self.password = password
         self.server = server
-        self._access_token = token
 
         self.setup: Setup | None = None
         self.devices: list[Device] = []
