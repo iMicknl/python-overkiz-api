@@ -7,8 +7,8 @@ import boto3
 from botocore.config import Config
 from warrant_lite import WarrantLite
 
+from pyoverkiz.clients.overkiz import OverkizClient
 from pyoverkiz.exceptions import NexityBadCredentialsException, NexityServiceException
-from pyoverkiz.servers.overkiz_server import OverkizServer
 
 NEXITY_API = "https://api.egn.prd.aws-nexity.fr"
 NEXITY_COGNITO_CLIENT_ID = "3mca95jd5ase5lfde65rerovok"
@@ -16,7 +16,7 @@ NEXITY_COGNITO_USER_POOL = "eu-west-1_wj277ucoI"
 NEXITY_COGNITO_REGION = "eu-west-1"
 
 
-class NexityServer(OverkizServer):
+class NexityClient(OverkizClient):
     async def _login(self, username: str, password: str) -> bool:
         """
         Authenticate and create an API session allowing access to the other operations.

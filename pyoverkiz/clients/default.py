@@ -1,7 +1,7 @@
-from pyoverkiz.servers.overkiz_server import OverkizServer
+from pyoverkiz.clients.overkiz import OverkizClient
 
 
-class DefaultServer(OverkizServer):
+class DefaultClient(OverkizClient):
     async def _login(self, username: str, password: str) -> bool:
         """
         Authenticate and create an API session allowing access to the other operations.

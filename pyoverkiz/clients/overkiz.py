@@ -1,4 +1,4 @@
-""" Python wrapper for the OverKiz API """
+""" Python wrapper for the OverKiz API"""
 
 from __future__ import annotations
 
@@ -59,8 +59,8 @@ async def refresh_listener(invocation: Mapping[str, Any]) -> None:
 
 
 @define(kw_only=True)
-class OverkizServer(ABC):
-    """Interface class for the Overkiz API"""
+class OverkizClient(ABC):
+    """Abstract class for the Overkiz API"""
 
     # username: str
     # password: str = field(repr=lambda _: "***")
@@ -134,7 +134,7 @@ class OverkizServer(ABC):
         ) as response:
             await self.check_response(response)
 
-    async def __aenter__(self) -> OverkizServer:
+    async def __aenter__(self) -> OverkizClient:
         return self
 
     async def __aexit__(

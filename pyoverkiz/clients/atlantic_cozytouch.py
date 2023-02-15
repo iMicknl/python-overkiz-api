@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from aiohttp import FormData
 
+from pyoverkiz.clients.overkiz import OverkizClient
 from pyoverkiz.exceptions import (
     CozyTouchBadCredentialsException,
     CozyTouchServiceException,
 )
-from pyoverkiz.servers.overkiz_server import OverkizServer
 
 COZYTOUCH_ATLANTIC_API = "https://apis.groupe-atlantic.com"
 COZYTOUCH_CLIENT_ID = (
@@ -14,7 +14,7 @@ COZYTOUCH_CLIENT_ID = (
 )
 
 
-class AtlanticCozytouch(OverkizServer):
+class AtlanticCozytouchClient(OverkizClient):
     async def _login(self, username: str, password: str) -> bool:
         """
         Authenticate and create an API session allowing access to the other operations.

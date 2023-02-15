@@ -47,8 +47,8 @@ PASSWORD = ""
 async def main() -> None:
 
     session = ClientSession()
-    server = SUPPORTED_SERVERS["somfy_europe"](session)
-    async with server as client:
+    client = SUPPORTED_SERVERS["somfy_europe"](session)
+    async with client as client:
         try:
             await client.login(USERNAME, PASSWORD)
         except Exception as exception:  # pylint: disable=broad-except
@@ -69,6 +69,7 @@ async def main() -> None:
 
 
 asyncio.run(main())
+
 ```
 
 ## Development
