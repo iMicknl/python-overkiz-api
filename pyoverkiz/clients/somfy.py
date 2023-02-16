@@ -24,7 +24,7 @@ class SomfyClient(OverkizClient):
     def _headers(self) -> dict[str, str]:
         return {"Authorization": f"Bearer {self._access_token}"}
 
-    async def get(self, path: str, ssl: bool = True) -> Any:
+    async def get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API"""
 
         await self._refresh_token_if_expired()
@@ -35,14 +35,13 @@ class SomfyClient(OverkizClient):
         path: str,
         payload: JSON | None = None,
         data: JSON | None = None,
-        ssl: bool = True,
     ) -> Any:
         """Make a POST request to the OverKiz API"""
         if path != "login":
             await self._refresh_token_if_expired()
         return await super().post(path, payload=payload, data=data)
 
-    async def delete(self, path: str, ssl: bool = True) -> None:
+    async def delete(self, path: str) -> None:
         """Make a DELETE request to the OverKiz API"""
         await self._refresh_token_if_expired()
         return await super().delete(path)

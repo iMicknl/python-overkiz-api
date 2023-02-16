@@ -73,6 +73,7 @@ class OverkizClient(ABC):
     setup: Setup | None = field(default=None, init=False)
     devices: list[Device] = field(factory=list, init=False)
     gateways: list[Gateway] = field(factory=list, init=False)
+    _ssl: bool = field(default=True, init=False)
 
     @abstractmethod
     async def _login(
@@ -99,12 +100,11 @@ class OverkizClient(ABC):
     async def get(
         self,
         path: str,
-        ssl: bool = True,
     ) -> Any:
         """Make a GET request to the OverKiz API"""
 
         async with self.session.get(
-            f"{self.endpoint}{path}", headers=self._headers, ssl=ssl
+            f"{self.endpoint}{path}", headers=self._headers, ssl=self._ssl
         ) as response:
             await self.check_response(response)
             return await response.json()
@@ -114,7 +114,6 @@ class OverkizClient(ABC):
         path: str,
         payload: JSON | None = None,
         data: JSON | None = None,
-        ssl: bool = True,
     ) -> Any:
         """Make a POST request to the OverKiz API"""
 
@@ -123,7 +122,7 @@ class OverkizClient(ABC):
             data=data,
             json=payload,
             headers=self._headers,
-            ssl=ssl,
+            ssl=self._ssl,
         ) as response:
             await self.check_response(response)
             return await response.json()
@@ -131,12 +130,11 @@ class OverkizClient(ABC):
     async def delete(
         self,
         path: str,
-        ssl: bool = True,
     ) -> None:
         """Make a DELETE request to the OverKiz API"""
 
         async with self.session.delete(
-            f"{self.endpoint}{path}", headers=self._headers, ssl=ssl
+            f"{self.endpoint}{path}", headers=self._headers, ssl=self._ssl
         ) as response:
             await self.check_response(response)
 
