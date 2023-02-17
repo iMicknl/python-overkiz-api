@@ -5,7 +5,6 @@ from __future__ import annotations
 import urllib.parse
 from abc import ABC, abstractmethod
 from json import JSONDecodeError
-from types import TracebackType
 from typing import Any, Mapping, cast
 
 import backoff
@@ -137,24 +136,6 @@ class OverkizClient(ABC):
             f"{self.endpoint}{path}", headers=self._headers, ssl=self._ssl
         ) as response:
             await self.check_response(response)
-
-    async def __aenter__(self) -> OverkizClient:
-        return self
-
-    async def __aexit__(
-        self,
-        exc_type: type[BaseException] | None,
-        exc_value: BaseException | None,
-        traceback: TracebackType | None,
-    ) -> None:
-        await self.close()
-
-    async def close(self) -> None:
-        """Close the session."""
-        if self.event_listener_id:
-            await self.unregister_event_listener()
-
-        await self.session.close()
 
     @backoff.on_exception(
         backoff.expo,

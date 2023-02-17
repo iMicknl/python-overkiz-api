@@ -6,8 +6,9 @@ import aiohttp
 import pytest
 from pytest import fixture
 
-from pyoverkiz.const import SUPPORTED_SERVERS
+from pyoverkiz.const import Server
 from pyoverkiz.enums import DataType
+from pyoverkiz.overkiz import Overkiz
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -15,7 +16,9 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 class TestOverkizClient:
     @fixture
     def client(self):
-        return SUPPORTED_SERVERS["somfy_europe"]("foo", "pass", aiohttp.ClientSession())
+        return Overkiz.get_client_for(
+            Server.SOMFY_EUROPE, "foo", "pass", aiohttp.ClientSession()
+        )
 
     @pytest.mark.asyncio
     async def test_get_devices_basic(self, client):
