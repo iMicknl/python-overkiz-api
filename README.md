@@ -37,8 +37,11 @@ pip install pyoverkiz
 import asyncio
 import time
 
-from pyoverkiz.const import SUPPORTED_SERVERS
 from aiohttp import ClientSession
+
+from pyoverkiz.clients.overkiz import OverkizClient
+from pyoverkiz.const import Server
+from pyoverkiz.overkiz import Overkiz
 
 USERNAME = ""
 PASSWORD = ""
@@ -46,23 +49,35 @@ PASSWORD = ""
 
 async def main() -> None:
 
-    session = ClientSession()
-    client = SUPPORTED_SERVERS["somfy_europe"](session)
-    async with client as client:
+    async with ClientSession() as session:
+        client = Overkiz.get_client_for(
+            Server.SOMFY_EUROPE, USERNAME, PASSWORD, session
+        )
         try:
-            await client.login(USERNAME, PASSWORD)
+            await client.login()
         except Exception as exception:  # pylint: disable=broad-except
             print(exception)
             return
 
-        devices = await client.get_devices()
+        gateways = await client.get_gateways()
+        token = await client.generate_local_token(gateways[0].id)
+        print(token)
+        await client.activate_local_token(gateways[0].id, token, "pyoverkiz")
+
+        local_client: OverkizClient = Overkiz.get_client_for(
+            Server.SOMFY_DEV_MODE, gateways[0].id, token, session
+        )
+
+        devices = await local_client.get_devices()
 
         for device in devices:
             print(f"{device.label} ({device.id}) - {device.controllable_name}")
             print(f"{device.widget} - {device.ui_class}")
 
+        await local_client.register_event_listener()
+
         while True:
-            events = await client.fetch_events()
+            events = await local_client.fetch_events()
             print(events)
 
             time.sleep(2)
