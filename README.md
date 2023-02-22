@@ -7,23 +7,11 @@
 
 A fully async and easy to use API client for the (internal) OverKiz API. You can use this client to interact with smart devices connected to the OverKiz platform, used by various vendors like Somfy TaHoma and Atlantic Cozytouch.
 
-This package is written for the Home Assistant [ha-tahoma](https://github.com/iMicknl/ha-tahoma) integration, but could be used by any Python project interacting with OverKiz hubs.
-
-> Somfy TaHoma has an official API, which can be consumed via the [somfy-open-api](https://github.com/tetienne/somfy-open-api). Unfortunately only a few device classes are supported via the official API, thus the need for this API client.
+This package is written for the Home Assistant [Overkiz](https://www.home-assistant.io/integrations/overkiz/) integration, but could be used by any Python project interacting with OverKiz hubs.
 
 ## Supported hubs
 
-- Atlantic Cozytouch
-- Bouygues Flexom
-- Hitachi Hi Kumo
-- Nexity Eugénie
-- Rexel Energeasy Connect
-- Simu (LiveIn2)
-- Somfy Connexoon IO
-- Somfy Connexoon RTS
-- Somfy TaHoma
-- Somfy TaHoma Switch
-- Thermor Cozytouch
+See [pyoverkiz/const.py](./pyoverkiz/const.py)
 
 ## Installation
 
@@ -32,6 +20,62 @@ pip install pyoverkiz
 ```
 
 ## Getting started
+
+### API Documentation
+
+A subset of the API is [documented and maintened](https://somfy-developer.github.io/Somfy-TaHoma-Developer-Mode) by Somfy.
+
+### Local API or Developper mode
+
+See https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode#getting-started
+
+For the moment, only Tahoma and Conexoon hubs from Somfy Europe can enabled this mode. Not all the devices are returned. You can have more details [here](https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode/issues/20).
+
+```python
+import asyncio
+import time
+
+from aiohttp import ClientSession
+
+from pyoverkiz.clients.overkiz import OverkizClient
+from pyoverkiz.const import Server
+from pyoverkiz.overkiz import Overkiz
+
+USERNAME = ""
+PASSWORD = ""
+
+
+async def main() -> None:
+
+    async with ClientSession() as session:
+        client = Overkiz.get_client_for(
+            Server.SOMFY_EUROPE, USERNAME, PASSWORD, session
+        )
+        try:
+            await client.login()
+        except Exception as exception:  # pylint: disable=broad-except
+            print(exception)
+            return
+
+        devices = await client.get_devices()
+
+        for device in devices:
+            print(f"{device.label} ({device.id}) - {device.controllable_name}")
+            print(f"{device.widget} - {device.ui_class}")
+
+        await client.register_event_listener()
+
+        while True:
+            events = await client.fetch_events()
+            print(events)
+
+            time.sleep(2)
+
+
+asyncio.run(main())
+```
+
+### Cloud API
 
 ```python
 import asyncio

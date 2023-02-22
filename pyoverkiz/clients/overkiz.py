@@ -449,7 +449,6 @@ class OverkizClient(ABC):
         Access scope : Full enduser API access (enduser/*)
         """
         response = await self.get(f"config/{gateway_id}/local/tokens/generate")
-        print(response)
 
         return cast(str, response["token"])
 
