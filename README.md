@@ -61,11 +61,11 @@ async def main() -> None:
 
         gateways = await client.get_gateways()
         token = await client.generate_local_token(gateways[0].id)
-        print(token)
         await client.activate_local_token(gateways[0].id, token, "pyoverkiz")
 
+        domain = f"gateway-{gateways[0].id}.local"
         local_client: OverkizClient = Overkiz.get_client_for(
-            Server.SOMFY_DEV_MODE, gateways[0].id, token, session
+            Server.SOMFY_DEV_MODE, domain, token, session
         )
 
         devices = await local_client.get_devices()

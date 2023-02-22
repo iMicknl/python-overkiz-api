@@ -113,13 +113,13 @@ SUPPORTED_SERVERS: dict[Server, Callable[[str, str, ClientSession], OverkizClien
         username=username,
         password=password,
     ),
-    Server.SOMFY_DEV_MODE: lambda gateway_id, token, session: SomfyLocalClient(
+    Server.SOMFY_DEV_MODE: lambda domain, token, session: SomfyLocalClient(
         name="Somfy Developer Mode (Local API)",
-        endpoint=f"https://gateway-{gateway_id}.local:8443/enduser-mobile-web/1/enduserAPI/",
+        endpoint=f"https://{domain}:8443/enduser-mobile-web/1/enduserAPI/",
         manufacturer="Somfy",
         configuration_url=None,
         session=session,
-        username=gateway_id,  # not used
+        username=domain,  # not used
         password=token,
     ),
     Server.SOMFY_AMERICA: lambda username, password, session: DefaultClient(
