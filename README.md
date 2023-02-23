@@ -25,11 +25,11 @@ pip install pyoverkiz
 
 A subset of the API is [documented and maintened](https://somfy-developer.github.io/Somfy-TaHoma-Developer-Mode) by Somfy.
 
-### Local API or Developper mode
+### Local API or Developer mode
 
 See https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode#getting-started
 
-For the moment, only Tahoma and Conexoon hubs from Somfy Europe can enabled this mode. Not all the devices are returned. You can have more details [here](https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode/issues/20).
+For the moment, only Somfy TaHoma Switch, TaHoma V2 and Connexoon hubs from Somfy Europe can enabled this mode. Not all the devices are returned. You can have more details [here](https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode/issues/20).
 
 ```python
 import asyncio
@@ -49,7 +49,10 @@ async def main() -> None:
 
     async with ClientSession() as session:
         client = Overkiz.get_client_for(
-            Server.SOMFY_EUROPE, USERNAME, PASSWORD, session
+            server=Server.SOMFY_EUROPE,
+            username=USERNAME,
+            password=PASSWORD,
+            session=session
         )
         try:
             await client.login()
