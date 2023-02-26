@@ -128,6 +128,7 @@ class OverkizCommandParam(str, Enum):
 
     A = "A"
     ABSENCE = "absence"
+    ACTIVE = "active"
     ADJUSTMENT = "adjustment"
     ARMED = "armed"
     ARMED_DAY = "armedDay"
@@ -186,6 +187,7 @@ class OverkizCommandParam(str, Enum):
     HIGH_DEMAND = "high demand"  # not a typo...
     HOLIDAYS = "holidays"
     HORIZONTAL = "horizontal"
+    INACTIVE = "inactive"
     INTERNAL = "internal"
     INTERNAL_SCHEDULING = "internalScheduling"
     LO = "lo"
