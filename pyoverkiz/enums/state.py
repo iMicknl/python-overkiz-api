@@ -184,6 +184,7 @@ class OverkizState(str, Enum):
     IO_SENSOR_ROOM = "io:SensorRoomState"
     IO_TARGET_HEATING_LEVEL = "io:TargetHeatingLevelState"
     IO_TOWEL_DRYER_TEMPORARY_STATE = "io:TowelDryerTemporaryStateState"
+    IO_VALVE_INSTALLATION_MODE = "io:ValveInstallationModeState"
     IO_VENTILATION_CONFIGURATION_MODE = "io:VentilationConfigurationModeState"
     IO_VENTILATION_MODE = "io:VentilationModeState"
     IO_VIBRATION_DETECTED = "io:VibrationDetectedState"
