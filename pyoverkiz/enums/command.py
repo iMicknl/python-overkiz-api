@@ -106,6 +106,7 @@ class OverkizCommand(str, Enum):
     SET_TARGET_TEMPERATURE = "setTargetTemperature"
     SET_TOWEL_DRYER_OPERATING_MODE = "setTowelDryerOperatingMode"
     SET_TOWEL_DRYER_TEMPORARY_STATE = "setTowelDryerTemporaryState"
+    SET_VALVE_SETTINGS = "setValveSettings"
     SET_VENTILATION_CONFIGURATION_MODE = "setVentilationConfigurationMode"
     SET_VENTILATION_MODE = "setVentilationMode"
     SET_WATER_TARGET_TEMPERATURE = "setWaterTargetTemperature"

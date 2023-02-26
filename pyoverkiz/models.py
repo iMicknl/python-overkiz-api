@@ -658,7 +658,7 @@ class HistoryExecution:
     event_time: int
     owner: str = field(repr=obfuscate_email)
     source: str
-    end_time: int
+    end_time: int | None = None
     effective_start_time: int | None = None
     duration: int
     label: str | None = None
@@ -676,7 +676,7 @@ class HistoryExecution:
         event_time: int,
         owner: str,
         source: str,
-        end_time: int,
+        end_time: int | None = None,
         effective_start_time: int | None = None,
         duration: int,
         label: str | None = None,
