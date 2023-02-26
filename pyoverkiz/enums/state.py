@@ -81,6 +81,8 @@ class OverkizState(str, Enum):
     CORE_LOCKED_UNLOCKED = "core:LockedUnlockedState"
     CORE_LUMINANCE = "core:LuminanceState"
     CORE_MANUFACTURER_NAME = "core:ManufacturerNameState"
+    CORE_MIN_SETPOINT = "core:MinSetpointState"
+    CORE_MAX_SETPOINT = "core:MaxSetpointState"
     CORE_MAXIMAL_SHOWER_MANUAL_MODE = "core:MaximalShowerManualModeState"
     CORE_MAXIMAL_TEMPERATURE_MANUAL_MODE = "core:MaximalTemperatureManualModeState"
     CORE_MAXIMUM_HEATING_TARGET_TEMPERATURE = (
@@ -106,6 +108,7 @@ class OverkizState(str, Enum):
     CORE_OPEN_CLOSED_PARTIAL = "core:OpenClosedPartialState"
     CORE_OPEN_CLOSED_PEDESTRIAN = "core:OpenClosedPedestrianState"
     CORE_OPEN_CLOSED_UNKNOWN = "core:OpenClosedUnknownState"
+    CORE_OPEN_CLOSED_VALVE = "core:OpenClosedValveState"
     CORE_OPERATING_MODE = "core:OperatingModeState"
     CORE_PEDESTRIAN_POSITION = "core:PedestrianPositionState"
     CORE_POWER_HEAT_ELECTRICAL_IN = "core:PowerHeatElectricalInState"
