@@ -87,6 +87,7 @@ class OverkizCommand(str, Enum):
     SET_HEATING_LEVEL = "setHeatingLevel"
     SET_HEATING_ON_OFF = "setHeatingOnOffState"
     SET_HEATING_TARGET_TEMPERATURE = "setHeatingTargetTemperature"
+    SET_HOLIDAYS = "setHolidays"
     SET_INTENSITY = "setIntensity"
     SET_LEVEL = "setLevel"
     SET_MANU_AND_SET_POINT_MODES = "setManuAndSetPointModes"
