@@ -72,6 +72,7 @@ class OverkizState(str, Enum):
     CORE_GAS_CONSUMPTION = "core:GasConsumptionState"
     CORE_GAS_DETECTION = "core:GasDetectionState"
     CORE_GREEN_COLOR_INTENSITY = "core:GreenColorIntensityState"
+    CORE_HOLIDAYS_MODE_STATE = "core:HolidaysModeState"
     CORE_HEATING_ON_OFF = "core:HeatingOnOffState"
     CORE_HEATING_STATUS = "core:HeatingStatusState"
     CORE_HEATING_TARGET_TEMPERATURE = "core:HeatingTargetTemperatureState"
