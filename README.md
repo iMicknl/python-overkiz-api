@@ -25,11 +25,7 @@ pip install pyoverkiz
 
 A subset of the API is [documented and maintened](https://somfy-developer.github.io/Somfy-TaHoma-Developer-Mode) by Somfy.
 
-### Local API or Developer mode
-
-See https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode#getting-started
-
-For the moment, only Somfy TaHoma Switch, TaHoma V2 and Connexoon hubs from Somfy Europe can enabled this mode. Not all the devices are returned. You can have more details [here](https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode/issues/20).
+### Cloud API
 
 ```python
 import asyncio
@@ -66,8 +62,6 @@ async def main() -> None:
             print(f"{device.label} ({device.id}) - {device.controllable_name}")
             print(f"{device.widget} - {device.ui_class}")
 
-        await client.register_event_listener()
-
         while True:
             events = await client.fetch_events()
             print(events)
@@ -78,7 +72,13 @@ async def main() -> None:
 asyncio.run(main())
 ```
 
-### Cloud API
+### Local API or Developer mode
+
+
+See https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode#getting-started
+
+For the moment, only Somfy TaHoma Switch, TaHoma V2 and Connexoon hubs from Somfy Europe can enabled this mode. Not all the devices are returned. You can have more details [here](https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode/issues/20).
+
 
 ```python
 import asyncio
