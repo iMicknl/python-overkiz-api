@@ -16,7 +16,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 class TestOverkizClient:
     @fixture
     def client(self):
-        return Overkiz.get_client_for(
+        return Overkiz.create_client(
             Server.SOMFY_EUROPE, "foo", "pass", aiohttp.ClientSession()
         )
 

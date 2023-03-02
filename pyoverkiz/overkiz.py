@@ -153,7 +153,7 @@ SUPPORTED_SERVERS: dict[Server, Callable[[str, str, ClientSession], OverkizClien
 
 class Overkiz:
     @staticmethod
-    def get_client_for(
+    def create_client(
         server: Server, username: str, password: str, session: ClientSession
     ) -> OverkizClient:
         """Get the client for the given server"""

@@ -44,7 +44,7 @@ PASSWORD = ""
 async def main() -> None:
 
     async with ClientSession() as session:
-        client = Overkiz.get_client_for(
+        client = Overkiz.create_client(
             server=Server.SOMFY_EUROPE,
             username=USERNAME,
             password=PASSWORD,
@@ -97,7 +97,7 @@ PASSWORD = ""
 async def main() -> None:
 
     async with ClientSession() as session:
-        client = Overkiz.get_client_for(
+        client = Overkiz.create_client(
             Server.SOMFY_EUROPE, USERNAME, PASSWORD, session
         )
         try:
@@ -111,7 +111,7 @@ async def main() -> None:
         await client.activate_local_token(gateways[0].id, token, "pyoverkiz")
 
         domain = f"gateway-{gateways[0].id}.local"
-        local_client: OverkizClient = Overkiz.get_client_for(
+        local_client: OverkizClient = Overkiz.create_client(
             Server.SOMFY_DEV_MODE, domain, token, session
         )
 
