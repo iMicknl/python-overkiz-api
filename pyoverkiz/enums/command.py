@@ -57,7 +57,7 @@ class OverkizCommand(str, Enum):
     REFRESH_VENTILATION_CONFIGURATION_MODE = "refreshVentilationConfigurationMode"
     REFRESH_VENTILATION_STATE = "refreshVentilationState"
     REFRESH_WATER_TARGET_TEMPERATURE = "refreshWaterTargetTemperature"
-    RING = "ring"
+    RING = "ring"
     RING_WITH_SINGLE_SIMPLE_SEQUENCE = "ringWithSingleSimpleSequence"
     SET_ABSENCE_MODE = "setAbsenceMode"
     SET_ACTIVE_MODE = "setActiveMode"
