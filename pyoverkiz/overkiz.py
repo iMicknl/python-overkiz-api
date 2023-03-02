@@ -119,8 +119,7 @@ SUPPORTED_SERVERS: dict[Server, Callable[[str, str, ClientSession], OverkizClien
         manufacturer="Somfy",
         configuration_url=None,
         session=session,
-        username=domain,  # not used
-        password=token,
+        token=token,
     ),
     Server.SOMFY_AMERICA: lambda username, password, session: DefaultClient(
         name="Somfy (North America)",

@@ -4,6 +4,7 @@ import datetime
 from typing import Any, cast
 
 from aiohttp import FormData
+from attr import define, field
 
 from pyoverkiz.clients.overkiz import OverkizClient
 from pyoverkiz.exceptions import SomfyBadCredentialsException, SomfyServiceException
@@ -14,8 +15,11 @@ SOMFY_CLIENT_ID = "0d8e920c-1478-11e7-a377-02dd59bd3041_1ewvaqmclfogo4kcsoo0c8k4
 SOMFY_CLIENT_SECRET = "12k73w1n540g8o4cokg0cw84cog840k84cwggscwg884004kgk"
 
 
+@define(kw_only=True)
 class SomfyClient(OverkizClient):
 
+    username: str
+    password: str = field(repr=lambda _: "***")
     _access_token: str | None = None
     _refresh_token: str | None = None
     _expires_in: datetime.datetime | None = None
@@ -46,7 +50,7 @@ class SomfyClient(OverkizClient):
         await self._refresh_token_if_expired()
         return await super().delete(path)
 
-    async def _login(self, username: str, password: str) -> bool:
+    async def _login(self) -> bool:
         """
         Authenticate and create an API session allowing access to the other operations.
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
@@ -57,8 +61,8 @@ class SomfyClient(OverkizClient):
             data=FormData(
                 {
                     "grant_type": "password",
-                    "username": username,
-                    "password": password,
+                    "username": self.username,
+                    "password": self.password,
                     "client_id": SOMFY_CLIENT_ID,
                     "client_secret": SOMFY_CLIENT_SECRET,
                 }

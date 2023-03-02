@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from aiohttp import FormData
+from attr import define, field
 
 from pyoverkiz.clients.overkiz import OverkizClient
 from pyoverkiz.exceptions import (
@@ -14,8 +15,13 @@ COZYTOUCH_CLIENT_ID = (
 )
 
 
+@define(kw_only=True)
 class AtlanticCozytouchClient(OverkizClient):
-    async def _login(self, username: str, password: str) -> bool:
+
+    username: str
+    password: str = field(repr=lambda _: "***")
+
+    async def _login(self) -> bool:
         """
         Authenticate and create an API session allowing access to the other operations.
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
@@ -26,8 +32,8 @@ class AtlanticCozytouchClient(OverkizClient):
             data=FormData(
                 {
                     "grant_type": "password",
-                    "username": "GA-PRIVATEPERSON/" + username,
-                    "password": password,
+                    "username": "GA-PRIVATEPERSON/" + self.username,
+                    "password": self.password,
                 }
             ),
             headers={

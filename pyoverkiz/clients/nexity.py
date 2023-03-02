@@ -4,6 +4,7 @@ import asyncio
 from typing import cast
 
 import boto3
+from attr import define, field
 from botocore.config import Config
 from warrant_lite import WarrantLite
 
@@ -16,8 +17,13 @@ NEXITY_COGNITO_USER_POOL = "eu-west-1_wj277ucoI"
 NEXITY_COGNITO_REGION = "eu-west-1"
 
 
+@define(kw_only=True)
 class NexityClient(OverkizClient):
-    async def _login(self, username: str, password: str) -> bool:
+
+    username: str
+    password: str = field(repr=lambda _: "***")
+
+    async def _login(self) -> bool:
         """
         Authenticate and create an API session allowing access to the other operations.
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
@@ -34,8 +40,8 @@ class NexityClient(OverkizClient):
         client = await loop.run_in_executor(None, _get_client)
 
         aws = WarrantLite(
-            username=username,
-            password=password,
+            username=self.username,
+            password=self.password,
             pool_id=NEXITY_COGNITO_USER_POOL,
             client_id=NEXITY_COGNITO_CLIENT_ID,
             client=client,
@@ -59,7 +65,7 @@ class NexityClient(OverkizClient):
 
             sso_token = cast(str, token["token"])
 
-        user_id = username.replace("@", "_-_")  # Replace @ for _-_
+        user_id = self.username.replace("@", "_-_")  # Replace @ for _-_
         payload = {"ssoToken": sso_token, "userId": user_id}
 
         post_response = await self.post("login", data=payload)

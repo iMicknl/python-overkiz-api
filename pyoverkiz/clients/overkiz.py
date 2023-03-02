@@ -61,8 +61,6 @@ async def refresh_listener(invocation: Mapping[str, Any]) -> None:
 class OverkizClient(ABC):
     """Abstract class for the Overkiz API"""
 
-    username: str
-    password: str = field(repr=lambda _: "***")
     name: str
     endpoint: str
     manufacturer: str
@@ -77,8 +75,6 @@ class OverkizClient(ABC):
     @abstractmethod
     async def _login(
         self,
-        username: str,
-        password: str,
     ) -> bool:
         """Login to the server."""
 
@@ -87,7 +83,7 @@ class OverkizClient(ABC):
         Authenticate and create an API session allowing access to the other operations.
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
-        if await self._login(self.username, self.password):
+        if await self._login():
             if register_event_listener:
                 await self.register_event_listener()
         return False
