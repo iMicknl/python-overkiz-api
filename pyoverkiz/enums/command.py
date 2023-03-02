@@ -14,7 +14,7 @@ class OverkizCommand(str, Enum):
     ARM = "arm"
     ARM_PARTIAL_DAY = "armPartialDay"
     ARM_PARTIAL_NIGHT = "armPartialNight"
-    BIP = "bip
+    BIP = "bip"
     CLOSE = "close"
     CLOSE_SLATS = "closeSlats"
     CYCLE = "cycle"
@@ -23,7 +23,7 @@ class OverkizCommand(str, Enum):
     DING_DONG = "dingDong"
     DOWN = "down"
     EXIT_DEROGATION = "exitDerogation"
-    FAST_BIP_SEQUENCE = "fastBipSequence
+    FAST_BIP_SEQUENCE = "fastBipSequence"
     GET_LEVEL = "getLevel"
     GET_NAME = "getName"
     GLOBAL_CONTROL = "globalControl"
