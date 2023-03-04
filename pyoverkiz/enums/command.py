@@ -19,6 +19,7 @@ class OverkizCommand(str, Enum):
     CLOSE = "close"
     CLOSE_SLATS = "closeSlats"
     CYCLE = "cycle"
+    DEACTIVATE_OPTION = "deactivateOption"
     DEPLOY = "deploy"
     DISARM = "disarm"
     DING_DONG = "dingDong"
