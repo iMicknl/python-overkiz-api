@@ -5,6 +5,7 @@ from enum import Enum, unique
 class OverkizCommand(str, Enum):
     """Device commands used by Overkiz."""
 
+    ACTIVATE_OPTION = "activateOption"
     ADVANCED_REFRESH = "advancedRefresh"
     ALARM_OFF = "alarmOff"
     ALARM_ON = "alarmOn"
@@ -238,6 +239,7 @@ class OverkizCommandParam(str, Enum):
     SAAC = "SAAC"
     SECURED = "secured"
     SFC = "SFC"
+    SILENCE = "silence"
     SILENT = "silent"
     SLEEPING_MODE = "sleepingMode"
     STANDARD = "standard"

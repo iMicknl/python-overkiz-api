@@ -7,13 +7,18 @@ class OverkizAttribute(str, Enum):
 
     CORE_FIRMWARE_REVISION = "core:FirmwareRevision"
     CORE_MANUFACTURER = "core:Manufacturer"
+    CORE_MANUFACTURER_REFERENCE = "core:ManufacturerReference"
     CORE_MAX_SETTABLE_VALUE = "core:MaxSettableValue"
     CORE_MEASURED_VALUE_TYPE = "core:MeasuredValueType"
     CORE_MIN_SETTABLE_VALUE = "core:MinSettableValue"
     CORE_ELECTRIC_POWER_CONSUMPTION_STATE_MEASURED_VALUE_TYPE = (
         "core:ElectricPowerConsumptionStateMeasuredValueType"
     )
+    CORE_SUPPORTED_ALIASES = "core:SupportedAliases"
+    CORE_SUPPORTED_OPTIONS = "core:SupportedOptions"
+    CORE_TECHNOLOGY = "core:Technology"
     HOMEKIT_SETUP_CODE = "homekit:SetupCode"
+    OGP_FEATURES = "ogp:Features"
 
 
 @unique
@@ -21,6 +26,7 @@ class OverkizState(str, Enum):
     """Device states used by Overkiz."""
 
     CORE_ACTIVE_ZONES = "core:ActiveZonesState"
+    CORE_ACTIVATED_OPTIONS = "core:ActivatedOptionsState"
     CORE_ASSEMBLY = "core:AssemblyState"
     CORE_AVAILABILITY = "core:AvailabilityState"
     CORE_BATTERY = "core:BatteryState"
