@@ -7,23 +7,11 @@
 
 A fully async and easy to use API client for the (internal) OverKiz API. You can use this client to interact with smart devices connected to the OverKiz platform, used by various vendors like Somfy TaHoma and Atlantic Cozytouch.
 
-This package is written for the Home Assistant [ha-tahoma](https://github.com/iMicknl/ha-tahoma) integration, but could be used by any Python project interacting with OverKiz hubs.
-
-> Somfy TaHoma has an official API, which can be consumed via the [somfy-open-api](https://github.com/tetienne/somfy-open-api). Unfortunately only a few device classes are supported via the official API, thus the need for this API client.
+This package is written for the Home Assistant [Overkiz](https://www.home-assistant.io/integrations/overkiz/) integration, but could be used by any Python project interacting with OverKiz hubs.
 
 ## Supported hubs
 
-- Atlantic Cozytouch
-- Bouygues Flexom
-- Hitachi Hi Kumo
-- Nexity Eugénie
-- Rexel Energeasy Connect
-- Simu (LiveIn2)
-- Somfy Connexoon IO
-- Somfy Connexoon RTS
-- Somfy TaHoma
-- Somfy TaHoma Switch
-- Thermor Cozytouch
+See [pyoverkiz/const.py](./pyoverkiz/const.py)
 
 ## Installation
 
@@ -33,18 +21,35 @@ pip install pyoverkiz
 
 ## Getting started
 
+### API Documentation
+
+A subset of the API is [documented and maintened](https://somfy-developer.github.io/Somfy-TaHoma-Developer-Mode) by Somfy.
+
+### Cloud API
+
 ```python
 import asyncio
 import time
 
-from pyoverkiz.const import SUPPORTED_SERVERS
-from pyoverkiz.client import OverkizClient
+from aiohttp import ClientSession
+
+from pyoverkiz.clients.overkiz import OverkizClient
+from pyoverkiz.const import Server
+from pyoverkiz.overkiz import Overkiz
 
 USERNAME = ""
 PASSWORD = ""
 
+
 async def main() -> None:
-    async with OverkizClient(USERNAME, PASSWORD, server=SUPPORTED_SERVERS["somfy_europe"]) as client:
+
+    async with ClientSession() as session:
+        client = Overkiz.create_client(
+            server=Server.SOMFY_EUROPE,
+            username=USERNAME,
+            password=PASSWORD,
+            session=session
+        )
         try:
             await client.login()
         except Exception as exception:  # pylint: disable=broad-except
@@ -63,7 +68,70 @@ async def main() -> None:
 
             time.sleep(2)
 
+
 asyncio.run(main())
+```
+
+### Local API or Developer mode
+
+
+See https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode#getting-started
+
+For the moment, only Somfy TaHoma Switch, TaHoma V2 and Connexoon hubs from Somfy Europe can enabled this mode. Not all the devices are returned. You can have more details [here](https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode/issues/20).
+
+
+```python
+import asyncio
+import time
+
+from aiohttp import ClientSession
+
+from pyoverkiz.clients.overkiz import OverkizClient
+from pyoverkiz.const import Server
+from pyoverkiz.overkiz import Overkiz
+
+USERNAME = ""
+PASSWORD = ""
+
+
+async def main() -> None:
+
+    async with ClientSession() as session:
+        client = Overkiz.create_client(
+            Server.SOMFY_EUROPE, USERNAME, PASSWORD, session
+        )
+        try:
+            await client.login()
+        except Exception as exception:  # pylint: disable=broad-except
+            print(exception)
+            return
+
+        gateways = await client.get_gateways()
+        token = await client.generate_local_token(gateways[0].id)
+        await client.activate_local_token(gateways[0].id, token, "pyoverkiz")
+
+        domain = f"gateway-{gateways[0].id}.local"
+        local_client: OverkizClient = Overkiz.create_client(
+            Server.SOMFY_DEV_MODE, domain, token, session
+        )
+
+        devices = await local_client.get_devices()
+
+        for device in devices:
+            print(f"{device.label} ({device.id}) - {device.controllable_name}")
+            print(f"{device.widget} - {device.ui_class}")
+
+        await local_client.register_event_listener()
+
+        while True:
+            events = await local_client.fetch_events()
+            print(events)
+
+            time.sleep(2)
+
+
+asyncio.run(main())
+
 ```
 
 ## Development

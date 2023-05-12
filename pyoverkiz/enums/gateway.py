@@ -51,7 +51,7 @@ class GatewayType(IntEnum):
     TAHOMA_RAIL_DIN_S = 108
 
     @classmethod
-    def _missing_(cls, value):  # type: ignore
+    def _missing_(cls, value):  # type: ignore[no-untyped-def]
         _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
         return cls.UNKNOWN
 
@@ -85,7 +85,7 @@ class GatewaySubType(IntEnum):
     # TAHOMA_BOX_C_IO = 12 That’s probably 17, but tahomalink.com says it’s 12
 
     @classmethod
-    def _missing_(cls, value):  # type: ignore
+    def _missing_(cls, value):  # type: ignore[no-untyped-def]
         _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
         return cls.UNKNOWN
 

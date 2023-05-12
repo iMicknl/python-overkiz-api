@@ -1,51 +1,30 @@
-""" Python wrapper for the OverKiz API """
+""" Python wrapper for the OverKiz API"""
+
 from __future__ import annotations
 
-import asyncio
-import datetime
 import urllib.parse
-from collections.abc import Mapping
+from abc import ABC, abstractmethod
 from json import JSONDecodeError
-from types import TracebackType
-from typing import Any, cast
+from typing import Any, Mapping, cast
 
 import backoff
-import boto3
 import humps
-from aiohttp import ClientResponse, ClientSession, FormData, ServerDisconnectedError
-from botocore.config import Config
-from warrant_lite import WarrantLite
+from aiohttp import ClientResponse, ClientSession, ServerDisconnectedError
+from attr import define
+from attrs import field
 
-from pyoverkiz.const import (
-    COZYTOUCH_ATLANTIC_API,
-    COZYTOUCH_CLIENT_ID,
-    NEXITY_API,
-    NEXITY_COGNITO_CLIENT_ID,
-    NEXITY_COGNITO_REGION,
-    NEXITY_COGNITO_USER_POOL,
-    SOMFY_API,
-    SOMFY_CLIENT_ID,
-    SOMFY_CLIENT_SECRET,
-    SUPPORTED_SERVERS,
-)
 from pyoverkiz.exceptions import (
     AccessDeniedToGatewayException,
     BadCredentialsException,
-    CozyTouchBadCredentialsException,
-    CozyTouchServiceException,
     InvalidCommandException,
     InvalidEventListenerIdException,
     InvalidTokenException,
     MaintenanceException,
     MissingAuthorizationTokenException,
-    NexityBadCredentialsException,
-    NexityServiceException,
     NoRegisteredEventListenerException,
     NotAuthenticatedException,
     NotSuchTokenException,
     SessionAndBearerInSameRequestException,
-    SomfyBadCredentialsException,
-    SomfyServiceException,
     TooManyAttemptsBannedException,
     TooManyConcurrentRequestsException,
     TooManyExecutionsException,
@@ -61,7 +40,6 @@ from pyoverkiz.models import (
     Gateway,
     HistoryExecution,
     LocalToken,
-    OverkizServer,
     Place,
     Scenario,
     Setup,
@@ -79,284 +57,81 @@ async def refresh_listener(invocation: Mapping[str, Any]) -> None:
     await invocation["args"][0].register_event_listener()
 
 
-# pylint: disable=too-many-instance-attributes, too-many-branches
+@define(kw_only=True)
+class OverkizClient(ABC):
+    """Abstract class for the Overkiz API"""
 
-
-class OverkizClient:
-    """Interface class for the Overkiz API"""
-
-    username: str
-    password: str
-    server: OverkizServer
-    setup: Setup | None
-    devices: list[Device]
-    gateways: list[Gateway]
-    event_listener_id: str | None
+    name: str
+    endpoint: str
+    manufacturer: str
     session: ClientSession
+    configuration_url: str | None
+    event_listener_id: str | None = field(default=None, init=False)
+    setup: Setup | None = field(default=None, init=False)
+    devices: list[Device] = field(factory=list, init=False)
+    gateways: list[Gateway] = field(factory=list, init=False)
+    _ssl: bool = field(default=True, init=False)
 
-    _refresh_token: str | None = None
-    _expires_in: datetime.datetime | None = None
-    _access_token: str | None = None
-
-    def __init__(
+    @abstractmethod
+    async def _login(
         self,
-        username: str,
-        password: str,
-        server: OverkizServer,
-        token: str | None = None,
-        session: ClientSession | None = None,
-    ) -> None:
-        """
-        Constructor
-
-        :param username: the username
-        :param password: the password
-        :param server: OverkizServer
-        :param session: optional ClientSession
-        """
-
-        self.username = username
-        self.password = password
-        self.server = server
-        self._access_token = token
-
-        self.setup: Setup | None = None
-        self.devices: list[Device] = []
-        self.gateways: list[Gateway] = []
-        self.event_listener_id: str | None = None
-
-        self.session = session if session else ClientSession()
-
-    async def __aenter__(self) -> OverkizClient:
-        return self
-
-    async def __aexit__(
-        self,
-        exc_type: type[BaseException] | None,
-        exc_value: BaseException | None,
-        traceback: TracebackType | None,
-    ) -> None:
-        await self.close()
-
-    async def close(self) -> None:
-        """Close the session."""
-        if self.event_listener_id:
-            await self.unregister_event_listener()
-
-        await self.session.close()
-
-    async def login(
-        self,
-        register_event_listener: bool | None = True,
     ) -> bool:
+        """Login to the server."""
+
+    async def login(self, register_event_listener: bool = True) -> bool:
         """
         Authenticate and create an API session allowing access to the other operations.
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
-        # Local authentication
-        if "/enduser-mobile-web/1/enduserAPI/" in self.server.endpoint:
+        if await self._login():
             if register_event_listener:
                 await self.register_event_listener()
-            else:
-                # Call a simple endpoint to verify if our token is correct
-                await self.get_gateways()
-
-            return True
-
-        # Somfy TaHoma authentication using access_token
-        if self.server == SUPPORTED_SERVERS["somfy_europe"]:
-            await self.somfy_tahoma_get_access_token()
-
-            if register_event_listener:
-                await self.register_event_listener()
-
-            return True
-
-        # CozyTouch authentication using jwt
-        if self.server == SUPPORTED_SERVERS["atlantic_cozytouch"]:
-            jwt = await self.cozytouch_login()
-            payload = {"jwt": jwt}
-
-        # Nexity authentication using ssoToken
-        elif self.server == SUPPORTED_SERVERS["nexity"]:
-            sso_token = await self.nexity_login()
-            user_id = self.username.replace("@", "_-_")  # Replace @ for _-_
-            payload = {"ssoToken": sso_token, "userId": user_id}
-
-        # Regular authentication using userId+userPassword
-        else:
-            payload = {"userId": self.username, "userPassword": self.password}
-
-        response = await self.__post("login", data=payload)
-
-        if response.get("success"):
-            if register_event_listener:
-                await self.register_event_listener()
-            return True
-
         return False
 
-    async def somfy_tahoma_get_access_token(self) -> str:
-        """
-        Authenticate via Somfy identity and acquire access_token.
-        """
-        # Request access token
-        async with self.session.post(
-            SOMFY_API + "/oauth/oauth/v2/token",
-            data=FormData(
-                {
-                    "grant_type": "password",
-                    "username": self.username,
-                    "password": self.password,
-                    "client_id": SOMFY_CLIENT_ID,
-                    "client_secret": SOMFY_CLIENT_SECRET,
-                }
-            ),
-            headers={
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-        ) as response:
-            token = await response.json()
+    @property
+    def _headers(self) -> dict[str, str]:
+        return {}
 
-            # { "message": "error.invalid.grant", "data": [], "uid": "xxx" }
-            if "message" in token and token["message"] == "error.invalid.grant":
-                raise SomfyBadCredentialsException(token["message"])
-
-            if "access_token" not in token:
-                raise SomfyServiceException("No Somfy access token provided.")
-
-            self._access_token = cast(str, token["access_token"])
-            self._refresh_token = token["refresh_token"]
-            self._expires_in = datetime.datetime.now() + datetime.timedelta(
-                seconds=token["expires_in"] - 5
-            )
-
-            return self._access_token
-
-    async def refresh_token(self) -> None:
-        """
-        Update the access and the refresh token. The refresh token will be valid 14 days.
-        """
-        if self.server != SUPPORTED_SERVERS["somfy_europe"]:
-            return
-
-        if not self._refresh_token:
-            raise ValueError("No refresh token provided. Login method must be used.")
-
-        # &grant_type=refresh_token&refresh_token=REFRESH_TOKEN
-        # Request access token
-        async with self.session.post(
-            SOMFY_API + "/oauth/oauth/v2/token",
-            data=FormData(
-                {
-                    "grant_type": "refresh_token",
-                    "refresh_token": self._refresh_token,
-                    "client_id": SOMFY_CLIENT_ID,
-                    "client_secret": SOMFY_CLIENT_SECRET,
-                }
-            ),
-            headers={
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-        ) as response:
-            token = await response.json()
-            # { "message": "error.invalid.grant", "data": [], "uid": "xxx" }
-            if "message" in token and token["message"] == "error.invalid.grant":
-                raise SomfyBadCredentialsException(token["message"])
-
-            if "access_token" not in token:
-                raise SomfyServiceException("No Somfy access token provided.")
-
-            self._access_token = cast(str, token["access_token"])
-            self._refresh_token = token["refresh_token"]
-            self._expires_in = datetime.datetime.now() + datetime.timedelta(
-                seconds=token["expires_in"] - 5
-            )
-
-    async def cozytouch_login(self) -> str:
-        """
-        Authenticate via CozyTouch identity and acquire JWT token.
-        """
-        # Request access token
-        async with self.session.post(
-            COZYTOUCH_ATLANTIC_API + "/token",
-            data=FormData(
-                {
-                    "grant_type": "password",
-                    "username": "GA-PRIVATEPERSON/" + self.username,
-                    "password": self.password,
-                }
-            ),
-            headers={
-                "Authorization": f"Basic {COZYTOUCH_CLIENT_ID}",
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-        ) as response:
-            token = await response.json()
-
-            # {'error': 'invalid_grant',
-            # 'error_description': 'Provided Authorization Grant is invalid.'}
-            if "error" in token and token["error"] == "invalid_grant":
-                raise CozyTouchBadCredentialsException(token["error_description"])
-
-            if "token_type" not in token:
-                raise CozyTouchServiceException("No CozyTouch token provided.")
-
-        # Request JWT
-        async with self.session.get(
-            COZYTOUCH_ATLANTIC_API + "/magellan/accounts/jwt",
-            headers={"Authorization": f"Bearer {token['access_token']}"},
-        ) as response:
-            jwt = await response.text()
-
-            if not jwt:
-                raise CozyTouchServiceException("No JWT token provided.")
-
-            jwt = jwt.strip('"')  # Remove surrounding quotes
-
-            return jwt
-
-    async def nexity_login(self) -> str:
-        """
-        Authenticate via Nexity identity and acquire SSO token.
-        """
-        loop = asyncio.get_event_loop()
-
-        def _get_client() -> boto3.session.Session.client:
-            return boto3.client(
-                "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
-            )
-
-        # Request access token
-        client = await loop.run_in_executor(None, _get_client)
-
-        aws = WarrantLite(
-            username=self.username,
-            password=self.password,
-            pool_id=NEXITY_COGNITO_USER_POOL,
-            client_id=NEXITY_COGNITO_CLIENT_ID,
-            client=client,
-        )
-
-        try:
-            tokens = await loop.run_in_executor(None, aws.authenticate_user)
-        except Exception as error:
-            raise NexityBadCredentialsException() from error
-
-        id_token = tokens["AuthenticationResult"]["IdToken"]
+    async def get(
+        self,
+        path: str,
+    ) -> Any:
+        """Make a GET request to the OverKiz API"""
 
         async with self.session.get(
-            NEXITY_API + "/deploy/api/v1/domotic/token",
-            headers={
-                "Authorization": id_token,
-            },
+            f"{self.endpoint}{path}", headers=self._headers, ssl=self._ssl
         ) as response:
-            token = await response.json()
+            await self.check_response(response)
+            return await response.json()
 
-            if "token" not in token:
-                raise NexityServiceException("No Nexity SSO token provided.")
+    async def post(
+        self,
+        path: str,
+        payload: JSON | None = None,
+        data: JSON | None = None,
+    ) -> Any:
+        """Make a POST request to the OverKiz API"""
 
-            return cast(str, token["token"])
+        async with self.session.post(
+            f"{self.endpoint}{path}",
+            data=data,
+            json=payload,
+            headers=self._headers,
+            ssl=self._ssl,
+        ) as response:
+            await self.check_response(response)
+            return await response.json()
+
+    async def delete(
+        self,
+        path: str,
+    ) -> None:
+        """Make a DELETE request to the OverKiz API"""
+
+        async with self.session.delete(
+            f"{self.endpoint}{path}", headers=self._headers, ssl=self._ssl
+        ) as response:
+            await self.check_response(response)
 
     @backoff.on_exception(
         backoff.expo,
@@ -384,7 +159,7 @@ class OverkizClient:
         if self.setup and not refresh:
             return self.setup
 
-        response = await self.__get("setup")
+        response = await self.get("setup")
 
         setup = Setup(**humps.decamelize(response))
 
@@ -411,7 +186,7 @@ class OverkizClient:
 
         This data will be masked to not return any confidential or PII data.
         """
-        response = await self.__get("setup")
+        response = await self.get("setup")
 
         return obfuscate_sensitive_data(response)
 
@@ -429,7 +204,7 @@ class OverkizClient:
         if self.devices and not refresh:
             return self.devices
 
-        response = await self.__get("setup/devices")
+        response = await self.get("setup/devices")
         devices = [Device(**d) for d in humps.decamelize(response)]
 
         # Cache response
@@ -453,7 +228,7 @@ class OverkizClient:
         if self.gateways and not refresh:
             return self.gateways
 
-        response = await self.__get("setup/gateways")
+        response = await self.get("setup/gateways")
         gateways = [Gateway(**g) for g in humps.decamelize(response)]
 
         # Cache response
@@ -473,7 +248,7 @@ class OverkizClient:
         """
         List execution history
         """
-        response = await self.__get("history/executions")
+        response = await self.get("history/executions")
         execution_history = [HistoryExecution(**h) for h in humps.decamelize(response)]
 
         return execution_history
@@ -485,7 +260,7 @@ class OverkizClient:
         """
         Retrieve a particular setup device definition
         """
-        response: dict = await self.__get(
+        response: dict = await self.get(
             f"setup/devices/{urllib.parse.quote_plus(deviceurl)}"
         )
 
@@ -498,7 +273,7 @@ class OverkizClient:
         """
         Retrieve states of requested device
         """
-        response = await self.__get(
+        response = await self.get(
             f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/states"
         )
         state = [State(**s) for s in humps.decamelize(response)]
@@ -512,24 +287,7 @@ class OverkizClient:
         """
         Ask the box to refresh all devices states for protocols supporting that operation
         """
-        await self.__post("setup/devices/states/refresh")
-
-    @backoff.on_exception(backoff.expo, TooManyConcurrentRequestsException, max_tries=5)
-    async def register_event_listener(self) -> str:
-        """
-        Register a new setup event listener on the current session and return a new
-        listener id.
-        Only one listener may be registered on a given session.
-        Registering an new listener will invalidate the previous one if any.
-        Note that registering an event listener drastically reduces the session
-        timeout : listening sessions are expected to call the /events/{listenerId}/fetch
-        API on a regular basis.
-        """
-        response = await self.__post("events/register")
-        listener_id = cast(str, response.get("id"))
-        self.event_listener_id = listener_id
-
-        return listener_id
+        await self.post("setup/devices/states/refresh")
 
     @backoff.on_exception(backoff.expo, TooManyConcurrentRequestsException, max_tries=5)
     @backoff.on_exception(
@@ -548,19 +306,34 @@ class OverkizClient:
         Per-session rate-limit : 1 calls per 1 SECONDS period for this particular
         operation (polling)
         """
-        await self._refresh_token_if_expired()
-        response = await self.__post(f"events/{self.event_listener_id}/fetch")
+        response = await self.post(f"events/{self.event_listener_id}/fetch")
         events = [Event(**e) for e in humps.decamelize(response)]
 
         return events
+
+    @backoff.on_exception(backoff.expo, TooManyConcurrentRequestsException, max_tries=5)
+    async def register_event_listener(self) -> str:
+        """
+        Register a new setup event listener on the current session and return a new
+        listener id.
+        Only one listener may be registered on a given session.
+        Registering an new listener will invalidate the previous one if any.
+        Note that registering an event listener drastically reduces the session
+        timeout : listening sessions are expected to call the /events/{listenerId}/fetch
+        API on a regular basis.
+        """
+        response = await self.post("events/register")
+        listener_id = cast(str, response.get("id"))
+        self.event_listener_id = listener_id
+
+        return listener_id
 
     async def unregister_event_listener(self) -> None:
         """
         Unregister an event listener.
         API response status is always 200, even on unknown listener ids.
         """
-        await self._refresh_token_if_expired()
-        await self.__post(f"events/{self.event_listener_id}/unregister")
+        await self.post(f"events/{self.event_listener_id}/unregister")
         self.event_listener_id = None
 
     @backoff.on_exception(
@@ -568,7 +341,7 @@ class OverkizClient:
     )
     async def get_current_execution(self, exec_id: str) -> Execution:
         """Get an action group execution currently running"""
-        response = await self.__get(f"exec/current/{exec_id}")
+        response = await self.get(f"exec/current/{exec_id}")
         execution = Execution(**humps.decamelize(response))
 
         return execution
@@ -578,7 +351,7 @@ class OverkizClient:
     )
     async def get_current_executions(self) -> list[Execution]:
         """Get all action groups executions currently running"""
-        response = await self.__get("exec/current")
+        response = await self.get("exec/current")
         executions = [Execution(**e) for e in humps.decamelize(response)]
 
         return executions
@@ -588,7 +361,7 @@ class OverkizClient:
     )
     async def get_api_version(self) -> str:
         """Get the API version (local only)"""
-        response = await self.__get("apiVersion")
+        response = await self.get("apiVersion")
 
         return cast(str, response["protocolVersion"])
 
@@ -618,7 +391,7 @@ class OverkizClient:
     )
     async def cancel_command(self, exec_id: str) -> None:
         """Cancel a running setup-level execution"""
-        await self.__delete(f"/exec/current/setup/{exec_id}")
+        await self.delete(f"/exec/current/setup/{exec_id}")
 
     @backoff.on_exception(
         backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
@@ -634,7 +407,7 @@ class OverkizClient:
             "label": label,
             "actions": [{"deviceURL": device_url, "commands": commands}],
         }
-        response: dict = await self.__post("exec/apply", payload)
+        response: dict = await self.post("exec/apply", payload)
         return cast(str, response["execId"])
 
     @backoff.on_exception(
@@ -645,7 +418,7 @@ class OverkizClient:
     )
     async def get_scenarios(self) -> list[Scenario]:
         """List the scenarios"""
-        response = await self.__get("actionGroups")
+        response = await self.get("actionGroups")
         return [Scenario(**scenario) for scenario in response]
 
     @backoff.on_exception(
@@ -656,7 +429,7 @@ class OverkizClient:
     )
     async def get_places(self) -> Place:
         """List the places"""
-        response = await self.__get("setup/places")
+        response = await self.get("setup/places")
         places = Place(**humps.decamelize(response))
         return places
 
@@ -671,7 +444,7 @@ class OverkizClient:
         Generates a new token
         Access scope : Full enduser API access (enduser/*)
         """
-        response = await self.__get(f"config/{gateway_id}/local/tokens/generate")
+        response = await self.get(f"config/{gateway_id}/local/tokens/generate")
 
         return cast(str, response["token"])
 
@@ -688,7 +461,7 @@ class OverkizClient:
         Create a token
         Access scope : Full enduser API access (enduser/*)
         """
-        response = await self.__post(
+        response = await self.post(
             f"config/{gateway_id}/local/tokens",
             {"label": label, "token": token, "scope": scope},
         )
@@ -708,7 +481,7 @@ class OverkizClient:
         Get all gateway tokens with the given scope
         Access scope : Full enduser API access (enduser/*)
         """
-        response = await self.__get(f"config/{gateway_id}/local/tokens/{scope}")
+        response = await self.get(f"config/{gateway_id}/local/tokens/{scope}")
         local_tokens = [LocalToken(**lt) for lt in humps.decamelize(response)]
 
         return local_tokens
@@ -724,7 +497,7 @@ class OverkizClient:
         Delete a token
         Access scope : Full enduser API access (enduser/*)
         """
-        await self.__delete(f"config/{gateway_id}/local/tokens/{uuid}")
+        await self.delete(f"config/{gateway_id}/local/tokens/{uuid}")
 
         return True
 
@@ -733,7 +506,7 @@ class OverkizClient:
     )
     async def execute_scenario(self, oid: str) -> str:
         """Execute a scenario"""
-        response = await self.__post(f"exec/{oid}")
+        response = await self.post(f"exec/{oid}")
         return cast(str, response["execId"])
 
     @backoff.on_exception(
@@ -744,57 +517,15 @@ class OverkizClient:
     )
     async def execute_scheduled_scenario(self, oid: str, timestamp: int) -> str:
         """Execute a scheduled scenario"""
-        response = await self.__post(f"exec/schedule/{oid}/{timestamp}")
+        response = await self.post(f"exec/schedule/{oid}/{timestamp}")
         return cast(str, response["triggerId"])
-
-    async def __get(self, path: str) -> Any:
-        """Make a GET request to the OverKiz API"""
-        headers = {}
-
-        await self._refresh_token_if_expired()
-        if self._access_token:
-            headers["Authorization"] = f"Bearer {self._access_token}"
-
-        async with self.session.get(
-            f"{self.server.endpoint}{path}",
-            headers=headers,
-        ) as response:
-            await self.check_response(response)
-            return await response.json()
-
-    async def __post(
-        self, path: str, payload: JSON | None = None, data: JSON | None = None
-    ) -> Any:
-        """Make a POST request to the OverKiz API"""
-        headers = {}
-
-        if path != "login" and self._access_token:
-            await self._refresh_token_if_expired()
-            headers["Authorization"] = f"Bearer {self._access_token}"
-
-        async with self.session.post(
-            f"{self.server.endpoint}{path}", data=data, json=payload, headers=headers
-        ) as response:
-            await self.check_response(response)
-            return await response.json()
-
-    async def __delete(self, path: str) -> None:
-        """Make a DELETE request to the OverKiz API"""
-        headers = {}
-
-        await self._refresh_token_if_expired()
-
-        if self._access_token:
-            headers["Authorization"] = f"Bearer {self._access_token}"
-
-        async with self.session.delete(
-            f"{self.server.endpoint}{path}", headers=headers
-        ) as response:
-            await self.check_response(response)
 
     @staticmethod
     async def check_response(response: ClientResponse) -> None:
         """Check the response returned by the OverKiz API"""
+
+        # pylint: disable=too-many-branches
+
         if response.status in [200, 204]:
             return
 
@@ -875,15 +606,3 @@ class OverkizClient:
                 raise AccessDeniedToGatewayException(message)
 
         raise Exception(message if message else result)
-
-    async def _refresh_token_if_expired(self) -> None:
-        """Check if token is expired and request a new one."""
-        if (
-            self._expires_in
-            and self._refresh_token
-            and self._expires_in <= datetime.datetime.now()
-        ):
-            await self.refresh_token()
-
-            if self.event_listener_id:
-                await self.register_event_listener()
