@@ -26,8 +26,6 @@ def obfuscate_sensitive_data(data: dict[str, Any]) -> JSON:
     """Mask Overkiz JSON data to remove sensitive data"""
     mask_next_value = False
 
-    print(data)
-
     for key, value in data.items():
         if key in ["gatewayId", "id", "deviceURL"]:
             data[key] = obfuscate_id(value)
