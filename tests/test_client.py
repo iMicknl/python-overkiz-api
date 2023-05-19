@@ -152,6 +152,44 @@ class TestOverkizClient:
                 assert device.device_address
                 assert device.protocol
 
+    @pytest.mark.parametrize(
+        "fixture_name",
+        [
+            ("setup_cozytouch.json"),
+            ("setup_cozytouch_v2.json"),
+            ("setup_cozytouch_2.json"),
+            ("setup_cozytouch_3.json"),
+            ("setup_cozytouch_4.json"),
+            ("setup_hi_kumo.json"),
+            ("setup_hi_kumo_2.json"),
+            ("setup_nexity.json"),
+            ("setup_nexity_2.json"),
+            ("setup_rexel.json"),
+            ("setup_tahoma_1.json"),
+            ("setup_tahoma_3.json"),
+            ("setup_tahoma_climate.json"),
+            ("setup_tahoma_oceania.json"),
+            ("setup_tahoma_pro.json"),
+            ("setup_hue_and_low_speed.json"),
+            ("setup_tahoma_siren_io.json"),
+            ("setup_tahoma_siren_rtd.json"),
+            ("setup_tahoma_be.json"),
+            ("setup_local.json"),
+            ("setup_local_tahoma.json"),
+        ],
+    )
+    @pytest.mark.asyncio
+    async def test_get_diagnostic_data(self, client: OverkizClient, fixture_name: str):
+        with open(
+            os.path.join(CURRENT_DIR, "fixtures/setup/" + fixture_name),
+            encoding="utf-8",
+        ) as setup_mock:
+            resp = MockResponse(setup_mock.read())
+
+        with patch.object(aiohttp.ClientSession, "get", return_value=resp):
+            diagnostics = await client.get_diagnostic_data()
+            assert (diagnostics)
+
 
 class MockResponse:
     def __init__(self, text, status=200):
