@@ -13,7 +13,7 @@
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "poetry config virtualenvs.create false && poetry install --no-interaction",
+	"postCreateCommand": "poetry config virtualenvs.create false && poetry install --no-interaction && pre-commit install",
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
