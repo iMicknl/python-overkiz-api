@@ -86,7 +86,6 @@ class TestOverkizClient:
 
             for event in events:
                 for state in event.device_states:
-
                     if state.type == 0:
                         assert state.value is None
 
@@ -188,7 +187,7 @@ class TestOverkizClient:
 
         with patch.object(aiohttp.ClientSession, "get", return_value=resp):
             diagnostics = await client.get_diagnostic_data()
-            assert (diagnostics)
+            assert diagnostics
 
 
 class MockResponse:
