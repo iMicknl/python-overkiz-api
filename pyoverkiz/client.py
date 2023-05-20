@@ -809,7 +809,7 @@ class OverkizClient:
             ) from error
 
         if result.get("errorCode"):
-            message = result.get("error")
+            message = result.get("error").strip("'")
 
             # {"errorCode": "AUTHENTICATION_ERROR",
             # "error": "Too many requests, try again later : login with xxx@xxx.tld"}
@@ -817,19 +817,19 @@ class OverkizClient:
                 raise TooManyRequestsException(message)
 
             # {"errorCode": "AUTHENTICATION_ERROR", "error": "Bad credentials"}
-            if "Bad credentials" in message:
+            if message == "Bad credentials":
                 raise BadCredentialsException(message)
 
             # {"errorCode": "RESOURCE_ACCESS_DENIED", "error": "Not authenticated"}
-            if "Not authenticated" in message:
+            if message == "Not authenticated":
                 raise NotAuthenticatedException(message)
 
             # {"error":"Missing authorization token.","errorCode":"RESOURCE_ACCESS_DENIED"}
-            if "Missing authorization token" in message:
+            if message == "Missing authorization token.":
                 raise MissingAuthorizationTokenException(message)
 
             # {"error": "Server busy, please try again later. (Too many executions)"}
-            if "Server busy, please try again later" in message:
+            if message == "Server busy, please try again later. (Too many executions)":
                 raise TooManyExecutionsException(message)
 
             # {"error": "UNSUPPORTED_OPERATION", "error": "No such command : ..."}
@@ -840,18 +840,21 @@ class OverkizClient:
             if "Invalid event listener id" in message:
                 raise InvalidEventListenerIdException(message)
 
-            # {'errorCode': 'UNSPECIFIED_ERROR', 'error': 'No registered event listener.'}
-            if "No registered event listener" in message:
+            # {'errorCode': 'UNSPECIFIED_ERROR', 'error': 'No registered event listener'}
+            if message == "No registered event listener":
                 raise NoRegisteredEventListenerException(message)
 
             # {"errorCode": "RESOURCE_ACCESS_DENIED",  "error": "too many concurrent requests"}
-            if "too many concurrent requests" in message:
+            if message == "too many concurrent requests":
                 raise TooManyConcurrentRequestsException(message)
 
-            if "Cannot use JSESSIONID and bearer token in same request" in message:
+            if message == "Cannot use JSESSIONID and bearer token in same request":
                 raise SessionAndBearerInSameRequestException(message)
 
-            if "Too many attempts with an invalid token, temporarily banned" in message:
+            if (
+                message
+                == "Too many attempts with an invalid token, temporarily banned."
+            ):
                 raise TooManyAttemptsBannedException(message)
 
             if "Invalid token : " in message:
@@ -864,7 +867,7 @@ class OverkizClient:
                 raise UnknownUserException(message)
 
             # {"error":"Unknown object.","errorCode":"UNSPECIFIED_ERROR"}
-            if "Unknown object" in message:
+            if message == "Unknown object.":
                 raise UnknownObjectException(message)
 
             # {'errorCode': 'RESOURCE_ACCESS_DENIED', 'error': 'Access denied to gateway #1234-5678-1234 for action ADD_TOKEN'}
