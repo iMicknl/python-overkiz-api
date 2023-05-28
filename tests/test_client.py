@@ -110,7 +110,7 @@ class TestOverkizClient:
     @pytest.mark.parametrize(
         "fixture_name, device_count",
         [
-            ("setup_3_gateways.json", 8),
+            ("setup_3_gateways.json", 37),
             ("setup_cozytouch.json", 12),
             ("setup_cozytouch_v2.json", 5),
             ("setup_cozytouch_2.json", 15),
@@ -155,6 +155,7 @@ class TestOverkizClient:
     @pytest.mark.parametrize(
         "fixture_name",
         [
+            ("setup_3_gateways.json"),
             ("setup_cozytouch.json"),
             ("setup_cozytouch_v2.json"),
             ("setup_cozytouch_2.json"),
