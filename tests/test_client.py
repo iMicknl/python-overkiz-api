@@ -108,32 +108,35 @@ class TestOverkizClient:
                         assert isinstance(state.value, dict)
 
     @pytest.mark.parametrize(
-        "fixture_name, device_count",
+        "fixture_name, device_count, gateway_count",
         [
-            ("setup_cozytouch.json", 12),
-            ("setup_cozytouch_v2.json", 5),
-            ("setup_cozytouch_2.json", 15),
-            ("setup_cozytouch_3.json", 15),
-            ("setup_hi_kumo.json", 3),
-            ("setup_hi_kumo_2.json", 3),
-            ("setup_nexity.json", 18),
-            ("setup_nexity_2.json", 17),
-            ("setup_rexel.json", 18),
-            ("setup_tahoma_1.json", 1),
-            ("setup_tahoma_3.json", 39),
-            ("setup_tahoma_climate.json", 19),
-            ("setup_tahoma_oceania.json", 3),
-            ("setup_tahoma_pro.json", 12),
-            ("setup_hue_and_low_speed.json", 40),
-            ("setup_tahoma_siren_io.json", 11),
-            ("setup_tahoma_siren_rtd.json", 31),
-            ("setup_tahoma_be.json", 15),
-            ("setup_local.json", 3),
-            ("setup_local_tahoma.json", 8),
+            ("setup_3_gateways.json", 37, 3),
+            ("setup_cozytouch.json", 12, 1),
+            ("setup_cozytouch_v2.json", 5, 1),
+            ("setup_cozytouch_2.json", 15, 1),
+            ("setup_cozytouch_3.json", 15, 1),
+            ("setup_hi_kumo.json", 3, 1),
+            ("setup_hi_kumo_2.json", 3, 1),
+            ("setup_nexity.json", 18, 1),
+            ("setup_nexity_2.json", 17, 1),
+            ("setup_rexel.json", 18, 1),
+            ("setup_tahoma_1.json", 1, 1),
+            ("setup_tahoma_3.json", 39, 1),
+            ("setup_tahoma_climate.json", 19, 1),
+            ("setup_tahoma_oceania.json", 3, 1),
+            ("setup_tahoma_pro.json", 12, 1),
+            ("setup_hue_and_low_speed.json", 40, 1),
+            ("setup_tahoma_siren_io.json", 11, 1),
+            ("setup_tahoma_siren_rtd.json", 31, 1),
+            ("setup_tahoma_be.json", 15, 1),
+            ("setup_local.json", 3, 1),
+            ("setup_local_tahoma.json", 8, 1),
         ],
     )
     @pytest.mark.asyncio
-    async def test_get_setup(self, client, fixture_name: str, device_count: int):
+    async def test_get_setup(
+        self, client, fixture_name: str, device_count: int, gateway_count: int
+    ):
         with open(
             os.path.join(CURRENT_DIR, "fixtures/setup/" + fixture_name),
             encoding="utf-8",
@@ -144,7 +147,7 @@ class TestOverkizClient:
             setup = await client.get_setup()
 
             assert len(setup.devices) == device_count
-            assert len(setup.gateways) == 1
+            assert len(setup.gateways) == gateway_count
 
             for device in setup.devices:
                 assert device.gateway_id
@@ -154,6 +157,7 @@ class TestOverkizClient:
     @pytest.mark.parametrize(
         "fixture_name",
         [
+            ("setup_3_gateways.json"),
             ("setup_cozytouch.json"),
             ("setup_cozytouch_v2.json"),
             ("setup_cozytouch_2.json"),
