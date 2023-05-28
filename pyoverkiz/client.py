@@ -809,7 +809,7 @@ class OverkizClient:
             ) from error
 
         if result.get("errorCode"):
-            message = result.get("error").strip("'")
+            message = result.get("error").strip('"')
 
             # {"errorCode": "AUTHENTICATION_ERROR",
             # "error": "Too many requests, try again later : login with xxx@xxx.tld"}
