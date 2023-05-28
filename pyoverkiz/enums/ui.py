@@ -132,6 +132,7 @@ class UIWidget(str, Enum):
     )
     CUMULATIVE_WATER_CONSUMPTION_SENSOR = "CumulativeWaterConsumptionSensor"
     CURTAIN_TRACK_UNO = "CurtainTrackUno"
+    CYCLIC_GARAGE_DOOR = "CyclicGarageDoor"
     CYCLIC_GENERIC = "CyclicGeneric"
     DHW_SET_POINT = "DHWSetPoint"
     DE_DIETRICH_BOILER = "DeDietrichBoiler"
