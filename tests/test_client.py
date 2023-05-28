@@ -108,7 +108,7 @@ class TestOverkizClient:
                         assert isinstance(state.value, dict)
 
     @pytest.mark.parametrize(
-        "fixture_name, device_count, gateways",
+        "fixture_name, device_count, gateway_count",
         [
             ("setup_3_gateways.json", 37, 3),
             ("setup_cozytouch.json", 12, 1),
@@ -135,7 +135,7 @@ class TestOverkizClient:
     )
     @pytest.mark.asyncio
     async def test_get_setup(
-        self, client, fixture_name: str, device_count: int, gateway_count: int = 1
+        self, client, fixture_name: str, device_count: int, gateway_count: int
     ):
         with open(
             os.path.join(CURRENT_DIR, "fixtures/setup/" + fixture_name),
