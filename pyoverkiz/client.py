@@ -43,6 +43,7 @@ from pyoverkiz.exceptions import (
     NoRegisteredEventListenerException,
     NotAuthenticatedException,
     NotSuchTokenException,
+    ServiceUnavailableException,
     SessionAndBearerInSameRequestException,
     SomfyBadCredentialsException,
     SomfyServiceException,
@@ -802,8 +803,13 @@ class OverkizClient:
             result = await response.json(content_type=None)
         except JSONDecodeError as error:
             result = await response.text()
-            if "Server is down for maintenance" in result:
+
+            if "is down for maintenance" in result:
                 raise MaintenanceException("Server is down for maintenance") from error
+
+            if response.status == 503:
+                raise ServiceUnavailableException(result) from error
+
             raise Exception(
                 f"Unknown error while requesting {response.url}. {response.status} - {result}"
             ) from error

@@ -6,6 +6,7 @@ import aiohttp
 import pytest
 from pytest import fixture
 
+from pyoverkiz import exceptions
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.enums import DataType
@@ -193,16 +194,50 @@ class TestOverkizClient:
             diagnostics = await client.get_diagnostic_data()
             assert diagnostics
 
+    @pytest.mark.parametrize(
+        "fixture_name, status_code, exception",
+        [
+            ("cloud/503-empty.html", 503, exceptions.ServiceUnavailableException),
+            ("cloud/503-maintenance.html", 503, exceptions.MaintenanceException),
+            (
+                "cloud/access-denied-to-gateway.json",
+                400,
+                exceptions.AccessDeniedToGatewayException,
+            ),
+        ],
+    )
+    @pytest.mark.asyncio
+    async def test_check_response_exception_handling(
+        self,
+        client: OverkizClient,
+        fixture_name: str,
+        status_code: int,
+        exception: Exception,
+    ):
+        with pytest.raises(exception):
+            if fixture_name:
+                with open(
+                    os.path.join(CURRENT_DIR, "fixtures/exceptions/" + fixture_name),
+                    encoding="utf-8",
+                ) as raw_events:
+                    resp = MockResponse(raw_events.read(), status_code)
+            else:
+                resp = MockResponse(None, status_code)
+
+            await client.check_response(resp)
+
 
 class MockResponse:
-    def __init__(self, text, status=200):
+    def __init__(self, text, status=200, url=""):
         self._text = text
         self.status = status
+        self.url = url
 
     async def text(self):
         return self._text
 
-    async def json(self):
+    # pylint: disable=unused-argument
+    async def json(self, content_type=None):
         return json.loads(self._text)
 
     async def __aexit__(self, exc_type, exc, tb):

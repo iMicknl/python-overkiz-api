@@ -26,7 +26,11 @@ class TooManyConcurrentRequestsException(BaseOverkizException):
     pass
 
 
-class MaintenanceException(BaseOverkizException):
+class ServiceUnavailableException(BaseOverkizException):
+    pass
+
+
+class MaintenanceException(ServiceUnavailableException):
     pass
 
 
