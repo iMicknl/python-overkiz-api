@@ -204,6 +204,36 @@ class TestOverkizClient:
                 exceptions.AccessDeniedToGatewayException,
                 400,
             ),
+            (
+                "cloud/bad-credentials.json",
+                exceptions.BadCredentialsException,
+                400,
+            ),
+            (
+                "cloud/missing-authorization-token.json",
+                exceptions.MissingAuthorizationTokenException,
+                400,
+            ),
+            (
+                "cloud/no-registered-event-listener.json",
+                exceptions.NoRegisteredEventListenerException,
+                400,
+            ),
+            (
+                "cloud/too-many-concurrent-requests.json",
+                exceptions.TooManyConcurrentRequestsException,
+                400,
+            ),
+            (
+                "cloud/too-many-executions.json",
+                exceptions.TooManyExecutionsException,
+                400,
+            ),
+            (
+                "cloud/too-many-requests.json",
+                exceptions.TooManyRequestsException,
+                400,
+            ),
             # (
             #     "local/204-no-corresponding-execId.json",
             #     exceptions.OverkizException,

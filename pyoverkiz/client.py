@@ -887,7 +887,7 @@ class OverkizClient:
                 raise AccessDeniedToGatewayException(message)
 
         # General Overkiz exception
-        raise OverkizException(message if message else result)
+        raise OverkizException(result)
 
     async def _refresh_token_if_expired(self) -> None:
         """Check if token is expired and request a new one."""
