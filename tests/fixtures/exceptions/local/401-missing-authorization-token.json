@@ -1,0 +1,4 @@
+{
+    "error": "Missing authorization token.",
+    "errorCode": "RESOURCE_ACCESS_DENIED"
+}

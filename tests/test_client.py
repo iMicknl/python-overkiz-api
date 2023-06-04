@@ -195,14 +195,75 @@ class TestOverkizClient:
             assert diagnostics
 
     @pytest.mark.parametrize(
-        "fixture_name, status_code, exception",
+        "fixture_name, exception, status_code",
         [
-            ("cloud/503-empty.html", 503, exceptions.ServiceUnavailableException),
-            ("cloud/503-maintenance.html", 503, exceptions.MaintenanceException),
+            ("cloud/503-empty.html", exceptions.ServiceUnavailableException, 503),
+            ("cloud/503-maintenance.html", exceptions.MaintenanceException, 503),
             (
                 "cloud/access-denied-to-gateway.json",
-                400,
                 exceptions.AccessDeniedToGatewayException,
+                400,
+            ),
+            # (
+            #     "local/204-no-corresponding-execId.json",
+            #     exceptions.OverkizException,
+            #     204,
+            # ),
+            (
+                "local/400-bad-parameters.json",
+                exceptions.OverkizException,
+                400,
+            ),
+            ("local/400-bus-error.json", exceptions.OverkizException, 400),
+            (
+                "local/400-malformed-action-group.json",
+                exceptions.OverkizException,
+                400,
+            ),
+            (
+                "local/400-malformed-fetch-id.json",
+                exceptions.OverkizException,
+                400,
+            ),
+            (
+                "local/400-missing-execution-id.json",
+                exceptions.OverkizException,
+                400,
+            ),
+            (
+                "local/400-missing-parameters.json",
+                exceptions.OverkizException,
+                400,
+            ),
+            (
+                "local/400-no-registered-event-listener.json",
+                exceptions.NoRegisteredEventListenerException,
+                400,
+            ),
+            (
+                "local/400-no-such-device.json",
+                exceptions.OverkizException,
+                400,
+            ),
+            (
+                "local/400-unknown-object.json",
+                exceptions.UnknownObjectException,
+                400,
+            ),
+            (
+                "local/400-unspecified-error.json",
+                exceptions.OverkizException,
+                400,
+            ),
+            (
+                "local/401-missing-authorization-token.json",
+                exceptions.MissingAuthorizationTokenException,
+                401,
+            ),
+            (
+                "local/401-not-authenticated.json",
+                exceptions.NotAuthenticatedException,
+                401,
             ),
         ],
     )

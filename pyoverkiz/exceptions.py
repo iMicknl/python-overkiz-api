@@ -2,6 +2,10 @@ class BaseOverkizException(Exception):
     pass
 
 
+class OverkizException(BaseOverkizException):
+    pass
+
+
 class BadCredentialsException(BaseOverkizException):
     pass
 
