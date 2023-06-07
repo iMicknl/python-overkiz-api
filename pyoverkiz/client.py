@@ -43,6 +43,8 @@ from pyoverkiz.exceptions import (
     NoRegisteredEventListenerException,
     NotAuthenticatedException,
     NotSuchTokenException,
+    OverkizException,
+    ServiceUnavailableException,
     SessionAndBearerInSameRequestException,
     SomfyBadCredentialsException,
     SomfyServiceException,
@@ -802,14 +804,27 @@ class OverkizClient:
             result = await response.json(content_type=None)
         except JSONDecodeError as error:
             result = await response.text()
-            if "Server is down for maintenance" in result:
+
+            if "is down for maintenance" in result:
                 raise MaintenanceException("Server is down for maintenance") from error
-            raise Exception(
+
+            if response.status == 503:
+                raise ServiceUnavailableException(result) from error
+
+            raise OverkizException(
                 f"Unknown error while requesting {response.url}. {response.status} - {result}"
             ) from error
 
         if result.get("errorCode"):
-            message = result.get("error").strip("'")
+            # Error messages between cloud and local Overkiz servers can be slightly different
+            # To make it easier to have a strict match for these errors, we remove the double quotes and the period at the end.
+
+            if message := result.get("error"):
+                message = message.strip(
+                    '".'
+                )  # Change to .removesuffix when Python 3.8 support is dropped
+            else:
+                message = ""  # An error message can have an empty (None) message
 
             # {"errorCode": "AUTHENTICATION_ERROR",
             # "error": "Too many requests, try again later : login with xxx@xxx.tld"}
@@ -825,7 +840,7 @@ class OverkizClient:
                 raise NotAuthenticatedException(message)
 
             # {"error":"Missing authorization token.","errorCode":"RESOURCE_ACCESS_DENIED"}
-            if message == "Missing authorization token.":
+            if message == "Missing authorization token":
                 raise MissingAuthorizationTokenException(message)
 
             # {"error": "Server busy, please try again later. (Too many executions)"}
@@ -851,10 +866,7 @@ class OverkizClient:
             if message == "Cannot use JSESSIONID and bearer token in same request":
                 raise SessionAndBearerInSameRequestException(message)
 
-            if (
-                message
-                == "Too many attempts with an invalid token, temporarily banned."
-            ):
+            if message == "Too many attempts with an invalid token, temporarily banned":
                 raise TooManyAttemptsBannedException(message)
 
             if "Invalid token : " in message:
@@ -867,14 +879,15 @@ class OverkizClient:
                 raise UnknownUserException(message)
 
             # {"error":"Unknown object.","errorCode":"UNSPECIFIED_ERROR"}
-            if message == "Unknown object.":
+            if message == "Unknown object":
                 raise UnknownObjectException(message)
 
             # {'errorCode': 'RESOURCE_ACCESS_DENIED', 'error': 'Access denied to gateway #1234-5678-1234 for action ADD_TOKEN'}
             if "Access denied to gateway" in message:
                 raise AccessDeniedToGatewayException(message)
 
-        raise Exception(message if message else result)
+        # General Overkiz exception
+        raise OverkizException(result)
 
     async def _refresh_token_if_expired(self) -> None:
         """Check if token is expired and request a new one."""

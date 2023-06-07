@@ -1,0 +1,4 @@
+{
+    "errorCode": "AUTHENTICATION_ERROR",
+    "error": "Too many requests, try again later : login with xxx@xxx.tld"
+}

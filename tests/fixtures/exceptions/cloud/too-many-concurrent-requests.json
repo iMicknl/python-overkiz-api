@@ -1,0 +1,4 @@
+{
+    "errorCode": "RESOURCE_ACCESS_DENIED",
+    "error": "too many concurrent requests"
+}
