@@ -16,6 +16,7 @@ from aiohttp import ClientResponse, ClientSession, FormData, ServerDisconnectedE
 from botocore.config import Config
 from warrant_lite import WarrantLite
 
+from pyoverkiz.enums import APIType
 from pyoverkiz.const import (
     COZYTOUCH_ATLANTIC_API,
     COZYTOUCH_CLIENT_ID,
@@ -95,6 +96,7 @@ class OverkizClient:
     gateways: list[Gateway]
     event_listener_id: str | None
     session: ClientSession
+    api_type: APIType
 
     _refresh_token: str | None = None
     _expires_in: datetime.datetime | None = None
@@ -128,6 +130,12 @@ class OverkizClient:
         self.event_listener_id: str | None = None
 
         self.session = session if session else ClientSession()
+
+        self.api_type = (
+            APIType.LOCAL
+            if "/enduser-mobile-web/1/enduserAPI/" in self.server.endpoint
+            else APIType.CLOUD
+        )
 
     async def __aenter__(self) -> OverkizClient:
         return self
