@@ -16,7 +16,6 @@ from aiohttp import ClientResponse, ClientSession, FormData, ServerDisconnectedE
 from botocore.config import Config
 from warrant_lite import WarrantLite
 
-from pyoverkiz.enums import APIType
 from pyoverkiz.const import (
     COZYTOUCH_ATLANTIC_API,
     COZYTOUCH_CLIENT_ID,
@@ -29,6 +28,7 @@ from pyoverkiz.const import (
     SOMFY_CLIENT_SECRET,
     SUPPORTED_SERVERS,
 )
+from pyoverkiz.enums import APIType
 from pyoverkiz.exceptions import (
     AccessDeniedToGatewayException,
     BadCredentialsException,
