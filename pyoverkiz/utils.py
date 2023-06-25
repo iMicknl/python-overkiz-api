@@ -3,6 +3,7 @@ from __future__ import annotations
 from pyoverkiz.enums import Server
 from pyoverkiz.models import OverkizServer
 
+
 def generate_local_server(
     host: str,
     name: str = Server.SOMFY_DEVELOPER_MODE,
