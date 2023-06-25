@@ -28,7 +28,7 @@ from pyoverkiz.const import (
     SOMFY_CLIENT_SECRET,
     SUPPORTED_SERVERS,
 )
-from pyoverkiz.enums import APIType
+from pyoverkiz.enums import APIType, Server
 from pyoverkiz.exceptions import (
     AccessDeniedToGatewayException,
     BadCredentialsException,
@@ -131,11 +131,10 @@ class OverkizClient:
 
         self.session = session if session else ClientSession()
 
-        self.api_type = (
-            APIType.LOCAL
-            if "/enduser-mobile-web/1/enduserAPI/" in self.server.endpoint
-            else APIType.CLOUD
-        )
+        if "/enduser-mobile-web/1/enduserAPI/" in self.server.endpoint:
+            self.api_type = APIType.LOCAL
+        else:
+            self.api_type = APIType.CLOUD
 
     async def __aenter__(self) -> OverkizClient:
         return self
@@ -174,7 +173,7 @@ class OverkizClient:
             return True
 
         # Somfy TaHoma authentication using access_token
-        if self.server == SUPPORTED_SERVERS["somfy_europe"]:
+        if self.server == SUPPORTED_SERVERS[Server.SOMFY_EUROPE]:
             await self.somfy_tahoma_get_access_token()
 
             if register_event_listener:
@@ -183,12 +182,12 @@ class OverkizClient:
             return True
 
         # CozyTouch authentication using jwt
-        if self.server == SUPPORTED_SERVERS["atlantic_cozytouch"]:
+        if self.server == SUPPORTED_SERVERS[Server.ATLANTIC_COZYTOUCH]:
             jwt = await self.cozytouch_login()
             payload = {"jwt": jwt}
 
         # Nexity authentication using ssoToken
-        elif self.server == SUPPORTED_SERVERS["nexity"]:
+        elif self.server == SUPPORTED_SERVERS[Server.NEXITY]:
             sso_token = await self.nexity_login()
             user_id = self.username.replace("@", "_-_")  # Replace @ for _-_
             payload = {"ssoToken": sso_token, "userId": user_id}
@@ -247,7 +246,7 @@ class OverkizClient:
         """
         Update the access and the refresh token. The refresh token will be valid 14 days.
         """
-        if self.server != SUPPORTED_SERVERS["somfy_europe"]:
+        if self.server != SUPPORTED_SERVERS[Server.SOMFY_EUROPE]:
             return
 
         if not self._refresh_token:

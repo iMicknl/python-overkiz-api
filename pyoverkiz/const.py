@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pyoverkiz.enums import Server
 from pyoverkiz.models import OverkizServer
 
 COZYTOUCH_ATLANTIC_API = "https://apis.groupe-atlantic.com"
@@ -17,85 +18,85 @@ SOMFY_CLIENT_ID = "0d8e920c-1478-11e7-a377-02dd59bd3041_1ewvaqmclfogo4kcsoo0c8k4
 SOMFY_CLIENT_SECRET = "12k73w1n540g8o4cokg0cw84cog840k84cwggscwg884004kgk"
 
 SUPPORTED_SERVERS: dict[str, OverkizServer] = {
-    "atlantic_cozytouch": OverkizServer(
+    Server.ATLANTIC_COZYTOUCH: OverkizServer(
         name="Atlantic Cozytouch",
         endpoint="https://ha110-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Atlantic",
         configuration_url=None,
     ),
-    "brandt": OverkizServer(
+    Server.BRANDT: OverkizServer(
         name="Brandt Smart Control",
         endpoint="https://ha3-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Brandt",
         configuration_url=None,
     ),
-    "flexom": OverkizServer(
+    Server.FLEXOM: OverkizServer(
         name="Flexom",
         endpoint="https://ha108-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Bouygues",
         configuration_url=None,
     ),
-    "hexaom_hexaconnect": OverkizServer(
+    Server.HEXAOM_HEXACONNECT: OverkizServer(
         name="Hexaom HexaConnect",
         endpoint="https://ha5-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Hexaom",
         configuration_url=None,
     ),
-    "hi_kumo_asia": OverkizServer(
+    Server.HI_KUMO_ASIA: OverkizServer(
         name="Hitachi Hi Kumo (Asia)",
         endpoint="https://ha203-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Hitachi",
         configuration_url=None,
     ),
-    "hi_kumo_europe": OverkizServer(
+    Server.HI_KUMO_EUROPE: OverkizServer(
         name="Hitachi Hi Kumo (Europe)",
         endpoint="https://ha117-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Hitachi",
         configuration_url=None,
     ),
-    "hi_kumo_oceania": OverkizServer(
+    Server.HI_KUMO_OCEANIA: OverkizServer(
         name="Hitachi Hi Kumo (Oceania)",
         endpoint="https://ha203-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Hitachi",
         configuration_url=None,
     ),
-    "nexity": OverkizServer(
+    Server.NEXITY: OverkizServer(
         name="Nexity Eugénie",
         endpoint="https://ha106-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Nexity",
         configuration_url=None,
     ),
-    "rexel": OverkizServer(
+    Server.REXEL: OverkizServer(
         name="Rexel Energeasy Connect",
         endpoint="https://ha112-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Rexel",
         configuration_url="https://utilisateur.energeasyconnect.com/user/#/zone/equipements",
     ),
-    "simu_livein2": OverkizServer(  # alias of https://tahomalink.com
+    Server.SIMU_LIVEIN2: OverkizServer(  # alias of https://tahomalink.com
         name="SIMU (LiveIn2)",
         endpoint="https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Somfy",
         configuration_url=None,
     ),
-    "somfy_europe": OverkizServer(  # alias of https://tahomalink.com
+    Server.SOMFY_EUROPE: OverkizServer(  # alias of https://tahomalink.com
         name="Somfy (Europe)",
         endpoint="https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Somfy",
         configuration_url="https://www.tahomalink.com",
     ),
-    "somfy_america": OverkizServer(
+    Server.SOMFY_AMERICA: OverkizServer(
         name="Somfy (North America)",
         endpoint="https://ha401-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Somfy",
         configuration_url=None,
     ),
-    "somfy_oceania": OverkizServer(
+    Server.SOMFY_OCEANIA: OverkizServer(
         name="Somfy (Oceania)",
         endpoint="https://ha201-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Somfy",
         configuration_url=None,
     ),
-    "ubiwizz": OverkizServer(
+    Server.UBIWIZZ: OverkizServer(
         name="Ubiwizz",
         endpoint="https://ha129-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Decelect",
