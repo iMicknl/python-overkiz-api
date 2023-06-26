@@ -132,7 +132,7 @@ class OverkizClient:
 
         self.session = session if session else ClientSession()
 
-        if "/enduser-mobile-web/1/enduserAPI/" in self.server.endpoint:
+        if LOCAL_API_PATH in self.server.endpoint:
             self.api_type = APIType.LOCAL
         else:
             self.api_type = APIType.CLOUD
@@ -164,11 +164,12 @@ class OverkizClient:
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
         # Local authentication
-        if LOCAL_API_PATH in self.server.endpoint:
+        if self.api_type == APIType.LOCAL:
             if register_event_listener:
                 await self.register_event_listener()
             else:
                 # Call a simple endpoint to verify if our token is correct
+                # Since local API does not have a /login endpoint
                 await self.get_gateways()
 
             return True
