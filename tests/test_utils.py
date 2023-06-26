@@ -1,4 +1,6 @@
-from pyoverkiz.utils import generate_local_server
+import pytest
+
+from pyoverkiz.utils import generate_local_server, is_overkiz_gateway
 
 LOCAL_HOST = "gateway-1234-5678-1243.local:8443"
 LOCAL_HOST_BY_IP = "192.168.1.105:8443"
@@ -33,3 +35,14 @@ class TestUtils:
         assert local_server.manufacturer == "Test Manufacturer"
         assert local_server.name == "Test Name"
         assert local_server.configuration_url == "https://somfy.com"
+
+    @pytest.mark.parametrize(
+        "gateway_id, overkiz_gateway",
+        [
+            ("1234-5678-6968", True),
+            ("SOMFY_PROTECT-v0NT53occUBPyuJRzx59kalW1hFfzimN", False),
+            ("SOMFY_THERMOSTAT-19649", False),
+        ],
+    )
+    def test_is_overkiz_gateway(self, gateway_id: str, overkiz_gateway: bool):
+        assert is_overkiz_gateway(gateway_id) == overkiz_gateway
