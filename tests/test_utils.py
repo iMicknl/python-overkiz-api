@@ -15,10 +15,14 @@ class TestUtils:
         )
         assert local_server.manufacturer == "Somfy"
         assert local_server.name == "Somfy Developer Mode"
+        assert local_server.configuration_url is None
 
     def test_generate_local_server_by_ip(self):
         local_server = generate_local_server(
-            host=LOCAL_HOST_BY_IP, manufacturer="Test Manufacturer", name="Test Name"
+            host=LOCAL_HOST_BY_IP,
+            manufacturer="Test Manufacturer",
+            name="Test Name",
+            configuration_url="https://somfy.com",
         )
 
         assert local_server
@@ -28,3 +32,4 @@ class TestUtils:
         )
         assert local_server.manufacturer == "Test Manufacturer"
         assert local_server.name == "Test Name"
+        assert local_server.configuration_url == "https://somfy.com"
