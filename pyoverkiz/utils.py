@@ -1,13 +1,12 @@
 from __future__ import annotations
 
 from pyoverkiz.const import LOCAL_API_PATH
-from pyoverkiz.enums import Server
 from pyoverkiz.models import OverkizServer
 
 
 def generate_local_server(
     host: str,
-    name: str = Server.SOMFY_DEVELOPER_MODE,
+    name: str = "Somfy Developer Mode",
     manufacturer: str = "Somfy",
     configuration_url: str | None = None,
 ) -> OverkizServer:
