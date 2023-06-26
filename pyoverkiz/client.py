@@ -19,6 +19,7 @@ from warrant_lite import WarrantLite
 from pyoverkiz.const import (
     COZYTOUCH_ATLANTIC_API,
     COZYTOUCH_CLIENT_ID,
+    LOCAL_API_PATH,
     NEXITY_API,
     NEXITY_COGNITO_CLIENT_ID,
     NEXITY_COGNITO_REGION,
@@ -163,7 +164,7 @@ class OverkizClient:
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
         # Local authentication
-        if "/enduser-mobile-web/1/enduserAPI/" in self.server.endpoint:
+        if LOCAL_API_PATH in self.server.endpoint:
             if register_event_listener:
                 await self.register_event_listener()
             else:

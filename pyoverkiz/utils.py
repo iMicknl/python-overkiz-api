@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from pyoverkiz.const import LOCAL_API_PATH
 from pyoverkiz.enums import Server
 from pyoverkiz.models import OverkizServer
 
@@ -13,7 +14,7 @@ def generate_local_server(
     """Generate OverkizServer class for connection with a local API (Somfy Developer mode)."""
     return OverkizServer(
         name=name,
-        endpoint=f"https://{host}/enduser-mobile-web/1/enduserAPI/",
+        endpoint=f"https://{host}{LOCAL_API_PATH}",
         manufacturer=manufacturer,
         configuration_url=configuration_url,
     )
