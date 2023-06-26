@@ -9,7 +9,8 @@ from pytest import fixture
 from pyoverkiz import exceptions
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.const import SUPPORTED_SERVERS
-from pyoverkiz.enums import DataType
+from pyoverkiz.enums import APIType, DataType
+from pyoverkiz.utils import generate_local_server
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -19,8 +20,24 @@ class TestOverkizClient:
     def client(self):
         return OverkizClient("username", "password", SUPPORTED_SERVERS["somfy_europe"])
 
+    @fixture
+    def local_client(self):
+        return OverkizClient(
+            "username",
+            "password",
+            generate_local_server("gateway-1234-5678-1243.local:8443"),
+        )
+
     @pytest.mark.asyncio
-    async def test_get_devices_basic(self, client):
+    async def test_get_api_type_cloud(self, client: OverkizClient):
+        assert client.api_type == APIType.CLOUD
+
+    @pytest.mark.asyncio
+    async def test_get_api_type_local(self, local_client: OverkizClient):
+        assert local_client.api_type == APIType.LOCAL
+
+    @pytest.mark.asyncio
+    async def test_get_devices_basic(self, client: OverkizClient):
         with open(
             os.path.join(CURRENT_DIR, "devices.json"), encoding="utf-8"
         ) as raw_devices:
@@ -39,7 +56,7 @@ class TestOverkizClient:
     )
     @pytest.mark.asyncio
     async def test_fetch_events_basic(
-        self, client, fixture_name: str, event_length: int
+        self, client: OverkizClient, fixture_name: str, event_length: int
     ):
         with open(
             os.path.join(CURRENT_DIR, "fixtures/event/" + fixture_name),
