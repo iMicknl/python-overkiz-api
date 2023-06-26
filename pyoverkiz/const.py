@@ -19,7 +19,7 @@ SOMFY_CLIENT_SECRET = "12k73w1n540g8o4cokg0cw84cog840k84cwggscwg884004kgk"
 
 LOCAL_API_PATH = "/enduser-mobile-web/1/enduserAPI/"
 
-SERVERS_THAT_SUPPORT_LOCAL_API = [
+SERVERS_WITH_LOCAL_API = [
     Server.SOMFY_EUROPE,
     Server.SOMFY_OCEANIA,
     Server.SOMFY_AMERICA,
