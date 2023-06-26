@@ -69,7 +69,7 @@ class TestOverkizClient:
             assert len(events) == event_length
 
     @pytest.mark.asyncio
-    async def test_fetch_events_simple_cast(self, client):
+    async def test_fetch_events_simple_cast(self, client: OverkizClient):
         with open(
             os.path.join(CURRENT_DIR, "fixtures/event/events.json"), encoding="utf-8"
         ) as raw_events:
@@ -92,7 +92,7 @@ class TestOverkizClient:
         ],
     )
     @pytest.mark.asyncio
-    async def test_fetch_events_casting(self, client, fixture_name: str):
+    async def test_fetch_events_casting(self, client: OverkizClient, fixture_name: str):
         with open(
             os.path.join(CURRENT_DIR, "fixtures/event/" + fixture_name),
             encoding="utf-8",
@@ -153,7 +153,11 @@ class TestOverkizClient:
     )
     @pytest.mark.asyncio
     async def test_get_setup(
-        self, client, fixture_name: str, device_count: int, gateway_count: int
+        self,
+        client: OverkizClient,
+        fixture_name: str,
+        device_count: int,
+        gateway_count: int,
     ):
         with open(
             os.path.join(CURRENT_DIR, "fixtures/setup/" + fixture_name),
