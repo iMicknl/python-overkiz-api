@@ -19,6 +19,7 @@ from warrant_lite import WarrantLite
 from pyoverkiz.const import (
     COZYTOUCH_ATLANTIC_API,
     COZYTOUCH_CLIENT_ID,
+    LOCAL_API_PATH,
     NEXITY_API,
     NEXITY_COGNITO_CLIENT_ID,
     NEXITY_COGNITO_REGION,
@@ -28,6 +29,7 @@ from pyoverkiz.const import (
     SOMFY_CLIENT_SECRET,
     SUPPORTED_SERVERS,
 )
+from pyoverkiz.enums import APIType, Server
 from pyoverkiz.exceptions import (
     AccessDeniedToGatewayException,
     BadCredentialsException,
@@ -95,6 +97,7 @@ class OverkizClient:
     gateways: list[Gateway]
     event_listener_id: str | None
     session: ClientSession
+    api_type: APIType
 
     _refresh_token: str | None = None
     _expires_in: datetime.datetime | None = None
@@ -129,6 +132,11 @@ class OverkizClient:
 
         self.session = session if session else ClientSession()
 
+        if LOCAL_API_PATH in self.server.endpoint:
+            self.api_type = APIType.LOCAL
+        else:
+            self.api_type = APIType.CLOUD
+
     async def __aenter__(self) -> OverkizClient:
         return self
 
@@ -156,17 +164,18 @@ class OverkizClient:
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
         # Local authentication
-        if "/enduser-mobile-web/1/enduserAPI/" in self.server.endpoint:
+        if self.api_type == APIType.LOCAL:
             if register_event_listener:
                 await self.register_event_listener()
             else:
                 # Call a simple endpoint to verify if our token is correct
+                # Since local API does not have a /login endpoint
                 await self.get_gateways()
 
             return True
 
         # Somfy TaHoma authentication using access_token
-        if self.server == SUPPORTED_SERVERS["somfy_europe"]:
+        if self.server == SUPPORTED_SERVERS[Server.SOMFY_EUROPE]:
             await self.somfy_tahoma_get_access_token()
 
             if register_event_listener:
@@ -175,12 +184,12 @@ class OverkizClient:
             return True
 
         # CozyTouch authentication using jwt
-        if self.server == SUPPORTED_SERVERS["atlantic_cozytouch"]:
+        if self.server == SUPPORTED_SERVERS[Server.ATLANTIC_COZYTOUCH]:
             jwt = await self.cozytouch_login()
             payload = {"jwt": jwt}
 
         # Nexity authentication using ssoToken
-        elif self.server == SUPPORTED_SERVERS["nexity"]:
+        elif self.server == SUPPORTED_SERVERS[Server.NEXITY]:
             sso_token = await self.nexity_login()
             user_id = self.username.replace("@", "_-_")  # Replace @ for _-_
             payload = {"ssoToken": sso_token, "userId": user_id}
@@ -239,7 +248,7 @@ class OverkizClient:
         """
         Update the access and the refresh token. The refresh token will be valid 14 days.
         """
-        if self.server != SUPPORTED_SERVERS["somfy_europe"]:
+        if self.server != SUPPORTED_SERVERS[Server.SOMFY_EUROPE]:
             return
 
         if not self._refresh_token:
