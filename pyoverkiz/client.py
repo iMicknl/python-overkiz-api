@@ -786,7 +786,7 @@ class OverkizClient:
     async def get_setup_option(self, option: str) -> Option | None:
         """
         This operation returns the selected subscribed option of a given setup.
-        For example developerMode-{gateway_id} to understand if developer mode is on.
+        For example `developerMode-{gateway_id}` to understand if developer mode is on.
         """
         response = await self.__get(f"setup/options/{option}")
 
@@ -805,8 +805,8 @@ class OverkizClient:
         self, option: str, parameter: str
     ) -> OptionParameter | None:
         """
-        This operation returns the selected subscribed option of a given setup.
-        For example developerMode-{gateway_id} to understand if developer mode is on.
+        This operation returns the selected parameters of a given setup and option.
+        For example `developerMode-{gateway_id}` and `gatewayId` to understand if developer mode is on.
         """
         response = await self.__get(f"setup/options/{option}/{parameter}")
 
