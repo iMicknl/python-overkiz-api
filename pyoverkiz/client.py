@@ -807,6 +807,9 @@ class OverkizClient:
         """
         This operation returns the selected parameters of a given setup and option.
         For example `developerMode-{gateway_id}` and `gatewayId` to understand if developer mode is on.
+
+        If the option is not available, an OverkizException will be thrown.
+        If the parameter is not available you will receive None.
         """
         response = await self.__get(f"setup/options/{option}/{parameter}")
 

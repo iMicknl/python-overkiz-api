@@ -10,6 +10,7 @@ from pyoverkiz import exceptions
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.enums import APIType, DataType
+from pyoverkiz.models import Option
 from pyoverkiz.utils import generate_local_server
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -337,6 +338,57 @@ class TestOverkizClient:
                 resp = MockResponse(None, status_code)
 
             await client.check_response(resp)
+
+    @pytest.mark.asyncio
+    async def test_get_setup_options(
+        self,
+        client: OverkizClient,
+    ):
+        with open(
+            os.path.join(CURRENT_DIR, "fixtures/endpoints/setup-options.json"),
+            encoding="utf-8",
+        ) as raw_events:
+            resp = MockResponse(raw_events.read())
+
+        with patch.object(aiohttp.ClientSession, "get", return_value=resp):
+            options = await client.get_setup_options()
+            assert len(options) == 3
+
+            for option in options:
+                assert isinstance(option, Option)
+
+    @pytest.mark.parametrize(
+        "fixture_name, option_name, instance",
+        [
+            (
+                "setup-options-developerMode.json",
+                "developerMode-1234-5678-1234",
+                Option,
+            ),
+            ("setup-options-empty.json", "test", None),
+        ],
+    )
+    @pytest.mark.asyncio
+    async def test_get_setup_option(
+        self,
+        client: OverkizClient,
+        fixture_name: str,
+        option_name: str,
+        instance: Option | None,
+    ):
+        with open(
+            os.path.join(CURRENT_DIR, "fixtures/endpoints/" + fixture_name),
+            encoding="utf-8",
+        ) as raw_events:
+            resp = MockResponse(raw_events.read())
+
+        with patch.object(aiohttp.ClientSession, "get", return_value=resp):
+            option = await client.get_setup_option(option_name)
+
+            if instance is None:
+                assert option is None
+            else:
+                assert isinstance(option, instance)
 
 
 class MockResponse:
