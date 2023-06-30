@@ -149,6 +149,7 @@ class TestOverkizClient:
             ("setup_tahoma_be.json", 15, 1),
             ("setup_local.json", 3, 1),
             ("setup_local_tahoma.json", 8, 1),
+            ("setup_local_with_climate.json", 33, 1),
         ],
     )
     @pytest.mark.asyncio
@@ -201,6 +202,7 @@ class TestOverkizClient:
             ("setup_tahoma_be.json"),
             ("setup_local.json"),
             ("setup_local_tahoma.json"),
+            ("setup_local_with_climate.json"),
         ],
     )
     @pytest.mark.asyncio
