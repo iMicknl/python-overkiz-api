@@ -65,6 +65,8 @@ from pyoverkiz.models import (
     Gateway,
     HistoryExecution,
     LocalToken,
+    Option,
+    OptionParameter,
     OverkizServer,
     Place,
     Scenario,
@@ -757,6 +759,64 @@ class OverkizClient:
         """Execute a scheduled scenario"""
         response = await self.__post(f"exec/schedule/{oid}/{timestamp}")
         return cast(str, response["triggerId"])
+
+    @backoff.on_exception(
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError),
+        max_tries=2,
+        on_backoff=relogin,
+    )
+    async def get_setup_options(self) -> list[Option]:
+        """
+        This operation returns all subscribed options of a given setup.
+        Per-session rate-limit : 1 calls per 1d period for this particular operation (bulk-load)
+        Access scope : Full enduser API access (enduser/*)
+        """
+        response = await self.__get("setup/options")
+        options = [Option(**o) for o in humps.decamelize(response)]
+
+        return options
+
+    @backoff.on_exception(
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError),
+        max_tries=2,
+        on_backoff=relogin,
+    )
+    async def get_setup_option(self, option: str) -> Option | None:
+        """
+        This operation returns the selected subscribed option of a given setup.
+        For example `developerMode-{gateway_id}` to understand if developer mode is on.
+        """
+        response = await self.__get(f"setup/options/{option}")
+
+        if response:
+            return Option(**humps.decamelize(response))
+
+        return None
+
+    @backoff.on_exception(
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError),
+        max_tries=2,
+        on_backoff=relogin,
+    )
+    async def get_setup_option_parameter(
+        self, option: str, parameter: str
+    ) -> OptionParameter | None:
+        """
+        This operation returns the selected parameters of a given setup and option.
+        For example `developerMode-{gateway_id}` and `gatewayId` to understand if developer mode is on.
+
+        If the option is not available, an OverkizException will be thrown.
+        If the parameter is not available you will receive None.
+        """
+        response = await self.__get(f"setup/options/{option}/{parameter}")
+
+        if response:
+            return OptionParameter(**humps.decamelize(response))
+
+        return None
 
     async def __get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API"""

@@ -1,0 +1,12 @@
+{
+    "creationTime": 1649319764000,
+    "lastUpdateTime": 1649319764000,
+    "optionId": "developerMode-1234-5678-1234",
+    "startDate": 1649319764000,
+    "parameters": [
+        {
+            "name": "gatewayId",
+            "value": "1234-5678-1234"
+        }
+    ]
+}

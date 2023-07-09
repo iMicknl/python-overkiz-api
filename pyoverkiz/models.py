@@ -221,7 +221,6 @@ class Device:
 
 @define(init=False, kw_only=True)
 class StateDefinition:
-
     qualified_name: str
     type: str | None = None
     values: list[str] | None = None
@@ -797,3 +796,36 @@ class LocalToken:
     gateway_creation_time: int
     uuid: str
     scope: str
+
+
+@define(kw_only=True)
+class OptionParameter:
+    name: str
+    value: str
+
+
+@define(init=False, kw_only=True)
+class Option:
+    creation_time: int
+    last_update_time: int
+    option_id: str
+    start_date: int
+    parameters: list[OptionParameter] | None
+
+    def __init__(
+        self,
+        *,
+        creation_time: int,
+        last_update_time: int,
+        option_id: str,
+        start_date: int,
+        parameters: list[dict[str, Any]] | None,
+        **_: Any,
+    ) -> None:
+        self.creation_time = creation_time
+        self.last_update_time = last_update_time
+        self.option_id = option_id
+        self.start_date = start_date
+        self.parameters = (
+            [OptionParameter(**p) for p in parameters] if parameters else []
+        )
