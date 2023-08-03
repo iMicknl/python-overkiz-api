@@ -141,6 +141,7 @@ class TestDevice:
             ),
             (
                 "eliot://ELIOT-000000000000000000000000000ABCDE/00000000000000000000000000125abc",
+                "eliot://ELIOT-000000000000000000000000000ABCDE/00000000000000000000000000125abc",
                 Protocol.ELIOT,
                 "ELIOT-000000000000000000000000000ABCDE",
                 "00000000000000000000000000125abc",
@@ -149,6 +150,7 @@ class TestDevice:
             ),
             (
                 "eliot://ELIOT-000000000000000000000000000ABCDE/00000000000000000000000000125abc#1",
+                "eliot://ELIOT-000000000000000000000000000ABCDE/00000000000000000000000000125abc",
                 Protocol.ELIOT,
                 "ELIOT-000000000000000000000000000ABCDE",
                 "00000000000000000000000000125abc",
@@ -158,6 +160,7 @@ class TestDevice:
             # Wrong device urls:
             (
                 "foo://whatever-blah/12",
+                "unknown://whatever-blah/12",
                 Protocol.UNKNOWN,
                 "whatever-blah",
                 "12",
@@ -166,6 +169,7 @@ class TestDevice:
             ),
             (
                 "foo://whatever",
+                None,
                 None,
                 None,
                 None,
