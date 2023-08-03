@@ -26,7 +26,7 @@ from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 # pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
 
 # <protocol>://<gatewayId>/<deviceAddress>[#<subsystemId>]
-DEVICE_URL_RE = r"(?P<protocol>.+)://(?P<gatewayId>\d{4}-\d{4}-\d{4})/(?P<deviceAddress>[^#]+)(#(?P<subsystemId>\d+))?"
+DEVICE_URL_RE = r"(?P<protocol>.+)://(?P<gatewayId>[^/]+)/(?P<deviceAddress>[^#]+)(#(?P<subsystemId>\d+))?"
 
 
 @define(init=False, kw_only=True)
@@ -144,9 +144,9 @@ class Device:
     enabled: bool
     label: str = field(repr=obfuscate_string)
     device_url: str = field(repr=obfuscate_id)
-    base_device_url: str = field(repr=obfuscate_id)
-    gateway_id: str = field(repr=obfuscate_id)
-    device_address: str = field(repr=obfuscate_id)
+    base_device_url: str | None = field(repr=obfuscate_id)
+    gateway_id: str | None = field(repr=obfuscate_id)
+    device_address: str | None = field(repr=obfuscate_id)
     subsystem_id: int | None = None
     is_sub_device: bool = False
     controllable_name: str
@@ -157,7 +157,7 @@ class Device:
     states: States
     type: ProductType
     place_oid: str | None = None
-    protocol: Protocol = field(init=False, repr=False)
+    protocol: Protocol | None = field(init=False, repr=False)
 
     def __init__(
         self,
@@ -191,11 +191,15 @@ class Device:
         self.type = ProductType(type)
         self.place_oid = place_oid
 
-        # Split <protocol>://<gatewayId>/<deviceAddress>[#<subsystemId>] into multiple variables
-        match = re.search(DEVICE_URL_RE, device_url)
-
+        self.base_device_url = None
+        self.protocol = None
+        self.gateway_id = None
+        self.device_address = None
         self.subsystem_id = None
         self.is_sub_device = False
+
+        # Split <protocol>://<gatewayId>/<deviceAddress>[#<subsystemId>] into multiple variables
+        match = re.search(DEVICE_URL_RE, device_url)
 
         if match:
             self.protocol = Protocol(match.group("protocol"))
@@ -223,7 +227,6 @@ class Device:
 
 @define(init=False, kw_only=True)
 class StateDefinition:
-
     qualified_name: str
     type: str | None = None
     values: list[str] | None = None
@@ -511,7 +514,8 @@ class Event:
         self.protocol_type = protocol_type
         self.name = EventName(name)
         self.failure_type_code = (
-            None if failure_type_code is None else FailureType(failure_type_code)
+            None if failure_type_code is None else FailureType(
+                failure_type_code)
         )
 
 
@@ -617,7 +621,8 @@ class Gateway:
         self.time_reliable = time_reliable
         self.connectivity = Connectivity(**connectivity)
         self.up_to_date = up_to_date
-        self.update_status = UpdateBoxStatus(update_status) if update_status else None
+        self.update_status = UpdateBoxStatus(
+            update_status) if update_status else None
         self.sync_in_progress = sync_in_progress
         self.partners = [Partner(**p) for p in partners] if partners else []
         self.type = GatewayType(type) if type else None
@@ -660,7 +665,7 @@ class HistoryExecution:
     event_time: int
     owner: str = field(repr=obfuscate_email)
     source: str
-    end_time: int
+    end_time: int | None = None
     effective_start_time: int | None = None
     duration: int
     label: str | None = None
@@ -678,7 +683,7 @@ class HistoryExecution:
         event_time: int,
         owner: str,
         source: str,
-        end_time: int,
+        end_time: int | None = None,
         effective_start_time: int | None = None,
         duration: int,
         label: str | None = None,
@@ -799,3 +804,36 @@ class LocalToken:
     gateway_creation_time: int
     uuid: str
     scope: str
+
+
+@define(kw_only=True)
+class OptionParameter:
+    name: str
+    value: str
+
+
+@define(init=False, kw_only=True)
+class Option:
+    creation_time: int
+    last_update_time: int
+    option_id: str
+    start_date: int
+    parameters: list[OptionParameter] | None
+
+    def __init__(
+        self,
+        *,
+        creation_time: int,
+        last_update_time: int,
+        option_id: str,
+        start_date: int,
+        parameters: list[dict[str, Any]] | None,
+        **_: Any,
+    ) -> None:
+        self.creation_time = creation_time
+        self.last_update_time = last_update_time
+        self.option_id = option_id
+        self.start_date = start_date
+        self.parameters = (
+            [OptionParameter(**p) for p in parameters] if parameters else []
+        )

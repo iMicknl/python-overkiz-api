@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import json
 import os
 from unittest.mock import patch
@@ -6,9 +8,12 @@ import aiohttp
 import pytest
 from pytest import fixture
 
+from pyoverkiz import exceptions
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.const import SUPPORTED_SERVERS
-from pyoverkiz.enums import DataType
+from pyoverkiz.enums import APIType, DataType
+from pyoverkiz.models import Option
+from pyoverkiz.utils import generate_local_server
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -18,8 +23,24 @@ class TestOverkizClient:
     def client(self):
         return OverkizClient("username", "password", SUPPORTED_SERVERS["somfy_europe"])
 
+    @fixture
+    def local_client(self):
+        return OverkizClient(
+            "username",
+            "password",
+            generate_local_server("gateway-1234-5678-1243.local:8443"),
+        )
+
     @pytest.mark.asyncio
-    async def test_get_devices_basic(self, client):
+    async def test_get_api_type_cloud(self, client: OverkizClient):
+        assert client.api_type == APIType.CLOUD
+
+    @pytest.mark.asyncio
+    async def test_get_api_type_local(self, local_client: OverkizClient):
+        assert local_client.api_type == APIType.LOCAL
+
+    @pytest.mark.asyncio
+    async def test_get_devices_basic(self, client: OverkizClient):
         with open(
             os.path.join(CURRENT_DIR, "devices.json"), encoding="utf-8"
         ) as raw_devices:
@@ -38,7 +59,7 @@ class TestOverkizClient:
     )
     @pytest.mark.asyncio
     async def test_fetch_events_basic(
-        self, client, fixture_name: str, event_length: int
+        self, client: OverkizClient, fixture_name: str, event_length: int
     ):
         with open(
             os.path.join(CURRENT_DIR, "fixtures/event/" + fixture_name),
@@ -51,7 +72,7 @@ class TestOverkizClient:
             assert len(events) == event_length
 
     @pytest.mark.asyncio
-    async def test_fetch_events_simple_cast(self, client):
+    async def test_fetch_events_simple_cast(self, client: OverkizClient):
         with open(
             os.path.join(CURRENT_DIR, "fixtures/event/events.json"), encoding="utf-8"
         ) as raw_events:
@@ -74,7 +95,7 @@ class TestOverkizClient:
         ],
     )
     @pytest.mark.asyncio
-    async def test_fetch_events_casting(self, client, fixture_name: str):
+    async def test_fetch_events_casting(self, client: OverkizClient, fixture_name: str):
         with open(
             os.path.join(CURRENT_DIR, "fixtures/event/" + fixture_name),
             encoding="utf-8",
@@ -86,7 +107,6 @@ class TestOverkizClient:
 
             for event in events:
                 for state in event.device_states:
-
                     if state.type == 0:
                         assert state.value is None
 
@@ -109,32 +129,41 @@ class TestOverkizClient:
                         assert isinstance(state.value, dict)
 
     @pytest.mark.parametrize(
-        "fixture_name, device_count",
+        "fixture_name, device_count, gateway_count",
         [
-            ("setup_cozytouch.json", 12),
-            ("setup_cozytouch_v2.json", 5),
-            ("setup_cozytouch_2.json", 15),
-            ("setup_cozytouch_3.json", 15),
-            ("setup_hi_kumo.json", 3),
-            ("setup_hi_kumo_2.json", 3),
-            ("setup_nexity.json", 18),
-            ("setup_nexity_2.json", 17),
-            ("setup_rexel.json", 18),
-            ("setup_tahoma_1.json", 1),
-            ("setup_tahoma_3.json", 39),
-            ("setup_tahoma_climate.json", 19),
-            ("setup_tahoma_oceania.json", 3),
-            ("setup_tahoma_pro.json", 12),
-            ("setup_hue_and_low_speed.json", 40),
-            ("setup_tahoma_siren_io.json", 11),
-            ("setup_tahoma_siren_rtd.json", 31),
-            ("setup_tahoma_be.json", 15),
-            ("setup_local.json", 3),
-            ("setup_local_tahoma.json", 8),
+            ("setup_3_gateways.json", 37, 3),
+            ("setup_cozytouch.json", 12, 1),
+            ("setup_cozytouch_v2.json", 5, 1),
+            ("setup_cozytouch_2.json", 15, 1),
+            ("setup_cozytouch_3.json", 15, 1),
+            ("setup_hi_kumo.json", 3, 1),
+            ("setup_hi_kumo_2.json", 3, 1),
+            ("setup_hi_kumo_8_gateways.json", 16, 8),
+            ("setup_nexity.json", 18, 1),
+            ("setup_nexity_2.json", 17, 1),
+            ("setup_rexel.json", 18, 1),
+            ("setup_tahoma_1.json", 1, 1),
+            ("setup_tahoma_3.json", 39, 1),
+            ("setup_tahoma_climate.json", 19, 1),
+            ("setup_tahoma_oceania.json", 3, 1),
+            ("setup_tahoma_pro.json", 12, 1),
+            ("setup_hue_and_low_speed.json", 40, 1),
+            ("setup_tahoma_siren_io.json", 11, 1),
+            ("setup_tahoma_siren_rtd.json", 31, 1),
+            ("setup_tahoma_be.json", 15, 1),
+            ("setup_local.json", 3, 1),
+            ("setup_local_tahoma.json", 8, 1),
+            ("setup_local_with_climate.json", 33, 1),
         ],
     )
     @pytest.mark.asyncio
-    async def test_get_setup(self, client, fixture_name: str, device_count: int):
+    async def test_get_setup(
+        self,
+        client: OverkizClient,
+        fixture_name: str,
+        device_count: int,
+        gateway_count: int,
+    ):
         with open(
             os.path.join(CURRENT_DIR, "fixtures/setup/" + fixture_name),
             encoding="utf-8",
@@ -145,7 +174,7 @@ class TestOverkizClient:
             setup = await client.get_setup()
 
             assert len(setup.devices) == device_count
-            assert len(setup.gateways) == 1
+            assert len(setup.gateways) == gateway_count
 
             for device in setup.devices:
                 assert device.gateway_id
@@ -153,16 +182,233 @@ class TestOverkizClient:
                 assert device.protocol
                 assert device.base_device_url
 
+    @pytest.mark.parametrize(
+        "fixture_name",
+        [
+            ("setup_3_gateways.json"),
+            ("setup_cozytouch.json"),
+            ("setup_cozytouch_v2.json"),
+            ("setup_cozytouch_2.json"),
+            ("setup_cozytouch_3.json"),
+            ("setup_cozytouch_4.json"),
+            ("setup_hi_kumo.json"),
+            ("setup_hi_kumo_2.json"),
+            ("setup_hi_kumo_8_gateways.json"),
+            ("setup_nexity.json"),
+            ("setup_nexity_2.json"),
+            ("setup_rexel.json"),
+            ("setup_tahoma_1.json"),
+            ("setup_tahoma_3.json"),
+            ("setup_tahoma_climate.json"),
+            ("setup_tahoma_oceania.json"),
+            ("setup_tahoma_pro.json"),
+            ("setup_hue_and_low_speed.json"),
+            ("setup_tahoma_siren_io.json"),
+            ("setup_tahoma_siren_rtd.json"),
+            ("setup_tahoma_be.json"),
+            ("setup_local.json"),
+            ("setup_local_tahoma.json"),
+            ("setup_local_with_climate.json"),
+        ],
+    )
+    @pytest.mark.asyncio
+    async def test_get_diagnostic_data(self, client: OverkizClient, fixture_name: str):
+        with open(
+            os.path.join(CURRENT_DIR, "fixtures/setup/" + fixture_name),
+            encoding="utf-8",
+        ) as setup_mock:
+            resp = MockResponse(setup_mock.read())
+
+        with patch.object(aiohttp.ClientSession, "get", return_value=resp):
+            diagnostics = await client.get_diagnostic_data()
+            assert diagnostics
+
+    @pytest.mark.parametrize(
+        "fixture_name, exception, status_code",
+        [
+            ("cloud/503-empty.html", exceptions.ServiceUnavailableException, 503),
+            ("cloud/503-maintenance.html", exceptions.MaintenanceException, 503),
+            (
+                "cloud/access-denied-to-gateway.json",
+                exceptions.AccessDeniedToGatewayException,
+                400,
+            ),
+            (
+                "cloud/bad-credentials.json",
+                exceptions.BadCredentialsException,
+                400,
+            ),
+            (
+                "cloud/missing-authorization-token.json",
+                exceptions.MissingAuthorizationTokenException,
+                400,
+            ),
+            (
+                "cloud/no-registered-event-listener.json",
+                exceptions.NoRegisteredEventListenerException,
+                400,
+            ),
+            (
+                "cloud/too-many-concurrent-requests.json",
+                exceptions.TooManyConcurrentRequestsException,
+                400,
+            ),
+            (
+                "cloud/too-many-executions.json",
+                exceptions.TooManyExecutionsException,
+                400,
+            ),
+            (
+                "cloud/too-many-requests.json",
+                exceptions.TooManyRequestsException,
+                400,
+            ),
+            # (
+            #     "local/204-no-corresponding-execId.json",
+            #     exceptions.OverkizException,
+            #     204,
+            # ),
+            (
+                "local/400-bad-parameters.json",
+                exceptions.OverkizException,
+                400,
+            ),
+            ("local/400-bus-error.json", exceptions.OverkizException, 400),
+            (
+                "local/400-malformed-action-group.json",
+                exceptions.OverkizException,
+                400,
+            ),
+            (
+                "local/400-malformed-fetch-id.json",
+                exceptions.OverkizException,
+                400,
+            ),
+            (
+                "local/400-missing-execution-id.json",
+                exceptions.OverkizException,
+                400,
+            ),
+            (
+                "local/400-missing-parameters.json",
+                exceptions.OverkizException,
+                400,
+            ),
+            (
+                "local/400-no-registered-event-listener.json",
+                exceptions.NoRegisteredEventListenerException,
+                400,
+            ),
+            (
+                "local/400-no-such-device.json",
+                exceptions.OverkizException,
+                400,
+            ),
+            (
+                "local/400-unknown-object.json",
+                exceptions.UnknownObjectException,
+                400,
+            ),
+            (
+                "local/400-unspecified-error.json",
+                exceptions.OverkizException,
+                400,
+            ),
+            (
+                "local/401-missing-authorization-token.json",
+                exceptions.MissingAuthorizationTokenException,
+                401,
+            ),
+            (
+                "local/401-not-authenticated.json",
+                exceptions.NotAuthenticatedException,
+                401,
+            ),
+        ],
+    )
+    @pytest.mark.asyncio
+    async def test_check_response_exception_handling(
+        self,
+        client: OverkizClient,
+        fixture_name: str,
+        status_code: int,
+        exception: Exception,
+    ):
+        with pytest.raises(exception):
+            if fixture_name:
+                with open(
+                    os.path.join(CURRENT_DIR, "fixtures/exceptions/" + fixture_name),
+                    encoding="utf-8",
+                ) as raw_events:
+                    resp = MockResponse(raw_events.read(), status_code)
+            else:
+                resp = MockResponse(None, status_code)
+
+            await client.check_response(resp)
+
+    @pytest.mark.asyncio
+    async def test_get_setup_options(
+        self,
+        client: OverkizClient,
+    ):
+        with open(
+            os.path.join(CURRENT_DIR, "fixtures/endpoints/setup-options.json"),
+            encoding="utf-8",
+        ) as raw_events:
+            resp = MockResponse(raw_events.read())
+
+        with patch.object(aiohttp.ClientSession, "get", return_value=resp):
+            options = await client.get_setup_options()
+            assert len(options) == 3
+
+            for option in options:
+                assert isinstance(option, Option)
+
+    @pytest.mark.parametrize(
+        "fixture_name, option_name, instance",
+        [
+            (
+                "setup-options-developerMode.json",
+                "developerMode-1234-5678-1234",
+                Option,
+            ),
+            ("setup-options-empty.json", "test", None),
+        ],
+    )
+    @pytest.mark.asyncio
+    async def test_get_setup_option(
+        self,
+        client: OverkizClient,
+        fixture_name: str,
+        option_name: str,
+        instance: Option | None,
+    ):
+        with open(
+            os.path.join(CURRENT_DIR, "fixtures/endpoints/" + fixture_name),
+            encoding="utf-8",
+        ) as raw_events:
+            resp = MockResponse(raw_events.read())
+
+        with patch.object(aiohttp.ClientSession, "get", return_value=resp):
+            option = await client.get_setup_option(option_name)
+
+            if instance is None:
+                assert option is None
+            else:
+                assert isinstance(option, instance)
+
 
 class MockResponse:
-    def __init__(self, text, status=200):
+    def __init__(self, text, status=200, url=""):
         self._text = text
         self.status = status
+        self.url = url
 
     async def text(self):
         return self._text
 
-    async def json(self):
+    # pylint: disable=unused-argument
+    async def json(self, content_type=None):
         return json.loads(self._text)
 
     async def __aexit__(self, exc_type, exc, tb):

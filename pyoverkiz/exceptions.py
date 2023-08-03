@@ -2,6 +2,10 @@ class BaseOverkizException(Exception):
     pass
 
 
+class OverkizException(BaseOverkizException):
+    pass
+
+
 class BadCredentialsException(BaseOverkizException):
     pass
 
@@ -26,7 +30,11 @@ class TooManyConcurrentRequestsException(BaseOverkizException):
     pass
 
 
-class MaintenanceException(BaseOverkizException):
+class ServiceUnavailableException(BaseOverkizException):
+    pass
+
+
+class MaintenanceException(ServiceUnavailableException):
     pass
 
 

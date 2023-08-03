@@ -139,6 +139,39 @@ class TestDevice:
                 2,
                 True,
             ),
+            (
+                "eliot://ELIOT-000000000000000000000000000ABCDE/00000000000000000000000000125abc",
+                Protocol.ELIOT,
+                "ELIOT-000000000000000000000000000ABCDE",
+                "00000000000000000000000000125abc",
+                None,
+                False,
+            ),
+            (
+                "eliot://ELIOT-000000000000000000000000000ABCDE/00000000000000000000000000125abc#1",
+                Protocol.ELIOT,
+                "ELIOT-000000000000000000000000000ABCDE",
+                "00000000000000000000000000125abc",
+                1,
+                False,
+            ),
+            # Wrong device urls:
+            (
+                "foo://whatever-blah/12",
+                Protocol.UNKNOWN,
+                "whatever-blah",
+                "12",
+                None,
+                False,
+            ),
+            (
+                "foo://whatever",
+                None,
+                None,
+                None,
+                None,
+                False,
+            ),
         ],
     )
     def test_base_url_parsing(

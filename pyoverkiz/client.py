@@ -19,6 +19,7 @@ from warrant_lite import WarrantLite
 from pyoverkiz.const import (
     COZYTOUCH_ATLANTIC_API,
     COZYTOUCH_CLIENT_ID,
+    LOCAL_API_PATH,
     NEXITY_API,
     NEXITY_COGNITO_CLIENT_ID,
     NEXITY_COGNITO_REGION,
@@ -28,6 +29,7 @@ from pyoverkiz.const import (
     SOMFY_CLIENT_SECRET,
     SUPPORTED_SERVERS,
 )
+from pyoverkiz.enums import APIType, Server
 from pyoverkiz.exceptions import (
     AccessDeniedToGatewayException,
     BadCredentialsException,
@@ -43,6 +45,8 @@ from pyoverkiz.exceptions import (
     NoRegisteredEventListenerException,
     NotAuthenticatedException,
     NotSuchTokenException,
+    OverkizException,
+    ServiceUnavailableException,
     SessionAndBearerInSameRequestException,
     SomfyBadCredentialsException,
     SomfyServiceException,
@@ -61,6 +65,8 @@ from pyoverkiz.models import (
     Gateway,
     HistoryExecution,
     LocalToken,
+    Option,
+    OptionParameter,
     OverkizServer,
     Place,
     Scenario,
@@ -93,6 +99,7 @@ class OverkizClient:
     gateways: list[Gateway]
     event_listener_id: str | None
     session: ClientSession
+    api_type: APIType
 
     _refresh_token: str | None = None
     _expires_in: datetime.datetime | None = None
@@ -127,6 +134,11 @@ class OverkizClient:
 
         self.session = session if session else ClientSession()
 
+        if LOCAL_API_PATH in self.server.endpoint:
+            self.api_type = APIType.LOCAL
+        else:
+            self.api_type = APIType.CLOUD
+
     async def __aenter__(self) -> OverkizClient:
         return self
 
@@ -154,17 +166,18 @@ class OverkizClient:
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
         # Local authentication
-        if "/enduser-mobile-web/1/enduserAPI/" in self.server.endpoint:
+        if self.api_type == APIType.LOCAL:
             if register_event_listener:
                 await self.register_event_listener()
             else:
                 # Call a simple endpoint to verify if our token is correct
+                # Since local API does not have a /login endpoint
                 await self.get_gateways()
 
             return True
 
         # Somfy TaHoma authentication using access_token
-        if self.server == SUPPORTED_SERVERS["somfy_europe"]:
+        if self.server == SUPPORTED_SERVERS[Server.SOMFY_EUROPE]:
             await self.somfy_tahoma_get_access_token()
 
             if register_event_listener:
@@ -173,12 +186,12 @@ class OverkizClient:
             return True
 
         # CozyTouch authentication using jwt
-        if self.server == SUPPORTED_SERVERS["atlantic_cozytouch"]:
+        if self.server == SUPPORTED_SERVERS[Server.ATLANTIC_COZYTOUCH]:
             jwt = await self.cozytouch_login()
             payload = {"jwt": jwt}
 
         # Nexity authentication using ssoToken
-        elif self.server == SUPPORTED_SERVERS["nexity"]:
+        elif self.server == SUPPORTED_SERVERS[Server.NEXITY]:
             sso_token = await self.nexity_login()
             user_id = self.username.replace("@", "_-_")  # Replace @ for _-_
             payload = {"ssoToken": sso_token, "userId": user_id}
@@ -237,7 +250,7 @@ class OverkizClient:
         """
         Update the access and the refresh token. The refresh token will be valid 14 days.
         """
-        if self.server != SUPPORTED_SERVERS["somfy_europe"]:
+        if self.server != SUPPORTED_SERVERS[Server.SOMFY_EUROPE]:
             return
 
         if not self._refresh_token:
@@ -283,7 +296,7 @@ class OverkizClient:
             data=FormData(
                 {
                     "grant_type": "password",
-                    "username": self.username,
+                    "username": "GA-PRIVATEPERSON/" + self.username,
                     "password": self.password,
                 }
             ),
@@ -304,7 +317,7 @@ class OverkizClient:
 
         # Request JWT
         async with self.session.get(
-            COZYTOUCH_ATLANTIC_API + "/gacoma/gacomawcfservice/accounts/jwt",
+            COZYTOUCH_ATLANTIC_API + "/magellan/accounts/jwt",
             headers={"Authorization": f"Bearer {token['access_token']}"},
         ) as response:
             jwt = await response.text()
@@ -747,6 +760,64 @@ class OverkizClient:
         response = await self.__post(f"exec/schedule/{oid}/{timestamp}")
         return cast(str, response["triggerId"])
 
+    @backoff.on_exception(
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError),
+        max_tries=2,
+        on_backoff=relogin,
+    )
+    async def get_setup_options(self) -> list[Option]:
+        """
+        This operation returns all subscribed options of a given setup.
+        Per-session rate-limit : 1 calls per 1d period for this particular operation (bulk-load)
+        Access scope : Full enduser API access (enduser/*)
+        """
+        response = await self.__get("setup/options")
+        options = [Option(**o) for o in humps.decamelize(response)]
+
+        return options
+
+    @backoff.on_exception(
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError),
+        max_tries=2,
+        on_backoff=relogin,
+    )
+    async def get_setup_option(self, option: str) -> Option | None:
+        """
+        This operation returns the selected subscribed option of a given setup.
+        For example `developerMode-{gateway_id}` to understand if developer mode is on.
+        """
+        response = await self.__get(f"setup/options/{option}")
+
+        if response:
+            return Option(**humps.decamelize(response))
+
+        return None
+
+    @backoff.on_exception(
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError),
+        max_tries=2,
+        on_backoff=relogin,
+    )
+    async def get_setup_option_parameter(
+        self, option: str, parameter: str
+    ) -> OptionParameter | None:
+        """
+        This operation returns the selected parameters of a given setup and option.
+        For example `developerMode-{gateway_id}` and `gatewayId` to understand if developer mode is on.
+
+        If the option is not available, an OverkizException will be thrown.
+        If the parameter is not available you will receive None.
+        """
+        response = await self.__get(f"setup/options/{option}/{parameter}")
+
+        if response:
+            return OptionParameter(**humps.decamelize(response))
+
+        return None
+
     async def __get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API"""
         headers = {}
@@ -802,14 +873,27 @@ class OverkizClient:
             result = await response.json(content_type=None)
         except JSONDecodeError as error:
             result = await response.text()
-            if "Server is down for maintenance" in result:
+
+            if "is down for maintenance" in result:
                 raise MaintenanceException("Server is down for maintenance") from error
-            raise Exception(
+
+            if response.status == 503:
+                raise ServiceUnavailableException(result) from error
+
+            raise OverkizException(
                 f"Unknown error while requesting {response.url}. {response.status} - {result}"
             ) from error
 
         if result.get("errorCode"):
-            message = result.get("error")
+            # Error messages between cloud and local Overkiz servers can be slightly different
+            # To make it easier to have a strict match for these errors, we remove the double quotes and the period at the end.
+
+            if message := result.get("error"):
+                message = message.strip(
+                    '".'
+                )  # Change to .removesuffix when Python 3.8 support is dropped
+            else:
+                message = ""  # An error message can have an empty (None) message
 
             # {"errorCode": "AUTHENTICATION_ERROR",
             # "error": "Too many requests, try again later : login with xxx@xxx.tld"}
@@ -825,7 +909,7 @@ class OverkizClient:
                 raise NotAuthenticatedException(message)
 
             # {"error":"Missing authorization token.","errorCode":"RESOURCE_ACCESS_DENIED"}
-            if message == "Missing authorization token.":
+            if message == "Missing authorization token":
                 raise MissingAuthorizationTokenException(message)
 
             # {"error": "Server busy, please try again later. (Too many executions)"}
@@ -851,10 +935,7 @@ class OverkizClient:
             if message == "Cannot use JSESSIONID and bearer token in same request":
                 raise SessionAndBearerInSameRequestException(message)
 
-            if (
-                message
-                == "Too many attempts with an invalid token, temporarily banned."
-            ):
+            if message == "Too many attempts with an invalid token, temporarily banned":
                 raise TooManyAttemptsBannedException(message)
 
             if "Invalid token : " in message:
@@ -867,14 +948,15 @@ class OverkizClient:
                 raise UnknownUserException(message)
 
             # {"error":"Unknown object.","errorCode":"UNSPECIFIED_ERROR"}
-            if message == "Unknown object.":
+            if message == "Unknown object":
                 raise UnknownObjectException(message)
 
             # {'errorCode': 'RESOURCE_ACCESS_DENIED', 'error': 'Access denied to gateway #1234-5678-1234 for action ADD_TOKEN'}
             if "Access denied to gateway" in message:
                 raise AccessDeniedToGatewayException(message)
 
-        raise Exception(message if message else result)
+        # General Overkiz exception
+        raise OverkizException(result)
 
     async def _refresh_token_if_expired(self) -> None:
         """Check if token is expired and request a new one."""

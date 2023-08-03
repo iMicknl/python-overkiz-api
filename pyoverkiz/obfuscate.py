@@ -56,6 +56,10 @@ def obfuscate_sensitive_data(data: dict[str, Any]) -> JSON:
             for val in value:
                 if isinstance(val, str):
                     continue
+                if isinstance(val, int):
+                    continue
+                if isinstance(val, float):
+                    continue
                 if isinstance(val, list):
                     continue
 

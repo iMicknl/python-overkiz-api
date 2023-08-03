@@ -1,0 +1,4 @@
+{
+    "errorCode": "RESOURCE_ACCESS_DENIED",
+    "error": "Access denied to gateway #1234-5678-1234 for action ADD_TOKEN"
+}
