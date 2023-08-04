@@ -1,14 +1,8 @@
-import sys
-from enum import unique
-
-if sys.version_info >= (3, 11):
-    from enum import StrEnum
-else:
-    from backports.strenum import StrEnum
+from enum import Enum, unique
 
 
 @unique
-class OverkizCommand(StrEnum):
+class OverkizCommand(str, Enum):
     """Device commands used by Overkiz."""
 
     ACTIVATE_OPTION = "activateOption"
@@ -137,7 +131,7 @@ class OverkizCommand(StrEnum):
 
 
 @unique
-class OverkizCommandParam(StrEnum):
+class OverkizCommandParam(str, Enum):
     """Parameter used by Overkiz commands and/or states."""
 
     A = "A"
@@ -265,7 +259,7 @@ class OverkizCommandParam(StrEnum):
 
 
 @unique
-class CommandMode(StrEnum):
+class CommandMode(str, Enum):
     HIGH_PRIORITY = "highPriority"
     GEOLOCATED = "geolocated"
     INTERNAL = "internal"
