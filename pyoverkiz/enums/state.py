@@ -1,8 +1,16 @@
-from enum import Enum, unique
+import sys
+from enum import unique
+
+# Since we support Python versions lower than 3.11, we use
+# a backport for StrEnum when needed.
+if sys.version_info >= (3, 11):
+    from enum import StrEnum
+else:
+    from backports.strenum import StrEnum
 
 
 @unique
-class OverkizAttribute(str, Enum):
+class OverkizAttribute(StrEnum):
     """Device attributes used by Overkiz."""
 
     CORE_FIRMWARE_REVISION = "core:FirmwareRevision"
@@ -22,7 +30,7 @@ class OverkizAttribute(str, Enum):
 
 
 @unique
-class OverkizState(str, Enum):
+class OverkizState(StrEnum):
     """Device states used by Overkiz."""
 
     CORE_ACTIVE_ZONES = "core:ActiveZonesState"

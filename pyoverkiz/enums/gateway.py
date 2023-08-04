@@ -1,7 +1,15 @@
 import logging
-from enum import Enum, IntEnum, unique
+import sys
+from enum import IntEnum, unique
 
 _LOGGER = logging.getLogger(__name__)
+
+# Since we support Python versions lower than 3.11, we use
+# a backport for StrEnum when needed.
+if sys.version_info >= (3, 11):
+    from enum import StrEnum
+else:
+    from backports.strenum import StrEnum
 
 
 @unique
@@ -98,7 +106,7 @@ class GatewaySubType(IntEnum):
 
 
 @unique
-class UpdateBoxStatus(str, Enum):
+class UpdateBoxStatus(StrEnum):
     NOT_UPDATABLE = "NOT_UPDATABLE"
     READY_TO_UPDATE = "READY_TO_UPDATE"
     READY_TO_BE_UPDATED_BY_SERVER = "READY_TO_BE_UPDATED_BY_SERVER"

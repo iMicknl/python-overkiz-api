@@ -1,8 +1,16 @@
-from enum import Enum, unique
+import sys
+from enum import unique
+
+# Since we support Python versions lower than 3.11, we use
+# a backport for StrEnum when needed.
+if sys.version_info >= (3, 11):
+    from enum import StrEnum
+else:
+    from backports.strenum import StrEnum
 
 
 @unique
-class OverkizCommand(str, Enum):
+class OverkizCommand(StrEnum):
     """Device commands used by Overkiz."""
 
     ACTIVATE_OPTION = "activateOption"
@@ -131,7 +139,7 @@ class OverkizCommand(str, Enum):
 
 
 @unique
-class OverkizCommandParam(str, Enum):
+class OverkizCommandParam(StrEnum):
     """Parameter used by Overkiz commands and/or states."""
 
     A = "A"
@@ -259,7 +267,7 @@ class OverkizCommandParam(str, Enum):
 
 
 @unique
-class CommandMode(str, Enum):
+class CommandMode(StrEnum):
     HIGH_PRIORITY = "highPriority"
     GEOLOCATED = "geolocated"
     INTERNAL = "internal"

@@ -1,7 +1,15 @@
 import logging
-from enum import Enum, IntEnum, unique
+import sys
+from enum import IntEnum, unique
 
 _LOGGER = logging.getLogger(__name__)
+
+# Since we support Python versions lower than 3.11, we use
+# a backport for StrEnum when needed.
+if sys.version_info >= (3, 11):
+    from enum import StrEnum
+else:
+    from backports.strenum import StrEnum
 
 
 @unique
@@ -241,7 +249,7 @@ class FailureType(IntEnum):
 
 
 @unique
-class EventName(str, Enum):
+class EventName(StrEnum):
     UNKNOWN = "Unknown"
     ACTION_GROUP_CREATED = "ActionGroupCreatedEvent"
     ACTION_GROUP_DELETED = "ActionGroupDeletedEvent"

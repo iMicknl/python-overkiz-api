@@ -1,11 +1,19 @@
 import logging
-from enum import Enum, unique
+import sys
+from enum import unique
 
 _LOGGER = logging.getLogger(__name__)
 
+# Since we support Python versions lower than 3.11, we use
+# a backport for StrEnum when needed.
+if sys.version_info >= (3, 11):
+    from enum import StrEnum
+else:
+    from backports.strenum import StrEnum
+
 
 @unique
-class Protocol(str, Enum):
+class Protocol(StrEnum):
     """Protocol used by Overkiz.
 
     Values have been retrieved from /reference/protocolTypes

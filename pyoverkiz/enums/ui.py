@@ -1,11 +1,19 @@
 import logging
-from enum import Enum, unique
+import sys
+from enum import unique
 
 _LOGGER = logging.getLogger(__name__)
 
+# Since we support Python versions lower than 3.11, we use
+# a backport for StrEnum when needed.
+if sys.version_info >= (3, 11):
+    from enum import StrEnum
+else:
+    from backports.strenum import StrEnum
+
 
 @unique
-class UIClass(str, Enum):
+class UIClass(StrEnum):
     # A list of all defined UI classes from /reference/ui/classes
     ADJUSTABLE_SLATS_ROLLER_SHUTTER = "AdjustableSlatsRollerShutter"
     AIR_SENSOR = "AirSensor"
@@ -82,7 +90,7 @@ class UIClass(str, Enum):
 
 
 @unique
-class UIWidget(str, Enum):
+class UIWidget(StrEnum):
     # A list of all defined UI widgets from /reference/ui/widgets
     AIR_FLOW_SENSOR = "AirFlowSensor"
     AIR_QUALITY_SENSOR = "AirQualitySensor"
