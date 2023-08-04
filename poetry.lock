@@ -188,6 +188,17 @@ files = [
 ]
 
 [[package]]
+name = "backports-strenum"
+version = "1.2.4"
+description = "Base class for creating enumerated constants that are also subclasses of str"
+category = "main"
+optional = false
+python-versions = ">=3.8, <4"
+files = [
+    {file = "backports.strenum-1.2.4.tar.gz", hash = "sha256:87b67fd1413af3ce959b565d84ddef99776cdd97a62e2fd2d0550cdacc210dee"},
+]
+
+[[package]]
 name = "black"
 version = "22.12.0"
 description = "The uncompromising code formatter."
@@ -1658,4 +1669,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "ee171dab8421ce948a68c21e19b925afcc08d82a7f8d659491aa4ca7faab4bef"
+content-hash = "4da1070d5bb0d8dbdb25816c98f6a357cf3dac9e4366f9d05e190dfc53dee48a"
