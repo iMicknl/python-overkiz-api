@@ -1,11 +1,19 @@
 import logging
-from enum import Enum, unique
+import sys
+from enum import unique
 
 _LOGGER = logging.getLogger(__name__)
 
+# Since we support Python versions lower than 3.11, we use
+# a backport for StrEnum when needed.
+if sys.version_info >= (3, 11):
+    from enum import StrEnum
+else:
+    from backports.strenum import StrEnum
+
 
 @unique
-class ExecutionType(str, Enum):
+class ExecutionType(StrEnum):
     UNKNOWN = "UNKNOWN"
     IMMEDIATE_EXECUTION = "Immediate execution"
     DELAYED_EXECUTION = "Delayed execution"
@@ -21,7 +29,7 @@ class ExecutionType(str, Enum):
 
 
 @unique
-class ExecutionState(str, Enum):
+class ExecutionState(StrEnum):
     UNKNOWN = "UNKNOWN"
     INITIALIZED = "INITIALIZED"
     NOT_TRANSMITTED = "NOT_TRANSMITTED"
@@ -39,7 +47,7 @@ class ExecutionState(str, Enum):
 
 
 @unique
-class ExecutionSubType(str, Enum):
+class ExecutionSubType(StrEnum):
     UNKNOWN = "UNKNOWN"
     _ = "-"
     ACTION_GROUP = "ACTION_GROUP"

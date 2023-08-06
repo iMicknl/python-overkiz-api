@@ -1,8 +1,16 @@
-from enum import Enum, unique
+import sys
+from enum import unique
+
+# Since we support Python versions lower than 3.11, we use
+# a backport for StrEnum when needed.
+if sys.version_info >= (3, 11):
+    from enum import StrEnum
+else:
+    from backports.strenum import StrEnum
 
 
 @unique
-class MeasuredValueType(str, Enum):
+class MeasuredValueType(StrEnum):
     """See https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode/issues/68#issuecomment-1281474879"""
 
     ABSOLUTE_VALUE = "core:AbsoluteValue"

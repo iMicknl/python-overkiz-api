@@ -5,6 +5,7 @@ from pyoverkiz.enums import (
     FailureType,
     GatewaySubType,
     GatewayType,
+    OverkizCommandParam,
 )
 
 
@@ -47,3 +48,11 @@ class TestExecutionType:
 class TestExecutionSubType:
     def test_missing(self):
         assert ExecutionSubType("test") == ExecutionSubType.UNKNOWN
+
+
+class TestStrEnumBackport:
+    def test_string_concat(self):
+        assert (
+            f"{OverkizCommandParam.A},{OverkizCommandParam.B},{OverkizCommandParam.C}"
+            == "A,B,C"
+        )
