@@ -12,7 +12,13 @@ from typing import Any, cast
 import backoff
 import boto3
 import humps
-from aiohttp import ClientResponse, ClientSession, FormData, ServerDisconnectedError
+from aiohttp import (
+    ClientConnectorError,
+    ClientResponse,
+    ClientSession,
+    FormData,
+    ServerDisconnectedError,
+)
 from botocore.config import Config
 from warrant_lite import WarrantLite
 
@@ -373,7 +379,7 @@ class OverkizClient:
 
     @backoff.on_exception(
         backoff.expo,
-        (NotAuthenticatedException, ServerDisconnectedError),
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
         max_tries=2,
         on_backoff=relogin,
     )
@@ -410,7 +416,7 @@ class OverkizClient:
 
     @backoff.on_exception(
         backoff.expo,
-        (NotAuthenticatedException, ServerDisconnectedError),
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
         max_tries=2,
         on_backoff=relogin,
     )
@@ -430,7 +436,7 @@ class OverkizClient:
 
     @backoff.on_exception(
         backoff.expo,
-        (NotAuthenticatedException, ServerDisconnectedError),
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
         max_tries=2,
         on_backoff=relogin,
     )
@@ -454,7 +460,7 @@ class OverkizClient:
 
     @backoff.on_exception(
         backoff.expo,
-        (NotAuthenticatedException, ServerDisconnectedError),
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
         max_tries=2,
         on_backoff=relogin,
     )
@@ -478,7 +484,7 @@ class OverkizClient:
 
     @backoff.on_exception(
         backoff.expo,
-        (NotAuthenticatedException, ServerDisconnectedError),
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
         max_tries=2,
         on_backoff=relogin,
     )
@@ -625,7 +631,7 @@ class OverkizClient:
 
     @backoff.on_exception(
         backoff.expo,
-        (NotAuthenticatedException, ServerDisconnectedError),
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
         max_tries=2,
         on_backoff=relogin,
     )
@@ -652,7 +658,7 @@ class OverkizClient:
 
     @backoff.on_exception(
         backoff.expo,
-        (NotAuthenticatedException, ServerDisconnectedError),
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
         max_tries=2,
         on_backoff=relogin,
     )
@@ -663,7 +669,7 @@ class OverkizClient:
 
     @backoff.on_exception(
         backoff.expo,
-        (NotAuthenticatedException, ServerDisconnectedError),
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
         max_tries=2,
         on_backoff=relogin,
     )
@@ -675,7 +681,7 @@ class OverkizClient:
 
     @backoff.on_exception(
         backoff.expo,
-        (NotAuthenticatedException, ServerDisconnectedError),
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
         max_tries=2,
         on_backoff=relogin,
     )
@@ -690,7 +696,7 @@ class OverkizClient:
 
     @backoff.on_exception(
         backoff.expo,
-        (NotAuthenticatedException, ServerDisconnectedError),
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
         max_tries=2,
         on_backoff=relogin,
     )
@@ -710,7 +716,7 @@ class OverkizClient:
 
     @backoff.on_exception(
         backoff.expo,
-        (NotAuthenticatedException, ServerDisconnectedError),
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
         max_tries=2,
         on_backoff=relogin,
     )
@@ -728,7 +734,7 @@ class OverkizClient:
 
     @backoff.on_exception(
         backoff.expo,
-        (NotAuthenticatedException, ServerDisconnectedError),
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
         max_tries=2,
         on_backoff=relogin,
     )
@@ -751,7 +757,7 @@ class OverkizClient:
 
     @backoff.on_exception(
         backoff.expo,
-        (NotAuthenticatedException, ServerDisconnectedError),
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
         max_tries=2,
         on_backoff=relogin,
     )
@@ -762,7 +768,7 @@ class OverkizClient:
 
     @backoff.on_exception(
         backoff.expo,
-        (NotAuthenticatedException, ServerDisconnectedError),
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
         max_tries=2,
         on_backoff=relogin,
     )
@@ -779,7 +785,7 @@ class OverkizClient:
 
     @backoff.on_exception(
         backoff.expo,
-        (NotAuthenticatedException, ServerDisconnectedError),
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
         max_tries=2,
         on_backoff=relogin,
     )
@@ -797,7 +803,7 @@ class OverkizClient:
 
     @backoff.on_exception(
         backoff.expo,
-        (NotAuthenticatedException, ServerDisconnectedError),
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
         max_tries=2,
         on_backoff=relogin,
     )
@@ -893,7 +899,8 @@ class OverkizClient:
                     '".'
                 )  # Change to .removesuffix when Python 3.8 support is dropped
             else:
-                message = ""  # An error message can have an empty (None) message
+                # An error message can have an empty (None) message
+                message = ""
 
             # {"errorCode": "AUTHENTICATION_ERROR",
             # "error": "Too many requests, try again later : login with xxx@xxx.tld"}

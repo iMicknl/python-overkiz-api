@@ -9,7 +9,6 @@ from pyoverkiz.obfuscate import obfuscate_sensitive_data
 # only process .JSON files in folder.
 for filename in glob.glob(os.path.join("tests/fixtures/setup", "*.json")):
     with open(filename, encoding="utf-8") as input_file:
-
         print(f"Masking {filename}")
 
         try:
