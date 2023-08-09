@@ -26,7 +26,7 @@ backports-strenum = "^1.2.4"
 tox = "^4.7"
 pytest = "^7.4"
 pytest-cov = "^4.1.0"
-pre-commit = "^2.21"
+pre-commit = "^3.3"
 black = {version = "^23.7", allow-prereleases = true}
 pylint = "^2.13.9"
 isort = "^5.11.5"
