@@ -276,6 +276,17 @@ urllib3 = ">=1.25.4,<1.27"
 crt = ["awscrt (==0.16.26)"]
 
 [[package]]
+name = "cachetools"
+version = "5.3.1"
+description = "Extensible memoizing collections and decorators"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "cachetools-5.3.1-py3-none-any.whl", hash = "sha256:95ef631eeaea14ba2e36f06437f36463aac3a096799e876ee55e5cdccb102590"},
+    {file = "cachetools-5.3.1.tar.gz", hash = "sha256:dce83f2d9b4e1f732a8cd44af8e8fab2dbe46201467fc98b3ef8f269092bf62b"},
+]
+
+[[package]]
 name = "certifi"
 version = "2023.7.22"
 description = "Python package for providing Mozilla's CA Bundle."
@@ -295,6 +306,17 @@ python-versions = ">=3.6.1"
 files = [
     {file = "cfgv-3.3.1-py2.py3-none-any.whl", hash = "sha256:c6a0883f3917a037485059700b9e75da2464e6c27051014ad85ba6aaa5884426"},
     {file = "cfgv-3.3.1.tar.gz", hash = "sha256:f5a830efb9ce7a445376bb66ec94c638a9787422f96264c98edc6bdeed8ab736"},
+]
+
+[[package]]
+name = "chardet"
+version = "5.2.0"
+description = "Universal encoding detector for Python 3"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "chardet-5.2.0-py3-none-any.whl", hash = "sha256:e1cf59446890a00105fe7b7912492ea04b6e6f06d4b742b2c788469e34c82970"},
+    {file = "chardet-5.2.0.tar.gz", hash = "sha256:1b3b6ff479a8c414bc3fa2c0852995695c4a026dcd6d0633b2dd092ca39c1cf7"},
 ]
 
 [[package]]
@@ -998,17 +1020,6 @@ pyyaml = ">=5.1"
 virtualenv = ">=20.10.0"
 
 [[package]]
-name = "py"
-version = "1.11.0"
-description = "library with cross-python path, ini-parsing, io, code, log facilities"
-optional = false
-python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
-files = [
-    {file = "py-1.11.0-py2.py3-none-any.whl", hash = "sha256:607c53218732647dff4acdfcd50cb62615cedf612e72d1724fb1a0cc6405b378"},
-    {file = "py-1.11.0.tar.gz", hash = "sha256:51c75c4126074b472f746a24399ad32f6053d1b34b68d2fa41e558e6f4a98719"},
-]
-
-[[package]]
 name = "pyasn1"
 version = "0.5.0"
 description = "Pure-Python implementation of ASN.1 types and DER/BER/CER codecs (X.208)"
@@ -1080,6 +1091,25 @@ typing-extensions = {version = ">=3.10.0", markers = "python_version < \"3.10\""
 [package.extras]
 spelling = ["pyenchant (>=3.2,<4.0)"]
 testutils = ["gitpython (>3)"]
+
+[[package]]
+name = "pyproject-api"
+version = "1.5.3"
+description = "API to interact with the python pyproject.toml based projects"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "pyproject_api-1.5.3-py3-none-any.whl", hash = "sha256:14cf09828670c7b08842249c1f28c8ee6581b872e893f81b62d5465bec41502f"},
+    {file = "pyproject_api-1.5.3.tar.gz", hash = "sha256:ffb5b2d7cad43f5b2688ab490de7c4d3f6f15e0b819cb588c4b771567c9729eb"},
+]
+
+[package.dependencies]
+packaging = ">=23.1"
+tomli = {version = ">=2.0.1", markers = "python_version < \"3.11\""}
+
+[package.extras]
+docs = ["furo (>=2023.5.20)", "sphinx (>=7.0.1)", "sphinx-autodoc-typehints (>=1.23,!=1.23.4)"]
+testing = ["covdefaults (>=2.3)", "importlib-metadata (>=6.6)", "pytest (>=7.3.1)", "pytest-cov (>=4.1)", "pytest-mock (>=3.10)", "setuptools (>=67.8)", "wheel (>=0.40)"]
 
 [[package]]
 name = "pytest"
@@ -1351,28 +1381,30 @@ files = [
 
 [[package]]
 name = "tox"
-version = "3.28.0"
+version = "4.7.0"
 description = "tox is a generic virtualenv management and test command line tool"
 optional = false
-python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
+python-versions = ">=3.7"
 files = [
-    {file = "tox-3.28.0-py2.py3-none-any.whl", hash = "sha256:57b5ab7e8bb3074edc3c0c0b4b192a4f3799d3723b2c5b76f1fa9f2d40316eea"},
-    {file = "tox-3.28.0.tar.gz", hash = "sha256:d0d28f3fe6d6d7195c27f8b054c3e99d5451952b54abdae673b71609a581f640"},
+    {file = "tox-4.7.0-py3-none-any.whl", hash = "sha256:79399a3d4641d1fd15eb6bd62c2f35923988038bf0ecf37a688b5e7a767de7d7"},
+    {file = "tox-4.7.0.tar.gz", hash = "sha256:89120e1568c763924301cfde61ba7d4b5c4615eeb1086d5370deb03e9cf63c41"},
 ]
 
 [package.dependencies]
-colorama = {version = ">=0.4.1", markers = "platform_system == \"Windows\""}
-filelock = ">=3.0.0"
-packaging = ">=14"
-pluggy = ">=0.12.0"
-py = ">=1.4.17"
-six = ">=1.14.0"
-tomli = {version = ">=2.0.1", markers = "python_version >= \"3.7\" and python_version < \"3.11\""}
-virtualenv = ">=16.0.0,<20.0.0 || >20.0.0,<20.0.1 || >20.0.1,<20.0.2 || >20.0.2,<20.0.3 || >20.0.3,<20.0.4 || >20.0.4,<20.0.5 || >20.0.5,<20.0.6 || >20.0.6,<20.0.7 || >20.0.7"
+cachetools = ">=5.3.1"
+chardet = ">=5.1"
+colorama = ">=0.4.6"
+filelock = ">=3.12.2"
+packaging = ">=23.1"
+platformdirs = ">=3.9.1"
+pluggy = ">=1.2"
+pyproject-api = ">=1.5.3"
+tomli = {version = ">=2.0.1", markers = "python_version < \"3.11\""}
+virtualenv = ">=20.24.1"
 
 [package.extras]
-docs = ["pygments-github-lexers (>=0.0.5)", "sphinx (>=2.0.0)", "sphinxcontrib-autoprogram (>=0.1.5)", "towncrier (>=18.5.0)"]
-testing = ["flaky (>=3.4.0)", "freezegun (>=0.3.11)", "pathlib2 (>=2.3.3)", "psutil (>=5.6.1)", "pytest (>=4.0.0)", "pytest-cov (>=2.5.1)", "pytest-mock (>=1.10.0)", "pytest-randomly (>=1.0.0)"]
+docs = ["furo (>=2023.5.20)", "sphinx (>=7.0.1)", "sphinx-argparse-cli (>=1.11.1)", "sphinx-autodoc-typehints (>=1.23.3,!=1.23.4)", "sphinx-copybutton (>=0.5.2)", "sphinx-inline-tabs (>=2023.4.21)", "sphinxcontrib-towncrier (>=0.2.1a0)", "towncrier (>=23.6)"]
+testing = ["build[virtualenv] (>=0.10)", "covdefaults (>=2.3)", "detect-test-pollution (>=1.1.1)", "devpi-process (>=0.3.1)", "diff-cover (>=7.7)", "distlib (>=0.3.7)", "flaky (>=3.7)", "hatch-vcs (>=0.3)", "hatchling (>=1.17.1)", "psutil (>=5.9.5)", "pytest (>=7.4)", "pytest-cov (>=4.1)", "pytest-mock (>=3.11.1)", "pytest-xdist (>=3.3.1)", "re-assert (>=1.1)", "time-machine (>=2.10)", "wheel (>=0.40)"]
 
 [[package]]
 name = "typing-extensions"
@@ -1612,4 +1644,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.8,<4.0"
-content-hash = "c68de7bc8b66160612dbc5b39429104de41922bdaa6f4146d02ad4ff9d1b8482"
+content-hash = "96fe8d01d1f14269096bbf4131f9a3493b87b305bdd7fdf2c5842c27796f5093"
