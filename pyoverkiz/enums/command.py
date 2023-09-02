@@ -80,6 +80,7 @@ class OverkizCommand(StrEnum):
     SET_BOOST_ON_OFF_STATE = "setBoostOnOffState"
     SET_CLOSURE = "setClosure"
     SET_CLOSURE_AND_LINEAR_SPEED = "setClosureAndLinearSpeed"
+    SET_CLOSURE_AND_ORIENTATION = "setClosureAndOrientation"
     SET_COMFORT_HEATING_TARGET_TEMPERATURE = "setComfortHeatingTargetTemperature"
     SET_COMFORT_TARGET_DHW_TEMPERATURE = "setComfortTargetDHWTemperature"
     SET_COMFORT_TEMPERATURE = "setComfortTemperature"
