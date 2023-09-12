@@ -50,6 +50,7 @@ class OverkizCommand(StrEnum):
     OPEN = "open"
     OPEN_SLATS = "openSlats"
     PARTIAL = "partial"
+    PARTIAL_POSITION = "partialPosition"
     REFRESH_BOOST_MODE_DURATION = "refreshBoostModeDuration"
     REFRESH_COMFORT_HEATING_TARGET_TEMPERATURE = (
         "refreshComfortHeatingTargetTemperature"
@@ -111,7 +112,6 @@ class OverkizCommand(StrEnum):
     SET_MODE_TEMPERATURE = "setModeTemperature"
     SET_OPERATING_MODE = "setOperatingMode"
     SET_ORIENTATION = "setOrientation"
-    SET_PARTIAL_POSITION = "setPartialPosition"
     SET_PASS_APC_DHW_MODE = "setPassAPCDHWMode"
     SET_PASS_APC_HEATING_MODE = "setPassAPCHeatingMode"
     SET_PASS_APC_OPERATING_MODE = "setPassAPCOperatingMode"
