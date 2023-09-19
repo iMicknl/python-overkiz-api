@@ -533,6 +533,17 @@ class OverkizClient:
         """
         await self.__post("setup/devices/states/refresh")
 
+    @backoff.on_exception(
+        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+    )
+    async def refresh_device_states(self, deviceurl: str) -> None:
+        """
+        Ask the box to refresh all states of the given device for protocols supporting that operation
+        """
+        await self.__post(
+            f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/states/refresh"
+        )
+
     @backoff.on_exception(backoff.expo, TooManyConcurrentRequestsException, max_tries=5)
     async def register_event_listener(self) -> str:
         """
