@@ -258,6 +258,7 @@ class EventName(StrEnum):
     CALENDAR_DAY_UPDATED = "CalendarDayUpdatedEvent"
     CALENDAR_RULE_CREATED = "CalendarRuleCreatedEvent"
     CALENDAR_RULE_DELETED = "CalendarRuleDeletedEvent"
+    CALENDAR_RULE_UPDATED = "CalendarRuleUpdatedEvent"
     CAMERA_DISCOVERED = "CameraDiscoveredEvent"
     CAMERA_DISCOVER_FAILED = "CameraDiscoverFailedEvent"
     CAMERA_UPLOAD_PHOTO = "CameraUploadPhotoEvent"
@@ -342,6 +343,7 @@ class EventName(StrEnum):
     MAIN_ACCOUNT_UPDATED = "MainAccountUpdatedEvent"
     NEW_DEVICE_FOUND = "NewDeviceFoundEvent"
     NOTIFICATION_EVENT_LOG = "NotificationEventLogEvent"
+    OGP_EVENT = "OGPEvent"
     OPENDOORS_DISCOVER_COMPLETED = "OpenDoorsDiscoverCompletedEvent"
     OPENDOORS_DISCOVER_FAILED = "OpenDoorsDiscoverFailedEvent"
     OPENDOORS_GENERATE_OAUTH_TOKENS_COMPLETED = (
