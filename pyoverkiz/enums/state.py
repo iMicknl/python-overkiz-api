@@ -132,7 +132,7 @@ class OverkizState(StrEnum):
     CORE_POWER_SUPPLY_UP_DOWN = "core:PowerSupplyUpDownState"
     CORE_PRIORITY_LOCK_TIMER = "core:PriorityLockTimerState"
     CORE_PRODUCT_MODEL_NAME = "core:ProductModelNameState"
-    CORE_PROGRAMING_AVAILABLE = "core:ProgrammingAvailableState"
+    CORE_PROGRAMMING_AVAILABLE = "core:ProgrammingAvailableState"
     CORE_RAIN = "core:RainState"
     CORE_RED_COLOR_INTENSITY = "core:RedColorIntensityState"
     CORE_RELATIVE_HUMIDITY = "core:RelativeHumidityState"
