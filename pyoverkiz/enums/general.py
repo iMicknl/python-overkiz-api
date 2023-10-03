@@ -343,7 +343,7 @@ class EventName(StrEnum):
     MAIN_ACCOUNT_UPDATED = "MainAccountUpdatedEvent"
     NEW_DEVICE_FOUND = "NewDeviceFoundEvent"
     NOTIFICATION_EVENT_LOG = "NotificationEventLogEvent"
-    OGP_EVENT = "OGPEvent"
+    OGP = "OGPEvent"
     OPENDOORS_DISCOVER_COMPLETED = "OpenDoorsDiscoverCompletedEvent"
     OPENDOORS_DISCOVER_FAILED = "OpenDoorsDiscoverFailedEvent"
     OPENDOORS_GENERATE_OAUTH_TOKENS_COMPLETED = (
