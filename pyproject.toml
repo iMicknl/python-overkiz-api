@@ -33,7 +33,7 @@ isort = "^5.11.5"
 mypy = "^1.6"
 flake8 = "^5.0.4"
 pyupgrade = "^3.3.2"
-pytest-asyncio = "^0.21.1"
+pytest-asyncio = "^0.22.0"
 
 
 [build-system]
