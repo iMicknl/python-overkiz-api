@@ -153,7 +153,6 @@ class OverkizClient:
             )
         else:
             self.api_type = APIType.CLOUD
-            self._ssl_context = None
 
     async def __aenter__(self) -> OverkizClient:
         return self
