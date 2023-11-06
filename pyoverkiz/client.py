@@ -270,8 +270,7 @@ class OverkizClient:
             return
 
         if not self._refresh_token:
-            raise ValueError(
-                "No refresh token provided. Login method must be used.")
+            raise ValueError("No refresh token provided. Login method must be used.")
 
         # &grant_type=refresh_token&refresh_token=REFRESH_TOKEN
         # Request access token
@@ -327,8 +326,7 @@ class OverkizClient:
             # {'error': 'invalid_grant',
             # 'error_description': 'Provided Authorization Grant is invalid.'}
             if "error" in token and token["error"] == "invalid_grant":
-                raise CozyTouchBadCredentialsException(
-                    token["error_description"])
+                raise CozyTouchBadCredentialsException(token["error_description"])
 
             if "token_type" not in token:
                 raise CozyTouchServiceException("No CozyTouch token provided.")
@@ -505,8 +503,7 @@ class OverkizClient:
         List execution history
         """
         response = await self.__get("history/executions")
-        execution_history = [HistoryExecution(
-            **h) for h in humps.decamelize(response)]
+        execution_history = [HistoryExecution(**h) for h in humps.decamelize(response)]
 
         return execution_history
 
@@ -912,8 +909,7 @@ class OverkizClient:
             result = await response.text()
 
             if "is down for maintenance" in result:
-                raise MaintenanceException(
-                    "Server is down for maintenance") from error
+                raise MaintenanceException("Server is down for maintenance") from error
 
             if response.status == 503:
                 raise ServiceUnavailableException(result) from error
