@@ -42,7 +42,12 @@ def obfuscate_sensitive_data(data: dict[str, Any]) -> JSON:
         ]:
             data[key] = obfuscate_string(value)
 
-        if value in ["core:NameState", "homekit:SetupCode", "homekit:SetupPayload"]:
+        if value in [
+            "core:NameState",
+            "homekit:SetupCode",
+            "homekit:SetupPayload",
+            "core:SSIDState",
+        ]:
             mask_next_value = True
 
         if mask_next_value and key == "value":
