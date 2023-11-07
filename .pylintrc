@@ -24,3 +24,5 @@ disable=
      fixme,
      pointless-string-statement,
      redefined-builtin
+
+max-module-lines=2000
