@@ -507,7 +507,10 @@ class OverkizClient:
         return execution_history
 
     @backoff.on_exception(
-        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
+        max_tries=2,
+        on_backoff=relogin,
     )
     async def get_device_definition(self, deviceurl: str) -> JSON | None:
         """
@@ -520,7 +523,10 @@ class OverkizClient:
         return response.get("definition")
 
     @backoff.on_exception(
-        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
+        max_tries=2,
+        on_backoff=relogin,
     )
     async def get_state(self, deviceurl: str) -> list[State]:
         """
@@ -534,7 +540,10 @@ class OverkizClient:
         return state
 
     @backoff.on_exception(
-        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
+        max_tries=2,
+        on_backoff=relogin,
     )
     async def refresh_states(self) -> None:
         """
@@ -543,7 +552,10 @@ class OverkizClient:
         await self.__post("setup/devices/states/refresh")
 
     @backoff.on_exception(
-        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
+        max_tries=2,
+        on_backoff=relogin,
     )
     async def refresh_device_states(self, deviceurl: str) -> None:
         """
@@ -572,7 +584,10 @@ class OverkizClient:
 
     @backoff.on_exception(backoff.expo, TooManyConcurrentRequestsException, max_tries=5)
     @backoff.on_exception(
-        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
+        max_tries=2,
+        on_backoff=relogin,
     )
     @backoff.on_exception(
         backoff.expo,
@@ -603,7 +618,10 @@ class OverkizClient:
         self.event_listener_id = None
 
     @backoff.on_exception(
-        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
+        max_tries=2,
+        on_backoff=relogin,
     )
     async def get_current_execution(self, exec_id: str) -> Execution:
         """Get an action group execution currently running"""
@@ -613,7 +631,10 @@ class OverkizClient:
         return execution
 
     @backoff.on_exception(
-        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
+        max_tries=2,
+        on_backoff=relogin,
     )
     async def get_current_executions(self) -> list[Execution]:
         """Get all action groups executions currently running"""
@@ -623,7 +644,10 @@ class OverkizClient:
         return executions
 
     @backoff.on_exception(
-        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
+        max_tries=2,
+        on_backoff=relogin,
     )
     async def get_api_version(self) -> str:
         """Get the API version (local only)"""
@@ -633,7 +657,10 @@ class OverkizClient:
 
     @backoff.on_exception(backoff.expo, TooManyExecutionsException, max_tries=10)
     @backoff.on_exception(
-        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
+        max_tries=2,
+        on_backoff=relogin,
     )
     async def execute_command(
         self,
@@ -660,7 +687,10 @@ class OverkizClient:
         await self.__delete(f"/exec/current/setup/{exec_id}")
 
     @backoff.on_exception(
-        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
+        max_tries=2,
+        on_backoff=relogin,
     )
     async def execute_commands(
         self,
@@ -768,7 +798,10 @@ class OverkizClient:
         return True
 
     @backoff.on_exception(
-        backoff.expo, NotAuthenticatedException, max_tries=2, on_backoff=relogin
+        backoff.expo,
+        (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
+        max_tries=2,
+        on_backoff=relogin,
     )
     async def execute_scenario(self, oid: str) -> str:
         """Execute a scenario"""
