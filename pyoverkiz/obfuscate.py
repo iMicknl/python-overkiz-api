@@ -14,7 +14,8 @@ def obfuscate_id(id: str | None) -> str:
 
 def obfuscate_email(email: str | None) -> str:
     """Mask email"""
-    return re.sub(r"(.).*@.*(.\..*)", r"\1****@****\2", str(email))
+    email = str(email).replace("_-_", "@")  # Replace @ for _-_ (Nexity)
+    return re.sub(r"(.).*@.*(.\..*)", r"\1****@****\2", email)
 
 
 def obfuscate_string(input: str) -> str:
