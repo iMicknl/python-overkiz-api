@@ -240,7 +240,10 @@ class FailureType(IntEnum):
     PEER_DOWN = 10005
     GATEWAY_BUFFER_OVERFLOW = 10006
     UNKNOWN_DETAILED_ERROR = 10007
+    TIME_OUT_ON_TRANSMIT = 20001
+    TIME_OUT_ON_TRANSMITTED_COMMAND = 20002
     TIME_OUT_ON_COMMAND_PROGRESS = 20003
+    DEVICE_NO_ANSWER = 60004
 
     @classmethod
     def _missing_(cls, value):  # type: ignore
@@ -258,6 +261,7 @@ class EventName(StrEnum):
     CALENDAR_DAY_UPDATED = "CalendarDayUpdatedEvent"
     CALENDAR_RULE_CREATED = "CalendarRuleCreatedEvent"
     CALENDAR_RULE_DELETED = "CalendarRuleDeletedEvent"
+    CALENDAR_RULE_UPDATED = "CalendarRuleUpdatedEvent"
     CAMERA_DISCOVERED = "CameraDiscoveredEvent"
     CAMERA_DISCOVER_FAILED = "CameraDiscoverFailedEvent"
     CAMERA_UPLOAD_PHOTO = "CameraUploadPhotoEvent"
@@ -342,6 +346,7 @@ class EventName(StrEnum):
     MAIN_ACCOUNT_UPDATED = "MainAccountUpdatedEvent"
     NEW_DEVICE_FOUND = "NewDeviceFoundEvent"
     NOTIFICATION_EVENT_LOG = "NotificationEventLogEvent"
+    OGP = "OGPEvent"
     OPENDOORS_DISCOVER_COMPLETED = "OpenDoorsDiscoverCompletedEvent"
     OPENDOORS_DISCOVER_FAILED = "OpenDoorsDiscoverFailedEvent"
     OPENDOORS_GENERATE_OAUTH_TOKENS_COMPLETED = (

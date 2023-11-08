@@ -14,7 +14,8 @@ def obfuscate_id(id: str | None) -> str:
 
 def obfuscate_email(email: str | None) -> str:
     """Mask email"""
-    return re.sub(r"(.).*@.*(.\..*)", r"\1****@****\2", str(email))
+    email = str(email).replace("_-_", "@")  # Replace @ for _-_ (Nexity)
+    return re.sub(r"(.).*@.*(.\..*)", r"\1****@****\2", email)
 
 
 def obfuscate_string(input: str) -> str:
@@ -42,7 +43,12 @@ def obfuscate_sensitive_data(data: dict[str, Any]) -> JSON:
         ]:
             data[key] = obfuscate_string(value)
 
-        if value in ["core:NameState", "homekit:SetupCode", "homekit:SetupPayload"]:
+        if value in [
+            "core:NameState",
+            "homekit:SetupCode",
+            "homekit:SetupPayload",
+            "core:SSIDState",
+        ]:
             mask_next_value = True
 
         if mask_next_value and key == "value":
