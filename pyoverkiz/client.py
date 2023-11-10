@@ -121,6 +121,7 @@ class OverkizClient:
         server: OverkizServer,
         token: str | None = None,
         session: ClientSession | None = None,
+        verify_ssl: bool | None = True,
     ) -> None:
         """
         Constructor
@@ -145,12 +146,14 @@ class OverkizClient:
 
         if LOCAL_API_PATH in self.server.endpoint:
             self.api_type = APIType.LOCAL
-            # To avoid security issues, we add the following authority to
-            # our HTTPS client trust store: https://ca.overkiz.com/overkiz-root-ca-2048.crt
-            self._ssl_context = ssl.create_default_context(
-                cafile=os.path.dirname(os.path.realpath(__file__))
-                + "/overkiz-root-ca-2048.crt"
-            )
+
+            if verify_ssl:
+                # To avoid security issues, we add the following authority to
+                # our HTTPS client trust store: https://ca.overkiz.com/overkiz-root-ca-2048.crt
+                self._ssl_context = ssl.create_default_context(
+                    cafile=os.path.dirname(os.path.realpath(__file__))
+                    + "/overkiz-root-ca-2048.crt"
+                )
         else:
             self.api_type = APIType.CLOUD
 
