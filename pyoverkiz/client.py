@@ -43,6 +43,7 @@ from pyoverkiz.exceptions import (
     BadCredentialsException,
     CozyTouchBadCredentialsException,
     CozyTouchServiceException,
+    ExecutionQueueFullException,
     InvalidCommandException,
     InvalidEventListenerIdException,
     InvalidTokenException,
@@ -1001,6 +1002,10 @@ class OverkizClient:
             # {"errorCode": "RESOURCE_ACCESS_DENIED",  "error": "too many concurrent requests"}
             if message == "too many concurrent requests":
                 raise TooManyConcurrentRequestsException(message)
+
+            # {'errorCode': 'EXEC_QUEUE_FULL', 'error': 'Execution queue is full on gateway: #xxx-yyyy-zzzz (soft limit: 10)'}
+            if "Execution queue is full on gateway" in message:
+                raise ExecutionQueueFullException(message)
 
             if message == "Cannot use JSESSIONID and bearer token in same request":
                 raise SessionAndBearerInSameRequestException(message)
