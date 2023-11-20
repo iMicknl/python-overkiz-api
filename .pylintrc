@@ -26,3 +26,4 @@ disable=
      redefined-builtin
 
 max-module-lines=2000
+max-statements=60

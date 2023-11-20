@@ -22,6 +22,10 @@ class TooManyExecutionsException(BaseOverkizException):
     pass
 
 
+class ExecutionQueueFullException(BaseOverkizException):
+    pass
+
+
 class TooManyRequestsException(BaseOverkizException):
     pass
 
