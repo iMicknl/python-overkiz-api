@@ -159,6 +159,7 @@ class UIWidget(StrEnum):
     DIMMER_RGBCOLOURED_LIGHT = "DimmerRGBColouredLight"
     DIMPLEX_VENTILATION_INLET_OUTLET = "DimplexVentilationInletOutlet"
     DISCRETE_EXTERIOR_HEATING = "DiscreteExteriorHeating"
+    DISCRETE_GATE_WITH_PEDESTRIAN_POSITION = "DiscreteGateWithPedestrianPosition "
     DISCRETE_POSITIONABLE_GARAGE_DOOR = "DiscretePositionableGarageDoor"
     DISCRETE_POSITIONABLE_GATE = "DiscretePositionableGate"
     DOCK = "Dock"
