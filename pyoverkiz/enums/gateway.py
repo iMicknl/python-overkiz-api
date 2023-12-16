@@ -57,6 +57,7 @@ class GatewayType(IntEnum):
     SOMFY_CONNECTIVITY_KIT = 99
     COZYTOUCH_V2 = 105
     TAHOMA_RAIL_DIN_S = 108
+    NEXITY_RAIL_DIN_S = 109
 
     @classmethod
     def _missing_(cls, value):  # type: ignore
