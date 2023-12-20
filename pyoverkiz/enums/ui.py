@@ -229,6 +229,7 @@ class UIWidget(StrEnum):
     HITACHI_DHW = "HitachiDHW"
     HITACHI_SWIMMING_POOL = "HitachiSwimmingPool"
     HITACHI_THERMOSTAT = "HitachiThermostat"
+    HLRR_WIFI_BRIDGE = "HLRRWifiBridge"
     HOMEKIT_STACK = "HomekitStack"
     HUE_BRIDGE = "HueBridge"
     IOGENERIC = "IOGeneric"
