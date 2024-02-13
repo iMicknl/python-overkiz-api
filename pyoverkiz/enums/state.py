@@ -33,6 +33,8 @@ class OverkizAttribute(StrEnum):
 class OverkizState(StrEnum):
     """Device states used by Overkiz."""
 
+    CORE_ACTIVE_COOLING_TIME_PROGRAM = "core:ActiveCoolingTimeProgramState"
+    CORE_ACTIVE_HEATING_TIME_PROGRAM = "core:ActiveHeatingTimeProgramState"
     CORE_ACTIVE_ZONES = "core:ActiveZonesState"
     CORE_ACTIVATED_OPTIONS = "core:ActivatedOptionsState"
     CORE_ASSEMBLY = "core:AssemblyState"
@@ -51,6 +53,9 @@ class OverkizState(StrEnum):
     CORE_CLOSURE_OR_ROCKER_POSITION = "core:ClosureOrRockerPositionState"
     CORE_CLOUD_DEVICE_STATUS = "core:CloudDeviceStatusState"
     CORE_CO2_CONCENTRATION = "core:CO2ConcentrationState"
+    CORE_COMFORT_COOLING_TARGET_TEMPERATURE = (
+        "core:ComfortCoolingTargetTemperatureState"
+    )
     CORE_COMFORT_HEATING_TARGET_TEMPERATURE = (
         "core:ComfortHeatingTargetTemperatureState"
     )
@@ -68,6 +73,8 @@ class OverkizState(StrEnum):
     CORE_CONTACT = "core:ContactState"
     CORE_CONTROL_WATER_TARGET_TEMPERATURE = "core:ControlWaterTargetTemperatureState"
     CORE_CO_CONCENTRATION = "core:COConcentrationState"
+    CORE_COOLING_ON_OFF = "core:CoolingOnOffState"
+    CORE_COOLING_TARGET_TEMPERATURE = "core:CoolingTargetTemperatureState"
     CORE_DEPLOYMENT = "core:DeploymentState"
     CORE_DEROGATED_TARGET_TEMPERATURE = "core:DerogatedTargetTemperatureState"
     CORE_DEROGATION_ACTIVATION = "core:DerogationActivationState"
@@ -76,6 +83,7 @@ class OverkizState(StrEnum):
     CORE_DHW_TEMPERATURE = "core:DHWTemperatureState"
     CORE_DISCRETE_RSSI_LEVEL = "core:DiscreteRSSILevelState"
     CORE_DWH_ON_OFF = "core:DHWOnOffState"
+    CORE_ECO_COOLING_TARGET_TEMPERATURE = "core:EcoCoolingTargetTemperatureState"
     CORE_ECO_HEATING_TARGET_TEMPERATURE = "core:EcoHeatingTargetTemperatureState"
     CORE_ECO_ROOM_TEMPERATURE = "core:EcoRoomTemperatureState"
     CORE_ECO_TARGET_DWH_TEMPERATURE = "core:EcoTargetDHWTemperatureState"
@@ -101,6 +109,9 @@ class OverkizState(StrEnum):
     CORE_MAX_SETPOINT = "core:MaxSetpointState"
     CORE_MAXIMAL_SHOWER_MANUAL_MODE = "core:MaximalShowerManualModeState"
     CORE_MAXIMAL_TEMPERATURE_MANUAL_MODE = "core:MaximalTemperatureManualModeState"
+    CORE_MAXIMUM_COOLING_TARGET_TEMPERATURE = (
+        "core:MaximumCoolingTargetTemperatureState"
+    )
     CORE_MAXIMUM_HEATING_TARGET_TEMPERATURE = (
         "core:MaximumHeatingTargetTemperatureState"
     )
@@ -109,6 +120,9 @@ class OverkizState(StrEnum):
     CORE_MIDDLE_WATER_TEMPERATURE_IN = "core:MiddleWaterTemperatureInState"
     CORE_MINIMAL_SHOWER_MANUAL_MODE = "core:MinimalShowerManualModeState"
     CORE_MINIMAL_TEMPERATURE_MANUAL_MODE = "core:MinimalTemperatureManualModeState"
+    CORE_MINIMUM_COOLING_TARGET_TEMPERATURE = (
+        "core:MinimumCoolingTargetTemperatureState"
+    )
     CORE_MINIMUM_HEATING_TARGET_TEMPERATURE = (
         "core:MinimumHeatingTargetTemperatureState"
     )
@@ -193,6 +207,8 @@ class OverkizState(StrEnum):
     IO_PASS_APCDHW_CONFIGURATION = "io:PassAPCDHWConfigurationState"
     IO_PASS_APCDHW_PROFILE = "io:PassAPCDHWProfileState"
     IO_PASS_APCDWH_MODE = "io:PassAPCDHWModeState"
+    IO_PASS_APC_COOLING_MODE = "io:PassAPCCoolingModeState"
+    IO_PASS_APC_COOLING_PROFILE = "io:PassAPCCoolingProfileState"
     IO_PASS_APC_HEATING_MODE = "io:PassAPCHeatingModeState"
     IO_PASS_APC_HEATING_PROFILE = "io:PassAPCHeatingProfileState"
     IO_PASS_APC_OPERATING_MODE = "io:PassAPCOperatingModeState"
