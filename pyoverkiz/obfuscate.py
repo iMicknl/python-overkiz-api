@@ -23,6 +23,7 @@ def obfuscate_string(input: str) -> str:
     return re.sub(r"[a-zA-Z0-9_.-]*", "*", str(input))
 
 
+# pylint: disable=too-many-branches
 def obfuscate_sensitive_data(data: dict[str, Any]) -> JSON:
     """Mask Overkiz JSON data to remove sensitive data"""
     mask_next_value = False
