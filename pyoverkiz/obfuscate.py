@@ -1,4 +1,5 @@
 """Utils for Overkiz client"""
+
 from __future__ import annotations
 
 import re
