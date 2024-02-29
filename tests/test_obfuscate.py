@@ -17,7 +17,35 @@ class TestObfucscate:
     def test_email_obfuscate(self, email: str, obfuscated: str):
         assert obfuscate_email(email) == obfuscated
 
+
 class TestObfucscateSensitive:
     def test_obfuscate_list_with_none(self):
-        input = {'d': [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, None, None, None, None, None, None, None]}
+        input = {
+            "d": [
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+                None,
+            ]
+        }
         assert obfuscate_sensitive_data(input) == input
