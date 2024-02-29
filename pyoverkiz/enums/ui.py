@@ -181,7 +181,7 @@ class UIWidget(StrEnum):
     DYNAMIC_HEATER = "DynamicHeater"
     DYNAMIC_HUMIDITY_SENSOR = "DynamicHumiditySensor"
     DYNAMIC_HVAC_CENTRAL_UNIT = "DynamicHvacCentralUnit"
-    DYNAMIC_HVAC_ZONE = "DynamicHvacZone "
+    DYNAMIC_HVAC_ZONE = "DynamicHvacZone"
     DYNAMIC_INTRUSION_SENSOR = "DynamicIntrusionSensor"
     DYNAMIC_LIGHT = "DynamicLight"
     DYNAMIC_LIGHT_SENSOR = "DynamicLightSensor"
