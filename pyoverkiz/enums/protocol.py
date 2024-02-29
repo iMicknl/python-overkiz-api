@@ -44,6 +44,7 @@ class Protocol(StrEnum):
     WISER = "wiser"
     PROFALUX_868 = "profalux868"
     OGP = "ogp"
+    OGCP = "ogcp"
     HOMEKIT = "homekit"
     AUGUST = "august"
     HLRR_WIFI = "hlrrwifi"
