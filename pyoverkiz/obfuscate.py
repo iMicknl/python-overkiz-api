@@ -68,6 +68,8 @@ def obfuscate_sensitive_data(data: dict[str, Any]) -> JSON:
                     continue
                 if isinstance(val, list):
                     continue
+                if val is None:
+                    continue
 
                 obfuscate_sensitive_data(val)
 
