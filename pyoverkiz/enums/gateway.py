@@ -58,7 +58,7 @@ class GatewayType(IntEnum):
     COZYTOUCH_V2 = 105
     TAHOMA_RAIL_DIN_S = 108
     NEXITY_RAIL_DIN_S = 109
-    DAIKIN = 118
+    DAIKIN_ONECTA = 118
 
     @classmethod
     def _missing_(cls, value):  # type: ignore
