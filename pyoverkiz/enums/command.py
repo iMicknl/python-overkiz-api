@@ -159,6 +159,7 @@ class OverkizCommand(StrEnum):
     SET_SECURED_POSITION_TEMPERATURE = "setSecuredPositionTemperature"
     SET_TARGET_ALARM_MODE = "setTargetAlarmMode"
     SET_TARGET_TEMPERATURE = "setTargetTemperature"
+    SET_TARGET_DHW_TEMPERATURE = "setTargetDHWTemperature"
     SET_TIME_PROGRAM_BY_ID = "setTimeProgramById"
     SET_TOWEL_DRYER_OPERATING_MODE = "setTowelDryerOperatingMode"
     SET_TOWEL_DRYER_TEMPORARY_STATE = "setTowelDryerTemporaryState"
