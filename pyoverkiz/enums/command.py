@@ -290,6 +290,7 @@ class OverkizCommandParam(StrEnum):
     PARTIAL_2 = "partial2"
     PEDESTRIAN = "pedestrian"
     PENDING = "pending"
+    PERFORMANCE = "performance"
     PERMANENT_HEATING = "permanentHeating"
     PERSON_INSIDE = "personInside"
     PROG = "prog"
