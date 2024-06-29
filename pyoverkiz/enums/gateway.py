@@ -53,6 +53,7 @@ class GatewayType(IntEnum):
     ELIOT = 77
     COZYTOUCH_SAUTER = 83
     WISER = 88
+    NETATMO = 92
     TAHOMA_SWITCH = 98
     SOMFY_CONNECTIVITY_KIT = 99
     COZYTOUCH_V2 = 105
