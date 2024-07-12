@@ -82,6 +82,7 @@ class OverkizState(StrEnum):
     CORE_CO_CONCENTRATION = "core:COConcentrationState"
     CORE_COOLING_ON_OFF = "core:CoolingOnOffState"
     CORE_COOLING_TARGET_TEMPERATURE = "core:CoolingTargetTemperatureState"
+    CORE_DATETIME = "core:DateTimeState"
     CORE_DEPLOYMENT = "core:DeploymentState"
     CORE_DEROGATED_TARGET_TEMPERATURE = "core:DerogatedTargetTemperatureState"
     CORE_DEROGATION_ACTIVATION = "core:DerogationActivationState"
