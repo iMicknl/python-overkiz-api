@@ -127,6 +127,7 @@ class OverkizCommand(StrEnum):
     SET_COOLING_ON_OFF = "setCoolingOnOffState"
     SET_COOLING_TARGET_TEMPERATURE = "setCoolingTargetTemperature"
     SET_CURRENT_OPERATING_MODE = "setCurrentOperatingMode"
+    SET_DATE_TIME = "setDateTime"
     SET_DEPLOYMENT = "setDeployment"
     SET_DEROGATED_TARGET_TEMPERATURE = "setDerogatedTargetTemperature"
     SET_DEROGATION = "setDerogation"
