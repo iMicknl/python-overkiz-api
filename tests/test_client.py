@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 import aiohttp
 import pytest
-from pytest import fixture
+from pytest_asyncio import fixture
 
 from pyoverkiz import exceptions
 from pyoverkiz.client import OverkizClient
@@ -20,11 +20,11 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 class TestOverkizClient:
     @fixture
-    def client(self):
+    async def client(self):
         return OverkizClient("username", "password", SUPPORTED_SERVERS["somfy_europe"])
 
     @fixture
-    def local_client(self):
+    async def local_client(self):
         return OverkizClient(
             "username",
             "password",
