@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Iterator, cast
+from collections.abc import Iterator
+from typing import Any, cast
 
 from attr import define, field
 
