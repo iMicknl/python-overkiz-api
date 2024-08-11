@@ -157,8 +157,6 @@ class OverkizClient:
                     cafile=os.path.dirname(os.path.realpath(__file__))
                     + "/overkiz-root-ca-2048.crt"
                 )
-            else:
-                self._ssl = False
 
         else:
             self.api_type = APIType.CLOUD
