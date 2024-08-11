@@ -31,5 +31,6 @@ categories:
 template: |
   ## What's changed
   $CHANGES
+
   ## Contributors to this release
   $CONTRIBUTORS
