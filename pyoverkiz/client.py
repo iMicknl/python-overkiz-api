@@ -954,8 +954,7 @@ class OverkizClient:
                 raise ServiceUnavailableException(result) from error
 
             raise OverkizException(
-                f"Unknown error while requesting {
-                    response.url}. {response.status} - {result}"
+                f"Unknown error while requesting {response.url}. {response.status} - {result}"
             ) from error
 
         if result.get("errorCode"):

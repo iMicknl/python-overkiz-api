@@ -27,7 +27,7 @@ repos:
       - id: pyupgrade
         name: pyupgrade
         entry: pyupgrade
-        args: ["--py37-plus"]
+        args: ["--py310-plus"]
         language: system
         types: [ python ]
       - id: mypy
