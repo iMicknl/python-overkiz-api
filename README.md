@@ -16,6 +16,7 @@ This package is mainly used by Home Assistant Core, to offer the Overkiz integra
 - Hitachi Hi Kumo
 - Nexity Eugénie
 - Rexel Energeasy Connect
+- Sauter Cozytouch
 - Simu (LiveIn2)
 - Somfy Connexoon IO
 - Somfy Connexoon RTS

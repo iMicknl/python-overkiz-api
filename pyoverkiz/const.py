@@ -27,7 +27,7 @@ SERVERS_WITH_LOCAL_API = [
 
 SUPPORTED_SERVERS: dict[str, OverkizServer] = {
     Server.ATLANTIC_COZYTOUCH: OverkizServer(
-        name="Atlantic Cozytouch",
+        name="Cozytouch (Atlantic, Thermor, Sauter)",
         endpoint="https://ha110-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Atlantic",
         configuration_url=None,
