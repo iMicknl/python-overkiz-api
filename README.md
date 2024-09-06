@@ -13,15 +13,19 @@ This package is mainly used by Home Assistant Core, to offer the Overkiz integra
 
 - Atlantic Cozytouch
 - Bouygues Flexom
+- Brandt Smart Control **\***
 - Hitachi Hi Kumo
 - Nexity Eugénie
-- Rexel Energeasy Connect
+- Rexel Energeasy Connect **\***
+- Sauter Cozytouch
 - Simu (LiveIn2)
 - Somfy Connexoon IO
 - Somfy Connexoon RTS
 - Somfy TaHoma
 - Somfy TaHoma Switch
 - Thermor Cozytouch
+
+\[*] _These servers utilize an authentication method that is currently not supported by this library. To use this library with these servers, you will need to obtain an access token (by sniffing the original app) and create a local user on the Overkiz API platform._
 
 ## Installation
 
@@ -40,12 +44,13 @@ import time
 
 from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.client import OverkizClient
+from pyoverkiz.enums import Server
 
 USERNAME = ""
 PASSWORD = ""
 
 async def main() -> None:
-    async with OverkizClient(USERNAME, PASSWORD, server=SUPPORTED_SERVERS["somfy_europe"]) as client:
+    async with OverkizClient(USERNAME, PASSWORD, server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE]) as client:
         try:
             await client.login()
         except Exception as exception:  # pylint: disable=broad-except
@@ -76,6 +81,7 @@ import aiohttp
 
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.const import SUPPORTED_SERVERS, OverkizServer
+from pyoverkiz.enums import Server
 
 USERNAME = ""
 PASSWORD = ""
@@ -88,7 +94,7 @@ async def main() -> None:
     if not token:
         # Generate new token via Cloud API
         async with OverkizClient(
-            username=USERNAME, password=PASSWORD, server=SUPPORTED_SERVERS["somfy_europe"]
+            username=USERNAME, password=PASSWORD, server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE]
         ) as client:
 
             await client.login()
@@ -139,23 +145,14 @@ asyncio.run(main())
 
 ## Development
 
-### Devcontainer
+### DevContainer (recommended)
 
 If you use Visual Studio Code with Docker or GitHub CodeSpaces, you can leverage the available devcontainer. This will install all required dependencies and tools and has the right Python version available. Easy!
 
 ### Manual
-- For Linux, install [pyenv](https://github.com/pyenv/pyenv) using [pyenv-installer](https://github.com/pyenv/pyenv-installer)
-- For MacOS, run `brew install pyenv`
-- Don't forget to update your `.bashrc` file (or similar):
-  ```
-  export PATH="~/.pyenv/bin:$PATH"
-  eval "$(pyenv init -)"
-  ```
-- Install the required [dependencies](https://github.com/pyenv/pyenv/wiki#suggested-build-environment)
+- Install Python 3.12
 - Install [poetry](https://python-poetry.org): `curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python`
-
 - Clone this repository
 - `cd python-overkiz-api`
-- Install the required Python version: `pyenv install`
 - Init the project: `poetry install`
 - Run `poetry run pre-commit install`
