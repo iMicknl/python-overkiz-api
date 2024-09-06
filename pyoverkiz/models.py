@@ -793,10 +793,10 @@ class OverkizServer:
 class LocalToken:
     label: str
     gateway_id: str = field(repr=obfuscate_id, default=None)
-    expiration_time: int
     gateway_creation_time: int
     uuid: str
     scope: str
+    expiration_time: int | None
 
 
 @define(kw_only=True)
