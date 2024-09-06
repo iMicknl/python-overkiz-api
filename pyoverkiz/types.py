@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import json
-from typing import Any, Callable, Dict, List, Union
+from collections.abc import Callable
+from typing import Any, Union
 
 from pyoverkiz.enums import DataType
 
-StateType = Union[str, int, float, bool, Dict[str, Any], List[Any], None]
+StateType = Union[str, int, float, bool, dict[str, Any], list[Any], None]
 
 
 DATA_TYPE_TO_PYTHON: dict[DataType, Callable[[Any], StateType]] = {
@@ -17,4 +18,4 @@ DATA_TYPE_TO_PYTHON: dict[DataType, Callable[[Any], StateType]] = {
     DataType.JSON_OBJECT: json.loads,
 }
 
-JSON = Union[Dict[str, Any], List[Dict[str, Any]]]  # pylint: disable=invalid-name
+JSON = Union[dict[str, Any], list[dict[str, Any]]]  # pylint: disable=invalid-name

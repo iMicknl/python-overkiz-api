@@ -114,16 +114,16 @@ class OverkizClient:
     _refresh_token: str | None = None
     _expires_in: datetime.datetime | None = None
     _access_token: str | None = None
-    _ssl_context: ssl.SSLContext | None = None
+    _ssl: ssl.SSLContext | bool = True
 
     def __init__(
         self,
         username: str,
         password: str,
         server: OverkizServer,
+        verify_ssl: bool = True,
         token: str | None = None,
         session: ClientSession | None = None,
-        verify_ssl: bool | None = True,
     ) -> None:
         """
         Constructor
@@ -145,17 +145,19 @@ class OverkizClient:
         self.event_listener_id: str | None = None
 
         self.session = session if session else ClientSession()
+        self._ssl = verify_ssl
 
         if LOCAL_API_PATH in self.server.endpoint:
             self.api_type = APIType.LOCAL
 
             if verify_ssl:
-                # To avoid security issues, we add the following authority to
+                # To avoid security issues while authentication to local API, we add the following authority to
                 # our HTTPS client trust store: https://ca.overkiz.com/overkiz-root-ca-2048.crt
-                self._ssl_context = ssl.create_default_context(
+                self._ssl = ssl.create_default_context(
                     cafile=os.path.dirname(os.path.realpath(__file__))
                     + "/overkiz-root-ca-2048.crt"
                 )
+
         else:
             self.api_type = APIType.CLOUD
 
@@ -893,7 +895,7 @@ class OverkizClient:
         async with self.session.get(
             f"{self.server.endpoint}{path}",
             headers=headers,
-            ssl_context=self._ssl_context,
+            ssl=self._ssl,
         ) as response:
             await self.check_response(response)
             return await response.json()
@@ -913,7 +915,7 @@ class OverkizClient:
             data=data,
             json=payload,
             headers=headers,
-            ssl_context=self._ssl_context,
+            ssl=self._ssl,
         ) as response:
             await self.check_response(response)
             return await response.json()
@@ -930,7 +932,7 @@ class OverkizClient:
         async with self.session.delete(
             f"{self.server.endpoint}{path}",
             headers=headers,
-            ssl_context=self._ssl_context,
+            ssl=self._ssl,
         ) as response:
             await self.check_response(response)
 
