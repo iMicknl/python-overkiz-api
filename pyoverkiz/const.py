@@ -80,6 +80,12 @@ SUPPORTED_SERVERS: dict[str, OverkizServer] = {
         manufacturer="Rexel",
         configuration_url="https://utilisateur.energeasyconnect.com/user/#/zone/equipements",
     ),
+    Server.SAUTER_COZYTOUCH: OverkizServer(  # duplicate of Atlantic Cozytouch
+        name="Sauter Cozytouch",
+        endpoint="https://ha110-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+        manufacturer="Sauter",
+        configuration_url=None,
+    ),
     Server.SIMU_LIVEIN2: OverkizServer(  # alias of https://tahomalink.com
         name="SIMU (LiveIn2)",
         endpoint="https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/",
@@ -102,6 +108,12 @@ SUPPORTED_SERVERS: dict[str, OverkizServer] = {
         name="Somfy (Oceania)",
         endpoint="https://ha201-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Somfy",
+        configuration_url=None,
+    ),
+    Server.THERMOR_COZYTOUCH: OverkizServer(  # duplicate of Atlantic Cozytouch
+        name="Thermor Cozytouch",
+        endpoint="https://ha110-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+        manufacturer="Thermor",
         configuration_url=None,
     ),
     Server.UBIWIZZ: OverkizServer(
