@@ -208,7 +208,11 @@ class OverkizClient:
             return True
 
         # CozyTouch authentication using jwt
-        if self.server == SUPPORTED_SERVERS[Server.ATLANTIC_COZYTOUCH]:
+        if self.server in [
+            SUPPORTED_SERVERS[Server.ATLANTIC_COZYTOUCH],
+            SUPPORTED_SERVERS[Server.THERMOR_COZYTOUCH],
+            SUPPORTED_SERVERS[Server.SAUTER_COZYTOUCH],
+        ]:
             jwt = await self.cozytouch_login()
             payload = {"jwt": jwt}
 
@@ -954,7 +958,8 @@ class OverkizClient:
                 raise ServiceUnavailableException(result) from error
 
             raise OverkizException(
-                f"Unknown error while requesting {response.url}. {response.status} - {result}"
+                f"Unknown error while requesting {
+                    response.url}. {response.status} - {result}"
             ) from error
 
         if result.get("errorCode"):
