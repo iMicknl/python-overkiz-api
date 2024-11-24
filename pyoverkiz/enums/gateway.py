@@ -60,6 +60,7 @@ class GatewayType(IntEnum):
     TAHOMA_RAIL_DIN_S = 108
     NEXITY_RAIL_DIN_S = 109
     DAIKIN_ONECTA = 118
+    TAHOMA_SWITCH_US = 121
     TAHOMA_SWITCH_SC = 128
 
     @classmethod
