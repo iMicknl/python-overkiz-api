@@ -60,6 +60,7 @@ class GatewayType(IntEnum):
     TAHOMA_RAIL_DIN_S = 108
     NEXITY_RAIL_DIN_S = 109
     DAIKIN_ONECTA = 118
+    TAHOMA_SWITCH_US = 121
     TAHOMA_SWITCH_SC = 128
 
     @classmethod
@@ -98,7 +99,10 @@ class GatewaySubType(IntEnum):
 
     @classmethod
     def _missing_(cls, value):  # type: ignore
-        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
+        _LOGGER.warning(
+            f"Unsupported value {
+                value} has been returned for {cls}"
+        )
         return cls.UNKNOWN
 
     @property
