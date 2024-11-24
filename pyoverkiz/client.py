@@ -104,7 +104,6 @@ def _create_local_ssl_context() -> ssl.SSLContext:
     This method is not async-friendly and should be called from a thread
     because it will load certificates from disk and do other blocking I/O.
     """
-
     return ssl.create_default_context(
         cafile=os.path.dirname(os.path.realpath(__file__)) + "/overkiz-root-ca-2048.crt"
     )
