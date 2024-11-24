@@ -98,6 +98,24 @@ async def refresh_listener(invocation: Mapping[str, Any]) -> None:
 # pylint: disable=too-many-instance-attributes, too-many-branches
 
 
+def _create_local_ssl_context() -> ssl.SSLContext:
+    """Create SSL context.
+
+    This method is not async-friendly and should be called from a thread
+    because it will load certificates from disk and do other blocking I/O.
+    """
+
+    return ssl.create_default_context(
+        cafile=os.path.dirname(os.path.realpath(__file__)) + "/overkiz-root-ca-2048.crt"
+    )
+
+
+# The default SSLContext objects are created at import time
+# since they do blocking I/O to load certificates from disk,
+# and imports should always be done before the event loop starts or in a thread.
+SSL_CONTEXT_LOCAL_API = _create_local_ssl_context()
+
+
 class OverkizClient:
     """Interface class for the Overkiz API"""
 
@@ -153,11 +171,7 @@ class OverkizClient:
             if verify_ssl:
                 # To avoid security issues while authentication to local API, we add the following authority to
                 # our HTTPS client trust store: https://ca.overkiz.com/overkiz-root-ca-2048.crt
-                self._ssl = ssl.create_default_context(
-                    cafile=os.path.dirname(os.path.realpath(__file__))
-                    + "/overkiz-root-ca-2048.crt"
-                )
-
+                self._ssl = SSL_CONTEXT_LOCAL_API
         else:
             self.api_type = APIType.CLOUD
 
