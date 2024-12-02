@@ -367,6 +367,7 @@ class EventName(StrEnum):
     SECONDARY_ACCOUNT_UPDATED = "SecondaryAccountUpdatedEvent"
     SETUP_JOB_COMPLETED = "SetupJobCompletedEvent"
     SETUP_JOB_FAILED = "SetupJobFailedEvent"
+    SETUP_METADATA_UPDATED = "SetupMetadataUpdatedEvent"
     SETUP_QUOTA_UPDATED = "SetupQuotaUpdatedEvent"
     SETUP_TRIGGER_CREATED = "SetupTriggerCreatedEvent"
     SETUP_TRIGGER_CREATION_FAILED = "SetupTriggerCreationFailedEvent"
