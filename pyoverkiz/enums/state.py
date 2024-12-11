@@ -232,6 +232,8 @@ class OverkizState(StrEnum):
     IO_PASS_APC_HEATING_PROFILE = "io:PassAPCHeatingProfileState"
     IO_PASS_APC_OPERATING_MODE = "io:PassAPCOperatingModeState"
     IO_PASS_APC_PRODUCT_TYPE = "io:PassAPCProductTypeState"
+    IO_POWER_HEAT_ELECTRICAL = "io:PowerHeatElectricalState"
+    IO_POWER_HEAT_PUMP = "io:PowerHeatPumpState"
     IO_PRIORITY_LOCK_LEVEL = "io:PriorityLockLevelState"
     IO_PRIORITY_LOCK_ORIGINATOR = "io:PriorityLockOriginatorState"
     IO_SENSOR_ROOM = "io:SensorRoomState"
