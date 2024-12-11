@@ -62,6 +62,7 @@ class GatewayType(IntEnum):
     HEXACONNECT = 117
     DAIKIN_ONECTA = 118
     TAHOMA_SWITCH_US = 121
+    TAHOMA_SWITCH_OC = 122
     TAHOMA_SWITCH_SC = 128
 
     @classmethod
