@@ -460,12 +460,19 @@ class OverkizClient:
             -> setup location: <location>
             -> house places (rooms and floors): <place>
             -> setup devices: <devices>
+            -> scenarios: <actionGroups>
 
         This data will be masked to not return any confidential or PII data.
         """
-        response = await self.__get("setup")
+        setup = await self.__get("setup")
+        scenarios = await self.__get("actionGroups")
 
-        return obfuscate_sensitive_data(response)
+        response = {
+            "setup": obfuscate_sensitive_data(setup),
+            "scenarios": scenarios,  # TODO obfuscate_sensitive_data
+        }
+
+        return response
 
     @backoff.on_exception(
         backoff.expo,
