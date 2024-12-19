@@ -171,6 +171,10 @@ class OverkizClient:
                 # To avoid security issues while authentication to local API, we add the following authority to
                 # our HTTPS client trust store: https://ca.overkiz.com/overkiz-root-ca-2048.crt
                 self._ssl = SSL_CONTEXT_LOCAL_API
+
+                # Disable strict validation introduced in Python 3.13, which doesn't
+                # work with Overkiz self-signed gateway certificates
+                self._ssl.verify_flags &= ~ssl.VERIFY_X509_STRICT
         else:
             self.api_type = APIType.CLOUD
 
