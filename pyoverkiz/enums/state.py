@@ -266,20 +266,18 @@ class OverkizState(StrEnum):
     MODBUSLINK_POWER_HEAT_PUMP = "modbuslink:PowerHeatPumpState"
     MODBUSLINK_PROGRAMMING_SLOTS = "modbuslink:ProgrammingSlotsState"
     MODBUSLINK_SMART_GRID_OPTION = "modbuslink:SmartGridOptionState"
-    MODBUS_AUTO_MANU_MODE_ZONE_1_STATE = "modbus:AutoManuModeZone1State"
+    MODBUS_AUTO_MANU_MODE_ZONE_1 = "modbus:AutoManuModeZone1State"
     MODBUS_CONTROL_DHW = "modbus:ControlDHWState"
     MODBUS_CONTROL_DHW_SETTING_TEMPERATURE = "modbus:ControlDHWSettingTemperatureState"
     MODBUS_DHW_MODE = "modbus:DHWModeState"
-    MODBUS_ROOM_AMBIENT_TEMPERATURE_STATUS_ZONE_1_STATE = (
+    MODBUS_ROOM_AMBIENT_TEMPERATURE_STATUS_ZONE_1 = (
         "modbus:RoomAmbientTemperatureStatusZone1State"
     )
-    MODBUS_THERMOSTAT_SETTING_STATUS_ZONE_1_STATE = (
-        "modbus:ThermostatSettingStatusZone1State"
-    )
-    MODBUS_THERMOSTAT_SETTING_CONTROL_ZONE_1_STATE = (
+    MODBUS_THERMOSTAT_SETTING_STATUS_ZONE_1 = "modbus:ThermostatSettingStatusZone1State"
+    MODBUS_THERMOSTAT_SETTING_CONTROL_ZONE_1 = (
         "modbus:ThermostatSettingControlZone1State"
     )
-    MODBUS_YUTAKI_TARGET_MODE_STATE = "modbus:YutakiTargetModeState"
+    MODBUS_YUTAKI_TARGET_MODE = "modbus:YutakiTargetModeState"
 
     MYFOX_ALARM_STATUS = "myfox:AlarmStatusState"
     MYFOX_ALERT_TRESPASS = "myfox:AlertTrespassState"
