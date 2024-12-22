@@ -273,6 +273,7 @@ class OverkizState(StrEnum):
     MODBUS_ROOM_AMBIENT_TEMPERATURE_STATUS_ZONE_1 = (
         "modbus:RoomAmbientTemperatureStatusZone1State"
     )
+    MODBUS_OUTDOOR_AMBIENT_TEMPERATURE = "modbus:OutdoorAmbientTemperatureState"
     MODBUS_THERMOSTAT_SETTING_STATUS_ZONE_1 = "modbus:ThermostatSettingStatusZone1State"
     MODBUS_THERMOSTAT_SETTING_CONTROL_ZONE_1 = (
         "modbus:ThermostatSettingControlZone1State"
