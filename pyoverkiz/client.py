@@ -53,6 +53,7 @@ from pyoverkiz.exceptions import (
     NexityBadCredentialsException,
     NexityServiceException,
     NoRegisteredEventListenerException,
+    NoSuchResourceException,
     NotAuthenticatedException,
     NotSuchTokenException,
     OverkizException,
@@ -1023,6 +1024,10 @@ class OverkizClient:
             if message == "No registered event listener":
                 raise NoRegisteredEventListenerException(message)
 
+            # {'errorCode': 'INVALID_API_CALL', 'error': 'No such resource'}
+            if message == "No such resource":
+                raise NoSuchResourceException(message)
+
             # {"errorCode": "RESOURCE_ACCESS_DENIED",  "error": "too many concurrent requests"}
             if message == "too many concurrent requests":
                 raise TooManyConcurrentRequestsException(message)
@@ -1054,7 +1059,7 @@ class OverkizClient:
             if "Access denied to gateway" in message:
                 raise AccessDeniedToGatewayException(message)
 
-        # General Overkiz exception
+        # Undefined Overkiz exception
         raise OverkizException(result)
 
     async def _refresh_token_if_expired(self) -> None:
