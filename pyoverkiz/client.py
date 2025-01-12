@@ -258,7 +258,7 @@ class OverkizClient:
         """
         # Request access token
         async with self.session.post(
-            SOMFY_API + "/oauth/oauth/v2/token",
+            SOMFY_API + "/oauth/oauth/v2/token/jwt",
             data=FormData(
                 {
                     "grant_type": "password",
@@ -302,7 +302,7 @@ class OverkizClient:
         # &grant_type=refresh_token&refresh_token=REFRESH_TOKEN
         # Request access token
         async with self.session.post(
-            SOMFY_API + "/oauth/oauth/v2/token",
+            SOMFY_API + "/oauth/oauth/v2/token/jwt",
             data=FormData(
                 {
                     "grant_type": "refresh_token",
