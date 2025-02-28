@@ -54,7 +54,6 @@ class OverkizCommand(StrEnum):
     OPEN_SLATS = "openSlats"
     PARTIAL = "partial"
     PARTIAL_POSITION = "partialPosition"
-    PROGRAM = "program"
     REFRESH_ABSENCE_SCHEDULING_AVAILABILITY = "refreshAbsenceSchedulingAvailability"
     REFRESH_BOOST_MODE_DURATION = "refreshBoostModeDuration"
     REFRESH_COMFORT_COOLING_TARGET_TEMPERATURE = (
@@ -304,6 +303,7 @@ class OverkizCommandParam(StrEnum):
     PERMANENT_HEATING = "permanentHeating"
     PERSON_INSIDE = "personInside"
     PROG = "prog"
+    PROGRAM = "program"
     RELAUNCH = "relaunch"
     RESET = "reset"
     SAAC = "SAAC"
