@@ -20,6 +20,7 @@ class OverkizCommand(StrEnum):
     ALARM_PARTIAL_1 = "alarmPartial1"
     ALARM_PARTIAL_2 = "alarmPartial2"
     ALARM_ZONE_ON = "alarmZoneOn"
+    ANTIFREEZE = "antifreeze"
     ARM = "arm"
     ARM_PARTIAL_DAY = "armPartialDay"
     ARM_PARTIAL_NIGHT = "armPartialNight"
