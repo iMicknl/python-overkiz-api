@@ -200,6 +200,7 @@ class OverkizCommandParam(StrEnum):
     ABSENCE = "absence"
     ACTIVE = "active"
     ADJUSTMENT = "adjustment"
+    ANTIFREEZE = "antifreeze"
     ARMED = "armed"
     ARMED_DAY = "armedDay"
     ARMED_NIGHT = "armedNight"
