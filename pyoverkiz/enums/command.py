@@ -304,6 +304,7 @@ class OverkizCommandParam(StrEnum):
     PERMANENT_HEATING = "permanentHeating"
     PERSON_INSIDE = "personInside"
     PROG = "prog"
+    PROGRAM = "program"
     RELAUNCH = "relaunch"
     RESET = "reset"
     SAAC = "SAAC"
