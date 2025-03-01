@@ -202,6 +202,7 @@ class OverkizCommandParam(StrEnum):
     ACTIVE = "active"
     ADJUSTMENT = "adjustment"
     ANTIFREEZE = "antifreeze"
+    ALWAYS = "always"
     ARMED = "armed"
     ARMED_DAY = "armedDay"
     ARMED_NIGHT = "armedNight"
