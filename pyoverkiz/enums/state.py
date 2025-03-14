@@ -160,6 +160,7 @@ class OverkizState(StrEnum):
     CORE_PROGRAMMING_AVAILABLE = "core:ProgrammingAvailableState"
     CORE_RAIN = "core:RainState"
     CORE_RED_COLOR_INTENSITY = "core:RedColorIntensityState"
+    CORE_REGULATION_MODE = "core:RegulationModeState"
     CORE_RELATIVE_HUMIDITY = "core:RelativeHumidityState"
     CORE_REMAINING_HOT_WATER = "core:RemainingHotWaterState"
     CORE_RSSI_LEVEL = "core:RSSILevelState"
