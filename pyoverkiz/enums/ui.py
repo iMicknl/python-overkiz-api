@@ -413,6 +413,7 @@ class UIWidget(StrEnum):
     WEATHER_FORECAST_SENSOR = "WeatherForecastSensor"
     WIFI = "Wifi"
     WIND_SPEED_SENSOR = "WindSpeedSensor"
+    WIND_SPEED_AND_DIRECTION_SENSOR = "WindSpeedAndDirectionSensor "
     WINDOW_LOCK = "WindowLock"
     WINDOW_WITH_TILT_SENSOR = "WindowWithTiltSensor"
     ZWAVE_AEOTEC_CONFIGURATION = "ZWaveAeotecConfiguration"
