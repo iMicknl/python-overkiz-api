@@ -349,6 +349,8 @@ class OverkizCommandParam(StrEnum):
     SUDDEN_DROP_MODE = "suddenDropMode"
     TEMPERATURE_OFFSET = "temperature_offset"
     TILT = "tilt"
+    TILT_POSITIVE = "tiltPositive"
+    TILT_NEGATIVE = "tiltNegative"
     TOTAL = "total"
     UNDETECTED = "undetected"
     UPS = "UPS"
