@@ -49,6 +49,7 @@ class OverkizState(StrEnum):
     CORE_AVAILABILITY = "core:AvailabilityState"
     CORE_BATTERY = "core:BatteryState"
     CORE_BATTERY_LEVEL = "core:BatteryLevelState"
+    CORE_BATTERY_DISCRETE_LEVEL = "core:BatteryDiscreteLevelState"
     CORE_BLUE_COLOR_INTENSITY = "core:BlueColorIntensityState"
     CORE_BOOST_ELECTRIC_POWER_CONSUMPTION = "core:BoostElectricPowerConsumptionState"
     CORE_BOOST_END_DATE = "core:BoostEndDateState"
