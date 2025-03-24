@@ -60,6 +60,7 @@ class OverkizState(StrEnum):
     CORE_CLOSURE_OR_ROCKER_POSITION = "core:ClosureOrRockerPositionState"
     CORE_CLOUD_DEVICE_STATUS = "core:CloudDeviceStatusState"
     CORE_CO2_CONCENTRATION = "core:CO2ConcentrationState"
+    CORE_COMMAND_LOCK_LEVELS = "core:CommandLockLevelsState"
     CORE_COMFORT_COOLING_TARGET_TEMPERATURE = (
         "core:ComfortCoolingTargetTemperatureState"
     )
@@ -114,6 +115,8 @@ class OverkizState(StrEnum):
     CORE_LEVEL = "core:LevelState"
     CORE_LIGHT_INTENSITY = "core:LightIntensityState"
     CORE_LOCKED_UNLOCKED = "core:LockedUnlockedState"
+    CORE_LOWER_CLOSURE = "core:LowerClosureState"
+    CORE_LOWER_OPEN_CLOSED = "core:LowerOpenClosedState"
     CORE_LUMINANCE = "core:LuminanceState"
     CORE_MANUFACTURER_NAME = "core:ManufacturerNameState"
     CORE_MIN_SETPOINT = "core:MinSetpointState"
@@ -164,6 +167,7 @@ class OverkizState(StrEnum):
     CORE_RELATIVE_HUMIDITY = "core:RelativeHumidityState"
     CORE_REMAINING_HOT_WATER = "core:RemainingHotWaterState"
     CORE_RSSI_LEVEL = "core:RSSILevelState"
+    CORE_SECURED_POSITION = "core:SecuredPositionState"
     CORE_SECURED_POSITION_TEMPERATURE = "core:SecuredPositionTemperatureState"
     CORE_SENSOR_DEFECT = "core:SensorDefectState"
     CORE_SLATE_ORIENTATION = "core:SlateOrientationState"
@@ -184,6 +188,8 @@ class OverkizState(StrEnum):
     CORE_TIME_PROGRAM_2 = "core:TimeProgram2State"
     CORE_TIME_PROGRAM_3 = "core:TimeProgram3State"
     CORE_TIME_PROGRAM_4 = "core:TimeProgram4State"
+    CORE_UPPER_CLOSURE = "core:UpperClosureState"
+    CORE_UPPER_OPEN_CLOSED = "core:UpperOpenClosedState"
     CORE_V40_WATER_VOLUME_ESTIMATION = "core:V40WaterVolumeEstimationState"
     CORE_VIBRATION = "core:VibrationState"
     CORE_WATER_CONSUMPTION = "core:WaterConsumptionState"
