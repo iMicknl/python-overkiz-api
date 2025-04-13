@@ -292,6 +292,7 @@ class OverkizCommandParam(StrEnum):
     HOLIDAYS = "holidays"
     HORIZONTAL = "horizontal"
     INACTIVE = "inactive"
+    INCREASE = "increase"
     INTERNAL = "internal"
     INTERNAL_SCHEDULING = "internalScheduling"
     LO = "lo"
