@@ -171,6 +171,7 @@ class OverkizCommand(StrEnum):
     SET_MEMORIZED_SIMPLE_VOLUME = "setMemorizedSimpleVolume"
     SET_MODE_TEMPERATURE = "setModeTemperature"
     SET_NAME = "setName"
+    SET_ON_OFF = "setOnOff"
     SET_OPERATING_MODE = "setOperatingMode"
     SET_ORIENTATION = "setOrientation"
     SET_PASS_APC_COOLING_MODE = "setPassAPCCoolingMode"
