@@ -96,7 +96,7 @@ SUPPORTED_SERVERS: dict[str, OverkizServer] = {
         name="Somfy (Europe)",
         endpoint="https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Somfy",
-        configuration_url="https://www.tahomalink.com",
+        configuration_url=None,
     ),
     Server.SOMFY_AMERICA: OverkizServer(
         name="Somfy (North America)",
