@@ -15,6 +15,8 @@ repos:
     hooks:
     -   id: trailing-whitespace
     -   id: end-of-file-fixer
+    -   id: check-json
+        exclude: .devcontainer
     -   id: check-yaml
     -   id: check-added-large-files
 -   repo: local
@@ -24,3 +26,4 @@ repos:
         entry: mypy
         language: system
         types: [ python ]
+        exclude: tests

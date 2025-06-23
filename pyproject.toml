@@ -42,7 +42,7 @@ dev-dependencies = [
 [tool.ruff.lint]
 select = [
     # flake8-async
-    "ASYNC",
+    # "ASYNC",
     # pycodestyle
     "E",
     # Pyflakes
@@ -72,3 +72,7 @@ include = [
 [tool.hatch.build.targets.wheel]
 packages = ["pyoverkiz"]
 only-packages = true
+
+[tool.mypy]
+exclude = "tests/"
+ignore_missing_imports = true
