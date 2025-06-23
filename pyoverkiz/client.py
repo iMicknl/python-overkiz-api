@@ -983,13 +983,8 @@ class OverkizClient:
             # Error messages between cloud and local Overkiz servers can be slightly different
             # To make it easier to have a strict match for these errors, we remove the double quotes and the period at the end.
 
-            if message := result.get("error"):
-                message = message.strip(
-                    '".'
-                )  # Change to .removesuffix when Python 3.8 support is dropped
-            else:
-                # An error message can have an empty (None) message
-                message = ""
+            # An error message can have an empty (None) message
+            message = message.strip('".') if (message := result.get("error")) else ""
 
             # {"errorCode": "AUTHENTICATION_ERROR",
             # "error": "Too many requests, try again later : login with xxx@xxx.tld"}

@@ -1,4 +1,4 @@
-# flake8: noqa: F401, F403
+# flake8: noqa: F403
 
 from .command import *
 from .execution import *

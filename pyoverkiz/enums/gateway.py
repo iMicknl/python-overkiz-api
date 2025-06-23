@@ -99,7 +99,7 @@ class GatewaySubType(IntEnum):
     TAHOMA_PRO = 14
     TAHOMA_SECURITY_SHORT_CHANNEL = 15
     TAHOMA_SECURITY_PRO = 16
-    # TAHOMA_BOX_C_IO = 12 That’s probably 17, but tahomalink.com says it’s 12
+    # TAHOMA_BOX_C_IO = 12  # Note: This is likely 17, but tahomalink.com lists it as 12
 
     @classmethod
     def _missing_(cls, value):  # type: ignore
