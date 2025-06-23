@@ -2,7 +2,7 @@
 
 A fully asynchronous and user-friendly API client for the OverKiz platform. This client enables interaction with smart devices connected to OverKiz, supporting multiple vendors such as Somfy TaHoma and Atlantic Cozytouch.
 
-This package is mainly used by Home Assistant Core, to offer the Overkiz integration. If you want to use this package in your own project, you can use the [following examples](#getting-started) to get started, or look at the [Home Assistant Code](https://github.com/home-assistant/core/tree/dev/homeassistant/components/overkiz) for more examples.
+This package is primarily used by Home Assistant Core to provide the Overkiz integration. If you wish to use this package in your own project, refer to the [examples below](#getting-started) or explore the [Home Assistant source code](https://github.com/home-assistant/core/tree/dev/homeassistant/components/overkiz) for additional usage examples.
 
 ## Supported hubs
 
