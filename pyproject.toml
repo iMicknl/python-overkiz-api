@@ -1,6 +1,6 @@
 [project]
 name = "pyoverkiz"
-version = "1.13.14"
+version = "1.17.2"
 description = "Async Python client to interact with internal OverKiz API (e.g. used by Somfy TaHoma)."
 readme = "README.md"
 authors = [
