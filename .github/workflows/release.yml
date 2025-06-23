@@ -34,7 +34,7 @@ jobs:
             echo version: $version_number
             echo "version=$version_number" >> $GITHUB_OUTPUT
 
-      - name: Bump project version in pyproject.toml and add changes to current branch and tag
+      - name: Bump project version in pyproject.toml and commit changes to current branch and tag
         run: |
             VERSION=${{ steps.retrieve-version.outputs.version }}
             uvx --from=toml-cli toml set --toml-path=pyproject.toml project.version $VERSION
@@ -43,12 +43,8 @@ jobs:
             git config --local user.name "GitHub Action"
 
             git add pyproject.toml
-            git commit -m "Bump version to ${{ github.event.release.tag_name }}"
-
-      - name: Commit changes
-        run: |
-            git add pyproject.toml
             git commit -m "Bump package version to ${{ steps.retrieve-version.outputs.version }}."
+
             git tag -f -a ${{ github.event.release.tag_name }} -m "Release ${{ steps.retrieve-version.outputs.version }}."
             git push origin HEAD:main
             git push origin -f ${{ github.event.release.tag_name }}
