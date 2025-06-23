@@ -30,7 +30,7 @@ repository = "https://github.com/iMicknl/python-overkiz-api"
 [tool.uv]
 dev-dependencies = [
     "tox<5.0.0,>=4.17.1",
-    "pytest<9.0.0,>=8.3.2",
+    "pytest>=8.3.2,<9.0.0",
     "pytest-cov<7,>=5",
     "pre-commit<5.0,>=3.8",
     "pytest-asyncio<1.1.0,>=0.23.8",
