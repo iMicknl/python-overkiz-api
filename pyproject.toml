@@ -55,6 +55,8 @@ select = [
     "SIM",
     # isort
     "I",
+    # ruff
+    "RUF",
 ]
 ignore = ["E501"] # Line too long
 
