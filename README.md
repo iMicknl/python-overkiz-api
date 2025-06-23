@@ -1,11 +1,6 @@
 # Python client for OverKiz API
 
-<p align=left>
-    <a href="https://github.com/iMicknl/python-overkiz-api/actions"><img src="https://github.com/iMicknl/python-overkiz-api/workflows/CI/badge.svg"/></a>
-    <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a>
-</p>
-
-A fully async and easy to use API client for the (internal) OverKiz API. You can use this client to interact with smart devices connected to the OverKiz platform, used by various vendors like Somfy TaHoma and Atlantic Cozytouch.
+A fully asynchronous and user-friendly API client for the OverKiz platform. This client enables interaction with smart devices connected to OverKiz, supporting multiple vendors such as Somfy TaHoma and Atlantic Cozytouch.
 
 This package is mainly used by Home Assistant Core, to offer the Overkiz integration. If you want to use this package in your own project, you can use the [following examples](#getting-started) to get started, or look at the [Home Assistant Code](https://github.com/home-assistant/core/tree/dev/homeassistant/components/overkiz) for more examples.
 
@@ -143,16 +138,17 @@ async def main() -> None:
 asyncio.run(main())
 ```
 
-## Development
+## Contribute
 
-### DevContainer (recommended)
+We welcome contributions! To get started with setting up this project for development, follow the steps below.
 
-If you use Visual Studio Code with Docker or GitHub CodeSpaces, you can leverage the available devcontainer. This will install all required dependencies and tools and has the right Python version available. Easy!
+### Dev Container (recommended)
+
+If you use Visual Studio Code with Docker or GitHub Codespaces, you can take advantage of the included [Dev Container](https://code.visualstudio.com/docs/devcontainers/containers). This environment comes pre-configured with all necessary dependencies and tools, including the correct Python version, making setup simple and straightforward.
 
 ### Manual
-- Install Python 3.12
-- Install [poetry](https://python-poetry.org): `curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python`
-- Clone this repository
-- `cd python-overkiz-api`
-- Init the project: `poetry install`
-- Run `poetry run pre-commit install`
+
+- Ensure Python 3.12 is installed on your system.
+- Install [uv](https://docs.astral.sh/uv/getting-started/installation).
+- Clone this repository and navigate to it: `cd python-overkiz-api`
+- Initialize the project with `uv sync`, then run `uv run pre-commit install`
