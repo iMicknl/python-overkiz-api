@@ -34,13 +34,11 @@ jobs:
             echo version: $version_number
             echo "version=$version_number" >> $GITHUB_OUTPUT
 
-      - name: Bump project version in pyproject.toml
+      - name: Bump project version in pyproject.toml and add changes to current branch and tag
         run: |
             VERSION=${{ steps.retrieve-version.outputs.version }}
             uvx --from=toml-cli toml set --toml-path=pyproject.toml project.version $VERSION
 
-      - name: Add changes to current branch and tag
-        run: |
             git config --local user.email "action@github.com"
             git config --local user.name "GitHub Action"
 
