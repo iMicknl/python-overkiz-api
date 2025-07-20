@@ -324,6 +324,7 @@ class EventName(StrEnum):
     GATEWAY_DETACHED = "GatewayDetachedEvent"
     GATEWAY_DISSOCIATED = "GatewayDissociatedEvent"
     GATEWAY_DOWN = "GatewayDownEvent"
+    GATEWAY_DOWN_OPTIONS_CHANGED = "GatewayDownOptionsChangedEvent"
     GATEWAY_FIRMWARE_UPDATED = "GatewayFirmwareUpdatedEvent"
     GATEWAY_FIRMWARE_UPDATE_COMPLETED = "GatewayFirmwareUpdateCompletedEvent"
     GATEWAY_FUNCTION_CHANGED = "GatewayFunctionChangedEvent"
