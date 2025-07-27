@@ -44,8 +44,11 @@ from pyoverkiz.enums import Server
 USERNAME = ""
 PASSWORD = ""
 
+
 async def main() -> None:
-    async with OverkizClient(USERNAME, PASSWORD, server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE]) as client:
+    async with OverkizClient(
+        USERNAME, PASSWORD, server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE]
+    ) as client:
         try:
             await client.login()
         except Exception as exception:  # pylint: disable=broad-except
@@ -64,6 +67,7 @@ async def main() -> None:
 
             time.sleep(2)
 
+
 asyncio.run(main())
 ```
 
@@ -80,38 +84,48 @@ from pyoverkiz.enums import Server
 
 USERNAME = ""
 PASSWORD = ""
-LOCAL_GATEWAY = "gateway-xxxx-xxxx-xxxx.local" # or use the IP address of your gateway
-VERIFY_SSL = True # set verify_ssl to False if you don't use the .local hostname
+LOCAL_GATEWAY = "gateway-xxxx-xxxx-xxxx.local"  # or use the IP address of your gateway
+VERIFY_SSL = True  # set verify_ssl to False if you don't use the .local hostname
+
 
 async def main() -> None:
-    token = "" # you can set the token here for testing purposes, to re-use an earlier generated token
+    token = ""  # you can set the token here for testing purposes, to re-use an earlier generated token
 
     if not token:
         # Generate new token via Cloud API
         async with OverkizClient(
-            username=USERNAME, password=PASSWORD, server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE]
+            username=USERNAME,
+            password=PASSWORD,
+            server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE],
         ) as client:
-
             await client.login()
             gateways = await client.get_gateways()
 
             for gateway in gateways:
                 token = await client.generate_local_token(gateway.id)
-                await client.activate_local_token(gateway_id=gateway.id, token=token, label="Home Assistant/local-dev")
+                await client.activate_local_token(
+                    gateway_id=gateway.id, token=token, label="Home Assistant/local-dev"
+                )
                 print(f"Token for {gateway.label} ({gateway.id}):")
                 print(token)  # save this token for future use
 
     # Local Connection
     session = aiohttp.ClientSession(
-        connector=aiohttp.TCPConnector(verify_ssl=VERIFY_SSL))
+        connector=aiohttp.TCPConnector(verify_ssl=VERIFY_SSL)
+    )
 
     async with OverkizClient(
-        username="", password="", token=token, session=session, verify_ssl=VERIFY_SSL, server=OverkizServer(
+        username="",
+        password="",
+        token=token,
+        session=session,
+        verify_ssl=VERIFY_SSL,
+        server=OverkizServer(
             name="Somfy TaHoma (local)",
             endpoint=f"https://{LOCAL_GATEWAY}:8443/enduser-mobile-web/1/enduserAPI/",
             manufacturer="Somfy",
             configuration_url=None,
-        )
+        ),
     ) as client:
         await client.login()
 
@@ -135,8 +149,18 @@ async def main() -> None:
 
             time.sleep(2)
 
+
 asyncio.run(main())
 ```
+
+## Projects using pyOverkiz
+
+This package powers the Overkiz integration in [Home Assistant Core](https://www.home-assistant.io/integrations/overkiz/). Other open-source projects and custom automations also leverage pyOverkiz to interact with Overkiz-compatible hubs and devices, including:
+
+- [overkiz2mqtt](https://github.com/RichieB2B/overkiz2mqtt): Bridges Overkiz devices to MQTT for integration with various platforms.
+- [mcp-overkiz](https://github.com/phimage/mcp-overkiz): Implements an MCP server to enable communication between Overkiz devices and language models.
+- [tahoma](https://github.com/pzim-devdata/tahoma): Command Line Interface (CLI) to control Overkiz devices.
+
 
 ## Contribute
 
