@@ -89,25 +89,7 @@ VERIFY_SSL = True  # set verify_ssl to False if you don't use the .local hostnam
 
 
 async def main() -> None:
-    token = ""  # you can set the token here for testing purposes, to re-use an earlier generated token
-
-    if not token:
-        # Generate new token via Cloud API
-        async with OverkizClient(
-            username=USERNAME,
-            password=PASSWORD,
-            server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE],
-        ) as client:
-            await client.login()
-            gateways = await client.get_gateways()
-
-            for gateway in gateways:
-                token = await client.generate_local_token(gateway.id)
-                await client.activate_local_token(
-                    gateway_id=gateway.id, token=token, label="Home Assistant/local-dev"
-                )
-                print(f"Token for {gateway.label} ({gateway.id}):")
-                print(token)  # save this token for future use
+    token = ""  # generate your token via the Somfy app and include it here
 
     # Local Connection
     session = aiohttp.ClientSession(
