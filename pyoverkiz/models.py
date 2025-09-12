@@ -430,6 +430,18 @@ class Command(dict):
         dict.__init__(self, name=name, parameters=parameters)
 
 
+@define(init=False)
+class Action:
+    """Represents OverKiz Action (multiple commands for specific device URL)."""
+
+    device_url: str
+    commands: list[Command]
+
+    def __init__(self, device_url: str, commands: list[Command]):
+        self.device_url = device_url
+        self.commands = commands
+
+
 @define(init=False, kw_only=True)
 class Event:
     name: EventName
