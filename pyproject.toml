@@ -27,8 +27,8 @@ dependencies = [
 homepage = "https://github.com/iMicknl/python-overkiz-api"
 repository = "https://github.com/iMicknl/python-overkiz-api"
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "tox<5.0.0,>=4.17.1",
     "pytest>=8.3.2,<9.0.0",
     "pytest-cov<7,>=5",
@@ -37,7 +37,6 @@ dev-dependencies = [
     "ruff>=0.12.0",
     "mypy>=1.16.1",
 ]
-
 
 [tool.ruff.lint]
 select = [
