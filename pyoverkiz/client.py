@@ -49,6 +49,7 @@ from pyoverkiz.exceptions import (
     InvalidEventListenerIdException,
     InvalidTokenException,
     MaintenanceException,
+    MissingAPIKeyException,
     MissingAuthorizationTokenException,
     NexityBadCredentialsException,
     NexityServiceException,
@@ -999,6 +1000,10 @@ class OverkizClient:
             if message == "Not authenticated":
                 raise NotAuthenticatedException(message)
 
+            # {'errorCode': 'AUTHENTICATION_ERROR', 'error': 'An API key is required to access this setup'}
+            if message == "An API key is required to access this setup":
+                raise MissingAPIKeyException(message)
+
             # {"error":"Missing authorization token.","errorCode":"RESOURCE_ACCESS_DENIED"}
             if message == "Missing authorization token":
                 raise MissingAuthorizationTokenException(message)
@@ -1018,6 +1023,10 @@ class OverkizClient:
             # {'errorCode': 'UNSPECIFIED_ERROR', 'error': 'No registered event listener'}
             if message == "No registered event listener":
                 raise NoRegisteredEventListenerException(message)
+
+            # {'errorCode': 'AUTHENTICATION_ERROR', 'error': 'No such user account : xxxxx'}
+            if "No such user account" in message:
+                raise UnknownUserException(message)
 
             # {'errorCode': 'INVALID_API_CALL', 'error': 'No such resource'}
             if message == "No such resource":

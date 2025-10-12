@@ -46,6 +46,10 @@ class MaintenanceException(ServiceUnavailableException):
     """Raised when the service is under maintenance."""
 
 
+class MissingAPIKeyException(BaseOverkizException):
+    """Raised when the API key is missing."""
+
+
 class MissingAuthorizationTokenException(BaseOverkizException):
     """Raised when the authorization token is missing."""
 
