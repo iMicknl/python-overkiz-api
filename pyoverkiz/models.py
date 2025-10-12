@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 import re
-from typing import Any, Iterator, cast
+from collections.abc import Iterator
+from typing import Any, cast
 
 from attr import define, field
 
@@ -336,6 +337,8 @@ class State:
             return None
         if self.type == DataType.FLOAT:
             return cast(float, self.value)
+        if self.type == DataType.INTEGER:
+            return float(cast(int, self.value))
         raise TypeError(f"{self.name} is not a float")
 
     @property
@@ -798,10 +801,10 @@ class OverkizServer:
 class LocalToken:
     label: str
     gateway_id: str = field(repr=obfuscate_id, default=None)
-    expiration_time: int
     gateway_creation_time: int
     uuid: str
     scope: str
+    expiration_time: int | None
 
 
 @define(kw_only=True)

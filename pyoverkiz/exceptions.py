@@ -1,105 +1,113 @@
 class BaseOverkizException(Exception):
-    pass
+    """Base exception for Overkiz errors."""
 
 
 class OverkizException(BaseOverkizException):
-    pass
+    """Raised when an undefined error occurs while communicating with the Overkiz API."""
 
 
 class BadCredentialsException(BaseOverkizException):
-    pass
+    """Raised when invalid credentials are provided."""
 
 
 class InvalidCommandException(BaseOverkizException):
-    pass
+    """Raised when an invalid command is provided."""
+
+
+class NoSuchResourceException(BaseOverkizException):
+    """Raised when an invalid API call is made."""
 
 
 class NotAuthenticatedException(BaseOverkizException):
-    pass
+    """Raised when the user is not authenticated."""
 
 
 class TooManyExecutionsException(BaseOverkizException):
-    pass
+    """Raised when too many executions are requested."""
+
+
+class ExecutionQueueFullException(BaseOverkizException):
+    """Raised when the execution queue is full."""
 
 
 class TooManyRequestsException(BaseOverkizException):
-    pass
+    """Raised when too many requests are made."""
 
 
 class TooManyConcurrentRequestsException(BaseOverkizException):
-    pass
+    """Raised when too many concurrent requests are made."""
 
 
 class ServiceUnavailableException(BaseOverkizException):
-    pass
+    """Raised when the service is unavailable."""
 
 
 class MaintenanceException(ServiceUnavailableException):
-    pass
+    """Raised when the service is under maintenance."""
 
 
 class MissingAuthorizationTokenException(BaseOverkizException):
-    pass
+    """Raised when the authorization token is missing."""
 
 
 class InvalidEventListenerIdException(BaseOverkizException):
-    pass
+    """Raised when an invalid event listener ID is provided."""
 
 
 class NoRegisteredEventListenerException(BaseOverkizException):
-    pass
+    """Raised when no event listener is registered."""
 
 
 class SessionAndBearerInSameRequestException(BaseOverkizException):
-    pass
+    """Raised when both session and bearer are provided in the same request."""
 
 
 class TooManyAttemptsBannedException(BaseOverkizException):
-    pass
+    """Raised when too many attempts are made and the user is (temporarily) banned."""
 
 
 class InvalidTokenException(BaseOverkizException):
-    pass
+    """Raised when an invalid token is provided."""
 
 
 class NotSuchTokenException(BaseOverkizException):
-    pass
+    """Raised when an invalid token is provided."""
 
 
 class UnknownUserException(BaseOverkizException):
-    pass
+    """Raised when an unknown user is provided."""
 
 
 class UnknownObjectException(BaseOverkizException):
-    pass
+    """Raised when an unknown object is provided."""
 
 
 class AccessDeniedToGatewayException(BaseOverkizException):
-    pass
+    """Raised when access is denied to the gateway. This often happens when the user is not the owner of the gateway."""
 
 
 # Nexity
 class NexityBadCredentialsException(BadCredentialsException):
-    pass
+    """Raised when invalid credentials are provided to Nexity authentication API."""
 
 
 class NexityServiceException(BaseOverkizException):
-    pass
+    """Raised when an error occurs while communicating with the Nexity API."""
 
 
 # CozyTouch
 class CozyTouchBadCredentialsException(BadCredentialsException):
-    pass
+    """Raised when invalid credentials are provided to CozyTouch authentication API."""
 
 
 class CozyTouchServiceException(BaseOverkizException):
-    pass
+    """Raised when an error occurs while communicating with the CozyTouch API."""
 
 
 # Somfy
 class SomfyBadCredentialsException(BadCredentialsException):
-    pass
+    """Raised when invalid credentials are provided to Somfy authentication API."""
 
 
 class SomfyServiceException(BaseOverkizException):
-    pass
+    """Raised when an error occurs while communicating with the Somfy API."""

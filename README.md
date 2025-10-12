@@ -1,29 +1,26 @@
 # Python client for OverKiz API
 
-<p align=center>
-    <a href="https://github.com/iMicknl/python-overkiz-api/actions"><img src="https://github.com/iMicknl/python-overkiz-api/workflows/CI/badge.svg"/></a>
-    <a href="https://github.com/psf/black"><img src="https://img.shields.io/badge/code%20style-black-000000.svg" /></a>
-</p>
+A fully asynchronous and user-friendly API client for the OverKiz platform. This client enables interaction with smart devices connected to OverKiz, supporting multiple vendors such as Somfy TaHoma and Atlantic Cozytouch.
 
-A fully async and easy to use API client for the (internal) OverKiz API. You can use this client to interact with smart devices connected to the OverKiz platform, used by various vendors like Somfy TaHoma and Atlantic Cozytouch.
-
-This package is written for the Home Assistant [ha-tahoma](https://github.com/iMicknl/ha-tahoma) integration, but could be used by any Python project interacting with OverKiz hubs.
-
-> Somfy TaHoma has an official API, which can be consumed via the [somfy-open-api](https://github.com/tetienne/somfy-open-api). Unfortunately only a few device classes are supported via the official API, thus the need for this API client.
+This package is primarily used by Home Assistant Core to provide the Overkiz integration. If you wish to use this package in your own project, refer to the [examples below](#getting-started) or explore the [Home Assistant source code](https://github.com/home-assistant/core/tree/dev/homeassistant/components/overkiz) for additional usage examples.
 
 ## Supported hubs
 
 - Atlantic Cozytouch
 - Bouygues Flexom
+- Brandt Smart Control **\***
 - Hitachi Hi Kumo
 - Nexity Eugénie
-- Rexel Energeasy Connect
+- Rexel Energeasy Connect **\***
+- Sauter Cozytouch
 - Simu (LiveIn2)
 - Somfy Connexoon IO
 - Somfy Connexoon RTS
 - Somfy TaHoma
 - Somfy TaHoma Switch
 - Thermor Cozytouch
+
+\[*] _These servers utilize an authentication method that is currently not supported by this library. To use this library with these servers, you will need to obtain an access token (by sniffing the original app) and create a local user on the Overkiz API platform._
 
 ## Installation
 
@@ -33,18 +30,25 @@ pip install pyoverkiz
 
 ## Getting started
 
+
+### Cloud API
+
 ```python
 import asyncio
 import time
 
 from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.client import OverkizClient
+from pyoverkiz.enums import Server
 
 USERNAME = ""
 PASSWORD = ""
 
+
 async def main() -> None:
-    async with OverkizClient(USERNAME, PASSWORD, server=SUPPORTED_SERVERS["somfy_europe"]) as client:
+    async with OverkizClient(
+        USERNAME, PASSWORD, server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE]
+    ) as client:
         try:
             await client.login()
         except Exception as exception:  # pylint: disable=broad-except
@@ -63,37 +67,94 @@ async def main() -> None:
 
             time.sleep(2)
 
+
 asyncio.run(main())
 ```
 
-## Development
+### Local API
 
-### Installation
+```python
+import asyncio
+import time
+import aiohttp
 
-- For Linux, install [pyenv](https://github.com/pyenv/pyenv) using [pyenv-installer](https://github.com/pyenv/pyenv-installer)
-- For MacOS, run `brew install pyenv`
-- Don't forget to update your `.bashrc` file (or similar):
-  ```
-  export PATH="~/.pyenv/bin:$PATH"
-  eval "$(pyenv init -)"
-  ```
-- Install the required [dependencies](https://github.com/pyenv/pyenv/wiki#suggested-build-environment)
-- Install [poetry](https://python-poetry.org): `curl -sSL https://raw.githubusercontent.com/python-poetry/poetry/master/get-poetry.py | python`
+from pyoverkiz.client import OverkizClient
+from pyoverkiz.const import SUPPORTED_SERVERS, OverkizServer
+from pyoverkiz.enums import Server
 
-- Clone this repository
-- `cd python-overkiz-api`
-- Install the required Python version: `pyenv install`
-- Init the project: `poetry install`
-- Run `poetry run pre-commit install`
+USERNAME = ""
+PASSWORD = ""
+LOCAL_GATEWAY = "gateway-xxxx-xxxx-xxxx.local"  # or use the IP address of your gateway
+VERIFY_SSL = True  # set verify_ssl to False if you don't use the .local hostname
 
-## PyCharm
 
-As IDE you can use [PyCharm](https://www.jetbrains.com/pycharm/).
+async def main() -> None:
+    token = ""  # generate your token via the Somfy app and include it here
 
-Using snap, run `snap install pycharm --classic` to install it.
+    # Local Connection
+    session = aiohttp.ClientSession(
+        connector=aiohttp.TCPConnector(verify_ssl=VERIFY_SSL)
+    )
 
-For MacOS, run `brew cask install pycharm-ce`
+    async with OverkizClient(
+        username="",
+        password="",
+        token=token,
+        session=session,
+        verify_ssl=VERIFY_SSL,
+        server=OverkizServer(
+            name="Somfy TaHoma (local)",
+            endpoint=f"https://{LOCAL_GATEWAY}:8443/enduser-mobile-web/1/enduserAPI/",
+            manufacturer="Somfy",
+            configuration_url=None,
+        ),
+    ) as client:
+        await client.login()
 
-Once launched, don't create a new project, but open an existing one and select the **python-overkiz-api** folder.
+        print("Local API connection succesfull!")
 
-Go to _File | Settings | Project: nre-tag | Project Interpreter_. Your interpreter must look like `<whatever>/python-overkiz-api/.venv/bin/python`
+        print(await client.get_api_version())
+
+        setup = await client.get_setup()
+        print(setup)
+
+        devices = await client.get_devices()
+        print(devices)
+
+        for device in devices:
+            print(f"{device.label} ({device.id}) - {device.controllable_name}")
+            print(f"{device.widget} - {device.ui_class}")
+
+        while True:
+            events = await client.fetch_events()
+            print(events)
+
+            time.sleep(2)
+
+
+asyncio.run(main())
+```
+
+## Projects using pyOverkiz
+
+This package powers the Overkiz integration in [Home Assistant Core](https://www.home-assistant.io/integrations/overkiz/). Other open-source projects and custom automations also leverage pyOverkiz to interact with Overkiz-compatible hubs and devices, including:
+
+- [overkiz2mqtt](https://github.com/RichieB2B/overkiz2mqtt): Bridges Overkiz devices to MQTT for integration with various platforms.
+- [mcp-overkiz](https://github.com/phimage/mcp-overkiz): Implements an MCP server to enable communication between Overkiz devices and language models.
+- [tahoma](https://github.com/pzim-devdata/tahoma): Command Line Interface (CLI) to control Overkiz devices.
+
+
+## Contribute
+
+We welcome contributions! To get started with setting up this project for development, follow the steps below.
+
+### Dev Container (recommended)
+
+If you use Visual Studio Code with Docker or GitHub Codespaces, you can take advantage of the included [Dev Container](https://code.visualstudio.com/docs/devcontainers/containers). This environment comes pre-configured with all necessary dependencies and tools, including the correct Python version, making setup simple and straightforward.
+
+### Manual
+
+- Ensure Python 3.12 is installed on your system.
+- Install [uv](https://docs.astral.sh/uv/getting-started/installation).
+- Clone this repository and navigate to it: `cd python-overkiz-api`
+- Initialize the project with `uv sync`, then run `uv run pre-commit install`

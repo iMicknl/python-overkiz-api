@@ -53,10 +53,19 @@ class GatewayType(IntEnum):
     ELIOT = 77
     COZYTOUCH_SAUTER = 83
     WISER = 88
+    NETATMO = 92
     TAHOMA_SWITCH = 98
     SOMFY_CONNECTIVITY_KIT = 99
     COZYTOUCH_V2 = 105
     TAHOMA_RAIL_DIN_S = 108
+    NEXITY_RAIL_DIN_S = 109
+    HEXACONNECT = 117
+    DAIKIN_ONECTA = 118
+    TAHOMA_SWITCH_US = 121
+    TAHOMA_SWITCH_OC = 122
+    TAHOMA_SWITCH_AU = 123
+    TAHOMA_SWITCH_CH = 126
+    TAHOMA_SWITCH_SC = 128
 
     @classmethod
     def _missing_(cls, value):  # type: ignore
@@ -90,7 +99,7 @@ class GatewaySubType(IntEnum):
     TAHOMA_PRO = 14
     TAHOMA_SECURITY_SHORT_CHANNEL = 15
     TAHOMA_SECURITY_PRO = 16
-    # TAHOMA_BOX_C_IO = 12 That’s probably 17, but tahomalink.com says it’s 12
+    # TAHOMA_BOX_C_IO = 12  # Note: This is likely 17, but tahomalink.com lists it as 12
 
     @classmethod
     def _missing_(cls, value):  # type: ignore

@@ -1,4 +1,5 @@
-""" Python wrapper for the OverKiz API """
+"""Python wrapper for the OverKiz API"""
+
 from __future__ import annotations
 
 import asyncio
@@ -43,6 +44,7 @@ from pyoverkiz.exceptions import (
     BadCredentialsException,
     CozyTouchBadCredentialsException,
     CozyTouchServiceException,
+    ExecutionQueueFullException,
     InvalidCommandException,
     InvalidEventListenerIdException,
     InvalidTokenException,
@@ -51,6 +53,7 @@ from pyoverkiz.exceptions import (
     NexityBadCredentialsException,
     NexityServiceException,
     NoRegisteredEventListenerException,
+    NoSuchResourceException,
     NotAuthenticatedException,
     NotSuchTokenException,
     OverkizException,
@@ -96,6 +99,23 @@ async def refresh_listener(invocation: Mapping[str, Any]) -> None:
 # pylint: disable=too-many-instance-attributes, too-many-branches
 
 
+def _create_local_ssl_context() -> ssl.SSLContext:
+    """Create SSL context.
+
+    This method is not async-friendly and should be called from a thread
+    because it will load certificates from disk and do other blocking I/O.
+    """
+    return ssl.create_default_context(
+        cafile=os.path.dirname(os.path.realpath(__file__)) + "/overkiz-root-ca-2048.crt"
+    )
+
+
+# The default SSLContext objects are created at import time
+# since they do blocking I/O to load certificates from disk,
+# and imports should always be done before the event loop starts or in a thread.
+SSL_CONTEXT_LOCAL_API = _create_local_ssl_context()
+
+
 class OverkizClient:
     """Interface class for the Overkiz API"""
 
@@ -112,13 +132,14 @@ class OverkizClient:
     _refresh_token: str | None = None
     _expires_in: datetime.datetime | None = None
     _access_token: str | None = None
-    _ssl_context: ssl.SSLContext | None = None
+    _ssl: ssl.SSLContext | bool = True
 
     def __init__(
         self,
         username: str,
         password: str,
         server: OverkizServer,
+        verify_ssl: bool = True,
         token: str | None = None,
         session: ClientSession | None = None,
     ) -> None:
@@ -142,15 +163,19 @@ class OverkizClient:
         self.event_listener_id: str | None = None
 
         self.session = session if session else ClientSession()
+        self._ssl = verify_ssl
 
         if LOCAL_API_PATH in self.server.endpoint:
             self.api_type = APIType.LOCAL
-            # To avoid security issues, we add the following authority to
-            # our HTTPS client trust store: https://ca.overkiz.com/overkiz-root-ca-2048.crt
-            self._ssl_context = ssl.create_default_context(
-                cafile=os.path.dirname(os.path.realpath(__file__))
-                + "/overkiz-root-ca-2048.crt"
-            )
+
+            if verify_ssl:
+                # To avoid security issues while authentication to local API, we add the following authority to
+                # our HTTPS client trust store: https://ca.overkiz.com/overkiz-root-ca-2048.crt
+                self._ssl = SSL_CONTEXT_LOCAL_API
+
+                # Disable strict validation introduced in Python 3.13, which doesn't
+                # work with Overkiz self-signed gateway certificates
+                self._ssl.verify_flags &= ~ssl.VERIFY_X509_STRICT
         else:
             self.api_type = APIType.CLOUD
 
@@ -201,7 +226,11 @@ class OverkizClient:
             return True
 
         # CozyTouch authentication using jwt
-        if self.server == SUPPORTED_SERVERS[Server.ATLANTIC_COZYTOUCH]:
+        if self.server in [
+            SUPPORTED_SERVERS[Server.ATLANTIC_COZYTOUCH],
+            SUPPORTED_SERVERS[Server.THERMOR_COZYTOUCH],
+            SUPPORTED_SERVERS[Server.SAUTER_COZYTOUCH],
+        ]:
             jwt = await self.cozytouch_login()
             payload = {"jwt": jwt}
 
@@ -230,7 +259,7 @@ class OverkizClient:
         """
         # Request access token
         async with self.session.post(
-            SOMFY_API + "/oauth/oauth/v2/token",
+            SOMFY_API + "/oauth/oauth/v2/token/jwt",
             data=FormData(
                 {
                     "grant_type": "password",
@@ -274,7 +303,7 @@ class OverkizClient:
         # &grant_type=refresh_token&refresh_token=REFRESH_TOKEN
         # Request access token
         async with self.session.post(
-            SOMFY_API + "/oauth/oauth/v2/token",
+            SOMFY_API + "/oauth/oauth/v2/token/jwt",
             data=FormData(
                 {
                     "grant_type": "refresh_token",
@@ -888,7 +917,7 @@ class OverkizClient:
         async with self.session.get(
             f"{self.server.endpoint}{path}",
             headers=headers,
-            ssl_context=self._ssl_context,
+            ssl=self._ssl,
         ) as response:
             await self.check_response(response)
             return await response.json()
@@ -908,7 +937,7 @@ class OverkizClient:
             data=data,
             json=payload,
             headers=headers,
-            ssl_context=self._ssl_context,
+            ssl=self._ssl,
         ) as response:
             await self.check_response(response)
             return await response.json()
@@ -925,7 +954,7 @@ class OverkizClient:
         async with self.session.delete(
             f"{self.server.endpoint}{path}",
             headers=headers,
-            ssl_context=self._ssl_context,
+            ssl=self._ssl,
         ) as response:
             await self.check_response(response)
 
@@ -954,13 +983,8 @@ class OverkizClient:
             # Error messages between cloud and local Overkiz servers can be slightly different
             # To make it easier to have a strict match for these errors, we remove the double quotes and the period at the end.
 
-            if message := result.get("error"):
-                message = message.strip(
-                    '".'
-                )  # Change to .removesuffix when Python 3.8 support is dropped
-            else:
-                # An error message can have an empty (None) message
-                message = ""
+            # An error message can have an empty (None) message
+            message = message.strip('".') if (message := result.get("error")) else ""
 
             # {"errorCode": "AUTHENTICATION_ERROR",
             # "error": "Too many requests, try again later : login with xxx@xxx.tld"}
@@ -995,9 +1019,17 @@ class OverkizClient:
             if message == "No registered event listener":
                 raise NoRegisteredEventListenerException(message)
 
+            # {'errorCode': 'INVALID_API_CALL', 'error': 'No such resource'}
+            if message == "No such resource":
+                raise NoSuchResourceException(message)
+
             # {"errorCode": "RESOURCE_ACCESS_DENIED",  "error": "too many concurrent requests"}
             if message == "too many concurrent requests":
                 raise TooManyConcurrentRequestsException(message)
+
+            # {'errorCode': 'EXEC_QUEUE_FULL', 'error': 'Execution queue is full on gateway: #xxx-yyyy-zzzz (soft limit: 10)'}
+            if "Execution queue is full on gateway" in message:
+                raise ExecutionQueueFullException(message)
 
             if message == "Cannot use JSESSIONID and bearer token in same request":
                 raise SessionAndBearerInSameRequestException(message)
@@ -1022,7 +1054,7 @@ class OverkizClient:
             if "Access denied to gateway" in message:
                 raise AccessDeniedToGatewayException(message)
 
-        # General Overkiz exception
+        # Undefined Overkiz exception
         raise OverkizException(result)
 
     async def _refresh_token_if_expired(self) -> None:
