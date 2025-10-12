@@ -332,7 +332,7 @@ class State:
         if self.type == DataType.FLOAT:
             return cast(float, self.value)
         if self.type == DataType.INTEGER:
-            return cast(int, self.value)
+            return float(cast(int, self.value))
         raise TypeError(f"{self.name} is not a float")
 
     @property
