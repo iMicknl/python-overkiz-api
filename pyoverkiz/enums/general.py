@@ -364,6 +364,7 @@ class EventName(StrEnum):
     REAL_TIME_SETUP_NOTIFICATION = "RealTimeSetupNotificationEvent"
     REFRESH_ALL_DEVICES_STATES_COMPLETED = "RefreshAllDevicesStatesCompletedEvent"
     REFRESH_ALL_DEVICES_STATES_FAILED = "RefreshAllDevicesStatesFailedEvent"
+    REFRESH_EVERYTHING_COMPLETED = "RefreshEverythingCompletedEvent"
     RESELLER_DELEGATION = "ResellerDelegationEvent"
     SECONDARY_ACCOUNT_UPDATED = "SecondaryAccountUpdatedEvent"
     SETUP_JOB_COMPLETED = "SetupJobCompletedEvent"
