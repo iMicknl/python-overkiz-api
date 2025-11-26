@@ -937,7 +937,7 @@ requires-dist = [
 dev = [
     { name = "mypy", specifier = ">=1.16.1" },
     { name = "pre-commit", specifier = ">=3.8,<5.0" },
-    { name = "pytest", specifier = ">=8.3.2,<9.0.0" },
+    { name = "pytest", specifier = ">=8.3.2,<10.0.0" },
     { name = "pytest-asyncio", specifier = ">=0.23.8,<1.1.0" },
     { name = "pytest-cov", specifier = ">=5,<7" },
     { name = "ruff", specifier = ">=0.12.0" },
