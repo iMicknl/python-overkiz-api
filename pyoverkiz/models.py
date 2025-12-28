@@ -569,7 +569,7 @@ class Scenario:
         self,
         creation_time: int,
         metadata: str,
-        actions: list[Action],
+        actions: list[dict[str, Any]],
         oid: str,
         last_update_time: int | None = None,
         label: str | None = None,
