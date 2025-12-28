@@ -540,12 +540,52 @@ class Execution:
 
 
 @define(init=False, kw_only=True)
+class Action:
+    """Represents OverKiz Action (multiple commands for specific device URL)."""
+
+    device_url: str
+    commands: list[Command]
+
+    def __init__(self, device_url: str, commands: list[Command]):
+        self.device_url = device_url
+        self.commands = commands
+
+
+@define(init=False, kw_only=True)
 class Scenario:
+    """Represents an OverKiz scenario."""
+
+    creation_time: int
+    last_update_time: int | None = None
     label: str = field(repr=obfuscate_string)
+    metadata: str
+    shortcut: bool | None = None
+    notification_type_mask: int | None = None
+    notification_condition: str | None = None
+    actions: list[Action]
     oid: str = field(repr=obfuscate_id)
 
-    def __init__(self, oid: str, label: str | None = None, **_: Any):
+    def __init__(
+        self,
+        creation_time: int,
+        metadata: str,
+        actions: list[Action],
+        oid: str,
+        last_update_time: int | None = None,
+        label: str | None = None,
+        shortcut: bool | None = None,
+        notification_type_mask: int | None = None,
+        notification_condition: str | None = None,
+        **_: Any,
+    ) -> None:
+        self.creation_time = creation_time
+        self.last_update_time = last_update_time
         self.label = label or ""
+        self.metadata = metadata
+        self.shortcut = shortcut
+        self.notification_type_mask = notification_type_mask
+        self.notification_condition = notification_condition
+        self.actions = actions
         self.oid = oid
 
 

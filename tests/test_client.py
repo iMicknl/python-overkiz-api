@@ -396,6 +396,35 @@ class TestOverkizClient:
             else:
                 assert isinstance(option, instance)
 
+    @pytest.mark.parametrize(
+        "fixture_name, scenario_count",
+        [
+            ("action-group-cozytouch.json", 9),
+        ],
+    )
+    @pytest.mark.asyncio
+    async def test_get_scenarios(
+        self,
+        client: OverkizClient,
+        fixture_name: str,
+        scenario_count: int,
+    ):
+        with open(
+            os.path.join(CURRENT_DIR, "fixtures/action_groups/" + fixture_name),
+            encoding="utf-8",
+        ) as action_group_mock:
+            resp = MockResponse(action_group_mock.read())
+
+        with patch.object(aiohttp.ClientSession, "get", return_value=resp):
+            scenarios = await client.get_scenarios()
+
+            assert len(scenarios) == scenario_count
+
+            for scenario in scenarios:
+                assert scenario.oid
+                assert scenario.label
+                assert scenario.actions
+
 
 class MockResponse:
     def __init__(self, text, status=200, url=""):

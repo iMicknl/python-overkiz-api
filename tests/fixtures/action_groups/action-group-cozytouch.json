@@ -1,0 +1,216 @@
+[
+    {
+        "creationTime": 1763489130000,
+        "lastUpdateTime": 1763489130000,
+        "label": "Label 1",
+        "metadata": "a56b34aa-2f6f-4e24-b73a-c2ed23f0ac91",
+        "shortcut": false,
+        "notificationTypeMask": 0,
+        "notificationCondition": "NEVER",
+        "actions": [
+            {
+                "deviceURL": "io://1234-5678-1234/13880042",
+                "commands": [
+                    {
+                        "type": 1,
+                        "name": "setHeatingLevel",
+                        "parameters": [
+                            "eco"
+                        ]
+                    }
+                ]
+            }
+        ],
+        "oid": "0a0589bb-9471-4667-a2a9-4602beb2a2e8"
+    },
+    {
+        "creationTime": 1763214463000,
+        "lastUpdateTime": 1763214463000,
+        "label": "Label 2",
+        "metadata": "f6206578-b730-4f66-b322-e8d0a5625407",
+        "shortcut": false,
+        "notificationTypeMask": 0,
+        "notificationCondition": "NEVER",
+        "actions": [
+            {
+                "deviceURL": "io://1234-5678-1234/15581081",
+                "commands": [
+                    {
+                        "type": 1,
+                        "name": "setHeatingLevel",
+                        "parameters": [
+                            "comfort"
+                        ]
+                    }
+                ]
+            }
+        ],
+        "oid": "50d39fc3-9368-49c9-bcbf-c74f3ce1678a"
+    },
+    {
+        "creationTime": 1763214533000,
+        "lastUpdateTime": 1763214533000,
+        "label": "Label 3",
+        "metadata": "c1f2a9b2-e959-4cc2-a9ec-7c12f13d684b",
+        "shortcut": false,
+        "notificationTypeMask": 0,
+        "notificationCondition": "NEVER",
+        "actions": [
+            {
+                "deviceURL": "io://1234-5678-1234/13933322",
+                "commands": [
+                    {
+                        "type": 1,
+                        "name": "setHeatingLevel",
+                        "parameters": [
+                            "eco"
+                        ]
+                    }
+                ]
+            }
+        ],
+        "oid": "6ed08671-9967-4f97-ba80-9561fdff8342"
+    },
+    {
+        "creationTime": 1763489115000,
+        "lastUpdateTime": 1763489115000,
+        "label": "Label 4",
+        "metadata": "a56b34aa-2f6f-4e24-b73a-c2ed23f0ac91",
+        "shortcut": false,
+        "notificationTypeMask": 0,
+        "notificationCondition": "NEVER",
+        "actions": [
+            {
+                "deviceURL": "io://1234-5678-1234/13880042",
+                "commands": [
+                    {
+                        "type": 1,
+                        "name": "setHeatingLevel",
+                        "parameters": [
+                            "comfort"
+                        ]
+                    }
+                ]
+            }
+        ],
+        "oid": "902cb626-2b30-45e1-9993-48c12b28b7e8"
+    },
+    {
+        "creationTime": 1645911835000,
+        "lastUpdateTime": 1763207152000,
+        "metadata": "0d84c6d3-e22f-4ec6-b064-24f47ae6a27f",
+        "shortcut": false,
+        "notificationTypeMask": 0,
+        "notificationCondition": "NEVER",
+        "actions": [
+            {
+                "deviceURL": "io://1234-5678-1234/13880042",
+                "commands": [
+                    {
+                        "type": 1,
+                        "name": "setHeatingLevel",
+                        "parameters": [
+                            "eco"
+                        ]
+                    }
+                ]
+            }
+        ],
+        "oid": "a6123547-b740-4233-b819-37d6bfdb262f"
+    },
+    {
+        "creationTime": 1645911837000,
+        "lastUpdateTime": 1763207151000,
+        "metadata": "0d84c6d3-e22f-4ec6-b064-24f47ae6a27f",
+        "shortcut": false,
+        "notificationTypeMask": 0,
+        "notificationCondition": "NEVER",
+        "actions": [
+            {
+                "deviceURL": "io://1234-5678-1234/13880042",
+                "commands": [
+                    {
+                        "type": 1,
+                        "name": "setHeatingLevel",
+                        "parameters": [
+                            "comfort"
+                        ]
+                    }
+                ]
+            }
+        ],
+        "oid": "cd65aa96-e520-4dac-a10b-2cf2318282c4"
+    },
+    {
+        "creationTime": 1763214461000,
+        "lastUpdateTime": 1763214461000,
+        "label": "Label 7",
+        "metadata": "f6206578-b730-4f66-b322-e8d0a5625407",
+        "shortcut": false,
+        "notificationTypeMask": 0,
+        "notificationCondition": "NEVER",
+        "actions": [
+            {
+                "deviceURL": "io://1234-5678-1234/15581081",
+                "commands": [
+                    {
+                        "type": 1,
+                        "name": "setHeatingLevel",
+                        "parameters": [
+                            "eco"
+                        ]
+                    }
+                ]
+            }
+        ],
+        "oid": "ebc17489-236b-460e-8312-e6aab8f041e9"
+    },
+    {
+        "creationTime": 1763214535000,
+        "lastUpdateTime": 1763214535000,
+        "label": "Label 8",
+        "metadata": "c1f2a9b2-e959-4cc2-a9ec-7c12f13d684b",
+        "shortcut": false,
+        "notificationTypeMask": 0,
+        "notificationCondition": "NEVER",
+        "actions": [
+            {
+                "deviceURL": "io://1234-5678-1234/13933322",
+                "commands": [
+                    {
+                        "type": 1,
+                        "name": "setHeatingLevel",
+                        "parameters": [
+                            "comfort"
+                        ]
+                    }
+                ]
+            }
+        ],
+        "oid": "f33627ed-6d64-4c9e-8830-314e46803d81"
+    },
+    {
+        "creationTime": 1763207186000,
+        "lastUpdateTime": 1763207186000,
+        "label": "Label 9",
+        "metadata": "a6363499-f520-431d-812b-ef37fa9db84c",
+        "shortcut": false,
+        "notificationTypeMask": 0,
+        "notificationCondition": "NEVER",
+        "actions": [
+            {
+                "deviceURL": "io://1234-5678-1234/13880042",
+                "commands": [
+                    {
+                        "type": 1,
+                        "name": "setHeatingLevel",
+                        "parameters": [
+                            "comfort"
+                        ]
+                    }
+                ]
+            }
+        ],
+        "oid": "f51acc08-084e-4850-a93f-b69368187d1e"
+    }
+]
