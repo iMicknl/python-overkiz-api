@@ -550,7 +550,7 @@ class Action:
     device_url: str
     commands: list[Command]
 
-    def __init__(self, device_url: str, commands: list[Command]):
+    def __init__(self, device_url: str, commands: list[dict[str, Any]]):
         self.device_url = device_url
         self.commands = [Command(**c) for c in commands] if commands else []
 
