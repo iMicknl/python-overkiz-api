@@ -745,7 +745,7 @@ class OverkizClient:
     async def get_scenarios(self) -> list[Scenario]:
         """List the scenarios"""
         response = await self.__get("actionGroups")
-        return [Scenario(**scenario) for scenario in response]
+        return [Scenario(**scenario) for scenario in humps.decamelize(response)]
 
     @backoff.on_exception(
         backoff.expo,
