@@ -541,7 +541,11 @@ class Execution:
 
 @define(init=False, kw_only=True)
 class Action:
-    """Represents OverKiz Action (multiple commands for specific device URL)."""
+    """
+    An action group is composed of one or more actions. Each action is related to a
+    single setup device (designated by its device URL) and is composed of one
+    or more commands to be executed on that device.
+    """
 
     device_url: str
     commands: list[Command]
@@ -553,7 +557,11 @@ class Action:
 
 @define(init=False, kw_only=True)
 class Scenario:
-    """Represents an OverKiz scenario."""
+    """
+    An action group is composed of one or more actions.
+    Each action is related to a single setup device (designated by its device URL) and
+    is composed of one or more commands to be executed on that device.
+    """
 
     id: str = field(repr=obfuscate_id)
     creation_time: int
