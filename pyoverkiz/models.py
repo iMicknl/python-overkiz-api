@@ -544,8 +544,8 @@ class Scenario:
     label: str = field(repr=obfuscate_string)
     oid: str = field(repr=obfuscate_id)
 
-    def __init__(self, label: str, oid: str, **_: Any):
-        self.label = label
+    def __init__(self, oid: str, label: str | None = None, **_: Any):
+        self.label = label or ""
         self.oid = oid
 
 
