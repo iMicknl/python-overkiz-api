@@ -400,6 +400,7 @@ class TestOverkizClient:
         "fixture_name, scenario_count",
         [
             ("action-group-cozytouch.json", 9),
+            ("action-group-tahoma-switch.json", 1),
         ],
     )
     @pytest.mark.asyncio
