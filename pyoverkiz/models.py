@@ -465,19 +465,25 @@ class States:
     get = __getitem__
 
 
-class Command(dict):
+@define(init=False, kw_only=True)
+class Command:
     """Represents an OverKiz Command."""
 
+    type: int | None = None
     name: str
     parameters: list[str | int | float] | None
 
     def __init__(
-        self, name: str, parameters: list[str | int | float] | None = None, **_: Any
+        self,
+        name: str,
+        parameters: list[str | int | float] | None = None,
+        type: int | None = None,
+        **_: Any,
     ):
         """Initialize a command instance and mirror fields into dict base class."""
         self.name = name
         self.parameters = parameters
-        dict.__init__(self, name=name, parameters=parameters)
+        self.type = type
 
 
 @define(init=False, kw_only=True)

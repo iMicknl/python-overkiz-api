@@ -39,7 +39,7 @@ from pyoverkiz.const import (
     SOMFY_CLIENT_SECRET,
     SUPPORTED_SERVERS,
 )
-from pyoverkiz.enums import APIType, Server
+from pyoverkiz.enums import APIType, CommandMode, Server
 from pyoverkiz.exceptions import (
     AccessDeniedToGatewayException,
     BadCredentialsException,
@@ -71,8 +71,8 @@ from pyoverkiz.exceptions import (
     UnknownUserException,
 )
 from pyoverkiz.models import (
+    Action,
     ActionGroup,
-    Command,
     Device,
     Event,
     Execution,
@@ -630,39 +630,40 @@ class OverkizClient:
 
     @retry_on_too_many_executions
     @retry_on_auth_error
-    async def execute_command(
+    async def execute_action_group(
         self,
-        device_url: str,
-        command: Command | str,
+        actions: list[Action],
+        mode: CommandMode | None = None,
         label: str | None = "python-overkiz-api",
     ) -> str:
-        """Send a command."""
-        if isinstance(command, str):
-            command = Command(command)
+        """Execute a non-persistent action group.
 
-        response: str = await self.execute_commands(device_url, [command], label)
+        The executed action group does not have to be persisted on the server before use.
+        Per-session rate-limit : 1 calls per 28min 48s period for all operations of the same category (exec)
+        """
+        payload = {
+            "label": label,
+            "actions": actions,
+        }
 
-        return response
+        if mode == CommandMode.GEOLOCATED:
+            url = "exec/apply/geolocated"
+        elif mode == CommandMode.INTERNAL:
+            url = "exec/apply/internal"
+        elif mode == CommandMode.HIGH_PRIORITY:
+            url = "exec/apply/highPriority"
+        else:
+            url = "exec/apply"
+
+        response: dict = await self.__post(url, payload)
+
+        return cast(str, response["execId"])
 
     @retry_on_auth_error
     async def cancel_command(self, exec_id: str) -> None:
         """Cancel a running setup-level execution."""
         await self.__delete(f"/exec/current/setup/{exec_id}")
 
-    @retry_on_auth_error
-    async def execute_commands(
-        self,
-        device_url: str,
-        commands: list[Command],
-        label: str | None = "python-overkiz-api",
-    ) -> str:
-        """Send several commands in one call."""
-        payload = {
-            "label": label,
-            "actions": [{"deviceURL": device_url, "commands": commands}],
-        }
-        response: dict = await self.__post("exec/apply", payload)
-        return cast(str, response["execId"])
 
     @retry_on_auth_error
     async def get_action_groups(self) -> list[ActionGroup]:
