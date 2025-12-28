@@ -542,9 +542,7 @@ class Execution:
 @define(init=False, kw_only=True)
 class Action:
     """
-    An action group is composed of one or more actions. Each action is related to a
-    single setup device (designated by its device URL) and is composed of one
-    or more commands to be executed on that device.
+    An action consists of multiple commands related to a single device, identified by its device URL.
     """
 
     device_url: str
