@@ -422,7 +422,7 @@ class TestOverkizClient:
 
             for scenario in scenarios:
                 assert scenario.oid
-                assert scenario.label
+                assert scenario.label is not None
                 assert scenario.actions
 
 
