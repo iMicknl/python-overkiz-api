@@ -148,13 +148,20 @@ This package powers the Overkiz integration in [Home Assistant Core](https://www
 
 We welcome contributions! To get started with setting up this project for development, follow the steps below.
 
-### Dev Container (recommended)
+
+### Project setup
+#### Dev Container (recommended)
 
 If you use Visual Studio Code with Docker or GitHub Codespaces, you can take advantage of the included [Dev Container](https://code.visualstudio.com/docs/devcontainers/containers). This environment comes pre-configured with all necessary dependencies and tools, including the correct Python version, making setup simple and straightforward.
 
-### Manual
+#### Manual setup
 
-- Ensure Python 3.12 is installed on your system.
 - Install [uv](https://docs.astral.sh/uv/getting-started/installation).
 - Clone this repository and navigate to it: `cd python-overkiz-api`
 - Initialize the project with `uv sync`, then run `uv run pre-commit install`
+
+#### Tests
+
+```bash
+uv run pytest
+```

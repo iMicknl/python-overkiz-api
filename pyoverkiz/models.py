@@ -331,6 +331,8 @@ class State:
             return None
         if self.type == DataType.FLOAT:
             return cast(float, self.value)
+        if self.type == DataType.INTEGER:
+            return float(cast(int, self.value))
         raise TypeError(f"{self.name} is not a float")
 
     @property
@@ -550,12 +552,68 @@ class Execution:
 
 
 @define(init=False, kw_only=True)
+class Action:
+    """
+    An action consists of multiple commands related to a single device, identified by its device URL.
+    """
+
+    device_url: str
+    commands: list[Command]
+
+    def __init__(self, device_url: str, commands: list[dict[str, Any]]):
+        self.device_url = device_url
+        self.commands = [Command(**c) for c in commands] if commands else []
+
+
+@define(init=False, kw_only=True)
 class Scenario:
+    """
+    An action group is composed of one or more actions.
+    Each action is related to a single setup device (designated by its device URL) and
+    is composed of one or more commands to be executed on that device.
+    """
+
+    id: str = field(repr=obfuscate_id)
+    creation_time: int
+    last_update_time: int | None = None
     label: str = field(repr=obfuscate_string)
+    metadata: str
+    shortcut: bool | None = None
+    notification_type_mask: int | None = None
+    notification_condition: str | None = None
+    notification_text: str | None = None
+    notification_title: str | None = None
+    actions: list[Action]
     oid: str = field(repr=obfuscate_id)
 
-    def __init__(self, label: str, oid: str, **_: Any):
-        self.label = label
+    def __init__(
+        self,
+        creation_time: int,
+        metadata: str,
+        actions: list[dict[str, Any]],
+        oid: str,
+        last_update_time: int | None = None,
+        label: str | None = None,
+        shortcut: bool | None = None,
+        notification_type_mask: int | None = None,
+        notification_condition: str | None = None,
+        notification_text: str | None = None,
+        notification_title: str | None = None,
+        **_: Any,
+    ) -> None:
+        self.id = oid
+        self.creation_time = creation_time
+        self.last_update_time = last_update_time
+        self.label = (
+            label or ""
+        )  # for backwards compatibility we set label to empty string if None
+        self.metadata = metadata
+        self.shortcut = shortcut
+        self.notification_type_mask = notification_type_mask
+        self.notification_condition = notification_condition
+        self.notification_text = notification_text
+        self.notification_title = notification_title
+        self.actions = [Action(**action) for action in actions]
         self.oid = oid
 
 

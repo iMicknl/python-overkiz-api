@@ -1,6 +1,6 @@
 [project]
 name = "pyoverkiz"
-version = "1.18.2"
+version = "1.19.2"
 description = "Async Python client to interact with internal OverKiz API (e.g. used by Somfy TaHoma)."
 readme = "README.md"
 authors = [
@@ -27,17 +27,16 @@ dependencies = [
 homepage = "https://github.com/iMicknl/python-overkiz-api"
 repository = "https://github.com/iMicknl/python-overkiz-api"
 
-[tool.uv]
-dev-dependencies = [
+[dependency-groups]
+dev = [
     "tox<5.0.0,>=4.17.1",
-    "pytest>=8.3.2,<9.0.0",
-    "pytest-cov<7,>=5",
+    "pytest>=8.3.2,<10.0.0",
+    "pytest-cov>=5,<8",
     "pre-commit<5.0,>=3.8",
-    "pytest-asyncio<1.1.0,>=0.23.8",
+    "pytest-asyncio>=0.23.8,<1.4.0",
     "ruff>=0.12.0",
     "mypy>=1.16.1",
 ]
-
 
 [tool.ruff.lint]
 select = [
