@@ -425,6 +425,13 @@ class TestOverkizClient:
                 assert scenario.label is not None
                 assert scenario.actions
 
+                for action in scenario.actions:
+                    assert action.device_url
+                    assert action.commands
+
+                    for command in action.commands:
+                        assert command.name
+
 
 class MockResponse:
     def __init__(self, text, status=200, url=""):

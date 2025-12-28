@@ -548,7 +548,7 @@ class Action:
 
     def __init__(self, device_url: str, commands: list[Command]):
         self.device_url = device_url
-        self.commands = commands
+        self.commands = [Command(**c) for c in commands] if commands else []
 
 
 @define(init=False, kw_only=True)
@@ -587,7 +587,7 @@ class Scenario:
         self.shortcut = shortcut
         self.notification_type_mask = notification_type_mask
         self.notification_condition = notification_condition
-        self.actions = actions
+        self.actions = [Action(**action) for action in actions]
         self.oid = oid
 
 
