@@ -486,6 +486,25 @@ class Command:
         self.parameters = parameters
         self.type = type
 
+    def to_payload(self) -> dict[str, object]:
+        """Return a JSON-serializable payload for this command.
+
+        The payload uses snake_case keys; the client will convert to camelCase
+        and apply small key fixes (like `deviceURL`) before sending.
+        """
+        payload: dict[str, object] = {"name": str(self.name)}
+
+        if self.type is not None:
+            payload["type"] = self.type
+
+        if self.parameters is not None:
+            payload["parameters"] = [
+                p if isinstance(p, (str, int, float, bool)) else str(p)
+                for p in self.parameters  # type: ignore[arg-type]
+            ]
+
+        return payload
+
 
 @define(init=False, kw_only=True)
 class Event:
@@ -607,10 +626,22 @@ class Action:
     device_url: str
     commands: list[Command]
 
-    def __init__(self, device_url: str, commands: list[dict[str, Any]]):
+    def __init__(self, device_url: str, commands: list[dict[str, Any] | Command]):
         """Initialize Action from API data and convert nested commands."""
         self.device_url = device_url
-        self.commands = [Command(**c) for c in commands] if commands else []
+        self.commands = [
+            c if isinstance(c, Command) else Command(**c) for c in commands
+        ]
+
+    def to_payload(self) -> dict[str, object]:
+        """Return a JSON-serializable payload for this action (snake_case).
+
+        The final camelCase conversion is handled by the client.
+        """
+        return {
+            "device_url": self.device_url,
+            "commands": [c.to_payload() for c in self.commands],
+        }
 
 
 @define(init=False, kw_only=True)

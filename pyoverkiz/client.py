@@ -87,6 +87,7 @@ from pyoverkiz.models import (
     State,
 )
 from pyoverkiz.obfuscate import obfuscate_sensitive_data
+from pyoverkiz.serializers import prepare_payload
 from pyoverkiz.types import JSON
 
 
@@ -641,10 +642,12 @@ class OverkizClient:
         The executed action group does not have to be persisted on the server before use.
         Per-session rate-limit : 1 calls per 28min 48s period for all operations of the same category (exec)
         """
-        payload = {
-            "label": label,
-            "actions": actions,
-        }
+        # Build a logical (snake_case) payload using model helpers and convert it
+        # to the exact JSON schema expected by the API (camelCase + small fixes).
+        payload = {"label": label, "actions": [a.to_payload() for a in actions]}
+
+        # Prepare final payload with camelCase keys and special abbreviation handling
+        final_payload = prepare_payload(payload)
 
         if mode == CommandMode.GEOLOCATED:
             url = "exec/apply/geolocated"
@@ -655,7 +658,7 @@ class OverkizClient:
         else:
             url = "exec/apply"
 
-        response: dict = await self.__post(url, payload)
+        response: dict = await self.__post(url, final_payload)
 
         return cast(str, response["execId"])
 
