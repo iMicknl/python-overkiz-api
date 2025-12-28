@@ -596,7 +596,7 @@ class Scenario:
         self.last_update_time = last_update_time
         self.label = (
             label or ""
-        )  # for backwards compatiblity we set label to empty string if None
+        )  # for backwards compatibility we set label to empty string if None
         self.metadata = metadata
         self.shortcut = shortcut
         self.notification_type_mask = notification_type_mask
