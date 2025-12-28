@@ -22,6 +22,7 @@ from pyoverkiz.enums import (
     UIWidget,
     UpdateBoxStatus,
 )
+from pyoverkiz.enums.command import OverkizCommand, OverkizCommandParam
 from pyoverkiz.enums.protocol import Protocol
 from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
@@ -470,12 +471,12 @@ class Command:
     """Represents an OverKiz Command."""
 
     type: int | None = None
-    name: str
-    parameters: list[str | int | float] | None
+    name: OverkizCommand
+    parameters: list[str | int | float | OverkizCommandParam] | None
 
     def __init__(
         self,
-        name: str,
+        name: OverkizCommand,
         parameters: list[str | int | float] | None = None,
         type: int | None = None,
         **_: Any,
