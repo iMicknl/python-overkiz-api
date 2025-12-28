@@ -679,7 +679,7 @@ class OverkizClient:
         }
         response: dict = await self.__post("exec/apply", payload)
         return cast(str, response["execId"])
-   
+
     @retry_on_auth_error
     async def execute_actions(
         self,
@@ -696,7 +696,7 @@ class OverkizClient:
         }
         response: dict = await self.__post("exec/apply", payload)
         return cast(str, response["execId"])
-      
+
     @retry_on_auth_error
     async def get_scenarios(self) -> list[Scenario]:
         """List the scenarios"""
