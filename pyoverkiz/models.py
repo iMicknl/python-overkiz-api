@@ -555,6 +555,7 @@ class Action:
 class Scenario:
     """Represents an OverKiz scenario."""
 
+    id: str = field(repr=obfuscate_id)
     creation_time: int
     last_update_time: int | None = None
     label: str = field(repr=obfuscate_string)
@@ -562,6 +563,8 @@ class Scenario:
     shortcut: bool | None = None
     notification_type_mask: int | None = None
     notification_condition: str | None = None
+    notification_text: str | None = None
+    notification_title: str | None = None
     actions: list[Action]
     oid: str = field(repr=obfuscate_id)
 
@@ -576,8 +579,11 @@ class Scenario:
         shortcut: bool | None = None,
         notification_type_mask: int | None = None,
         notification_condition: str | None = None,
+        notification_text: str | None = None,
+        notification_title: str | None = None,
         **_: Any,
     ) -> None:
+        self.id = oid
         self.creation_time = creation_time
         self.last_update_time = last_update_time
         self.label = (
@@ -587,6 +593,8 @@ class Scenario:
         self.shortcut = shortcut
         self.notification_type_mask = notification_type_mask
         self.notification_condition = notification_condition
+        self.notification_text = notification_text
+        self.notification_title = notification_title
         self.actions = [Action(**action) for action in actions]
         self.oid = oid
 
