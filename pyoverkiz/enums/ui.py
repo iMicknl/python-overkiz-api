@@ -4,17 +4,9 @@
 # Enum values contain "PASS" in API names (e.g. PassAPC), not passwords
 
 import logging
-import sys
-from enum import unique
+from enum import StrEnum, unique
 
 _LOGGER = logging.getLogger(__name__)
-
-# Since we support Python versions lower than 3.11, we use
-# a backport for StrEnum when needed.
-if sys.version_info >= (3, 11):
-    from enum import StrEnum
-else:
-    from backports.strenum import StrEnum  # type: ignore[import]
 
 
 @unique
