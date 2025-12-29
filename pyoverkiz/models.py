@@ -1,3 +1,5 @@
+"""Models representing Overkiz API payloads and convenient accessors."""
+
 from __future__ import annotations
 
 import re
@@ -32,6 +34,8 @@ DEVICE_URL_RE = r"(?P<protocol>.+)://(?P<gatewayId>[^/]+)/(?P<deviceAddress>[^#]
 
 @define(init=False, kw_only=True)
 class Setup:
+    """Representation of a complete setup returned by the Overkiz API."""
+
     creation_time: str | None = None
     last_update_time: str | None = None
     id: str = field(repr=obfuscate_id, default=None)
@@ -60,6 +64,7 @@ class Setup:
         features: list[dict[str, Any]] | None = None,
         **_: Any,
     ) -> None:
+        """Initialize a Setup and construct nested model instances."""
         self.id = id
         self.creation_time = creation_time
         self.last_update_time = last_update_time
@@ -75,6 +80,8 @@ class Setup:
 
 @define(init=False, kw_only=True)
 class Location:
+    """Geographical and address metadata for a Setup."""
+
     creation_time: str
     last_update_time: str | None = None
     city: str = field(repr=obfuscate_string, default=None)
@@ -117,6 +124,7 @@ class Location:
         dusk_offset: int,
         **_: Any,
     ) -> None:
+        """Initialize Location with address and timezone information."""
         self.creation_time = creation_time
         self.last_update_time = last_update_time
         self.city = city
@@ -139,6 +147,8 @@ class Location:
 
 @define(init=False, kw_only=True)
 class Device:
+    """Representation of a device in the setup including parsed fields and states."""
+
     id: str = field(repr=False)
     attributes: States
     available: bool
@@ -178,6 +188,7 @@ class Device:
         place_oid: str | None = None,
         **_: Any,
     ) -> None:
+        """Initialize Device and parse URL, protocol and nested definitions."""
         self.id = device_url
         self.attributes = States(attributes)
         self.available = available
@@ -222,6 +233,8 @@ class Device:
 
 @define(init=False, kw_only=True)
 class StateDefinition:
+    """Definition metadata for a state (qualified name, type and possible values)."""
+
     qualified_name: str
     type: str | None = None
     values: list[str] | None = None
@@ -234,6 +247,7 @@ class StateDefinition:
         values: list[str] | None = None,
         **_: Any,
     ) -> None:
+        """Initialize StateDefinition and set qualified name from either `name` or `qualified_name`."""
         self.type = type
         self.values = values
 
@@ -245,6 +259,8 @@ class StateDefinition:
 
 @define(init=False, kw_only=True)
 class Definition:
+    """Definition of device capabilities: command definitions, state definitions and UI hints."""
+
     commands: CommandDefinitions
     states: list[StateDefinition]
     widget_name: str | None = None
@@ -261,6 +277,7 @@ class Definition:
         qualified_name: str | None = None,
         **_: Any,
     ) -> None:
+        """Initialize Definition and construct nested command/state definitions."""
         self.commands = CommandDefinitions(commands)
         self.states = [StateDefinition(**sd) for sd in states] if states else []
         self.widget_name = widget_name
@@ -270,31 +287,41 @@ class Definition:
 
 @define(init=False, kw_only=True)
 class CommandDefinition:
+    """Metadata for a single command definition (name and parameter count)."""
+
     command_name: str
     nparams: int
 
     def __init__(self, command_name: str, nparams: int, **_: Any) -> None:
+        """Initialize CommandDefinition."""
         self.command_name = command_name
         self.nparams = nparams
 
 
 @define(init=False)
 class CommandDefinitions:
+    """Container for command definitions providing convenient lookup by name."""
+
     _commands: list[CommandDefinition]
 
     def __init__(self, commands: list[dict[str, Any]]):
+        """Build the inner list of CommandDefinition objects from raw data."""
         self._commands = [CommandDefinition(**command) for command in commands]
 
     def __iter__(self) -> Iterator[CommandDefinition]:
+        """Iterate over defined commands."""
         return self._commands.__iter__()
 
     def __contains__(self, name: str) -> bool:
+        """Return True if a command with `name` exists."""
         return self.__getitem__(name) is not None
 
     def __getitem__(self, command: str) -> CommandDefinition | None:
+        """Return the command definition or None if missing."""
         return next((cd for cd in self._commands if cd.command_name == command), None)
 
     def __len__(self) -> int:
+        """Return number of command definitions."""
         return len(self._commands)
 
     get = __getitem__
@@ -302,6 +329,8 @@ class CommandDefinitions:
 
 @define(init=False, kw_only=True)
 class State:
+    """A single device state with typed accessors for its value."""
+
     name: str
     type: DataType
     value: StateType
@@ -312,13 +341,15 @@ class State:
         type: int,
         value: StateType = None,
         **_: Any,
-    ):
+    ) -> None:
+        """Initialize State and set its declared data type."""
         self.name = name
         self.value = value
         self.type = DataType(type)
 
     @property
     def value_as_int(self) -> int | None:
+        """Return the integer value or None if not set; raise on type mismatch."""
         if self.type == DataType.NONE:
             return None
         if self.type == DataType.INTEGER:
@@ -327,6 +358,7 @@ class State:
 
     @property
     def value_as_float(self) -> float | None:
+        """Return the float value, allow int->float conversion; raise on type mismatch."""
         if self.type == DataType.NONE:
             return None
         if self.type == DataType.FLOAT:
@@ -337,6 +369,7 @@ class State:
 
     @property
     def value_as_bool(self) -> bool | None:
+        """Return the boolean value or raise on type mismatch."""
         if self.type == DataType.NONE:
             return None
         if self.type == DataType.BOOLEAN:
@@ -345,6 +378,7 @@ class State:
 
     @property
     def value_as_str(self) -> str | None:
+        """Return the string value or raise on type mismatch."""
         if self.type == DataType.NONE:
             return None
         if self.type == DataType.STRING:
@@ -353,6 +387,7 @@ class State:
 
     @property
     def value_as_dict(self) -> dict[str, Any] | None:
+        """Return the dict value or raise if state is not a JSON object."""
         if self.type == DataType.NONE:
             return None
         if self.type == DataType.JSON_OBJECT:
@@ -361,6 +396,7 @@ class State:
 
     @property
     def value_as_list(self) -> list[Any] | None:
+        """Return the list value or raise if state is not a JSON array."""
         if self.type == DataType.NONE:
             return None
         if self.type == DataType.JSON_ARRAY:
@@ -370,6 +406,8 @@ class State:
 
 @define(init=False, kw_only=True)
 class EventState(State):
+    """State variant used when parsing event payloads (casts string values)."""
+
     def __init__(
         self,
         name: str,
@@ -377,6 +415,7 @@ class EventState(State):
         value: str | None = None,
         **_: Any,
     ):
+        """Initialize EventState and cast string values based on declared data type."""
         super().__init__(name, type, value, **_)
 
         # Overkiz (cloud) returns all state values as a string
@@ -388,24 +427,31 @@ class EventState(State):
 
 @define(init=False)
 class States:
+    """Container of State objects providing lookup and mapping helpers."""
+
     _states: list[State]
 
     def __init__(self, states: list[dict[str, Any]] | None = None) -> None:
+        """Create a container of State objects from raw state dicts or an empty list."""
         if states:
             self._states = [State(**state) for state in states]
         else:
             self._states = []
 
     def __iter__(self) -> Iterator[State]:
+        """Return an iterator over contained State objects."""
         return self._states.__iter__()
 
     def __contains__(self, name: str) -> bool:
+        """Return True if a state with the given name exists in the container."""
         return self.__getitem__(name) is not None
 
     def __getitem__(self, name: str) -> State | None:
+        """Return the State with the given name or None if missing."""
         return next((state for state in self._states if state.name == name), None)
 
     def __setitem__(self, name: str, state: State) -> None:
+        """Set or append a State identified by name."""
         found = self.__getitem__(name)
         if found is None:
             self._states.append(state)
@@ -413,6 +459,7 @@ class States:
             self._states[self._states.index(found)] = state
 
     def __len__(self) -> int:
+        """Return number of states in the container."""
         return len(self._states)
 
     get = __getitem__
@@ -427,6 +474,7 @@ class Command(dict):
     def __init__(
         self, name: str, parameters: list[str | int | float] | None = None, **_: Any
     ):
+        """Initialize a command instance and mirror fields into dict base class."""
         self.name = name
         self.parameters = parameters
         dict.__init__(self, name=name, parameters=parameters)
@@ -434,6 +482,8 @@ class Command(dict):
 
 @define(init=False, kw_only=True)
 class Event:
+    """Represents an Overkiz event containing metadata and device states."""
+
     name: EventName
     timestamp: int | None
     setupoid: str | None = field(repr=obfuscate_id, default=None)
@@ -485,6 +535,7 @@ class Event:
         new_state: ExecutionState | None = None,
         **_: Any,
     ):
+        """Initialize Event from raw Overkiz payload fields."""
         self.timestamp = timestamp
         self.gateway_id = gateway_id
         self.exec_id = exec_id
@@ -517,6 +568,8 @@ class Event:
 
 @define(init=False, kw_only=True)
 class Execution:
+    """Execution occurrence with owner, state and action group metadata."""
+
     id: str
     description: str
     owner: str = field(repr=obfuscate_email)
@@ -532,6 +585,7 @@ class Execution:
         action_group: list[dict[str, Any]],
         **_: Any,
     ):
+        """Initialize Execution object from API fields."""
         self.id = id
         self.description = description
         self.owner = owner
@@ -541,22 +595,21 @@ class Execution:
 
 @define(init=False, kw_only=True)
 class Action:
-    """
-    An action consists of multiple commands related to a single device, identified by its device URL.
-    """
+    """An action consists of multiple commands related to a single device, identified by its device URL."""
 
     device_url: str
     commands: list[Command]
 
     def __init__(self, device_url: str, commands: list[dict[str, Any]]):
+        """Initialize Action from API data and convert nested commands."""
         self.device_url = device_url
         self.commands = [Command(**c) for c in commands] if commands else []
 
 
 @define(init=False, kw_only=True)
 class Scenario:
-    """
-    An action group is composed of one or more actions.
+    """An action group is composed of one or more actions.
+
     Each action is related to a single setup device (designated by its device URL) and
     is composed of one or more commands to be executed on that device.
     """
@@ -589,6 +642,7 @@ class Scenario:
         notification_title: str | None = None,
         **_: Any,
     ) -> None:
+        """Initialize Scenario (action group) from API data."""
         self.id = oid
         self.creation_time = creation_time
         self.last_update_time = last_update_time
@@ -607,12 +661,15 @@ class Scenario:
 
 @define(init=False, kw_only=True)
 class Partner:
+    """Partner details for a gateway or service provider."""
+
     activated: bool
     name: str
     id: str = field(repr=obfuscate_id)
     status: str
 
     def __init__(self, activated: bool, name: str, id: str, status: str, **_: Any):
+        """Initialize Partner information."""
         self.activated = activated
         self.name = name
         self.id = id
@@ -621,16 +678,21 @@ class Partner:
 
 @define(init=False, kw_only=True)
 class Connectivity:
+    """Connectivity metadata for a gateway update box."""
+
     status: str
     protocol_version: str
 
     def __init__(self, status: str, protocol_version: str, **_: Any):
+        """Initialize Connectivity information."""
         self.status = status
         self.protocol_version = protocol_version
 
 
 @define(init=False, kw_only=True)
 class Gateway:
+    """Representation of a gateway, including connectivity and partner info."""
+
     partners: list[Partner]
     functions: str | None = None
     sub_type: GatewaySubType | None = None
@@ -664,6 +726,7 @@ class Gateway:
         type: GatewayType | None = None,
         **_: Any,
     ) -> None:
+        """Initialize Gateway from API data and child objects."""
         self.id = gateway_id
         self.gateway_id = gateway_id
         self.functions = functions
@@ -682,6 +745,8 @@ class Gateway:
 
 @define(init=False, kw_only=True)
 class HistoryExecutionCommand:
+    """A command within a recorded historical execution, including its status and parameters."""
+
     device_url: str = field(repr=obfuscate_id)
     command: str
     rank: int
@@ -701,6 +766,7 @@ class HistoryExecutionCommand:
         parameters: list[Any] | None = None,
         **_: Any,
     ) -> None:
+        """Initialize HistoryExecutionCommand from API fields."""
         self.device_url = device_url
         self.command = command
         self.parameters = parameters
@@ -712,6 +778,8 @@ class HistoryExecutionCommand:
 
 @define(init=False, kw_only=True)
 class HistoryExecution:
+    """A recorded execution entry containing details and its list of commands."""
+
     id: str
     event_time: int
     owner: str = field(repr=obfuscate_email)
@@ -746,6 +814,7 @@ class HistoryExecution:
         execution_sub_type: ExecutionSubType,
         **_: Any,
     ) -> None:
+        """Initialize HistoryExecution and convert nested command structures."""
         self.id = id
         self.event_time = event_time
         self.owner = owner
@@ -764,6 +833,8 @@ class HistoryExecution:
 
 @define(init=False, kw_only=True)
 class Place:
+    """Representation of a place (house/room) in a setup."""
+
     creation_time: int
     last_update_time: int | None = None
     label: str
@@ -783,6 +854,7 @@ class Place:
         sub_places: list[Any] | None,
         **_: Any,
     ) -> None:
+        """Initialize Place from API data and convert nested sub-places."""
         self.id = oid
         self.creation_time = creation_time
         self.last_update_time = last_update_time
@@ -794,12 +866,16 @@ class Place:
 
 @define(kw_only=True)
 class Feature:
+    """Feature flags exposed by a setup or gateway."""
+
     name: str
     source: str
 
 
 @define(kw_only=True)
 class ZoneItem:
+    """An item inside a Zone (device reference)."""
+
     item_type: str
     device_oid: str
     device_url: str
@@ -807,6 +883,8 @@ class ZoneItem:
 
 @define(init=False, kw_only=True)
 class Zone:
+    """A Zone groups related devices inside a place."""
+
     creation_time: str
     last_update_time: str
     label: str
@@ -828,6 +906,7 @@ class Zone:
         oid: str,
         **_: Any,
     ) -> None:
+        """Initialize Zone from API data and convert nested items."""
         self.last_update_time = last_update_time
         self.label = label
         self.type = type
@@ -849,6 +928,8 @@ class OverkizServer:
 
 @define(kw_only=True)
 class LocalToken:
+    """Descriptor for a local gateway token."""
+
     label: str
     gateway_id: str = field(repr=obfuscate_id, default=None)
     gateway_creation_time: int
@@ -859,12 +940,16 @@ class LocalToken:
 
 @define(kw_only=True)
 class OptionParameter:
+    """Key/value pair representing option parameter."""
+
     name: str
     value: str
 
 
 @define(init=False, kw_only=True)
 class Option:
+    """A subscribed option for a setup including parameters."""
+
     creation_time: int
     last_update_time: int
     option_id: str
@@ -881,6 +966,7 @@ class Option:
         parameters: list[dict[str, Any]] | None,
         **_: Any,
     ) -> None:
+        """Initialize Option from API data and convert nested parameters."""
         self.creation_time = creation_time
         self.last_update_time = last_update_time
         self.option_id = option_id

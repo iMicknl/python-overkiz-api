@@ -1,3 +1,5 @@
+"""Utilities for generating helper objects and simple checks."""
+
 from __future__ import annotations
 
 import re
@@ -22,5 +24,5 @@ def generate_local_server(
 
 
 def is_overkiz_gateway(gateway_id: str) -> bool:
-    "Return if gateway is Overkiz gateway. Can be used to distinguish between the main gateway and an additional gateway."
+    """Return if gateway is Overkiz gateway. Can be used to distinguish between the main gateway and an additional gateway."""
     return bool(re.match(r"\d{4}-\d{4}-\d{4}", gateway_id))

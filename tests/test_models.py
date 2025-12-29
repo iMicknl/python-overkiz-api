@@ -1,3 +1,5 @@
+"""Unit tests for models (Device, State and States helpers)."""
+
 from __future__ import annotations
 
 import humps
@@ -64,6 +66,8 @@ STATE = "core:NameState"
 
 
 class TestDevice:
+    """Tests for Device model parsing and property extraction."""
+
     @pytest.mark.parametrize(
         "device_url, protocol, gateway_id, device_address, subsystem_id, is_sub_device",
         [
@@ -175,6 +179,7 @@ class TestDevice:
         subsystem_id: int | None,
         is_sub_device: bool,
     ):
+        """Ensure device URL parsing extracts protocol, gateway and address correctly."""
         test_device = {
             **RAW_DEVICES,
             **{"deviceURL": device_url},
@@ -189,6 +194,7 @@ class TestDevice:
         assert device.is_sub_device == is_sub_device
 
     def test_none_states(self):
+        """Devices without a `states` field should provide an empty States object."""
         hump_device = humps.decamelize(RAW_DEVICES)
         del hump_device["states"]
         device = Device(**hump_device)
@@ -196,17 +202,22 @@ class TestDevice:
 
 
 class TestStates:
+    """Tests for the States container behaviour and getter semantics."""
+
     def test_empty_states(self):
+        """An empty list yields an empty States object with no state found."""
         states = States([])
         assert not states
         assert not states.get(STATE)
 
     def test_none_states(self):
+        """A None value for states should behave as empty."""
         states = States(None)
         assert not states
         assert not states.get(STATE)
 
     def test_getter(self):
+        """Retrieve a known state and validate its properties."""
         states = States(RAW_STATES)
         state = states.get(STATE)
         assert state
@@ -215,62 +226,77 @@ class TestStates:
         assert state.value == "alarm name"
 
     def test_getter_missing(self):
+        """Requesting a missing state returns falsy (None)."""
         states = States(RAW_STATES)
         state = states.get("FooState")
         assert not state
 
 
 class TestState:
+    """Unit tests for State value accessors and type validation."""
+
     def test_int_value(self):
+        """Integer typed state returns proper integer accessor."""
         state = State(name="state", type=DataType.INTEGER, value=1)
         assert state.value_as_int == 1
 
     def test_bad_int_value(self):
+        """Accessor raises TypeError if the state type mismatches expected int."""
         state = State(name="state", type=DataType.BOOLEAN, value=False)
         with pytest.raises(TypeError):
             assert state.value_as_int
 
     def test_float_value(self):
+        """Float typed state returns proper float accessor."""
         state = State(name="state", type=DataType.FLOAT, value=1.0)
         assert state.value_as_float == 1.0
 
     def test_bad_float_value(self):
+        """Accessor raises TypeError if the state type mismatches expected float."""
         state = State(name="state", type=DataType.BOOLEAN, value=False)
         with pytest.raises(TypeError):
             assert state.value_as_float
 
     def test_bool_value(self):
+        """Boolean typed state returns proper boolean accessor."""
         state = State(name="state", type=DataType.BOOLEAN, value=True)
         assert state.value_as_bool
 
     def test_bad_bool_value(self):
+        """Accessor raises TypeError if the state type mismatches expected bool."""
         state = State(name="state", type=DataType.INTEGER, value=1)
         with pytest.raises(TypeError):
             assert state.value_as_bool
 
     def test_str_value(self):
+        """String typed state returns proper string accessor."""
         state = State(name="state", type=DataType.STRING, value="foo")
         assert state.value_as_str == "foo"
 
     def test_bad_str_value(self):
+        """Accessor raises TypeError if the state type mismatches expected string."""
         state = State(name="state", type=DataType.BOOLEAN, value=False)
         with pytest.raises(TypeError):
             assert state.value_as_str
 
     def test_dict_value(self):
+        """JSON object typed state returns proper dict accessor."""
         state = State(name="state", type=DataType.JSON_OBJECT, value={"foo": "bar"})
         assert state.value_as_dict == {"foo": "bar"}
 
     def test_bad_dict_value(self):
+        """Accessor raises TypeError if the state type mismatches expected dict."""
         state = State(name="state", type=DataType.BOOLEAN, value=False)
         with pytest.raises(TypeError):
             assert state.value_as_dict
 
     def test_list_value(self):
+        """JSON array typed state returns proper list accessor."""
         state = State(name="state", type=DataType.JSON_ARRAY, value=[1, 2])
         assert state.value_as_list == [1, 2]
 
     def test_bad_list_value(self):
+        """Accessor raises TypeError if the state type mismatches expected list."""
         state = State(name="state", type=DataType.BOOLEAN, value=False)
         with pytest.raises(TypeError):
             assert state.value_as_list

@@ -1,3 +1,5 @@
+"""Server and API type enums used to select target Overkiz endpoints."""
+
 import sys
 from enum import unique
 
@@ -11,12 +13,16 @@ else:
 
 @unique
 class APIType(StrEnum):
+    """API types supported by the client (cloud or local)."""
+
     CLOUD = "cloud"
     LOCAL = "local"
 
 
 @unique
 class Server(StrEnum):
+    """Known named Overkiz server endpoints."""
+
     ATLANTIC_COZYTOUCH = "atlantic_cozytouch"
     BRANDT = "brandt"
     FLEXOM = "flexom"

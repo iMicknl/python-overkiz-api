@@ -1,3 +1,5 @@
+"""Unit tests for the high-level OverkizClient behaviour and responses."""
+
 from __future__ import annotations
 
 import json
@@ -19,12 +21,16 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
 class TestOverkizClient:
+    """Tests for the public OverkizClient behaviour (API type, devices, events, setup and diagnostics)."""
+
     @fixture
     async def client(self):
+        """Fixture providing an OverkizClient configured for the cloud server."""
         return OverkizClient("username", "password", SUPPORTED_SERVERS["somfy_europe"])
 
     @fixture
     async def local_client(self):
+        """Fixture providing an OverkizClient configured for a local (developer) server."""
         return OverkizClient(
             "username",
             "password",
@@ -33,14 +39,17 @@ class TestOverkizClient:
 
     @pytest.mark.asyncio
     async def test_get_api_type_cloud(self, client: OverkizClient):
+        """Verify that a cloud-configured client reports APIType.CLOUD."""
         assert client.api_type == APIType.CLOUD
 
     @pytest.mark.asyncio
     async def test_get_api_type_local(self, local_client: OverkizClient):
+        """Verify that a local-configured client reports APIType.LOCAL."""
         assert local_client.api_type == APIType.LOCAL
 
     @pytest.mark.asyncio
     async def test_get_devices_basic(self, client: OverkizClient):
+        """Ensure the client can fetch and parse the basic devices fixture."""
         with open(
             os.path.join(CURRENT_DIR, "devices.json"), encoding="utf-8"
         ) as raw_devices:
@@ -61,6 +70,7 @@ class TestOverkizClient:
     async def test_fetch_events_basic(
         self, client: OverkizClient, fixture_name: str, event_length: int
     ):
+        """Parameterised test that fetches events fixture and checks the expected count."""
         with open(
             os.path.join(CURRENT_DIR, "fixtures/event/" + fixture_name),
             encoding="utf-8",
@@ -73,6 +83,7 @@ class TestOverkizClient:
 
     @pytest.mark.asyncio
     async def test_fetch_events_simple_cast(self, client: OverkizClient):
+        """Check that event state values from the cloud (strings) are cast to appropriate types."""
         with open(
             os.path.join(CURRENT_DIR, "fixtures/event/events.json"), encoding="utf-8"
         ) as raw_events:
@@ -96,6 +107,7 @@ class TestOverkizClient:
     )
     @pytest.mark.asyncio
     async def test_fetch_events_casting(self, client: OverkizClient, fixture_name: str):
+        """Validate that fetched event states are cast to the expected Python types for each data type."""
         with open(
             os.path.join(CURRENT_DIR, "fixtures/event/" + fixture_name),
             encoding="utf-8",
@@ -164,6 +176,7 @@ class TestOverkizClient:
         device_count: int,
         gateway_count: int,
     ):
+        """Ensure setup parsing yields expected device and gateway counts and device metadata."""
         with open(
             os.path.join(CURRENT_DIR, "fixtures/setup/" + fixture_name),
             encoding="utf-8",
@@ -212,6 +225,7 @@ class TestOverkizClient:
     )
     @pytest.mark.asyncio
     async def test_get_diagnostic_data(self, client: OverkizClient, fixture_name: str):
+        """Verify that diagnostic data can be fetched and is not empty."""
         with open(
             os.path.join(CURRENT_DIR, "fixtures/setup/" + fixture_name),
             encoding="utf-8",
@@ -333,6 +347,7 @@ class TestOverkizClient:
         status_code: int,
         exception: Exception,
     ):
+        """Ensure client raises the correct exception for various error fixtures/status codes."""
         with pytest.raises(exception):
             if fixture_name:
                 with open(
@@ -350,6 +365,7 @@ class TestOverkizClient:
         self,
         client: OverkizClient,
     ):
+        """Check that setup options are parsed and return the expected number of Option instances."""
         with open(
             os.path.join(CURRENT_DIR, "fixtures/endpoints/setup-options.json"),
             encoding="utf-8",
@@ -382,6 +398,7 @@ class TestOverkizClient:
         option_name: str,
         instance: Option | None,
     ):
+        """Verify retrieval of a single setup option by name, including non-existent options."""
         with open(
             os.path.join(CURRENT_DIR, "fixtures/endpoints/" + fixture_name),
             encoding="utf-8",
@@ -410,6 +427,7 @@ class TestOverkizClient:
         fixture_name: str,
         scenario_count: int,
     ):
+        """Ensure action groups (scenarios) are parsed correctly and contain actions and commands."""
         with open(
             os.path.join(CURRENT_DIR, "fixtures/action_groups/" + fixture_name),
             encoding="utf-8",
@@ -435,20 +453,27 @@ class TestOverkizClient:
 
 
 class MockResponse:
+    """Simple stand-in for aiohttp responses used in tests."""
+
     def __init__(self, text, status=200, url=""):
+        """Create a mock response with text payload and optional status/url."""
         self._text = text
         self.status = status
         self.url = url
 
     async def text(self):
+        """Return text payload asynchronously."""
         return self._text
 
     # pylint: disable=unused-argument
     async def json(self, content_type=None):
+        """Return parsed JSON payload asynchronously."""
         return json.loads(self._text)
 
     async def __aexit__(self, exc_type, exc, tb):
+        """Context manager exit (noop)."""
         pass
 
     async def __aenter__(self):
+        """Context manager enter returning self."""
         return self

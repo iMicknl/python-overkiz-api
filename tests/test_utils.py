@@ -1,3 +1,5 @@
+"""Tests for utility helper functions like server generation and gateway checks."""
+
 import pytest
 
 from pyoverkiz.utils import generate_local_server, is_overkiz_gateway
@@ -7,7 +9,10 @@ LOCAL_HOST_BY_IP = "192.168.1.105:8443"
 
 
 class TestUtils:
+    """Tests for utility helpers like local server generation and gateway checks."""
+
     def test_generate_local_server(self):
+        """Create a local server descriptor using the host and default values."""
         local_server = generate_local_server(host=LOCAL_HOST)
 
         assert local_server
@@ -20,6 +25,7 @@ class TestUtils:
         assert local_server.configuration_url is None
 
     def test_generate_local_server_by_ip(self):
+        """Create a local server descriptor using an IP host and custom fields."""
         local_server = generate_local_server(
             host=LOCAL_HOST_BY_IP,
             manufacturer="Test Manufacturer",
@@ -45,4 +51,5 @@ class TestUtils:
         ],
     )
     def test_is_overkiz_gateway(self, gateway_id: str, overkiz_gateway: bool):
+        """Detect whether a gateway id follows the Overkiz gateway pattern."""
         assert is_overkiz_gateway(gateway_id) == overkiz_gateway

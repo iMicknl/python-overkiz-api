@@ -1,4 +1,4 @@
-"""Utils for Overkiz client"""
+"""Utils for Overkiz client."""
 
 from __future__ import annotations
 
@@ -9,24 +9,24 @@ from pyoverkiz.types import JSON
 
 
 def obfuscate_id(id: str | None) -> str:
-    """Mask id"""
+    """Mask id."""
     return re.sub(r"(SETUP)?\d+-", "****-", str(id))
 
 
 def obfuscate_email(email: str | None) -> str:
-    """Mask email"""
+    """Mask email."""
     email = str(email).replace("_-_", "@")  # Replace @ for _-_ (Nexity)
     return re.sub(r"(.).*@.*(.\..*)", r"\1****@****\2", email)
 
 
 def obfuscate_string(input: str) -> str:
-    """Mask string"""
+    """Mask string."""
     return re.sub(r"[a-zA-Z0-9_.-]*", "*", str(input))
 
 
 # pylint: disable=too-many-branches
 def obfuscate_sensitive_data(data: dict[str, Any]) -> JSON:
-    """Mask Overkiz JSON data to remove sensitive data"""
+    """Mask Overkiz JSON data to remove sensitive data."""
     mask_next_value = False
 
     for key, value in data.items():

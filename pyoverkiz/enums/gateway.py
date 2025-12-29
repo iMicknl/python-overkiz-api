@@ -1,3 +1,5 @@
+"""Enums for gateway types and related helpers."""
+
 import logging
 import sys
 from enum import IntEnum, unique
@@ -14,6 +16,8 @@ else:
 
 @unique
 class GatewayType(IntEnum):
+    """Enumeration of known gateway types returned by Overkiz."""
+
     UNKNOWN = -1
     VIRTUAL_KIZBOX = 0
     KIZBOX_V1 = 2
@@ -74,6 +78,7 @@ class GatewayType(IntEnum):
 
     @property
     def beautify_name(self) -> str:
+        """Return a human friendly name for the gateway type."""
         name = self.name.replace("_", " ").title()
         name = name.replace("Tahoma", "TaHoma")
         name = name.replace("Rts", "RTS")
@@ -82,6 +87,8 @@ class GatewayType(IntEnum):
 
 @unique
 class GatewaySubType(IntEnum):
+    """Sub-type enumeration for gateways to identify specific models/variants."""
+
     UNKNOWN = -1
     TAHOMA_BASIC = 1
     TAHOMA_BASIC_PLUS = 2
@@ -108,6 +115,7 @@ class GatewaySubType(IntEnum):
 
     @property
     def beautify_name(self) -> str:
+        """Return a human friendly name for the gateway sub-type."""
         name = self.name.replace("_", " ").title()
         name = name.replace("Tahoma", "TaHoma")
         name = name.replace("Rts", "RTS")
@@ -116,6 +124,8 @@ class GatewaySubType(IntEnum):
 
 @unique
 class UpdateBoxStatus(StrEnum):
+    """Status of the gateway update box indicating its updateability."""
+
     NOT_UPDATABLE = "NOT_UPDATABLE"
     READY_TO_UPDATE = "READY_TO_UPDATE"
     READY_TO_BE_UPDATED_BY_SERVER = "READY_TO_BE_UPDATED_BY_SERVER"

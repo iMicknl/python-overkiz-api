@@ -1,3 +1,5 @@
+"""Type helpers used across the package (state types and JSON helpers)."""
+
 from __future__ import annotations
 
 import json

@@ -1,3 +1,5 @@
+"""Execution related enums (types, states and subtypes)."""
+
 import logging
 import sys
 from enum import unique
@@ -14,6 +16,8 @@ else:
 
 @unique
 class ExecutionType(StrEnum):
+    """High-level execution categories returned by the API."""
+
     UNKNOWN = "UNKNOWN"
     IMMEDIATE_EXECUTION = "Immediate execution"
     DELAYED_EXECUTION = "Delayed execution"
@@ -30,6 +34,8 @@ class ExecutionType(StrEnum):
 
 @unique
 class ExecutionState(StrEnum):
+    """Execution lifecycle states."""
+
     UNKNOWN = "UNKNOWN"
     INITIALIZED = "INITIALIZED"
     NOT_TRANSMITTED = "NOT_TRANSMITTED"
@@ -48,6 +54,8 @@ class ExecutionState(StrEnum):
 
 @unique
 class ExecutionSubType(StrEnum):
+    """Subtypes for execution reasons or sources."""
+
     UNKNOWN = "UNKNOWN"
     _ = "-"
     ACTION_GROUP = "ACTION_GROUP"

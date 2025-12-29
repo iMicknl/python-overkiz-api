@@ -1,3 +1,5 @@
+"""Tests for the obfuscation utilities used in fixtures and logging."""
+
 import pytest
 
 from pyoverkiz.obfuscate import obfuscate_email, obfuscate_sensitive_data
@@ -7,6 +9,8 @@ LOCAL_HOST_BY_IP = "192.168.1.105:8443"
 
 
 class TestObfucscate:
+    """Tests for obfuscation utilities (emails and sensitive data)."""
+
     @pytest.mark.parametrize(
         "email, obfuscated",
         [
@@ -15,11 +19,15 @@ class TestObfucscate:
         ],
     )
     def test_email_obfuscate(self, email: str, obfuscated: str):
+        """Verify email obfuscation produces the expected masked result."""
         assert obfuscate_email(email) == obfuscated
 
 
 class TestObfucscateSensitive:
+    """Tests around obfuscating sensitive structures while preserving non-sensitive content."""
+
     def test_obfuscate_list_with_none(self):
+        """Ensure lists containing None values are handled without modification."""
         input = {
             "d": [
                 0,

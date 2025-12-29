@@ -91,18 +91,6 @@ Always use full type annotations, generics, and other modern practices.
 - For longer tests put them in a file like `tests/test_somename.py` in the `tests/`
   directory (or `tests/module_name/test_somename.py` file for a submodule).
 
-- For simple tests, prefer inline functions in the original code file below a `## Tests`
-  comment. This keeps the tests easy to maintain and close to the code.
-  Inline tests should NOT import pytest or pytest fixtures as we do not want runtime
-  dependency on pytest.
-
-- DO NOT write one-off test code in extra files that are throwaway.
-
-- DO NOT put `if __name__ == "__main__":` just for quick testing.
-  Instead use the inline function tests and run them with `uv run pytest`.
-
-- You can run such individual tests with `uv run pytest -s src/.../path/to/test`
-
 - Don’t add docs to assertions unless it’s not obvious what they’re checking - the
   assertion appears in the stack trace.
   Do NOT write `assert x == 5, "x should be 5"`. Do NOT write `assert x == 5 # Check if
@@ -164,6 +152,8 @@ Always use full type annotations, generics, and other modern practices.
   ```
 
 ## Guidelines for Docstrings
+
+- Every method (or function) should have a docstring.
 
 - Here is an example of the correct style for docstrings:
   ```python

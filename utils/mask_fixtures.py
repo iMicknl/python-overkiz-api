@@ -1,3 +1,5 @@
+"""Simple helper script to mask sensitive fields in JSON fixtures."""
+
 from __future__ import annotations
 
 import glob

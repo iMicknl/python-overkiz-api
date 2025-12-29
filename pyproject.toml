@@ -40,6 +40,8 @@ dev = [
 
 [tool.ruff.lint]
 select = [
+    # pydocstyle
+    "D",
     # flake8-async
     # "ASYNC",
     # pycodestyle
@@ -58,6 +60,9 @@ select = [
     "RUF",
 ]
 ignore = ["E501"] # Line too long
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"  # Accepts: "google", "numpy", or "pep257".
 
 [build-system]
 requires = ["hatchling"]
