@@ -647,9 +647,6 @@ class ActionGroup:
         if oid is None and id is None:
             raise ValueError("Either 'oid' or 'id' must be provided")
 
-        # Narrow types for mypy: guarantee one of 'oid' or 'id' is not None
-        assert oid is not None or id is not None
-
         self.id = cast(str, oid or id)
         self.creation_time = creation_time
         self.last_update_time = last_update_time
