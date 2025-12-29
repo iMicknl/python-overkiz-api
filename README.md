@@ -39,7 +39,8 @@ import time
 
 from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.client import OverkizClient
-from pyoverkiz.enums import Server
+from pyoverkiz.models import Action
+from pyoverkiz.enums import Server, OverkizCommand
 
 USERNAME = ""
 PASSWORD = ""
@@ -60,6 +61,19 @@ async def main() -> None:
         for device in devices:
             print(f"{device.label} ({device.id}) - {device.controllable_name}")
             print(f"{device.widget} - {device.ui_class}")
+
+        await client.execute_action_group(
+            actions=[
+                Action(
+                    device_url="io://1234-5678-1234/12345678",
+                    commands=[
+                        Command(name=OverkizCommand.SET_CLOSURE, parameters=[100])
+                    ]
+                )
+            ],
+            label="Execution via Python",
+            # mode=CommandMode.HIGH_PRIORITY
+        )
 
         while True:
             events = await client.fetch_events()

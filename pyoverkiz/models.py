@@ -22,6 +22,7 @@ from pyoverkiz.enums import (
     UIWidget,
     UpdateBoxStatus,
 )
+from pyoverkiz.enums.command import OverkizCommand, OverkizCommandParam
 from pyoverkiz.enums.protocol import Protocol
 from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
@@ -465,19 +466,44 @@ class States:
     get = __getitem__
 
 
-class Command(dict):
+@define(init=False, kw_only=True)
+class Command:
     """Represents an OverKiz Command."""
 
-    name: str
-    parameters: list[str | int | float] | None
+    type: int | None = None
+    name: OverkizCommand
+    parameters: list[str | int | float | OverkizCommandParam] | None
 
     def __init__(
-        self, name: str, parameters: list[str | int | float] | None = None, **_: Any
+        self,
+        name: OverkizCommand,
+        parameters: list[str | int | float | OverkizCommandParam] | None = None,
+        type: int | None = None,
+        **_: Any,
     ):
         """Initialize a command instance and mirror fields into dict base class."""
         self.name = name
         self.parameters = parameters
-        dict.__init__(self, name=name, parameters=parameters)
+        self.type = type
+
+    def to_payload(self) -> dict[str, object]:
+        """Return a JSON-serializable payload for this command.
+
+        The payload uses snake_case keys; the client will convert to camelCase
+        and apply small key fixes (like `deviceURL`) before sending.
+        """
+        payload: dict[str, object] = {"name": str(self.name)}
+
+        if self.type is not None:
+            payload["type"] = self.type
+
+        if self.parameters is not None:
+            payload["parameters"] = [
+                p if isinstance(p, (str, int, float, bool)) else str(p)
+                for p in self.parameters  # type: ignore[arg-type]
+            ]
+
+        return payload
 
 
 @define(init=False, kw_only=True)
@@ -600,10 +626,22 @@ class Action:
     device_url: str
     commands: list[Command]
 
-    def __init__(self, device_url: str, commands: list[dict[str, Any]]):
+    def __init__(self, device_url: str, commands: list[dict[str, Any] | Command]):
         """Initialize Action from API data and convert nested commands."""
         self.device_url = device_url
-        self.commands = [Command(**c) for c in commands] if commands else []
+        self.commands = [
+            c if isinstance(c, Command) else Command(**c) for c in commands
+        ]
+
+    def to_payload(self) -> dict[str, object]:
+        """Return a JSON-serializable payload for this action (snake_case).
+
+        The final camelCase conversion is handled by the client.
+        """
+        return {
+            "device_url": self.device_url,
+            "commands": [c.to_payload() for c in self.commands],
+        }
 
 
 @define(init=False, kw_only=True)
