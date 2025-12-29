@@ -470,6 +470,41 @@ class TestOverkizClient:
             for option in options:
                 assert isinstance(option, Option)
 
+    @pytest.mark.asyncio
+    async def test_execute_action_group_omits_none_fields(self, client: OverkizClient):
+        """Ensure `type` and `parameters` that are None are omitted from the request payload."""
+        from pyoverkiz.enums.command import OverkizCommand
+        from pyoverkiz.models import Action, Command
+
+        action = Action(
+            "rts://2025-8464-6867/16756006",
+            [Command(name=OverkizCommand.CLOSE, parameters=None, type=None)],
+        )
+
+        resp = MockResponse('{"execId": "exec-123"}')
+
+        with patch.object(aiohttp.ClientSession, "post") as mock_post:
+            mock_post.return_value = resp
+
+            exec_id = await client.execute_action_group([action])
+
+            assert exec_id == "exec-123"
+
+            assert mock_post.called
+            _, kwargs = mock_post.call_args
+            sent_json = kwargs.get("json")
+            assert sent_json is not None
+
+            # The client should have converted payload to camelCase and applied
+            # abbreviation fixes (deviceURL) before sending.
+            action_sent = sent_json["actions"][0]
+            assert action_sent.get("deviceURL") == action.device_url
+
+            cmd = action_sent["commands"][0]
+            assert "type" not in cmd
+            assert "parameters" not in cmd
+            assert cmd["name"] == "close"
+
     @pytest.mark.parametrize(
         "fixture_name, option_name, instance",
         [

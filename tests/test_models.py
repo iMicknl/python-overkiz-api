@@ -303,3 +303,33 @@ class TestState:
         state = State(name="state", type=DataType.BOOLEAN, value=False)
         with pytest.raises(TypeError):
             assert state.value_as_list
+
+
+def test_command_to_payload_omits_none():
+    """Command.to_payload omits None fields from the resulting payload."""
+    from pyoverkiz.enums.command import OverkizCommand
+    from pyoverkiz.models import Command
+
+    cmd = Command(name=OverkizCommand.CLOSE, parameters=None, type=None)
+    payload = cmd.to_payload()
+
+    assert payload == {"name": "close"}
+
+
+def test_action_to_payload_and_parameters_conversion():
+    """Action.to_payload converts nested Command enums to primitives."""
+    from pyoverkiz.enums.command import OverkizCommand, OverkizCommandParam
+    from pyoverkiz.models import Action, Command
+
+    cmd = Command(
+        name=OverkizCommand.SET_LEVEL, parameters=[10, OverkizCommandParam.A], type=1
+    )
+    action = Action("rts://2025-8464-6867/16756006", [cmd])
+
+    payload = action.to_payload()
+
+    assert payload["device_url"] == "rts://2025-8464-6867/16756006"
+    assert payload["commands"][0]["name"] == "setLevel"
+    assert payload["commands"][0]["type"] == 1
+    # parameters should be converted to primitives (enum -> str)
+    assert payload["commands"][0]["parameters"] == [10, "A"]
