@@ -165,6 +165,8 @@ Always use full type annotations, generics, and other modern practices.
 
 ## Guidelines for Docstrings
 
+- Every method (or function) should have a docstring.
+
 - Here is an example of the correct style for docstrings:
   ```python
   def check_if_url(
