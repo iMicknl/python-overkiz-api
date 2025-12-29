@@ -34,5 +34,5 @@ repos:
         name: ty check
         entry: uv run ty check .
         language: system
-        types: [python]
+        types: [ python ]
         exclude: tests
