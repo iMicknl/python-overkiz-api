@@ -49,7 +49,7 @@ PASSWORD = ""
 
 async def main() -> None:
     async with OverkizClient(
-        server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE],
+        server=Server.SOMFY_EUROPE,
         credentials=UsernamePasswordCredentials(USERNAME, PASSWORD),
     ) as client:
         try:
@@ -95,10 +95,8 @@ import time
 
 from pyoverkiz.auth.credentials import LocalTokenCredentials
 from pyoverkiz.client import OverkizClient
-from pyoverkiz.const import OverkizServer
+from pyoverkiz.utils import generate_local_server
 
-USERNAME = ""
-PASSWORD = ""
 LOCAL_GATEWAY = "gateway-xxxx-xxxx-xxxx.local"  # or use the IP address of your gateway
 VERIFY_SSL = True  # set verify_ssl to False if you don't use the .local hostname
 
@@ -107,12 +105,7 @@ async def main() -> None:
     token = ""  # generate your token via the Somfy app and include it here
 
     async with OverkizClient(
-        server=OverkizServer(
-            name="Somfy TaHoma (local)",
-            endpoint=f"https://{LOCAL_GATEWAY}:8443/enduser-mobile-web/1/enduserAPI/",
-            manufacturer="Somfy",
-            configuration_url=None,
-        ),
+        server=generate_local_server(host=LOCAL_GATEWAY),
         credentials=LocalTokenCredentials(token),
         verify_ssl=VERIFY_SSL,
     ) as client:
