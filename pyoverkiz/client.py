@@ -229,6 +229,7 @@ class OverkizClient:
             if register_event_listener:
                 await self.register_event_listener()
             else:
+                # Validate local API token by calling a simple endpoint
                 await self.get_gateways()
 
             return True
