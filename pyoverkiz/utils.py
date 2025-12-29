@@ -14,8 +14,6 @@ def create_local_server_config(
     host: str,
     name: str = "Somfy Developer Mode",
     manufacturer: str = "Somfy",
-    type: APIType = APIType.LOCAL,
-    server: Server | None = Server.SOMFY_DEVELOPER_MODE,
     configuration_url: str | None = None,
 ) -> ServerConfig:
     """Generate server configuration for a local API (Somfy Developer mode)."""
@@ -23,9 +21,9 @@ def create_local_server_config(
         name=name,
         endpoint=f"https://{host}{LOCAL_API_PATH}",
         manufacturer=manufacturer,
-        server=server,
+        server=Server.SOMFY_DEVELOPER_MODE,
         configuration_url=configuration_url,
-        type=type,
+        type=APIType.LOCAL,
     )
 
 
@@ -34,18 +32,20 @@ def create_server_config(
     name: str,
     endpoint: str,
     manufacturer: str,
-    server: Server | None = None,
-    type: APIType = APIType.CLOUD,
+    server: Server | str | None = None,
+    type: APIType | str = APIType.CLOUD,
     configuration_url: str | None = None,
 ) -> ServerConfig:
     """Generate server configuration with the provided endpoint and metadata."""
     return ServerConfig(
-        server=server,
+        server=server
+        if isinstance(server, Server) or server is None
+        else Server(server),
         name=name,
         endpoint=endpoint,
         manufacturer=manufacturer,
         configuration_url=configuration_url,
-        type=type,
+        type=type if isinstance(type, APIType) else APIType(type),
     )
 
 

@@ -963,12 +963,33 @@ class Zone:
 class ServerConfig:
     """Connection target details for an Overkiz-compatible server."""
 
-    server: Server | None = None
+    server: Server | None
     name: str
     endpoint: str
     manufacturer: str
-    type: APIType | str
+    type: APIType
     configuration_url: str | None = None
+
+    def __init__(
+        self,
+        *,
+        server: Server | str | None = None,
+        name: str,
+        endpoint: str,
+        manufacturer: str,
+        type: str | APIType,
+        configuration_url: str | None = None,
+        **_: Any,
+    ) -> None:
+        """Initialize ServerConfig and convert enum fields."""
+        self.server = (
+            server if isinstance(server, Server) or server is None else Server(server)
+        )
+        self.name = name
+        self.endpoint = endpoint
+        self.manufacturer = manufacturer
+        self.type = type if isinstance(type, APIType) else APIType(type)
+        self.configuration_url = configuration_url
 
 
 @define(kw_only=True)
