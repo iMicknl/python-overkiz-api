@@ -5,21 +5,43 @@ from __future__ import annotations
 import re
 
 from pyoverkiz.const import LOCAL_API_PATH
+from pyoverkiz.enums.server import APIType
 from pyoverkiz.models import ServerConfig
 
 
-def generate_local_server(
+def create_local_server_config(
+    *,
     host: str,
     name: str = "Somfy Developer Mode",
     manufacturer: str = "Somfy",
+    type: APIType = APIType.LOCAL,
     configuration_url: str | None = None,
 ) -> ServerConfig:
     """Generate server configuration for a local API (Somfy Developer mode)."""
-    return ServerConfig(
+    return create_server_config(
         name=name,
         endpoint=f"https://{host}{LOCAL_API_PATH}",
         manufacturer=manufacturer,
         configuration_url=configuration_url,
+        type=type,
+    )
+
+
+def create_server_config(
+    *,
+    name: str,
+    endpoint: str,
+    manufacturer: str,
+    type: APIType = APIType.CLOUD,
+    configuration_url: str | None = None,
+) -> ServerConfig:
+    """Generate server configuration with the provided endpoint and metadata."""
+    return ServerConfig(
+        name=name,
+        endpoint=endpoint,
+        manufacturer=manufacturer,
+        configuration_url=configuration_url,
+        type=type,
     )
 
 

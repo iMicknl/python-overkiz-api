@@ -24,6 +24,7 @@ from pyoverkiz.enums import (
 )
 from pyoverkiz.enums.command import OverkizCommand, OverkizCommandParam
 from pyoverkiz.enums.protocol import Protocol
+from pyoverkiz.enums.server import APIType
 from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 
@@ -965,7 +966,8 @@ class ServerConfig:
     name: str
     endpoint: str
     manufacturer: str
-    configuration_url: str | None
+    type: APIType | str
+    configuration_url: str | None = None
 
 
 @define(kw_only=True)

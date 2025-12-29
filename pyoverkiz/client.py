@@ -20,7 +20,7 @@ from aiohttp import (
 )
 
 from pyoverkiz.auth import Credentials, build_auth_strategy
-from pyoverkiz.const import LOCAL_API_PATH, SUPPORTED_SERVERS
+from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.enums import APIType, CommandMode, Server
 from pyoverkiz.exceptions import (
     AccessDeniedToGatewayException,
@@ -128,13 +128,12 @@ SSL_CONTEXT_LOCAL_API = _create_local_ssl_context()
 class OverkizClient:
     """Interface class for the Overkiz API."""
 
-    server: ServerConfig
+    server_config: ServerConfig
     setup: Setup | None
     devices: list[Device]
     gateways: list[Gateway]
     event_listener_id: str | None
     session: ClientSession
-    api_type: APIType
     _ssl: ssl.SSLContext | bool = True
 
     def __init__(
@@ -151,7 +150,7 @@ class OverkizClient:
         :param server: ServerConfig
         :param session: optional ClientSession
         """
-        self.server = self._normalize_server(server)
+        self.server_config = self._normalize_server(server)
 
         self.setup: Setup | None = None
         self.devices: list[Device] = []
@@ -161,23 +160,22 @@ class OverkizClient:
         self.session = session if session else ClientSession()
         self._ssl = verify_ssl
 
-        if LOCAL_API_PATH in self.server.endpoint:
-            self.api_type = APIType.LOCAL
+        if self.server_config.type == APIType.LOCAL and verify_ssl:
+            # To avoid security issues while authentication to local API, we add the following authority to
+            # our HTTPS client trust store: https://ca.overkiz.com/overkiz-root-ca-2048.crt
+            self._ssl = SSL_CONTEXT_LOCAL_API
 
-            if verify_ssl:
-                # To avoid security issues while authentication to local API, we add the following authority to
-                # our HTTPS client trust store: https://ca.overkiz.com/overkiz-root-ca-2048.crt
-                self._ssl = SSL_CONTEXT_LOCAL_API
-
-                # Disable strict validation introduced in Python 3.13, which doesn't
-                # work with Overkiz self-signed gateway certificates
-                self._ssl.verify_flags &= ~ssl.VERIFY_X509_STRICT
-        else:
-            self.api_type = APIType.CLOUD
+            # Disable strict validation introduced in Python 3.13, which doesn't
+            # work with Overkiz self-signed gateway certificates
+            self._ssl.verify_flags &= ~ssl.VERIFY_X509_STRICT
 
         inferred_server_key = server_key or self._resolve_server_key()
         self._auth = build_auth_strategy(
-            inferred_server_key, self.server, credentials, self.session, self._ssl
+            inferred_server_key,
+            self.server_config,
+            credentials,
+            self.session,
+            self._ssl,
         )
 
     async def __aenter__(self) -> OverkizClient:
@@ -211,10 +209,13 @@ class OverkizClient:
     def _resolve_server_key(self) -> Server:
         """Infer a `Server` enum for the current server configuration."""
         for key, value in SUPPORTED_SERVERS.items():
-            if self.server is value or self.server.endpoint == value.endpoint:
+            if (
+                self.server_config is value
+                or self.server_config.endpoint == value.endpoint
+            ):
                 return Server(key)
 
-        if self.api_type == APIType.LOCAL:
+        if self.server_config.type == APIType.LOCAL:
             return Server(Server.SOMFY_DEVELOPER_MODE)
 
         raise OverkizException(
@@ -603,7 +604,7 @@ class OverkizClient:
         headers = dict(self._auth.auth_headers(path))
 
         async with self.session.get(
-            f"{self.server.endpoint}{path}",
+            f"{self.server_config.endpoint}{path}",
             headers=headers,
             ssl=self._ssl,
         ) as response:
@@ -618,7 +619,7 @@ class OverkizClient:
         headers = dict(self._auth.auth_headers(path))
 
         async with self.session.post(
-            f"{self.server.endpoint}{path}",
+            f"{self.server_config.endpoint}{path}",
             data=data,
             json=payload,
             headers=headers,
@@ -633,7 +634,7 @@ class OverkizClient:
         headers = dict(self._auth.auth_headers(path))
 
         async with self.session.delete(
-            f"{self.server.endpoint}{path}",
+            f"{self.server_config.endpoint}{path}",
             headers=headers,
             ssl=self._ssl,
         ) as response:

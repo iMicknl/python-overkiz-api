@@ -364,7 +364,7 @@ class RexelAuthStrategy(BaseAuthStrategy):
         )
 
     async def refresh_if_needed(self) -> bool:
-        """ "Refresh Rexel OAuth2 tokens if needed."""
+        """Refresh Rexel OAuth2 tokens if needed."""
         if not self.context.is_expired() or not self.context.refresh_token:
             return False
 

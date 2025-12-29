@@ -2,7 +2,7 @@
 
 import pytest
 
-from pyoverkiz.utils import generate_local_server, is_overkiz_gateway
+from pyoverkiz.utils import create_local_server_config, is_overkiz_gateway
 
 LOCAL_HOST = "gateway-1234-5678-1243.local:8443"
 LOCAL_HOST_BY_IP = "192.168.1.105:8443"
@@ -11,9 +11,9 @@ LOCAL_HOST_BY_IP = "192.168.1.105:8443"
 class TestUtils:
     """Tests for utility helpers like local server generation and gateway checks."""
 
-    def test_generate_local_server(self):
+    def test_create_local_server_config(self):
         """Create a local server descriptor using the host and default values."""
-        local_server = generate_local_server(host=LOCAL_HOST)
+        local_server = create_local_server_config(host=LOCAL_HOST)
 
         assert local_server
         assert (
@@ -24,9 +24,9 @@ class TestUtils:
         assert local_server.name == "Somfy Developer Mode"
         assert local_server.configuration_url is None
 
-    def test_generate_local_server_by_ip(self):
+    def test_create_local_server_config_by_ip(self):
         """Create a local server descriptor using an IP host and custom fields."""
-        local_server = generate_local_server(
+        local_server = create_local_server_config(
             host=LOCAL_HOST_BY_IP,
             manufacturer="Test Manufacturer",
             name="Test Name",

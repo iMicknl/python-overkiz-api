@@ -18,7 +18,7 @@ from pyoverkiz.auth.credentials import (
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.enums import APIType, DataType, Server
 from pyoverkiz.models import Option
-from pyoverkiz.utils import generate_local_server
+from pyoverkiz.utils import create_local_server_config
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -38,7 +38,7 @@ class TestOverkizClient:
     async def local_client(self):
         """Fixture providing an OverkizClient configured for a local (developer) server."""
         return OverkizClient(
-            server=generate_local_server("gateway-1234-5678-1243.local:8443"),
+            server=create_local_server_config("gateway-1234-5678-1243.local:8443"),
             credentials=LocalTokenCredentials("token"),
         )
 

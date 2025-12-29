@@ -23,24 +23,22 @@ from pyoverkiz.auth.strategies import (
     SessionLoginStrategy,
     SomfyAuthStrategy,
 )
-from pyoverkiz.const import LOCAL_API_PATH, SUPPORTED_SERVERS
+from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.enums import APIType, Server
 from pyoverkiz.models import ServerConfig
 
 
 def build_auth_strategy(
     server_key: str | Server | None,
-    server: ServerConfig,
+    server_config: ServerConfig,
     credentials: Credentials,
     session: ClientSession,
     ssl_context: ssl.SSLContext | bool,
 ) -> Any:
     """Build the correct auth strategy for the given server and credentials."""
-    api_type = APIType.LOCAL if LOCAL_API_PATH in server.endpoint else APIType.CLOUD
-
     # Normalize server key
     try:
-        key = Server(server_key) if server_key else _match_server_key(server)
+        key = Server(server_key) if server_key else _match_server_key(server_config)
     except ValueError:
         key = None
 
@@ -48,9 +46,9 @@ def build_auth_strategy(
         return SomfyAuthStrategy(
             _ensure_username_password(credentials),
             session,
-            server,
+            server_config,
             ssl_context,
-            api_type,
+            server_config.type,
         )
 
     if key in {
@@ -61,43 +59,55 @@ def build_auth_strategy(
         return CozytouchAuthStrategy(
             _ensure_username_password(credentials),
             session,
-            server,
+            server_config,
             ssl_context,
-            api_type,
+            server_config.type,
         )
 
     if key == Server.NEXITY:
         return NexityAuthStrategy(
             _ensure_username_password(credentials),
             session,
-            server,
+            server_config,
             ssl_context,
-            api_type,
+            server_config.type,
         )
 
     if key == Server.REXEL:
         return RexelAuthStrategy(
-            _ensure_rexel(credentials), session, server, ssl_context, api_type
+            _ensure_rexel(credentials),
+            session,
+            server_config,
+            ssl_context,
+            server_config.type,
         )
 
-    if api_type == APIType.LOCAL:
+    if server_config.type == APIType.LOCAL:
         if isinstance(credentials, LocalTokenCredentials):
             return LocalTokenAuthStrategy(
-                credentials, session, server, ssl_context, api_type
+                credentials, session, server_config, ssl_context, server_config.type
             )
         return BearerTokenAuthStrategy(
-            _ensure_token(credentials), session, server, ssl_context, api_type
+            _ensure_token(credentials),
+            session,
+            server_config,
+            ssl_context,
+            server_config.type,
         )
 
     if isinstance(credentials, TokenCredentials) and not isinstance(
         credentials, LocalTokenCredentials
     ):
         return BearerTokenAuthStrategy(
-            credentials, session, server, ssl_context, api_type
+            credentials, session, server_config, ssl_context, server_config.type
         )
 
     return SessionLoginStrategy(
-        _ensure_username_password(credentials), session, server, ssl_context, api_type
+        _ensure_username_password(credentials),
+        session,
+        server_config,
+        ssl_context,
+        server_config.type,
     )
 
 
