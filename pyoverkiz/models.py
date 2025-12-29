@@ -574,7 +574,7 @@ class Execution:
     description: str
     owner: str = field(repr=obfuscate_email)
     state: str
-    action_group: list[dict[str, Any]]
+    action_group: ActionGroup
 
     def __init__(
         self,
@@ -582,7 +582,7 @@ class Execution:
         description: str,
         owner: str,
         state: str,
-        action_group: list[dict[str, Any]],
+        action_group: dict[str, Any],
         **_: Any,
     ):
         """Initialize Execution object from API fields."""
@@ -590,7 +590,7 @@ class Execution:
         self.description = description
         self.owner = owner
         self.state = state
-        self.action_group = action_group
+        self.action_group = ActionGroup(**action_group)
 
 
 @define(init=False, kw_only=True)
@@ -607,7 +607,7 @@ class Action:
 
 
 @define(init=False, kw_only=True)
-class Scenario:
+class ActionGroup:
     """An action group is composed of one or more actions.
 
     Each action is related to a single setup device (designated by its device URL) and
@@ -615,10 +615,10 @@ class Scenario:
     """
 
     id: str = field(repr=obfuscate_id)
-    creation_time: int
+    creation_time: int | None = None
     last_update_time: int | None = None
     label: str = field(repr=obfuscate_string)
-    metadata: str
+    metadata: str | None = None
     shortcut: bool | None = None
     notification_type_mask: int | None = None
     notification_condition: str | None = None
@@ -629,10 +629,11 @@ class Scenario:
 
     def __init__(
         self,
-        creation_time: int,
-        metadata: str,
         actions: list[dict[str, Any]],
-        oid: str,
+        creation_time: int | None = None,
+        metadata: str | None = None,
+        oid: str | None = None,
+        id: str | None = None,
         last_update_time: int | None = None,
         label: str | None = None,
         shortcut: bool | None = None,
@@ -642,8 +643,11 @@ class Scenario:
         notification_title: str | None = None,
         **_: Any,
     ) -> None:
-        """Initialize Scenario (action group) from API data."""
-        self.id = oid
+        """Initialize ActionGroup from API data and convert nested actions."""
+        if oid is None and id is None:
+            raise ValueError("Either 'oid' or 'id' must be provided")
+
+        self.id = cast(str, oid or id)
         self.creation_time = creation_time
         self.last_update_time = last_update_time
         self.label = (
@@ -656,7 +660,7 @@ class Scenario:
         self.notification_text = notification_text
         self.notification_title = notification_title
         self.actions = [Action(**action) for action in actions]
-        self.oid = oid
+        self.oid = cast(str, oid or id)
 
 
 @define(init=False, kw_only=True)

@@ -421,7 +421,7 @@ class TestOverkizClient:
         ],
     )
     @pytest.mark.asyncio
-    async def test_get_scenarios(
+    async def test_get_action_groups(
         self,
         client: OverkizClient,
         fixture_name: str,
@@ -435,16 +435,16 @@ class TestOverkizClient:
             resp = MockResponse(action_group_mock.read())
 
         with patch.object(aiohttp.ClientSession, "get", return_value=resp):
-            scenarios = await client.get_scenarios()
+            action_groups = await client.get_action_groups()
 
-            assert len(scenarios) == scenario_count
+            assert len(action_groups) == scenario_count
 
-            for scenario in scenarios:
-                assert scenario.oid
-                assert scenario.label is not None
-                assert scenario.actions
+            for action_group in action_groups:
+                assert action_group.oid
+                assert action_group.label is not None
+                assert action_group.actions
 
-                for action in scenario.actions:
+                for action in action_group.actions:
                     assert action.device_url
                     assert action.commands
 
