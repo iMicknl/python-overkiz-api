@@ -1,3 +1,5 @@
+"""Command-related enums and parameters used by device commands."""
+
 import sys
 from enum import unique
 
@@ -367,6 +369,8 @@ class OverkizCommandParam(StrEnum):
 
 @unique
 class CommandMode(StrEnum):
+    """Execution mode flags for commands (e.g., high priority or geolocated)."""
+
     HIGH_PRIORITY = "highPriority"
     GEOLOCATED = "geolocated"
     INTERNAL = "internal"

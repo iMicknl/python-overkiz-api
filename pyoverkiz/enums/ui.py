@@ -1,3 +1,5 @@
+"""UI enums for classes and widgets used to interpret device UI metadata."""
+
 import logging
 import sys
 from enum import unique
@@ -14,6 +16,8 @@ else:
 
 @unique
 class UIClass(StrEnum):
+    """Enumeration of UI classes used to describe device categories and behaviors."""
+
     # A list of all defined UI classes from /reference/ui/classes
     ADJUSTABLE_SLATS_ROLLER_SHUTTER = "AdjustableSlatsRollerShutter"
     AIR_SENSOR = "AirSensor"
@@ -93,6 +97,8 @@ class UIClass(StrEnum):
 
 @unique
 class UIWidget(StrEnum):
+    """Enumeration of UI widgets used by Overkiz for device presentation."""
+
     # A list of all defined UI widgets from /reference/ui/widgets
     AIR_FLOW_SENSOR = "AirFlowSensor"
     AIR_QUALITY_SENSOR = "AirQualitySensor"

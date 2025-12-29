@@ -1,3 +1,5 @@
+"""Protocol enums describe device URL schemes used by Overkiz."""
+
 import logging
 import sys
 from enum import unique

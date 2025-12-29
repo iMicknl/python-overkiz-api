@@ -1,3 +1,5 @@
+"""General-purpose enums like product types, data types and event names."""
+
 import logging
 import sys
 from enum import IntEnum, unique
@@ -14,6 +16,8 @@ else:
 
 @unique
 class ProductType(IntEnum):
+    """Product type constants used to interpret Device types."""
+
     NONE = 0
     ACTUATOR = 1
     SENSOR = 2
@@ -26,6 +30,8 @@ class ProductType(IntEnum):
 
 @unique
 class DataType(IntEnum):
+    """Data type constants used to interpret State values."""
+
     NONE = 0
     INTEGER = 1
     FLOAT = 2
@@ -40,6 +46,8 @@ class DataType(IntEnum):
 
 @unique
 class FailureType(IntEnum):
+    """Failure type codes returned by the API."""
+
     UNKNOWN = -1
     NO_FAILURE = 0
     NON_EXECUTING = 11
@@ -253,6 +261,8 @@ class FailureType(IntEnum):
 
 @unique
 class EventName(StrEnum):
+    """Enumeration of event names emitted by Overkiz."""
+
     UNKNOWN = "Unknown"
     ACTION_GROUP_CREATED = "ActionGroupCreatedEvent"
     ACTION_GROUP_DELETED = "ActionGroupDeletedEvent"

@@ -1,3 +1,6 @@
+"""Exceptions defined for Overkiz API and its integrations."""
+
+
 class BaseOverkizException(Exception):
     """Base exception for Overkiz errors."""
 

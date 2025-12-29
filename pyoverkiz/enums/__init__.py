@@ -1,3 +1,5 @@
+"""Convenience re-exports for the enums package."""
+
 # flake8: noqa: F403
 
 from .command import *

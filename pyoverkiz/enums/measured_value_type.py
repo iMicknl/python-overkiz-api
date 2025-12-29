@@ -1,3 +1,5 @@
+"""Measured value type enums used to interpret numeric sensor data."""
+
 import sys
 from enum import unique
 

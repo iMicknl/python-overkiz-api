@@ -1,3 +1,5 @@
+"""State and attribute enums describing Overkiz device states and attributes."""
+
 import sys
 from enum import unique
 

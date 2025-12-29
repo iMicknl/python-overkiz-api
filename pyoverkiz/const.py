@@ -1,3 +1,5 @@
+"""Constants and server descriptors used across the package."""
+
 from __future__ import annotations
 
 from pyoverkiz.enums import Server

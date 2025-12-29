@@ -1,3 +1,5 @@
+"""Utilities for generating helper objects and simple checks."""
+
 from __future__ import annotations
 
 import re
