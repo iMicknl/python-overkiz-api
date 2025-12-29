@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
+# mypy: ignore-errors
+# ty: ignore
+
 """Simple example demonstrating the action queue feature."""
+
+from __future__ import annotations
 
 import asyncio
 
