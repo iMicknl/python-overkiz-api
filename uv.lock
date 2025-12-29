@@ -844,7 +844,7 @@ wheels = [
 
 [[package]]
 name = "pyoverkiz"
-version = "1.19.4"
+version = "2.0.0"
 source = { editable = "." }
 dependencies = [
     { name = "aiohttp" },
