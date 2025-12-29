@@ -959,8 +959,8 @@ class Zone:
 
 
 @define(kw_only=True)
-class OverkizServer:
-    """Class to describe an Overkiz server."""
+class ServerConfig:
+    """Connection target details for an Overkiz-compatible server."""
 
     name: str
     endpoint: str

@@ -47,32 +47,37 @@ from pyoverkiz.exceptions import (
     SomfyBadCredentialsException,
     SomfyServiceException,
 )
-from pyoverkiz.models import OverkizServer
+from pyoverkiz.models import ServerConfig
 
 
 class BaseAuthStrategy(AuthStrategy):
     def __init__(
         self,
         session: ClientSession,
-        server: OverkizServer,
+        server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
         api_type: APIType,
     ) -> None:
+        """Store shared auth context for Overkiz API interactions."""
         self.session = session
         self.server = server
         self._ssl = ssl_context
         self.api_type = api_type
 
     async def login(self) -> None:
+        """Perform authentication; default is a no-op for subclasses to override."""
         return None
 
     async def refresh_if_needed(self) -> bool:
+        """Refresh authentication tokens if needed; default returns False."""
         return False
 
     def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
+        """Return authentication headers for a request path."""
         return {}
 
     async def close(self) -> None:
+        """Close any resources held by the strategy; default is no-op."""
         return None
 
 
@@ -81,7 +86,7 @@ class SessionLoginStrategy(BaseAuthStrategy):
         self,
         credentials: UsernamePasswordCredentials,
         session: ClientSession,
-        server: OverkizServer,
+        server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
         api_type: APIType,
     ) -> None:
@@ -116,7 +121,7 @@ class SomfyAuthStrategy(BaseAuthStrategy):
         self,
         credentials: UsernamePasswordCredentials,
         session: ClientSession,
-        server: OverkizServer,
+        server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
         api_type: APIType,
     ) -> None:
@@ -189,7 +194,7 @@ class CozytouchAuthStrategy(SessionLoginStrategy):
         self,
         credentials: UsernamePasswordCredentials,
         session: ClientSession,
-        server: OverkizServer,
+        server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
         api_type: APIType,
     ) -> None:
@@ -238,7 +243,7 @@ class NexityAuthStrategy(SessionLoginStrategy):
         self,
         credentials: UsernamePasswordCredentials,
         session: ClientSession,
-        server: OverkizServer,
+        server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
         api_type: APIType,
     ) -> None:
@@ -286,7 +291,7 @@ class LocalTokenAuthStrategy(BaseAuthStrategy):
         self,
         credentials: LocalTokenCredentials,
         session: ClientSession,
-        server: OverkizServer,
+        server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
         api_type: APIType,
     ) -> None:
@@ -306,7 +311,7 @@ class RexelAuthStrategy(BaseAuthStrategy):
         self,
         credentials: RexelOAuthCodeCredentials,
         session: ClientSession,
-        server: OverkizServer,
+        server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
         api_type: APIType,
     ) -> None:
@@ -381,7 +386,7 @@ class BearerTokenAuthStrategy(BaseAuthStrategy):
         self,
         credentials: TokenCredentials,
         session: ClientSession,
-        server: OverkizServer,
+        server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
         api_type: APIType,
     ) -> None:

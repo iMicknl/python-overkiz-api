@@ -23,16 +23,17 @@ from pyoverkiz.auth.strategies import (
 )
 from pyoverkiz.const import LOCAL_API_PATH, SUPPORTED_SERVERS
 from pyoverkiz.enums import APIType, Server
-from pyoverkiz.models import OverkizServer
+from pyoverkiz.models import ServerConfig
 
 
 def build_auth_strategy(
     server_key: str | Server | None,
-    server: OverkizServer,
+    server: ServerConfig,
     credentials: Credentials,
     session: ClientSession,
     ssl_context: ssl.SSLContext | bool,
 ) -> Any:
+    """Build the correct auth strategy for the given server and credentials."""
     api_type = APIType.LOCAL if LOCAL_API_PATH in server.endpoint else APIType.CLOUD
 
     # Normalize server key
@@ -98,7 +99,8 @@ def build_auth_strategy(
     )
 
 
-def _match_server_key(server: OverkizServer) -> Server:
+def _match_server_key(server: ServerConfig) -> Server:
+    """Find the `Server` enum corresponding to a `ServerConfig` entry."""
     for key, value in SUPPORTED_SERVERS.items():
         if server is value or server.endpoint == value.endpoint:
             return Server(key)
@@ -107,18 +109,21 @@ def _match_server_key(server: OverkizServer) -> Server:
 
 
 def _ensure_username_password(credentials: Credentials) -> UsernamePasswordCredentials:
+    """Validate that credentials are username/password based."""
     if not isinstance(credentials, UsernamePasswordCredentials):
         raise TypeError("UsernamePasswordCredentials are required for this server.")
     return credentials
 
 
 def _ensure_token(credentials: Credentials) -> TokenCredentials:
+    """Validate that credentials carry a bearer token."""
     if not isinstance(credentials, TokenCredentials):
         raise TypeError("TokenCredentials are required for this server.")
     return credentials
 
 
 def _ensure_rexel(credentials: Credentials) -> RexelOAuthCodeCredentials:
+    """Validate that credentials are of Rexel OAuth code type."""
     if not isinstance(credentials, RexelOAuthCodeCredentials):
         raise TypeError("RexelOAuthCodeCredentials are required for this server.")
     return credentials

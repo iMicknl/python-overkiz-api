@@ -16,8 +16,7 @@ from pyoverkiz.auth.credentials import (
     UsernamePasswordCredentials,
 )
 from pyoverkiz.client import OverkizClient
-from pyoverkiz.const import SUPPORTED_SERVERS
-from pyoverkiz.enums import APIType, DataType
+from pyoverkiz.enums import APIType, DataType, Server
 from pyoverkiz.models import Option
 from pyoverkiz.utils import generate_local_server
 
@@ -31,7 +30,7 @@ class TestOverkizClient:
     async def client(self):
         """Fixture providing an OverkizClient configured for the cloud server."""
         return OverkizClient(
-            server=SUPPORTED_SERVERS["somfy_europe"],
+            server=Server.SOMFY_EUROPE,
             credentials=UsernamePasswordCredentials("username", "password"),
         )
 

@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from pyoverkiz.enums import Server
-from pyoverkiz.models import OverkizServer
+from pyoverkiz.models import ServerConfig
 
 COZYTOUCH_ATLANTIC_API = "https://apis.groupe-atlantic.com"
 COZYTOUCH_CLIENT_ID = (
@@ -39,98 +39,98 @@ SERVERS_WITH_LOCAL_API = [
     Server.SOMFY_AMERICA,
 ]
 
-SUPPORTED_SERVERS: dict[str, OverkizServer] = {
-    Server.ATLANTIC_COZYTOUCH: OverkizServer(
+SUPPORTED_SERVERS: dict[str, ServerConfig] = {
+    Server.ATLANTIC_COZYTOUCH: ServerConfig(
         name="Atlantic Cozytouch",
         endpoint="https://ha110-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Atlantic",
         configuration_url=None,
     ),
-    Server.BRANDT: OverkizServer(
+    Server.BRANDT: ServerConfig(
         name="Brandt Smart Control",
         endpoint="https://ha3-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Brandt",
         configuration_url=None,
     ),
-    Server.FLEXOM: OverkizServer(
+    Server.FLEXOM: ServerConfig(
         name="Flexom",
         endpoint="https://ha108-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Bouygues",
         configuration_url=None,
     ),
-    Server.HEXAOM_HEXACONNECT: OverkizServer(
+    Server.HEXAOM_HEXACONNECT: ServerConfig(
         name="Hexaom HexaConnect",
         endpoint="https://ha5-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Hexaom",
         configuration_url=None,
     ),
-    Server.HI_KUMO_ASIA: OverkizServer(
+    Server.HI_KUMO_ASIA: ServerConfig(
         name="Hitachi Hi Kumo (Asia)",
         endpoint="https://ha203-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Hitachi",
         configuration_url=None,
     ),
-    Server.HI_KUMO_EUROPE: OverkizServer(
+    Server.HI_KUMO_EUROPE: ServerConfig(
         name="Hitachi Hi Kumo (Europe)",
         endpoint="https://ha117-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Hitachi",
         configuration_url=None,
     ),
-    Server.HI_KUMO_OCEANIA: OverkizServer(
+    Server.HI_KUMO_OCEANIA: ServerConfig(
         name="Hitachi Hi Kumo (Oceania)",
         endpoint="https://ha203-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Hitachi",
         configuration_url=None,
     ),
-    Server.NEXITY: OverkizServer(
+    Server.NEXITY: ServerConfig(
         name="Nexity Eugénie",
         endpoint="https://ha106-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Nexity",
         configuration_url=None,
     ),
-    Server.REXEL: OverkizServer(
+    Server.REXEL: ServerConfig(
         name="Rexel Energeasy Connect",
         endpoint=REXEL_BACKEND_API,
         manufacturer="Rexel",
         configuration_url="https://utilisateur.energeasyconnect.com/user/#/zone/equipements",
     ),
-    Server.SAUTER_COZYTOUCH: OverkizServer(  # duplicate of Atlantic Cozytouch
+    Server.SAUTER_COZYTOUCH: ServerConfig(  # duplicate of Atlantic Cozytouch
         name="Sauter Cozytouch",
         endpoint="https://ha110-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Sauter",
         configuration_url=None,
     ),
-    Server.SIMU_LIVEIN2: OverkizServer(  # alias of https://tahomalink.com
+    Server.SIMU_LIVEIN2: ServerConfig(  # alias of https://tahomalink.com
         name="SIMU (LiveIn2)",
         endpoint="https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Somfy",
         configuration_url=None,
     ),
-    Server.SOMFY_EUROPE: OverkizServer(  # alias of https://tahomalink.com
+    Server.SOMFY_EUROPE: ServerConfig(  # alias of https://tahomalink.com
         name="Somfy (Europe)",
         endpoint="https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Somfy",
         configuration_url=None,
     ),
-    Server.SOMFY_AMERICA: OverkizServer(
+    Server.SOMFY_AMERICA: ServerConfig(
         name="Somfy (North America)",
         endpoint="https://ha401-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Somfy",
         configuration_url=None,
     ),
-    Server.SOMFY_OCEANIA: OverkizServer(
+    Server.SOMFY_OCEANIA: ServerConfig(
         name="Somfy (Oceania)",
         endpoint="https://ha201-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Somfy",
         configuration_url=None,
     ),
-    Server.THERMOR_COZYTOUCH: OverkizServer(  # duplicate of Atlantic Cozytouch
+    Server.THERMOR_COZYTOUCH: ServerConfig(  # duplicate of Atlantic Cozytouch
         name="Thermor Cozytouch",
         endpoint="https://ha110-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Thermor",
         configuration_url=None,
     ),
-    Server.UBIWIZZ: OverkizServer(
+    Server.UBIWIZZ: ServerConfig(
         name="Ubiwizz",
         endpoint="https://ha129-1.overkiz.com/enduser-mobile-web/enduserAPI/",
         manufacturer="Decelect",

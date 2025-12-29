@@ -21,7 +21,7 @@ from aiohttp import (
 
 from pyoverkiz.auth import Credentials, build_auth_strategy
 from pyoverkiz.const import LOCAL_API_PATH, SUPPORTED_SERVERS
-from pyoverkiz.enums import APIType, Server
+from pyoverkiz.enums import APIType, CommandMode, Server
 from pyoverkiz.exceptions import (
     AccessDeniedToGatewayException,
     BadCredentialsException,
@@ -49,7 +49,6 @@ from pyoverkiz.exceptions import (
 from pyoverkiz.models import (
     Action,
     ActionGroup,
-    CommandMode,
     Device,
     Event,
     Execution,
@@ -58,8 +57,8 @@ from pyoverkiz.models import (
     LocalToken,
     Option,
     OptionParameter,
-    OverkizServer,
     Place,
+    ServerConfig,
     Setup,
     State,
 )
@@ -129,7 +128,7 @@ SSL_CONTEXT_LOCAL_API = _create_local_ssl_context()
 class OverkizClient:
     """Interface class for the Overkiz API."""
 
-    server: OverkizServer
+    server: ServerConfig
     setup: Setup | None
     devices: list[Device]
     gateways: list[Gateway]
@@ -141,7 +140,7 @@ class OverkizClient:
     def __init__(
         self,
         *,
-        server: OverkizServer,
+        server: ServerConfig | Server | str,
         credentials: Credentials,
         verify_ssl: bool = True,
         session: ClientSession | None = None,
@@ -149,10 +148,10 @@ class OverkizClient:
     ) -> None:
         """Constructor.
 
-        :param server: OverkizServer
+        :param server: ServerConfig
         :param session: optional ClientSession
         """
-        self.server = server
+        self.server = self._normalize_server(server)
 
         self.setup: Setup | None = None
         self.devices: list[Device] = []
@@ -182,7 +181,7 @@ class OverkizClient:
         )
 
     async def __aenter__(self) -> OverkizClient:
-        """Enter the async context manager and return the client."""
+        """Enter async context manager and return the client instance."""
         return self
 
     async def __aexit__(
@@ -194,7 +193,23 @@ class OverkizClient:
         """Exit the async context manager and close the client session."""
         await self.close()
 
+    @staticmethod
+    def _normalize_server(server: ServerConfig | Server | str) -> ServerConfig:
+        """Resolve user-provided server identifiers into a `ServerConfig`."""
+        if isinstance(server, ServerConfig):
+            return server
+
+        server_key = server.value if isinstance(server, Server) else str(server)
+
+        try:
+            return SUPPORTED_SERVERS[server_key]
+        except KeyError as error:
+            raise OverkizException(
+                f"Unknown server '{server_key}'. Provide a supported server key or ServerConfig instance."
+            ) from error
+
     def _resolve_server_key(self) -> Server:
+        """Infer a `Server` enum for the current server configuration."""
         for key, value in SUPPORTED_SERVERS.items():
             if self.server is value or self.server.endpoint == value.endpoint:
                 return Server(key)
