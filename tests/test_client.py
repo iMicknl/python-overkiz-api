@@ -38,19 +38,19 @@ class TestOverkizClient:
     async def local_client(self):
         """Fixture providing an OverkizClient configured for a local (developer) server."""
         return OverkizClient(
-            server=create_local_server_config("gateway-1234-5678-1243.local:8443"),
-            credentials=LocalTokenCredentials("token"),
+            server=create_local_server_config(host="gateway-1234-5678-1243.local:8443"),
+            credentials=LocalTokenCredentials(token="token"),
         )
 
     @pytest.mark.asyncio
     async def test_get_api_type_cloud(self, client: OverkizClient):
         """Verify that a cloud-configured client reports APIType.CLOUD."""
-        assert client.api_type == APIType.CLOUD
+        assert client.server_config.type == APIType.CLOUD
 
     @pytest.mark.asyncio
     async def test_get_api_type_local(self, local_client: OverkizClient):
         """Verify that a local-configured client reports APIType.LOCAL."""
-        assert local_client.api_type == APIType.LOCAL
+        assert local_client.server_config.type == APIType.LOCAL
 
     @pytest.mark.asyncio
     async def test_get_devices_basic(self, client: OverkizClient):
