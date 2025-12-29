@@ -471,7 +471,7 @@ class Command:
     """Represents an OverKiz Command."""
 
     type: int | None = None
-    name: OverkizCommand
+    name: str | OverkizCommand
     parameters: list[str | int | float | OverkizCommandParam] | None
 
     def __init__(
