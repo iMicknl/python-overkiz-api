@@ -15,6 +15,7 @@ class QueuedExecution:
     """Represents a queued action execution that will resolve to an exec_id when the batch executes."""
 
     def __init__(self) -> None:
+        """Initialize the queued execution."""
         self._future: asyncio.Future[str] = asyncio.Future()
 
     def set_result(self, exec_id: str) -> None:
@@ -33,8 +34,7 @@ class QueuedExecution:
 
 
 class ActionQueue:
-    """
-    Batches multiple action executions into single API calls.
+    """Batches multiple action executions into single API calls.
 
     When actions are added, they are held for a configurable delay period.
     If more actions arrive during this window, they are batched together.
@@ -53,8 +53,7 @@ class ActionQueue:
         delay: float = 0.5,
         max_actions: int = 20,
     ) -> None:
-        """
-        Initialize the action queue.
+        """Initialize the action queue.
 
         :param executor: Async function to execute batched actions
         :param delay: Seconds to wait before auto-flushing (default 0.5)
@@ -78,8 +77,7 @@ class ActionQueue:
         mode: CommandMode | None = None,
         label: str | None = None,
     ) -> QueuedExecution:
-        """
-        Add actions to the queue.
+        """Add actions to the queue.
 
         :param actions: Actions to queue
         :param mode: Command mode (will flush if different from pending mode)
@@ -176,8 +174,7 @@ class ActionQueue:
             raise
 
     async def flush(self) -> list[str]:
-        """
-        Force flush all pending actions immediately.
+        """Force flush all pending actions immediately.
 
         :return: List of exec_ids from flushed batches
         """
