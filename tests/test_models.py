@@ -303,6 +303,7 @@ class TestState:
 
 
 def test_command_to_payload_omits_none():
+    """Command.to_payload omits None fields from the resulting payload."""
     from pyoverkiz.enums.command import OverkizCommand
     from pyoverkiz.models import Command
 
@@ -313,6 +314,7 @@ def test_command_to_payload_omits_none():
 
 
 def test_action_to_payload_and_parameters_conversion():
+    """Action.to_payload converts nested Command enums to primitives."""
     from pyoverkiz.enums.command import OverkizCommand, OverkizCommandParam
     from pyoverkiz.models import Action, Command
 

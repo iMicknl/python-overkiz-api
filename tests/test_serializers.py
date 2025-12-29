@@ -1,9 +1,12 @@
+"""Tests for pyoverkiz.serializers."""
+
 from __future__ import annotations
 
 from pyoverkiz.serializers import prepare_payload
 
 
 def test_prepare_payload_camelizes_and_fixes_device_url():
+    """Test that prepare_payload converts snake_case to camelCase and fixes abbreviations."""
     payload = {
         "label": "test",
         "actions": [{"device_url": "rts://1/2", "commands": [{"name": "close"}]}],
@@ -17,6 +20,7 @@ def test_prepare_payload_camelizes_and_fixes_device_url():
 
 
 def test_prepare_payload_nested_lists_and_dicts():
+    """Test that prepare_payload handles nested lists and dicts correctly."""
     payload = {
         "actions": [
             {
