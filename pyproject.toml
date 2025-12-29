@@ -75,6 +75,7 @@ only-packages = true
 
 [tool.mypy]
 exclude = "tests/"
+ignore_missing_imports = true
 
 [tool.ty.src]
 exclude = ["tests/"]

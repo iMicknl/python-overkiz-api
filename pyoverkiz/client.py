@@ -22,6 +22,7 @@ from aiohttp import (
     FormData,
     ServerDisconnectedError,
 )
+from botocore.client import BaseClient
 from botocore.config import Config
 from warrant_lite import WarrantLite
 
@@ -408,7 +409,7 @@ class OverkizClient:
         """
         loop = asyncio.get_event_loop()
 
-        def _get_client() -> boto3.session.Session.client:
+        def _get_client() -> BaseClient:
             return boto3.client(
                 "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
             )
