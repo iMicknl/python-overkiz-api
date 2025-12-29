@@ -156,7 +156,11 @@ class OverkizClient:
         self.gateways: list[Gateway] = []
         self.event_listener_id: str | None = None
 
-        self.session = session if session else ClientSession()
+        self.session = (
+            session
+            if session
+            else ClientSession(headers={"User-Agent": "python-overkiz-api"})
+        )
         self._ssl = verify_ssl
 
         if self.server_config.type == APIType.LOCAL and verify_ssl:
