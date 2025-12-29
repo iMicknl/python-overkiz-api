@@ -1,3 +1,5 @@
+"""Factory to build authentication strategies based on server and credentials."""
+
 from __future__ import annotations
 
 import ssl

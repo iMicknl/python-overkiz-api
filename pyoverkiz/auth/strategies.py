@@ -1,3 +1,5 @@
+"""Authentication strategies for Overkiz API."""
+
 from __future__ import annotations
 
 import asyncio
@@ -11,6 +13,7 @@ from typing import Any, cast
 
 import boto3
 from aiohttp import ClientSession, FormData
+from botocore.client import BaseClient
 from botocore.config import Config
 from warrant_lite import WarrantLite
 
@@ -51,6 +54,8 @@ from pyoverkiz.models import ServerConfig
 
 
 class BaseAuthStrategy(AuthStrategy):
+    """Base class for authentication strategies."""
+
     def __init__(
         self,
         session: ClientSession,
@@ -82,6 +87,8 @@ class BaseAuthStrategy(AuthStrategy):
 
 
 class SessionLoginStrategy(BaseAuthStrategy):
+    """Authentication strategy using session-based login."""
+
     def __init__(
         self,
         credentials: UsernamePasswordCredentials,
@@ -90,10 +97,12 @@ class SessionLoginStrategy(BaseAuthStrategy):
         ssl_context: ssl.SSLContext | bool,
         api_type: APIType,
     ) -> None:
+        """Initialize SessionLoginStrategy with given parameters."""
         super().__init__(session, server, ssl_context, api_type)
         self.credentials = credentials
 
     async def login(self) -> None:
+        """Perform login using username and password."""
         payload = {
             "userId": self.credentials.username,
             "userPassword": self.credentials.password,
@@ -101,6 +110,7 @@ class SessionLoginStrategy(BaseAuthStrategy):
         await self._post_login(payload)
 
     async def _post_login(self, data: Mapping[str, Any]) -> None:
+        """Post login data to the server and handle response."""
         async with self.session.post(
             f"{self.server.endpoint}login",
             data=data,
@@ -117,6 +127,8 @@ class SessionLoginStrategy(BaseAuthStrategy):
 
 
 class SomfyAuthStrategy(BaseAuthStrategy):
+    """Authentication strategy using Somfy OAuth2."""
+
     def __init__(
         self,
         credentials: UsernamePasswordCredentials,
@@ -125,11 +137,13 @@ class SomfyAuthStrategy(BaseAuthStrategy):
         ssl_context: ssl.SSLContext | bool,
         api_type: APIType,
     ) -> None:
+        """Initialize SomfyAuthStrategy with given parameters."""
         super().__init__(session, server, ssl_context, api_type)
         self.credentials = credentials
         self.context = AuthContext()
 
     async def login(self) -> None:
+        """Perform login using Somfy OAuth2."""
         await self._request_access_token(
             grant_type="password",
             extra_fields={
@@ -139,6 +153,7 @@ class SomfyAuthStrategy(BaseAuthStrategy):
         )
 
     async def refresh_if_needed(self) -> bool:
+        """Refresh Somfy OAuth2 tokens if needed."""
         if not self.context.is_expired() or not self.context.refresh_token:
             return False
 
@@ -149,6 +164,7 @@ class SomfyAuthStrategy(BaseAuthStrategy):
         return True
 
     def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
+        """Return authentication headers for a request path."""
         if self.context.access_token:
             return {"Authorization": f"Bearer {self.context.access_token}"}
 
@@ -190,6 +206,8 @@ class SomfyAuthStrategy(BaseAuthStrategy):
 
 
 class CozytouchAuthStrategy(SessionLoginStrategy):
+    """Authentication strategy using Cozytouch session-based login."""
+
     def __init__(
         self,
         credentials: UsernamePasswordCredentials,
@@ -198,9 +216,11 @@ class CozytouchAuthStrategy(SessionLoginStrategy):
         ssl_context: ssl.SSLContext | bool,
         api_type: APIType,
     ) -> None:
+        """Initialize CozytouchAuthStrategy with given parameters."""
         super().__init__(credentials, session, server, ssl_context, api_type)
 
     async def login(self) -> None:
+        """Perform login using Cozytouch username and password."""
         form = FormData(
             {
                 "grant_type": "password",
@@ -239,6 +259,8 @@ class CozytouchAuthStrategy(SessionLoginStrategy):
 
 
 class NexityAuthStrategy(SessionLoginStrategy):
+    """Authentication strategy using Nexity session-based login."""
+
     def __init__(
         self,
         credentials: UsernamePasswordCredentials,
@@ -247,12 +269,14 @@ class NexityAuthStrategy(SessionLoginStrategy):
         ssl_context: ssl.SSLContext | bool,
         api_type: APIType,
     ) -> None:
+        """Initialize NexityAuthStrategy with given parameters."""
         super().__init__(credentials, session, server, ssl_context, api_type)
 
     async def login(self) -> None:
+        """Perform login using Nexity username and password."""
         loop = asyncio.get_event_loop()
 
-        def _client() -> boto3.session.Session.client:
+        def _client() -> BaseClient:
             return boto3.client(
                 "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
             )
@@ -287,6 +311,8 @@ class NexityAuthStrategy(SessionLoginStrategy):
 
 
 class LocalTokenAuthStrategy(BaseAuthStrategy):
+    """Authentication strategy using a local API token."""
+
     def __init__(
         self,
         credentials: LocalTokenCredentials,
@@ -295,18 +321,23 @@ class LocalTokenAuthStrategy(BaseAuthStrategy):
         ssl_context: ssl.SSLContext | bool,
         api_type: APIType,
     ) -> None:
+        """Initialize LocalTokenAuthStrategy with given parameters."""
         super().__init__(session, server, ssl_context, api_type)
         self.credentials = credentials
 
     async def login(self) -> None:
+        """Validate that a token is provided for local API access."""
         if not self.credentials.token:
             raise InvalidTokenException("Local API requires a token.")
 
     def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
+        """Return authentication headers for a request path."""
         return {"Authorization": f"Bearer {self.credentials.token}"}
 
 
 class RexelAuthStrategy(BaseAuthStrategy):
+    """Authentication strategy using Rexel OAuth2."""
+
     def __init__(
         self,
         credentials: RexelOAuthCodeCredentials,
@@ -315,11 +346,13 @@ class RexelAuthStrategy(BaseAuthStrategy):
         ssl_context: ssl.SSLContext | bool,
         api_type: APIType,
     ) -> None:
+        """Initialize RexelAuthStrategy with given parameters."""
         super().__init__(session, server, ssl_context, api_type)
         self.credentials = credentials
         self.context = AuthContext()
 
     async def login(self) -> None:
+        """Perform login using Rexel OAuth2 authorization code."""
         await self._exchange_token(
             {
                 "grant_type": "authorization_code",
@@ -331,6 +364,7 @@ class RexelAuthStrategy(BaseAuthStrategy):
         )
 
     async def refresh_if_needed(self) -> bool:
+        """ "Refresh Rexel OAuth2 tokens if needed."""
         if not self.context.is_expired() or not self.context.refresh_token:
             return False
 
@@ -345,11 +379,13 @@ class RexelAuthStrategy(BaseAuthStrategy):
         return True
 
     def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
+        """Return authentication headers for a request path."""
         if self.context.access_token:
             return {"Authorization": f"Bearer {self.context.access_token}"}
         return {}
 
     async def _exchange_token(self, payload: Mapping[str, str]) -> None:
+        """Exchange authorization code or refresh token for access token."""
         form = FormData(payload)
         async with self.session.post(
             REXEL_OAUTH_TOKEN_URL,
@@ -373,6 +409,7 @@ class RexelAuthStrategy(BaseAuthStrategy):
 
     @staticmethod
     def _ensure_consent(access_token: str) -> None:
+        """Ensure that the Rexel token has the required consent."""
         payload = _decode_jwt_payload(access_token)
         consent = payload.get("consent")
         if consent != REXEL_REQUIRED_CONSENT:
@@ -382,6 +419,8 @@ class RexelAuthStrategy(BaseAuthStrategy):
 
 
 class BearerTokenAuthStrategy(BaseAuthStrategy):
+    """Authentication strategy using a static bearer token."""
+
     def __init__(
         self,
         credentials: TokenCredentials,
@@ -390,16 +429,19 @@ class BearerTokenAuthStrategy(BaseAuthStrategy):
         ssl_context: ssl.SSLContext | bool,
         api_type: APIType,
     ) -> None:
+        """Initialize BearerTokenAuthStrategy with given parameters."""
         super().__init__(session, server, ssl_context, api_type)
         self.credentials = credentials
 
     def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
+        """Return authentication headers for a request path."""
         if self.credentials.token:
             return {"Authorization": f"Bearer {self.credentials.token}"}
         return {}
 
 
 def _decode_jwt_payload(token: str) -> dict[str, Any]:
+    """Decode the payload of a JWT token."""
     parts = token.split(".")
     if len(parts) < 2:
         raise InvalidTokenException("Malformed JWT received.")

@@ -215,7 +215,7 @@ class OverkizClient:
                 return Server(key)
 
         if self.api_type == APIType.LOCAL:
-            return Server.SOMFY_DEVELOPER_MODE
+            return Server(Server.SOMFY_DEVELOPER_MODE)
 
         raise OverkizException(
             "Unknown server configuration; provide server_key explicitly."

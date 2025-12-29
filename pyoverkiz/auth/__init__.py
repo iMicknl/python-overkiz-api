@@ -1,3 +1,5 @@
+"""Authentication module for pyoverkiz."""
+
 from __future__ import annotations
 
 from pyoverkiz.auth.base import AuthContext, AuthStrategy
