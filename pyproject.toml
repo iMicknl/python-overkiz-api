@@ -9,7 +9,7 @@ authors = [
     {name = "Thibaut Etienne"},
 ]
 license = {text = "MIT"}
-requires-python = "<4.0,>=3.10"
+requires-python = "<4.0,>=3.12"
 packages = [
     { include = "pyoverkiz" }
 ]
@@ -20,7 +20,6 @@ dependencies = [
     "attrs>=21.2",
     "boto3<2.0.0,>=1.18.59",
     "warrant-lite<2.0.0,>=1.0.4",
-    "backports-strenum<2.0.0,>=1.2.4; python_version < \"3.11\"",
 ]
 
 [project.urls]
