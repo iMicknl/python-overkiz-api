@@ -140,6 +140,7 @@ class OverkizClient:
 
     def __init__(
         self,
+        *,
         server: OverkizServer,
         credentials: Credentials,
         verify_ssl: bool = True,

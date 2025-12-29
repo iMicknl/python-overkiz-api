@@ -31,16 +31,16 @@ class TestOverkizClient:
     async def client(self):
         """Fixture providing an OverkizClient configured for the cloud server."""
         return OverkizClient(
-            SUPPORTED_SERVERS["somfy_europe"],
-            UsernamePasswordCredentials("username", "password"),
+            server=SUPPORTED_SERVERS["somfy_europe"],
+            credentials=UsernamePasswordCredentials("username", "password"),
         )
 
     @fixture
     async def local_client(self):
         """Fixture providing an OverkizClient configured for a local (developer) server."""
         return OverkizClient(
-            generate_local_server("gateway-1234-5678-1243.local:8443"),
-            LocalTokenCredentials("token"),
+            server=generate_local_server("gateway-1234-5678-1243.local:8443"),
+            credentials=LocalTokenCredentials("token"),
         )
 
     @pytest.mark.asyncio
