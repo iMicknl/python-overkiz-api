@@ -23,26 +23,21 @@ from pyoverkiz.auth.strategies import (
     SessionLoginStrategy,
     SomfyAuthStrategy,
 )
-from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.enums import APIType, Server
 from pyoverkiz.models import ServerConfig
 
 
 def build_auth_strategy(
-    server_key: str | Server | None,
+    *,
     server_config: ServerConfig,
     credentials: Credentials,
     session: ClientSession,
     ssl_context: ssl.SSLContext | bool,
 ) -> Any:
     """Build the correct auth strategy for the given server and credentials."""
-    # Normalize server key
-    try:
-        key = Server(server_key) if server_key else _match_server_key(server_config)
-    except ValueError:
-        key = None
+    server: Server | None = server_config.server
 
-    if key == Server.SOMFY_EUROPE:
+    if server == Server.SOMFY_EUROPE:
         return SomfyAuthStrategy(
             _ensure_username_password(credentials),
             session,
@@ -51,7 +46,7 @@ def build_auth_strategy(
             server_config.type,
         )
 
-    if key in {
+    if server in {
         Server.ATLANTIC_COZYTOUCH,
         Server.THERMOR_COZYTOUCH,
         Server.SAUTER_COZYTOUCH,
@@ -64,7 +59,7 @@ def build_auth_strategy(
             server_config.type,
         )
 
-    if key == Server.NEXITY:
+    if server == Server.NEXITY:
         return NexityAuthStrategy(
             _ensure_username_password(credentials),
             session,
@@ -73,7 +68,7 @@ def build_auth_strategy(
             server_config.type,
         )
 
-    if key == Server.REXEL:
+    if server == Server.REXEL:
         return RexelAuthStrategy(
             _ensure_rexel(credentials),
             session,
@@ -109,15 +104,6 @@ def build_auth_strategy(
         ssl_context,
         server_config.type,
     )
-
-
-def _match_server_key(server: ServerConfig) -> Server:
-    """Find the `Server` enum corresponding to a `ServerConfig` entry."""
-    for key, value in SUPPORTED_SERVERS.items():
-        if server is value or server.endpoint == value.endpoint:
-            return Server(key)
-
-    raise ValueError("Unable to match server to a known Server enum.")
 
 
 def _ensure_username_password(credentials: Credentials) -> UsernamePasswordCredentials:

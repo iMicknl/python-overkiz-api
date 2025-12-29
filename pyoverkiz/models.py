@@ -24,7 +24,7 @@ from pyoverkiz.enums import (
 )
 from pyoverkiz.enums.command import OverkizCommand, OverkizCommandParam
 from pyoverkiz.enums.protocol import Protocol
-from pyoverkiz.enums.server import APIType
+from pyoverkiz.enums.server import APIType, Server
 from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 
@@ -963,6 +963,7 @@ class Zone:
 class ServerConfig:
     """Connection target details for an Overkiz-compatible server."""
 
+    server: Server | None = None
     name: str
     endpoint: str
     manufacturer: str

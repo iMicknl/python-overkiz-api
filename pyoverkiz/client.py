@@ -172,9 +172,7 @@ class OverkizClient:
             # work with Overkiz self-signed gateway certificates
             self._ssl.verify_flags &= ~ssl.VERIFY_X509_STRICT
 
-        inferred_server_key = server_key or self._resolve_server_key()
         self._auth = build_auth_strategy(
-            inferred_server_key,
             self.server_config,
             credentials,
             self.session,
@@ -211,6 +209,9 @@ class OverkizClient:
 
     def _resolve_server_key(self) -> Server:
         """Infer a `Server` enum for the current server configuration."""
+        if self.server_config.server:
+            return self.server_config.server
+
         for key, value in SUPPORTED_SERVERS.items():
             if (
                 self.server_config is value
@@ -243,7 +244,7 @@ class OverkizClient:
         """
         await self._auth.login()
 
-        if self.api_type == APIType.LOCAL:
+        if self.server_config.type == APIType.LOCAL:
             if register_event_listener:
                 await self.register_event_listener()
             else:
