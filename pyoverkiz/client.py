@@ -173,10 +173,10 @@ class OverkizClient:
             self._ssl.verify_flags &= ~ssl.VERIFY_X509_STRICT
 
         self._auth = build_auth_strategy(
-            self.server_config,
-            credentials,
-            self.session,
-            self._ssl,
+            server_config=self.server_config,
+            credentials=credentials,
+            session=self.session,
+            ssl_context=self._ssl,
         )
 
     async def __aenter__(self) -> OverkizClient:
