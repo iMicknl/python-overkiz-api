@@ -1,16 +1,6 @@
 """Server and API type enums used to select target Overkiz endpoints."""
 
-import sys
-from enum import unique
-
-# Since we support Python versions lower than 3.11, we use
-# a backport for StrEnum when needed.
-if sys.version_info >= (3, 11):
-    from enum import StrEnum
-else:
-    from backports.strenum import (  # ty: ignore[unresolved-import]
-        StrEnum,  # type: ignore[import]
-    )
+from enum import StrEnum, unique
 
 
 @unique
