@@ -30,3 +30,9 @@ repos:
         language: system
         types: [ python ]
         exclude: tests
+      - id: ty
+        name: ty check
+        entry: uv run ty check .
+        language: system
+        types: [python]
+        exclude: tests

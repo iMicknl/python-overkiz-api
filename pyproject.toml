@@ -74,7 +74,7 @@ packages = ["pyoverkiz"]
 only-packages = true
 
 [tool.mypy]
-exclude = "tests/"
+exclude = ["tests/"]
 ignore_missing_imports = true
 
 [tool.ty.src]
