@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import ssl
-from typing import Any
 
 from aiohttp import ClientSession
 
@@ -15,6 +14,7 @@ from pyoverkiz.auth.credentials import (
     UsernamePasswordCredentials,
 )
 from pyoverkiz.auth.strategies import (
+    AuthStrategy,
     BearerTokenAuthStrategy,
     CozytouchAuthStrategy,
     LocalTokenAuthStrategy,
@@ -33,7 +33,7 @@ def build_auth_strategy(
     credentials: Credentials,
     session: ClientSession,
     ssl_context: ssl.SSLContext | bool,
-) -> Any:
+) -> AuthStrategy:
     """Build the correct auth strategy for the given server and credentials."""
     server: Server | None = server_config.server
 

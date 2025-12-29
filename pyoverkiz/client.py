@@ -19,7 +19,7 @@ from aiohttp import (
     ServerDisconnectedError,
 )
 
-from pyoverkiz.auth import Credentials, build_auth_strategy
+from pyoverkiz.auth import AuthStrategy, Credentials, build_auth_strategy
 from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.enums import APIType, CommandMode, Server
 from pyoverkiz.exceptions import (
@@ -134,6 +134,7 @@ class OverkizClient:
     event_listener_id: str | None
     session: ClientSession
     _ssl: ssl.SSLContext | bool = True
+    _auth: AuthStrategy
 
     def __init__(
         self,
@@ -142,7 +143,6 @@ class OverkizClient:
         credentials: Credentials,
         verify_ssl: bool = True,
         session: ClientSession | None = None,
-        server_key: Server | str | None = None,
     ) -> None:
         """Constructor.
 
@@ -206,25 +206,6 @@ class OverkizClient:
             raise OverkizException(
                 f"Unknown server '{server_key}'. Provide a supported server key or ServerConfig instance."
             ) from error
-
-    def _resolve_server_key(self) -> Server:
-        """Infer a `Server` enum for the current server configuration."""
-        if self.server_config.server:
-            return self.server_config.server
-
-        for key, value in SUPPORTED_SERVERS.items():
-            if (
-                self.server_config is value
-                or self.server_config.endpoint == value.endpoint
-            ):
-                return Server(key)
-
-        if self.server_config.type == APIType.LOCAL:
-            return Server(Server.SOMFY_DEVELOPER_MODE)
-
-        raise OverkizException(
-            "Unknown server configuration; provide server_key explicitly."
-        )
 
     async def close(self) -> None:
         """Close the session."""
