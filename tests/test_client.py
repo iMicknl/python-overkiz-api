@@ -11,6 +11,10 @@ import pytest
 from pytest_asyncio import fixture
 
 from pyoverkiz import exceptions
+from pyoverkiz.auth.credentials import (
+    LocalTokenCredentials,
+    UsernamePasswordCredentials,
+)
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.enums import APIType, DataType
@@ -26,15 +30,17 @@ class TestOverkizClient:
     @fixture
     async def client(self):
         """Fixture providing an OverkizClient configured for the cloud server."""
-        return OverkizClient("username", "password", SUPPORTED_SERVERS["somfy_europe"])
+        return OverkizClient(
+            SUPPORTED_SERVERS["somfy_europe"],
+            UsernamePasswordCredentials("username", "password"),
+        )
 
     @fixture
     async def local_client(self):
         """Fixture providing an OverkizClient configured for a local (developer) server."""
         return OverkizClient(
-            "username",
-            "password",
             generate_local_server("gateway-1234-5678-1243.local:8443"),
+            LocalTokenCredentials("token"),
         )
 
     @pytest.mark.asyncio

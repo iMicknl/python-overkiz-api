@@ -15,6 +15,18 @@ NEXITY_COGNITO_CLIENT_ID = "3mca95jd5ase5lfde65rerovok"
 NEXITY_COGNITO_USER_POOL = "eu-west-1_wj277ucoI"
 NEXITY_COGNITO_REGION = "eu-west-1"
 
+REXEL_BACKEND_API = (
+    "https://app-ec-backend-enduser-prod.azurewebsites.net/api/enduser/overkiz/"
+)
+REXEL_OAUTH_CLIENT_ID = "2b635ede-c3fb-43bc-8d23-f6d17f80e96d"
+REXEL_OAUTH_SCOPE = "https://adb2cservicesfrenduserprod.onmicrosoft.com/94f05108-65f7-477a-a84d-e67e1aed6f79/ExternalProvider"
+REXEL_OAUTH_TENANT = (
+    "https://consumerlogin.rexelservices.fr/670998c0-f737-4d75-a32f-ba9292755b70"
+)
+REXEL_OAUTH_POLICY = "B2C_1A_SIGNINONLYHOMEASSISTANT"
+REXEL_OAUTH_TOKEN_URL = f"{REXEL_OAUTH_TENANT}/oauth2/v2.0/token?p={REXEL_OAUTH_POLICY}"
+REXEL_REQUIRED_CONSENT = "homeassistant"
+
 SOMFY_API = "https://accounts.somfy.com"
 SOMFY_CLIENT_ID = "0d8e920c-1478-11e7-a377-02dd59bd3041_1ewvaqmclfogo4kcsoo0c8k4kso884owg08sg8c40sk4go4ksg"
 SOMFY_CLIENT_SECRET = "12k73w1n540g8o4cokg0cw84cog840k84cwggscwg884004kgk"
@@ -78,7 +90,7 @@ SUPPORTED_SERVERS: dict[str, OverkizServer] = {
     ),
     Server.REXEL: OverkizServer(
         name="Rexel Energeasy Connect",
-        endpoint="https://ha112-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+        endpoint=REXEL_BACKEND_API,
         manufacturer="Rexel",
         configuration_url="https://utilisateur.energeasyconnect.com/user/#/zone/equipements",
     ),

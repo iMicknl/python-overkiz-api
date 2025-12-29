@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import asyncio
-import datetime
 import os
 import ssl
 import urllib.parse
@@ -13,38 +11,20 @@ from types import TracebackType
 from typing import Any, cast
 
 import backoff
-import boto3
 import humps
 from aiohttp import (
     ClientConnectorError,
     ClientResponse,
     ClientSession,
-    FormData,
     ServerDisconnectedError,
 )
-from botocore.client import BaseClient
-from botocore.config import Config
-from warrant_lite import WarrantLite
 
-from pyoverkiz.const import (
-    COZYTOUCH_ATLANTIC_API,
-    COZYTOUCH_CLIENT_ID,
-    LOCAL_API_PATH,
-    NEXITY_API,
-    NEXITY_COGNITO_CLIENT_ID,
-    NEXITY_COGNITO_REGION,
-    NEXITY_COGNITO_USER_POOL,
-    SOMFY_API,
-    SOMFY_CLIENT_ID,
-    SOMFY_CLIENT_SECRET,
-    SUPPORTED_SERVERS,
-)
-from pyoverkiz.enums import APIType, CommandMode, Server
+from pyoverkiz.auth import Credentials, build_auth_strategy
+from pyoverkiz.const import LOCAL_API_PATH, SUPPORTED_SERVERS
+from pyoverkiz.enums import APIType, Server
 from pyoverkiz.exceptions import (
     AccessDeniedToGatewayException,
     BadCredentialsException,
-    CozyTouchBadCredentialsException,
-    CozyTouchServiceException,
     ExecutionQueueFullException,
     InvalidCommandException,
     InvalidEventListenerIdException,
@@ -52,8 +32,6 @@ from pyoverkiz.exceptions import (
     MaintenanceException,
     MissingAPIKeyException,
     MissingAuthorizationTokenException,
-    NexityBadCredentialsException,
-    NexityServiceException,
     NoRegisteredEventListenerException,
     NoSuchResourceException,
     NotAuthenticatedException,
@@ -61,8 +39,6 @@ from pyoverkiz.exceptions import (
     OverkizException,
     ServiceUnavailableException,
     SessionAndBearerInSameRequestException,
-    SomfyBadCredentialsException,
-    SomfyServiceException,
     TooManyAttemptsBannedException,
     TooManyConcurrentRequestsException,
     TooManyExecutionsException,
@@ -73,6 +49,7 @@ from pyoverkiz.exceptions import (
 from pyoverkiz.models import (
     Action,
     ActionGroup,
+    CommandMode,
     Device,
     Event,
     Execution,
@@ -152,8 +129,6 @@ SSL_CONTEXT_LOCAL_API = _create_local_ssl_context()
 class OverkizClient:
     """Interface class for the Overkiz API."""
 
-    username: str
-    password: str
     server: OverkizServer
     setup: Setup | None
     devices: list[Device]
@@ -161,32 +136,22 @@ class OverkizClient:
     event_listener_id: str | None
     session: ClientSession
     api_type: APIType
-
-    _refresh_token: str | None = None
-    _expires_in: datetime.datetime | None = None
-    _access_token: str | None = None
     _ssl: ssl.SSLContext | bool = True
 
     def __init__(
         self,
-        username: str,
-        password: str,
         server: OverkizServer,
+        credentials: Credentials,
         verify_ssl: bool = True,
-        token: str | None = None,
         session: ClientSession | None = None,
+        server_key: Server | str | None = None,
     ) -> None:
         """Constructor.
 
-        :param username: the username
-        :param password: the password
         :param server: OverkizServer
         :param session: optional ClientSession
         """
-        self.username = username
-        self.password = password
         self.server = server
-        self._access_token = token
 
         self.setup: Setup | None = None
         self.devices: list[Device] = []
@@ -210,6 +175,11 @@ class OverkizClient:
         else:
             self.api_type = APIType.CLOUD
 
+        inferred_server_key = server_key or self._resolve_server_key()
+        self._auth = build_auth_strategy(
+            inferred_server_key, self.server, credentials, self.session, self._ssl
+        )
+
     async def __aenter__(self) -> OverkizClient:
         """Enter the async context manager and return the client."""
         return self
@@ -223,11 +193,24 @@ class OverkizClient:
         """Exit the async context manager and close the client session."""
         await self.close()
 
+    def _resolve_server_key(self) -> Server:
+        for key, value in SUPPORTED_SERVERS.items():
+            if self.server is value or self.server.endpoint == value.endpoint:
+                return Server(key)
+
+        if self.api_type == APIType.LOCAL:
+            return Server.SOMFY_DEVELOPER_MODE
+
+        raise OverkizException(
+            "Unknown server configuration; provide server_key explicitly."
+        )
+
     async def close(self) -> None:
         """Close the session."""
         if self.event_listener_id:
             await self.unregister_event_listener()
 
+        await self._auth.close()
         await self.session.close()
 
     async def login(
@@ -238,207 +221,20 @@ class OverkizClient:
 
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt].
         """
-        # Local authentication
+        await self._auth.login()
+
         if self.api_type == APIType.LOCAL:
             if register_event_listener:
                 await self.register_event_listener()
             else:
-                # Call a simple endpoint to verify if our token is correct
-                # Since local API does not have a /login endpoint
                 await self.get_gateways()
 
             return True
 
-        # Somfy TaHoma authentication using access_token
-        if self.server == SUPPORTED_SERVERS[Server.SOMFY_EUROPE]:
-            await self.somfy_tahoma_get_access_token()
+        if register_event_listener:
+            await self.register_event_listener()
 
-            if register_event_listener:
-                await self.register_event_listener()
-
-            return True
-
-        # CozyTouch authentication using jwt
-        if self.server in [
-            SUPPORTED_SERVERS[Server.ATLANTIC_COZYTOUCH],
-            SUPPORTED_SERVERS[Server.THERMOR_COZYTOUCH],
-            SUPPORTED_SERVERS[Server.SAUTER_COZYTOUCH],
-        ]:
-            jwt = await self.cozytouch_login()
-            payload = {"jwt": jwt}
-
-        # Nexity authentication using ssoToken
-        elif self.server == SUPPORTED_SERVERS[Server.NEXITY]:
-            sso_token = await self.nexity_login()
-            user_id = self.username.replace("@", "_-_")  # Replace @ for _-_
-            payload = {"ssoToken": sso_token, "userId": user_id}
-
-        # Regular authentication using userId+userPassword
-        else:
-            payload = {"userId": self.username, "userPassword": self.password}
-
-        response = await self.__post("login", data=payload)
-
-        if response.get("success"):
-            if register_event_listener:
-                await self.register_event_listener()
-            return True
-
-        return False
-
-    async def somfy_tahoma_get_access_token(self) -> str:
-        """Authenticate via Somfy identity and acquire access_token."""
-        # Request access token
-        async with self.session.post(
-            SOMFY_API + "/oauth/oauth/v2/token/jwt",
-            data=FormData(
-                {
-                    "grant_type": "password",
-                    "username": self.username,
-                    "password": self.password,
-                    "client_id": SOMFY_CLIENT_ID,
-                    "client_secret": SOMFY_CLIENT_SECRET,
-                }
-            ),
-            headers={
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-        ) as response:
-            token = await response.json()
-
-            # { "message": "error.invalid.grant", "data": [], "uid": "xxx" }
-            if "message" in token and token["message"] == "error.invalid.grant":
-                raise SomfyBadCredentialsException(token["message"])
-
-            if "access_token" not in token:
-                raise SomfyServiceException("No Somfy access token provided.")
-
-            self._access_token = cast(str, token["access_token"])
-            self._refresh_token = token["refresh_token"]
-            self._expires_in = datetime.datetime.now() + datetime.timedelta(
-                seconds=token["expires_in"] - 5
-            )
-
-            return self._access_token
-
-    async def refresh_token(self) -> None:
-        """Update the access and the refresh token. The refresh token will be valid 14 days."""
-        if self.server != SUPPORTED_SERVERS[Server.SOMFY_EUROPE]:
-            return
-
-        if not self._refresh_token:
-            raise ValueError("No refresh token provided. Login method must be used.")
-
-        # &grant_type=refresh_token&refresh_token=REFRESH_TOKEN
-        # Request access token
-        async with self.session.post(
-            SOMFY_API + "/oauth/oauth/v2/token/jwt",
-            data=FormData(
-                {
-                    "grant_type": "refresh_token",
-                    "refresh_token": self._refresh_token,
-                    "client_id": SOMFY_CLIENT_ID,
-                    "client_secret": SOMFY_CLIENT_SECRET,
-                }
-            ),
-            headers={
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-        ) as response:
-            token = await response.json()
-            # { "message": "error.invalid.grant", "data": [], "uid": "xxx" }
-            if "message" in token and token["message"] == "error.invalid.grant":
-                raise SomfyBadCredentialsException(token["message"])
-
-            if "access_token" not in token:
-                raise SomfyServiceException("No Somfy access token provided.")
-
-            self._access_token = cast(str, token["access_token"])
-            self._refresh_token = token["refresh_token"]
-            self._expires_in = datetime.datetime.now() + datetime.timedelta(
-                seconds=token["expires_in"] - 5
-            )
-
-    async def cozytouch_login(self) -> str:
-        """Authenticate via CozyTouch identity and acquire JWT token."""
-        # Request access token
-        async with self.session.post(
-            COZYTOUCH_ATLANTIC_API + "/token",
-            data=FormData(
-                {
-                    "grant_type": "password",
-                    "username": "GA-PRIVATEPERSON/" + self.username,
-                    "password": self.password,
-                }
-            ),
-            headers={
-                "Authorization": f"Basic {COZYTOUCH_CLIENT_ID}",
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-        ) as response:
-            token = await response.json()
-
-            # {'error': 'invalid_grant',
-            # 'error_description': 'Provided Authorization Grant is invalid.'}
-            if "error" in token and token["error"] == "invalid_grant":
-                raise CozyTouchBadCredentialsException(token["error_description"])
-
-            if "token_type" not in token:
-                raise CozyTouchServiceException("No CozyTouch token provided.")
-
-        # Request JWT
-        async with self.session.get(
-            COZYTOUCH_ATLANTIC_API + "/magellan/accounts/jwt",
-            headers={"Authorization": f"Bearer {token['access_token']}"},
-        ) as response:
-            jwt = await response.text()
-
-            if not jwt:
-                raise CozyTouchServiceException("No JWT token provided.")
-
-            jwt = jwt.strip('"')  # Remove surrounding quotes
-
-            return jwt
-
-    async def nexity_login(self) -> str:
-        """Authenticate via Nexity identity and acquire SSO token."""
-        loop = asyncio.get_event_loop()
-
-        def _get_client() -> BaseClient:
-            return boto3.client(
-                "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
-            )
-
-        # Request access token
-        client = await loop.run_in_executor(None, _get_client)
-
-        aws = WarrantLite(
-            username=self.username,
-            password=self.password,
-            pool_id=NEXITY_COGNITO_USER_POOL,
-            client_id=NEXITY_COGNITO_CLIENT_ID,
-            client=client,
-        )
-
-        try:
-            tokens = await loop.run_in_executor(None, aws.authenticate_user)
-        except Exception as error:
-            raise NexityBadCredentialsException() from error
-
-        id_token = tokens["AuthenticationResult"]["IdToken"]
-
-        async with self.session.get(
-            NEXITY_API + "/deploy/api/v1/domotic/token",
-            headers={
-                "Authorization": id_token,
-            },
-        ) as response:
-            token = await response.json()
-
-            if "token" not in token:
-                raise NexityServiceException("No Nexity SSO token provided.")
-
-            return cast(str, token["token"])
+        return True
 
     @retry_on_auth_error
     async def get_setup(self, refresh: bool = False) -> Setup:
@@ -787,11 +583,8 @@ class OverkizClient:
 
     async def __get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API."""
-        headers = {}
-
         await self._refresh_token_if_expired()
-        if self._access_token:
-            headers["Authorization"] = f"Bearer {self._access_token}"
+        headers = dict(self._auth.auth_headers(path))
 
         async with self.session.get(
             f"{self.server.endpoint}{path}",
@@ -805,11 +598,8 @@ class OverkizClient:
         self, path: str, payload: JSON | None = None, data: JSON | None = None
     ) -> Any:
         """Make a POST request to the OverKiz API."""
-        headers = {}
-
-        if path != "login" and self._access_token:
-            await self._refresh_token_if_expired()
-            headers["Authorization"] = f"Bearer {self._access_token}"
+        await self._refresh_token_if_expired()
+        headers = dict(self._auth.auth_headers(path))
 
         async with self.session.post(
             f"{self.server.endpoint}{path}",
@@ -823,12 +613,8 @@ class OverkizClient:
 
     async def __delete(self, path: str) -> None:
         """Make a DELETE request to the OverKiz API."""
-        headers = {}
-
         await self._refresh_token_if_expired()
-
-        if self._access_token:
-            headers["Authorization"] = f"Bearer {self._access_token}"
+        headers = dict(self._auth.auth_headers(path))
 
         async with self.session.delete(
             f"{self.server.endpoint}{path}",
@@ -946,12 +732,7 @@ class OverkizClient:
 
     async def _refresh_token_if_expired(self) -> None:
         """Check if token is expired and request a new one."""
-        if (
-            self._expires_in
-            and self._refresh_token
-            and self._expires_in <= datetime.datetime.now()
-        ):
-            await self.refresh_token()
+        refreshed = await self._auth.refresh_if_needed()
 
-            if self.event_listener_id:
-                await self.register_event_listener()
+        if refreshed and self.event_listener_id:
+            await self.register_event_listener()
