@@ -11,7 +11,7 @@ else:
 
 @unique
 class MeasuredValueType(StrEnum):
-    """See https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode/issues/68#issuecomment-1281474879"""
+    """See https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode/issues/68#issuecomment-1281474879."""
 
     ABSOLUTE_VALUE = "core:AbsoluteValue"
     ANGLE_IN_DEGREES = "core:AngleInDegrees"
