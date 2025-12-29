@@ -1,7 +1,7 @@
 [project]
 name = "pyoverkiz"
-version = "1.20.1"
-description = "Async Python client to interact with internal OverKiz API (e.g. used by Somfy TaHoma)."
+version = "2.0.0"
+description = "A fully asynchronous API client for interaction with smart devices connected to OverKiz, supporting multiple vendors such as Somfy TaHoma and Atlantic Cozytouch."
 readme = "README.md"
 authors = [
     {name = "Mick Vleeshouwer", email = "mick@imick.nl"},
@@ -88,8 +88,3 @@ ignore_missing_imports = true
 
 [tool.ty.src]
 exclude = ["tests/"]
-
-[tool.ty.rules]
-# This project uses both mypy and ty; mypy's `type: ignore` comments
-# should not be flagged as unused by ty.
-unused-type-ignore-comment = "ignore"
