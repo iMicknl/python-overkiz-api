@@ -608,8 +608,8 @@ class Action:
 
 @define(init=False, kw_only=True)
 class ActionGroup:
-    """
-    An action group is composed of one or more actions.
+    """An action group is composed of one or more actions.
+
     Each action is related to a single setup device (designated by its device URL) and
     is composed of one or more commands to be executed on that device.
     """
