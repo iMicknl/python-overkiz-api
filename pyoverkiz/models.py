@@ -843,6 +843,26 @@ class Place:
     oid: str
     sub_places: list[Place]
 
+    def __init__(
+        self,
+        *,
+        creation_time: int,
+        last_update_time: int | None = None,
+        label: str,
+        type: int,
+        oid: str,
+        sub_places: list[Any] | None,
+        **_: Any,
+    ) -> None:
+        """Initialize Place from API data and convert nested sub-places."""
+        self.id = oid
+        self.creation_time = creation_time
+        self.last_update_time = last_update_time
+        self.label = label
+        self.type = type
+        self.oid = oid
+        self.sub_places = [Place(**p) for p in sub_places] if sub_places else []
+
 
 @define(kw_only=True)
 class Feature:
@@ -935,3 +955,22 @@ class Option:
     option_id: str
     start_date: int
     parameters: list[OptionParameter] | None
+
+    def __init__(
+        self,
+        *,
+        creation_time: int,
+        last_update_time: int,
+        option_id: str,
+        start_date: int,
+        parameters: list[dict[str, Any]] | None,
+        **_: Any,
+    ) -> None:
+        """Initialize Option from API data and convert nested parameters."""
+        self.creation_time = creation_time
+        self.last_update_time = last_update_time
+        self.option_id = option_id
+        self.start_date = start_date
+        self.parameters = (
+            [OptionParameter(**p) for p in parameters] if parameters else []
+        )

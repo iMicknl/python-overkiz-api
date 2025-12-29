@@ -26,6 +26,11 @@ class ExecutionType(StrEnum):
     RAW_TRIGGER_SERVER = "Raw trigger (Server)"
     RAW_TRIGGER_GATEWAY = "Raw trigger (Gateway)"
 
+    @classmethod
+    def _missing_(cls, value):  # type: ignore
+        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
+        return cls.UNKNOWN
+
 
 @unique
 class ExecutionState(StrEnum):
