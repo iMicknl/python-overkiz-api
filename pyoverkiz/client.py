@@ -71,6 +71,7 @@ from pyoverkiz.exceptions import (
     UnknownUserException,
 )
 from pyoverkiz.models import (
+    ActionGroup,
     Command,
     Device,
     Event,
@@ -82,7 +83,6 @@ from pyoverkiz.models import (
     OptionParameter,
     OverkizServer,
     Place,
-    Scenario,
     Setup,
     State,
 )
@@ -665,10 +665,12 @@ class OverkizClient:
         return cast(str, response["execId"])
 
     @retry_on_auth_error
-    async def get_scenarios(self) -> list[Scenario]:
-        """List the scenarios."""
+    async def get_action_groups(self) -> list[ActionGroup]:
+        """List the action groups (scenarios)."""
         response = await self.__get("actionGroups")
-        return [Scenario(**scenario) for scenario in humps.decamelize(response)]
+        return [
+            ActionGroup(**action_group) for action_group in humps.decamelize(response)
+        ]
 
     @retry_on_auth_error
     async def get_places(self) -> Place:
