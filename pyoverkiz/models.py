@@ -971,18 +971,6 @@ class ServerConfig:
 
 
 @define(kw_only=True)
-class LocalToken:
-    """Descriptor for a local gateway token."""
-
-    label: str
-    gateway_id: str = field(repr=obfuscate_id, default=None)
-    gateway_creation_time: int
-    uuid: str
-    scope: str
-    expiration_time: int | None
-
-
-@define(kw_only=True)
 class OptionParameter:
     """Key/value pair representing option parameter."""
 

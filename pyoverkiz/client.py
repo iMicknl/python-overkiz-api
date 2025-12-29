@@ -54,7 +54,6 @@ from pyoverkiz.models import (
     Execution,
     Gateway,
     HistoryExecution,
-    LocalToken,
     Option,
     OptionParameter,
     Place,
@@ -494,54 +493,6 @@ class OverkizClient:
         response = await self.__get("setup/places")
         places = Place(**humps.decamelize(response))
         return places
-
-    @retry_on_auth_error
-    async def generate_local_token(self, gateway_id: str) -> str:
-        """Generates a new token.
-
-        Access scope : Full enduser API access (enduser/*).
-        """
-        response = await self.__get(f"config/{gateway_id}/local/tokens/generate")
-
-        return cast(str, response["token"])
-
-    @retry_on_auth_error
-    async def activate_local_token(
-        self, gateway_id: str, token: str, label: str, scope: str = "devmode"
-    ) -> str:
-        """Create a token.
-
-        Access scope : Full enduser API access (enduser/*).
-        """
-        response = await self.__post(
-            f"config/{gateway_id}/local/tokens",
-            {"label": label, "token": token, "scope": scope},
-        )
-
-        return cast(str, response["requestId"])
-
-    @retry_on_auth_error
-    async def get_local_tokens(
-        self, gateway_id: str, scope: str = "devmode"
-    ) -> list[LocalToken]:
-        """Get all gateway tokens with the given scope.
-
-        Access scope : Full enduser API access (enduser/*).
-        """
-        response = await self.__get(f"config/{gateway_id}/local/tokens/{scope}")
-        local_tokens = [LocalToken(**lt) for lt in humps.decamelize(response)]
-
-        return local_tokens
-
-    @retry_on_auth_error
-    async def delete_local_token(self, gateway_id: str, uuid: str) -> bool:
-        """Delete a token.
-
-        Access scope : Full enduser API access (enduser/*).
-        """
-        await self.__delete(f"config/{gateway_id}/local/tokens/{uuid}")
-
-        return True
 
     @retry_on_auth_error
     async def execute_scenario(self, oid: str) -> str:
