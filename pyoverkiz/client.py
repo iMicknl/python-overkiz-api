@@ -172,15 +172,13 @@ class OverkizClient:
         token: str | None = None,
         session: ClientSession | None = None,
     ) -> None:
-        """
-        Constructor
+        """Constructor
 
         :param username: the username
         :param password: the password
         :param server: OverkizServer
         :param session: optional ClientSession
         """
-
         self.username = username
         self.password = password
         self.server = server
@@ -230,8 +228,7 @@ class OverkizClient:
         self,
         register_event_listener: bool | None = True,
     ) -> bool:
-        """
-        Authenticate and create an API session allowing access to the other operations.
+        """Authenticate and create an API session allowing access to the other operations.
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt]
         """
         # Local authentication
@@ -283,9 +280,7 @@ class OverkizClient:
         return False
 
     async def somfy_tahoma_get_access_token(self) -> str:
-        """
-        Authenticate via Somfy identity and acquire access_token.
-        """
+        """Authenticate via Somfy identity and acquire access_token."""
         # Request access token
         async with self.session.post(
             SOMFY_API + "/oauth/oauth/v2/token/jwt",
@@ -320,9 +315,7 @@ class OverkizClient:
             return self._access_token
 
     async def refresh_token(self) -> None:
-        """
-        Update the access and the refresh token. The refresh token will be valid 14 days.
-        """
+        """Update the access and the refresh token. The refresh token will be valid 14 days."""
         if self.server != SUPPORTED_SERVERS[Server.SOMFY_EUROPE]:
             return
 
@@ -360,9 +353,7 @@ class OverkizClient:
             )
 
     async def cozytouch_login(self) -> str:
-        """
-        Authenticate via CozyTouch identity and acquire JWT token.
-        """
+        """Authenticate via CozyTouch identity and acquire JWT token."""
         # Request access token
         async with self.session.post(
             COZYTOUCH_ATLANTIC_API + "/token",
@@ -403,9 +394,7 @@ class OverkizClient:
             return jwt
 
     async def nexity_login(self) -> str:
-        """
-        Authenticate via Nexity identity and acquire SSO token.
-        """
+        """Authenticate via Nexity identity and acquire SSO token."""
         loop = asyncio.get_event_loop()
 
         def _get_client() -> boto3.session.Session.client:
@@ -446,8 +435,7 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def get_setup(self, refresh: bool = False) -> Setup:
-        """
-        Get all data about the connected user setup
+        """Get all data about the connected user setup
             -> gateways data (serial number, activation state, ...): <gateways/gateway>
             -> setup location: <location>
             -> house places (rooms and floors): <place>
@@ -478,8 +466,7 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def get_diagnostic_data(self) -> JSON:
-        """
-        Get all data about the connected user setup
+        """Get all data about the connected user setup
             -> gateways data (serial number, activation state, ...): <gateways/gateway>
             -> setup location: <location>
             -> house places (rooms and floors): <place>
@@ -493,8 +480,7 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def get_devices(self, refresh: bool = False) -> list[Device]:
-        """
-        List devices
+        """List devices
         Per-session rate-limit : 1 calls per 1d period for this particular operation (bulk-load)
         """
         if self.devices and not refresh:
@@ -512,8 +498,7 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def get_gateways(self, refresh: bool = False) -> list[Gateway]:
-        """
-        Get every gateways of a connected user setup
+        """Get every gateways of a connected user setup
         Per-session rate-limit : 1 calls per 1d period for this particular operation (bulk-load)
         """
         if self.gateways and not refresh:
@@ -531,9 +516,7 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def get_execution_history(self) -> list[HistoryExecution]:
-        """
-        List execution history
-        """
+        """List execution history"""
         response = await self.__get("history/executions")
         execution_history = [HistoryExecution(**h) for h in humps.decamelize(response)]
 
@@ -541,9 +524,7 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def get_device_definition(self, deviceurl: str) -> JSON | None:
-        """
-        Retrieve a particular setup device definition
-        """
+        """Retrieve a particular setup device definition"""
         response: dict = await self.__get(
             f"setup/devices/{urllib.parse.quote_plus(deviceurl)}"
         )
@@ -552,9 +533,7 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def get_state(self, deviceurl: str) -> list[State]:
-        """
-        Retrieve states of requested device
-        """
+        """Retrieve states of requested device"""
         response = await self.__get(
             f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/states"
         )
@@ -564,24 +543,19 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def refresh_states(self) -> None:
-        """
-        Ask the box to refresh all devices states for protocols supporting that operation
-        """
+        """Ask the box to refresh all devices states for protocols supporting that operation"""
         await self.__post("setup/devices/states/refresh")
 
     @retry_on_auth_error
     async def refresh_device_states(self, deviceurl: str) -> None:
-        """
-        Ask the box to refresh all states of the given device for protocols supporting that operation
-        """
+        """Ask the box to refresh all states of the given device for protocols supporting that operation"""
         await self.__post(
             f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/states/refresh"
         )
 
     @retry_on_concurrent_requests
     async def register_event_listener(self) -> str:
-        """
-        Register a new setup event listener on the current session and return a new
+        """Register a new setup event listener on the current session and return a new
         listener id.
         Only one listener may be registered on a given session.
         Registering an new listener will invalidate the previous one if any.
@@ -599,8 +573,7 @@ class OverkizClient:
     @retry_on_auth_error
     @retry_on_listener_error
     async def fetch_events(self) -> list[Event]:
-        """
-        Fetch new events from a registered event listener. Fetched events are removed
+        """Fetch new events from a registered event listener. Fetched events are removed
         from the listener buffer. Return an empty response if no event is available.
         Per-session rate-limit : 1 calls per 1 SECONDS period for this particular
         operation (polling)
@@ -612,8 +585,7 @@ class OverkizClient:
         return events
 
     async def unregister_event_listener(self) -> None:
-        """
-        Unregister an event listener.
+        """Unregister an event listener.
         API response status is always 200, even on unknown listener ids.
         """
         await self._refresh_token_if_expired()
@@ -694,8 +666,7 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def generate_local_token(self, gateway_id: str) -> str:
-        """
-        Generates a new token
+        """Generates a new token
         Access scope : Full enduser API access (enduser/*)
         """
         response = await self.__get(f"config/{gateway_id}/local/tokens/generate")
@@ -706,8 +677,7 @@ class OverkizClient:
     async def activate_local_token(
         self, gateway_id: str, token: str, label: str, scope: str = "devmode"
     ) -> str:
-        """
-        Create a token
+        """Create a token
         Access scope : Full enduser API access (enduser/*)
         """
         response = await self.__post(
@@ -721,8 +691,7 @@ class OverkizClient:
     async def get_local_tokens(
         self, gateway_id: str, scope: str = "devmode"
     ) -> list[LocalToken]:
-        """
-        Get all gateway tokens with the given scope
+        """Get all gateway tokens with the given scope
         Access scope : Full enduser API access (enduser/*)
         """
         response = await self.__get(f"config/{gateway_id}/local/tokens/{scope}")
@@ -732,8 +701,7 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def delete_local_token(self, gateway_id: str, uuid: str) -> bool:
-        """
-        Delete a token
+        """Delete a token
         Access scope : Full enduser API access (enduser/*)
         """
         await self.__delete(f"config/{gateway_id}/local/tokens/{uuid}")
@@ -754,8 +722,7 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def get_setup_options(self) -> list[Option]:
-        """
-        This operation returns all subscribed options of a given setup.
+        """This operation returns all subscribed options of a given setup.
         Per-session rate-limit : 1 calls per 1d period for this particular operation (bulk-load)
         Access scope : Full enduser API access (enduser/*)
         """
@@ -766,8 +733,7 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def get_setup_option(self, option: str) -> Option | None:
-        """
-        This operation returns the selected subscribed option of a given setup.
+        """This operation returns the selected subscribed option of a given setup.
         For example `developerMode-{gateway_id}` to understand if developer mode is on.
         """
         response = await self.__get(f"setup/options/{option}")
@@ -781,8 +747,7 @@ class OverkizClient:
     async def get_setup_option_parameter(
         self, option: str, parameter: str
     ) -> OptionParameter | None:
-        """
-        This operation returns the selected parameters of a given setup and option.
+        """This operation returns the selected parameters of a given setup and option.
         For example `developerMode-{gateway_id}` and `gatewayId` to understand if developer mode is on.
 
         If the option is not available, an OverkizException will be thrown.

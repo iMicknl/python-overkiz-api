@@ -541,9 +541,7 @@ class Execution:
 
 @define(init=False, kw_only=True)
 class Action:
-    """
-    An action consists of multiple commands related to a single device, identified by its device URL.
-    """
+    """An action consists of multiple commands related to a single device, identified by its device URL."""
 
     device_url: str
     commands: list[Command]
@@ -555,8 +553,7 @@ class Action:
 
 @define(init=False, kw_only=True)
 class Scenario:
-    """
-    An action group is composed of one or more actions.
+    """An action group is composed of one or more actions.
     Each action is related to a single setup device (designated by its device URL) and
     is composed of one or more commands to be executed on that device.
     """
