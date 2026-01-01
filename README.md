@@ -38,7 +38,6 @@ import asyncio
 import time
 
 from pyoverkiz.auth.credentials import UsernamePasswordCredentials
-from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.models import Action
 from pyoverkiz.enums import Server, OverkizCommand
