@@ -166,8 +166,12 @@ class OverkizClient:
         if self.server_config.type == APIType.LOCAL and verify_ssl:
             # To avoid security issues while authentication to local API, we add the following authority to
             # our HTTPS client trust store: https://ca.overkiz.com/overkiz-root-ca-2048.crt
-            # Create a new SSL context to avoid mutating the shared global context
-            self._ssl = _create_local_ssl_context()
+            # Create a copy of the SSL context to avoid mutating the shared global context
+            self._ssl = ssl.SSLContext(SSL_CONTEXT_LOCAL_API.protocol)
+            self._ssl.load_verify_locations(
+                cafile=os.path.dirname(os.path.realpath(__file__))
+                + "/overkiz-root-ca-2048.crt"
+            )
 
             # Disable strict validation introduced in Python 3.13, which doesn't
             # work with Overkiz self-signed gateway certificates
