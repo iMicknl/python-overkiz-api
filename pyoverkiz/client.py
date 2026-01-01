@@ -19,6 +19,7 @@ from aiohttp import (
     ClientConnectorError,
     ClientResponse,
     ClientSession,
+    ClientTimeout,
     FormData,
     ServerDisconnectedError,
 )
@@ -161,6 +162,7 @@ class OverkizClient:
     event_listener_id: str | None
     session: ClientSession
     api_type: APIType
+    request_timeout: ClientTimeout
 
     _refresh_token: str | None = None
     _expires_in: datetime.datetime | None = None
@@ -175,13 +177,17 @@ class OverkizClient:
         verify_ssl: bool = True,
         token: str | None = None,
         session: ClientSession | None = None,
+        request_timeout: ClientTimeout | None = None,
     ) -> None:
         """Constructor.
 
         :param username: the username
         :param password: the password
         :param server: OverkizServer
-        :param session: optional ClientSession
+        :param verify_ssl: whether to verify SSL certificates
+        :param token: optional access token
+        :param session: optional ClientSession (if provided, request_timeout will be applied to operations)
+        :param request_timeout: optional ClientTimeout for requests (uses optimized defaults if not provided)
         """
         self.username = username
         self.password = password
@@ -193,7 +199,6 @@ class OverkizClient:
         self.gateways: list[Gateway] = []
         self.event_listener_id: str | None = None
 
-        self.session = session if session else ClientSession()
         self._ssl = verify_ssl
 
         if LOCAL_API_PATH in self.server.endpoint:
@@ -209,6 +214,29 @@ class OverkizClient:
                 self._ssl.verify_flags &= ~ssl.VERIFY_X509_STRICT
         else:
             self.api_type = APIType.CLOUD
+
+        # Set request timeout with optimized defaults for local API
+        if request_timeout is not None:
+            self.request_timeout = request_timeout
+        elif self.api_type == APIType.LOCAL:
+            # Local API: tight polling every 5s requires fast timeouts to detect dead connections
+            # mDNS (.local) addresses can have resolution delays, so we need reasonable connect timeout
+            self.request_timeout = ClientTimeout(
+                total=25,  # 25s total (leaves margin for 5s polling interval)
+                connect=5,  # 5s for TCP+mDNS resolution
+                sock_read=15,  # 15s to get first byte from gateway
+                sock_connect=5,  # 5s for socket connection
+            )
+        else:
+            # Cloud API: standard timeouts
+            self.request_timeout = ClientTimeout(
+                total=30,  # 30s total
+                connect=10,  # 10s to connect
+                sock_read=20,  # 20s to get first byte
+                sock_connect=10,  # 10s for socket connection
+            )
+
+        self.session = session if session else ClientSession()
 
     async def __aenter__(self) -> OverkizClient:
         """Enter the async context manager and return the client."""
@@ -797,6 +825,7 @@ class OverkizClient:
             f"{self.server.endpoint}{path}",
             headers=headers,
             ssl=self._ssl,
+            timeout=self.request_timeout,
         ) as response:
             await self.check_response(response)
             return await response.json()
@@ -817,6 +846,7 @@ class OverkizClient:
             json=payload,
             headers=headers,
             ssl=self._ssl,
+            timeout=self.request_timeout,
         ) as response:
             await self.check_response(response)
             return await response.json()
@@ -834,6 +864,7 @@ class OverkizClient:
             f"{self.server.endpoint}{path}",
             headers=headers,
             ssl=self._ssl,
+            timeout=self.request_timeout,
         ) as response:
             await self.check_response(response)
 

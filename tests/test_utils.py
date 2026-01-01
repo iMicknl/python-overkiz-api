@@ -2,7 +2,11 @@
 
 import pytest
 
-from pyoverkiz.utils import generate_local_server, is_overkiz_gateway
+from pyoverkiz.utils import (
+    generate_local_server,
+    is_overkiz_gateway,
+    resolve_mdns_hostname,
+)
 
 LOCAL_HOST = "gateway-1234-5678-1243.local:8443"
 LOCAL_HOST_BY_IP = "192.168.1.105:8443"
@@ -53,3 +57,34 @@ class TestUtils:
     def test_is_overkiz_gateway(self, gateway_id: str, overkiz_gateway: bool):
         """Detect whether a gateway id follows the Overkiz gateway pattern."""
         assert is_overkiz_gateway(gateway_id) == overkiz_gateway
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize(
+        "hostname, expected_type, expected_value",
+        [
+            # Already IP addresses - should return as-is
+            ("192.168.1.100", str, "192.168.1.100"),
+            ("192.168.1.100:8443", str, "192.168.1.100:8443"),
+            ("127.0.0.1", str, "127.0.0.1"),
+            # Non-.local hostnames - should return as-is
+            ("example.com", str, "example.com"),
+            ("example.com:8443", str, "example.com:8443"),
+            # .local addresses - returns False when resolution fails (in unit tests)
+            ("gateway-xxxx-xxxx-xxxx.local", bool, False),
+            ("gateway-xxxx-xxxx-xxxx.local:8443", bool, False),
+        ],
+    )
+    async def test_resolve_mdns_hostname(
+        self, hostname: str, expected_type: type, expected_value: str | bool
+    ):
+        """Test asynchronous mDNS resolution with new str | bool return type.
+
+        Returns str for IPs/non-.local hostnames or resolved .local addresses.
+        Returns False when .local resolution fails.
+        """
+        result = await resolve_mdns_hostname(hostname)
+        assert isinstance(result, expected_type)
+        assert result == expected_value or (
+            isinstance(result, str)
+            and result.startswith(("192.", "127.", "10.", "172.", "169."))
+        )
