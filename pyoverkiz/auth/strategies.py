@@ -121,6 +121,10 @@ class SessionLoginStrategy(BaseAuthStrategy):
                     f"Login failed for {self.server.name}: {response.status}"
                 )
 
+            # A 204 No Content response cannot have a body, so skip JSON parsing.
+            if response.status == 204:
+                return
+
             result = await response.json()
             if not result.get("success"):
                 raise BadCredentialsException("Login failed: bad credentials")
@@ -200,9 +204,9 @@ class SomfyAuthStrategy(BaseAuthStrategy):
             self.context.refresh_token = token.get("refresh_token")
             expires_in = token.get("expires_in")
             if expires_in:
-                self.context.expires_at = datetime.datetime.now() + datetime.timedelta(
-                    seconds=cast(int, expires_in) - 5
-                )
+                self.context.expires_at = datetime.datetime.now(
+                    datetime.UTC
+                ) + datetime.timedelta(seconds=cast(int, expires_in) - 5)
 
 
 class CozytouchAuthStrategy(SessionLoginStrategy):
@@ -394,6 +398,18 @@ class RexelAuthStrategy(BaseAuthStrategy):
         ) as response:
             token = await response.json()
 
+            # Handle OAuth error responses explicitly before accessing the access token.
+            error = token.get("error")
+            if error:
+                description = token.get("error_description") or token.get("message")
+                if description:
+                    raise InvalidTokenException(
+                        f"Error retrieving Rexel access token: {description}"
+                    )
+                raise InvalidTokenException(
+                    f"Error retrieving Rexel access token: {error}"
+                )
+
             access_token = token.get("access_token")
             if not access_token:
                 raise InvalidTokenException("No Rexel access token provided.")
@@ -403,9 +419,9 @@ class RexelAuthStrategy(BaseAuthStrategy):
             self.context.refresh_token = token.get("refresh_token")
             expires_in = token.get("expires_in")
             if expires_in:
-                self.context.expires_at = datetime.datetime.now() + datetime.timedelta(
-                    seconds=cast(int, expires_in) - 5
-                )
+                self.context.expires_at = datetime.datetime.now(
+                    datetime.UTC
+                ) + datetime.timedelta(seconds=cast(int, expires_in) - 5)
 
     @staticmethod
     def _ensure_consent(access_token: str) -> None:
