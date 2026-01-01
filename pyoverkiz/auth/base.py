@@ -21,9 +21,9 @@ class AuthContext:
         if not self.expires_at:
             return False
 
-        return datetime.datetime.now() >= self.expires_at - datetime.timedelta(
-            seconds=skew_seconds
-        )
+        return datetime.datetime.now(
+            datetime.UTC
+        ) >= self.expires_at - datetime.timedelta(seconds=skew_seconds)
 
 
 class AuthStrategy(Protocol):

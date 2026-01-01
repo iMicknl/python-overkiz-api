@@ -37,15 +37,16 @@ def create_server_config(
     configuration_url: str | None = None,
 ) -> ServerConfig:
     """Generate server configuration with the provided endpoint and metadata."""
+    # TODO fix: ServerConfig.__init__ handles the enum conversion, but mypy doesn't recognize
+    # this due to attrs @define decorator generating __init__ with stricter signatures,
+    # so we need type: ignore comments.
     return ServerConfig(
-        server=server
-        if isinstance(server, Server) or server is None
-        else Server(server),
+        server=server,  # type: ignore[arg-type]
         name=name,
         endpoint=endpoint,
         manufacturer=manufacturer,
         configuration_url=configuration_url,
-        type=type if isinstance(type, APIType) else APIType(type),
+        type=type,  # type: ignore[arg-type]
     )
 
 
