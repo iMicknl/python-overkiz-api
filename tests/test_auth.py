@@ -3,8 +3,7 @@
 from __future__ import annotations
 
 import datetime
-import ssl
-from unittest.mock import AsyncMock, MagicMock, Mock, patch
+from unittest.mock import AsyncMock, MagicMock
 
 import pytest
 from aiohttp import ClientSession
@@ -108,9 +107,7 @@ class TestAuthFactory:
     def test_ensure_username_password_invalid(self):
         """Test that invalid credentials raise TypeError."""
         creds = TokenCredentials("token")
-        with pytest.raises(
-            TypeError, match="UsernamePasswordCredentials are required"
-        ):
+        with pytest.raises(TypeError, match="UsernamePasswordCredentials are required"):
             _ensure_username_password(creds)
 
     def test_ensure_token_valid(self):
@@ -332,9 +329,7 @@ class TestAuthFactory:
         credentials = TokenCredentials("token")  # Wrong type for Somfy
         session = AsyncMock(spec=ClientSession)
 
-        with pytest.raises(
-            TypeError, match="UsernamePasswordCredentials are required"
-        ):
+        with pytest.raises(TypeError, match="UsernamePasswordCredentials are required"):
             build_auth_strategy(
                 server_config=server_config,
                 credentials=credentials,
