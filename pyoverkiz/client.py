@@ -212,7 +212,7 @@ class OverkizClient:
                 raise ValueError("action_queue_delay must be positive")
             if action_queue_max_actions < 1:
                 raise ValueError("action_queue_max_actions must be at least 1")
-            
+
             self._action_queue = ActionQueue(
                 executor=self._execute_action_group_direct,
                 delay=action_queue_delay,
@@ -710,7 +710,7 @@ class OverkizClient:
         :param mode: Command mode (GEOLOCATED, INTERNAL, HIGH_PRIORITY, or None)
         :param label: Label for the action group
         :return: exec_id string from the executed action group
-        
+
         Example usage::
 
             # Works the same with or without queue

@@ -90,7 +90,7 @@ class ActionQueue:
         :return: QueuedExecution that resolves to exec_id when batch executes
         """
         batch_to_execute = None
-        
+
         async with self._lock:
             # If mode or label changes, flush existing queue first
             if self._pending_actions and (
@@ -165,9 +165,11 @@ class ActionQueue:
                 waiter.set_exception(exc)
             raise
 
-    def _prepare_flush(self) -> tuple[list[Action], CommandMode | None, str | None, list[QueuedExecution]]:
+    def _prepare_flush(
+        self,
+    ) -> tuple[list[Action], CommandMode | None, str | None, list[QueuedExecution]]:
         """Prepare a flush by taking snapshot and clearing state (must be called with lock held).
-        
+
         Returns a tuple of (actions, mode, label, waiters) that should be executed
         outside the lock using _execute_batch().
         """
@@ -203,7 +205,7 @@ class ActionQueue:
         """Execute a batch of actions and notify waiters (must be called without lock)."""
         if not actions:
             return
-            
+
         try:
             exec_id = await self._executor(actions, mode, label)
             # Notify all waiters
