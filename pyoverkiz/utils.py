@@ -38,12 +38,12 @@ def create_server_config(
 ) -> ServerConfig:
     """Generate server configuration with the provided endpoint and metadata."""
     return ServerConfig(
-        server=server,
+        server=server,  # type: ignore[arg-type]
         name=name,
         endpoint=endpoint,
         manufacturer=manufacturer,
         configuration_url=configuration_url,
-        type=type,
+        type=type,  # type: ignore[arg-type]
     )
 
 
