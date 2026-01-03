@@ -19,6 +19,7 @@ from aiohttp import (
     ServerDisconnectedError,
 )
 
+from pyoverkiz.action_queue import ActionQueue
 from pyoverkiz.auth import AuthStrategy, Credentials, build_auth_strategy
 from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.enums import APIType, CommandMode, Server
@@ -141,6 +142,7 @@ class OverkizClient:
     session: ClientSession
     _ssl: ssl.SSLContext | bool = True
     _auth: AuthStrategy
+    _action_queue: ActionQueue | None = None
 
     def __init__(
         self,
@@ -149,11 +151,17 @@ class OverkizClient:
         credentials: Credentials,
         verify_ssl: bool = True,
         session: ClientSession | None = None,
+        action_queue_enabled: bool = False,
+        action_queue_delay: float = 0.5,
+        action_queue_max_actions: int = 20,
     ) -> None:
         """Constructor.
 
         :param server: ServerConfig
         :param session: optional ClientSession
+        :param action_queue_enabled: enable action batching queue (default False)
+        :param action_queue_delay: seconds to wait before flushing queue (default 0.5)
+        :param action_queue_max_actions: maximum actions per batch before auto-flush (default 20)
         """
         self.server_config = self._normalize_server(server)
 
@@ -172,6 +180,19 @@ class OverkizClient:
         if self.server_config.type == APIType.LOCAL and verify_ssl:
             # Use the prebuilt SSL context with disabled strict validation for local API.
             self._ssl = SSL_CONTEXT_LOCAL_API
+
+        # Initialize action queue if enabled
+        if action_queue_enabled:
+            if action_queue_delay <= 0:
+                raise ValueError("action_queue_delay must be positive")
+            if action_queue_max_actions < 1:
+                raise ValueError("action_queue_max_actions must be at least 1")
+
+            self._action_queue = ActionQueue(
+                executor=self._execute_action_group_direct,
+                delay=action_queue_delay,
+                max_actions=action_queue_max_actions,
+            )
 
         self._auth = build_auth_strategy(
             server_config=self.server_config,
@@ -210,6 +231,10 @@ class OverkizClient:
 
     async def close(self) -> None:
         """Close the session."""
+        # Flush any pending actions in queue
+        if self._action_queue:
+            await self._action_queue.shutdown()
+
         if self.event_listener_id:
             await self.unregister_event_listener()
 
@@ -431,13 +456,13 @@ class OverkizClient:
 
     @retry_on_too_many_executions
     @retry_on_auth_error
-    async def execute_action_group(
+    async def _execute_action_group_direct(
         self,
         actions: list[Action],
         mode: CommandMode | None = None,
         label: str | None = "python-overkiz-api",
     ) -> str:
-        """Execute a non-persistent action group.
+        """Execute a non-persistent action group directly (internal method).
 
         The executed action group does not have to be persisted on the server before use.
         Per-session rate-limit : 1 calls per 28min 48s period for all operations of the same category (exec)
@@ -461,6 +486,57 @@ class OverkizClient:
         response: dict = await self.__post(url, final_payload)
 
         return cast(str, response["execId"])
+
+    async def execute_action_group(
+        self,
+        actions: list[Action],
+        mode: CommandMode | None = None,
+        label: str | None = "python-overkiz-api",
+    ) -> str:
+        """Execute a non-persistent action group.
+
+        When action queue is enabled, actions will be batched with other actions
+        executed within the configured delay window. The method will wait for the
+        batch to execute and return the exec_id.
+
+        When action queue is disabled, executes immediately and returns exec_id.
+
+        The API is consistent regardless of queue configuration - always returns
+        exec_id string directly.
+
+        :param actions: List of actions to execute
+        :param mode: Command mode (GEOLOCATED, INTERNAL, HIGH_PRIORITY, or None)
+        :param label: Label for the action group
+        :return: exec_id string from the executed action group
+
+        Example usage::
+
+            # Works the same with or without queue
+            exec_id = await client.execute_action_group([action])
+        """
+        if self._action_queue:
+            queued = await self._action_queue.add(actions, mode, label)
+            return await queued
+        else:
+            return await self._execute_action_group_direct(actions, mode, label)
+
+    async def flush_action_queue(self) -> None:
+        """Force flush all pending actions in the queue immediately.
+
+        If action queue is disabled, this method does nothing.
+        If there are no pending actions, this method does nothing.
+        """
+        if self._action_queue:
+            await self._action_queue.flush()
+
+    def get_pending_actions_count(self) -> int:
+        """Get the number of actions currently waiting in the queue.
+
+        Returns 0 if action queue is disabled.
+        """
+        if self._action_queue:
+            return self._action_queue.get_pending_count()
+        return 0
 
     @retry_on_auth_error
     async def cancel_command(self, exec_id: str) -> None:
