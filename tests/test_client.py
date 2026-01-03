@@ -15,11 +15,14 @@ import pytest
 from pytest_asyncio import fixture
 
 from pyoverkiz import exceptions
+from pyoverkiz.auth.credentials import (
+    LocalTokenCredentials,
+    UsernamePasswordCredentials,
+)
 from pyoverkiz.client import OverkizClient
-from pyoverkiz.const import SUPPORTED_SERVERS
-from pyoverkiz.enums import APIType, DataType
+from pyoverkiz.enums import APIType, DataType, Server
 from pyoverkiz.models import Option
-from pyoverkiz.utils import generate_local_server
+from pyoverkiz.utils import create_local_server_config
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -30,26 +33,28 @@ class TestOverkizClient:
     @fixture
     async def client(self):
         """Fixture providing an OverkizClient configured for the cloud server."""
-        return OverkizClient("username", "password", SUPPORTED_SERVERS["somfy_europe"])
+        return OverkizClient(
+            server=Server.SOMFY_EUROPE,
+            credentials=UsernamePasswordCredentials("username", "password"),
+        )
 
     @fixture
     async def local_client(self):
         """Fixture providing an OverkizClient configured for a local (developer) server."""
         return OverkizClient(
-            "username",
-            "password",
-            generate_local_server("gateway-1234-5678-1243.local:8443"),
+            server=create_local_server_config(host="gateway-1234-5678-1243.local:8443"),
+            credentials=LocalTokenCredentials(token="token"),
         )
 
     @pytest.mark.asyncio
     async def test_get_api_type_cloud(self, client: OverkizClient):
         """Verify that a cloud-configured client reports APIType.CLOUD."""
-        assert client.api_type == APIType.CLOUD
+        assert client.server_config.type == APIType.CLOUD
 
     @pytest.mark.asyncio
     async def test_get_api_type_local(self, local_client: OverkizClient):
         """Verify that a local-configured client reports APIType.LOCAL."""
-        assert local_client.api_type == APIType.LOCAL
+        assert local_client.server_config.type == APIType.LOCAL
 
     @pytest.mark.asyncio
     async def test_get_devices_basic(self, client: OverkizClient):
