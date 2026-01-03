@@ -8,8 +8,8 @@ from __future__ import annotations
 
 import asyncio
 
+from pyoverkiz.auth import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient
-from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.enums import OverkizCommand, Server
 from pyoverkiz.models import Action, Command
 
@@ -19,9 +19,8 @@ async def example_without_queue():
     print("\n=== Example 1: Without Queue (Immediate Execution) ===")
 
     client = OverkizClient(
-        username="user@example.com",
-        password="password",
-        server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE],
+        server=Server.SOMFY_EUROPE,
+        credentials=UsernamePasswordCredentials("user@example.com", "password"),
         action_queue_enabled=False,  # Queue disabled
     )
 
@@ -45,9 +44,8 @@ async def example_with_queue():
     print("\n=== Example 2: With Queue (Batched Execution) ===")
 
     client = OverkizClient(
-        username="user@example.com",
-        password="password",
-        server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE],
+        server=Server.SOMFY_EUROPE,
+        credentials=UsernamePasswordCredentials("user@example.com", "password"),
         action_queue_enabled=True,  # Queue enabled!
         action_queue_delay=0.5,  # Wait 500ms before flushing
         action_queue_max_actions=20,  # Max 20 actions per batch
@@ -97,9 +95,8 @@ async def example_manual_flush():
     print("\n=== Example 3: Manual Flush ===")
 
     client = OverkizClient(
-        username="user@example.com",
-        password="password",
-        server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE],
+        server=Server.SOMFY_EUROPE,
+        credentials=UsernamePasswordCredentials("user@example.com", "password"),
         action_queue_enabled=True,
         action_queue_delay=10.0,  # Long delay
     )

@@ -5,8 +5,8 @@ from unittest.mock import AsyncMock, patch
 
 import pytest
 
+from pyoverkiz.auth import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient
-from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.enums import OverkizCommand, Server
 from pyoverkiz.models import Action, Command
 
@@ -15,9 +15,8 @@ from pyoverkiz.models import Action, Command
 async def test_client_without_queue_executes_immediately():
     """Test that client without queue executes actions immediately."""
     client = OverkizClient(
-        username="test@example.com",
-        password="test",
-        server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE],
+        server=Server.SOMFY_EUROPE,
+        credentials=UsernamePasswordCredentials("test@example.com", "test"),
         action_queue_enabled=False,
     )
 
@@ -48,9 +47,8 @@ async def test_client_without_queue_executes_immediately():
 async def test_client_with_queue_batches_actions():
     """Test that client with queue batches multiple actions."""
     client = OverkizClient(
-        username="test@example.com",
-        password="test",
-        server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE],
+        server=Server.SOMFY_EUROPE,
+        credentials=UsernamePasswordCredentials("test@example.com", "test"),
         action_queue_enabled=True,
         action_queue_delay=0.1,
     )
@@ -102,9 +100,8 @@ async def test_client_with_queue_batches_actions():
 async def test_client_manual_flush():
     """Test manually flushing the queue."""
     client = OverkizClient(
-        username="test@example.com",
-        password="test",
-        server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE],
+        server=Server.SOMFY_EUROPE,
+        credentials=UsernamePasswordCredentials("test@example.com", "test"),
         action_queue_enabled=True,
         action_queue_delay=10.0,  # Long delay
     )
@@ -146,9 +143,8 @@ async def test_client_manual_flush():
 async def test_client_close_flushes_queue():
     """Test that closing the client flushes pending actions."""
     client = OverkizClient(
-        username="test@example.com",
-        password="test",
-        server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE],
+        server=Server.SOMFY_EUROPE,
+        credentials=UsernamePasswordCredentials("test@example.com", "test"),
         action_queue_enabled=True,
         action_queue_delay=10.0,
     )
@@ -183,9 +179,8 @@ async def test_client_close_flushes_queue():
 async def test_client_queue_respects_max_actions():
     """Test that queue flushes when max actions is reached."""
     client = OverkizClient(
-        username="test@example.com",
-        password="test",
-        server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE],
+        server=Server.SOMFY_EUROPE,
+        credentials=UsernamePasswordCredentials("test@example.com", "test"),
         action_queue_enabled=True,
         action_queue_delay=10.0,
         action_queue_max_actions=2,  # Max 2 actions
