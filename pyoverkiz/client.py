@@ -19,7 +19,7 @@ from aiohttp import (
     ServerDisconnectedError,
 )
 
-from pyoverkiz.action_queue import ActionQueue, QueuedExecution
+from pyoverkiz.action_queue import ActionQueue
 from pyoverkiz.auth import AuthStrategy, Credentials, build_auth_strategy
 from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.enums import APIType, CommandMode, Server
@@ -161,7 +161,7 @@ class OverkizClient:
         :param session: optional ClientSession
         :param action_queue_enabled: enable action batching queue (default False)
         :param action_queue_delay: seconds to wait before flushing queue (default 0.5)
-        :param action_queue_max_actions: max actions per batch (default 20)
+        :param action_queue_max_actions: maximum actions per batch before auto-flush (default 20)
         """
         self.server_config = self._normalize_server(server)
 
@@ -183,6 +183,11 @@ class OverkizClient:
 
         # Initialize action queue if enabled
         if action_queue_enabled:
+            if action_queue_delay <= 0:
+                raise ValueError("action_queue_delay must be positive")
+            if action_queue_max_actions < 1:
+                raise ValueError("action_queue_max_actions must be at least 1")
+
             self._action_queue = ActionQueue(
                 executor=self._execute_action_group_direct,
                 delay=action_queue_delay,
@@ -487,22 +492,31 @@ class OverkizClient:
         actions: list[Action],
         mode: CommandMode | None = None,
         label: str | None = "python-overkiz-api",
-    ) -> str | QueuedExecution:
+    ) -> str:
         """Execute a non-persistent action group.
 
-        If action queue is enabled, actions will be batched with other actions
-        executed within the configured delay window. Returns a QueuedExecution
-        that can be awaited to get the exec_id.
+        When action queue is enabled, actions will be batched with other actions
+        executed within the configured delay window. The method will wait for the
+        batch to execute and return the exec_id.
 
-        If action queue is disabled, executes immediately and returns exec_id directly.
+        When action queue is disabled, executes immediately and returns exec_id.
+
+        The API is consistent regardless of queue configuration - always returns
+        exec_id string directly.
 
         :param actions: List of actions to execute
         :param mode: Command mode (GEOLOCATED, INTERNAL, HIGH_PRIORITY, or None)
         :param label: Label for the action group
-        :return: exec_id string (if queue disabled) or QueuedExecution (if queue enabled)
+        :return: exec_id string from the executed action group
+
+        Example usage::
+
+            # Works the same with or without queue
+            exec_id = await client.execute_action_group([action])
         """
         if self._action_queue:
-            return await self._action_queue.add(actions, mode, label)
+            queued = await self._action_queue.add(actions, mode, label)
+            return await queued
         else:
             return await self._execute_action_group_direct(actions, mode, label)
 

@@ -68,18 +68,21 @@ async def test_client_with_queue_batches_actions():
     ) as mock_post:
         mock_post.return_value = {"execId": "exec-batched"}
 
-        # Queue multiple actions quickly
-        queued1 = await client.execute_action_group([actions[0]])
-        queued2 = await client.execute_action_group([actions[1]])
-        queued3 = await client.execute_action_group([actions[2]])
+        # Queue multiple actions quickly - start them as tasks to allow batching
+        task1 = asyncio.create_task(client.execute_action_group([actions[0]]))
+        task2 = asyncio.create_task(client.execute_action_group([actions[1]]))
+        task3 = asyncio.create_task(client.execute_action_group([actions[2]]))
+
+        # Give them a moment to queue
+        await asyncio.sleep(0.01)
 
         # Should have 3 actions pending
         assert client.get_pending_actions_count() == 3
 
         # Wait for all to execute
-        exec_id1 = await queued1
-        exec_id2 = await queued2
-        exec_id3 = await queued3
+        exec_id1 = await task1
+        exec_id2 = await task2
+        exec_id3 = await task3
 
         # All should have the same exec_id (batched together)
         assert exec_id1 == exec_id2 == exec_id3 == "exec-batched"
@@ -116,7 +119,11 @@ async def test_client_manual_flush():
     ) as mock_post:
         mock_post.return_value = {"execId": "exec-flushed"}
 
-        queued = await client.execute_action_group([action])
+        # Start execution as a task to allow checking pending count
+        exec_task = asyncio.create_task(client.execute_action_group([action]))
+
+        # Give it a moment to queue
+        await asyncio.sleep(0.01)
 
         # Should have 1 action pending
         assert client.get_pending_actions_count() == 1
@@ -127,7 +134,7 @@ async def test_client_manual_flush():
         # Should be executed now
         assert client.get_pending_actions_count() == 0
 
-        exec_id = await queued
+        exec_id = await exec_task
         assert exec_id == "exec-flushed"
 
         mock_post.assert_called_once()
@@ -156,13 +163,17 @@ async def test_client_close_flushes_queue():
     ) as mock_post:
         mock_post.return_value = {"execId": "exec-closed"}
 
-        queued = await client.execute_action_group([action])
+        # Start execution as a task
+        exec_task = asyncio.create_task(client.execute_action_group([action]))
+
+        # Give it a moment to queue
+        await asyncio.sleep(0.01)
 
         # Close should flush
         await client.close()
 
         # Should be executed
-        exec_id = await queued
+        exec_id = await exec_task
         assert exec_id == "exec-closed"
 
         mock_post.assert_called_once()
@@ -193,26 +204,23 @@ async def test_client_queue_respects_max_actions():
     ) as mock_post:
         mock_post.return_value = {"execId": "exec-123"}
 
-        # Add 2 actions - should trigger flush
-        queued1 = await client.execute_action_group([actions[0]])
-        queued2 = await client.execute_action_group([actions[1]])
+        # Add 2 actions as tasks to trigger flush
+        task1 = asyncio.create_task(client.execute_action_group([actions[0]]))
+        task2 = asyncio.create_task(client.execute_action_group([actions[1]]))
 
         # Wait a bit for flush
         await asyncio.sleep(0.05)
 
         # First 2 should be done
-        exec_id1 = await queued1
-        exec_id2 = await queued2
+        exec_id1 = await task1
+        exec_id2 = await task2
         assert exec_id1 == "exec-123"
         assert exec_id2 == "exec-123"
 
         # Add third action - starts new batch
-        queued3 = await client.execute_action_group([actions[2]])
+        exec_id3 = await client.execute_action_group([actions[2]])
 
-        # Flush to complete
-        await client.flush_action_queue()
-
-        exec_id3 = await queued3
+        # Should have exec_id directly (waited for batch to complete)
         assert exec_id3 == "exec-123"
 
         # Should have been called twice (2 batches)

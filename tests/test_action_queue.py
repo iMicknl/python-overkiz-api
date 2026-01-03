@@ -94,9 +94,9 @@ async def test_action_queue_max_actions_flush(mock_executor):
     await asyncio.sleep(0.05)
 
     # First 3 should be done
-    assert queued1._future.done()
-    assert queued2._future.done()
-    assert queued3._future.done()
+    assert queued1.is_done()
+    assert queued2.is_done()
+    assert queued3.is_done()
 
     # Add 2 more - should start a new batch
     queued4 = await queue.add([actions[3]])
@@ -180,7 +180,7 @@ async def test_action_queue_manual_flush(mock_executor):
     await queue.flush()
 
     # Should be done now
-    assert queued._future.done()
+    assert queued.is_done()
     exec_id = await queued
     assert exec_id.startswith("exec-1-")
 
@@ -201,7 +201,7 @@ async def test_action_queue_shutdown(mock_executor):
     await queue.shutdown()
 
     # Should be done
-    assert queued._future.done()
+    assert queued.is_done()
     mock_executor.assert_called_once()
 
 
@@ -263,8 +263,11 @@ async def test_queued_execution_awaitable():
         await asyncio.sleep(0.05)
         queued.set_result("exec-123")
 
-    _task = asyncio.create_task(set_result())  # noqa: RUF006
+    task = asyncio.create_task(set_result())
 
     # Await the result
     result = await queued
     assert result == "exec-123"
+
+    # Ensure background task has completed
+    await task
