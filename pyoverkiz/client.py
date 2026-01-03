@@ -26,7 +26,7 @@ from botocore.client import BaseClient
 from botocore.config import Config
 from warrant_lite import WarrantLite
 
-from pyoverkiz.action_queue import ActionQueue, QueuedExecution
+from pyoverkiz.action_queue import ActionQueue
 from pyoverkiz.const import (
     COZYTOUCH_ATLANTIC_API,
     COZYTOUCH_CLIENT_ID,
@@ -694,36 +694,31 @@ class OverkizClient:
         actions: list[Action],
         mode: CommandMode | None = None,
         label: str | None = "python-overkiz-api",
-    ) -> str | QueuedExecution:
+    ) -> str:
         """Execute a non-persistent action group.
 
-        **Note:** When action queue is enabled, the return type changes from `str` to
-        `QueuedExecution`. Callers must handle both return types or always await the
-        result (both types are awaitable). By default, the queue is disabled for
-        backward compatibility.
+        When action queue is enabled, actions will be batched with other actions
+        executed within the configured delay window. The method will wait for the
+        batch to execute and return the exec_id.
 
-        If action queue is enabled, actions will be batched with other actions
-        executed within the configured delay window. Returns a QueuedExecution
-        that can be awaited to get the exec_id.
+        When action queue is disabled, executes immediately and returns exec_id.
 
-        If action queue is disabled, executes immediately and returns exec_id directly.
+        The API is consistent regardless of queue configuration - always returns
+        exec_id string directly.
 
         :param actions: List of actions to execute
         :param mode: Command mode (GEOLOCATED, INTERNAL, HIGH_PRIORITY, or None)
         :param label: Label for the action group
-        :return: exec_id string (if queue disabled) or QueuedExecution (if queue enabled)
+        :return: exec_id string from the executed action group
         
         Example usage::
 
-            # Without queue (default)
+            # Works the same with or without queue
             exec_id = await client.execute_action_group([action])
-            
-            # With queue enabled
-            queued = await client.execute_action_group([action])
-            exec_id = await queued  # Await the QueuedExecution to get exec_id
         """
         if self._action_queue:
-            return await self._action_queue.add(actions, mode, label)
+            queued = await self._action_queue.add(actions, mode, label)
+            return await queued
         else:
             return await self._execute_action_group_direct(actions, mode, label)
 
