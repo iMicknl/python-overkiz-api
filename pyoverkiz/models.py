@@ -24,6 +24,7 @@ from pyoverkiz.enums import (
 )
 from pyoverkiz.enums.command import OverkizCommand, OverkizCommandParam
 from pyoverkiz.enums.protocol import Protocol
+from pyoverkiz.enums.server import APIType, Server
 from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 
@@ -959,25 +960,36 @@ class Zone:
 
 
 @define(kw_only=True)
-class OverkizServer:
-    """Class to describe an Overkiz server."""
+class ServerConfig:
+    """Connection target details for an Overkiz-compatible server."""
 
+    server: Server | None
     name: str
     endpoint: str
     manufacturer: str
-    configuration_url: str | None
+    type: APIType
+    configuration_url: str | None = None
 
-
-@define(kw_only=True)
-class LocalToken:
-    """Descriptor for a local gateway token."""
-
-    label: str
-    gateway_id: str = field(repr=obfuscate_id, default=None)
-    gateway_creation_time: int
-    uuid: str
-    scope: str
-    expiration_time: int | None
+    def __init__(
+        self,
+        *,
+        server: Server | str | None = None,
+        name: str,
+        endpoint: str,
+        manufacturer: str,
+        type: str | APIType,
+        configuration_url: str | None = None,
+        **_: Any,
+    ) -> None:
+        """Initialize ServerConfig and convert enum fields."""
+        self.server = (
+            server if isinstance(server, Server) or server is None else Server(server)
+        )
+        self.name = name
+        self.endpoint = endpoint
+        self.manufacturer = manufacturer
+        self.type = type if isinstance(type, APIType) else APIType(type)
+        self.configuration_url = configuration_url
 
 
 @define(kw_only=True)
