@@ -113,9 +113,15 @@ def _create_local_ssl_context() -> ssl.SSLContext:
     This method is not async-friendly and should be called from a thread
     because it will load certificates from disk and do other blocking I/O.
     """
-    return ssl.create_default_context(
+    context = ssl.create_default_context(
         cafile=os.path.dirname(os.path.realpath(__file__)) + "/overkiz-root-ca-2048.crt"
     )
+
+    # Disable strict validation introduced in Python 3.13, which doesn't work with
+    # Overkiz self-signed gateway certificates. Applied once to the shared context.
+    context.verify_flags &= ~ssl.VERIFY_X509_STRICT
+
+    return context
 
 
 # The default SSLContext objects are created at import time
@@ -164,18 +170,8 @@ class OverkizClient:
         self._ssl = verify_ssl
 
         if self.server_config.type == APIType.LOCAL and verify_ssl:
-            # To avoid security issues while authentication to local API, we add the following authority to
-            # our HTTPS client trust store: https://ca.overkiz.com/overkiz-root-ca-2048.crt
-            # Create a copy of the SSL context to avoid mutating the shared global context
-            self._ssl = ssl.SSLContext(SSL_CONTEXT_LOCAL_API.protocol)
-            self._ssl.load_verify_locations(
-                cafile=os.path.dirname(os.path.realpath(__file__))
-                + "/overkiz-root-ca-2048.crt"
-            )
-
-            # Disable strict validation introduced in Python 3.13, which doesn't
-            # work with Overkiz self-signed gateway certificates
-            self._ssl.verify_flags &= ~ssl.VERIFY_X509_STRICT
+            # Use the prebuilt SSL context with disabled strict validation for local API.
+            self._ssl = SSL_CONTEXT_LOCAL_API
 
         self._auth = build_auth_strategy(
             server_config=self.server_config,

@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
+import base64
 import datetime
+import json
 from unittest.mock import AsyncMock, MagicMock
 
 import pytest
@@ -29,8 +31,10 @@ from pyoverkiz.auth.strategies import (
     RexelAuthStrategy,
     SessionLoginStrategy,
     SomfyAuthStrategy,
+    _decode_jwt_payload,
 )
 from pyoverkiz.enums import APIType, Server
+from pyoverkiz.exceptions import InvalidTokenException
 from pyoverkiz.models import ServerConfig
 
 
@@ -478,3 +482,53 @@ class TestBearerTokenAuthStrategy:
         headers = strategy.auth_headers()
 
         assert headers == {"Authorization": "Bearer my_bearer_token"}
+
+
+class TestRexelAuthStrategy:
+    """Tests for Rexel auth specifics."""
+
+    @pytest.mark.asyncio
+    async def test_exchange_token_error_response(self):
+        """Ensure OAuth error payloads raise InvalidTokenException before parsing access token."""
+        server_config = ServerConfig(
+            server=Server.REXEL,
+            name="Rexel",
+            endpoint="https://api.rexel.com",
+            manufacturer="Rexel",
+            type=APIType.CLOUD,
+        )
+        credentials = RexelOAuthCodeCredentials("code", "https://redirect")
+        session = AsyncMock(spec=ClientSession)
+
+        mock_response = MagicMock()
+        mock_response.status = 400
+        mock_response.json = AsyncMock(
+            return_value={"error": "invalid_grant", "error_description": "bad grant"}
+        )
+        mock_response.__aenter__ = AsyncMock(return_value=mock_response)
+        mock_response.__aexit__ = AsyncMock(return_value=None)
+        session.post = MagicMock(return_value=mock_response)
+
+        strategy = RexelAuthStrategy(
+            credentials, session, server_config, True, APIType.CLOUD
+        )
+
+        with pytest.raises(InvalidTokenException, match="bad grant"):
+            await strategy._exchange_token({"grant_type": "authorization_code"})
+
+    def test_ensure_consent_missing(self):
+        """Raising when JWT consent claim is missing or incorrect."""
+        payload_segment = (
+            base64.urlsafe_b64encode(json.dumps({"consent": "other"}).encode())
+            .decode()
+            .rstrip("=")
+        )
+        token = f"header.{payload_segment}.sig"
+
+        with pytest.raises(InvalidTokenException, match="Consent is missing"):
+            RexelAuthStrategy._ensure_consent(token)
+
+    def test_decode_jwt_payload_invalid_format(self):
+        """Malformed tokens raise InvalidTokenException during decoding."""
+        with pytest.raises(InvalidTokenException):
+            _decode_jwt_payload("invalid.token")
