@@ -191,7 +191,7 @@ class OverkizClient:
         :param session: optional ClientSession
         :param action_queue_enabled: enable action batching queue (default False)
         :param action_queue_delay: seconds to wait before flushing queue (default 0.5)
-        :param action_queue_max_actions: max actions per batch (default 20)
+        :param action_queue_max_actions: maximum actions per batch before auto-flush (default 20)
         """
         self.username = username
         self.password = password
@@ -208,6 +208,11 @@ class OverkizClient:
 
         # Initialize action queue if enabled
         if action_queue_enabled:
+            if action_queue_delay <= 0:
+                raise ValueError("action_queue_delay must be positive")
+            if action_queue_max_actions < 1:
+                raise ValueError("action_queue_max_actions must be at least 1")
+            
             self._action_queue = ActionQueue(
                 executor=self._execute_action_group_direct,
                 delay=action_queue_delay,

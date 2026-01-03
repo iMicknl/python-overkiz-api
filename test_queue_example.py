@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # mypy: ignore-errors
-# ty: ignore
+# type: ignore
 
 """Simple example demonstrating the action queue feature."""
 
@@ -26,7 +26,7 @@ async def example_without_queue():
     )
 
     # Create some example actions
-    _action1 = Action(
+    Action(
         device_url="io://1234-5678-9012/12345678",
         commands=[Command(name=OverkizCommand.CLOSE)],
     )
@@ -75,10 +75,10 @@ async def example_with_queue():
     print(f"Got QueuedExecution object: {queued1}")
 
     print("Queueing action 2...")
-    _queued2 = await client.execute_action_group([action2])
+    await client.execute_action_group([action2])
 
     print("Queueing action 3...")
-    _queued3 = await client.execute_action_group([action3])
+    await client.execute_action_group([action3])
 
     print(f"Pending actions in queue: {client.get_pending_actions_count()}")
 
@@ -116,7 +116,7 @@ async def example_manual_flush():
     )
 
     print("Queueing action with 10s delay...")
-    _queued = await client.execute_action_group([action])
+    await client.execute_action_group([action])
 
     print(f"Pending actions: {client.get_pending_actions_count()}")
 
