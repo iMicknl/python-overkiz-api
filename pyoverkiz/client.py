@@ -697,6 +697,11 @@ class OverkizClient:
     ) -> str | QueuedExecution:
         """Execute a non-persistent action group.
 
+        **Note:** When action queue is enabled, the return type changes from `str` to
+        `QueuedExecution`. Callers must handle both return types or always await the
+        result (both types are awaitable). By default, the queue is disabled for
+        backward compatibility.
+
         If action queue is enabled, actions will be batched with other actions
         executed within the configured delay window. Returns a QueuedExecution
         that can be awaited to get the exec_id.
@@ -707,6 +712,15 @@ class OverkizClient:
         :param mode: Command mode (GEOLOCATED, INTERNAL, HIGH_PRIORITY, or None)
         :param label: Label for the action group
         :return: exec_id string (if queue disabled) or QueuedExecution (if queue enabled)
+        
+        Example usage::
+
+            # Without queue (default)
+            exec_id = await client.execute_action_group([action])
+            
+            # With queue enabled
+            queued = await client.execute_action_group([action])
+            exec_id = await queued  # Await the QueuedExecution to get exec_id
         """
         if self._action_queue:
             return await self._action_queue.add(actions, mode, label)
