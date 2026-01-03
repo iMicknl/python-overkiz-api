@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # mypy: ignore-errors
-# ty: ignore
+# type: ignore
 
 """Simple example demonstrating the action queue feature."""
 
@@ -26,7 +26,7 @@ async def example_without_queue():
     )
 
     # Create some example actions
-    _action1 = Action(
+    Action(
         device_url="io://1234-5678-9012/12345678",
         commands=[Command(name=OverkizCommand.CLOSE)],
     )
@@ -71,28 +71,22 @@ async def example_with_queue():
 
     # These will be queued and batched together!
     print("Queueing action 1...")
-    queued1 = await client.execute_action_group([action1])
-    print(f"Got QueuedExecution object: {queued1}")
+    exec_id1 = await client.execute_action_group([action1])
+    print(f"Got exec_id: {exec_id1}")
 
     print("Queueing action 2...")
-    _queued2 = await client.execute_action_group([action2])
+    exec_id2 = await client.execute_action_group([action2])
 
     print("Queueing action 3...")
-    _queued3 = await client.execute_action_group([action3])
+    exec_id3 = await client.execute_action_group([action3])
 
     print(f"Pending actions in queue: {client.get_pending_actions_count()}")
 
-    # Wait for all actions to execute (they'll be batched together)
-    print("\nWaiting for batch to execute...")
-    # exec_id1 = await queued1
-    # exec_id2 = await queued2
-    # exec_id3 = await queued3
-
     # All three will have the same exec_id since they were batched together!
-    # print(f"Exec ID 1: {exec_id1}")
-    # print(f"Exec ID 2: {exec_id2}")
-    # print(f"Exec ID 3: {exec_id3}")
-    # print(f"All same? {exec_id1 == exec_id2 == exec_id3}")
+    print(f"\nExec ID 1: {exec_id1}")
+    print(f"Exec ID 2: {exec_id2}")
+    print(f"Exec ID 3: {exec_id3}")
+    print(f"All same? {exec_id1 == exec_id2 == exec_id3}")
 
     print("\nWith queue: Multiple actions batched into single API request!")
     await client.close()
@@ -116,8 +110,11 @@ async def example_manual_flush():
     )
 
     print("Queueing action with 10s delay...")
-    _queued = await client.execute_action_group([action])
+    # Start execution in background (don't await yet)
+    exec_task = asyncio.create_task(client.execute_action_group([action]))
 
+    # Give it a moment to queue
+    await asyncio.sleep(0.1)
     print(f"Pending actions: {client.get_pending_actions_count()}")
 
     # Don't want to wait 10 seconds? Flush manually!
@@ -126,9 +123,9 @@ async def example_manual_flush():
 
     print(f"Pending actions after flush: {client.get_pending_actions_count()}")
 
-    # Now we can await the result
-    # exec_id = await queued
-    # print(f"Got exec_id: {exec_id}")
+    # Now get the result
+    exec_id = await exec_task
+    print(f"Got exec_id: {exec_id}")
 
     await client.close()
 
