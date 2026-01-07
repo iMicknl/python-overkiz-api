@@ -618,7 +618,7 @@ class Scenario:
     creation_time: int
     last_update_time: int | None = None
     label: str = field(repr=obfuscate_string)
-    metadata: str
+    metadata: str | None = None
     shortcut: bool | None = None
     notification_type_mask: int | None = None
     notification_condition: str | None = None
@@ -630,9 +630,9 @@ class Scenario:
     def __init__(
         self,
         creation_time: int,
-        metadata: str,
         actions: list[dict[str, Any]],
         oid: str,
+        metadata: str | None = None,
         last_update_time: int | None = None,
         label: str | None = None,
         shortcut: bool | None = None,
