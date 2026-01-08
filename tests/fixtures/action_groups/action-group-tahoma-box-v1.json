@@ -1,0 +1,1353 @@
+[
+  {
+    "creationTime": 1474268697000,
+    "lastUpdateTime": 1689334259000,
+    "label": "** **",
+    "shortcut": false,
+    "notificationTypeMask": 0,
+    "notificationCondition": "NEVER",
+    "actions": [
+      {
+        "deviceURL": "io://1234-5678-0977/11442201",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              73,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/9394970",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              76,
+              "lowspeed"
+            ]
+          }
+        ]
+      }
+    ],
+    "oid": "08559606-8198-41ad-a816-ad4312e7f041"
+  },
+  {
+    "creationTime": 1514121653000,
+    "lastUpdateTime": 1621231501000,
+    "label": "**\u00e4** **",
+    "shortcut": false,
+    "notificationTypeMask": 0,
+    "notificationCondition": "NEVER",
+    "actions": [
+      {
+        "deviceURL": "io://1234-5678-0977/7730534",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/13920312",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/7897015",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/15941844",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/1087512",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/667540",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/11442201",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/9394970",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/2158931",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/9964775",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      }
+    ],
+    "oid": "1f5ba70c-9913-4d21-ad24-1a92ca10aa2f"
+  },
+  {
+    "creationTime": 1585672427000,
+    "lastUpdateTime": 1585672427000,
+    "label": "** **",
+    "shortcut": false,
+    "notificationTypeMask": 0,
+    "notificationCondition": "NEVER",
+    "actions": [
+      {
+        "deviceURL": "io://1234-5678-0977/10077471",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      }
+    ],
+    "oid": "4e4457b0-3310-4516-afc8-2ff0f15a1895"
+  },
+  {
+    "creationTime": 1528458276000,
+    "lastUpdateTime": 1528458276000,
+    "label": "** ** **",
+    "shortcut": false,
+    "notificationTypeMask": 0,
+    "notificationCondition": "NEVER",
+    "actions": [
+      {
+        "deviceURL": "io://1234-5678-0977/7730534",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/7897015",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/15941844",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/1087512",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/11442201",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/9394970",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/9964775",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      }
+    ],
+    "oid": "56828b0c-422b-404d-8cf5-75626053e59f"
+  },
+  {
+    "creationTime": 1565356740000,
+    "lastUpdateTime": 1565356740000,
+    "label": "** **",
+    "shortcut": false,
+    "notificationTypeMask": 0,
+    "notificationCondition": "NEVER",
+    "actions": [
+      {
+        "deviceURL": "io://1234-5678-0977/7731450",
+        "commands": [
+          {
+            "type": 1,
+            "name": "undeploy",
+            "parameters": []
+          }
+        ]
+      }
+    ],
+    "oid": "5efd387b-cb87-4d77-afcf-dd9c3fd5a1ad"
+  },
+  {
+    "creationTime": 1474280781000,
+    "lastUpdateTime": 1477670033000,
+    "label": "** **",
+    "shortcut": false,
+    "notificationTypeMask": 0,
+    "notificationCondition": "NEVER",
+    "actions": [
+      {
+        "deviceURL": "io://1234-5678-0977/7730534",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/7897015",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/15941844",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/11442201",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/9394970",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/9964775",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      }
+    ],
+    "oid": "63c2a7d4-1f02-4f4d-9215-03d4fa89064c"
+  },
+  {
+    "creationTime": 1486191675000,
+    "lastUpdateTime": 1486191675000,
+    "label": "** ** **",
+    "shortcut": false,
+    "notificationTypeMask": 0,
+    "notificationCondition": "NEVER",
+    "actions": [
+      {
+        "deviceURL": "io://1234-5678-0977/7730534",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/7897015",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/15941844",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/1087512",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/11442201",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/9394970",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/9964775",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      }
+    ],
+    "oid": "6509248d-3aa9-4c3c-bf91-e932443eabe8"
+  },
+  {
+    "creationTime": 1474281304000,
+    "lastUpdateTime": 1474281398000,
+    "label": "** ** **",
+    "shortcut": false,
+    "notificationTypeMask": 0,
+    "notificationCondition": "NEVER",
+    "actions": [
+      {
+        "deviceURL": "io://1234-5678-0977/7730534",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              77,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/7897015",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              84,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/15941844",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              86,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/11442201",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/9394970",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/9964775",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      }
+    ],
+    "oid": "67e4391f-af06-4137-a254-bde3b041f0e8"
+  },
+  {
+    "creationTime": 1474269194000,
+    "lastUpdateTime": 1528458383000,
+    "label": "**",
+    "shortcut": false,
+    "notificationTypeMask": 0,
+    "notificationCondition": "NEVER",
+    "actions": [
+      {
+        "deviceURL": "io://1234-5678-0977/13920312",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              72,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/2158931",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              70,
+              "lowspeed"
+            ]
+          }
+        ]
+      }
+    ],
+    "oid": "6db30fdf-1d3b-42a7-9983-5ee2ec80a88f"
+  },
+  {
+    "creationTime": 1565356728000,
+    "lastUpdateTime": 1565356728000,
+    "label": "** **",
+    "shortcut": false,
+    "notificationTypeMask": 0,
+    "notificationCondition": "NEVER",
+    "actions": [
+      {
+        "deviceURL": "io://1234-5678-0977/7731450",
+        "commands": [
+          {
+            "type": 1,
+            "name": "deploy",
+            "parameters": []
+          }
+        ]
+      }
+    ],
+    "oid": "6e451937-c68e-4333-8608-18d1bf08ee01"
+  },
+  {
+    "creationTime": 1514121684000,
+    "lastUpdateTime": 1514121684000,
+    "label": "**\u00e4** **",
+    "shortcut": false,
+    "notificationTypeMask": 0,
+    "notificationCondition": "NEVER",
+    "actions": [
+      {
+        "deviceURL": "io://1234-5678-0977/10077471",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/7730534",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/13920312",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/7897015",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/15941844",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/1087512",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/667540",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/11442201",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/9394970",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/2158931",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/9964775",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      }
+    ],
+    "oid": "909dab95-98e5-42df-9230-6ee613881176"
+  },
+  {
+    "creationTime": 1474268864000,
+    "lastUpdateTime": 1627649783000,
+    "label": "** **",
+    "shortcut": false,
+    "notificationTypeMask": 0,
+    "notificationCondition": "NEVER",
+    "actions": [
+      {
+        "deviceURL": "io://1234-5678-0977/10077471",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/7730534",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/13920312",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/7897015",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/15941844",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/1087512",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/11442201",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/9394970",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/2158931",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/667540",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/9964775",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      }
+    ],
+    "oid": "94dfa013-5d7d-47b6-996d-9c207ac4bc6d"
+  },
+  {
+    "creationTime": 1497901068000,
+    "lastUpdateTime": 1627649758000,
+    "label": "** **",
+    "shortcut": false,
+    "notificationTypeMask": 0,
+    "notificationCondition": "NEVER",
+    "actions": [
+      {
+        "deviceURL": "io://1234-5678-0977/13920312",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              70,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/1087512",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              58,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/2158931",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              73,
+              "lowspeed"
+            ]
+          }
+        ]
+      }
+    ],
+    "oid": "99593c7f-923a-4116-8c59-80817f468ef5"
+  },
+  {
+    "creationTime": 1474268387000,
+    "lastUpdateTime": 1692187896000,
+    "label": "** **",
+    "shortcut": false,
+    "notificationTypeMask": 0,
+    "notificationCondition": "NEVER",
+    "actions": [
+      {
+        "deviceURL": "io://1234-5678-0977/10077471",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              75,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/7897015",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              74,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/667540",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              76,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/9964775",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              58,
+              "lowspeed"
+            ]
+          }
+        ]
+      }
+    ],
+    "oid": "a1e875e5-dd91-4923-a9d0-42208b6d88d0"
+  },
+  {
+    "creationTime": 1514121744000,
+    "lastUpdateTime": 1514121744000,
+    "label": "**\u00e4** **",
+    "shortcut": false,
+    "notificationTypeMask": 0,
+    "notificationCondition": "NEVER",
+    "actions": [
+      {
+        "deviceURL": "io://1234-5678-0977/7730534",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/7897015",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/15941844",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/11442201",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/9394970",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/9964775",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      }
+    ],
+    "oid": "c4eadd96-a95f-4173-9b71-276fde872228"
+  },
+  {
+    "creationTime": 1585672440000,
+    "lastUpdateTime": 1585672440000,
+    "label": "** **",
+    "shortcut": false,
+    "notificationTypeMask": 0,
+    "notificationCondition": "NEVER",
+    "actions": [
+      {
+        "deviceURL": "io://1234-5678-0977/10077471",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              0,
+              "lowspeed"
+            ]
+          }
+        ]
+      }
+    ],
+    "oid": "e736e09a-3e3a-4daa-925b-b25aeed94146"
+  },
+  {
+    "creationTime": 1474268967000,
+    "lastUpdateTime": 1627649789000,
+    "label": "** **",
+    "shortcut": false,
+    "notificationTypeMask": 0,
+    "notificationCondition": "NEVER",
+    "actions": [
+      {
+        "deviceURL": "io://1234-5678-0977/10077471",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/7730534",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/13920312",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/7897015",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/15941844",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/1087512",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/11442201",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/9394970",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/2158931",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/667540",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      },
+      {
+        "deviceURL": "io://1234-5678-0977/9964775",
+        "commands": [
+          {
+            "type": 1,
+            "name": "setClosureAndLinearSpeed",
+            "parameters": [
+              100,
+              "lowspeed"
+            ]
+          }
+        ]
+      }
+    ],
+    "oid": "f5f9d4b8-7285-4768-89b5-63a8d56ebf6b"
+  }
+]
