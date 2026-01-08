@@ -8,7 +8,7 @@
     "notificationCondition": "NEVER",
     "actions": [
       {
-        "deviceURL": "rts://1234-5678-7145/16765962",
+        "deviceURL": "rts://1234-5678-1234/16765962",
         "commands": [
           {
             "type": 1,
@@ -18,7 +18,7 @@
         ]
       },
       {
-        "deviceURL": "rts://1234-5678-7145/16755525",
+        "deviceURL": "rts://1234-5678-1234/16755525",
         "commands": [
           {
             "type": 1,
@@ -28,7 +28,7 @@
         ]
       },
       {
-        "deviceURL": "rts://1234-5678-7145/16737657",
+        "deviceURL": "rts://1234-5678-1234/16737657",
         "commands": [
           {
             "type": 1,
@@ -38,7 +38,7 @@
         ]
       },
       {
-        "deviceURL": "io://1234-5678-7145/16108086",
+        "deviceURL": "io://1234-5678-1234/16108086",
         "commands": [
           {
             "type": 1,
@@ -59,7 +59,7 @@
     "notificationCondition": "NEVER",
     "actions": [
       {
-        "deviceURL": "rts://1234-5678-7145/16765962",
+        "deviceURL": "rts://1234-5678-1234/16765962",
         "commands": [
           {
             "type": 1,
@@ -69,7 +69,7 @@
         ]
       },
       {
-        "deviceURL": "rts://1234-5678-7145/16755525",
+        "deviceURL": "rts://1234-5678-1234/16755525",
         "commands": [
           {
             "type": 1,
@@ -79,7 +79,7 @@
         ]
       },
       {
-        "deviceURL": "rts://1234-5678-7145/16737657",
+        "deviceURL": "rts://1234-5678-1234/16737657",
         "commands": [
           {
             "type": 1,
