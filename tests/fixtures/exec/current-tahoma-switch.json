@@ -1,0 +1,37 @@
+[
+    {
+        "startTime": 1767003511145,
+        "owner": "somfy@imick.nl",
+        "actionGroup": {
+            "label": "Execution via Home Assistant",
+            "shortcut": false,
+            "notificationTypeMask": 0,
+            "notificationCondition": "NEVER",
+            "actions": [
+                {
+                    "deviceURL": "rts://2025-8464-6867/16756006",
+                    "commands": [
+                        {
+                            "type": 1,
+                            "name": "close"
+                        }
+                    ]
+                },
+                {
+                    "deviceURL": "rts://2025-8464-6867/16719623",
+                    "commands": [
+                        {
+                            "type": 1,
+                            "name": "identify"
+                        }
+                    ]
+                }
+            ]
+        },
+        "description": "Execution : Execution via Home Assistant",
+        "id": "699dd967-0a19-0481-7a62-99b990a2feb8",
+        "state": "TRANSMITTED",
+        "executionType": "Immediate execution",
+        "executionSubType": "MANUAL_CONTROL"
+    }
+]
