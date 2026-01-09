@@ -29,7 +29,6 @@ repository = "https://github.com/iMicknl/python-overkiz-api"
 
 [dependency-groups]
 dev = [
-    "tox<5.0.0,>=4.17.1",
     "pytest>=8.3.2,<10.0.0",
     "pytest-cov>=5,<8",
     "pre-commit<5.0,>=3.8",
@@ -44,7 +43,7 @@ select = [
     # pydocstyle
     "D",
     # flake8-async
-    # "ASYNC",
+    "ASYNC",
     # pycodestyle
     "E",
     # Pyflakes
@@ -59,8 +58,24 @@ select = [
     "I",
     # ruff
     "RUF",
+    # flake8-bandit (security)
+    "S",
+    # flake8-print
+    "T",
+    # flake8-comprehensions
+    "C4",
 ]
 ignore = ["E501"] # Line too long
+
+[tool.ruff.lint.per-file-ignores]
+# Tests: S101 (assert) is expected, ASYNC230 (blocking open) is acceptable for fixtures
+"tests/**/*.py" = ["S101", "ASYNC230"]
+# S105: OAuth client secrets are public by design (embedded in mobile apps)
+"pyoverkiz/const.py" = ["S105"]
+# S105: Enum values contain "TOKEN" or "PASS" in API names, not passwords
+"pyoverkiz/enums/*.py" = ["S105"]
+# Utility scripts can use print
+"utils/**/*.py" = ["T201"]
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"  # Accepts: "google", "numpy", or "pep257".
