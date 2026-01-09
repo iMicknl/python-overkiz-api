@@ -8,6 +8,7 @@ from typing import Any, cast
 
 from attr import define, field
 
+from pyoverkiz.converters import converter
 from pyoverkiz.enums import (
     DataType,
     EventName,
@@ -68,7 +69,7 @@ class Setup:
         self.id = id
         self.creation_time = creation_time
         self.last_update_time = last_update_time
-        self.location = Location(**location) if location else None
+        self.location = converter.structure(location, Location) if location else None
         self.gateways = [Gateway(**g) for g in gateways]
         self.devices = [Device(**d) for d in devices]
         self.zones = [Zone(**z) for z in zones] if zones else None
@@ -78,71 +79,28 @@ class Setup:
         self.features = [Feature(**f) for f in features] if features else None
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class Location:
     """Geographical and address metadata for a Setup."""
 
     creation_time: str
-    last_update_time: str | None = None
-    city: str = field(repr=obfuscate_string, default=None)
-    country: str = field(repr=obfuscate_string, default=None)
-    postal_code: str = field(repr=obfuscate_string, default=None)
-    address_line1: str = field(repr=obfuscate_string, default=None)
-    address_line2: str = field(repr=obfuscate_string, default=None)
     timezone: str
-    longitude: str = field(repr=obfuscate_string, default=None)
-    latitude: str = field(repr=obfuscate_string, default=None)
     twilight_mode: int
     twilight_angle: str
-    twilight_city: str | None = None
     summer_solstice_dusk_minutes: str
     winter_solstice_dusk_minutes: str
     twilight_offset_enabled: bool
     dawn_offset: int
     dusk_offset: int
-
-    def __init__(
-        self,
-        *,
-        creation_time: str,
-        last_update_time: str | None = None,
-        city: str = field(repr=obfuscate_string, default=None),
-        country: str = field(repr=obfuscate_string, default=None),
-        postal_code: str = field(repr=obfuscate_string, default=None),
-        address_line1: str = field(repr=obfuscate_string, default=None),
-        address_line2: str = field(repr=obfuscate_string, default=None),
-        timezone: str,
-        longitude: str = field(repr=obfuscate_string, default=None),
-        latitude: str = field(repr=obfuscate_string, default=None),
-        twilight_mode: int,
-        twilight_angle: str,
-        twilight_city: str | None = None,
-        summer_solstice_dusk_minutes: str,
-        winter_solstice_dusk_minutes: str,
-        twilight_offset_enabled: bool,
-        dawn_offset: int,
-        dusk_offset: int,
-        **_: Any,
-    ) -> None:
-        """Initialize Location with address and timezone information."""
-        self.creation_time = creation_time
-        self.last_update_time = last_update_time
-        self.city = city
-        self.country = country
-        self.postal_code = postal_code
-        self.address_line1 = address_line1
-        self.address_line2 = address_line2
-        self.timezone = timezone
-        self.longitude = longitude
-        self.latitude = latitude
-        self.twilight_mode = twilight_mode
-        self.twilight_angle = twilight_angle
-        self.twilight_city = twilight_city
-        self.summer_solstice_dusk_minutes = summer_solstice_dusk_minutes
-        self.winter_solstice_dusk_minutes = winter_solstice_dusk_minutes
-        self.twilight_offset_enabled = twilight_offset_enabled
-        self.dawn_offset = dawn_offset
-        self.dusk_offset = dusk_offset
+    last_update_time: str | None = None
+    city: str | None = field(repr=obfuscate_string, default=None)
+    country: str | None = field(repr=obfuscate_string, default=None)
+    postal_code: str | None = field(repr=obfuscate_string, default=None)
+    address_line1: str | None = field(repr=obfuscate_string, default=None)
+    address_line2: str | None = field(repr=obfuscate_string, default=None)
+    longitude: str | None = field(repr=obfuscate_string, default=None)
+    latitude: str | None = field(repr=obfuscate_string, default=None)
+    twilight_city: str | None = None
 
 
 @define(init=False, kw_only=True)
@@ -659,7 +617,7 @@ class Scenario:
         self.oid = oid
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class Partner:
     """Partner details for a gateway or service provider."""
 
@@ -668,25 +626,13 @@ class Partner:
     id: str = field(repr=obfuscate_id)
     status: str
 
-    def __init__(self, activated: bool, name: str, id: str, status: str, **_: Any):
-        """Initialize Partner information."""
-        self.activated = activated
-        self.name = name
-        self.id = id
-        self.status = status
 
-
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class Connectivity:
     """Connectivity metadata for a gateway update box."""
 
     status: str
     protocol_version: str
-
-    def __init__(self, status: str, protocol_version: str, **_: Any):
-        """Initialize Connectivity information."""
-        self.status = status
-        self.protocol_version = protocol_version
 
 
 @define(init=False, kw_only=True)
@@ -734,11 +680,11 @@ class Gateway:
         self.mode = mode
         self.place_oid = place_oid
         self.time_reliable = time_reliable
-        self.connectivity = Connectivity(**connectivity)
+        self.connectivity = converter.structure(connectivity, Connectivity)
         self.up_to_date = up_to_date
         self.update_status = UpdateBoxStatus(update_status) if update_status else None
         self.sync_in_progress = sync_in_progress
-        self.partners = [Partner(**p) for p in partners] if partners else []
+        self.partners = converter.structure(partners, list[Partner]) if partners else []
         self.type = GatewayType(type) if type else None
         self.sub_type = GatewaySubType(sub_type) if sub_type else None
 
