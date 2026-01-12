@@ -24,16 +24,15 @@ def obfuscate_string(input: str) -> str:
     return re.sub(r"[a-zA-Z0-9_.-]*", "*", str(input))
 
 
-# pylint: disable=too-many-branches
 def obfuscate_sensitive_data(data: dict[str, Any]) -> JSON:
     """Mask Overkiz JSON data to remove sensitive data."""
     mask_next_value = False
 
     for key, value in data.items():
-        if key in ["gatewayId", "id", "deviceURL"]:
+        if key in {"gatewayId", "id", "deviceURL"}:
             data[key] = obfuscate_id(value)
 
-        if key in [
+        if key in {
             "label",
             "city",
             "country",
@@ -42,16 +41,16 @@ def obfuscate_sensitive_data(data: dict[str, Any]) -> JSON:
             "addressLine2",
             "longitude",
             "latitude",
-        ]:
+        }:
             data[key] = obfuscate_string(value)
 
-        if value in [
+        if value in (
             "core:NameState",
             "homekit:SetupCode",
             "homekit:SetupPayload",
             "core:SSIDState",
             "core:NetworkMacState",
-        ]:
+        ):
             mask_next_value = True
 
         if mask_next_value and key == "value":
@@ -63,17 +62,7 @@ def obfuscate_sensitive_data(data: dict[str, Any]) -> JSON:
             obfuscate_sensitive_data(value)
         elif isinstance(value, list):
             for val in value:
-                if isinstance(val, str):
-                    continue
-                if isinstance(val, int):
-                    continue
-                if isinstance(val, float):
-                    continue
-                if isinstance(val, list):
-                    continue
-                if val is None:
-                    continue
-
-                obfuscate_sensitive_data(val)
+                if isinstance(val, dict):
+                    obfuscate_sensitive_data(val)
 
     return data
