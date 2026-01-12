@@ -50,6 +50,7 @@ def obfuscate_sensitive_data(data: dict[str, Any]) -> JSON:
             "homekit:SetupCode",
             "homekit:SetupPayload",
             "core:SSIDState",
+            "core:NetworkMacState",
         ]:
             mask_next_value = True
 
