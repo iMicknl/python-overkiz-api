@@ -29,10 +29,10 @@ Always use full type annotations, generics, and other modern practices.
   # Install all dependencies:
   uv sync
 
-  # Run linting (with ruff), pre-commit checks and type checking (with mypy).
+  # Run linting (with ruff), prek (pre-commit alternative) checks and type checking (with mypy).
   # Note when you run this, ruff will auto-format and sort imports, resolving any
   # linter warnings about import ordering:
-  uv run pre-commit run --all-files
+  uv run prek run --all-files
 
   # Run tests:
   uv run pytest
