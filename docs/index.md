@@ -4,7 +4,11 @@ hide:
   - toc
   - title
 ---
-# pyOverkiz
+<style>
+  .md-content__inner > h1:first-of-type {
+    display: none;
+  }
+</style>
 
 pyOverkiz is an async Python library for interacting with Overkiz-based platforms, including Somfy and Atlantic. It enables authentication, device discovery, state reading, command execution, and real-time event streaming from supported gateways.
 
