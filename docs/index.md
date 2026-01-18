@@ -2,26 +2,26 @@
 hide:
   - navigation
   - toc
+  - title
 ---
 # pyOverkiz
 
-pyOverkiz is an async Python client for the OverKiz platform, used by vendors like Somfy and Atlantic. It lets you authenticate, discover devices, read states, execute commands, and consume gateway events.
+pyOverkiz is an async Python library for interacting with Overkiz-based platforms, including Somfy and Atlantic. It enables authentication, device discovery, state reading, command execution, and real-time event streaming from supported gateways.
 
 ## What you can do
 
-- Connect to cloud or local gateways
-- Discover devices and read states
-- Send commands to your devices
-- Consume event streams for near real-time updates
+- Authenticate with Overkiz cloud or local gateways
+- Automatically discover and list connected devices
+- Read device states and attributes
+- Execute commands on devices
+- Receive real-time updates via event streams
 
 ## Supported hubs
 
 - Atlantic Cozytouch
 - Bouygues Flexom
-<!-- - Brandt Smart Control **\*** -->
 - Hitachi Hi Kumo
 - Nexity Eugénie
-<!-- - Rexel Energeasy Connect **\*** -->
 - Sauter Cozytouch
 - Simu (LiveIn2)
 - Somfy Connexoon IO
@@ -29,9 +29,5 @@ pyOverkiz is an async Python client for the OverKiz platform, used by vendors li
 - Somfy TaHoma
 - Somfy TaHoma Switch
 - Thermor Cozytouch
-
-## Where to go next
-
-- Start with the [Getting started](getting-started.md) guide
-- Learn the architecture in [Core concepts](core-concepts.md)
-- Browse the [API reference](api-reference.md)
+<!-- - Brandt Smart Control **\*** -->
+<!-- - Rexel Energeasy Connect **\*** -->

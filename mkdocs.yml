@@ -3,6 +3,7 @@ repo_url: https://github.com/iMicknl/python-overkiz-api
 edit_uri: edit/main/docs/
 
 docs_dir: docs
+copyright: This project is not affiliated with Overkiz, Somfy, or any other mentioned brand. All trademarks and brand names are the property of their respective owners.
 
 extra:
   generator: false
@@ -14,6 +15,7 @@ theme:
     - toc.follow
     - search.suggest
     - search.highlight
+    - navigation.footer
 
 plugins:
   - search
@@ -32,6 +34,7 @@ markdown_extensions:
   - pymdownx.highlight
   - pymdownx.superfences
   - pymdownx.tasklist
+  - admonition
 
 nav:
   - Overview: index.md

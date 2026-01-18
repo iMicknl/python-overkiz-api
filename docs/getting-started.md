@@ -7,14 +7,17 @@
 
 ## Install pyOverkiz from PyPi
 
-```bash
-pip install pyoverkiz
-```
 
-If you use uv:
+### With UV <small>recommended</small> { #with-uv data-toc-label="with uv" }
 
 ```bash
 uv add pyoverkiz
+```
+
+### With pip
+
+```bash
+pip install pyoverkiz
 ```
 
 ## Choose your server
