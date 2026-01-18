@@ -1,0 +1,39 @@
+site_name: pyOverkiz Documentation
+
+docs_dir: docs
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - toc.follow
+    - search.suggest
+    - search.highlight
+
+plugins:
+  - search
+  - autorefs
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: true
+            docstring_style: google
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.tasklist
+
+nav:
+  - Overview: index.md
+  - User Guide:
+      - Getting started: getting-started.md
+      - Authentication: authentication.md
+      - Core concepts: core-concepts.md
+      - Device control: device-control.md
+      - Event handling: event-handling.md
+      - Error handling: error-handling.md
+      - Troubleshooting: troubleshooting.md
+  - Contribute: contribute.md
+  - API Reference: api-reference.md
