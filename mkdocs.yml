@@ -1,4 +1,6 @@
 site_name: pyOverkiz Documentation
+repo_url: https://github.com/iMicknl/python-overkiz-api
+edit_uri: edit/main/docs/
 
 docs_dir: docs
 
@@ -19,6 +21,9 @@ plugins:
           options:
             show_source: true
             docstring_style: google
+            show_signature: true
+            show_signature_annotations: true
+            signature_crossrefs: true
 
 markdown_extensions:
   - pymdownx.highlight

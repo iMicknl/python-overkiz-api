@@ -1,3 +1,8 @@
+---
+hide:
+  - navigation
+  - toc
+---
 # pyOverkiz
 
 pyOverkiz is an async Python client for the OverKiz platform, used by vendors like Somfy TaHoma and Atlantic Cozytouch. It lets you authenticate, discover devices, read states, execute commands, and consume gateway events.
