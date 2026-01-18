@@ -4,6 +4,9 @@ edit_uri: edit/main/docs/
 
 docs_dir: docs
 
+extra:
+  generator: false
+
 theme:
   name: material
   features:
