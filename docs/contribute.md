@@ -38,7 +38,7 @@ uv run prek run --all-files
 
 ## Project guidelines
 
-- Use Python 3.10–3.13 features and type annotations.
+- Use Python 3.10+ features and type annotations.
 - Keep absolute imports and avoid relative imports.
 - Preserve existing comments and logging unless your change requires updates.
 - Prefer small, focused changes and add tests when behavior changes.
