@@ -2,26 +2,19 @@
 
 ## Prerequisites
 
-- Python 3.10–3.13
-- uv
+- Python 3.10+
 - An OverKiz-compatible hub and account
 
-## Install dependencies
+## Install pyOverkiz from PyPi
 
 ```bash
-uv sync
+pip install pyoverkiz
 ```
 
-## Run the docs locally
+If you use uv:
 
 ```bash
-uv run mkdocs serve
-```
-
-Docs will be available at http://localhost:8000.
-
-```bash
-uv run mkdocs build
+uv add pyoverkiz
 ```
 
 ## Choose your server
@@ -98,4 +91,11 @@ async def main() -> None:
 
 
 asyncio.run(main())
+
+## Next steps
+
+- Learn about authentication flows in [docs/authentication.md](docs/authentication.md).
+- Control devices and run actions in [docs/device-control.md](docs/device-control.md).
+- Handle events in [docs/event-handling.md](docs/event-handling.md).
+- Understand errors in [docs/error-handling.md](docs/error-handling.md).
 ```

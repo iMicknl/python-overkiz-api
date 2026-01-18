@@ -14,6 +14,18 @@ Install git hooks:
 uv run prek install
 ```
 
+## Run the docs locally
+
+```bash
+uv run mkdocs serve
+```
+
+Docs will be available at http://localhost:8000.
+
+```bash
+uv run mkdocs build
+```
+
 ## Tests and linting
 
 ```bash

@@ -40,5 +40,5 @@ nav:
       - Event handling: event-handling.md
       - Error handling: error-handling.md
       - Troubleshooting: troubleshooting.md
-  - Contribute: contribute.md
   - API Reference: api-reference.md
+  - Contribute: contribute.md
