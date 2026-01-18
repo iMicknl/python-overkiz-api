@@ -30,10 +30,10 @@ jobs:
       - name: Retrieve version from tag name
         id: retrieve-version
         run: |
-            tag=${{ github.event.release.tag_name }}
-            version_number=${tag#?}
-            echo version: $version_number
-            echo "version=$version_number" >> $GITHUB_OUTPUT
+            tag="${{ github.event.release.tag_name }}"
+            version_number="${tag#?}"
+            echo "version: $version_number"
+            echo "version=$version_number" >> "$GITHUB_OUTPUT"
 
       - name: Bump project version in pyproject.toml and commit changes to current branch and tag
         run: |
