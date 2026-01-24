@@ -16,7 +16,7 @@ repos:
     -   id: trailing-whitespace
     -   id: end-of-file-fixer
     -   id: check-json
-        exclude: .devcontainer
+        exclude: .devcontainer|.vscode
     -   id: check-yaml
     -   id: check-added-large-files
     -   id: no-commit-to-branch
