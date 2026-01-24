@@ -13,7 +13,6 @@ If the gateway uses a self-signed certificate, pass `verify_ssl=False` when crea
 
 - Confirm the server matches your vendor region.
 - Re-run `login()` and retry the call.
-- For unsupported auth flows, switch to local token authentication.
 
 ## Rate limits and concurrency
 
