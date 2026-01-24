@@ -17,17 +17,19 @@ for device in devices:
 ## Read a state value
 
 ```python
+from pyoverkiz.enums import OverkizState
+
 devices = await client.get_devices()
 
-for device in devices:
-    print(device.label, device.controllable_name)
-
+# For demo purposes we take the first availalbe device
 device = devices[0]
-closure_state = next(
-    (state for state in device.states if state.name == "core:ClosureState"),
+
+availability_state = next(
+    (state for state in device.states if state.name == OverkizState.CORE_AVAILABILITY),
     None,
 )
-print(closure_state.value if closure_state else None)
+
+print(availability_state.value if availability_state else None)
 ```
 
 ## Send a command
