@@ -26,6 +26,7 @@ plugins:
           options:
             show_source: true
             docstring_style: google
+            show_docstring_attributes: true
             show_signature: true
             show_signature_annotations: true
             signature_crossrefs: true
