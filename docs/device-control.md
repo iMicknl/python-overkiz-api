@@ -1,6 +1,6 @@
 # Device control
 
-All examples assume you are authenticated and have an active session. For details on setting up authentication, see the [Getting Started](getting-started) guide.
+All examples assume you are authenticated and have an active session. For details on setting up authentication, see the [Getting Started](getting-started.md) guide.
 
 ## List devices
 
