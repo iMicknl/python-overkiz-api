@@ -1,133 +1,90 @@
 # Device control
 
+All examples assume you are authenticated and have an active session. For details on setting up authentication, see the [Getting Started](getting-started) guide.
+
 ## List devices
 
 ```python
-import asyncio
+devices = await client.get_devices()
 
-from pyoverkiz.auth.credentials import UsernamePasswordCredentials
-from pyoverkiz.client import OverkizClient
-from pyoverkiz.enums import Server
+for device in devices:
+    print(device.label, device.controllable_name)
 
-
-async def main() -> None:
-    async with OverkizClient(
-        server=Server.SOMFY_EUROPE,
-        credentials=UsernamePasswordCredentials("you@example.com", "password"),
-    ) as client:
-        await client.login()
-        devices = await client.get_devices()
-        for device in devices:
-            print(device.label, device.controllable_name)
-
-
-asyncio.run(main())
+    # Access device metadata, including available commands, states, and identifiers:
+    print(device.definition)
 ```
 
 ## Read a state value
 
 ```python
-import asyncio
+devices = await client.get_devices()
 
-from pyoverkiz.auth.credentials import UsernamePasswordCredentials
-from pyoverkiz.client import OverkizClient
-from pyoverkiz.enums import Server
+for device in devices:
+    print(device.label, device.controllable_name)
 
-
-async def main() -> None:
-    async with OverkizClient(
-        server=Server.SOMFY_EUROPE,
-        credentials=UsernamePasswordCredentials("you@example.com", "password"),
-    ) as client:
-        await client.login()
-        devices = await client.get_devices()
-        device = devices[0]
-        closure_state = next(
-            (state for state in device.states if state.name == "core:ClosureState"),
-            None,
-        )
-        print(closure_state.value if closure_state else None)
-
-
-asyncio.run(main())
+device = devices[0]
+closure_state = next(
+    (state for state in device.states if state.name == "core:ClosureState"),
+    None,
+)
+print(closure_state.value if closure_state else None)
 ```
 
 ## Send a command
 
 ```python
-import asyncio
-
-from pyoverkiz.auth.credentials import UsernamePasswordCredentials
-from pyoverkiz.client import OverkizClient
-from pyoverkiz.enums import OverkizCommand, Server
+from pyoverkiz.enums import OverkizCommand
 from pyoverkiz.models import Action, Command
 
-
-async def main() -> None:
-    async with OverkizClient(
-        server=Server.SOMFY_EUROPE,
-        credentials=UsernamePasswordCredentials("you@example.com", "password"),
-    ) as client:
-        await client.login()
-        await client.execute_action_group(
-            actions=[
-                Action(
-                    device_url="io://1234-5678-1234/12345678",
-                    commands=[
-                        Command(
-                            name=OverkizCommand.SET_CLOSURE,
-                            parameters=[50],
-                        )
-                    ],
+await client.execute_action_group(
+    actions=[
+        Action(
+            device_url="io://1234-5678-1234/12345678",
+            commands=[
+                Command(
+                    name=OverkizCommand.SET_CLOSURE,
+                    parameters=[50],
                 )
             ],
-            label="Set closure",
         )
-
-
-asyncio.run(main())
+        ],
+    label="Execution: set closure",
+)
 ```
 
 ## Action groups and common patterns
 
 - Use a single action group to batch multiple device commands.
-- Parameters vary by device. Many closure-style devices use 0–100.
-- Thermostat-style devices commonly accept target temperatures.
 
 ```python
-import asyncio
-
-from pyoverkiz.auth.credentials import UsernamePasswordCredentials
-from pyoverkiz.client import OverkizClient
-from pyoverkiz.enums import OverkizCommand, Server
+from pyoverkiz.enums import OverkizCommand
 from pyoverkiz.models import Action, Command
 
-
-async def main() -> None:
-    async with OverkizClient(
-        server=Server.SOMFY_EUROPE,
-        credentials=UsernamePasswordCredentials("you@example.com", "password"),
-    ) as client:
-        await client.login()
-        await client.execute_action_group(
-            actions=[
-                Action(
-                    device_url="io://1234-5678-1234/12345678",
-                    commands=[
-                        Command(
-                            name=OverkizCommand.SET_TARGET_TEMPERATURE,
-                            parameters=[21.5],
-                        )
-                    ],
+await client.execute_action_group(
+    actions=[
+        Action(
+            device_url="io://1234-5678-1234/12345678",
+            commands=[
+                Command(
+                    name=OverkizCommand.SET_DEROGATION,
+                    parameters=[21.5, OverkizCommandParam.FURTHER_NOTICE],
                 )
             ],
-            label="Set temperature",
+        ),
+        Action(
+            device_url="io://1234-5678-1234/12345678",
+            commands=[
+                Command(
+                    name=OverkizCommand.SET_MODE_TEMPERATURE,
+                    parameters=[OverkizCommandParam.MANUAL_MODE, 21.5],
+                )
+            ],
         )
-
-
-asyncio.run(main())
+    ],
+    label="Execution: multiple commands",
+)
 ```
 
 ## Polling vs event-driven
 
-Polling `get_devices()` is simple but can be slower. Event listeners provide faster updates; see the event handling guide for details.
+Polling with `get_devices()` is straightforward but may introduce latency and increase server load. For more immediate updates, consider using event listeners. Refer to the [event handling](event-handling.md) guide for implementation details.
