@@ -45,6 +45,6 @@ uv run prek run --all-files
 
 ## Submitting changes
 
-1. Create a feature branch.
-2. Run linting and tests.
+1. Fork the repository and create a new feature branch for your changes.
+2. Ensure all linting and tests pass locally before submitting.
 3. Open a pull request with a clear description and context.
