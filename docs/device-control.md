@@ -21,7 +21,7 @@ from pyoverkiz.enums import OverkizState
 
 devices = await client.get_devices()
 
-# For demo purposes we take the first availalbe device
+# For demo purposes we take the first available device
 device = devices[0]
 
 availability_state = next(
