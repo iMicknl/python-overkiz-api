@@ -1,0 +1,4 @@
+{
+    "error": "Another action exists on the same device : rts://1234-5678-1234/123456",
+    "errorCode": "DUPLICATE_FIELD_OR_VALUE"
+}
