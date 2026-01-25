@@ -81,8 +81,14 @@ async def refresh_listener(invocation: Mapping[str, Any]) -> None:
 retry_on_auth_error = backoff.on_exception(
     backoff.expo,
     (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
-    max_tries=2,
+    max_tries=5,
     on_backoff=relogin,
+)
+
+retry_on_connection_failure = backoff.on_exception(
+    backoff.expo,
+    (TimeoutError, ClientConnectorError),
+    max_tries=10,
 )
 
 retry_on_concurrent_requests = backoff.on_exception(
@@ -95,6 +101,12 @@ retry_on_too_many_executions = backoff.on_exception(
     backoff.expo,
     TooManyExecutionsException,
     max_tries=10,
+)
+
+retry_on_execution_queue_full = backoff.on_exception(
+    backoff.expo,
+    ExecutionQueueFullException,
+    max_tries=5,
 )
 
 retry_on_listener_error = backoff.on_exception(
@@ -414,6 +426,7 @@ class OverkizClient:
     @retry_on_concurrent_requests
     @retry_on_auth_error
     @retry_on_listener_error
+    @retry_on_connection_failure
     async def fetch_events(self) -> list[Event]:
         """Fetch new events from a registered event listener. Fetched events are removed.
 
@@ -460,6 +473,7 @@ class OverkizClient:
         return cast(str, response["protocolVersion"])
 
     @retry_on_too_many_executions
+    @retry_on_execution_queue_full
     @retry_on_auth_error
     async def _execute_action_group_direct(
         self,
