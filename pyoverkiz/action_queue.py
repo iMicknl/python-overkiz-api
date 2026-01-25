@@ -5,11 +5,29 @@ from __future__ import annotations
 import asyncio
 import contextlib
 from collections.abc import Callable, Coroutine, Generator
+from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from pyoverkiz.enums import CommandMode
     from pyoverkiz.models import Action
+
+
+@dataclass(frozen=True, slots=True)
+class ActionQueueSettings:
+    """Settings for configuring the action queue behavior."""
+
+    delay: float = 0.5
+    max_actions: int = 20
+
+    def validate(self) -> None:
+        """Validate configuration values for the action queue."""
+        if self.delay <= 0:
+            raise ValueError(f"action_queue.delay must be positive, got {self.delay!r}")
+        if self.max_actions < 1:
+            raise ValueError(
+                f"action_queue.max_actions must be at least 1, got {self.max_actions!r}"
+            )
 
 
 class QueuedExecution:

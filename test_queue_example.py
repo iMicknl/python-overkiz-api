@@ -9,6 +9,7 @@ from __future__ import annotations
 import asyncio
 import logging
 
+from pyoverkiz.action_queue import ActionQueueSettings
 from pyoverkiz.auth import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.enums import OverkizCommand, Server
@@ -24,7 +25,7 @@ async def example_without_queue():
     client = OverkizClient(
         server=Server.SOMFY_EUROPE,
         credentials=UsernamePasswordCredentials("user@example.com", "password"),
-        action_queue_enabled=False,  # Queue disabled
+        action_queue=False,  # Queue disabled
     )
 
     # Create some example actions
@@ -51,9 +52,10 @@ async def example_with_queue():
     client = OverkizClient(
         server=Server.SOMFY_EUROPE,
         credentials=UsernamePasswordCredentials("user@example.com", "password"),
-        action_queue_enabled=True,  # Queue enabled!
-        action_queue_delay=0.5,  # Wait 500ms before flushing
-        action_queue_max_actions=20,  # Max 20 actions per batch
+        action_queue=ActionQueueSettings(
+            delay=0.5,  # Wait 500ms before flushing
+            max_actions=20,  # Max 20 actions per batch
+        ),
     )
 
     # Create some example actions
@@ -102,8 +104,7 @@ async def example_manual_flush():
     client = OverkizClient(
         server=Server.SOMFY_EUROPE,
         credentials=UsernamePasswordCredentials("user@example.com", "password"),
-        action_queue_enabled=True,
-        action_queue_delay=10.0,  # Long delay
+        action_queue=ActionQueueSettings(delay=10.0),  # Long delay
     )
 
     action = Action(

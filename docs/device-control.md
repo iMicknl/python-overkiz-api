@@ -91,44 +91,8 @@ await client.execute_action_group(
 
 If you trigger many action groups in rapid succession, you can enable the action
 queue to batch calls within a short window. This reduces API calls and helps
-avoid rate limits.
-
-```python
-from pyoverkiz.client import OverkizClient
-from pyoverkiz.auth import UsernamePasswordCredentials
-from pyoverkiz.enums import OverkizCommand, Server
-from pyoverkiz.models import Action, Command
-
-client = OverkizClient(
-    server=Server.SOMFY_EUROPE,
-    credentials=UsernamePasswordCredentials("user@example.com", "password"),
-    action_queue_enabled=True,
-    action_queue_delay=0.5,  # seconds to wait before auto-flush
-    action_queue_max_actions=20,  # auto-flush when this count is reached
-)
-
-action1 = Action(
-    device_url="io://1234-5678-1234/12345678",
-    commands=[Command(name=OverkizCommand.CLOSE)],
-)
-action2 = Action(
-    device_url="io://1234-5678-1234/87654321",
-    commands=[Command(name=OverkizCommand.OPEN)],
-)
-
-# These calls will be batched and return the same exec_id.
-exec_id1 = await client.execute_action_group([action1])
-exec_id2 = await client.execute_action_group([action2])
-
-print(exec_id1 == exec_id2)
-```
-
-Notes:
-- `action_queue_delay` must be positive.
-- `action_queue_max_actions` must be at least 1 and triggers an immediate flush.
-- `flush_action_queue()` forces an immediate flush.
-- `get_pending_actions_count()` returns a best-effort count and should not be
-  used for critical control flow.
+avoid rate limits. See the [Action queue](action-queue.md) guide for setup,
+advanced settings, and usage patterns.
 
 ## Polling vs event-driven
 
