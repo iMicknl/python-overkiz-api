@@ -1,7 +1,7 @@
 """Tests for utility helper functions like server generation and gateway checks."""
 
 # ruff: noqa: S101
-# Tests use assert statements
+# S101: Tests use assert statements.
 
 import pytest
 

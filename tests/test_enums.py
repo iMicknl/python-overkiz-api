@@ -1,7 +1,7 @@
 """Tests for enum helper behaviour and expected values."""
 
 # ruff: noqa: S101
-# Tests use assert statements
+# S101: Tests use assert statements.
 
 from pyoverkiz.enums import (
     EventName,

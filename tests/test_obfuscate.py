@@ -1,7 +1,7 @@
 """Tests for the obfuscation utilities used in fixtures and logging."""
 
 # ruff: noqa: S101
-# Tests use assert statements
+# S101: Tests use assert statements.
 
 import pytest
 
