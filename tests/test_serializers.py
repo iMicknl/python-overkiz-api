@@ -1,8 +1,5 @@
 """Tests for pyoverkiz.serializers."""
 
-# ruff: noqa: S101
-# S101: Tests use assert statements.
-
 from __future__ import annotations
 
 from pyoverkiz.serializers import prepare_payload

@@ -1,7 +1,6 @@
 """Unit tests for the high-level OverkizClient behaviour and responses."""
 
-# ruff: noqa: ASYNC230, S101, S106
-# S101: Tests use assert statements.
+# ruff: noqa: ASYNC230, S106
 # S106: Test credentials use dummy values.
 # ASYNC230: Blocking open() is acceptable for reading test fixtures
 

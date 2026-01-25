@@ -1,7 +1,6 @@
 """Tests for authentication module."""
 
-# ruff: noqa: S101, S105, S106
-# S101: Tests use assert statements.
+# ruff: noqa: S105, S106
 # S105/S106: Test credentials use dummy values.
 
 from __future__ import annotations
