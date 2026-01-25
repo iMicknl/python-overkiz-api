@@ -42,9 +42,11 @@ from pyoverkiz.const import (
 from pyoverkiz.enums import APIType, Server
 from pyoverkiz.exceptions import (
     AccessDeniedToGatewayException,
+    ActionGroupSetupNotFoundException,
     BadCredentialsException,
     CozyTouchBadCredentialsException,
     CozyTouchServiceException,
+    DuplicateActionOnDeviceException,
     ExecutionQueueFullException,
     InvalidCommandException,
     InvalidEventListenerIdException,
@@ -860,8 +862,15 @@ class OverkizClient:
             # An error message can have an empty (None) message
             message = message.strip('".') if (message := result.get("error")) else ""
 
-            # {"errorCode": "AUTHENTICATION_ERROR",
-            # "error": "Too many requests, try again later : login with xxx@xxx.tld"}
+            # {"errorCode": "DUPLICATE_FIELD_OR_VALUE", "error": "Another action exists on the same device : rts://1234-5689-1234/123456"}
+            if message.startswith("Another action exists on the same device"):
+                raise DuplicateActionOnDeviceException(message)
+
+            # {"errorCode": "INVALID_FIELD_VALUE", "error": "Unable to determine action group setup (no setup for gateway #1234-5678-1234)"}
+            if message.startswith("Unable to determine action group setup"):
+                raise ActionGroupSetupNotFoundException(message)
+
+            # {"errorCode": "AUTHENTICATION_ERROR", "error": "Too many requests, try again later : login with xxx@xxx.tld"}
             if "Too many requests" in message:
                 raise TooManyRequestsException(message)
 
@@ -873,7 +882,7 @@ class OverkizClient:
             if message == "Not authenticated":
                 raise NotAuthenticatedException(message)
 
-            # {'errorCode': 'AUTHENTICATION_ERROR', 'error': 'An API key is required to access this setup'}
+            # {"errorCode": "AUTHENTICATION_ERROR", "error": "An API key is required to access this setup"}
             if message == "An API key is required to access this setup":
                 raise MissingAPIKeyException(message)
 
@@ -889,19 +898,19 @@ class OverkizClient:
             if "No such command" in message:
                 raise InvalidCommandException(message)
 
-            # {'errorCode': 'UNSPECIFIED_ERROR', 'error': 'Invalid event listener id : ...'}
+            # {"errorCode": "UNSPECIFIED_ERROR", "error": "Invalid event listener id : ..."}
             if "Invalid event listener id" in message:
                 raise InvalidEventListenerIdException(message)
 
-            # {'errorCode': 'UNSPECIFIED_ERROR', 'error': 'No registered event listener'}
+            # {"errorCode": "UNSPECIFIED_ERROR", "error": "No registered event listener"}
             if message == "No registered event listener":
                 raise NoRegisteredEventListenerException(message)
 
-            # {'errorCode': 'AUTHENTICATION_ERROR', 'error': 'No such user account : xxxxx'}
+            # {"errorCode": "AUTHENTICATION_ERROR", "error": "No such user account : xxxxx"}
             if "No such user account" in message:
                 raise UnknownUserException(message)
 
-            # {'errorCode': 'INVALID_API_CALL', 'error': 'No such resource'}
+            # {"errorCode": "INVALID_API_CALL", "error": "No such resource"}
             if message == "No such resource":
                 raise NoSuchResourceException(message)
 
@@ -909,7 +918,7 @@ class OverkizClient:
             if message == "too many concurrent requests":
                 raise TooManyConcurrentRequestsException(message)
 
-            # {'errorCode': 'EXEC_QUEUE_FULL', 'error': 'Execution queue is full on gateway: #xxx-yyyy-zzzz (soft limit: 10)'}
+            # {"errorCode": "EXEC_QUEUE_FULL", "error": "Execution queue is full on gateway: #xxx-yyyy-zzzz (soft limit: 10)"}
             if "Execution queue is full on gateway" in message:
                 raise ExecutionQueueFullException(message)
 
@@ -932,7 +941,7 @@ class OverkizClient:
             if message == "Unknown object":
                 raise UnknownObjectException(message)
 
-            # {'errorCode': 'RESOURCE_ACCESS_DENIED', 'error': 'Access denied to gateway #1234-5678-1234 for action ADD_TOKEN'}
+            # {"errorCode": "RESOURCE_ACCESS_DENIED", "error": "Access denied to gateway #1234-5678-1234 for action ADD_TOKEN"}
             if "Access denied to gateway" in message:
                 raise AccessDeniedToGatewayException(message)
 

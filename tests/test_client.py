@@ -312,6 +312,16 @@ class TestOverkizClient:
                 400,
             ),
             (
+                "local/400-duplicate-action-on-device.json",
+                exceptions.DuplicateActionOnDeviceException,
+                400,
+            ),
+            (
+                "local/400-action-group-setup-not-found.json",
+                exceptions.ActionGroupSetupNotFoundException,
+                400,
+            ),
+            (
                 "local/400-no-registered-event-listener.json",
                 exceptions.NoRegisteredEventListenerException,
                 400,

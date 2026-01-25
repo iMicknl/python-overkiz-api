@@ -17,6 +17,14 @@ class InvalidCommandException(BaseOverkizException):
     """Raised when an invalid command is provided."""
 
 
+class DuplicateActionOnDeviceException(BaseOverkizException):
+    """Raised when another action already exists for the same device."""
+
+
+class ActionGroupSetupNotFoundException(BaseOverkizException):
+    """Raised when an action group setup cannot be determined for a gateway."""
+
+
 class NoSuchResourceException(BaseOverkizException):
     """Raised when an invalid API call is made."""
 
