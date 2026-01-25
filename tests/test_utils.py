@@ -1,8 +1,5 @@
 """Tests for utility helper functions like server generation and gateway checks."""
 
-# ruff: noqa: S101
-# Tests use assert statements
-
 import pytest
 
 from pyoverkiz.utils import generate_local_server, is_overkiz_gateway

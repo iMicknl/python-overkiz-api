@@ -1,7 +1,6 @@
 """Unit tests for the high-level OverkizClient behaviour and responses."""
 
-# ruff: noqa: S101, ASYNC230
-# S101: Tests use assert statements
+# ruff: noqa: ASYNC230
 # ASYNC230: Blocking open() is acceptable for reading test fixtures
 
 from __future__ import annotations
