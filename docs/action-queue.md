@@ -1,6 +1,6 @@
 # Action queue
 
-The action queue automatically groups rapid, consecutive calls to `execute_action_group()` into a single ActionGroup execution. This minimizes the number of API calls and helps prevent rate limiting issues, such as `TooManyRequestsException`, `TooManyConcurrentRequestsException`, or `TooManyExecutionsException`, which can occur if actions are sent individually in quick succession.
+The action queue automatically groups rapid, consecutive calls to `execute_action_group()` into a single ActionGroup execution. This minimizes the number of API calls and helps prevent rate limiting issues, such as `TooManyRequestsException`, `TooManyConcurrentRequestsException`, `TooManyExecutionsException`, or `ExecutionQueueFullException` which can occur if actions are sent individually in quick succession.
 
 Important limitation:
 - Gateways only allow a single action per device in each action group. The queue

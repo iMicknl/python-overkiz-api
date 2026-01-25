@@ -85,15 +85,18 @@ await client.execute_action_group(
     ],
     label="Execution: multiple commands",
 )
-```
 
-## Action queue (batching across calls)
+## Limitations and rate limits
+
+Gateways impose limits on how many executions can run or be queued simultaneously. If the execution queue is full, the API will raise an `ExecutionQueueFullException`. Most gateways allow up to 10 concurrent executions.
+
+### Action queue (batching across calls)
 
 If you trigger many action groups in rapid succession, you can enable the action
 queue to batch calls within a short window. This reduces API calls and helps
 avoid rate limits. See the [Action queue](action-queue.md) guide for setup,
 advanced settings, and usage patterns.
 
-## Polling vs event-driven
+### Polling vs event-driven
 
 Polling with `get_devices()` is straightforward but may introduce latency and increase server load. For more immediate updates, consider using event listeners. Refer to the [event handling](event-handling.md) guide for implementation details.
