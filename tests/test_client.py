@@ -6,7 +6,7 @@
 from __future__ import annotations
 
 import json
-import os
+from pathlib import Path
 from unittest.mock import patch
 
 import aiohttp
@@ -20,7 +20,7 @@ from pyoverkiz.enums import APIType, DataType
 from pyoverkiz.models import Option
 from pyoverkiz.utils import generate_local_server
 
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+CURRENT_DIR = Path(__file__).parent
 
 
 class TestOverkizClient:
@@ -53,9 +53,7 @@ class TestOverkizClient:
     @pytest.mark.asyncio
     async def test_get_devices_basic(self, client: OverkizClient):
         """Ensure the client can fetch and parse the basic devices fixture."""
-        with open(
-            os.path.join(CURRENT_DIR, "devices.json"), encoding="utf-8"
-        ) as raw_devices:
+        with open(CURRENT_DIR / "devices.json", encoding="utf-8") as raw_devices:
             resp = MockResponse(raw_devices.read())
 
         with patch.object(aiohttp.ClientSession, "get", return_value=resp):
@@ -75,7 +73,7 @@ class TestOverkizClient:
     ):
         """Parameterised test that fetches events fixture and checks the expected count."""
         with open(
-            os.path.join(CURRENT_DIR, "fixtures/event/" + fixture_name),
+            CURRENT_DIR / "fixtures" / "event" / fixture_name,
             encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
@@ -88,7 +86,7 @@ class TestOverkizClient:
     async def test_fetch_events_simple_cast(self, client: OverkizClient):
         """Check that event state values from the cloud (strings) are cast to appropriate types."""
         with open(
-            os.path.join(CURRENT_DIR, "fixtures/event/events.json"), encoding="utf-8"
+            CURRENT_DIR / "fixtures" / "event" / "events.json", encoding="utf-8"
         ) as raw_events:
             resp = MockResponse(raw_events.read())
 
@@ -112,7 +110,7 @@ class TestOverkizClient:
     async def test_fetch_events_casting(self, client: OverkizClient, fixture_name: str):
         """Validate that fetched event states are cast to the expected Python types for each data type."""
         with open(
-            os.path.join(CURRENT_DIR, "fixtures/event/" + fixture_name),
+            CURRENT_DIR / "fixtures" / "event" / fixture_name,
             encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
@@ -181,7 +179,7 @@ class TestOverkizClient:
     ):
         """Ensure setup parsing yields expected device and gateway counts and device metadata."""
         with open(
-            os.path.join(CURRENT_DIR, "fixtures/setup/" + fixture_name),
+            CURRENT_DIR / "fixtures" / "setup" / fixture_name,
             encoding="utf-8",
         ) as setup_mock:
             resp = MockResponse(setup_mock.read())
@@ -230,7 +228,7 @@ class TestOverkizClient:
     async def test_get_diagnostic_data(self, client: OverkizClient, fixture_name: str):
         """Verify that diagnostic data can be fetched and is not empty."""
         with open(
-            os.path.join(CURRENT_DIR, "fixtures/setup/" + fixture_name),
+            CURRENT_DIR / "fixtures" / "setup" / fixture_name,
             encoding="utf-8",
         ) as setup_mock:
             resp = MockResponse(setup_mock.read())
@@ -354,7 +352,7 @@ class TestOverkizClient:
         with pytest.raises(exception):
             if fixture_name:
                 with open(
-                    os.path.join(CURRENT_DIR, "fixtures/exceptions/" + fixture_name),
+                    CURRENT_DIR / "fixtures" / "exceptions" / fixture_name,
                     encoding="utf-8",
                 ) as raw_events:
                     resp = MockResponse(raw_events.read(), status_code)
@@ -370,7 +368,7 @@ class TestOverkizClient:
     ):
         """Check that setup options are parsed and return the expected number of Option instances."""
         with open(
-            os.path.join(CURRENT_DIR, "fixtures/endpoints/setup-options.json"),
+            CURRENT_DIR / "fixtures" / "endpoints" / "setup-options.json",
             encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
@@ -403,7 +401,7 @@ class TestOverkizClient:
     ):
         """Verify retrieval of a single setup option by name, including non-existent options."""
         with open(
-            os.path.join(CURRENT_DIR, "fixtures/endpoints/" + fixture_name),
+            CURRENT_DIR / "fixtures" / "endpoints" / fixture_name,
             encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
@@ -434,7 +432,7 @@ class TestOverkizClient:
     ):
         """Ensure action groups (scenarios) are parsed correctly and contain actions and commands."""
         with open(
-            os.path.join(CURRENT_DIR, "fixtures/action_groups/" + fixture_name),
+            CURRENT_DIR / "fixtures" / "action_groups" / fixture_name,
             encoding="utf-8",
         ) as action_group_mock:
             resp = MockResponse(action_group_mock.read())
