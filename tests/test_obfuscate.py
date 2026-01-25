@@ -1,5 +1,8 @@
 """Tests for the obfuscation utilities used in fixtures and logging."""
 
+# ruff: noqa: S101
+# Tests use assert statements
+
 import pytest
 
 from pyoverkiz.obfuscate import obfuscate_email, obfuscate_sensitive_data

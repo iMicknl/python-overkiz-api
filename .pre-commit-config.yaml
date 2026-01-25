@@ -22,6 +22,10 @@ repos:
     -   id: no-commit-to-branch
         stages: [pre-commit]
         args: [--branch, main]
+-   repo: https://github.com/rhysd/actionlint
+    rev: v1.7.7
+    hooks:
+    -   id: actionlint
 -   repo: local
     hooks:
       - id: mypy

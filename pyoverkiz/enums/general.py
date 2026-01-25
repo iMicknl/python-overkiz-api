@@ -1,5 +1,8 @@
 """General-purpose enums like product types, data types and event names."""
 
+# ruff: noqa: S105
+# Enum values contain "TOKEN" in API event names, not passwords
+
 import logging
 import sys
 from enum import IntEnum, unique

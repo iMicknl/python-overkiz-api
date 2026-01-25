@@ -1,5 +1,8 @@
 """Unit tests for models (Device, State and States helpers)."""
 
+# ruff: noqa: S101
+# Tests use assert statements
+
 from __future__ import annotations
 
 import humps

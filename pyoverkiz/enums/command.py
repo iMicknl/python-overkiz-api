@@ -1,5 +1,8 @@
 """Command-related enums and parameters used by device commands."""
 
+# ruff: noqa: S105
+# Enum values contain "PASS" in API names (e.g. PassAPC), not passwords
+
 import sys
 from enum import unique
 
