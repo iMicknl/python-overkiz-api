@@ -477,7 +477,7 @@ class Command:
 
     def __init__(
         self,
-        name: OverkizCommand,
+        name: str | OverkizCommand,
         parameters: list[str | int | float | OverkizCommandParam] | None = None,
         type: int | None = None,
         **_: Any,

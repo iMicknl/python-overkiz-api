@@ -158,6 +158,8 @@ class OverkizClient:
         """Constructor.
 
         :param server: ServerConfig
+        :param credentials: Credentials for authentication
+        :param verify_ssl: Enable SSL certificate verification
         :param session: optional ClientSession
         :param action_queue_enabled: enable action batching queue (default False)
         :param action_queue_delay: seconds to wait before flushing queue (default 0.5)
@@ -184,9 +186,14 @@ class OverkizClient:
         # Initialize action queue if enabled
         if action_queue_enabled:
             if action_queue_delay <= 0:
-                raise ValueError("action_queue_delay must be positive")
+                raise ValueError(
+                    f"action_queue_delay must be positive, got {action_queue_delay!r}"
+                )
             if action_queue_max_actions < 1:
-                raise ValueError("action_queue_max_actions must be at least 1")
+                raise ValueError(
+                    "action_queue_max_actions must be at least 1, "
+                    f"got {action_queue_max_actions!r}"
+                )
 
             self._action_queue = ActionQueue(
                 executor=self._execute_action_group_direct,

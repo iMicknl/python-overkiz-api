@@ -4,8 +4,8 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
-from collections.abc import Callable, Coroutine
-from typing import TYPE_CHECKING
+from collections.abc import Callable, Coroutine, Generator
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from pyoverkiz.enums import CommandMode
@@ -17,25 +17,38 @@ class QueuedExecution:
 
     def __init__(self) -> None:
         """Initialize the queued execution."""
-        self._future: asyncio.Future[str] = asyncio.Future()
+        # Future is created lazily to ensure it is bound to the running event loop.
+        # Creating it in __init__ would fail if no loop is running yet.
+        self._future: asyncio.Future[str] | None = None
+
+    def _ensure_future(self) -> asyncio.Future[str]:
+        """Create the underlying future lazily, bound to the running event loop."""
+        # This method is the single point of future creation to guarantee
+        # consistent loop binding for callers that await or set results later.
+        if self._future is None:
+            loop = asyncio.get_running_loop()
+            self._future = loop.create_future()
+        return self._future
 
     def set_result(self, exec_id: str) -> None:
         """Set the execution ID result."""
-        if not self._future.done():
-            self._future.set_result(exec_id)
+        future = self._ensure_future()
+        if not future.done():
+            future.set_result(exec_id)
 
     def set_exception(self, exception: BaseException) -> None:
         """Set an exception if the batch execution failed."""
-        if not self._future.done():
-            self._future.set_exception(exception)
+        future = self._ensure_future()
+        if not future.done():
+            future.set_exception(exception)
 
     def is_done(self) -> bool:
         """Check if the execution has completed (either with result or exception)."""
-        return self._future.done()
+        return self._future.done() if self._future is not None else False
 
-    def __await__(self):
+    def __await__(self) -> Generator[Any, None, str]:
         """Make this awaitable."""
-        return self._future.__await__()
+        return self._ensure_future().__await__()
 
 
 class ActionQueue:
@@ -89,14 +102,16 @@ class ActionQueue:
         :param label: Label for the action group
         :return: QueuedExecution that resolves to exec_id when batch executes
         """
-        batch_to_execute = None
+        batches_to_execute: list[
+            tuple[list[Action], CommandMode | None, str | None, list[QueuedExecution]]
+        ] = []
 
         async with self._lock:
             # If mode or label changes, flush existing queue first
             if self._pending_actions and (
                 mode != self._pending_mode or label != self._pending_label
             ):
-                batch_to_execute = self._prepare_flush()
+                batches_to_execute.append(self._prepare_flush())
 
             # Add actions to pending queue
             self._pending_actions.extend(actions)
@@ -115,18 +130,15 @@ class ActionQueue:
                 # Prepare the current batch for flushing (which includes the actions
                 # we just added). If we already flushed due to mode change, this is
                 # a second batch.
-                new_batch = self._prepare_flush()
-                # Execute the first batch if it exists, then the second
-                if batch_to_execute:
-                    await self._execute_batch(*batch_to_execute)
-                batch_to_execute = new_batch
+                batches_to_execute.append(self._prepare_flush())
             elif self._flush_task is None or self._flush_task.done():
                 # Schedule delayed flush if not already scheduled
                 self._flush_task = asyncio.create_task(self._delayed_flush())
 
-        # Execute batch outside the lock if we flushed
-        if batch_to_execute:
-            await self._execute_batch(*batch_to_execute)
+        # Execute batches outside the lock if we flushed
+        for batch in batches_to_execute:
+            if batch[0]:
+                await self._execute_batch(*batch)
 
         return waiter
 
@@ -152,13 +164,7 @@ class ActionQueue:
                 self._flush_task = None
 
             # Execute outside the lock
-            try:
-                exec_id = await self._executor(actions, mode, label)
-                for waiter in waiters:
-                    waiter.set_result(exec_id)
-            except Exception as exc:
-                for waiter in waiters:
-                    waiter.set_exception(exc)
+            await self._execute_batch(actions, mode, label, waiters)
         except asyncio.CancelledError as exc:
             # Ensure all waiters are notified if this task is cancelled
             for waiter in waiters:
@@ -211,11 +217,12 @@ class ActionQueue:
             # Notify all waiters
             for waiter in waiters:
                 waiter.set_result(exec_id)
-        except Exception as exc:
+        except BaseException as exc:
             # Propagate exception to all waiters
             for waiter in waiters:
                 waiter.set_exception(exc)
-            raise
+            if isinstance(exc, asyncio.CancelledError):
+                raise
 
     async def flush(self) -> None:
         """Force flush all pending actions immediately.
@@ -241,7 +248,8 @@ class ActionQueue:
 
         This method does not acquire the internal lock and therefore returns a
         best-effort snapshot that may be slightly out of date if the queue is
-        being modified concurrently by other coroutines.
+        being modified concurrently by other coroutines. Do not rely on this
+        value for critical control flow.
         """
         return len(self._pending_actions)
 
