@@ -36,8 +36,8 @@ DEVICE_URL_RE = r"(?P<protocol>.+)://(?P<gatewayId>[^/]+)/(?P<deviceAddress>[^#]
 class Setup:
     """Representation of a complete setup returned by the Overkiz API."""
 
-    creation_time: str | None = None
-    last_update_time: str | None = None
+    creation_time: int | None = None
+    last_update_time: int | None = None
     id: str = field(repr=obfuscate_id, default=None)
     location: Location | None = None
     gateways: list[Gateway]
@@ -51,8 +51,8 @@ class Setup:
     def __init__(
         self,
         *,
-        creation_time: str | None = None,
-        last_update_time: str | None = None,
+        creation_time: int | None = None,
+        last_update_time: int | None = None,
         id: str = field(repr=obfuscate_id, default=None),
         location: dict[str, Any] | None = None,
         gateways: list[dict[str, Any]],
@@ -82,8 +82,8 @@ class Setup:
 class Location:
     """Geographical and address metadata for a Setup."""
 
-    creation_time: str
-    last_update_time: str | None = None
+    creation_time: int
+    last_update_time: int | None = None
     city: str = field(repr=obfuscate_string, default=None)
     country: str = field(repr=obfuscate_string, default=None)
     postal_code: str = field(repr=obfuscate_string, default=None)
@@ -104,8 +104,8 @@ class Location:
     def __init__(
         self,
         *,
-        creation_time: str,
-        last_update_time: str | None = None,
+        creation_time: int,
+        last_update_time: int | None = None,
         city: str = field(repr=obfuscate_string, default=None),
         country: str = field(repr=obfuscate_string, default=None),
         postal_code: str = field(repr=obfuscate_string, default=None),
@@ -885,8 +885,8 @@ class ZoneItem:
 class Zone:
     """A Zone groups related devices inside a place."""
 
-    creation_time: str
-    last_update_time: str
+    creation_time: int
+    last_update_time: int
     label: str
     type: int
     items: list[ZoneItem] | None
@@ -897,7 +897,8 @@ class Zone:
     def __init__(
         self,
         *,
-        last_update_time: str,
+        creation_time: int,
+        last_update_time: int,
         label: str,
         type: int,
         items: list[dict[str, Any]] | None,
@@ -907,6 +908,7 @@ class Zone:
         **_: Any,
     ) -> None:
         """Initialize Zone from API data and convert nested items."""
+        self.creation_time = creation_time
         self.last_update_time = last_update_time
         self.label = label
         self.type = type
