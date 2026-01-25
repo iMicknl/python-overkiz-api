@@ -2,6 +2,13 @@
 
 The action queue automatically groups rapid, consecutive calls to `execute_action_group()` into a single ActionGroup execution. This minimizes the number of API calls and helps prevent rate limiting issues, such as `TooManyRequestsException`, `TooManyConcurrentRequestsException`, or `TooManyExecutionsException`, which can occur if actions are sent individually in quick succession.
 
+Important limitation:
+- Gateways only allow a single action per device in each action group. The queue
+    merges commands for the same `device_url` into a single action to keep the
+    batch valid and preserve command order for that device.
+- If you pass multiple actions for the same `device_url` in a single
+    `execute_action_group()` call, the queue will merge them for you.
+
 ## Enable with defaults
 
 Set `action_queue=True` to enable batching with default settings:

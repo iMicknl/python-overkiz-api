@@ -115,6 +115,10 @@ class ActionQueue:
     ) -> QueuedExecution:
         """Add actions to the queue.
 
+        When multiple actions target the same device, their commands are merged
+        into a single action to respect the gateway limitation of one action per
+        device in each action group.
+
         :param actions: Actions to queue
         :param mode: Command mode (will flush if different from pending mode)
         :param label: Label for the action group
@@ -124,6 +128,19 @@ class ActionQueue:
             tuple[list[Action], CommandMode | None, str | None, list[QueuedExecution]]
         ] = []
 
+        if not actions:
+            raise ValueError("actions must contain at least one Action")
+
+        normalized_actions: list[Action] = []
+        normalized_index: dict[str, Action] = {}
+        for action in actions:
+            existing = normalized_index.get(action.device_url)
+            if existing is None:
+                normalized_actions.append(action)
+                normalized_index[action.device_url] = action
+            else:
+                existing.commands.extend(action.commands)
+
         async with self._lock:
             # If mode or label changes, flush existing queue first
             if self._pending_actions and (
@@ -132,7 +149,19 @@ class ActionQueue:
                 batches_to_execute.append(self._prepare_flush())
 
             # Add actions to pending queue
-            self._pending_actions.extend(actions)
+            for action in normalized_actions:
+                pending = next(
+                    (
+                        pending_action
+                        for pending_action in self._pending_actions
+                        if pending_action.device_url == action.device_url
+                    ),
+                    None,
+                )
+                if pending is None:
+                    self._pending_actions.append(action)
+                else:
+                    pending.commands.extend(action.commands)
             self._pending_mode = mode
             self._pending_label = label
 

@@ -165,6 +165,56 @@ async def test_action_queue_label_change_flush(mock_executor):
 
 
 @pytest.mark.asyncio
+async def test_action_queue_duplicate_device_merge(mock_executor):
+    """Test that queue merges commands for duplicate devices."""
+    queue = ActionQueue(executor=mock_executor, delay=0.5)
+
+    action1 = Action(
+        device_url="io://1234-5678-9012/1",
+        commands=[Command(name=OverkizCommand.CLOSE)],
+    )
+    action2 = Action(
+        device_url="io://1234-5678-9012/1",
+        commands=[Command(name=OverkizCommand.OPEN)],
+    )
+
+    queued1 = await queue.add([action1])
+    queued2 = await queue.add([action2])
+
+    exec_id1 = await queued1
+    exec_id2 = await queued2
+
+    assert exec_id1 == exec_id2
+    mock_executor.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_action_queue_duplicate_device_merge_order(mock_executor):
+    """Test that command order is preserved when merging."""
+    queue = ActionQueue(executor=mock_executor, delay=0.1)
+
+    action1 = Action(
+        device_url="io://1234-5678-9012/1",
+        commands=[Command(name=OverkizCommand.CLOSE)],
+    )
+    action2 = Action(
+        device_url="io://1234-5678-9012/1",
+        commands=[Command(name=OverkizCommand.OPEN)],
+    )
+
+    queued = await queue.add([action1, action2])
+    await queued
+
+    args, _ = mock_executor.call_args
+    actions = args[0]
+    assert len(actions) == 1
+    assert [command.name for command in actions[0].commands] == [
+        OverkizCommand.CLOSE,
+        OverkizCommand.OPEN,
+    ]
+
+
+@pytest.mark.asyncio
 async def test_action_queue_manual_flush(mock_executor):
     """Test manual flush of the queue."""
     queue = ActionQueue(executor=mock_executor, delay=10.0)  # Long delay
@@ -246,7 +296,7 @@ async def test_action_queue_get_pending_count():
     assert queue.get_pending_count() == 1
 
     await queue.add([action])
-    assert queue.get_pending_count() == 2
+    assert queue.get_pending_count() == 1
 
     # Wait for flush
     await asyncio.sleep(0.6)

@@ -504,6 +504,10 @@ class OverkizClient:
         executed within the configured delay window. The method will wait for the
         batch to execute and return the exec_id.
 
+        Gateways only allow a single action per device in each action group. The
+        action queue enforces this by merging commands for the same device into
+        a single action in the batch.
+
         When action queue is disabled, executes immediately and returns exec_id.
 
         The API is consistent regardless of queue configuration - always returns
