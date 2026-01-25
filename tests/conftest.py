@@ -13,7 +13,7 @@ from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.utils import generate_local_server
 
 if TYPE_CHECKING:
-    from collections.abc import Generator
+    pass
 
 
 class MockResponse:
@@ -37,7 +37,7 @@ class MockResponse:
         """Context manager exit (noop)."""
         pass
 
-    async def __aenter__(self) -> "MockResponse":
+    async def __aenter__(self) -> MockResponse:
         """Context manager enter returning self."""
         return self
 
