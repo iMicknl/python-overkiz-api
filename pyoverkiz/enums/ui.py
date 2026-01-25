@@ -1,5 +1,8 @@
 """UI enums for classes and widgets used to interpret device UI metadata."""
 
+# ruff: noqa: S105
+# Enum values contain "PASS" in API names (e.g. PassAPC), not passwords
+
 import logging
 import sys
 from enum import unique

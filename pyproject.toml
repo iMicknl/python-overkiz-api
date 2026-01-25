@@ -67,16 +67,6 @@ select = [
 ]
 ignore = ["E501"] # Line too long
 
-[tool.ruff.lint.per-file-ignores]
-# Tests: S101 (assert) is expected, ASYNC230 (blocking open) is acceptable for fixtures
-"tests/**/*.py" = ["S101", "ASYNC230"]
-# S105: OAuth client secrets are public by design (embedded in mobile apps)
-"pyoverkiz/const.py" = ["S105"]
-# S105: Enum values contain "TOKEN" or "PASS" in API names, not passwords
-"pyoverkiz/enums/*.py" = ["S105"]
-# Utility scripts can use print
-"utils/**/*.py" = ["T201"]
-
 [tool.ruff.lint.pydocstyle]
 convention = "google"  # Accepts: "google", "numpy", or "pep257".
 

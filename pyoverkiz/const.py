@@ -17,7 +17,8 @@ NEXITY_COGNITO_REGION = "eu-west-1"
 
 SOMFY_API = "https://accounts.somfy.com"
 SOMFY_CLIENT_ID = "0d8e920c-1478-11e7-a377-02dd59bd3041_1ewvaqmclfogo4kcsoo0c8k4kso884owg08sg8c40sk4go4ksg"
-SOMFY_CLIENT_SECRET = "12k73w1n540g8o4cokg0cw84cog840k84cwggscwg884004kgk"
+# OAuth client secrets are public by design (embedded in mobile apps)
+SOMFY_CLIENT_SECRET = "12k73w1n540g8o4cokg0cw84cog840k84cwggscwg884004kgk"  # noqa: S105
 
 LOCAL_API_PATH = "/enduser-mobile-web/1/enduserAPI/"
 

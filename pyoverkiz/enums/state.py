@@ -1,5 +1,8 @@
 """State and attribute enums describing Overkiz device states and attributes."""
 
+# ruff: noqa: S105
+# Enum values contain "PASS" or "TOKEN" in API names, not passwords
+
 import sys
 from enum import unique
 

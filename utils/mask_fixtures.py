@@ -1,5 +1,8 @@
 """Simple helper script to mask sensitive fields in JSON fixtures."""
 
+# ruff: noqa: T201
+# Utility scripts can use print for CLI output
+
 from __future__ import annotations
 
 import glob
