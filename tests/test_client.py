@@ -194,9 +194,9 @@ class TestOverkizClient:
             assert len(setup.gateways) == gateway_count
 
             for device in setup.devices:
-                assert device.gateway_id
-                assert device.device_address
-                assert device.protocol
+                assert device.gateway_id is not None
+                assert device.device_address is not None
+                assert device.protocol is not None
 
     @pytest.mark.parametrize(
         "fixture_name",
@@ -238,7 +238,7 @@ class TestOverkizClient:
 
         with patch.object(aiohttp.ClientSession, "get", return_value=resp):
             diagnostics = await client.get_diagnostic_data()
-            assert diagnostics
+            assert diagnostics is not None
 
     @pytest.mark.parametrize(
         "fixture_name, exception, status_code",
@@ -446,16 +446,16 @@ class TestOverkizClient:
             assert len(scenarios) == scenario_count
 
             for scenario in scenarios:
-                assert scenario.oid
+                assert scenario.oid is not None
                 assert scenario.label is not None
                 assert scenario.actions
 
                 for action in scenario.actions:
-                    assert action.device_url
+                    assert action.device_url is not None
                     assert action.commands
 
                     for command in action.commands:
-                        assert command.name
+                        assert command.name is not None
 
 
 class MockResponse:
