@@ -3,29 +3,24 @@
 from __future__ import annotations
 
 import json
-from typing import TYPE_CHECKING
 
-import pytest
 import pytest_asyncio
 
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.utils import generate_local_server
 
-if TYPE_CHECKING:
-    pass
-
 
 class MockResponse:
     """Simple stand-in for aiohttp responses used in tests."""
 
-    def __init__(self, text: str | None, status: int = 200, url: str = "") -> None:
+    def __init__(self, text: str, status: int = 200, url: str = "") -> None:
         """Create a mock response with text payload and optional status/url."""
         self._text = text
         self.status = status
         self.url = url
 
-    async def text(self) -> str | None:
+    async def text(self) -> str:
         """Return text payload asynchronously."""
         return self._text
 
@@ -40,12 +35,6 @@ class MockResponse:
     async def __aenter__(self) -> MockResponse:
         """Context manager enter returning self."""
         return self
-
-
-@pytest.fixture
-def mock_response() -> type[MockResponse]:
-    """Provide the MockResponse class for creating mock responses."""
-    return MockResponse
 
 
 @pytest_asyncio.fixture
