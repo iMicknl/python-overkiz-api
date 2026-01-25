@@ -7,8 +7,8 @@ The action queue automatically groups rapid, consecutive calls to `execute_actio
 Set `action_queue=True` to enable batching with default settings:
 
 ```python
-from pyoverkiz.client import OverkizClient
 from pyoverkiz.auth import UsernamePasswordCredentials
+from pyoverkiz.client import OverkizClient
 from pyoverkiz.enums import OverkizCommand, Server
 from pyoverkiz.models import Action, Command
 
@@ -27,8 +27,9 @@ action2 = Action(
     commands=[Command(name=OverkizCommand.OPEN)],
 )
 
-exec_id1 = await client.execute_action_group([action1])
-exec_id2 = await client.execute_action_group([action2])
+task1 = asyncio.create_task(client.execute_action_group([action1]))
+task2 = asyncio.create_task(client.execute_action_group([action2]))
+exec_id1, exec_id2 = await asyncio.gather(task1, task2)
 
 print(exec_id1 == exec_id2)
 ```
