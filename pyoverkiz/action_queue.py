@@ -23,10 +23,10 @@ class ActionQueueSettings:
     def validate(self) -> None:
         """Validate configuration values for the action queue."""
         if self.delay <= 0:
-            raise ValueError(f"action_queue.delay must be positive, got {self.delay!r}")
+            raise ValueError(f"action_queue_delay must be positive, got {self.delay!r}")
         if self.max_actions < 1:
             raise ValueError(
-                f"action_queue.max_actions must be at least 1, got {self.max_actions!r}"
+                f"action_queue_max_actions must be at least 1, got {self.max_actions!r}"
             )
 
 
@@ -78,6 +78,7 @@ class ActionQueue:
     - The delay timer expires
     - The max actions limit is reached
     - The command mode changes
+    - The label changes
     - Manual flush is requested
     """
 
@@ -264,12 +265,15 @@ class ActionQueue:
             # Notify all waiters
             for waiter in waiters:
                 waiter.set_result(exec_id)
-        except BaseException as exc:
-            # Propagate exception to all waiters
+        except asyncio.CancelledError as exc:
+            # Propagate cancellation to all waiters, then re-raise.
             for waiter in waiters:
                 waiter.set_exception(exc)
-            if isinstance(exc, asyncio.CancelledError):
-                raise
+            raise
+        except Exception as exc:
+            # Propagate exceptions to all waiters without swallowing system-level exits.
+            for waiter in waiters:
+                waiter.set_exception(exc)
 
     async def flush(self) -> None:
         """Force flush all pending actions immediately.
@@ -296,7 +300,7 @@ class ActionQueue:
         This method does not acquire the internal lock and therefore returns a
         best-effort snapshot that may be slightly out of date if the queue is
         being modified concurrently by other coroutines. Do not rely on this
-        value for critical control flow.
+        value for critical control flow or for making flush decisions.
         """
         return len(self._pending_actions)
 

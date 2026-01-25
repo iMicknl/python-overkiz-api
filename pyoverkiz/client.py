@@ -539,9 +539,10 @@ class OverkizClient:
             await self._action_queue.flush()
 
     def get_pending_actions_count(self) -> int:
-        """Get the number of actions currently waiting in the queue.
+        """Get the approximate number of actions currently waiting in the queue.
 
-        Returns 0 if action queue is disabled.
+        Returns 0 if action queue is disabled. This is a best-effort snapshot
+        and may be stale if other coroutines modify the queue concurrently.
         """
         if self._action_queue:
             return self._action_queue.get_pending_count()

@@ -14,6 +14,8 @@ Important limitation:
 Set `action_queue=True` to enable batching with default settings:
 
 ```python
+import asyncio
+
 from pyoverkiz.auth import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.enums import OverkizCommand, Server
