@@ -22,7 +22,7 @@ from aiohttp import (
     FormData,
     ServerDisconnectedError,
 )
-from backoff._typing import Details
+from backoff.types import Details
 from botocore.client import BaseClient
 from botocore.config import Config
 from warrant_lite import WarrantLite
