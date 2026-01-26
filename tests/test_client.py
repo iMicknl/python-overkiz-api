@@ -8,7 +8,7 @@ from __future__ import annotations
 
 import json
 import os
-from unittest.mock import patch
+from unittest.mock import AsyncMock, patch
 
 import aiohttp
 import pytest
@@ -101,6 +101,83 @@ class TestOverkizClient:
             assert int_state_event.value == 23247220
             assert isinstance(int_state_event.value, int)
             assert int_state_event.type == DataType.INTEGER
+
+    @pytest.mark.asyncio
+    async def test_backoff_relogin_on_auth_error(self, client: OverkizClient):
+        """Ensure auth backoff retries and triggers `login()` on failure."""
+        client.login = AsyncMock()
+
+        with (
+            patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
+            patch.object(
+                OverkizClient,
+                "_OverkizClient__get",
+                new=AsyncMock(
+                    side_effect=[
+                        exceptions.NotAuthenticatedException("expired"),
+                        {"protocolVersion": "1"},
+                    ]
+                ),
+            ) as get_mock,
+        ):
+            result = await client.get_api_version()
+
+        assert result == "1"
+        assert get_mock.await_count == 2
+        assert client.login.await_count == 1
+        assert sleep_mock.await_count == 1
+
+    @pytest.mark.asyncio
+    async def test_backoff_refresh_listener_on_listener_error(
+        self, client: OverkizClient
+    ) -> None:
+        """Ensure listener backoff retries and triggers `register_event_listener()`."""
+        client.event_listener_id = "listener-1"
+        client.register_event_listener = AsyncMock(return_value="listener-2")
+
+        with (
+            patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
+            patch.object(
+                OverkizClient,
+                "_OverkizClient__post",
+                new=AsyncMock(
+                    side_effect=[
+                        exceptions.InvalidEventListenerIdException("bad listener"),
+                        [],
+                    ]
+                ),
+            ) as post_mock,
+        ):
+            events = await client.fetch_events()
+
+        assert events == []
+        assert post_mock.await_count == 2
+        assert client.register_event_listener.await_count == 1
+        assert sleep_mock.await_count == 1
+
+    @pytest.mark.asyncio
+    async def test_backoff_retries_on_concurrent_requests(
+        self, client: OverkizClient
+    ) -> None:
+        """Ensure concurrent request backoff retries and succeeds afterwards."""
+        with (
+            patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
+            patch.object(
+                OverkizClient,
+                "_OverkizClient__post",
+                new=AsyncMock(
+                    side_effect=[
+                        exceptions.TooManyConcurrentRequestsException("busy"),
+                        {"id": "listener-3"},
+                    ]
+                ),
+            ) as post_mock,
+        ):
+            listener_id = await client.register_event_listener()
+
+        assert listener_id == "listener-3"
+        assert post_mock.await_count == 2
+        assert sleep_mock.await_count == 1
 
     @pytest.mark.parametrize(
         "fixture_name",
