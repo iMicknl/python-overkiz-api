@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import asyncio
 import datetime
+import logging
 import os
 import ssl
 import urllib.parse
-from collections.abc import Mapping
 from json import JSONDecodeError
 from types import TracebackType
 from typing import Any, cast
@@ -22,6 +22,7 @@ from aiohttp import (
     FormData,
     ServerDisconnectedError,
 )
+from backoff._typing import Details
 from botocore.client import BaseClient
 from botocore.config import Config
 from warrant_lite import WarrantLite
@@ -91,13 +92,15 @@ from pyoverkiz.models import (
 from pyoverkiz.obfuscate import obfuscate_sensitive_data
 from pyoverkiz.types import JSON
 
+_LOGGER = logging.getLogger(__name__)
 
-async def relogin(invocation: Mapping[str, Any]) -> None:
+
+async def relogin(invocation: Details) -> None:
     """Small helper used by retry decorators to re-authenticate the client."""
     await invocation["args"][0].login()
 
 
-async def refresh_listener(invocation: Mapping[str, Any]) -> None:
+async def refresh_listener(invocation: Details) -> None:
     """Helper to refresh an event listener when retrying listener-related operations."""
     await invocation["args"][0].register_event_listener()
 
@@ -108,24 +111,28 @@ retry_on_auth_error = backoff.on_exception(
     (NotAuthenticatedException, ServerDisconnectedError),
     max_tries=2,
     on_backoff=relogin,
+    logger=_LOGGER,
 )
 
 retry_on_connection_failure = backoff.on_exception(
     backoff.expo,
     (TimeoutError, ClientConnectorError),
     max_tries=5,
+    logger=_LOGGER,
 )
 
 retry_on_concurrent_requests = backoff.on_exception(
     backoff.expo,
     TooManyConcurrentRequestsException,
     max_tries=5,
+    logger=_LOGGER,
 )
 
 retry_on_too_many_executions = backoff.on_exception(
     backoff.expo,
     TooManyExecutionsException,
     max_tries=10,
+    logger=_LOGGER,
 )
 
 retry_on_listener_error = backoff.on_exception(
@@ -133,12 +140,14 @@ retry_on_listener_error = backoff.on_exception(
     (InvalidEventListenerIdException, NoRegisteredEventListenerException),
     max_tries=2,
     on_backoff=refresh_listener,
+    logger=_LOGGER,
 )
 
 retry_on_execution_queue_full = backoff.on_exception(
     backoff.expo,
     ExecutionQueueFullException,
     max_tries=5,
+    logger=_LOGGER,
 )
 
 # pylint: disable=too-many-instance-attributes, too-many-branches
