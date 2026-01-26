@@ -105,9 +105,15 @@ async def refresh_listener(invocation: Mapping[str, Any]) -> None:
 # Reusable backoff decorators to reduce code duplication
 retry_on_auth_error = backoff.on_exception(
     backoff.expo,
-    (NotAuthenticatedException, ServerDisconnectedError, ClientConnectorError),
+    (NotAuthenticatedException, ServerDisconnectedError),
     max_tries=2,
     on_backoff=relogin,
+)
+
+retry_on_connection_failure = backoff.on_exception(
+    backoff.expo,
+    (TimeoutError, ClientConnectorError),
+    max_tries=10,
 )
 
 retry_on_concurrent_requests = backoff.on_exception(
@@ -129,6 +135,11 @@ retry_on_listener_error = backoff.on_exception(
     on_backoff=refresh_listener,
 )
 
+retry_on_execution_queue_full = backoff.on_exception(
+    backoff.expo,
+    ExecutionQueueFullException,
+    max_tries=5,
+)
 
 # pylint: disable=too-many-instance-attributes, too-many-branches
 
@@ -585,6 +596,7 @@ class OverkizClient:
     @retry_on_concurrent_requests
     @retry_on_auth_error
     @retry_on_listener_error
+    @retry_on_connection_failure
     async def fetch_events(self) -> list[Event]:
         """Fetch new events from a registered event listener. Fetched events are removed.
 
