@@ -1,7 +1,7 @@
 [
     {
         "startTime": 1767003511145,
-        "owner": "somfy@imick.nl",
+        "owner": "email@email.nl",
         "actionGroup": {
             "label": "Execution via Home Assistant",
             "shortcut": false,
@@ -9,7 +9,7 @@
             "notificationCondition": "NEVER",
             "actions": [
                 {
-                    "deviceURL": "rts://2025-8464-6867/16756006",
+                    "deviceURL": "rts://1234-5678-1234/12345678",
                     "commands": [
                         {
                             "type": 1,
@@ -18,7 +18,7 @@
                     ]
                 },
                 {
-                    "deviceURL": "rts://2025-8464-6867/16719623",
+                    "deviceURL": "rts://1234-5678-1234/87654321",
                     "commands": [
                         {
                             "type": 1,
