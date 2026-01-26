@@ -22,7 +22,9 @@ from pyoverkiz.enums import (
     UIWidget,
     UpdateBoxStatus,
 )
+from pyoverkiz.enums.command import OverkizCommand, OverkizCommandParam
 from pyoverkiz.enums.protocol import Protocol
+from pyoverkiz.enums.server import APIType, Server
 from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 
@@ -465,19 +467,44 @@ class States:
     get = __getitem__
 
 
-class Command(dict):
+@define(init=False, kw_only=True)
+class Command:
     """Represents an OverKiz Command."""
 
-    name: str
-    parameters: list[str | int | float] | None
+    type: int | None = None
+    name: str | OverkizCommand
+    parameters: list[str | int | float | OverkizCommandParam] | None
 
     def __init__(
-        self, name: str, parameters: list[str | int | float] | None = None, **_: Any
+        self,
+        name: str | OverkizCommand,
+        parameters: list[str | int | float | OverkizCommandParam] | None = None,
+        type: int | None = None,
+        **_: Any,
     ):
         """Initialize a command instance and mirror fields into dict base class."""
         self.name = name
         self.parameters = parameters
-        dict.__init__(self, name=name, parameters=parameters)
+        self.type = type
+
+    def to_payload(self) -> dict[str, object]:
+        """Return a JSON-serializable payload for this command.
+
+        The payload uses snake_case keys; the client will convert to camelCase
+        and apply small key fixes (like `deviceURL`) before sending.
+        """
+        payload: dict[str, object] = {"name": str(self.name)}
+
+        if self.type is not None:
+            payload["type"] = self.type
+
+        if self.parameters is not None:
+            payload["parameters"] = [
+                p if isinstance(p, (str, int, float, bool)) else str(p)
+                for p in self.parameters  # type: ignore[arg-type]
+            ]
+
+        return payload
 
 
 @define(init=False, kw_only=True)
@@ -574,7 +601,7 @@ class Execution:
     description: str
     owner: str = field(repr=obfuscate_email)
     state: str
-    action_group: list[dict[str, Any]]
+    action_group: ActionGroup
 
     def __init__(
         self,
@@ -582,7 +609,7 @@ class Execution:
         description: str,
         owner: str,
         state: str,
-        action_group: list[dict[str, Any]],
+        action_group: dict[str, Any],
         **_: Any,
     ):
         """Initialize Execution object from API fields."""
@@ -590,7 +617,7 @@ class Execution:
         self.description = description
         self.owner = owner
         self.state = state
-        self.action_group = action_group
+        self.action_group = ActionGroup(**action_group)
 
 
 @define(init=False, kw_only=True)
@@ -600,14 +627,26 @@ class Action:
     device_url: str
     commands: list[Command]
 
-    def __init__(self, device_url: str, commands: list[dict[str, Any]]):
+    def __init__(self, device_url: str, commands: list[dict[str, Any] | Command]):
         """Initialize Action from API data and convert nested commands."""
         self.device_url = device_url
-        self.commands = [Command(**c) for c in commands] if commands else []
+        self.commands = [
+            c if isinstance(c, Command) else Command(**c) for c in commands
+        ]
+
+    def to_payload(self) -> dict[str, object]:
+        """Return a JSON-serializable payload for this action (snake_case).
+
+        The final camelCase conversion is handled by the client.
+        """
+        return {
+            "device_url": self.device_url,
+            "commands": [c.to_payload() for c in self.commands],
+        }
 
 
 @define(init=False, kw_only=True)
-class Scenario:
+class ActionGroup:
     """An action group is composed of one or more actions.
 
     Each action is related to a single setup device (designated by its device URL) and
@@ -615,7 +654,7 @@ class Scenario:
     """
 
     id: str = field(repr=obfuscate_id)
-    creation_time: int
+    creation_time: int | None = None
     last_update_time: int | None = None
     label: str = field(repr=obfuscate_string)
     metadata: str | None = None
@@ -629,10 +668,11 @@ class Scenario:
 
     def __init__(
         self,
-        creation_time: int,
         actions: list[dict[str, Any]],
-        oid: str,
+        creation_time: int | None = None,
         metadata: str | None = None,
+        oid: str | None = None,
+        id: str | None = None,
         last_update_time: int | None = None,
         label: str | None = None,
         shortcut: bool | None = None,
@@ -642,8 +682,11 @@ class Scenario:
         notification_title: str | None = None,
         **_: Any,
     ) -> None:
-        """Initialize Scenario (action group) from API data."""
-        self.id = oid
+        """Initialize ActionGroup from API data and convert nested actions."""
+        if oid is None and id is None:
+            raise ValueError("Either 'oid' or 'id' must be provided")
+
+        self.id = cast(str, oid or id)
         self.creation_time = creation_time
         self.last_update_time = last_update_time
         self.label = (
@@ -656,7 +699,7 @@ class Scenario:
         self.notification_text = notification_text
         self.notification_title = notification_title
         self.actions = [Action(**action) for action in actions]
-        self.oid = oid
+        self.oid = cast(str, oid or id)
 
 
 @define(init=False, kw_only=True)
@@ -919,25 +962,36 @@ class Zone:
 
 
 @define(kw_only=True)
-class OverkizServer:
-    """Class to describe an Overkiz server."""
+class ServerConfig:
+    """Connection target details for an Overkiz-compatible server."""
 
+    server: Server | None
     name: str
     endpoint: str
     manufacturer: str
-    configuration_url: str | None
+    type: APIType
+    configuration_url: str | None = None
 
-
-@define(kw_only=True)
-class LocalToken:
-    """Descriptor for a local gateway token."""
-
-    label: str
-    gateway_id: str = field(repr=obfuscate_id, default=None)
-    gateway_creation_time: int
-    uuid: str
-    scope: str
-    expiration_time: int | None
+    def __init__(
+        self,
+        *,
+        server: Server | str | None = None,
+        name: str,
+        endpoint: str,
+        manufacturer: str,
+        type: str | APIType,
+        configuration_url: str | None = None,
+        **_: Any,
+    ) -> None:
+        """Initialize ServerConfig and convert enum fields."""
+        self.server = (
+            server if isinstance(server, Server) or server is None else Server(server)
+        )
+        self.name = name
+        self.endpoint = endpoint
+        self.manufacturer = manufacturer
+        self.type = type if isinstance(type, APIType) else APIType(type)
+        self.configuration_url = configuration_url
 
 
 @define(kw_only=True)
