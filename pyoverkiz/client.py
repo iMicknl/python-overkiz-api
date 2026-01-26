@@ -73,6 +73,7 @@ from pyoverkiz.exceptions import (
     UnknownUserException,
 )
 from pyoverkiz.models import (
+    Action,
     Command,
     Device,
     Event,
@@ -662,6 +663,23 @@ class OverkizClient:
         payload = {
             "label": label,
             "actions": [{"deviceURL": device_url, "commands": commands}],
+        }
+        response: dict = await self.__post("exec/apply", payload)
+        return cast(str, response["execId"])
+
+    @retry_on_auth_error
+    async def execute_actions(
+        self,
+        actions: list[Action],
+        label: str | None = "python-overkiz-api",
+    ) -> str:
+        """Send several commands to different devices in one call"""
+        payload = {
+            "label": label,
+            "actions": [
+                {"deviceURL": action.device_url, "commands": action.commands}
+                for action in actions
+            ],
         }
         response: dict = await self.__post("exec/apply", payload)
         return cast(str, response["execId"])
