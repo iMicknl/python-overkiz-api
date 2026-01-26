@@ -113,7 +113,7 @@ retry_on_auth_error = backoff.on_exception(
 retry_on_connection_failure = backoff.on_exception(
     backoff.expo,
     (TimeoutError, ClientConnectorError),
-    max_tries=10,
+    max_tries=5,
 )
 
 retry_on_concurrent_requests = backoff.on_exception(
