@@ -1,45 +1,27 @@
 """Unit tests for the high-level OverkizClient behaviour and responses."""
 
-# ruff: noqa: S101, ASYNC230
-# S101: Tests use assert statements
+# ruff: noqa: ASYNC230
 # ASYNC230: Blocking open() is acceptable for reading test fixtures
 
 from __future__ import annotations
 
-import json
-import os
+from pathlib import Path
 from unittest.mock import patch
 
 import aiohttp
 import pytest
-from pytest_asyncio import fixture
 
 from pyoverkiz import exceptions
 from pyoverkiz.client import OverkizClient
-from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.enums import APIType, DataType
 from pyoverkiz.models import Option
-from pyoverkiz.utils import generate_local_server
+from tests.conftest import MockResponse
 
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+CURRENT_DIR = Path(__file__).parent
 
 
 class TestOverkizClient:
     """Tests for the public OverkizClient behaviour (API type, devices, events, setup and diagnostics)."""
-
-    @fixture
-    async def client(self):
-        """Fixture providing an OverkizClient configured for the cloud server."""
-        return OverkizClient("username", "password", SUPPORTED_SERVERS["somfy_europe"])
-
-    @fixture
-    async def local_client(self):
-        """Fixture providing an OverkizClient configured for a local (developer) server."""
-        return OverkizClient(
-            "username",
-            "password",
-            generate_local_server("gateway-1234-5678-1243.local:8443"),
-        )
 
     @pytest.mark.asyncio
     async def test_get_api_type_cloud(self, client: OverkizClient):
@@ -54,9 +36,7 @@ class TestOverkizClient:
     @pytest.mark.asyncio
     async def test_get_devices_basic(self, client: OverkizClient):
         """Ensure the client can fetch and parse the basic devices fixture."""
-        with open(
-            os.path.join(CURRENT_DIR, "devices.json"), encoding="utf-8"
-        ) as raw_devices:
+        with open(CURRENT_DIR / "devices.json", encoding="utf-8") as raw_devices:
             resp = MockResponse(raw_devices.read())
 
         with patch.object(aiohttp.ClientSession, "get", return_value=resp):
@@ -76,7 +56,7 @@ class TestOverkizClient:
     ):
         """Parameterised test that fetches events fixture and checks the expected count."""
         with open(
-            os.path.join(CURRENT_DIR, "fixtures/event/" + fixture_name),
+            CURRENT_DIR / "fixtures" / "event" / fixture_name,
             encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
@@ -89,7 +69,7 @@ class TestOverkizClient:
     async def test_fetch_events_simple_cast(self, client: OverkizClient):
         """Check that event state values from the cloud (strings) are cast to appropriate types."""
         with open(
-            os.path.join(CURRENT_DIR, "fixtures/event/events.json"), encoding="utf-8"
+            CURRENT_DIR / "fixtures" / "event" / "events.json", encoding="utf-8"
         ) as raw_events:
             resp = MockResponse(raw_events.read())
 
@@ -113,7 +93,7 @@ class TestOverkizClient:
     async def test_fetch_events_casting(self, client: OverkizClient, fixture_name: str):
         """Validate that fetched event states are cast to the expected Python types for each data type."""
         with open(
-            os.path.join(CURRENT_DIR, "fixtures/event/" + fixture_name),
+            CURRENT_DIR / "fixtures" / "event" / fixture_name,
             encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
@@ -182,7 +162,7 @@ class TestOverkizClient:
     ):
         """Ensure setup parsing yields expected device and gateway counts and device metadata."""
         with open(
-            os.path.join(CURRENT_DIR, "fixtures/setup/" + fixture_name),
+            CURRENT_DIR / "fixtures" / "setup" / fixture_name,
             encoding="utf-8",
         ) as setup_mock:
             resp = MockResponse(setup_mock.read())
@@ -194,9 +174,9 @@ class TestOverkizClient:
             assert len(setup.gateways) == gateway_count
 
             for device in setup.devices:
-                assert device.gateway_id
-                assert device.device_address
-                assert device.protocol
+                assert device.gateway_id is not None
+                assert device.device_address is not None
+                assert device.protocol is not None
 
     @pytest.mark.parametrize(
         "fixture_name",
@@ -231,14 +211,14 @@ class TestOverkizClient:
     async def test_get_diagnostic_data(self, client: OverkizClient, fixture_name: str):
         """Verify that diagnostic data can be fetched and is not empty."""
         with open(
-            os.path.join(CURRENT_DIR, "fixtures/setup/" + fixture_name),
+            CURRENT_DIR / "fixtures" / "setup" / fixture_name,
             encoding="utf-8",
         ) as setup_mock:
             resp = MockResponse(setup_mock.read())
 
         with patch.object(aiohttp.ClientSession, "get", return_value=resp):
             diagnostics = await client.get_diagnostic_data()
-            assert diagnostics
+            assert diagnostics is not None
 
     @pytest.mark.parametrize(
         "fixture_name, exception, status_code",
@@ -365,7 +345,7 @@ class TestOverkizClient:
         with pytest.raises(exception):
             if fixture_name:
                 with open(
-                    os.path.join(CURRENT_DIR, "fixtures/exceptions/" + fixture_name),
+                    CURRENT_DIR / "fixtures" / "exceptions" / fixture_name,
                     encoding="utf-8",
                 ) as raw_events:
                     resp = MockResponse(raw_events.read(), status_code)
@@ -381,7 +361,7 @@ class TestOverkizClient:
     ):
         """Check that setup options are parsed and return the expected number of Option instances."""
         with open(
-            os.path.join(CURRENT_DIR, "fixtures/endpoints/setup-options.json"),
+            CURRENT_DIR / "fixtures" / "endpoints" / "setup-options.json",
             encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
@@ -414,7 +394,7 @@ class TestOverkizClient:
     ):
         """Verify retrieval of a single setup option by name, including non-existent options."""
         with open(
-            os.path.join(CURRENT_DIR, "fixtures/endpoints/" + fixture_name),
+            CURRENT_DIR / "fixtures" / "endpoints" / fixture_name,
             encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
@@ -445,7 +425,7 @@ class TestOverkizClient:
     ):
         """Ensure action groups (scenarios) are parsed correctly and contain actions and commands."""
         with open(
-            os.path.join(CURRENT_DIR, "fixtures/action_groups/" + fixture_name),
+            CURRENT_DIR / "fixtures" / "action_groups" / fixture_name,
             encoding="utf-8",
         ) as action_group_mock:
             resp = MockResponse(action_group_mock.read())
@@ -456,40 +436,13 @@ class TestOverkizClient:
             assert len(scenarios) == scenario_count
 
             for scenario in scenarios:
-                assert scenario.oid
+                assert scenario.oid is not None
                 assert scenario.label is not None
                 assert scenario.actions
 
                 for action in scenario.actions:
-                    assert action.device_url
+                    assert action.device_url is not None
                     assert action.commands
 
                     for command in action.commands:
-                        assert command.name
-
-
-class MockResponse:
-    """Simple stand-in for aiohttp responses used in tests."""
-
-    def __init__(self, text, status=200, url=""):
-        """Create a mock response with text payload and optional status/url."""
-        self._text = text
-        self.status = status
-        self.url = url
-
-    async def text(self):
-        """Return text payload asynchronously."""
-        return self._text
-
-    # pylint: disable=unused-argument
-    async def json(self, content_type=None):
-        """Return parsed JSON payload asynchronously."""
-        return json.loads(self._text)
-
-    async def __aexit__(self, exc_type, exc, tb):
-        """Context manager exit (noop)."""
-        pass
-
-    async def __aenter__(self):
-        """Context manager enter returning self."""
-        return self
+                        assert command.name is not None

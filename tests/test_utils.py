@@ -1,8 +1,5 @@
 """Tests for utility helper functions like server generation and gateway checks."""
 
-# ruff: noqa: S101
-# Tests use assert statements
-
 import pytest
 
 from pyoverkiz.utils import generate_local_server, is_overkiz_gateway
@@ -18,7 +15,7 @@ class TestUtils:
         """Create a local server descriptor using the host and default values."""
         local_server = generate_local_server(host=LOCAL_HOST)
 
-        assert local_server
+        assert local_server is not None
         assert (
             local_server.endpoint
             == "https://gateway-1234-5678-1243.local:8443/enduser-mobile-web/1/enduserAPI/"
@@ -36,7 +33,7 @@ class TestUtils:
             configuration_url="https://somfy.com",
         )
 
-        assert local_server
+        assert local_server is not None
         assert (
             local_server.endpoint
             == "https://192.168.1.105:8443/enduser-mobile-web/1/enduserAPI/"

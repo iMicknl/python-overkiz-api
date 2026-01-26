@@ -1,8 +1,5 @@
 """Unit tests for models (Device, State and States helpers)."""
 
-# ruff: noqa: S101
-# Tests use assert statements
-
 from __future__ import annotations
 
 import humps
@@ -201,7 +198,7 @@ class TestDevice:
         hump_device = humps.decamelize(RAW_DEVICES)
         del hump_device["states"]
         device = Device(**hump_device)
-        assert not device.states.get(STATE)
+        assert device.states.get(STATE) is None
 
 
 class TestStates:
@@ -211,19 +208,19 @@ class TestStates:
         """An empty list yields an empty States object with no state found."""
         states = States([])
         assert not states
-        assert not states.get(STATE)
+        assert states.get(STATE) is None
 
     def test_none_states(self):
         """A None value for states should behave as empty."""
         states = States(None)
         assert not states
-        assert not states.get(STATE)
+        assert states.get(STATE) is None
 
     def test_getter(self):
         """Retrieve a known state and validate its properties."""
         states = States(RAW_STATES)
         state = states.get(STATE)
-        assert state
+        assert state is not None
         assert state.name == STATE
         assert state.type == DataType.STRING
         assert state.value == "alarm name"
@@ -232,7 +229,7 @@ class TestStates:
         """Requesting a missing state returns falsy (None)."""
         states = States(RAW_STATES)
         state = states.get("FooState")
-        assert not state
+        assert state is None
 
 
 class TestState:
@@ -246,8 +243,7 @@ class TestState:
     def test_bad_int_value(self):
         """Accessor raises TypeError if the state type mismatches expected int."""
         state = State(name="state", type=DataType.BOOLEAN, value=False)
-        with pytest.raises(TypeError):
-            assert state.value_as_int
+        pytest.raises(TypeError, lambda: state.value_as_int)
 
     def test_float_value(self):
         """Float typed state returns proper float accessor."""
@@ -257,8 +253,7 @@ class TestState:
     def test_bad_float_value(self):
         """Accessor raises TypeError if the state type mismatches expected float."""
         state = State(name="state", type=DataType.BOOLEAN, value=False)
-        with pytest.raises(TypeError):
-            assert state.value_as_float
+        pytest.raises(TypeError, lambda: state.value_as_float)
 
     def test_bool_value(self):
         """Boolean typed state returns proper boolean accessor."""
@@ -268,8 +263,7 @@ class TestState:
     def test_bad_bool_value(self):
         """Accessor raises TypeError if the state type mismatches expected bool."""
         state = State(name="state", type=DataType.INTEGER, value=1)
-        with pytest.raises(TypeError):
-            assert state.value_as_bool
+        pytest.raises(TypeError, lambda: state.value_as_bool)
 
     def test_str_value(self):
         """String typed state returns proper string accessor."""
@@ -279,8 +273,7 @@ class TestState:
     def test_bad_str_value(self):
         """Accessor raises TypeError if the state type mismatches expected string."""
         state = State(name="state", type=DataType.BOOLEAN, value=False)
-        with pytest.raises(TypeError):
-            assert state.value_as_str
+        pytest.raises(TypeError, lambda: state.value_as_str)
 
     def test_dict_value(self):
         """JSON object typed state returns proper dict accessor."""
@@ -290,8 +283,7 @@ class TestState:
     def test_bad_dict_value(self):
         """Accessor raises TypeError if the state type mismatches expected dict."""
         state = State(name="state", type=DataType.BOOLEAN, value=False)
-        with pytest.raises(TypeError):
-            assert state.value_as_dict
+        pytest.raises(TypeError, lambda: state.value_as_dict)
 
     def test_list_value(self):
         """JSON array typed state returns proper list accessor."""
@@ -301,5 +293,4 @@ class TestState:
     def test_bad_list_value(self):
         """Accessor raises TypeError if the state type mismatches expected list."""
         state = State(name="state", type=DataType.BOOLEAN, value=False)
-        with pytest.raises(TypeError):
-            assert state.value_as_list
+        pytest.raises(TypeError, lambda: state.value_as_list)
