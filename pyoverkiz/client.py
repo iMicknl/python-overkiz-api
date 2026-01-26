@@ -95,14 +95,19 @@ from pyoverkiz.types import JSON
 _LOGGER = logging.getLogger(__name__)
 
 
+def _get_client_from_invocation(invocation: Details) -> OverkizClient:
+    """Return the `OverkizClient` instance from a backoff invocation."""
+    return cast(OverkizClient, invocation["args"][0])
+
+
 async def relogin(invocation: Details) -> None:
-    """Small helper used by retry decorators to re-authenticate the client."""
-    await invocation["args"][0].login()
+    """Re-authenticate using the main `OverkizClient` instance."""
+    await _get_client_from_invocation(invocation).login()
 
 
 async def refresh_listener(invocation: Details) -> None:
-    """Helper to refresh an event listener when retrying listener-related operations."""
-    await invocation["args"][0].register_event_listener()
+    """Refresh the listener using the main `OverkizClient` instance."""
+    await _get_client_from_invocation(invocation).register_event_listener()
 
 
 # Reusable backoff decorators to reduce code duplication
