@@ -710,7 +710,7 @@ class OverkizClient:
         return await self.__get("reference/ui/profileNames")
 
     @retry_on_auth_error
-    async def get_reference_ui_widgets(self) -> JSON:
+    async def get_reference_ui_widgets(self) -> list[str]:
         """Get a list of all defined UI widgets."""
         return await self.__get("reference/ui/widgets")
 
