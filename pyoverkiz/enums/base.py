@@ -3,10 +3,7 @@
 from __future__ import annotations
 
 import logging
-from enum import Enum
-from typing import TypeVar, cast
-
-_EnumT = TypeVar("_EnumT", bound=Enum)
+from typing import Any, Self, cast
 
 
 class UnknownEnumMixin:
@@ -19,13 +16,14 @@ class UnknownEnumMixin:
     __missing_message__ = "Unsupported value %s has been returned for %s"
 
     @classmethod
-    def _missing_(cls, value):  # type: ignore[override]
+    def _missing_(cls, value: object) -> Self:
         """Return `UNKNOWN` and log unrecognized values."""
         message = getattr(cls, "__missing_message__", cls.__missing_message__)
         logging.getLogger(cls.__module__).warning(message, value, cls)
-        return cls.UNKNOWN
+        # Type checker cannot infer UNKNOWN exists on Self, but all subclasses define it
+        return cast(Self, cls.UNKNOWN)  # type: ignore[attr-defined]
 
     @classmethod
-    def from_value(cls: type[_EnumT], value: object) -> _EnumT:
+    def from_value(cls: type[Self], value: object) -> Self:
         """Return enum for `value`, falling back to `UNKNOWN`."""
-        return cast(_EnumT, cls(value))
+        return cast(Self, cast(Any, cls)(value))

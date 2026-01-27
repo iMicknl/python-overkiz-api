@@ -44,5 +44,3 @@ class Protocol(UnknownEnumMixin, StrEnum):
     WISER = "wiser"
     ZIGBEE = "zigbee"
     ZWAVE = "zwave"
-
-    __missing_message__ = "Unsupported protocol %s has been returned for %s"
