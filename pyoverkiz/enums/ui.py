@@ -16,7 +16,7 @@ from pyoverkiz.enums.base import UnknownEnumMixin
 class UIClass(UnknownEnumMixin, StrEnum):
     """Enumeration of UI classes used to describe device categories and behaviors."""
 
-    UNKNOWN = "unknown"
+    UNKNOWN = "Unknown"
 
     ADJUSTABLE_SLATS_ROLLER_SHUTTER = "AdjustableSlatsRollerShutter"
     AIR_SENSOR = "AirSensor"
@@ -94,7 +94,7 @@ class UIClass(UnknownEnumMixin, StrEnum):
 class UIWidget(UnknownEnumMixin, StrEnum):
     """Enumeration of UI widgets used by Overkiz for device presentation."""
 
-    UNKNOWN = "unknown"
+    UNKNOWN = "Unknown"
 
     AIR_FLOW_SENSOR = "AirFlowSensor"
     AIR_QUALITY_SENSOR = "AirQualitySensor"

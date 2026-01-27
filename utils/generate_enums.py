@@ -164,7 +164,7 @@ async def generate_ui_enums() -> None:
             "class UIClass(UnknownEnumMixin, StrEnum):",
             '    """Enumeration of UI classes used to describe device categories and behaviors."""',
             "",
-            '    UNKNOWN = "unknown"',
+            '    UNKNOWN = "Unknown"',
             "",
         ]
 
@@ -182,7 +182,7 @@ async def generate_ui_enums() -> None:
             '    """Enumeration of UI widgets used by Overkiz for device presentation."""'
         )
         lines.append("")
-        lines.append('    UNKNOWN = "unknown"')
+        lines.append('    UNKNOWN = "Unknown"')
         lines.append("")
 
         # Add UI widgets
