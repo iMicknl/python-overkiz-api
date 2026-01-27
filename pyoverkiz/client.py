@@ -688,7 +688,7 @@ class OverkizClient:
         return await self.__get("reference/timezones")
 
     @retry_on_auth_error
-    async def get_reference_ui_classes(self) -> JSON:
+    async def get_reference_ui_classes(self) -> list[str]:
         """Get a list of all defined UI classes."""
         return await self.__get("reference/ui/classes")
 
