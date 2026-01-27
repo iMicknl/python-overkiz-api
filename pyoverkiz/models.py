@@ -1030,3 +1030,20 @@ class Option:
         self.parameters = (
             [OptionParameter(**p) for p in parameters] if parameters else []
         )
+
+
+@define(init=False, kw_only=True)
+class ProtocolType:
+    """Protocol type definition from the reference API."""
+
+    id: int
+    prefix: str
+    name: str
+    label: str
+
+    def __init__(self, id: int, prefix: str, name: str, label: str, **_: Any):
+        """Initialize ProtocolType from API data."""
+        self.id = id
+        self.prefix = prefix
+        self.name = name
+        self.label = label
