@@ -462,3 +462,16 @@ class UIWidget(UnknownEnumMixin, StrEnum):
     ZWAVE_TRANSCEIVER = "ZWaveTransceiver"
     ZIGBEE_NETWORK = "ZigbeeNetwork"
     ZIGBEE_STACK = "ZigbeeStack"
+
+
+@unique
+class UIClassifier(UnknownEnumMixin, StrEnum):
+    """Enumeration of UI classifiers used to categorize device types."""
+
+    UNKNOWN = "unknown"
+
+    COOLING_SYSTEM = "coolingSystem"
+    EMITTER = "emitter"
+    GENERATOR = "generator"
+    HEATING_SYSTEM = "heatingSystem"
+    SENSOR = "sensor"

@@ -693,7 +693,7 @@ class OverkizClient:
         return await self.__get("reference/ui/classes")
 
     @retry_on_auth_error
-    async def get_reference_ui_classifiers(self) -> JSON:
+    async def get_reference_ui_classifiers(self) -> list[str]:
         """Get a list of all defined UI classifiers."""
         return await self.__get("reference/ui/classifiers")
 

@@ -202,6 +202,27 @@ async def generate_ui_enums() -> None:
 
         lines.append("")  # End with newline
 
+        # Fetch and add UI classifiers
+        ui_classifiers = cast(list[str], await client.get_reference_ui_classifiers())
+
+        lines.append("")
+        lines.append("@unique")
+        lines.append("class UIClassifier(UnknownEnumMixin, StrEnum):")
+        lines.append(
+            '    """Enumeration of UI classifiers used to categorize device types."""'
+        )
+        lines.append("")
+        lines.append('    UNKNOWN = "unknown"')
+        lines.append("")
+
+        # Add UI classifiers
+        sorted_classifiers = sorted(ui_classifiers)
+        for ui_classifier in sorted_classifiers:
+            enum_name = to_enum_name(ui_classifier)
+            lines.append(f'    {enum_name} = "{ui_classifier}"')
+
+        lines.append("")  # End with newline
+
         # Write to the ui.py file
         output_path = Path(__file__).parent.parent / "pyoverkiz" / "enums" / "ui.py"
         output_path.write_text("\n".join(lines))
@@ -215,6 +236,7 @@ async def generate_ui_enums() -> None:
         print(f"✓ Added {len(ui_widgets)} UI widgets from API")
         print(f"✓ Added {additional_widget_count} additional hardcoded UI widgets")
         print(f"✓ Total: {len(sorted_widgets)} UI widgets")
+        print(f"✓ Added {len(sorted_classifiers)} UI classifiers")
 
 
 async def generate_all() -> None:
