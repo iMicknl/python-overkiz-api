@@ -577,7 +577,7 @@ class OverkizClient:
         return 0
 
     @retry_on_auth_error
-    async def cancel_command(self, exec_id: str) -> None:
+    async def cancel_execution(self, exec_id: str) -> None:
         """Cancel a running setup-level execution."""
         await self.__delete(f"/exec/current/setup/{exec_id}")
 
