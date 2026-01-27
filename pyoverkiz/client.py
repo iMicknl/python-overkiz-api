@@ -65,6 +65,7 @@ from pyoverkiz.models import (
     ServerConfig,
     Setup,
     State,
+    UIProfileDefinition,
 )
 from pyoverkiz.obfuscate import obfuscate_sensitive_data
 from pyoverkiz.serializers import prepare_payload
@@ -698,11 +699,19 @@ class OverkizClient:
         return await self.__get("reference/ui/classifiers")
 
     @retry_on_auth_error
-    async def get_reference_ui_profile(self, profile_name: str) -> JSON:
-        """Get a description of a given UI profile (or form-factor variant)."""
-        return await self.__get(
+    async def get_reference_ui_profile(self, profile_name: str) -> UIProfileDefinition:
+        """Get a description of a given UI profile (or form-factor variant).
+
+        Returns a profile definition containing:
+        - name: Profile name
+        - commands: Available commands with parameters and descriptions
+        - states: Available states with value types and descriptions
+        - form_factor: Whether profile is tied to a specific physical device type
+        """
+        response = await self.__get(
             f"reference/ui/profile/{urllib.parse.quote_plus(profile_name)}"
         )
+        return UIProfileDefinition(**humps.decamelize(response))
 
     @retry_on_auth_error
     async def get_reference_ui_profile_names(self) -> list[str]:

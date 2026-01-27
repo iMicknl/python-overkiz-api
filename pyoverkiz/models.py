@@ -1047,3 +1047,154 @@ class ProtocolType:
         self.prefix = prefix
         self.name = name
         self.label = label
+
+
+@define(init=False, kw_only=True)
+class ValuePrototype:
+    """Value prototype defining parameter/state value constraints."""
+
+    type: str
+    min_value: int | float | None = None
+    max_value: int | float | None = None
+    enum_values: list[str] | None = None
+    description: str | None = None
+
+    def __init__(
+        self,
+        type: str,
+        min_value: int | float | None = None,
+        max_value: int | float | None = None,
+        enum_values: list[str] | None = None,
+        description: str | None = None,
+        **_: Any,
+    ):
+        """Initialize ValuePrototype from API data."""
+        self.type = type
+        self.min_value = min_value
+        self.max_value = max_value
+        self.enum_values = enum_values
+        self.description = description
+
+
+@define(init=False, kw_only=True)
+class CommandParameter:
+    """Command parameter definition."""
+
+    optional: bool
+    sensitive: bool
+    value_prototypes: list[ValuePrototype]
+
+    def __init__(
+        self,
+        optional: bool,
+        sensitive: bool,
+        value_prototypes: list[dict] | None = None,
+        **_: Any,
+    ):
+        """Initialize CommandParameter from API data."""
+        self.optional = optional
+        self.sensitive = sensitive
+        self.value_prototypes = (
+            [ValuePrototype(**vp) for vp in value_prototypes]
+            if value_prototypes
+            else []
+        )
+
+
+@define(init=False, kw_only=True)
+class CommandPrototype:
+    """Command prototype defining parameters."""
+
+    parameters: list[CommandParameter]
+
+    def __init__(self, parameters: list[dict] | None = None, **_: Any):
+        """Initialize CommandPrototype from API data."""
+        self.parameters = (
+            [CommandParameter(**p) for p in parameters] if parameters else []
+        )
+
+
+@define(init=False, kw_only=True)
+class UIProfileCommand:
+    """UI profile command definition."""
+
+    name: str
+    prototype: CommandPrototype | None = None
+    description: str | None = None
+
+    def __init__(
+        self,
+        name: str,
+        prototype: dict | None = None,
+        description: str | None = None,
+        **_: Any,
+    ):
+        """Initialize UIProfileCommand from API data."""
+        self.name = name
+        self.prototype = CommandPrototype(**prototype) if prototype else None
+        self.description = description
+
+
+@define(init=False, kw_only=True)
+class StatePrototype:
+    """State prototype defining value constraints."""
+
+    value_prototypes: list[ValuePrototype]
+
+    def __init__(self, value_prototypes: list[dict] | None = None, **_: Any):
+        """Initialize StatePrototype from API data."""
+        self.value_prototypes = (
+            [ValuePrototype(**vp) for vp in value_prototypes]
+            if value_prototypes
+            else []
+        )
+
+
+@define(init=False, kw_only=True)
+class UIProfileState:
+    """UI profile state definition."""
+
+    name: str
+    prototype: StatePrototype | None = None
+    description: str | None = None
+
+    def __init__(
+        self,
+        name: str,
+        prototype: dict | None = None,
+        description: str | None = None,
+        **_: Any,
+    ):
+        """Initialize UIProfileState from API data."""
+        self.name = name
+        self.prototype = StatePrototype(**prototype) if prototype else None
+        self.description = description
+
+
+@define(init=False, kw_only=True)
+class UIProfileDefinition:
+    """UI profile definition from the reference API.
+
+    Describes device capabilities through available commands and states.
+    """
+
+    name: str
+    commands: list[UIProfileCommand]
+    states: list[UIProfileState]
+    form_factor: bool
+
+    def __init__(
+        self,
+        name: str,
+        commands: list[dict] | None = None,
+        states: list[dict] | None = None,
+        form_factor: bool = False,
+        **_: Any,
+    ):
+        """Initialize UIProfileDefinition from API data."""
+        self.name = name
+        self.commands = (
+            [UIProfileCommand(**cmd) for cmd in commands] if commands else []
+        )
+        self.states = [UIProfileState(**s) for s in states] if states else []
+        self.form_factor = form_factor

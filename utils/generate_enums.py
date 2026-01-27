@@ -14,6 +14,7 @@ from pyoverkiz.auth.credentials import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.enums import Server
 from pyoverkiz.exceptions import OverkizException
+from pyoverkiz.models import UIProfileDefinition, ValuePrototype
 
 # Hardcoded protocols that may not be available on all servers
 # Format: (name, prefix)
@@ -254,13 +255,13 @@ async def generate_ui_profiles() -> None:
         ui_profile_names = await client.get_reference_ui_profile_names()
 
         # Fetch details for all profiles
-        profiles_with_details: list[tuple[str, dict[str, object] | None]] = []
+        profiles_with_details: list[tuple[str, UIProfileDefinition | None]] = []
 
         for profile_name in ui_profile_names:
             print(f"Fetching {profile_name}...")
             try:
                 details = await client.get_reference_ui_profile(profile_name)
-                profiles_with_details.append((profile_name, details))  # type: ignore[arg-type]
+                profiles_with_details.append((profile_name, details))
             except OverkizException:
                 print(f"  ! Could not fetch details for {profile_name}")
                 profiles_with_details.append((profile_name, None))
@@ -276,20 +277,20 @@ async def generate_ui_profiles() -> None:
 
             return name.upper()
 
-        def format_value_prototype(vp: dict) -> str:
+        def format_value_prototype(vp: ValuePrototype) -> str:
             """Format a value prototype into a readable string."""
-            type_str = vp.get("type", "unknown").lower()
+            type_str = vp.type.lower()
             parts = [type_str]
 
-            if "minValue" in vp and "maxValue" in vp:
-                parts.append(f"{vp['minValue']}-{vp['maxValue']}")
-            elif "minValue" in vp:
-                parts.append(f">= {vp['minValue']}")
-            elif "maxValue" in vp:
-                parts.append(f"<= {vp['maxValue']}")
+            if vp.min_value is not None and vp.max_value is not None:
+                parts.append(f"{vp.min_value}-{vp.max_value}")
+            elif vp.min_value is not None:
+                parts.append(f">= {vp.min_value}")
+            elif vp.max_value is not None:
+                parts.append(f"<= {vp.max_value}")
 
-            if "enumValues" in vp:
-                enum_vals = ", ".join(f"'{v}'" for v in vp["enumValues"])
+            if vp.enum_values:
+                enum_vals = ", ".join(f"'{v}'" for v in vp.enum_values)
                 parts.append(f"values: {enum_vals}")
 
             return " ".join(parts)
@@ -345,21 +346,20 @@ async def generate_ui_profiles() -> None:
             comment_lines = []
 
             # Add commands if present
-            commands_obj = details_obj.get("commands", [])
-            if commands_obj:
+            if details_obj.commands:
                 comment_lines.append("Commands:")
-                for cmd in commands_obj:  # type: ignore[attr-defined,union-attr]
-                    cmd_name = cmd.get("name", "unknown")  # type: ignore[union-attr]
-                    desc = clean_description(cmd.get("description", ""))  # type: ignore[union-attr]
+                for cmd in details_obj.commands:
+                    cmd_name = cmd.name
+                    desc = clean_description(cmd.description or "")
 
                     # Get parameter info
-                    params = cmd.get("prototype", {}).get("parameters", [])  # type: ignore[union-attr]
-                    if params:
+                    if cmd.prototype and cmd.prototype.parameters:
                         param_strs = []
-                        for param in params:  # type: ignore[union-attr]
-                            vps = param.get("valuePrototypes", [])  # type: ignore[union-attr]
-                            if vps:
-                                param_strs.append(format_value_prototype(vps[0]))  # type: ignore[arg-type]
+                        for param in cmd.prototype.parameters:
+                            if param.value_prototypes:
+                                param_strs.append(
+                                    format_value_prototype(param.value_prototypes[0])
+                                )
                         param_info = (
                             f"({', '.join(param_strs)})" if param_strs else "()"
                         )
@@ -372,18 +372,19 @@ async def generate_ui_profiles() -> None:
                         comment_lines.append(f"  - {cmd_name}{param_info}")
 
             # Add states if present
-            states_obj = details_obj.get("states", [])
-            if states_obj:
+            if details_obj.states:
                 if comment_lines:
                     comment_lines.append("")
                 comment_lines.append("States:")
-                for state in states_obj:  # type: ignore[attr-defined,union-attr]
-                    state_name = state.get("name", "unknown")  # type: ignore[union-attr]
-                    desc = clean_description(state.get("description", ""))  # type: ignore[union-attr]
+                for state in details_obj.states:
+                    state_name = state.name
+                    desc = clean_description(state.description or "")
 
                     # Get value prototype info
-                    vps = state.get("prototype", {}).get("valuePrototypes", [])  # type: ignore[union-attr]
-                    type_info = f" ({format_value_prototype(vps[0])})" if vps else ""  # type: ignore[arg-type]
+                    if state.prototype and state.prototype.value_prototypes:
+                        type_info = f" ({format_value_prototype(state.prototype.value_prototypes[0])})"
+                    else:
+                        type_info = ""
 
                     if desc:
                         comment_lines.append(f"  - {state_name}{type_info}: {desc}")
@@ -391,8 +392,7 @@ async def generate_ui_profiles() -> None:
                         comment_lines.append(f"  - {state_name}{type_info}")
 
             # Add form factor info
-            form_factor = details_obj.get("formFactor", False)
-            if form_factor:
+            if details_obj.form_factor:
                 if comment_lines:
                     comment_lines.append("")
                 comment_lines.append("Form factor specific: Yes")
