@@ -247,6 +247,7 @@ class FailureType(UnknownEnumMixin, IntEnum):
     TIME_OUT_ON_COMMAND_PROGRESS = 20003
     DEVICE_NO_ANSWER = 60004
 
+
 @unique
 class EventName(UnknownEnumMixin, StrEnum):
     """Enumeration of event names emitted by Overkiz."""
@@ -433,8 +434,3 @@ class EventName(UnknownEnumMixin, StrEnum):
     ZONE_CREATED = "ZoneCreatedEvent"
     ZONE_DELETED = "ZoneDeletedEvent"
     ZONE_UPDATED = "ZoneUpdatedEvent"
-
-    @classmethod
-    def _missing_(cls, value):  # type: ignore
-        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
-        return cls.UNKNOWN

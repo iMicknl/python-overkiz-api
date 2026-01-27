@@ -83,6 +83,7 @@ class UIClass(UnknownEnumMixin, StrEnum):
 
     UNKNOWN = "unknown"
 
+
 @unique
 class UIWidget(UnknownEnumMixin, StrEnum):
     """Enumeration of UI widgets used by Overkiz for device presentation."""
@@ -424,8 +425,3 @@ class UIWidget(UnknownEnumMixin, StrEnum):
     ZIGBEE_STACK = "ZigbeeStack"
 
     UNKNOWN = "unknown"
-
-    @classmethod
-    def _missing_(cls, value):  # type: ignore
-        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
-        return cls.UNKNOWN
