@@ -3,14 +3,13 @@
 # ruff: noqa: S105
 # Enum values contain "PASS" in API names (e.g. PassAPC), not passwords
 
-import logging
 from enum import StrEnum, unique
 
-_LOGGER = logging.getLogger(__name__)
+from pyoverkiz.enums.base import UnknownEnumMixin
 
 
 @unique
-class UIClass(StrEnum):
+class UIClass(UnknownEnumMixin, StrEnum):
     """Enumeration of UI classes used to describe device categories and behaviors."""
 
     # A list of all defined UI classes from /reference/ui/classes
@@ -84,14 +83,8 @@ class UIClass(StrEnum):
 
     UNKNOWN = "unknown"
 
-    @classmethod
-    def _missing_(cls, value):  # type: ignore
-        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
-        return cls.UNKNOWN
-
-
 @unique
-class UIWidget(StrEnum):
+class UIWidget(UnknownEnumMixin, StrEnum):
     """Enumeration of UI widgets used by Overkiz for device presentation."""
 
     # A list of all defined UI widgets from /reference/ui/widgets
