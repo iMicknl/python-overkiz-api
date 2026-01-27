@@ -72,9 +72,10 @@ class TestDevice:
     """Tests for Device model parsing and property extraction."""
 
     @pytest.mark.parametrize(
-        "device_url, protocol, gateway_id, device_address, subsystem_id, is_sub_device",
+        "device_url, base_device_url, protocol, gateway_id, device_address, subsystem_id, is_sub_device",
         [
             (
+                "io://1234-5678-9012/10077486",
                 "io://1234-5678-9012/10077486",
                 Protocol.IO,
                 "1234-5678-9012",
@@ -84,6 +85,7 @@ class TestDevice:
             ),
             (
                 "io://1234-5678-9012/10077486#8",
+                "io://1234-5678-9012/10077486",
                 Protocol.IO,
                 "1234-5678-9012",
                 "10077486",
@@ -91,6 +93,7 @@ class TestDevice:
                 True,
             ),
             (
+                "hue://1234-1234-4411/001788676dde/lights/10",
                 "hue://1234-1234-4411/001788676dde/lights/10",
                 Protocol.HUE,
                 "1234-1234-4411",
@@ -100,6 +103,7 @@ class TestDevice:
             ),
             (
                 "hue://1234-1234-4411/001788676dde/lights/10#5",
+                "hue://1234-1234-4411/001788676dde/lights/10",
                 Protocol.HUE,
                 "1234-1234-4411",
                 "001788676dde/lights/10",
@@ -107,6 +111,7 @@ class TestDevice:
                 True,
             ),
             (
+                "upnpcontrol://1234-1234-4411/uuid:RINCON_000E586B571601400",
                 "upnpcontrol://1234-1234-4411/uuid:RINCON_000E586B571601400",
                 Protocol.UPNP_CONTROL,
                 "1234-1234-4411",
@@ -116,6 +121,7 @@ class TestDevice:
             ),
             (
                 "upnpcontrol://1234-1234-4411/uuid:RINCON_000E586B571601400#7",
+                "upnpcontrol://1234-1234-4411/uuid:RINCON_000E586B571601400",
                 Protocol.UPNP_CONTROL,
                 "1234-1234-4411",
                 "uuid:RINCON_000E586B571601400",
@@ -123,6 +129,7 @@ class TestDevice:
                 True,
             ),
             (
+                "zigbee://1234-1234-1234/9876/1",
                 "zigbee://1234-1234-1234/9876/1",
                 Protocol.ZIGBEE,
                 "1234-1234-1234",
@@ -132,6 +139,7 @@ class TestDevice:
             ),
             (
                 "zigbee://1234-1234-1234/9876/1#2",
+                "zigbee://1234-1234-1234/9876/1",
                 Protocol.ZIGBEE,
                 "1234-1234-1234",
                 "9876/1",
@@ -139,6 +147,7 @@ class TestDevice:
                 True,
             ),
             (
+                "eliot://ELIOT-000000000000000000000000000ABCDE/00000000000000000000000000125abc",
                 "eliot://ELIOT-000000000000000000000000000ABCDE/00000000000000000000000000125abc",
                 Protocol.ELIOT,
                 "ELIOT-000000000000000000000000000ABCDE",
@@ -148,6 +157,7 @@ class TestDevice:
             ),
             (
                 "eliot://ELIOT-000000000000000000000000000ABCDE/00000000000000000000000000125abc#1",
+                "eliot://ELIOT-000000000000000000000000000ABCDE/00000000000000000000000000125abc",
                 Protocol.ELIOT,
                 "ELIOT-000000000000000000000000000ABCDE",
                 "00000000000000000000000000125abc",
@@ -157,6 +167,7 @@ class TestDevice:
             # Wrong device urls:
             (
                 "foo://whatever-blah/12",
+                "unknown://whatever-blah/12",
                 Protocol.UNKNOWN,
                 "whatever-blah",
                 "12",
@@ -169,6 +180,7 @@ class TestDevice:
                 None,
                 None,
                 None,
+                None,
                 False,
             ),
         ],
@@ -176,6 +188,7 @@ class TestDevice:
     def test_base_url_parsing(
         self,
         device_url: str,
+        base_device_url: str,
         protocol: Protocol,
         gateway_id: str,
         device_address: str,
@@ -190,6 +203,7 @@ class TestDevice:
         hump_device = humps.decamelize(test_device)
         device = Device(**hump_device)
 
+        assert device.base_device_url == base_device_url
         assert device.protocol == protocol
         assert device.gateway_id == gateway_id
         assert device.device_address == device_address
