@@ -61,6 +61,7 @@ from pyoverkiz.models import (
     Option,
     OptionParameter,
     Place,
+    ProtocolType,
     ServerConfig,
     Setup,
     State,
@@ -669,9 +670,17 @@ class OverkizClient:
         return await self.__post("reference/devices/search", payload)
 
     @retry_on_auth_error
-    async def get_reference_protocol_types(self) -> JSON:
-        """Get details about supported protocol types on that server instance."""
-        return await self.__get("reference/protocolTypes")
+    async def get_reference_protocol_types(self) -> list[ProtocolType]:
+        """Get details about supported protocol types on that server instance.
+
+        Returns a list of protocol type definitions, each containing:
+        - id: Numeric protocol identifier
+        - prefix: URL prefix used in device addresses
+        - name: Internal protocol name
+        - label: Human-readable protocol label
+        """
+        response = await self.__get("reference/protocolTypes")
+        return [ProtocolType(**protocol) for protocol in response]
 
     @retry_on_auth_error
     async def get_reference_timezones(self) -> JSON:
