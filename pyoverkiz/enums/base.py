@@ -18,7 +18,7 @@ class UnknownEnumMixin:
     @classmethod
     def _missing_(cls, value: object) -> Self:
         """Return `UNKNOWN` and log unrecognized values."""
-        message = getattr(cls, "__missing_message__", cls.__missing_message__)
+        message = cls.__missing_message__
         logging.getLogger(cls.__module__).warning(message, value, cls)
         # Type checker cannot infer UNKNOWN exists on Self, but all subclasses define it
         return cast(Self, cls.UNKNOWN)  # type: ignore[attr-defined]
