@@ -705,7 +705,7 @@ class OverkizClient:
         )
 
     @retry_on_auth_error
-    async def get_reference_ui_profile_names(self) -> JSON:
+    async def get_reference_ui_profile_names(self) -> list[str]:
         """Get a list of all defined UI profiles (and form-factor variants)."""
         return await self.__get("reference/ui/profileNames")
 

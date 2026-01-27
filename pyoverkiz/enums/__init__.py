@@ -13,6 +13,7 @@ from pyoverkiz.enums import protocol as _protocol
 from pyoverkiz.enums import server as _server
 from pyoverkiz.enums import state as _state
 from pyoverkiz.enums import ui as _ui
+from pyoverkiz.enums import ui_profile as _ui_profile
 from pyoverkiz.enums.command import *
 from pyoverkiz.enums.execution import *
 from pyoverkiz.enums.gateway import *
@@ -22,6 +23,7 @@ from pyoverkiz.enums.protocol import *
 from pyoverkiz.enums.server import *
 from pyoverkiz.enums.state import *
 from pyoverkiz.enums.ui import *
+from pyoverkiz.enums.ui_profile import *
 
 __all__ = sorted(
     {
@@ -36,6 +38,7 @@ __all__ = sorted(
             _server,
             _state,
             _ui,
+            _ui_profile,
         )
         for name, obj in vars(module).items()
         if isinstance(obj, type) and issubclass(obj, Enum)

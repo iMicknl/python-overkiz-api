@@ -13,6 +13,7 @@ from typing import cast
 from pyoverkiz.auth.credentials import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.enums import Server
+from pyoverkiz.exceptions import OverkizException
 
 # Hardcoded protocols that may not be available on all servers
 # Format: (name, prefix)
@@ -239,11 +240,203 @@ async def generate_ui_enums() -> None:
         print(f"✓ Added {len(sorted_classifiers)} UI classifiers")
 
 
+async def generate_ui_profiles() -> None:
+    """Generate the UIProfile enum from the Overkiz API."""
+    username = os.environ["OVERKIZ_USERNAME"]
+    password = os.environ["OVERKIZ_PASSWORD"]
+
+    async with OverkizClient(
+        server=Server.SOMFY_EUROPE,
+        credentials=UsernamePasswordCredentials(username, password),
+    ) as client:
+        await client.login()
+
+        ui_profile_names = await client.get_reference_ui_profile_names()
+
+        # Fetch details for all profiles
+        profiles_with_details: list[tuple[str, dict[str, object] | None]] = []
+
+        for profile_name in ui_profile_names:
+            print(f"Fetching {profile_name}...")
+            try:
+                details = await client.get_reference_ui_profile(profile_name)
+                profiles_with_details.append((profile_name, details))  # type: ignore[arg-type]
+            except OverkizException:
+                print(f"  ! Could not fetch details for {profile_name}")
+                profiles_with_details.append((profile_name, None))
+
+        # Convert camelCase to SCREAMING_SNAKE_CASE for enum names
+        def to_enum_name(value: str) -> str:
+            # Insert underscore before uppercase letters
+            name = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1_\2", value)
+            name = re.sub(r"([a-z\d])([A-Z])", r"\1_\2", name)
+
+            # Clean up any double underscores
+            name = re.sub(r"__+", "_", name)
+
+            return name.upper()
+
+        def format_value_prototype(vp: dict) -> str:
+            """Format a value prototype into a readable string."""
+            type_str = vp.get("type", "unknown").lower()
+            parts = [type_str]
+
+            if "minValue" in vp and "maxValue" in vp:
+                parts.append(f"{vp['minValue']}-{vp['maxValue']}")
+            elif "minValue" in vp:
+                parts.append(f">= {vp['minValue']}")
+            elif "maxValue" in vp:
+                parts.append(f"<= {vp['maxValue']}")
+
+            if "enumValues" in vp:
+                enum_vals = ", ".join(f"'{v}'" for v in vp["enumValues"])
+                parts.append(f"values: {enum_vals}")
+
+            return " ".join(parts)
+
+        def clean_description(desc: str) -> str:
+            """Clean description text to fit in a single-line comment."""
+            # Remove newlines and excessive whitespace
+            cleaned = " ".join(desc.split())
+            return cleaned.strip()
+
+        # Generate the enum file content
+        lines = [
+            '"""UI Profile enums describe device capabilities through commands and states.',
+            "",
+            "THIS FILE IS AUTO-GENERATED. DO NOT EDIT MANUALLY.",
+            "Run `uv run utils/generate_enums.py` to regenerate.",
+            '"""',
+            "",
+            "from enum import StrEnum, unique",
+            "",
+            "from pyoverkiz.enums.base import UnknownEnumMixin",
+            "",
+            "",
+            "@unique",
+            "class UIProfile(UnknownEnumMixin, StrEnum):",
+            '    """',
+            "    UI Profiles define device capabilities through commands and states.",
+            "    ",
+            "    Each profile describes what a device can do (commands) and what information",
+            "    it provides (states). Form factor indicates if the profile is tied to a",
+            "    specific physical device type.",
+            '    """',
+            "",
+            '    UNKNOWN = "Unknown"',
+            "",
+        ]
+
+        # Sort profiles by name for consistent output
+        profiles_with_details.sort(key=lambda p: p[0])
+
+        # Add each profile with detailed comments
+        for profile_name, details_obj in profiles_with_details:
+            enum_name = to_enum_name(profile_name)
+
+            if details_obj is None:
+                # No details available
+                lines.append(f"    # {profile_name} (details unavailable)")
+                lines.append(f'    {enum_name} = "{profile_name}"')
+                lines.append("")
+                continue
+
+            # Build multi-line comment
+            comment_lines = []
+
+            # Add commands if present
+            commands_obj = details_obj.get("commands", [])
+            if commands_obj:
+                comment_lines.append("Commands:")
+                for cmd in commands_obj:  # type: ignore[attr-defined,union-attr]
+                    cmd_name = cmd.get("name", "unknown")  # type: ignore[union-attr]
+                    desc = clean_description(cmd.get("description", ""))  # type: ignore[union-attr]
+
+                    # Get parameter info
+                    params = cmd.get("prototype", {}).get("parameters", [])  # type: ignore[union-attr]
+                    if params:
+                        param_strs = []
+                        for param in params:  # type: ignore[union-attr]
+                            vps = param.get("valuePrototypes", [])  # type: ignore[union-attr]
+                            if vps:
+                                param_strs.append(format_value_prototype(vps[0]))  # type: ignore[arg-type]
+                        param_info = (
+                            f"({', '.join(param_strs)})" if param_strs else "()"
+                        )
+                    else:
+                        param_info = "()"
+
+                    if desc:
+                        comment_lines.append(f"  - {cmd_name}{param_info}: {desc}")
+                    else:
+                        comment_lines.append(f"  - {cmd_name}{param_info}")
+
+            # Add states if present
+            states_obj = details_obj.get("states", [])
+            if states_obj:
+                if comment_lines:
+                    comment_lines.append("")
+                comment_lines.append("States:")
+                for state in states_obj:  # type: ignore[attr-defined,union-attr]
+                    state_name = state.get("name", "unknown")  # type: ignore[union-attr]
+                    desc = clean_description(state.get("description", ""))  # type: ignore[union-attr]
+
+                    # Get value prototype info
+                    vps = state.get("prototype", {}).get("valuePrototypes", [])  # type: ignore[union-attr]
+                    type_info = f" ({format_value_prototype(vps[0])})" if vps else ""  # type: ignore[arg-type]
+
+                    if desc:
+                        comment_lines.append(f"  - {state_name}{type_info}: {desc}")
+                    else:
+                        comment_lines.append(f"  - {state_name}{type_info}")
+
+            # Add form factor info
+            form_factor = details_obj.get("formFactor", False)
+            if form_factor:
+                if comment_lines:
+                    comment_lines.append("")
+                comment_lines.append("Form factor specific: Yes")
+
+            # If we have any details, add the comment block
+            if comment_lines:
+                lines.append("    #")
+                lines.append(f"    # {profile_name}")
+                lines.append("    #")
+                for comment_line in comment_lines:
+                    if comment_line:
+                        lines.append(f"    # {comment_line}")
+                    else:
+                        lines.append("    #")
+            else:
+                # Simple single-line comment
+                lines.append(f"    # {profile_name}")
+
+            lines.append(f'    {enum_name} = "{profile_name}"')
+            lines.append("")
+
+        # Write to the ui_profile.py file
+        output_path = (
+            Path(__file__).parent.parent / "pyoverkiz" / "enums" / "ui_profile.py"
+        )
+        output_path.write_text("\n".join(lines))
+
+        print(f"\n✓ Generated {output_path}")
+        print(f"✓ Added {len(profiles_with_details)} UI profiles")
+        print(
+            f"✓ Profiles with details: {sum(1 for _, d in profiles_with_details if d is not None)}"
+        )
+        print(
+            f"✓ Profiles without details: {sum(1 for _, d in profiles_with_details if d is None)}"
+        )
+
+
 async def generate_all() -> None:
     """Generate all enums from the Overkiz API."""
     await generate_protocol_enum()
     print()
     await generate_ui_enums()
+    print()
+    await generate_ui_profiles()
 
 
 asyncio.run(generate_all())
