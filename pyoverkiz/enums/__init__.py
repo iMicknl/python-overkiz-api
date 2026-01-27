@@ -12,6 +12,7 @@ from pyoverkiz.enums.general import DataType, EventName, FailureType, ProductTyp
 from pyoverkiz.enums.measured_value_type import MeasuredValueType
 from pyoverkiz.enums.protocol import Protocol
 from pyoverkiz.enums.server import APIType, Server
+from pyoverkiz.enums.state import OverkizAttribute, OverkizState
 from pyoverkiz.enums.ui import UIClass, UIWidget
 from pyoverkiz.enums.ui_profile import UIProfile
 
@@ -27,8 +28,10 @@ __all__ = [
     "GatewaySubType",
     "GatewayType",
     "MeasuredValueType",
+    "OverkizAttribute",
     "OverkizCommand",
     "OverkizCommandParam",
+    "OverkizState",
     "ProductType",
     "Protocol",
     "Server",
