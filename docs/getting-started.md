@@ -2,6 +2,8 @@
 
 This guide will help you install the library, connect to your hub, and perform your first actions.
 
+> Need the official Overkiz cloud API reference? Visit the [Overkiz API Documentation](https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/doc) ([mirror](/api)). Most endpoints are accessible via the pyOverkiz package.
+
 ## Prerequisites
 
 - Python 3.10+
