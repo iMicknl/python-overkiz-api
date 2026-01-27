@@ -651,6 +651,60 @@ class OverkizClient:
 
         return None
 
+    @retry_on_auth_error
+    async def get_reference_controllable(self, controllable_name: str) -> JSON:
+        """Get a controllable definition."""
+        return await self.__get(
+            f"reference/controllable/{urllib.parse.quote_plus(controllable_name)}"
+        )
+
+    @retry_on_auth_error
+    async def get_reference_controllable_types(self) -> JSON:
+        """Get details about all supported controllable types."""
+        return await self.__get("reference/controllableTypes")
+
+    @retry_on_auth_error
+    async def search_reference_devices_model(self, payload: JSON) -> JSON:
+        """Search reference device models using a POST payload."""
+        return await self.__post("reference/devices/search", payload)
+
+    @retry_on_auth_error
+    async def get_reference_protocol_types(self) -> JSON:
+        """Get details about supported protocol types on that server instance."""
+        return await self.__get("reference/protocolTypes")
+
+    @retry_on_auth_error
+    async def get_reference_timezones(self) -> JSON:
+        """Get timezones list."""
+        return await self.__get("reference/timezones")
+
+    @retry_on_auth_error
+    async def get_reference_ui_classes(self) -> JSON:
+        """Get a list of all defined UI classes."""
+        return await self.__get("reference/ui/classes")
+
+    @retry_on_auth_error
+    async def get_reference_ui_classifiers(self) -> JSON:
+        """Get a list of all defined UI classifiers."""
+        return await self.__get("reference/ui/classifiers")
+
+    @retry_on_auth_error
+    async def get_reference_ui_profile(self, profile_name: str) -> JSON:
+        """Get a description of a given UI profile (or form-factor variant)."""
+        return await self.__get(
+            f"reference/ui/profile/{urllib.parse.quote_plus(profile_name)}"
+        )
+
+    @retry_on_auth_error
+    async def get_reference_ui_profile_names(self) -> JSON:
+        """Get a list of all defined UI profiles (and form-factor variants)."""
+        return await self.__get("reference/ui/profileNames")
+
+    @retry_on_auth_error
+    async def get_reference_ui_widgets(self) -> JSON:
+        """Get a list of all defined UI widgets."""
+        return await self.__get("reference/ui/widgets")
+
     async def __get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API."""
         await self._refresh_token_if_expired()
