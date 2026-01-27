@@ -1,13 +1,12 @@
 """Protocol enums describe device URL schemes used by Overkiz."""
 
-import logging
 from enum import StrEnum, unique
 
-_LOGGER = logging.getLogger(__name__)
+from pyoverkiz.enums.base import UnknownEnumMixin
 
 
 @unique
-class Protocol(StrEnum):
+class Protocol(UnknownEnumMixin, StrEnum):
     """Protocol used by Overkiz.
 
     Values have been retrieved from /reference/protocolTypes
@@ -46,7 +45,4 @@ class Protocol(StrEnum):
     ZIGBEE = "zigbee"
     ZWAVE = "zwave"
 
-    @classmethod
-    def _missing_(cls, value):  # type: ignore
-        _LOGGER.warning(f"Unsupported protocol {value} has been returned for {cls}")
-        return cls.UNKNOWN
+    __missing_message__ = "Unsupported protocol %s has been returned for %s"
