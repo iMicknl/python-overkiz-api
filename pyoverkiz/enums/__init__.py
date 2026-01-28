@@ -13,7 +13,7 @@ from pyoverkiz.enums.measured_value_type import MeasuredValueType
 from pyoverkiz.enums.protocol import Protocol
 from pyoverkiz.enums.server import APIType, Server
 from pyoverkiz.enums.state import OverkizAttribute, OverkizState
-from pyoverkiz.enums.ui import UIClass, UIWidget
+from pyoverkiz.enums.ui import UIClass, UIClassifier, UIWidget
 from pyoverkiz.enums.ui_profile import UIProfile
 
 __all__ = [
@@ -36,6 +36,7 @@ __all__ = [
     "Protocol",
     "Server",
     "UIClass",
+    "UIClassifier",
     "UIProfile",
     "UIWidget",
     "UpdateBoxStatus",
