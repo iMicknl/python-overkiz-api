@@ -29,7 +29,7 @@ ADDITIONAL_PROTOCOLS = [
 ADDITIONAL_WIDGETS = [
     ("ALARM_PANEL_CONTROLLER", "AlarmPanelController"),
     ("CYCLIC_GARAGE_DOOR", "CyclicGarageDoor"),
-    ("CYCLIC_SWINGING_GATE_OPENER", "CyclicSwingingGateOpener "),
+    ("CYCLIC_SWINGING_GATE_OPENER", "CyclicSwingingGateOpener"),
     ("DISCRETE_GATE_WITH_PEDESTRIAN_POSITION", "DiscreteGateWithPedestrianPosition"),
     ("HLRR_WIFI_BRIDGE", "HLRRWifiBridge"),
     ("NODE", "Node"),
