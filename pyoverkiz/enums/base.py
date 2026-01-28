@@ -18,7 +18,7 @@ class UnknownEnumMixin:
     @classmethod
     def _missing_(cls, value: object) -> Self:  # type: ignore[override]
         """Return `UNKNOWN` and log unrecognized values.
-        
+
         Intentionally overrides `StrEnum._missing_` to provide UNKNOWN fallback.
         """
         message = cls.__missing_message__
