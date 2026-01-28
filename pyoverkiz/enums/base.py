@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Any, Self, cast
+from typing import Self, cast
 
 
 class UnknownEnumMixin:
@@ -16,8 +16,11 @@ class UnknownEnumMixin:
     __missing_message__ = "Unsupported value %s has been returned for %s"
 
     @classmethod
-    def _missing_(cls, value: object) -> Self:
-        """Return `UNKNOWN` and log unrecognized values."""
+    def _missing_(cls, value: object) -> Self:  # type: ignore[override]
+        """Return `UNKNOWN` and log unrecognized values.
+        
+        Intentionally overrides `StrEnum._missing_` to provide UNKNOWN fallback.
+        """
         message = cls.__missing_message__
         logging.getLogger(cls.__module__).warning(message, value, cls)
         # Type checker cannot infer UNKNOWN exists on Self, but all subclasses define it
