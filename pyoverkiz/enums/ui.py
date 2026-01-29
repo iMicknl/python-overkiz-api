@@ -149,7 +149,7 @@ class UIWidget(UnknownEnumMixin, StrEnum):
     CURTAIN_TRACK_UNO = "CurtainTrackUno"
     CYCLIC_GARAGE_DOOR = "CyclicGarageDoor"
     CYCLIC_GENERIC = "CyclicGeneric"
-    CYCLIC_SWINGING_GATE_OPENER = "CyclicSwingingGateOpener "
+    CYCLIC_SWINGING_GATE_OPENER = "CyclicSwingingGateOpener"
     DHW_SET_POINT = "DHWSetPoint"
     DE_DIETRICH_BOILER = "DeDietrichBoiler"
     DE_DIETRICH_DHW = "DeDietrichDHW"
