@@ -155,6 +155,7 @@ class DeviceIdentifier:
     gateway_id: str = field(repr=obfuscate_id)
     device_address: str = field(repr=obfuscate_id)
     subsystem_id: int | None = None
+    base_device_url: str = field(repr=obfuscate_id, init=False)
 
     def __init__(
         self,
@@ -169,16 +170,12 @@ class DeviceIdentifier:
         self.gateway_id = gateway_id
         self.device_address = device_address
         self.subsystem_id = subsystem_id
+        self.base_device_url = f"{protocol}://{gateway_id}/{device_address}"
 
     @property
     def is_sub_device(self) -> bool:
         """Return True if this identifier represents a sub-device (subsystem_id > 1)."""
         return self.subsystem_id is not None and self.subsystem_id > 1
-
-    @property
-    def base_device_url(self) -> str:
-        """Return the device URL without a subsystem id."""
-        return f"{self.protocol}://{self.gateway_id}/{self.device_address}"
 
     @classmethod
     def from_device_url(cls, device_url: str) -> DeviceIdentifier:
