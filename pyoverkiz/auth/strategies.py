@@ -364,6 +364,7 @@ class RexelAuthStrategy(BaseAuthStrategy):
                 "scope": REXEL_OAUTH_SCOPE,
                 "code": self.credentials.code,
                 "redirect_uri": self.credentials.redirect_uri,
+                "code_verifier": self.credentials.code_verifier,
             }
         )
 
@@ -390,11 +391,9 @@ class RexelAuthStrategy(BaseAuthStrategy):
 
     async def _exchange_token(self, payload: Mapping[str, str]) -> None:
         """Exchange authorization code or refresh token for access token."""
-        form = FormData(payload)
         async with self.session.post(
             REXEL_OAUTH_TOKEN_URL,
-            data=form,
-            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            data=payload,
         ) as response:
             token = await response.json()
 

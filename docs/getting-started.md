@@ -131,23 +131,53 @@ Use a cloud server when you want to connect through the vendor’s public API. U
 
 === "Rexel (cloud)"
 
-    Authentication to the Rexel cloud requires your mobile app username and password.
+    Authentication to the Rexel cloud uses OAuth2 with PKCE (Proof Key for Code Exchange).
 
-    Use `Server.REXEL` with `UsernamePasswordCredentials` to authenticate.
+    **Step 1: Generate PKCE parameters and authorization URL**
+
+    ```python
+    import secrets
+    from pyoverkiz.pkce import generate_pkce_pair
+    from pyoverkiz.utils import build_rexel_authorization_url
+
+    # Generate PKCE code verifier and challenge
+    code_verifier, code_challenge = generate_pkce_pair()
+
+    # Generate authorization URL (user must visit this in browser)
+    state = secrets.token_urlsafe(16)  # For CSRF protection
+    auth_url = build_rexel_authorization_url(code_challenge, state)
+
+    print(f"Visit this URL to authorize: {auth_url}")
+    ```
+
+    **Step 2: Redirect user to authorization URL**
+
+    Direct the user to the `auth_url`. After successful login, they will be redirected to:
+    ```
+    https://my.home-assistant.io/redirect/oauth?code=AUTHORIZATION_CODE&state=STATE_VALUE
+    ```
+
+    **Step 3: Exchange authorization code for access token**
 
     ```python
     import asyncio
-
-    from pyoverkiz.auth.credentials import UsernamePasswordCredentials
+    from pyoverkiz.auth.credentials import RexelOAuthCodeCredentials
     from pyoverkiz.client import OverkizClient
     from pyoverkiz.enums import Server
+    from pyoverkiz.const import REXEL_OAUTH_REDIRECT_URI
 
     async def main() -> None:
+        # Use the authorization code from the redirect
         async with OverkizClient(
             server=Server.REXEL,
-            credentials=UsernamePasswordCredentials("you@example.com", "password"),
+            credentials=RexelOAuthCodeCredentials(
+                code="AUTHORIZATION_CODE_FROM_REDIRECT",
+                redirect_uri=REXEL_OAUTH_REDIRECT_URI,
+                code_verifier=code_verifier,  # From step 1
+            ),
         ) as client:
             await client.login()
+            # Client is now authenticated and ready to use
 
     asyncio.run(main())
     ```
