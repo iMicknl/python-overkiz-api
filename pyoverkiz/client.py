@@ -61,9 +61,11 @@ from pyoverkiz.models import (
     Option,
     OptionParameter,
     Place,
+    ProtocolType,
     ServerConfig,
     Setup,
     State,
+    UIProfileDefinition,
 )
 from pyoverkiz.obfuscate import obfuscate_sensitive_data
 from pyoverkiz.serializers import prepare_payload
@@ -650,6 +652,76 @@ class OverkizClient:
             return OptionParameter(**humps.decamelize(response))
 
         return None
+
+    @retry_on_auth_error
+    async def get_reference_controllable(self, controllable_name: str) -> JSON:
+        """Get a controllable definition."""
+        return await self.__get(
+            f"reference/controllable/{urllib.parse.quote_plus(controllable_name)}"
+        )
+
+    @retry_on_auth_error
+    async def get_reference_controllable_types(self) -> JSON:
+        """Get details about all supported controllable types."""
+        return await self.__get("reference/controllableTypes")
+
+    @retry_on_auth_error
+    async def search_reference_devices_model(self, payload: JSON) -> JSON:
+        """Search reference device models using a POST payload."""
+        return await self.__post("reference/devices/search", payload)
+
+    @retry_on_auth_error
+    async def get_reference_protocol_types(self) -> list[ProtocolType]:
+        """Get details about supported protocol types on that server instance.
+
+        Returns a list of protocol type definitions, each containing:
+        - id: Numeric protocol identifier
+        - prefix: URL prefix used in device addresses
+        - name: Internal protocol name
+        - label: Human-readable protocol label
+        """
+        response = await self.__get("reference/protocolTypes")
+        return [ProtocolType(**protocol) for protocol in response]
+
+    @retry_on_auth_error
+    async def get_reference_timezones(self) -> JSON:
+        """Get timezones list."""
+        return await self.__get("reference/timezones")
+
+    @retry_on_auth_error
+    async def get_reference_ui_classes(self) -> list[str]:
+        """Get a list of all defined UI classes."""
+        return await self.__get("reference/ui/classes")
+
+    @retry_on_auth_error
+    async def get_reference_ui_classifiers(self) -> list[str]:
+        """Get a list of all defined UI classifiers."""
+        return await self.__get("reference/ui/classifiers")
+
+    @retry_on_auth_error
+    async def get_reference_ui_profile(self, profile_name: str) -> UIProfileDefinition:
+        """Get a description of a given UI profile (or form-factor variant).
+
+        Returns a profile definition containing:
+        - name: Profile name
+        - commands: Available commands with parameters and descriptions
+        - states: Available states with value types and descriptions
+        - form_factor: Whether profile is tied to a specific physical device type
+        """
+        response = await self.__get(
+            f"reference/ui/profile/{urllib.parse.quote_plus(profile_name)}"
+        )
+        return UIProfileDefinition(**humps.decamelize(response))
+
+    @retry_on_auth_error
+    async def get_reference_ui_profile_names(self) -> list[str]:
+        """Get a list of all defined UI profiles (and form-factor variants)."""
+        return await self.__get("reference/ui/profileNames")
+
+    @retry_on_auth_error
+    async def get_reference_ui_widgets(self) -> list[str]:
+        """Get a list of all defined UI widgets."""
+        return await self.__get("reference/ui/widgets")
 
     async def __get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API."""
