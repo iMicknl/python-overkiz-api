@@ -430,6 +430,148 @@ async def generate_ui_profiles() -> None:
         )
 
 
+def extract_commands_from_fixtures(fixtures_dir: Path) -> set[str]:
+    """Extract all commands from fixture files in the given directory.
+
+    Reads all JSON fixture files and collects unique command names from device
+    definitions. Commands are returned as camelCase values.
+    """
+    import json
+
+    commands: set[str] = set()
+
+    for fixture_file in fixtures_dir.glob("*.json"):
+        try:
+            data = json.loads(fixture_file.read_text())
+            if "devices" not in data:
+                continue
+
+            for device in data["devices"]:
+                if "definition" not in device:
+                    continue
+
+                definition = device["definition"]
+                if "commands" not in definition:
+                    continue
+
+                for command in definition["commands"]:
+                    if "commandName" in command:
+                        commands.add(command["commandName"])
+        except (json.JSONDecodeError, KeyError, TypeError):
+            # Skip files that can't be parsed or have unexpected structure
+            continue
+
+    return commands
+
+
+def command_to_enum_name(command_name: str) -> str:
+    """Convert a command name (camelCase) to an ENUM_NAME (SCREAMING_SNAKE_CASE).
+
+    Example: "setTargetTemperature" -> "SET_TARGET_TEMPERATURE"
+    """
+    # Insert underscore before uppercase letters
+    name = re.sub(r"([a-z\d])([A-Z])", r"\1_\2", command_name)
+    return name.upper()
+
+
+async def generate_command_enums() -> None:
+    """Generate the OverkizCommand enum from fixture files."""
+    fixtures_dir = Path(__file__).parent.parent / "tests" / "fixtures" / "setup"
+
+    # Extract commands from fixtures
+    fixture_commands = extract_commands_from_fixtures(fixtures_dir)
+
+    # Read existing commands from the command.py file
+    command_file = Path(__file__).parent.parent / "pyoverkiz" / "enums" / "command.py"
+    content = command_file.read_text()
+
+    # Find the rest of the file content after OverkizCommand class
+    rest_start_idx = content.find("@unique\nclass OverkizCommandParam")
+    if rest_start_idx == -1:
+        rest_start_idx = content.find("@unique\nclass CommandMode")
+    rest_of_file = content[rest_start_idx:] if rest_start_idx != -1 else ""
+
+    # Parse existing commands from the enum
+    existing_commands: dict[str, str] = {}
+    in_overkiz_command = False
+    lines_before_rest = (
+        content[:rest_start_idx].split("\n")
+        if rest_start_idx != -1
+        else content.split("\n")
+    )
+
+    for line in lines_before_rest:
+        if "class OverkizCommand" in line:
+            in_overkiz_command = True
+            continue
+        if in_overkiz_command and line.strip() and not line.startswith(" "):
+            # Non-indented line means we've left the class
+            break
+        if in_overkiz_command and " = " in line and not line.strip().startswith("#"):
+            parts = line.strip().split(" = ")
+            if len(parts) == 2:
+                enum_name = parts[0].strip()
+                # Extract the value from quotes
+                value_part = parts[1].split("#")[0].strip()  # Remove comments
+                if value_part.startswith('"') and value_part.endswith('"'):
+                    command_value = value_part[1:-1]
+                    existing_commands[command_value] = enum_name
+
+    # Merge: keep existing commands and add new ones from fixtures
+    all_command_values = set(existing_commands.keys()) | fixture_commands
+
+    # Convert to list of tuples: (command_value, enum_name)
+    command_tuples: list[tuple[str, str]] = []
+    for cmd_value in sorted(all_command_values):
+        if cmd_value in existing_commands:
+            enum_name = existing_commands[cmd_value]
+        else:
+            enum_name = command_to_enum_name(cmd_value)
+
+        command_tuples.append((enum_name, cmd_value))
+
+    # Sort alphabetically by enum name
+    command_tuples.sort(key=lambda x: x[0])
+
+    # Generate the enum file content
+    lines = [
+        '"""Command-related enums and parameters used by device commands."""',
+        "",
+        "# ruff: noqa: S105",
+        '# Enum values contain "PASS" in API names (e.g. PassAPC), not passwords',
+        "",
+        "from enum import StrEnum, unique",
+        "",
+        "",
+        "@unique",
+        "class OverkizCommand(StrEnum):",
+        '    """Device commands used by Overkiz."""',
+        "",
+    ]
+
+    # Add each command
+    for enum_name, cmd_value in command_tuples:
+        lines.append(f'    {enum_name} = "{cmd_value}"')
+
+    lines.append("")
+    lines.append("")
+
+    # Append the rest of the file (OverkizCommandParam and CommandMode classes)
+    if rest_of_file:
+        lines.append(rest_of_file.rstrip())
+    lines.append("")
+
+    # Write to the command.py file
+    command_file.write_text("\n".join(lines))
+
+    print(f"✓ Generated {command_file}")
+    print(f"✓ Added {len(existing_commands)} existing commands")
+    print(f"✓ Found {len(fixture_commands)} total commands in fixtures")
+    new_commands_count = len(fixture_commands - set(existing_commands.keys()))
+    print(f"✓ Added {new_commands_count} new commands from fixtures")
+    print(f"✓ Total: {len(all_command_values)} commands")
+
+
 async def generate_all() -> None:
     """Generate all enums from the Overkiz API."""
     await generate_protocol_enum()
@@ -437,6 +579,9 @@ async def generate_all() -> None:
     await generate_ui_enums()
     print()
     await generate_ui_profiles()
+    print()
+    await generate_command_enums()
 
 
-asyncio.run(generate_all())
+if __name__ == "__main__":
+    asyncio.run(generate_all())
