@@ -464,63 +464,120 @@ def extract_commands_from_fixtures(fixtures_dir: Path) -> set[str]:
     return commands
 
 
+def extract_state_values_from_fixtures(fixtures_dir: Path) -> set[str]:
+    """Extract all state values from fixture files in the given directory.
+
+    Reads all JSON fixture files and collects unique state values from device
+    definitions. Values are extracted from DiscreteState types.
+    """
+    import json
+
+    values: set[str] = set()
+
+    for fixture_file in fixtures_dir.glob("*.json"):
+        try:
+            data = json.loads(fixture_file.read_text())
+            if "devices" not in data:
+                continue
+
+            for device in data["devices"]:
+                if "definition" not in device:
+                    continue
+
+                definition = device["definition"]
+                if "states" not in definition:
+                    continue
+
+                for state in definition["states"]:
+                    # Extract values from DiscreteState
+                    if state.get("type") == "DiscreteState" and "values" in state:
+                        for value in state["values"]:
+                            if isinstance(value, str):
+                                values.add(value)
+        except (json.JSONDecodeError, KeyError, TypeError):
+            # Skip files that can't be parsed or have unexpected structure
+            continue
+
+    return values
+
+
 def command_to_enum_name(command_name: str) -> str:
     """Convert a command name (camelCase) to an ENUM_NAME (SCREAMING_SNAKE_CASE).
 
     Example: "setTargetTemperature" -> "SET_TARGET_TEMPERATURE"
+    Spaces are converted to underscores: "long peak" -> "LONG_PEAK"
     """
+    # First, replace spaces with underscores
+    name = command_name.replace(" ", "_")
     # Insert underscore before uppercase letters
-    name = re.sub(r"([a-z\d])([A-Z])", r"\1_\2", command_name)
+    name = re.sub(r"([a-z\d])([A-Z])", r"\1_\2", name)
     return name.upper()
 
 
 async def generate_command_enums() -> None:
-    """Generate the OverkizCommand enum from fixture files."""
+    """Generate the OverkizCommand enum and update OverkizCommandParam from fixture files."""
     fixtures_dir = Path(__file__).parent.parent / "tests" / "fixtures" / "setup"
 
-    # Extract commands from fixtures
+    # Extract commands and state values from fixtures
     fixture_commands = extract_commands_from_fixtures(fixtures_dir)
+    fixture_state_values = extract_state_values_from_fixtures(fixtures_dir)
 
     # Read existing commands from the command.py file
     command_file = Path(__file__).parent.parent / "pyoverkiz" / "enums" / "command.py"
     content = command_file.read_text()
 
-    # Find the rest of the file content after OverkizCommand class
-    rest_start_idx = content.find("@unique\nclass OverkizCommandParam")
-    if rest_start_idx == -1:
-        rest_start_idx = content.find("@unique\nclass CommandMode")
-    rest_of_file = content[rest_start_idx:] if rest_start_idx != -1 else ""
+    # Find the OverkizCommandParam class
+    param_class_start_idx = content.find("@unique\nclass OverkizCommandParam")
+    command_mode_class_start_idx = content.find("@unique\nclass CommandMode")
 
-    # Parse existing commands from the enum
+    # Parse existing commands from OverkizCommand
     existing_commands: dict[str, str] = {}
     in_overkiz_command = False
-    lines_before_rest = (
-        content[:rest_start_idx].split("\n")
-        if rest_start_idx != -1
-        else content.split("\n")
-    )
+    lines_before_param = content[:param_class_start_idx].split("\n")
 
-    for line in lines_before_rest:
+    for line in lines_before_param:
         if "class OverkizCommand" in line:
             in_overkiz_command = True
             continue
         if in_overkiz_command and line.strip() and not line.startswith(" "):
-            # Non-indented line means we've left the class
             break
         if in_overkiz_command and " = " in line and not line.strip().startswith("#"):
             parts = line.strip().split(" = ")
             if len(parts) == 2:
                 enum_name = parts[0].strip()
-                # Extract the value from quotes
-                value_part = parts[1].split("#")[0].strip()  # Remove comments
+                value_part = parts[1].split("#")[0].strip()
                 if value_part.startswith('"') and value_part.endswith('"'):
                     command_value = value_part[1:-1]
                     existing_commands[command_value] = enum_name
 
+    # Parse existing parameters from OverkizCommandParam
+    existing_params: dict[str, str] = {}
+    in_param_class = False
+    lines_param_section = content[
+        param_class_start_idx:command_mode_class_start_idx
+    ].split("\n")
+
+    for line in lines_param_section:
+        if "class OverkizCommandParam" in line:
+            in_param_class = True
+            continue
+        if in_param_class and line.strip() and not line.startswith(" "):
+            break
+        if in_param_class and " = " in line and not line.strip().startswith("#"):
+            parts = line.strip().split(" = ")
+            if len(parts) == 2:
+                enum_name = parts[0].strip()
+                value_part = parts[1].split("#")[0].strip()
+                if value_part.startswith('"') and value_part.endswith('"'):
+                    param_value = value_part[1:-1]
+                    existing_params[param_value] = enum_name
+
     # Merge: keep existing commands and add new ones from fixtures
     all_command_values = set(existing_commands.keys()) | fixture_commands
 
-    # Convert to list of tuples: (command_value, enum_name)
+    # Convert to list of tuples for commands: (enum_name, command_value)
+    # Track enum names to detect duplicates
+    command_enum_names: set[str] = set()
     command_tuples: list[tuple[str, str]] = []
     for cmd_value in sorted(all_command_values):
         if cmd_value in existing_commands:
@@ -528,10 +585,37 @@ async def generate_command_enums() -> None:
         else:
             enum_name = command_to_enum_name(cmd_value)
 
-        command_tuples.append((enum_name, cmd_value))
+        # Skip if this enum_name already exists (avoid duplicates)
+        if enum_name not in command_enum_names:
+            command_tuples.append((enum_name, cmd_value))
+            command_enum_names.add(enum_name)
 
     # Sort alphabetically by enum name
     command_tuples.sort(key=lambda x: x[0])
+
+    # Merge: keep existing params and add new ones from fixture state values
+    all_param_values = set(existing_params.keys()) | fixture_state_values
+
+    # Convert to list of tuples for params: (enum_name, param_value)
+    # Track enum names to detect duplicates
+    param_enum_names: set[str] = set()
+    param_tuples: list[tuple[str, str]] = []
+    for param_value in sorted(all_param_values):
+        if param_value in existing_params:
+            enum_name = existing_params[param_value]
+        else:
+            enum_name = command_to_enum_name(param_value)
+
+        # Skip if this enum_name already exists (avoid duplicates)
+        if enum_name not in param_enum_names:
+            param_tuples.append((enum_name, param_value))
+            param_enum_names.add(enum_name)
+
+    # Sort alphabetically by enum name
+    param_tuples.sort(key=lambda x: x[0])
+
+    # Sort alphabetically by enum name
+    param_tuples.sort(key=lambda x: x[0])
 
     # Generate the enum file content
     lines = [
@@ -551,14 +635,32 @@ async def generate_command_enums() -> None:
 
     # Add each command
     for enum_name, cmd_value in command_tuples:
-        lines.append(f'    {enum_name} = "{cmd_value}"')
+        if " " in cmd_value:
+            lines.append(f'    {enum_name} = "{cmd_value}"  # value with space')
+        else:
+            lines.append(f'    {enum_name} = "{cmd_value}"')
+
+    lines.append("")
+    lines.append("")
+    lines.append("@unique")
+    lines.append("class OverkizCommandParam(StrEnum):")
+    lines.append('    """Parameter used by Overkiz commands and/or states."""')
+    lines.append("")
+
+    # Add each param
+    for enum_name, param_value in param_tuples:
+        if " " in param_value:
+            lines.append(f'    {enum_name} = "{param_value}"  # value with space')
+        else:
+            lines.append(f'    {enum_name} = "{param_value}"')
 
     lines.append("")
     lines.append("")
 
-    # Append the rest of the file (OverkizCommandParam and CommandMode classes)
-    if rest_of_file:
-        lines.append(rest_of_file.rstrip())
+    # Append CommandMode class
+    command_mode_start = content.find("@unique\nclass CommandMode")
+    if command_mode_start != -1:
+        lines.append(content[command_mode_start:].rstrip())
     lines.append("")
 
     # Write to the command.py file
@@ -570,6 +672,12 @@ async def generate_command_enums() -> None:
     new_commands_count = len(fixture_commands - set(existing_commands.keys()))
     print(f"✓ Added {new_commands_count} new commands from fixtures")
     print(f"✓ Total: {len(all_command_values)} commands")
+    print()
+    print(f"✓ Added {len(existing_params)} existing parameters")
+    print(f"✓ Found {len(fixture_state_values)} total state values in fixtures")
+    new_params_count = len(fixture_state_values - set(existing_params.keys()))
+    print(f"✓ Added {new_params_count} new parameters from fixtures")
+    print(f"✓ Total: {len(all_param_values)} parameters")
 
 
 async def generate_all() -> None:
