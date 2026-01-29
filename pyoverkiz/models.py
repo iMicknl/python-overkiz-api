@@ -183,7 +183,6 @@ class Device:
         definition: dict[str, Any],
         data_properties: list[dict[str, Any]] | None = None,
         widget: str | None = None,
-        widget_name: str | None = None,
         ui_class: str | None = None,
         states: list[dict[str, Any]] | None = None,
         type: int,
@@ -231,6 +230,32 @@ class Device:
             self.widget = UIWidget(widget)
         elif self.definition.widget_name:
             self.widget = UIWidget(self.definition.widget_name)
+
+    def get_supported_command_name(
+        self, commands: list[str | OverkizCommand]
+    ) -> str | None:
+        """Return the first command name that exists in this device's definition."""
+        return self.definition.commands.select(commands)
+
+    def has_supported_command(self, commands: list[str | OverkizCommand]) -> bool:
+        """Return True if any of the given commands exist in this device's definition."""
+        return self.definition.commands.has_any(commands)
+
+    def get_state_value(self, states: list[str]) -> StateType | None:
+        """Return the value of the first state that exists with a non-None value."""
+        return self.states.select_value(states)
+
+    def has_state_value(self, states: list[str]) -> bool:
+        """Return True if any of the given states exist with a non-None value."""
+        return self.states.has_any(states)
+
+    def get_state_definition(self, states: list[str]) -> StateDefinition | None:
+        """Return the first StateDefinition that matches, from the device definition."""
+        return self.definition.get_state_definition(states)
+
+    def get_attribute_value(self, attributes: list[str]) -> StateType:
+        """Return the value of the first attribute that exists with a non-None value."""
+        return self.attributes.select_value(attributes)
 
 
 @define(init=False, kw_only=True)
@@ -286,6 +311,18 @@ class Definition:
         self.ui_class = ui_class
         self.qualified_name = qualified_name
 
+    def get_state_definition(self, states: list[str]) -> StateDefinition | None:
+        """Return the first StateDefinition whose `qualified_name` matches, or None."""
+        states_set = set(states)
+        for state_def in self.states:
+            if state_def.qualified_name in states_set:
+                return state_def
+        return None
+
+    def has_state_definition(self, states: list[str]) -> bool:
+        """Return True if any of the given state definitions exist."""
+        return self.get_state_definition(states) is not None
+
 
 @define(init=False, kw_only=True)
 class CommandDefinition:
@@ -327,6 +364,16 @@ class CommandDefinitions:
         return len(self._commands)
 
     get = __getitem__
+
+    def select(self, commands: list[str | OverkizCommand]) -> str | None:
+        """Return the first command name that exists in this definition, or None."""
+        return next(
+            (str(command) for command in commands if str(command) in self), None
+        )
+
+    def has_any(self, commands: list[str | OverkizCommand]) -> bool:
+        """Return True if any of the given commands exist in this definition."""
+        return self.select(commands) is not None
 
 
 @define(init=False, kw_only=True)
@@ -465,6 +512,23 @@ class States:
         return len(self._states)
 
     get = __getitem__
+
+    def select(self, names: list[str]) -> State | None:
+        """Return the first State that exists and has a non-None value, or None."""
+        for name in names:
+            if (state := self[name]) and state.value is not None:
+                return state
+        return None
+
+    def select_value(self, names: list[str]) -> StateType:
+        """Return the value of the first State that exists with a non-None value."""
+        if state := self.select(names):
+            return state.value
+        return None
+
+    def has_any(self, names: list[str]) -> bool:
+        """Return True if any of the given state names exist with a non-None value."""
+        return self.select(names) is not None
 
 
 @define(init=False, kw_only=True)
