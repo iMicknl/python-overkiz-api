@@ -32,7 +32,8 @@ class LocalTokenCredentials(TokenCredentials):
 
 @dataclass(slots=True)
 class RexelOAuthCodeCredentials(Credentials):
-    """Credentials using Rexel OAuth2 authorization code."""
+    """Credentials using Rexel OAuth2 authorization code with PKCE."""
 
     code: str = field(repr=False)
     redirect_uri: str
+    code_verifier: str

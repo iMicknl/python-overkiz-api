@@ -102,9 +102,12 @@ class TestCredentials:
 
     def test_rexel_oauth_credentials(self):
         """Test RexelOAuthCodeCredentials creation."""
-        creds = RexelOAuthCodeCredentials("auth_code_xyz", "http://redirect.uri")
+        creds = RexelOAuthCodeCredentials(
+            "auth_code_xyz", "http://redirect.uri", "code_verifier_123"
+        )
         assert creds.code == "auth_code_xyz"
         assert creds.redirect_uri == "http://redirect.uri"
+        assert creds.code_verifier == "code_verifier_123"
 
 
 class TestAuthFactory:
@@ -142,7 +145,7 @@ class TestAuthFactory:
 
     def test_ensure_credentials_rexel_valid(self):
         """Test that valid Rexel credentials pass validation."""
-        creds = RexelOAuthCodeCredentials("code", "uri")
+        creds = RexelOAuthCodeCredentials("code", "uri", "verifier")
         result = _ensure_credentials(creds, RexelOAuthCodeCredentials)
         assert result is creds
 
@@ -228,7 +231,9 @@ class TestAuthFactory:
             manufacturer="Rexel",
             api_type=APIType.CLOUD,
         )
-        credentials = RexelOAuthCodeCredentials("code", "http://redirect.uri")
+        credentials = RexelOAuthCodeCredentials(
+            "code", "http://redirect.uri", "verifier"
+        )
         session = AsyncMock(spec=ClientSession)
 
         strategy = build_auth_strategy(
@@ -596,7 +601,9 @@ class TestRexelAuthStrategy:
             manufacturer="Rexel",
             api_type=APIType.CLOUD,
         )
-        credentials = RexelOAuthCodeCredentials("code", "https://redirect")
+        credentials = RexelOAuthCodeCredentials(
+            "code", "https://redirect", "code_verifier_value"
+        )
         session = AsyncMock(spec=ClientSession)
 
         mock_response = MagicMock()

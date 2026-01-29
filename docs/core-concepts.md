@@ -77,6 +77,17 @@ States are name/value pairs that represent the current device status, such as cl
 
 The API uses an event listener that you register once per session. Fetching events drains the server-side buffer. Events include execution state changes, device state updates, and other notifications.
 
+## Authentication strategies
+
+The library supports multiple authentication methods depending on the server:
+
+- **Username/Password**: Most cloud servers (Somfy, Cozytouch, Hitachi, Nexity)
+- **Bearer Token**: Cloud servers with pre-issued tokens
+- **Local Token**: Somfy Developer Mode (local gateways)
+- **OAuth2 with PKCE**: Rexel (Azure AD B2C)
+
+Each server automatically selects the appropriate authentication strategy based on the credentials provided.
+
 ## Relationship diagram
 
 ```
