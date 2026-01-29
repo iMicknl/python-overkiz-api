@@ -239,6 +239,51 @@ class TestDevice:
         assert state_def is not None
         assert state_def.qualified_name == "core:ClosureState"
 
+    def test_get_attribute_value_returns_first_match(self):
+        """Device.get_attribute_value() returns the value of the first matching attribute."""
+        test_device = {
+            **RAW_DEVICES,
+            "attributes": [
+                {"name": "core:Manufacturer", "type": 3, "value": "VELUX"},
+                {"name": "core:Model", "type": 3, "value": "WINDOW 100"},
+            ],
+        }
+        hump_device = humps.decamelize(test_device)
+        device = Device(**hump_device)
+        value = device.get_attribute_value(
+            ["nonexistent", "core:Model", "core:Manufacturer"]
+        )
+        assert value == "WINDOW 100"
+
+    def test_get_attribute_value_returns_none_when_no_match(self):
+        """Device.get_attribute_value() returns None when no attribute matches."""
+        hump_device = humps.decamelize(RAW_DEVICES)
+        device = Device(**hump_device)
+        value = device.get_attribute_value(["nonexistent", "also_nonexistent"])
+        assert value is None
+
+    def test_get_attribute_value_empty_attributes(self):
+        """Device.get_attribute_value() returns None for devices with no attributes."""
+        test_device = {**RAW_DEVICES, "attributes": []}
+        hump_device = humps.decamelize(test_device)
+        device = Device(**hump_device)
+        value = device.get_attribute_value(["core:Manufacturer"])
+        assert value is None
+
+    def test_get_attribute_value_with_none_values(self):
+        """Device.get_attribute_value() skips attributes with None values."""
+        test_device = {
+            **RAW_DEVICES,
+            "attributes": [
+                {"name": "core:Model", "type": 3, "value": None},
+                {"name": "core:Manufacturer", "type": 3, "value": "VELUX"},
+            ],
+        }
+        hump_device = humps.decamelize(test_device)
+        device = Device(**hump_device)
+        value = device.get_attribute_value(["core:Model", "core:Manufacturer"])
+        assert value == "VELUX"
+
 
 class TestStates:
     """Tests for the States container behaviour and getter semantics."""
@@ -371,6 +416,38 @@ class TestDefinition:
         """get_state_definition() returns None when no state definition matches."""
         definition = Definition(commands=[], states=[])
         assert definition.get_state_definition(["nonexistent"]) is None
+
+    def test_has_state_definition_returns_true(self):
+        """has_state_definition() returns True when a state definition matches."""
+        definition = Definition(
+            commands=[],
+            states=[
+                {"qualified_name": "core:ClosureState", "type": "ContinuousState"},
+                {
+                    "qualified_name": "core:TargetClosureState",
+                    "type": "ContinuousState",
+                },
+            ],
+        )
+        assert definition.has_state_definition(["core:ClosureState"])
+        assert definition.has_state_definition(
+            ["nonexistent", "core:TargetClosureState"]
+        )
+
+    def test_has_state_definition_returns_false(self):
+        """has_state_definition() returns False when no state definition matches."""
+        definition = Definition(
+            commands=[],
+            states=[
+                {"qualified_name": "core:ClosureState", "type": "ContinuousState"},
+            ],
+        )
+        assert not definition.has_state_definition(["nonexistent", "also_nonexistent"])
+
+    def test_has_state_definition_empty_states(self):
+        """has_state_definition() returns False for definitions with no states."""
+        definition = Definition(commands=[], states=[])
+        assert not definition.has_state_definition(["core:ClosureState"])
 
 
 class TestState:
