@@ -148,28 +148,75 @@ class Location:
 
 
 @define(init=False, kw_only=True)
+class DeviceIdentifier:
+    """Parsed components from a device URL."""
+
+    protocol: Protocol
+    gateway_id: str = field(repr=obfuscate_id)
+    device_address: str = field(repr=obfuscate_id)
+    subsystem_id: int | None = None
+
+    def __init__(
+        self,
+        *,
+        protocol: Protocol,
+        gateway_id: str,
+        device_address: str,
+        subsystem_id: int | None = None,
+    ) -> None:
+        """Initialize DeviceIdentifier with required URL components."""
+        self.protocol = protocol
+        self.gateway_id = gateway_id
+        self.device_address = device_address
+        self.subsystem_id = subsystem_id
+
+    @property
+    def is_sub_device(self) -> bool:
+        """Return True if this identifier represents a sub-device (subsystem_id > 1)."""
+        return self.subsystem_id is not None and self.subsystem_id > 1
+
+    @property
+    def base_device_url(self) -> str:
+        """Return the device URL without a subsystem id."""
+        return f"{self.protocol}://{self.gateway_id}/{self.device_address}"
+
+    @classmethod
+    def from_device_url(cls, device_url: str) -> DeviceIdentifier:
+        """Parse a device URL into its structured identifier components."""
+        match = re.search(DEVICE_URL_RE, device_url)
+        if not match:
+            raise ValueError(f"Invalid device URL: {device_url}")
+
+        subsystem_id = (
+            int(match.group("subsystemId")) if match.group("subsystemId") else None
+        )
+
+        return cls(
+            protocol=Protocol(match.group("protocol")),
+            gateway_id=match.group("gatewayId"),
+            device_address=match.group("deviceAddress"),
+            subsystem_id=subsystem_id,
+        )
+
+
+@define(init=False, kw_only=True)
 class Device:
     """Representation of a device in the setup including parsed fields and states."""
 
-    id: str = field(repr=False)
     attributes: States
     available: bool
     enabled: bool
     label: str = field(repr=obfuscate_string)
     device_url: str = field(repr=obfuscate_id)
-    gateway_id: str | None = field(repr=obfuscate_id)
-    device_address: str | None = field(repr=obfuscate_id)
-    subsystem_id: int | None = None
-    is_sub_device: bool = False
     controllable_name: str
     definition: Definition
     data_properties: list[dict[str, Any]] | None = None
-    widget: UIWidget
-    ui_class: UIClass
     states: States
     type: ProductType
     place_oid: str | None = None
-    protocol: Protocol | None = field(init=False, repr=False)
+    identifier: DeviceIdentifier = field(init=False, repr=False)
+    _ui_class: UIClass | None = field(init=False, repr=False)
+    _widget: UIWidget | None = field(init=False, repr=False)
 
     def __init__(
         self,
@@ -190,7 +237,6 @@ class Device:
         **_: Any,
     ) -> None:
         """Initialize Device and parse URL, protocol and nested definitions."""
-        self.id = device_url
         self.attributes = States(attributes)
         self.available = available
         self.definition = Definition(**definition)
@@ -203,33 +249,28 @@ class Device:
         self.type = ProductType(type)
         self.place_oid = place_oid
 
-        self.protocol = None
-        self.gateway_id = None
-        self.device_address = None
-        self.subsystem_id = None
-        self.is_sub_device = False
+        self.identifier = DeviceIdentifier.from_device_url(device_url)
 
-        # Split <protocol>://<gatewayId>/<deviceAddress>[#<subsystemId>] into multiple variables
-        match = re.search(DEVICE_URL_RE, device_url)
+        self._ui_class = UIClass(ui_class) if ui_class else None
+        self._widget = UIWidget(widget) if widget else None
 
-        if match:
-            self.protocol = Protocol(match.group("protocol"))
-            self.gateway_id = match.group("gatewayId")
-            self.device_address = match.group("deviceAddress")
+    @property
+    def ui_class(self) -> UIClass:
+        """Return the UI class, falling back to the definition if available."""
+        if self._ui_class is not None:
+            return self._ui_class
+        if self.definition.ui_class:
+            return UIClass(self.definition.ui_class)
+        raise ValueError(f"Device {self.device_url} has no UI class defined")
 
-            if match.group("subsystemId"):
-                self.subsystem_id = int(match.group("subsystemId"))
-                self.is_sub_device = self.subsystem_id > 1
-
-        if ui_class:
-            self.ui_class = UIClass(ui_class)
-        elif self.definition.ui_class:
-            self.ui_class = UIClass(self.definition.ui_class)
-
-        if widget:
-            self.widget = UIWidget(widget)
-        elif self.definition.widget_name:
-            self.widget = UIWidget(self.definition.widget_name)
+    @property
+    def widget(self) -> UIWidget:
+        """Return the widget, falling back to the definition if available."""
+        if self._widget is not None:
+            return self._widget
+        if self.definition.widget_name:
+            return UIWidget(self.definition.widget_name)
+        raise ValueError(f"Device {self.device_url} has no widget defined")
 
     def get_supported_command_name(
         self, commands: list[str | OverkizCommand]

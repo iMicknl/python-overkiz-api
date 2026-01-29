@@ -157,23 +157,6 @@ class TestDevice:
                 1,
                 False,
             ),
-            # Wrong device urls:
-            (
-                "foo://whatever-blah/12",
-                Protocol.UNKNOWN,
-                "whatever-blah",
-                "12",
-                None,
-                False,
-            ),
-            (
-                "foo://whatever",
-                None,
-                None,
-                None,
-                None,
-                False,
-            ),
         ],
     )
     def test_base_url_parsing(
@@ -193,11 +176,22 @@ class TestDevice:
         hump_device = humps.decamelize(test_device)
         device = Device(**hump_device)
 
-        assert device.protocol == protocol
-        assert device.gateway_id == gateway_id
-        assert device.device_address == device_address
-        assert device.subsystem_id == subsystem_id
-        assert device.is_sub_device == is_sub_device
+        assert device.identifier.protocol == protocol
+        assert device.identifier.gateway_id == gateway_id
+        assert device.identifier.device_address == device_address
+        assert device.identifier.subsystem_id == subsystem_id
+        assert device.identifier.is_sub_device == is_sub_device
+
+    def test_invalid_device_url_raises(self):
+        """Invalid device URLs should raise during identifier parsing."""
+        test_device = {
+            **RAW_DEVICES,
+            **{"deviceURL": "foo://whatever"},
+        }
+        hump_device = humps.decamelize(test_device)
+
+        with pytest.raises(ValueError, match="Invalid device URL"):
+            Device(**hump_device)
 
     def test_none_states(self):
         """Devices without a `states` field should provide an empty States object."""
