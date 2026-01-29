@@ -6,12 +6,13 @@
         {
             "label": "Docs: Serve (development)",
             "type": "shell",
-            "command": "uv run mkdocs serve"
+            "command": "uv run mkdocs serve",
+            "problemMatcher": []
         },
         {
             "label": "Docs: Build",
             "type": "shell",
             "command": "uv run mkdocs build --clean"
-        },
+        }
     ]
 }
