@@ -118,7 +118,7 @@ print(f"Firmware: {firmware}")
 # Get the value of the first matching attribute from a list
 firmware = device.select_first_attribute_value([
     OverkizAttribute.CORE_FIRMWARE_REVISION,
-    OverkizAttribute.CORE_SOFTWARE_VERSION,
+    OverkizAttribute.CORE_MANUFACTURER,
 ])
 print(f"Firmware: {firmware}")
 ```
