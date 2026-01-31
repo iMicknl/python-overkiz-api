@@ -209,7 +209,14 @@ class Device:
     definition: Definition
     states: States
     type: ProductType
+    oid: str | None = field(repr=obfuscate_id, default=None)
     place_oid: str | None = None
+    creation_time: int | None = None
+    last_update_time: int | None = None
+    shortcut: bool | None = None
+    metadata: str | None = None
+    synced: bool | None = None  # Local API only
+    subsystem_id: int | None = None  # Local API only
     identifier: DeviceIdentifier = field(init=False, repr=False)
     _ui_class: UIClass | None = field(init=False, repr=False)
     _widget: UIWidget | None = field(init=False, repr=False)
@@ -228,7 +235,14 @@ class Device:
         ui_class: str | None = None,
         states: list[dict[str, Any]] | None = None,
         type: int,
+        oid: str | None = None,
         place_oid: str | None = None,
+        creation_time: int | None = None,
+        last_update_time: int | None = None,
+        shortcut: bool | None = None,
+        metadata: str | None = None,
+        synced: bool | None = None,
+        subsystem_id: int | None = None,
         **_: Any,
     ) -> None:
         """Initialize Device and parse URL, protocol and nested definitions."""
@@ -241,7 +255,14 @@ class Device:
         self.controllable_name = controllable_name
         self.states = States(states)
         self.type = ProductType(type)
+        self.oid = oid
         self.place_oid = place_oid
+        self.creation_time = creation_time
+        self.last_update_time = last_update_time
+        self.shortcut = shortcut
+        self.metadata = metadata
+        self.synced = synced
+        self.subsystem_id = subsystem_id
 
         self.identifier = DeviceIdentifier.from_device_url(device_url)
 
@@ -319,6 +340,7 @@ class StateDefinition:
     qualified_name: str
     type: str | None = None
     values: list[str] | None = None
+    event_based: bool | None = None
 
     def __init__(
         self,
@@ -326,11 +348,13 @@ class StateDefinition:
         qualified_name: str | None = None,
         type: str | None = None,
         values: list[str] | None = None,
+        event_based: bool | None = None,
         **_: Any,
     ) -> None:
         """Initialize StateDefinition and set qualified name from either `name` or `qualified_name`."""
         self.type = type
         self.values = values
+        self.event_based = event_based
 
         if qualified_name:
             self.qualified_name = qualified_name
@@ -348,6 +372,10 @@ class Definition:
     widget_name: str | None = None
     ui_class: str | None = None
     qualified_name: str | None = None
+    ui_profiles: list[str] | None = None
+    ui_classifiers: list[str] | None = None
+    type: str | None = None
+    attributes: list[dict[str, Any]] | None = None  # Local API only
 
     def __init__(
         self,
@@ -358,6 +386,10 @@ class Definition:
         widget_name: str | None = None,
         ui_class: str | None = None,
         qualified_name: str | None = None,
+        ui_profiles: list[str] | None = None,
+        ui_classifiers: list[str] | None = None,
+        type: str | None = None,
+        attributes: list[dict[str, Any]] | None = None,
         **_: Any,
     ) -> None:
         """Initialize Definition and construct nested command/state definitions."""
@@ -369,6 +401,10 @@ class Definition:
         self.widget_name = widget_name
         self.ui_class = ui_class
         self.qualified_name = qualified_name
+        self.ui_profiles = ui_profiles
+        self.ui_classifiers = ui_classifiers
+        self.type = type
+        self.attributes = attributes
 
     def get_state_definition(self, states: list[str]) -> StateDefinition | None:
         """Return the first StateDefinition whose `qualified_name` matches, or None."""
