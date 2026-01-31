@@ -207,7 +207,6 @@ class Device:
     device_url: str = field(repr=obfuscate_id)
     controllable_name: str
     definition: Definition
-    data_properties: list[dict[str, Any]] | None = None
     states: States
     type: ProductType
     place_oid: str | None = None
@@ -225,7 +224,6 @@ class Device:
         device_url: str,
         controllable_name: str,
         definition: dict[str, Any],
-        data_properties: list[dict[str, Any]] | None = None,
         widget: str | None = None,
         ui_class: str | None = None,
         states: list[dict[str, Any]] | None = None,
@@ -242,7 +240,6 @@ class Device:
         self.label = label
         self.controllable_name = controllable_name
         self.states = States(states)
-        self.data_properties = data_properties
         self.type = ProductType(type)
         self.place_oid = place_oid
 
@@ -297,6 +294,25 @@ class Device:
 
 
 @define(init=False, kw_only=True)
+class DataProperty:
+    """Data property with qualified name and value."""
+
+    qualified_name: str
+    value: str
+
+    def __init__(
+        self,
+        *,
+        qualified_name: str,
+        value: str,
+        **_: Any,
+    ) -> None:
+        """Initialize DataProperty."""
+        self.qualified_name = qualified_name
+        self.value = value
+
+
+@define(init=False, kw_only=True)
 class StateDefinition:
     """Definition metadata for a state (qualified name, type and possible values)."""
 
@@ -328,6 +344,7 @@ class Definition:
 
     commands: CommandDefinitions
     states: list[StateDefinition]
+    data_properties: list[DataProperty]
     widget_name: str | None = None
     ui_class: str | None = None
     qualified_name: str | None = None
@@ -337,6 +354,7 @@ class Definition:
         *,
         commands: list[dict[str, Any]],
         states: list[dict[str, Any]] | None = None,
+        data_properties: list[dict[str, Any]] | None = None,
         widget_name: str | None = None,
         ui_class: str | None = None,
         qualified_name: str | None = None,
@@ -345,6 +363,9 @@ class Definition:
         """Initialize Definition and construct nested command/state definitions."""
         self.commands = CommandDefinitions(commands)
         self.states = [StateDefinition(**sd) for sd in states] if states else []
+        self.data_properties = (
+            [DataProperty(**dp) for dp in data_properties] if data_properties else []
+        )
         self.widget_name = widget_name
         self.ui_class = ui_class
         self.qualified_name = qualified_name
