@@ -24,12 +24,99 @@ devices = await client.get_devices()
 # For demo purposes we take the first available device
 device = devices[0]
 
+# Traditional approach
 availability_state = next(
     (state for state in device.states if state.name == OverkizState.CORE_AVAILABILITY),
     None,
 )
 
 print(availability_state.value if availability_state else None)
+```
+
+### Helper methods for device state queries
+
+The `Device` class provides convenient helper methods for querying device states, commands, and their definitions:
+
+#### Get state value
+
+```python
+from pyoverkiz.enums import OverkizState
+
+devices = await client.get_devices()
+device = devices[0]
+
+# Get the value of the first matching state
+closure_value = device.get_state_value([OverkizState.CORE_CLOSURE, "core:ClosureState"])
+print(f"Closure: {closure_value}")
+
+# Check if a state has a non-None value
+if device.has_state_value([OverkizState.CORE_CLOSURE, "core:ClosureState"]):
+    print("Device has a closure state")
+```
+
+#### Get state definition
+
+```python
+devices = await client.get_devices()
+device = devices[0]
+
+# Get the state definition for querying type, valid values, etc.
+state_def = device.get_state_definition([OverkizState.CORE_CLOSURE, "core:ClosureState"])
+if state_def:
+    print(f"Type: {state_def.type}")
+    print(f"Valid values: {state_def.values}")
+```
+
+#### Check supported commands
+
+```python
+from pyoverkiz.enums import OverkizCommand
+
+devices = await client.get_devices()
+device = devices[0]
+
+# Check if device supports any of the given commands
+if device.has_supported_command([OverkizCommand.OPEN, OverkizCommand.CLOSE]):
+    print("Device supports open/close commands")
+
+# Get the first supported command from a list
+supported_cmd = device.get_supported_command_name(
+    [OverkizCommand.SET_CLOSURE, OverkizCommand.OPEN, OverkizCommand.CLOSE]
+)
+if supported_cmd:
+    print(f"Supported command: {supported_cmd}")
+```
+
+#### Get attribute value
+
+```python
+devices = await client.get_devices()
+device = devices[0]
+
+# Get the value of device attributes (like manufacturer or model)
+manufacturer = device.get_attribute_value([
+    "core:Manufacturer",
+    "core:Model",
+])
+print(f"Manufacturer: {manufacturer}")
+```
+
+#### Access device identifier
+
+Device URLs are automatically parsed into structured identifier components for easier access:
+
+```python
+devices = await client.get_devices()
+device = devices[0]
+
+# Access parsed device URL components
+print(f"Protocol: {device.identifier.protocol}")
+print(f"Gateway ID: {device.identifier.gateway_id}")
+print(f"Device address: {device.identifier.device_address}")
+
+# Check if this is a sub-device
+if device.identifier.is_sub_device:
+    print(f"Sub-device ID: {device.identifier.subsystem_id}")
 ```
 
 ## Send a command
