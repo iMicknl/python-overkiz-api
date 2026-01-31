@@ -276,9 +276,9 @@ class TestOverkizClient:
             assert len(setup.gateways) == gateway_count
 
             for device in setup.devices:
-                assert device.gateway_id
-                assert device.device_address
-                assert device.protocol
+                assert device.identifier.gateway_id
+                assert device.identifier.device_address
+                assert device.identifier.protocol
 
     @pytest.mark.parametrize(
         "fixture_name",
