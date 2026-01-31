@@ -287,30 +287,50 @@ class Device:
             return UIWidget(self.definition.widget_name)
         raise ValueError(f"Device {self.device_url} has no widget defined")
 
-    def get_supported_command_name(
-        self, commands: list[str | OverkizCommand]
-    ) -> str | None:
-        """Return the first command name that exists in this device's definition."""
-        return self.definition.commands.select(commands)
+    def supports_command(self, command: str | OverkizCommand) -> bool:
+        """Check if device supports a command."""
+        return str(command) in self.definition.commands
 
-    def has_supported_command(self, commands: list[str | OverkizCommand]) -> bool:
-        """Return True if any of the given commands exist in this device's definition."""
+    def supports_any_command(self, commands: list[str | OverkizCommand]) -> bool:
+        """Check if device supports any of the commands."""
         return self.definition.commands.has_any(commands)
 
-    def get_state_value(self, states: list[str]) -> StateType | None:
-        """Return the value of the first state that exists with a non-None value."""
+    def select_first_command(self, commands: list[str | OverkizCommand]) -> str | None:
+        """Return first supported command name from list, or None."""
+        return self.definition.commands.select(commands)
+
+    def get_state_value(self, state: str) -> StateType | None:
+        """Get value of a single state, or None if not found or None."""
+        return self.states.select_value([state])
+
+    def select_first_state_value(self, states: list[str]) -> StateType | None:
+        """Return value of first state with non-None value from list, or None."""
         return self.states.select_value(states)
 
-    def has_state_value(self, states: list[str]) -> bool:
-        """Return True if any of the given states exist with a non-None value."""
+    def has_state_value(self, state: str) -> bool:
+        """Check if a state exists with a non-None value."""
+        return self.states.has_any([state])
+
+    def has_any_state_value(self, states: list[str]) -> bool:
+        """Check if any of the states exist with non-None values."""
         return self.states.has_any(states)
 
-    def get_state_definition(self, states: list[str]) -> StateDefinition | None:
-        """Return the first StateDefinition that matches, from the device definition."""
+    def get_state_definition(self, state: str) -> StateDefinition | None:
+        """Get StateDefinition for a single state name, or None."""
+        return self.definition.get_state_definition([state])
+
+    def select_first_state_definition(
+        self, states: list[str]
+    ) -> StateDefinition | None:
+        """Return first matching StateDefinition from list, or None."""
         return self.definition.get_state_definition(states)
 
-    def get_attribute_value(self, attributes: list[str]) -> StateType:
-        """Return the value of the first attribute that exists with a non-None value."""
+    def get_attribute_value(self, attribute: str) -> StateType | None:
+        """Get value of a single attribute, or None if not found or None."""
+        return self.attributes.select_value([attribute])
+
+    def select_first_attribute_value(self, attributes: list[str]) -> StateType | None:
+        """Return value of first attribute with non-None value from list, or None."""
         return self.attributes.select_value(attributes)
 
 
