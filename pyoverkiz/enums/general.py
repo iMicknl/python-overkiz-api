@@ -44,18 +44,29 @@ class FailureType(IntEnum):
     """Failure type codes returned by the API."""
 
     UNKNOWN = -1
+    # No failure reported.
     NO_FAILURE = 0
+    # The status of the device means that the command cannot be executed.
     NON_EXECUTING = 11
+    # The device has stopped. A problem occurred during activation.
     ERROR_WHILE_EXECUTING = 12
+    # The device is not recognised.
     ACTUATORUNKNOWN = 101
+    # The device seems to be out of radio range. Please check that it is switched on.
     ACTUATORNOANSWER = 102
     ERRORREADWRITEACCESS = 103
+    # The device does not understand the command.
     ERRORCOMMAND = 104
     CMDUNKNOWN = 105
+    # The action on the device has been cancelled.
     CMDCANCELLED = 106
+    # Access to internet has been deactivated. To activate it again, press the
+    # button on your TaHoma/Somfy box until the LED is green.
     NOREMOTECONTROL = 107
     ERROR_TRANSFER_KEY = 108
     ERRORDATABASE = 109
+    # Access to internet has been deactivated. To activate it again, press the
+    # button on your TaHoma/Somfy box unit until the LED is green.
     MODELOCALENABLED = 110
     BAD_CMD = 111
     BAD_HD = 112
@@ -65,6 +76,7 @@ class FailureType(IntEnum):
     NOT_FOUND_ETX = 116
     BAD_CRC_SERIAL = 117
     BAD_STATUS = 118
+    # No remote control found.
     KEY_NOT_RECEIVE = 119
     INSERTION_ERROR = 120
     NODE_NOT_VERIFY_WITH_NEW_KEY = 121
@@ -73,23 +85,38 @@ class FailureType(IntEnum):
     NODE_CANT_PAIRED = 124
     NODE_CANT_UPDATE_TRANSFER_STATUS = 125
     UNKNOWN_ERROR = 126
+    # The device is not recognised.
     INVALID_CHANNEL = 127
     INVALID_COMMAND = 128
     SERIAL_IO_ERROR = 129
     OPERATION_NOT_ALLOWED = 130
     RESTART_STACK = 131
+    # A device has not responded correctly during detection. Please restart the
+    # add devices procedure.
     INCOMPLETE_DISCOVER = 132
+    # No remote control found.
     TRANFER_KEY_NO_REMOTE_CONTROLLER = 133
+    # More than one remote control found.
     TRANFER_KEY_MULTI_REMOTE_CONTROLLER = 134
     RF_PROTOCOL_FATAL_ERROR = 135
     INTERNAL_ERROR = 136
+    # Radio disturbance. A device in the installation is probably causing
+    # disturbance in your system.
     BUSY_RADIO_ERROR = 137
+    # The device does not have the same security key. Please contact your
+    # installer.
     BAD_MAC_ERROR = 138
+    # Your actuator is not set and is not controllable. Contact your retailer to
+    # be able to control your actuator.
     SETUP_REQUIRED = 139
+    # The actuator does not have the same security key. Contact your retailer to
+    # be able to control your actuator.
     MASTER_AUTHENTICATION_FAILED_ERROR = 140
     END_OF_RECEIVING_CONFIGURATION_MODE = 141
     DATA_TRANSPORT_SERVICE_ERROR = 142
     DATA_TRANSPORT_SERVICE_ABORTED_BY_RECIPIENT = 143
+    # The action on the device has not been executed because a configuration
+    # session was in progress.
     STOPPED_BY_CONFIGURATION_OPERATION_ERROR = 144
     COMMAND_NAME_TYPE_INVALID = 145
     COMMAND_NAME_NOT_INSTALLED_OR_INVALID = 146
@@ -99,41 +126,79 @@ class FailureType(IntEnum):
     COMMAND_ZONE_TEMPERATURE_INVALID = 150
     COMMAND_DHW_NOT_INSTALLED_OR_INVALID = 151
     COMMAND_INSERTION_FAILED_ERROR = 152
+    # Your device has encountered an obstacle. Please remove the obstacle.
     NONEXEC_BLOCKED_BY_HAZARD = 153
+    # Your device has been placed in safety mode following intensive use.
     NONEXEC_OVERHEATING_PROTECTION = 154
+    # A sensor has detected a risk to your device. It has been placed in safety
+    # mode and its movement is restricted.
     NONEXEC_DEVICE_LIMITATION = 155
+    # Your lock cannot be operated because the door is open. Please close the
+    # door.
     NONEXEC_DOOR_IS_OPENED = 156
+    # Your io homecontrol device is refining its settings. Please control it
+    # using a local control point.
     NONEXEC_MAINTENANCE_REQUIRED = 157
+    # Your sensor seems to be no more powered. Contact your installer if the
+    # problem persists.
     DEAD_SENSOR = 158
+    # Maintenance required on your sensor.
     SENSOR_MAINTENANCE_REQUIRED = 159
+    # The status of the device means that the command cannot be executed.
     NONEXEC_OTHER = 160
     WHILEEXEC_BLOCKED_BY_HAZARD = 161
     WHILEEXEC_OVERHEATING_PROTECTION = 162
     WHILEEXEC_DEVICE_LIMITATION = 163
+    # Your door cannot be locked because it is open. Please close the door.
     WHILEEXEC_DOOR_IS_OPENED = 164
     WHILEEXEC_MAINTENANCE_REQUIRED = 165
+    # The status of the device means that the command cannot be executed.
     WHILEEXEC_OTHER = 166
+    # Your equipment is not protected by a security device, so it cannot be
+    # controlled.
     PRIORITY_LOCK__LOCAL_USER = 167
+    # The io-homecontrol® device is in manual mode. It can therefore only be
+    # controlled from its control point. To control it, please activate
+    # "general" mode using the device control point.
     PRIORITY_LOCK__USER = 168
+    # Inoperative [Rain]
     PRIORITY_LOCK__RAIN = 169
+    # Inoperative [Timer]
     PRIORITY_LOCK__TIMER = 170
+    # A sensor has detected a risk to your device. It has been placed in safety
+    # mode and its movement is restricted.
     PRIORITY_LOCK__SECURITY = 171
+    # Inoperative [UPS]
     PRIORITY_LOCK__UPS = 172
+    # Inoperative [SFC]
     PRIORITY_LOCK__SFC = 173
+    # Inoperative [LSC]
     PRIORITY_LOCK__LSC = 174
+    # Inoperative [SAAC]
     PRIORITY_LOCK__SAAC = 175
+    # Your sensor has detected wind. Your device has been placed in safety
+    # mode.
     PRIORITY_LOCK__WIND = 176
+    # Inoperative [External Access]
     PRIORITY_LOCK__EXTERNAL_ACCESS = 177
+    # Inoperative [Emergency]
     PRIORITY_LOCK__EMERGENCY = 178
+    # No equipment found.
     NO_DISTANT_FOR_DISCOVER = 179
     ANOTHER_COMMAND_IS_RUNNING = 180
     PROBLEM_WITH_BOILER_COMMUNICATION = 181
+    # Box is locked in RCM.
     LOCKED_BY_RCM = 182
+    # No remote control found in RCM.
     RCM_NO_REMOTE_CONTROL = 183
+    # Discovery process failed because no remote control was found.
     DISCOVER_NO_REMOTE_CONTROLLER_ERROR = 184
+    # Command was interrupted by a local control point.
     COMMAND_INTERRUPTED = 185
     PRIORITY_LOCK__WIND_FORCING_AVAILABLE = 190
     PRIORITY_LOCK__WIND_FORCING_UNAVAILABLE = 191
+    # Your equipment is not protected by a security device, so it cannot be
+    # controlled.
     PRIORITY_LOCK__NO_SECURITY_DEVICE = 192
     PRIORITY_LOCK__DEAD_SENSOR = 193
     PRIORITY_LOCK__UNKNOWN_ERROR = 194
@@ -187,16 +252,28 @@ class FailureType(IntEnum):
     NOT_IMPLEMENTED_YET = 300
     MODULE_NOT_LOADED = 301
     APPLICATION_NOT_RUNNING = 302
+    # Your device has been put in manual mode. Please reactivate automatic mode
+    # so that it can be controlled again.
     NONEXEC_MANUALLY_CONTROLLED = 400
     NONEXEC_AUTOMATIC_CYCLE = 401
+    # The battery level in your device seems too low. Please check the battery
+    # in your device so that TaHoma can control it again.
     NONEXEC_BATTERY_LEVEL = 402
     NONEXEC_WRONG_LOAD_CONNECTED = 403
+    # Your product seems to be consuming too much power for your device. Please
+    # check your device's specifications.
     NONEXEC_HIGH_CONSUMPTION = 404
     NONEXEC_LOW_CONSUMPTION = 405
+    # Your device is not available in the colour requested.
     NONEXEC_COLOUR_NOT_REACHABLE = 406
     NONEXEC_USER_ACTION_NEEDED = 407
+    # Your device cannot perform the command requested in its current status.
     NONEXEC_COMMAND_INCOMPATIBLE_WITH_MOVEMENT = 408
+    # Your device cannot perform the command requested. Please contact your
+    # installer to solve the problem.
     NONEXEC_CANNOT_CHANGE_STATE = 409
+    # Your device cannot be controlled. Please clean the filter so that it can
+    # be controlled again.
     NONEXEC_FILTER_MAINTENANCE = 410
     NONEXEC_OPERATING_MODE_NOT_SUPPORTED = 411
     WHILEEXEC_MANUALLY_CONTROLLED = 420
@@ -207,15 +284,23 @@ class FailureType(IntEnum):
     WHILEEXEC_LOW_CONSUMPTION = 425
     WHILEEXEC_COLOUR_NOT_REACHABLE = 426
     WHILEEXEC_USER_ACTION_NEEDED = 427
+    # Your device cannot perform the command requested in its current status.
     WHILEEXEC_COMMAND_INCOMPATIBLE_WITH_MOVEMENT = 428
     WHILEEXEC_CANNOT_CHANGE_STATE = 429
     WHILEEXEC_FILTER_MAINTENANCE = 430
     WHILEEXEC_OPERATING_MODE_NOT_SUPPORTED = 431
+    # Your equipment has been in override mode. Automatic orders are not
+    # executed. Manually replace your equipment in Eco or Comfort mode, then
+    # the time scheduler will work again.
     OVERRIDEMODE_ERROR = 450
+    # Login and password of your camera are incorrect.
     CAMERA_INVALID_CREDENTIALS = 500
     UNSUPPORTED_CAMERA_TYPE = 501
+    # Unable to connect to the device, check the LAN connection.
     NETWORK_COULDNT_RESOLVE_HOST = 601
+    # Cannot connect to remote network device.
     NETWORK_COULDNT_CONNECT = 602
+    # The remote network device did not respond or was too slow.
     NETWORK_OPERATION_TIMEDOUT = 603
     LPB_APP_OUT_OF_RANGE = 701
     LPB_APP_OUT_OF_MAXRANGE = 702
@@ -233,19 +318,27 @@ class FailureType(IntEnum):
     LPB_APP_UNKNOWN_GATEWAY = 714
     LPB_APP_GATEWAY_UNREACHABLE = 715
     APPLICATION_ERROR = 800
+    # The username of your Philips hue gateway is incorrect.
     HUE_INVALID_CREDENTIALS = 900
     HUE_LINK_BUTTON_NOT_PRESSED = 901
+    # Your Philips hue device is off.
     HUE_DEVICE_IS_OFF = 902
+    # Connection has been lost. Please check that it is switched on and
+    # connected to the Internet.
     TIMED_OUT = 10001
+    # The action on the device has been cancelled.
     CANCELLED = 10002
     UNKNOWN_ERROR_CODE = 10003
     SERVER_FAILURE = 10004
+    # Router not available. Check that it is properly connected.
     PEER_DOWN = 10005
     GATEWAY_BUFFER_OVERFLOW = 10006
     UNKNOWN_DETAILED_ERROR = 10007
     TIME_OUT_ON_TRANSMIT = 20001
     TIME_OUT_ON_TRANSMITTED_COMMAND = 20002
     TIME_OUT_ON_COMMAND_PROGRESS = 20003
+    # The device seems to be out of radio range. Please check that it is
+    # switched on.
     DEVICE_NO_ANSWER = 60004
 
     @classmethod
