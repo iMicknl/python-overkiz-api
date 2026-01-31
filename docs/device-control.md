@@ -45,12 +45,20 @@ from pyoverkiz.enums import OverkizState
 devices = await client.get_devices()
 device = devices[0]
 
-# Get the value of the first matching state
-slats_orientation = device.get_state_value([OverkizState.CORE_SLATS_ORIENTATION, OverkizState.CORE_SLATE_ORIENTATION])
+# Get the value of a single state
+slats_orientation = device.get_state_value(OverkizState.CORE_SLATS_ORIENTATION)
 print(f"Orientation: {slats_orientation}")
 
-# Check if a state has a non-None value
-if device.has_state_value([OverkizState.CORE_SLATS_ORIENTATION, OverkizState.CORE_SLATE_ORIENTATION]):
+# Get the value of the first matching state from a list (fallback pattern)
+slats_orientation = device.select_first_state_value([OverkizState.CORE_SLATS_ORIENTATION, OverkizState.CORE_SLATE_ORIENTATION])
+print(f"Orientation: {slats_orientation}")
+
+# Check if a single state has a non-None value
+if device.has_state_value(OverkizState.CORE_SLATS_ORIENTATION):
+    print("Device has a slats orientation")
+
+# Check if any of the states have non-None values
+if device.has_any_state_value([OverkizState.CORE_SLATS_ORIENTATION, OverkizState.CORE_SLATE_ORIENTATION]):
     print("Device has a slats orientation")
 ```
 
@@ -60,8 +68,14 @@ if device.has_state_value([OverkizState.CORE_SLATS_ORIENTATION, OverkizState.COR
 devices = await client.get_devices()
 device = devices[0]
 
-# Get the state definition for querying type, valid values, etc.
-state_def = device.get_state_definition([OverkizState.CORE_OPEN_CLOSED, OverkizState.CORE_SLATS_OPEN_CLOSED])
+# Get the state definition for a single state
+state_def = device.get_state_definition(OverkizState.CORE_OPEN_CLOSED)
+if state_def:
+    print(f"Type: {state_def.type}")
+    print(f"Valid values: {state_def.values}")
+
+# Get the first matching state definition from a list
+state_def = device.select_first_state_definition([OverkizState.CORE_OPEN_CLOSED, OverkizState.CORE_SLATS_OPEN_CLOSED])
 if state_def:
     print(f"Type: {state_def.type}")
     print(f"Valid values: {state_def.values}")
@@ -75,12 +89,16 @@ from pyoverkiz.enums import OverkizCommand
 devices = await client.get_devices()
 device = devices[0]
 
+# Check if device supports a single command
+if device.supports_command(OverkizCommand.OPEN):
+    print("Device supports open command")
+
 # Check if device supports any of the given commands
-if device.has_supported_command([OverkizCommand.OPEN, OverkizCommand.CLOSE]):
+if device.supports_any_command([OverkizCommand.OPEN, OverkizCommand.CLOSE]):
     print("Device supports open/close commands")
 
 # Get the first supported command from a list
-supported_cmd = device.get_supported_command_name(
+supported_cmd = device.select_first_command(
     [OverkizCommand.SET_CLOSURE, OverkizCommand.OPEN, OverkizCommand.CLOSE]
 )
 if supported_cmd:
@@ -93,9 +111,14 @@ if supported_cmd:
 devices = await client.get_devices()
 device = devices[0]
 
-# Get the value of device attributes (like firmware)
-firmware = device.get_attribute_value([
+# Get the value of a single attribute
+firmware = device.get_attribute_value(OverkizAttribute.CORE_FIRMWARE_REVISION)
+print(f"Firmware: {firmware}")
+
+# Get the value of the first matching attribute from a list
+firmware = device.select_first_attribute_value([
     OverkizAttribute.CORE_FIRMWARE_REVISION,
+    OverkizAttribute.CORE_MANUFACTURER,
 ])
 print(f"Firmware: {firmware}")
 ```

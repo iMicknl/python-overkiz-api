@@ -200,47 +200,77 @@ class TestDevice:
         device = Device(**hump_device)
         assert not device.states.get(STATE)
 
-    def test_get_supported_command_name(self):
-        """Device.get_supported_command_name() delegates to commands.select()."""
+    def test_select_first_command(self):
+        """Device.select_first_command() returns first supported command from list."""
         hump_device = humps.decamelize(RAW_DEVICES)
         device = Device(**hump_device)
-        assert (
-            device.get_supported_command_name(["nonexistent", "open", "close"])
-            == "open"
-        )
-        assert device.get_supported_command_name(["nonexistent"]) is None
+        assert device.select_first_command(["nonexistent", "open", "close"]) == "open"
+        assert device.select_first_command(["nonexistent"]) is None
 
-    def test_has_supported_command(self):
-        """Device.has_supported_command() delegates to commands.has_any()."""
+    def test_supports_command(self):
+        """Device.supports_command() checks if device supports a single command."""
         hump_device = humps.decamelize(RAW_DEVICES)
         device = Device(**hump_device)
-        assert device.has_supported_command(["nonexistent", "open"])
-        assert not device.has_supported_command(["nonexistent"])
+        assert device.supports_command("open")
+        assert not device.supports_command("nonexistent")
+
+    def test_supports_any_command(self):
+        """Device.supports_any_command() checks if device supports any command."""
+        hump_device = humps.decamelize(RAW_DEVICES)
+        device = Device(**hump_device)
+        assert device.supports_any_command(["nonexistent", "open"])
+        assert not device.supports_any_command(["nonexistent"])
 
     def test_get_state_value(self):
-        """Device.get_state_value() returns the value of the first matching state."""
+        """Device.get_state_value() returns value of a single state."""
         hump_device = humps.decamelize(RAW_DEVICES)
         device = Device(**hump_device)
-        value = device.get_state_value(["nonexistent", "core:ClosureState"])
+        value = device.get_state_value("core:ClosureState")
+        assert value == 100
+        assert device.get_state_value("nonexistent") is None
+
+    def test_select_first_state_value(self):
+        """Device.select_first_state_value() returns value of first matching state from list."""
+        hump_device = humps.decamelize(RAW_DEVICES)
+        device = Device(**hump_device)
+        value = device.select_first_state_value(["nonexistent", "core:ClosureState"])
         assert value == 100
 
     def test_has_state_value(self):
-        """Device.has_state_value() returns True if any state exists with non-None value."""
+        """Device.has_state_value() checks if a single state exists with non-None value."""
         hump_device = humps.decamelize(RAW_DEVICES)
         device = Device(**hump_device)
-        assert device.has_state_value(["nonexistent", "core:ClosureState"])
-        assert not device.has_state_value(["nonexistent"])
+        assert device.has_state_value("core:ClosureState")
+        assert not device.has_state_value("nonexistent")
+
+    def test_has_any_state_value(self):
+        """Device.has_any_state_value() checks if any state exists with non-None value."""
+        hump_device = humps.decamelize(RAW_DEVICES)
+        device = Device(**hump_device)
+        assert device.has_any_state_value(["nonexistent", "core:ClosureState"])
+        assert not device.has_any_state_value(["nonexistent"])
 
     def test_get_state_definition(self):
-        """Device.get_state_definition() returns the first matching StateDefinition."""
+        """Device.get_state_definition() returns StateDefinition for a single state."""
         hump_device = humps.decamelize(RAW_DEVICES)
         device = Device(**hump_device)
-        state_def = device.get_state_definition(["nonexistent", "core:ClosureState"])
+        state_def = device.get_state_definition("core:ClosureState")
+        assert state_def is not None
+        assert state_def.qualified_name == "core:ClosureState"
+        assert device.get_state_definition("nonexistent") is None
+
+    def test_select_first_state_definition(self):
+        """Device.select_first_state_definition() returns first matching StateDefinition from list."""
+        hump_device = humps.decamelize(RAW_DEVICES)
+        device = Device(**hump_device)
+        state_def = device.select_first_state_definition(
+            ["nonexistent", "core:ClosureState"]
+        )
         assert state_def is not None
         assert state_def.qualified_name == "core:ClosureState"
 
-    def test_get_attribute_value_returns_first_match(self):
-        """Device.get_attribute_value() returns the value of the first matching attribute."""
+    def test_get_attribute_value(self):
+        """Device.get_attribute_value() returns value of a single attribute."""
         test_device = {
             **RAW_DEVICES,
             "attributes": [
@@ -250,28 +280,43 @@ class TestDevice:
         }
         hump_device = humps.decamelize(test_device)
         device = Device(**hump_device)
-        value = device.get_attribute_value(
+        value = device.get_attribute_value("core:Model")
+        assert value == "WINDOW 100"
+        assert device.get_attribute_value("nonexistent") is None
+
+    def test_select_first_attribute_value_returns_first_match(self):
+        """Device.select_first_attribute_value() returns value of first matching attribute from list."""
+        test_device = {
+            **RAW_DEVICES,
+            "attributes": [
+                {"name": "core:Manufacturer", "type": 3, "value": "VELUX"},
+                {"name": "core:Model", "type": 3, "value": "WINDOW 100"},
+            ],
+        }
+        hump_device = humps.decamelize(test_device)
+        device = Device(**hump_device)
+        value = device.select_first_attribute_value(
             ["nonexistent", "core:Model", "core:Manufacturer"]
         )
         assert value == "WINDOW 100"
 
-    def test_get_attribute_value_returns_none_when_no_match(self):
-        """Device.get_attribute_value() returns None when no attribute matches."""
+    def test_select_first_attribute_value_returns_none_when_no_match(self):
+        """Device.select_first_attribute_value() returns None when no attribute matches."""
         hump_device = humps.decamelize(RAW_DEVICES)
         device = Device(**hump_device)
-        value = device.get_attribute_value(["nonexistent", "also_nonexistent"])
+        value = device.select_first_attribute_value(["nonexistent", "also_nonexistent"])
         assert value is None
 
-    def test_get_attribute_value_empty_attributes(self):
-        """Device.get_attribute_value() returns None for devices with no attributes."""
+    def test_select_first_attribute_value_empty_attributes(self):
+        """Device.select_first_attribute_value() returns None for devices with no attributes."""
         test_device = {**RAW_DEVICES, "attributes": []}
         hump_device = humps.decamelize(test_device)
         device = Device(**hump_device)
-        value = device.get_attribute_value(["core:Manufacturer"])
+        value = device.select_first_attribute_value(["core:Manufacturer"])
         assert value is None
 
-    def test_get_attribute_value_with_none_values(self):
-        """Device.get_attribute_value() skips attributes with None values."""
+    def test_select_first_attribute_value_with_none_values(self):
+        """Device.select_first_attribute_value() skips attributes with None values."""
         test_device = {
             **RAW_DEVICES,
             "attributes": [
@@ -281,7 +326,7 @@ class TestDevice:
         }
         hump_device = humps.decamelize(test_device)
         device = Device(**hump_device)
-        value = device.get_attribute_value(["core:Model", "core:Manufacturer"])
+        value = device.select_first_attribute_value(["core:Model", "core:Manufacturer"])
         assert value == "VELUX"
 
 
