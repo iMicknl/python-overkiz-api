@@ -46,12 +46,12 @@ devices = await client.get_devices()
 device = devices[0]
 
 # Get the value of the first matching state
-closure_value = device.get_state_value([OverkizState.CORE_CLOSURE, "core:ClosureState"])
-print(f"Closure: {closure_value}")
+slats_orientation = device.get_state_value([OverkizState.CORE_SLATS_ORIENTATION, OverkizState.CORE_SLATE_ORIENTATION])
+print(f"Orientation: {slats_orientation}")
 
 # Check if a state has a non-None value
-if device.has_state_value([OverkizState.CORE_CLOSURE, "core:ClosureState"]):
-    print("Device has a closure state")
+if device.has_state_value([OverkizState.CORE_SLATS_ORIENTATION, OverkizState.CORE_SLATE_ORIENTATION]):
+    print("Device has a slats orientation")
 ```
 
 #### Get state definition
@@ -61,7 +61,7 @@ devices = await client.get_devices()
 device = devices[0]
 
 # Get the state definition for querying type, valid values, etc.
-state_def = device.get_state_definition([OverkizState.CORE_CLOSURE, "core:ClosureState"])
+state_def = device.get_state_definition([OverkizState.CORE_OPEN_CLOSED, OverkizState.CORE_SLATS_OPEN_CLOSED])
 if state_def:
     print(f"Type: {state_def.type}")
     print(f"Valid values: {state_def.values}")
@@ -93,12 +93,11 @@ if supported_cmd:
 devices = await client.get_devices()
 device = devices[0]
 
-# Get the value of device attributes (like manufacturer or model)
-manufacturer = device.get_attribute_value([
-    "core:Manufacturer",
-    "core:Model",
+# Get the value of device attributes (like firmware)
+firmware = device.get_attribute_value([
+    OverkizAttribute.CORE_FIRMWARE_REVISION,
 ])
-print(f"Manufacturer: {manufacturer}")
+print(f"Firmware: {firmware}")
 ```
 
 #### Access device identifier
@@ -113,6 +112,7 @@ device = devices[0]
 print(f"Protocol: {device.identifier.protocol}")
 print(f"Gateway ID: {device.identifier.gateway_id}")
 print(f"Device address: {device.identifier.device_address}")
+print(f"Base device URL: {device.identifier.base_device_url}")
 
 # Check if this is a sub-device
 if device.identifier.is_sub_device:
