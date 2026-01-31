@@ -1,0 +1,54 @@
+site_name: pyOverkiz Documentation
+repo_url: https://github.com/iMicknl/python-overkiz-api
+edit_uri: edit/main/docs/
+
+docs_dir: docs
+copyright: This project is not affiliated with Overkiz, Somfy, or any other mentioned brand. All trademarks and brand names are the property of their respective owners.
+
+extra:
+  generator: false
+
+theme:
+  name: material
+  features:
+    - navigation.tabs
+    - toc.follow
+    - search.suggest
+    - search.highlight
+    - navigation.footer
+
+plugins:
+  - search
+  - autorefs
+  - mkdocstrings:
+      handlers:
+        python:
+          options:
+            show_source: true
+            docstring_style: google
+            show_docstring_attributes: true
+            show_signature: true
+            show_signature_annotations: true
+            signature_crossrefs: true
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.tasklist
+  - admonition
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+
+nav:
+  - Overview: index.md
+  - User Guide:
+      - Getting started: getting-started.md
+      - Core concepts: core-concepts.md
+      - Device control: device-control.md
+      - Action queue: action-queue.md
+      - Event handling: event-handling.md
+      - Error handling: error-handling.md
+      - Troubleshooting: troubleshooting.md
+  - API Reference: api-reference.md
+  - Contribute: contribute.md

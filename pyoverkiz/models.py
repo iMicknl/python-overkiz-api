@@ -22,7 +22,9 @@ from pyoverkiz.enums import (
     UIWidget,
     UpdateBoxStatus,
 )
+from pyoverkiz.enums.command import OverkizCommand, OverkizCommandParam
 from pyoverkiz.enums.protocol import Protocol
+from pyoverkiz.enums.server import APIType, Server
 from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 
@@ -146,28 +148,78 @@ class Location:
 
 
 @define(init=False, kw_only=True)
+class DeviceIdentifier:
+    """Parsed components from a device URL."""
+
+    protocol: Protocol
+    gateway_id: str = field(repr=obfuscate_id)
+    device_address: str = field(repr=obfuscate_id)
+    subsystem_id: int | None = None
+    base_device_url: str = field(repr=obfuscate_id, init=False)
+
+    def __init__(
+        self,
+        *,
+        protocol: Protocol,
+        gateway_id: str,
+        device_address: str,
+        subsystem_id: int | None = None,
+    ) -> None:
+        """Initialize DeviceIdentifier with required URL components."""
+        self.protocol = protocol
+        self.gateway_id = gateway_id
+        self.device_address = device_address
+        self.subsystem_id = subsystem_id
+        self.base_device_url = f"{protocol}://{gateway_id}/{device_address}"
+
+    @property
+    def is_sub_device(self) -> bool:
+        """Return True if this identifier represents a sub-device (subsystem_id > 1)."""
+        return self.subsystem_id is not None and self.subsystem_id > 1
+
+    @classmethod
+    def from_device_url(cls, device_url: str) -> DeviceIdentifier:
+        """Parse a device URL into its structured identifier components."""
+        match = re.search(DEVICE_URL_RE, device_url)
+        if not match:
+            raise ValueError(f"Invalid device URL: {device_url}")
+
+        subsystem_id = (
+            int(match.group("subsystemId")) if match.group("subsystemId") else None
+        )
+
+        return cls(
+            protocol=Protocol(match.group("protocol")),
+            gateway_id=match.group("gatewayId"),
+            device_address=match.group("deviceAddress"),
+            subsystem_id=subsystem_id,
+        )
+
+
+@define(init=False, kw_only=True)
 class Device:
     """Representation of a device in the setup including parsed fields and states."""
 
-    id: str = field(repr=False)
     attributes: States
     available: bool
     enabled: bool
     label: str = field(repr=obfuscate_string)
     device_url: str = field(repr=obfuscate_id)
-    gateway_id: str | None = field(repr=obfuscate_id)
-    device_address: str | None = field(repr=obfuscate_id)
-    subsystem_id: int | None = None
-    is_sub_device: bool = False
     controllable_name: str
     definition: Definition
-    data_properties: list[dict[str, Any]] | None = None
-    widget: UIWidget
-    ui_class: UIClass
     states: States
     type: ProductType
+    oid: str | None = field(repr=obfuscate_id, default=None)
     place_oid: str | None = None
-    protocol: Protocol | None = field(init=False, repr=False)
+    creation_time: int | None = None
+    last_update_time: int | None = None
+    shortcut: bool | None = None
+    metadata: str | None = None
+    synced: bool | None = None  # Local API only
+    subsystem_id: int | None = None  # Local API only
+    identifier: DeviceIdentifier = field(init=False, repr=False)
+    _ui_class: UIClass | None = field(init=False, repr=False)
+    _widget: UIWidget | None = field(init=False, repr=False)
 
     def __init__(
         self,
@@ -179,17 +231,21 @@ class Device:
         device_url: str,
         controllable_name: str,
         definition: dict[str, Any],
-        data_properties: list[dict[str, Any]] | None = None,
         widget: str | None = None,
-        widget_name: str | None = None,
         ui_class: str | None = None,
         states: list[dict[str, Any]] | None = None,
         type: int,
+        oid: str | None = None,
         place_oid: str | None = None,
+        creation_time: int | None = None,
+        last_update_time: int | None = None,
+        shortcut: bool | None = None,
+        metadata: str | None = None,
+        synced: bool | None = None,
+        subsystem_id: int | None = None,
         **_: Any,
     ) -> None:
         """Initialize Device and parse URL, protocol and nested definitions."""
-        self.id = device_url
         self.attributes = States(attributes)
         self.available = available
         self.definition = Definition(**definition)
@@ -198,37 +254,103 @@ class Device:
         self.label = label
         self.controllable_name = controllable_name
         self.states = States(states)
-        self.data_properties = data_properties
         self.type = ProductType(type)
+        self.oid = oid
         self.place_oid = place_oid
+        self.creation_time = creation_time
+        self.last_update_time = last_update_time
+        self.shortcut = shortcut
+        self.metadata = metadata
+        self.synced = synced
+        self.subsystem_id = subsystem_id
 
-        self.protocol = None
-        self.gateway_id = None
-        self.device_address = None
-        self.subsystem_id = None
-        self.is_sub_device = False
+        self.identifier = DeviceIdentifier.from_device_url(device_url)
 
-        # Split <protocol>://<gatewayId>/<deviceAddress>[#<subsystemId>] into multiple variables
-        match = re.search(DEVICE_URL_RE, device_url)
+        self._ui_class = UIClass(ui_class) if ui_class else None
+        self._widget = UIWidget(widget) if widget else None
 
-        if match:
-            self.protocol = Protocol(match.group("protocol"))
-            self.gateway_id = match.group("gatewayId")
-            self.device_address = match.group("deviceAddress")
+    @property
+    def ui_class(self) -> UIClass:
+        """Return the UI class, falling back to the definition if available."""
+        if self._ui_class is not None:
+            return self._ui_class
+        if self.definition.ui_class:
+            return UIClass(self.definition.ui_class)
+        raise ValueError(f"Device {self.device_url} has no UI class defined")
 
-            if match.group("subsystemId"):
-                self.subsystem_id = int(match.group("subsystemId"))
-                self.is_sub_device = self.subsystem_id > 1
+    @property
+    def widget(self) -> UIWidget:
+        """Return the widget, falling back to the definition if available."""
+        if self._widget is not None:
+            return self._widget
+        if self.definition.widget_name:
+            return UIWidget(self.definition.widget_name)
+        raise ValueError(f"Device {self.device_url} has no widget defined")
 
-        if ui_class:
-            self.ui_class = UIClass(ui_class)
-        elif self.definition.ui_class:
-            self.ui_class = UIClass(self.definition.ui_class)
+    def supports_command(self, command: str | OverkizCommand) -> bool:
+        """Check if device supports a command."""
+        return str(command) in self.definition.commands
 
-        if widget:
-            self.widget = UIWidget(widget)
-        elif self.definition.widget_name:
-            self.widget = UIWidget(self.definition.widget_name)
+    def supports_any_command(self, commands: list[str | OverkizCommand]) -> bool:
+        """Check if device supports any of the commands."""
+        return self.definition.commands.has_any(commands)
+
+    def select_first_command(self, commands: list[str | OverkizCommand]) -> str | None:
+        """Return first supported command name from list, or None."""
+        return self.definition.commands.select(commands)
+
+    def get_state_value(self, state: str) -> StateType | None:
+        """Get value of a single state, or None if not found or None."""
+        return self.states.select_value([state])
+
+    def select_first_state_value(self, states: list[str]) -> StateType | None:
+        """Return value of first state with non-None value from list, or None."""
+        return self.states.select_value(states)
+
+    def has_state_value(self, state: str) -> bool:
+        """Check if a state exists with a non-None value."""
+        return self.states.has_any([state])
+
+    def has_any_state_value(self, states: list[str]) -> bool:
+        """Check if any of the states exist with non-None values."""
+        return self.states.has_any(states)
+
+    def get_state_definition(self, state: str) -> StateDefinition | None:
+        """Get StateDefinition for a single state name, or None."""
+        return self.definition.get_state_definition([state])
+
+    def select_first_state_definition(
+        self, states: list[str]
+    ) -> StateDefinition | None:
+        """Return first matching StateDefinition from list, or None."""
+        return self.definition.get_state_definition(states)
+
+    def get_attribute_value(self, attribute: str) -> StateType | None:
+        """Get value of a single attribute, or None if not found or None."""
+        return self.attributes.select_value([attribute])
+
+    def select_first_attribute_value(self, attributes: list[str]) -> StateType | None:
+        """Return value of first attribute with non-None value from list, or None."""
+        return self.attributes.select_value(attributes)
+
+
+@define(init=False, kw_only=True)
+class DataProperty:
+    """Data property with qualified name and value."""
+
+    qualified_name: str
+    value: str
+
+    def __init__(
+        self,
+        *,
+        qualified_name: str,
+        value: str,
+        **_: Any,
+    ) -> None:
+        """Initialize DataProperty."""
+        self.qualified_name = qualified_name
+        self.value = value
 
 
 @define(init=False, kw_only=True)
@@ -238,6 +360,7 @@ class StateDefinition:
     qualified_name: str
     type: str | None = None
     values: list[str] | None = None
+    event_based: bool | None = None
 
     def __init__(
         self,
@@ -245,11 +368,13 @@ class StateDefinition:
         qualified_name: str | None = None,
         type: str | None = None,
         values: list[str] | None = None,
+        event_based: bool | None = None,
         **_: Any,
     ) -> None:
         """Initialize StateDefinition and set qualified name from either `name` or `qualified_name`."""
         self.type = type
         self.values = values
+        self.event_based = event_based
 
         if qualified_name:
             self.qualified_name = qualified_name
@@ -263,26 +388,55 @@ class Definition:
 
     commands: CommandDefinitions
     states: list[StateDefinition]
+    data_properties: list[DataProperty]
     widget_name: str | None = None
     ui_class: str | None = None
     qualified_name: str | None = None
+    ui_profiles: list[str] | None = None
+    ui_classifiers: list[str] | None = None
+    type: str | None = None
+    attributes: list[dict[str, Any]] | None = None  # Local API only
 
     def __init__(
         self,
         *,
         commands: list[dict[str, Any]],
         states: list[dict[str, Any]] | None = None,
+        data_properties: list[dict[str, Any]] | None = None,
         widget_name: str | None = None,
         ui_class: str | None = None,
         qualified_name: str | None = None,
+        ui_profiles: list[str] | None = None,
+        ui_classifiers: list[str] | None = None,
+        type: str | None = None,
+        attributes: list[dict[str, Any]] | None = None,
         **_: Any,
     ) -> None:
         """Initialize Definition and construct nested command/state definitions."""
         self.commands = CommandDefinitions(commands)
         self.states = [StateDefinition(**sd) for sd in states] if states else []
+        self.data_properties = (
+            [DataProperty(**dp) for dp in data_properties] if data_properties else []
+        )
         self.widget_name = widget_name
         self.ui_class = ui_class
         self.qualified_name = qualified_name
+        self.ui_profiles = ui_profiles
+        self.ui_classifiers = ui_classifiers
+        self.type = type
+        self.attributes = attributes
+
+    def get_state_definition(self, states: list[str]) -> StateDefinition | None:
+        """Return the first StateDefinition whose `qualified_name` matches, or None."""
+        states_set = set(states)
+        for state_def in self.states:
+            if state_def.qualified_name in states_set:
+                return state_def
+        return None
+
+    def has_state_definition(self, states: list[str]) -> bool:
+        """Return True if any of the given state definitions exist."""
+        return self.get_state_definition(states) is not None
 
 
 @define(init=False, kw_only=True)
@@ -325,6 +479,16 @@ class CommandDefinitions:
         return len(self._commands)
 
     get = __getitem__
+
+    def select(self, commands: list[str | OverkizCommand]) -> str | None:
+        """Return the first command name that exists in this definition, or None."""
+        return next(
+            (str(command) for command in commands if str(command) in self), None
+        )
+
+    def has_any(self, commands: list[str | OverkizCommand]) -> bool:
+        """Return True if any of the given commands exist in this definition."""
+        return self.select(commands) is not None
 
 
 @define(init=False, kw_only=True)
@@ -464,20 +628,62 @@ class States:
 
     get = __getitem__
 
+    def select(self, names: list[str]) -> State | None:
+        """Return the first State that exists and has a non-None value, or None."""
+        for name in names:
+            if (state := self[name]) and state.value is not None:
+                return state
+        return None
 
-class Command(dict):
+    def select_value(self, names: list[str]) -> StateType:
+        """Return the value of the first State that exists with a non-None value."""
+        if state := self.select(names):
+            return state.value
+        return None
+
+    def has_any(self, names: list[str]) -> bool:
+        """Return True if any of the given state names exist with a non-None value."""
+        return self.select(names) is not None
+
+
+@define(init=False, kw_only=True)
+class Command:
     """Represents an OverKiz Command."""
 
-    name: str
-    parameters: list[str | int | float] | None
+    type: int | None = None
+    name: str | OverkizCommand
+    parameters: list[str | int | float | OverkizCommandParam] | None
 
     def __init__(
-        self, name: str, parameters: list[str | int | float] | None = None, **_: Any
+        self,
+        name: str | OverkizCommand,
+        parameters: list[str | int | float | OverkizCommandParam] | None = None,
+        type: int | None = None,
+        **_: Any,
     ):
         """Initialize a command instance and mirror fields into dict base class."""
         self.name = name
         self.parameters = parameters
-        dict.__init__(self, name=name, parameters=parameters)
+        self.type = type
+
+    def to_payload(self) -> dict[str, object]:
+        """Return a JSON-serializable payload for this command.
+
+        The payload uses snake_case keys; the client will convert to camelCase
+        and apply small key fixes (like `deviceURL`) before sending.
+        """
+        payload: dict[str, object] = {"name": str(self.name)}
+
+        if self.type is not None:
+            payload["type"] = self.type
+
+        if self.parameters is not None:
+            payload["parameters"] = [
+                p if isinstance(p, (str, int, float, bool)) else str(p)
+                for p in self.parameters  # type: ignore[arg-type]
+            ]
+
+        return payload
 
 
 @define(init=False, kw_only=True)
@@ -574,7 +780,7 @@ class Execution:
     description: str
     owner: str = field(repr=obfuscate_email)
     state: str
-    action_group: list[dict[str, Any]]
+    action_group: ActionGroup
 
     def __init__(
         self,
@@ -582,7 +788,7 @@ class Execution:
         description: str,
         owner: str,
         state: str,
-        action_group: list[dict[str, Any]],
+        action_group: dict[str, Any],
         **_: Any,
     ):
         """Initialize Execution object from API fields."""
@@ -590,7 +796,7 @@ class Execution:
         self.description = description
         self.owner = owner
         self.state = state
-        self.action_group = action_group
+        self.action_group = ActionGroup(**action_group)
 
 
 @define(init=False, kw_only=True)
@@ -600,14 +806,26 @@ class Action:
     device_url: str
     commands: list[Command]
 
-    def __init__(self, device_url: str, commands: list[dict[str, Any]]):
+    def __init__(self, device_url: str, commands: list[dict[str, Any] | Command]):
         """Initialize Action from API data and convert nested commands."""
         self.device_url = device_url
-        self.commands = [Command(**c) for c in commands] if commands else []
+        self.commands = [
+            c if isinstance(c, Command) else Command(**c) for c in commands
+        ]
+
+    def to_payload(self) -> dict[str, object]:
+        """Return a JSON-serializable payload for this action (snake_case).
+
+        The final camelCase conversion is handled by the client.
+        """
+        return {
+            "device_url": self.device_url,
+            "commands": [c.to_payload() for c in self.commands],
+        }
 
 
 @define(init=False, kw_only=True)
-class Scenario:
+class ActionGroup:
     """An action group is composed of one or more actions.
 
     Each action is related to a single setup device (designated by its device URL) and
@@ -615,7 +833,7 @@ class Scenario:
     """
 
     id: str = field(repr=obfuscate_id)
-    creation_time: int
+    creation_time: int | None = None
     last_update_time: int | None = None
     label: str = field(repr=obfuscate_string)
     metadata: str | None = None
@@ -629,10 +847,11 @@ class Scenario:
 
     def __init__(
         self,
-        creation_time: int,
         actions: list[dict[str, Any]],
-        oid: str,
+        creation_time: int | None = None,
         metadata: str | None = None,
+        oid: str | None = None,
+        id: str | None = None,
         last_update_time: int | None = None,
         label: str | None = None,
         shortcut: bool | None = None,
@@ -642,8 +861,11 @@ class Scenario:
         notification_title: str | None = None,
         **_: Any,
     ) -> None:
-        """Initialize Scenario (action group) from API data."""
-        self.id = oid
+        """Initialize ActionGroup from API data and convert nested actions."""
+        if oid is None and id is None:
+            raise ValueError("Either 'oid' or 'id' must be provided")
+
+        self.id = cast(str, oid or id)
         self.creation_time = creation_time
         self.last_update_time = last_update_time
         self.label = (
@@ -656,7 +878,7 @@ class Scenario:
         self.notification_text = notification_text
         self.notification_title = notification_title
         self.actions = [Action(**action) for action in actions]
-        self.oid = oid
+        self.oid = cast(str, oid or id)
 
 
 @define(init=False, kw_only=True)
@@ -919,25 +1141,36 @@ class Zone:
 
 
 @define(kw_only=True)
-class OverkizServer:
-    """Class to describe an Overkiz server."""
+class ServerConfig:
+    """Connection target details for an Overkiz-compatible server."""
 
+    server: Server | None
     name: str
     endpoint: str
     manufacturer: str
-    configuration_url: str | None
+    type: APIType
+    configuration_url: str | None = None
 
-
-@define(kw_only=True)
-class LocalToken:
-    """Descriptor for a local gateway token."""
-
-    label: str
-    gateway_id: str = field(repr=obfuscate_id, default=None)
-    gateway_creation_time: int
-    uuid: str
-    scope: str
-    expiration_time: int | None
+    def __init__(
+        self,
+        *,
+        server: Server | str | None = None,
+        name: str,
+        endpoint: str,
+        manufacturer: str,
+        type: str | APIType,
+        configuration_url: str | None = None,
+        **_: Any,
+    ) -> None:
+        """Initialize ServerConfig and convert enum fields."""
+        self.server = (
+            server if isinstance(server, Server) or server is None else Server(server)
+        )
+        self.name = name
+        self.endpoint = endpoint
+        self.manufacturer = manufacturer
+        self.type = type if isinstance(type, APIType) else APIType(type)
+        self.configuration_url = configuration_url
 
 
 @define(kw_only=True)

@@ -37,9 +37,10 @@ pip install pyoverkiz
 import asyncio
 import time
 
-from pyoverkiz.const import SUPPORTED_SERVERS
+from pyoverkiz.auth.credentials import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient
-from pyoverkiz.enums import Server
+from pyoverkiz.models import Action
+from pyoverkiz.enums import Server, OverkizCommand
 
 USERNAME = ""
 PASSWORD = ""
@@ -47,7 +48,8 @@ PASSWORD = ""
 
 async def main() -> None:
     async with OverkizClient(
-        USERNAME, PASSWORD, server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE]
+        server=Server.SOMFY_EUROPE,
+        credentials=UsernamePasswordCredentials(USERNAME, PASSWORD),
     ) as client:
         try:
             await client.login()
@@ -60,6 +62,19 @@ async def main() -> None:
         for device in devices:
             print(f"{device.label} ({device.id}) - {device.controllable_name}")
             print(f"{device.widget} - {device.ui_class}")
+
+        await client.execute_action_group(
+            actions=[
+                Action(
+                    device_url="io://1234-5678-1234/12345678",
+                    commands=[
+                        Command(name=OverkizCommand.SET_CLOSURE, parameters=[100])
+                    ]
+                )
+            ],
+            label="Execution via Python",
+            # mode=CommandMode.HIGH_PRIORITY
+        )
 
         while True:
             events = await client.fetch_events()
@@ -76,14 +91,11 @@ asyncio.run(main())
 ```python
 import asyncio
 import time
-import aiohttp
 
+from pyoverkiz.auth.credentials import LocalTokenCredentials
 from pyoverkiz.client import OverkizClient
-from pyoverkiz.const import SUPPORTED_SERVERS, OverkizServer
-from pyoverkiz.enums import Server
+from pyoverkiz.utils import create_local_server_config
 
-USERNAME = ""
-PASSWORD = ""
 LOCAL_GATEWAY = "gateway-xxxx-xxxx-xxxx.local"  # or use the IP address of your gateway
 VERIFY_SSL = True  # set verify_ssl to False if you don't use the .local hostname
 
@@ -91,23 +103,10 @@ VERIFY_SSL = True  # set verify_ssl to False if you don't use the .local hostnam
 async def main() -> None:
     token = ""  # generate your token via the Somfy app and include it here
 
-    # Local Connection
-    session = aiohttp.ClientSession(
-        connector=aiohttp.TCPConnector(verify_ssl=VERIFY_SSL)
-    )
-
     async with OverkizClient(
-        username="",
-        password="",
-        token=token,
-        session=session,
+        server=create_local_server_config(host=LOCAL_GATEWAY),
+        credentials=LocalTokenCredentials(token),
         verify_ssl=VERIFY_SSL,
-        server=OverkizServer(
-            name="Somfy TaHoma (local)",
-            endpoint=f"https://{LOCAL_GATEWAY}:8443/enduser-mobile-web/1/enduserAPI/",
-            manufacturer="Somfy",
-            configuration_url=None,
-        ),
     ) as client:
         await client.login()
 

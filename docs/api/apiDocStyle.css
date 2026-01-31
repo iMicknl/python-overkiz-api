@@ -95,6 +95,12 @@ td.pr {
 	text-align: center;
 }
 
+.m_patch .m {
+	color: white;
+	background-color: #88008f;
+	text-align: center;
+}
+
 .m_get    .p {
 	color: black;
 	background-color: #e7f0f7;
@@ -121,6 +127,13 @@ td.pr {
 	background-color: #f5e8e8;
 	text-align: left;
 	border: 1px #efd5d6 solid;
+}
+
+.m_patch .p {
+	color: black;
+	background-color: #f4e8f5;
+	text-align: left;
+	border: 1px #e9d5ef solid;
 }
 
 .m_get    .d {
@@ -151,6 +164,13 @@ td.pr {
 	border: 1px #efd5d6 solid;
 }
 
+.m_patch .d {
+	color: black;
+	background-color: #ffffff;
+	text-align: left;
+	border: 1px #eed5ef solid;
+}
+
 .m {
 	border-top-right-radius: 5px;
 	border-bottom-right-radius: 5px;
@@ -160,7 +180,7 @@ td.pr {
 pre.m_desc, pre.c_desc {
 	white-space: pre-wrap;
 	word-wrap:break-word;
-    margin-left: 10px;
+	margin-left: 10px;
 }
 
 th {
@@ -241,6 +261,18 @@ span.list:hover, span.expand:hover, span#listAll:hover, span#expandAll:hover, sp
 	font-style: italic;
 }
 
+.rateLimited {
+	margin-left: 10px;
+	color: orange;
+	font-style: italic;
+}
+
+.scoped {
+	margin-left: 10px;
+	color: #3344FF;
+	font-style: italic;
+}
+
 span.list:hover, span.expand:hover {
 	color: #6e6f70;
 }
@@ -259,6 +291,10 @@ span.list:hover, span.expand:hover {
 
 .fs:hover .rel.m_delete {
 	color: #a3201c;
+}
+
+.fs:hover .rel.m_patch {
+	color: #88008f;
 }
 
 .c_det {

@@ -1,7 +1,7 @@
 """Unit tests for the high-level OverkizClient behaviour and responses."""
 
-# ruff: noqa: S101, ASYNC230
-# S101: Tests use assert statements
+# ruff: noqa: ASYNC230, S106
+# S106: Test credentials use dummy values.
 # ASYNC230: Blocking open() is acceptable for reading test fixtures
 
 from __future__ import annotations
@@ -15,11 +15,14 @@ import pytest
 from pytest_asyncio import fixture
 
 from pyoverkiz import exceptions
+from pyoverkiz.auth.credentials import (
+    LocalTokenCredentials,
+    UsernamePasswordCredentials,
+)
 from pyoverkiz.client import OverkizClient
-from pyoverkiz.const import SUPPORTED_SERVERS
-from pyoverkiz.enums import APIType, DataType
+from pyoverkiz.enums import APIType, DataType, Server
 from pyoverkiz.models import Option
-from pyoverkiz.utils import generate_local_server
+from pyoverkiz.utils import create_local_server_config
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -30,26 +33,28 @@ class TestOverkizClient:
     @fixture
     async def client(self):
         """Fixture providing an OverkizClient configured for the cloud server."""
-        return OverkizClient("username", "password", SUPPORTED_SERVERS["somfy_europe"])
+        return OverkizClient(
+            server=Server.SOMFY_EUROPE,
+            credentials=UsernamePasswordCredentials("username", "password"),
+        )
 
     @fixture
     async def local_client(self):
         """Fixture providing an OverkizClient configured for a local (developer) server."""
         return OverkizClient(
-            "username",
-            "password",
-            generate_local_server("gateway-1234-5678-1243.local:8443"),
+            server=create_local_server_config(host="gateway-1234-5678-1243.local:8443"),
+            credentials=LocalTokenCredentials(token="token"),
         )
 
     @pytest.mark.asyncio
     async def test_get_api_type_cloud(self, client: OverkizClient):
         """Verify that a cloud-configured client reports APIType.CLOUD."""
-        assert client.api_type == APIType.CLOUD
+        assert client.server_config.type == APIType.CLOUD
 
     @pytest.mark.asyncio
     async def test_get_api_type_local(self, local_client: OverkizClient):
         """Verify that a local-configured client reports APIType.LOCAL."""
-        assert local_client.api_type == APIType.LOCAL
+        assert local_client.server_config.type == APIType.LOCAL
 
     @pytest.mark.asyncio
     async def test_get_devices_basic(self, client: OverkizClient):
@@ -271,9 +276,9 @@ class TestOverkizClient:
             assert len(setup.gateways) == gateway_count
 
             for device in setup.devices:
-                assert device.gateway_id
-                assert device.device_address
-                assert device.protocol
+                assert device.identifier.gateway_id
+                assert device.identifier.device_address
+                assert device.identifier.protocol
 
     @pytest.mark.parametrize(
         "fixture_name",
@@ -470,6 +475,41 @@ class TestOverkizClient:
             for option in options:
                 assert isinstance(option, Option)
 
+    @pytest.mark.asyncio
+    async def test_execute_action_group_omits_none_fields(self, client: OverkizClient):
+        """Ensure `type` and `parameters` that are None are omitted from the request payload."""
+        from pyoverkiz.enums.command import OverkizCommand
+        from pyoverkiz.models import Action, Command
+
+        action = Action(
+            "rts://2025-8464-6867/16756006",
+            [Command(name=OverkizCommand.CLOSE, parameters=None, type=None)],
+        )
+
+        resp = MockResponse('{"execId": "exec-123"}')
+
+        with patch.object(aiohttp.ClientSession, "post") as mock_post:
+            mock_post.return_value = resp
+
+            exec_id = await client.execute_action_group([action])
+
+            assert exec_id == "exec-123"
+
+            assert mock_post.called
+            _, kwargs = mock_post.call_args
+            sent_json = kwargs.get("json")
+            assert sent_json is not None
+
+            # The client should have converted payload to camelCase and applied
+            # abbreviation fixes (deviceURL) before sending.
+            action_sent = sent_json["actions"][0]
+            assert action_sent.get("deviceURL") == action.device_url
+
+            cmd = action_sent["commands"][0]
+            assert "type" not in cmd
+            assert "parameters" not in cmd
+            assert cmd["name"] == "close"
+
     @pytest.mark.parametrize(
         "fixture_name, option_name, instance",
         [
@@ -514,7 +554,7 @@ class TestOverkizClient:
         ],
     )
     @pytest.mark.asyncio
-    async def test_get_scenarios(
+    async def test_get_action_groups(
         self,
         client: OverkizClient,
         fixture_name: str,
@@ -528,16 +568,16 @@ class TestOverkizClient:
             resp = MockResponse(action_group_mock.read())
 
         with patch.object(aiohttp.ClientSession, "get", return_value=resp):
-            scenarios = await client.get_scenarios()
+            action_groups = await client.get_action_groups()
 
-            assert len(scenarios) == scenario_count
+            assert len(action_groups) == scenario_count
 
-            for scenario in scenarios:
-                assert scenario.oid
-                assert scenario.label is not None
-                assert scenario.actions
+            for action_group in action_groups:
+                assert action_group.oid
+                assert action_group.label is not None
+                assert action_group.actions
 
-                for action in scenario.actions:
+                for action in action_group.actions:
                     assert action.device_url
                     assert action.commands
 
