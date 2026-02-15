@@ -1,13 +1,12 @@
 """Execution related enums (types, states and subtypes)."""
 
-import logging
 from enum import StrEnum, unique
 
-_LOGGER = logging.getLogger(__name__)
+from pyoverkiz.enums.base import UnknownEnumMixin
 
 
 @unique
-class ExecutionType(StrEnum):
+class ExecutionType(UnknownEnumMixin, StrEnum):
     """High-level execution categories returned by the API."""
 
     UNKNOWN = "UNKNOWN"
@@ -18,14 +17,9 @@ class ExecutionType(StrEnum):
     RAW_TRIGGER_SERVER = "Raw trigger (Server)"
     RAW_TRIGGER_GATEWAY = "Raw trigger (Gateway)"
 
-    @classmethod
-    def _missing_(cls, value):  # type: ignore
-        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
-        return cls.UNKNOWN
-
 
 @unique
-class ExecutionState(StrEnum):
+class ExecutionState(UnknownEnumMixin, StrEnum):
     """Execution lifecycle states."""
 
     UNKNOWN = "UNKNOWN"
@@ -38,14 +32,9 @@ class ExecutionState(StrEnum):
     QUEUED_GATEWAY_SIDE = "QUEUED_GATEWAY_SIDE"
     QUEUED_SERVER_SIDE = "QUEUED_SERVER_SIDE"
 
-    @classmethod
-    def _missing_(cls, value):  # type: ignore
-        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
-        return cls.UNKNOWN
-
 
 @unique
-class ExecutionSubType(StrEnum):
+class ExecutionSubType(UnknownEnumMixin, StrEnum):
     """Subtypes for execution reasons or sources."""
 
     UNKNOWN = "UNKNOWN"
@@ -63,8 +52,3 @@ class ExecutionSubType(StrEnum):
     NO_ERROR = "NO_ERROR"
     P2P_COMMAND_REGULATION = "P2P_COMMAND_REGULATION"
     TIME_TRIGGER = "TIME_TRIGGER"
-
-    @classmethod
-    def _missing_(cls, value):  # type: ignore
-        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
-        return cls.UNKNOWN
