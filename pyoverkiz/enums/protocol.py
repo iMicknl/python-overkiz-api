@@ -1,13 +1,16 @@
-"""Protocol enums describe device URL schemes used by Overkiz."""
+"""Protocol enums describe device URL schemes used by Overkiz.
 
-import logging
+THIS FILE IS AUTO-GENERATED. DO NOT EDIT MANUALLY.
+Run `uv run utils/generate_enums.py` to regenerate.
+"""
+
 from enum import StrEnum, unique
 
-_LOGGER = logging.getLogger(__name__)
+from pyoverkiz.enums.base import UnknownEnumMixin
 
 
 @unique
-class Protocol(StrEnum):
+class Protocol(UnknownEnumMixin, StrEnum):
     """Protocol used by Overkiz.
 
     Values have been retrieved from /reference/protocolTypes
@@ -15,38 +18,33 @@ class Protocol(StrEnum):
 
     UNKNOWN = "unknown"
 
-    AUGUST = "august"
-    CAMERA = "camera"
-    ELIOT = "eliot"
-    ENOCEAN = "enocean"
+    AUGUST = "august"  # 59: August Webservices
+    CAMERA = "camera"  # 13: Generic Camera Control Protocol
+    ELIOT = "eliot"  # 45: Eliot Webservices
+    ENOCEAN = "enocean"  # 7: EnOcean
     HLRR_WIFI = "hlrrwifi"
-    HOMEKIT = "homekit"
-    HUE = "hue"
-    INTERNAL = "internal"
-    IO = "io"
-    JSW = "jsw"
-    MODBUS = "modbus"
+    HOMEKIT = "homekit"  # 48: HOMEKIT
+    HUE = "hue"  # 22: Philips HUE - Personal Wireless Lighting
+    INTERNAL = "internal"  # 29: Kizbox Internal Modules
+    IO = "io"  # 1: IO HomeControl©
+    JSW = "jsw"  # 30: JSW Webservices
+    MODBUS = "modbus"  # 20: Modbus
     MODBUSLINK = "modbuslink"
-    MYFOX = "myfox"
-    NETATMO = "netatmo"
-    OGCP = "ogcp"
-    OGP = "ogp"
-    OPENDOORS = "opendoors"
-    OVP = "ovp"
-    PROFALUX_868 = "profalux868"
-    RAMSES = "ramses"
-    RTD = "rtd"
-    RTDS = "rtds"
+    MYFOX = "myfox"  # 25: MyFox Webservices
+    NETATMO = "netatmo"  # 38: Netatmo Webservices
+    OGCP = "ogcp"  # 62: Overkiz Generic Cloud Protocol
+    OGP = "ogp"  # 56: Overkiz Generic Protocol
+    OPENDOORS = "opendoors"  # 35: OpenDoors Webservices
+    OVP = "ovp"  # 14: OVERKIZ Radio Protocol
+    PROFALUX_868 = "profalux868"  # 50: Profalux 868
+    RAMSES = "ramses"  # 6: Ramses II (Honeywell)
+    RTD = "rtd"  # 5: Domis RTD - Actuator
+    RTDS = "rtds"  # 11: Domis RTD - Sensor
     RTN = "rtn"
-    RTS = "rts"
-    SOMFY_THERMOSTAT = "somfythermostat"
-    UPNP_CONTROL = "upnpcontrol"
-    VERISURE = "verisure"
-    WISER = "wiser"
-    ZIGBEE = "zigbee"
-    ZWAVE = "zwave"
-
-    @classmethod
-    def _missing_(cls, value):  # type: ignore
-        _LOGGER.warning(f"Unsupported protocol {value} has been returned for {cls}")
-        return cls.UNKNOWN
+    RTS = "rts"  # 2: Somfy RTS
+    SOMFY_THERMOSTAT = "somfythermostat"  # 39: Somfy Thermostat Webservice
+    UPNP_CONTROL = "upnpcontrol"  # 43: UPnP Control
+    VERISURE = "verisure"  # 23: Verisure Webservices
+    WISER = "wiser"  # 54: Schneider Wiser
+    ZIGBEE = "zigbee"  # 3: Zigbee
+    ZWAVE = "zwave"  # 8: Z-Wave

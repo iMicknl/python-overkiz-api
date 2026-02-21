@@ -37,6 +37,7 @@ def create_server_config(
     configuration_url: str | None = None,
 ) -> ServerConfig:
     """Generate server configuration with the provided endpoint and metadata."""
+    # ServerConfig.__init__ accepts str | enum types and converts them internally
     return ServerConfig(
         server=server,  # type: ignore[arg-type]
         name=name,

@@ -1,13 +1,12 @@
 """Enums for gateway types and related helpers."""
 
-import logging
 from enum import IntEnum, StrEnum, unique
 
-_LOGGER = logging.getLogger(__name__)
+from pyoverkiz.enums.base import UnknownEnumMixin
 
 
 @unique
-class GatewayType(IntEnum):
+class GatewayType(UnknownEnumMixin, IntEnum):
     """Enumeration of known gateway types returned by Overkiz."""
 
     UNKNOWN = -1
@@ -63,22 +62,19 @@ class GatewayType(IntEnum):
     TAHOMA_SWITCH_CH = 126
     TAHOMA_SWITCH_SC = 128
 
-    @classmethod
-    def _missing_(cls, value):  # type: ignore
-        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
-        return cls.UNKNOWN
-
     @property
     def beautify_name(self) -> str:
         """Return a human friendly name for the gateway type."""
-        name = self.name.replace("_", " ").title()
-        name = name.replace("Tahoma", "TaHoma")
-        name = name.replace("Rts", "RTS")
-        return name
+        return (
+            self.name.replace("_", " ")
+            .title()
+            .replace("Tahoma", "TaHoma")
+            .replace("Rts", "RTS")
+        )
 
 
 @unique
-class GatewaySubType(IntEnum):
+class GatewaySubType(UnknownEnumMixin, IntEnum):
     """Sub-type enumeration for gateways to identify specific models/variants."""
 
     UNKNOWN = -1
@@ -100,18 +96,15 @@ class GatewaySubType(IntEnum):
     TAHOMA_SECURITY_PRO = 16
     # TAHOMA_BOX_C_IO = 12  # Note: This is likely 17, but tahomalink.com lists it as 12
 
-    @classmethod
-    def _missing_(cls, value):  # type: ignore
-        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
-        return cls.UNKNOWN
-
     @property
     def beautify_name(self) -> str:
         """Return a human friendly name for the gateway sub-type."""
-        name = self.name.replace("_", " ").title()
-        name = name.replace("Tahoma", "TaHoma")
-        name = name.replace("Rts", "RTS")
-        return name
+        return (
+            self.name.replace("_", " ")
+            .title()
+            .replace("Tahoma", "TaHoma")
+            .replace("Rts", "RTS")
+        )
 
 
 @unique
