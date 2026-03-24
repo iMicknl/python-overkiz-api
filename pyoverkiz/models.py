@@ -6,7 +6,7 @@ import re
 from collections.abc import Iterator
 from typing import Any, cast
 
-from attr import define, field
+from attr import Factory, define, field
 
 from pyoverkiz.enums import (
     DataType,
@@ -28,13 +28,266 @@ from pyoverkiz.enums.server import APIType, Server
 from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 
-# pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
-
 # <protocol>://<gatewayId>/<deviceAddress>[#<subsystemId>]
 DEVICE_URL_RE = r"(?P<protocol>.+)://(?P<gatewayId>[^/]+)/(?P<deviceAddress>[^#]+)(#(?P<subsystemId>\d+))?"
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
+class Partner:
+    """Partner details for a gateway or service provider."""
+
+    activated: bool
+    name: str
+    id: str = field(repr=obfuscate_id)
+    status: str
+
+
+@define(kw_only=True)
+class Connectivity:
+    """Connectivity metadata for a gateway update box."""
+
+    status: str
+    protocol_version: str
+
+
+@define(kw_only=True)
+class Feature:
+    """Feature flags exposed by a setup or gateway."""
+
+    name: str
+    source: str
+
+
+@define(kw_only=True)
+class ZoneItem:
+    """An item inside a Zone (device reference)."""
+
+    item_type: str
+    device_oid: str
+    device_url: str
+
+
+@define(kw_only=True)
+class OptionParameter:
+    """Key/value pair representing option parameter."""
+
+    name: str
+    value: str
+
+
+@define(kw_only=True)
+class DataProperty:
+    """Data property with qualified name and value."""
+
+    qualified_name: str
+    value: str
+
+
+@define(kw_only=True)
+class ProtocolType:
+    """Protocol type definition from the reference API."""
+
+    id: int
+    prefix: str
+    name: str
+    label: str
+
+
+@define(kw_only=True)
+class ValuePrototype:
+    """Value prototype defining parameter/state value constraints."""
+
+    type: str
+    min_value: int | float | None = None
+    max_value: int | float | None = None
+    enum_values: list[str] | None = None
+    description: str | None = None
+
+
+@define(kw_only=True)
+class CommandParameter:
+    """Command parameter definition."""
+
+    optional: bool
+    sensitive: bool
+    value_prototypes: list[ValuePrototype] = Factory(list)
+
+
+@define(kw_only=True)
+class CommandPrototype:
+    """Command prototype defining parameters."""
+
+    parameters: list[CommandParameter] = Factory(list)
+
+
+@define(kw_only=True)
+class StatePrototype:
+    """State prototype defining value constraints."""
+
+    value_prototypes: list[ValuePrototype] = Factory(list)
+
+
+@define(kw_only=True)
+class UIProfileCommand:
+    """UI profile command definition."""
+
+    name: str
+    prototype: CommandPrototype | None = None
+    description: str | None = None
+
+
+@define(kw_only=True)
+class UIProfileState:
+    """UI profile state definition."""
+
+    name: str
+    prototype: StatePrototype | None = None
+    description: str | None = None
+
+
+@define(kw_only=True)
+class UIProfileDefinition:
+    """UI profile definition from the reference API.
+
+    Describes device capabilities through available commands and states.
+    """
+
+    name: str
+    commands: list[UIProfileCommand] = Factory(list)
+    states: list[UIProfileState] = Factory(list)
+    form_factor: bool = False
+
+
+@define(kw_only=True)
+class Location:
+    """Geographical and address metadata for a Setup."""
+
+    creation_time: int
+    last_update_time: int | None = None
+    city: str | None = field(repr=obfuscate_string, default=None)
+    country: str | None = field(repr=obfuscate_string, default=None)
+    postal_code: str | None = field(repr=obfuscate_string, default=None)
+    address_line1: str | None = field(repr=obfuscate_string, default=None)
+    address_line2: str | None = field(repr=obfuscate_string, default=None)
+    timezone: str = ""
+    longitude: str | None = field(repr=obfuscate_string, default=None)
+    latitude: str | None = field(repr=obfuscate_string, default=None)
+    twilight_mode: int = 0
+    twilight_angle: str = ""
+    twilight_city: str | None = None
+    summer_solstice_dusk_minutes: str = ""
+    winter_solstice_dusk_minutes: str = ""
+    twilight_offset_enabled: bool = False
+    dawn_offset: int = 0
+    dusk_offset: int = 0
+
+
+@define(kw_only=True)
+class Option:
+    """A subscribed option for a setup including parameters."""
+
+    creation_time: int
+    last_update_time: int
+    option_id: str
+    start_date: int
+    parameters: list[OptionParameter] = Factory(list)
+
+
+@define(kw_only=True)
+class Zone:
+    """A Zone groups related devices inside a place."""
+
+    creation_time: int
+    last_update_time: int
+    label: str
+    type: int
+    items: list[ZoneItem] = Factory(list)
+    external_oid: str | None = None
+    metadata: str | None = None
+    oid: str = ""
+
+
+@define(kw_only=True)
+class Gateway:
+    """Representation of a gateway, including connectivity and partner info."""
+
+    partners: list[Partner] = Factory(list)
+    functions: str | None = None
+    sub_type: GatewaySubType | None = None
+    id: str = field(repr=obfuscate_id, default="")
+    gateway_id: str = field(repr=obfuscate_id, default="")
+    alive: bool | None = None
+    mode: str | None = None
+    place_oid: str | None = None
+    time_reliable: bool | None = None
+    connectivity: Connectivity = Factory(
+        lambda: Connectivity(status="", protocol_version="")  # type: ignore[call-arg]
+    )
+    up_to_date: bool | None = None
+    update_status: UpdateBoxStatus | None = None
+    sync_in_progress: bool | None = None
+    type: GatewayType | None = None
+
+    def __attrs_post_init__(self) -> None:
+        """Mirror gateway_id into id for convenience."""
+        if self.gateway_id and not self.id:
+            self.id = self.gateway_id
+        elif self.id and not self.gateway_id:
+            self.gateway_id = self.id
+
+
+@define(kw_only=True)
+class Place:
+    """Representation of a place (house/room) in a setup."""
+
+    creation_time: int = 0
+    last_update_time: int | None = None
+    label: str = ""
+    type: int = 0
+    id: str = ""
+    oid: str = ""
+    sub_places: list[Place] = Factory(list)
+
+    def __attrs_post_init__(self) -> None:
+        """Mirror oid into id for convenience."""
+        if self.oid and not self.id:
+            self.id = self.oid
+
+
+@define(kw_only=True)
+class HistoryExecutionCommand:
+    """A command within a recorded historical execution, including its status and parameters."""
+
+    device_url: str = field(repr=obfuscate_id)
+    command: str
+    rank: int
+    dynamic: bool
+    state: ExecutionState
+    failure_type: str
+    parameters: list[Any] | None = None
+
+
+@define(kw_only=True)
+class HistoryExecution:
+    """A recorded execution entry containing details and its list of commands."""
+
+    id: str
+    event_time: int
+    owner: str = field(repr=obfuscate_email)
+    source: str
+    end_time: int | None = None
+    effective_start_time: int | None = None
+    duration: int = 0
+    label: str | None = None
+    type: str = ""
+    state: ExecutionState = ExecutionState.UNKNOWN
+    failure_type: str = ""
+    commands: list[HistoryExecutionCommand] = Factory(list)
+    execution_type: ExecutionType = ExecutionType.UNKNOWN
+    execution_sub_type: ExecutionSubType = ExecutionSubType.UNKNOWN
+
+
+@define(kw_only=True)
 class Setup:
     """Representation of a complete setup returned by the Overkiz API."""
 
@@ -42,109 +295,13 @@ class Setup:
     last_update_time: int | None = None
     id: str = field(repr=obfuscate_id, default=None)
     location: Location | None = None
-    gateways: list[Gateway]
-    devices: list[Device]
+    gateways: list[Gateway] = Factory(list)
+    devices: list[Device] = Factory(list)
     zones: list[Zone] | None = None
     reseller_delegation_type: str | None = None
     oid: str | None = None
     root_place: Place | None = None
     features: list[Feature] | None = None
-
-    def __init__(
-        self,
-        *,
-        creation_time: int | None = None,
-        last_update_time: int | None = None,
-        id: str = field(repr=obfuscate_id, default=None),
-        location: dict[str, Any] | None = None,
-        gateways: list[dict[str, Any]],
-        devices: list[dict[str, Any]],
-        zones: list[dict[str, Any]] | None = None,
-        reseller_delegation_type: str | None = None,
-        oid: str | None = None,
-        root_place: dict[str, Any] | None = None,
-        features: list[dict[str, Any]] | None = None,
-        **_: Any,
-    ) -> None:
-        """Initialize a Setup and construct nested model instances."""
-        self.id = id
-        self.creation_time = creation_time
-        self.last_update_time = last_update_time
-        self.location = Location(**location) if location else None
-        self.gateways = [Gateway(**g) for g in gateways]
-        self.devices = [Device(**d) for d in devices]
-        self.zones = [Zone(**z) for z in zones] if zones else None
-        self.reseller_delegation_type = reseller_delegation_type
-        self.oid = oid
-        self.root_place = Place(**root_place) if root_place else None
-        self.features = [Feature(**f) for f in features] if features else None
-
-
-@define(init=False, kw_only=True)
-class Location:
-    """Geographical and address metadata for a Setup."""
-
-    creation_time: int
-    last_update_time: int | None = None
-    city: str = field(repr=obfuscate_string, default=None)
-    country: str = field(repr=obfuscate_string, default=None)
-    postal_code: str = field(repr=obfuscate_string, default=None)
-    address_line1: str = field(repr=obfuscate_string, default=None)
-    address_line2: str = field(repr=obfuscate_string, default=None)
-    timezone: str
-    longitude: str = field(repr=obfuscate_string, default=None)
-    latitude: str = field(repr=obfuscate_string, default=None)
-    twilight_mode: int
-    twilight_angle: str
-    twilight_city: str | None = None
-    summer_solstice_dusk_minutes: str
-    winter_solstice_dusk_minutes: str
-    twilight_offset_enabled: bool
-    dawn_offset: int
-    dusk_offset: int
-
-    def __init__(
-        self,
-        *,
-        creation_time: int,
-        last_update_time: int | None = None,
-        city: str = field(repr=obfuscate_string, default=None),
-        country: str = field(repr=obfuscate_string, default=None),
-        postal_code: str = field(repr=obfuscate_string, default=None),
-        address_line1: str = field(repr=obfuscate_string, default=None),
-        address_line2: str = field(repr=obfuscate_string, default=None),
-        timezone: str,
-        longitude: str = field(repr=obfuscate_string, default=None),
-        latitude: str = field(repr=obfuscate_string, default=None),
-        twilight_mode: int,
-        twilight_angle: str,
-        twilight_city: str | None = None,
-        summer_solstice_dusk_minutes: str,
-        winter_solstice_dusk_minutes: str,
-        twilight_offset_enabled: bool,
-        dawn_offset: int,
-        dusk_offset: int,
-        **_: Any,
-    ) -> None:
-        """Initialize Location with address and timezone information."""
-        self.creation_time = creation_time
-        self.last_update_time = last_update_time
-        self.city = city
-        self.country = country
-        self.postal_code = postal_code
-        self.address_line1 = address_line1
-        self.address_line2 = address_line2
-        self.timezone = timezone
-        self.longitude = longitude
-        self.latitude = latitude
-        self.twilight_mode = twilight_mode
-        self.twilight_angle = twilight_angle
-        self.twilight_city = twilight_city
-        self.summer_solstice_dusk_minutes = summer_solstice_dusk_minutes
-        self.winter_solstice_dusk_minutes = winter_solstice_dusk_minutes
-        self.twilight_offset_enabled = twilight_offset_enabled
-        self.dawn_offset = dawn_offset
-        self.dusk_offset = dusk_offset
 
 
 @define(init=False, kw_only=True)
@@ -335,25 +492,6 @@ class Device:
 
 
 @define(init=False, kw_only=True)
-class DataProperty:
-    """Data property with qualified name and value."""
-
-    qualified_name: str
-    value: str
-
-    def __init__(
-        self,
-        *,
-        qualified_name: str,
-        value: str,
-        **_: Any,
-    ) -> None:
-        """Initialize DataProperty."""
-        self.qualified_name = qualified_name
-        self.value = value
-
-
-@define(init=False, kw_only=True)
 class StateDefinition:
     """Definition metadata for a state (qualified name, type and possible values)."""
 
@@ -491,25 +629,13 @@ class CommandDefinitions:
         return self.select(commands) is not None
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class State:
     """A single device state with typed accessors for its value."""
 
     name: str
     type: DataType
-    value: StateType
-
-    def __init__(
-        self,
-        name: str,
-        type: int,
-        value: StateType = None,
-        **_: Any,
-    ) -> None:
-        """Initialize State and set its declared data type."""
-        self.name = name
-        self.value = value
-        self.type = DataType(type)
+    value: StateType = None
 
     @property
     def value_as_int(self) -> int | None:
@@ -568,23 +694,17 @@ class State:
         raise TypeError(f"{self.name} is not an array")
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class EventState(State):
-    """State variant used when parsing event payloads (casts string values)."""
+    """State variant used when parsing event payloads.
 
-    def __init__(
-        self,
-        name: str,
-        type: int,
-        value: str | None = None,
-        **_: Any,
-    ):
-        """Initialize EventState and cast string values based on declared data type."""
-        super().__init__(name, type, value, **_)
+    The cloud API returns all state values as strings. This subclass casts
+    them to the appropriate Python type based on the declared DataType.
+    The local API returns properly typed values, which pass through unchanged.
+    """
 
-        # Overkiz (cloud) returns all state values as a string
-        # We cast them here based on the data type provided by Overkiz
-        # Overkiz (local) returns all state values in the right format
+    def __attrs_post_init__(self) -> None:
+        """Cast string values to the declared data type."""
         if isinstance(self.value, str) and self.type in DATA_TYPE_TO_PYTHON:
             self.value = DATA_TYPE_TO_PYTHON[self.type](self.value)
 
@@ -686,12 +806,12 @@ class Command:
         return payload
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class Event:
     """Represents an Overkiz event containing metadata and device states."""
 
     name: EventName
-    timestamp: int | None
+    timestamp: int | None = None
     setupoid: str | None = field(repr=obfuscate_id, default=None)
     owner_key: str | None = field(repr=obfuscate_id, default=None)
     type: int | None = None
@@ -710,69 +830,12 @@ class Event:
     gateway_id: str | None = field(repr=obfuscate_id, default=None)
     exec_id: str | None = None
     device_url: str | None = field(repr=obfuscate_id, default=None)
-    device_states: list[EventState]
+    device_states: list[EventState] = Factory(list)
     old_state: ExecutionState | None = None
     new_state: ExecutionState | None = None
 
-    def __init__(
-        self,
-        name: EventName,
-        timestamp: int | None = None,
-        setupoid: str | None = field(repr=obfuscate_id, default=None),
-        owner_key: str | None = None,
-        type: int | None = None,
-        sub_type: int | None = None,
-        time_to_next_state: int | None = None,
-        failed_commands: list[dict[str, Any]] | None = None,
-        failure_type_code: FailureType | None = None,
-        failure_type: str | None = None,
-        condition_groupoid: str | None = None,
-        place_oid: str | None = None,
-        label: str | None = None,
-        metadata: Any | None = None,
-        camera_id: str | None = None,
-        deleted_raw_devices_count: Any | None = None,
-        protocol_type: Any | None = None,
-        gateway_id: str | None = None,
-        exec_id: str | None = None,
-        device_url: str | None = None,
-        device_states: list[dict[str, Any]] | None = None,
-        old_state: ExecutionState | None = None,
-        new_state: ExecutionState | None = None,
-        **_: Any,
-    ):
-        """Initialize Event from raw Overkiz payload fields."""
-        self.timestamp = timestamp
-        self.gateway_id = gateway_id
-        self.exec_id = exec_id
-        self.device_url = device_url
-        self.device_states = (
-            [EventState(**s) for s in device_states] if device_states else []
-        )
-        self.old_state = ExecutionState(old_state) if old_state else None
-        self.new_state = ExecutionState(new_state) if new_state else None
-        self.setupoid = setupoid
-        self.owner_key = owner_key
-        self.type = type
-        self.sub_type = sub_type
-        self.time_to_next_state = time_to_next_state
-        self.failed_commands = failed_commands
 
-        self.failure_type = failure_type
-        self.condition_groupoid = condition_groupoid
-        self.place_oid = place_oid
-        self.label = label
-        self.metadata = metadata
-        self.camera_id = camera_id
-        self.deleted_raw_devices_count = deleted_raw_devices_count
-        self.protocol_type = protocol_type
-        self.name = EventName(name)
-        self.failure_type_code = (
-            None if failure_type_code is None else FailureType(failure_type_code)
-        )
-
-
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class Execution:
     """Execution occurrence with owner, state and action group metadata."""
 
@@ -781,22 +844,6 @@ class Execution:
     owner: str = field(repr=obfuscate_email)
     state: str
     action_group: ActionGroup
-
-    def __init__(
-        self,
-        id: str,
-        description: str,
-        owner: str,
-        state: str,
-        action_group: dict[str, Any],
-        **_: Any,
-    ):
-        """Initialize Execution object from API fields."""
-        self.id = id
-        self.description = description
-        self.owner = owner
-        self.state = state
-        self.action_group = ActionGroup(**action_group)
 
 
 @define(init=False, kw_only=True)
@@ -824,7 +871,7 @@ class Action:
         }
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class ActionGroup:
     """An action group is composed of one or more actions.
 
@@ -832,312 +879,25 @@ class ActionGroup:
     is composed of one or more commands to be executed on that device.
     """
 
-    id: str = field(repr=obfuscate_id)
+    id: str = field(repr=obfuscate_id, default="")
     creation_time: int | None = None
     last_update_time: int | None = None
-    label: str = field(repr=obfuscate_string)
+    label: str = field(repr=obfuscate_string, default="")
     metadata: str | None = None
     shortcut: bool | None = None
     notification_type_mask: int | None = None
     notification_condition: str | None = None
     notification_text: str | None = None
     notification_title: str | None = None
-    actions: list[Action]
-    oid: str = field(repr=obfuscate_id)
+    actions: list[Action] = Factory(list)
+    oid: str = field(repr=obfuscate_id, default="")
 
-    def __init__(
-        self,
-        actions: list[dict[str, Any]],
-        creation_time: int | None = None,
-        metadata: str | None = None,
-        oid: str | None = None,
-        id: str | None = None,
-        last_update_time: int | None = None,
-        label: str | None = None,
-        shortcut: bool | None = None,
-        notification_type_mask: int | None = None,
-        notification_condition: str | None = None,
-        notification_text: str | None = None,
-        notification_title: str | None = None,
-        **_: Any,
-    ) -> None:
-        """Initialize ActionGroup from API data and convert nested actions."""
-        if oid is None and id is None:
-            raise ValueError("Either 'oid' or 'id' must be provided")
-
-        self.id = cast(str, oid or id)
-        self.creation_time = creation_time
-        self.last_update_time = last_update_time
-        self.label = (
-            label or ""
-        )  # for backwards compatibility we set label to empty string if None
-        self.metadata = metadata
-        self.shortcut = shortcut
-        self.notification_type_mask = notification_type_mask
-        self.notification_condition = notification_condition
-        self.notification_text = notification_text
-        self.notification_title = notification_title
-        self.actions = [Action(**action) for action in actions]
-        self.oid = cast(str, oid or id)
-
-
-@define(init=False, kw_only=True)
-class Partner:
-    """Partner details for a gateway or service provider."""
-
-    activated: bool
-    name: str
-    id: str = field(repr=obfuscate_id)
-    status: str
-
-    def __init__(self, activated: bool, name: str, id: str, status: str, **_: Any):
-        """Initialize Partner information."""
-        self.activated = activated
-        self.name = name
-        self.id = id
-        self.status = status
-
-
-@define(init=False, kw_only=True)
-class Connectivity:
-    """Connectivity metadata for a gateway update box."""
-
-    status: str
-    protocol_version: str
-
-    def __init__(self, status: str, protocol_version: str, **_: Any):
-        """Initialize Connectivity information."""
-        self.status = status
-        self.protocol_version = protocol_version
-
-
-@define(init=False, kw_only=True)
-class Gateway:
-    """Representation of a gateway, including connectivity and partner info."""
-
-    partners: list[Partner]
-    functions: str | None = None
-    sub_type: GatewaySubType | None = None
-    id: str = field(repr=obfuscate_id)
-    gateway_id: str = field(repr=obfuscate_id)
-    alive: bool | None = None
-    mode: str | None = None
-    place_oid: str | None = None
-    time_reliable: bool | None = None
-    connectivity: Connectivity
-    up_to_date: bool | None = None
-    update_status: UpdateBoxStatus | None = None
-    sync_in_progress: bool | None = None
-    type: GatewayType | None = None
-
-    def __init__(
-        self,
-        *,
-        partners: list[dict[str, Any]] | None = None,
-        functions: str | None = None,
-        sub_type: GatewaySubType | None = None,
-        gateway_id: str,
-        alive: bool | None = None,
-        mode: str | None = None,
-        place_oid: str | None = None,
-        time_reliable: bool | None = None,
-        connectivity: dict[str, Any],
-        up_to_date: bool | None = None,
-        update_status: UpdateBoxStatus | None = None,
-        sync_in_progress: bool | None = None,
-        type: GatewayType | None = None,
-        **_: Any,
-    ) -> None:
-        """Initialize Gateway from API data and child objects."""
-        self.id = gateway_id
-        self.gateway_id = gateway_id
-        self.functions = functions
-        self.alive = alive
-        self.mode = mode
-        self.place_oid = place_oid
-        self.time_reliable = time_reliable
-        self.connectivity = Connectivity(**connectivity)
-        self.up_to_date = up_to_date
-        self.update_status = UpdateBoxStatus(update_status) if update_status else None
-        self.sync_in_progress = sync_in_progress
-        self.partners = [Partner(**p) for p in partners] if partners else []
-        self.type = GatewayType(type) if type else None
-        self.sub_type = GatewaySubType(sub_type) if sub_type else None
-
-
-@define(init=False, kw_only=True)
-class HistoryExecutionCommand:
-    """A command within a recorded historical execution, including its status and parameters."""
-
-    device_url: str = field(repr=obfuscate_id)
-    command: str
-    rank: int
-    dynamic: bool
-    state: ExecutionState
-    failure_type: str
-    parameters: list[Any] | None = None
-
-    def __init__(
-        self,
-        device_url: str,
-        command: str,
-        rank: int,
-        dynamic: bool,
-        state: ExecutionState,
-        failure_type: str,
-        parameters: list[Any] | None = None,
-        **_: Any,
-    ) -> None:
-        """Initialize HistoryExecutionCommand from API fields."""
-        self.device_url = device_url
-        self.command = command
-        self.parameters = parameters
-        self.rank = rank
-        self.dynamic = dynamic
-        self.state = ExecutionState(state)
-        self.failure_type = failure_type
-
-
-@define(init=False, kw_only=True)
-class HistoryExecution:
-    """A recorded execution entry containing details and its list of commands."""
-
-    id: str
-    event_time: int
-    owner: str = field(repr=obfuscate_email)
-    source: str
-    end_time: int | None = None
-    effective_start_time: int | None = None
-    duration: int
-    label: str | None = None
-    type: str
-    state: ExecutionState
-    failure_type: str
-    commands: list[HistoryExecutionCommand]
-    execution_type: ExecutionType
-    execution_sub_type: ExecutionSubType
-
-    def __init__(
-        self,
-        *,
-        id: str,
-        event_time: int,
-        owner: str,
-        source: str,
-        end_time: int | None = None,
-        effective_start_time: int | None = None,
-        duration: int,
-        label: str | None = None,
-        type: str,
-        state: ExecutionState,
-        failure_type: str,
-        commands: list[dict[str, Any]],
-        execution_type: ExecutionType,
-        execution_sub_type: ExecutionSubType,
-        **_: Any,
-    ) -> None:
-        """Initialize HistoryExecution and convert nested command structures."""
-        self.id = id
-        self.event_time = event_time
-        self.owner = owner
-        self.source = source
-        self.end_time = end_time
-        self.effective_start_time = effective_start_time
-        self.duration = duration
-        self.label = label
-        self.type = type
-        self.state = ExecutionState(state)
-        self.failure_type = failure_type
-        self.commands = [HistoryExecutionCommand(**hec) for hec in commands]
-        self.execution_type = ExecutionType(execution_type)
-        self.execution_sub_type = ExecutionSubType(execution_sub_type)
-
-
-@define(init=False, kw_only=True)
-class Place:
-    """Representation of a place (house/room) in a setup."""
-
-    creation_time: int
-    last_update_time: int | None = None
-    label: str
-    type: int
-    id: str
-    oid: str
-    sub_places: list[Place]
-
-    def __init__(
-        self,
-        *,
-        creation_time: int,
-        last_update_time: int | None = None,
-        label: str,
-        type: int,
-        oid: str,
-        sub_places: list[Any] | None,
-        **_: Any,
-    ) -> None:
-        """Initialize Place from API data and convert nested sub-places."""
-        self.id = oid
-        self.creation_time = creation_time
-        self.last_update_time = last_update_time
-        self.label = label
-        self.type = type
-        self.oid = oid
-        self.sub_places = [Place(**p) for p in sub_places] if sub_places else []
-
-
-@define(kw_only=True)
-class Feature:
-    """Feature flags exposed by a setup or gateway."""
-
-    name: str
-    source: str
-
-
-@define(kw_only=True)
-class ZoneItem:
-    """An item inside a Zone (device reference)."""
-
-    item_type: str
-    device_oid: str
-    device_url: str
-
-
-@define(init=False, kw_only=True)
-class Zone:
-    """A Zone groups related devices inside a place."""
-
-    creation_time: int
-    last_update_time: int
-    label: str
-    type: int
-    items: list[ZoneItem] | None
-    external_oid: str | None
-    metadata: str | None
-    oid: str
-
-    def __init__(
-        self,
-        *,
-        creation_time: int,
-        last_update_time: int,
-        label: str,
-        type: int,
-        items: list[dict[str, Any]] | None,
-        external_oid: str | None = None,
-        metadata: str | None = None,
-        oid: str,
-        **_: Any,
-    ) -> None:
-        """Initialize Zone from API data and convert nested items."""
-        self.creation_time = creation_time
-        self.last_update_time = last_update_time
-        self.label = label
-        self.type = type
-        self.items = [ZoneItem(**z) for z in items] if items else []
-        self.external_oid = external_oid
-        self.metadata = metadata
-        self.oid = oid
+    def __attrs_post_init__(self) -> None:
+        """Mirror oid/id for convenience and ensure at least one is set."""
+        if self.oid and not self.id:
+            self.id = self.oid
+        elif self.id and not self.oid:
+            self.oid = self.id
 
 
 @define(kw_only=True)
@@ -1173,207 +933,31 @@ class ServerConfig:
         self.configuration_url = configuration_url
 
 
-@define(kw_only=True)
-class OptionParameter:
-    """Key/value pair representing option parameter."""
+def _register_custom_init_models() -> None:
+    """Register models that have a custom ``__init__`` with the cattrs converter.
 
-    name: str
-    value: str
-
-
-@define(init=False, kw_only=True)
-class Option:
-    """A subscribed option for a setup including parameters."""
-
-    creation_time: int
-    last_update_time: int
-    option_id: str
-    start_date: int
-    parameters: list[OptionParameter] | None
-
-    def __init__(
-        self,
-        *,
-        creation_time: int,
-        last_update_time: int,
-        option_id: str,
-        start_date: int,
-        parameters: list[dict[str, Any]] | None,
-        **_: Any,
-    ) -> None:
-        """Initialize Option from API data and convert nested parameters."""
-        self.creation_time = creation_time
-        self.last_update_time = last_update_time
-        self.option_id = option_id
-        self.start_date = start_date
-        self.parameters = (
-            [OptionParameter(**p) for p in parameters] if parameters else []
-        )
-
-
-@define(init=False, kw_only=True)
-class ProtocolType:
-    """Protocol type definition from the reference API."""
-
-    id: int
-    prefix: str
-    name: str
-    label: str
-
-    def __init__(self, id: int, prefix: str, name: str, label: str, **_: Any):
-        """Initialize ProtocolType from API data."""
-        self.id = id
-        self.prefix = prefix
-        self.name = name
-        self.label = label
-
-
-@define(init=False, kw_only=True)
-class ValuePrototype:
-    """Value prototype defining parameter/state value constraints."""
-
-    type: str
-    min_value: int | float | None = None
-    max_value: int | float | None = None
-    enum_values: list[str] | None = None
-    description: str | None = None
-
-    def __init__(
-        self,
-        type: str,
-        min_value: int | float | None = None,
-        max_value: int | float | None = None,
-        enum_values: list[str] | None = None,
-        description: str | None = None,
-        **_: Any,
-    ):
-        """Initialize ValuePrototype from API data."""
-        self.type = type
-        self.min_value = min_value
-        self.max_value = max_value
-        self.enum_values = enum_values
-        self.description = description
-
-
-@define(init=False, kw_only=True)
-class CommandParameter:
-    """Command parameter definition."""
-
-    optional: bool
-    sensitive: bool
-    value_prototypes: list[ValuePrototype]
-
-    def __init__(
-        self,
-        optional: bool,
-        sensitive: bool,
-        value_prototypes: list[dict] | None = None,
-        **_: Any,
-    ):
-        """Initialize CommandParameter from API data."""
-        self.optional = optional
-        self.sensitive = sensitive
-        self.value_prototypes = (
-            [ValuePrototype(**vp) for vp in value_prototypes]
-            if value_prototypes
-            else []
-        )
-
-
-@define(init=False, kw_only=True)
-class CommandPrototype:
-    """Command prototype defining parameters."""
-
-    parameters: list[CommandParameter]
-
-    def __init__(self, parameters: list[dict] | None = None, **_: Any):
-        """Initialize CommandPrototype from API data."""
-        self.parameters = (
-            [CommandParameter(**p) for p in parameters] if parameters else []
-        )
-
-
-@define(init=False, kw_only=True)
-class UIProfileCommand:
-    """UI profile command definition."""
-
-    name: str
-    prototype: CommandPrototype | None = None
-    description: str | None = None
-
-    def __init__(
-        self,
-        name: str,
-        prototype: dict | None = None,
-        description: str | None = None,
-        **_: Any,
-    ):
-        """Initialize UIProfileCommand from API data."""
-        self.name = name
-        self.prototype = CommandPrototype(**prototype) if prototype else None
-        self.description = description
-
-
-@define(init=False, kw_only=True)
-class StatePrototype:
-    """State prototype defining value constraints."""
-
-    value_prototypes: list[ValuePrototype]
-
-    def __init__(self, value_prototypes: list[dict] | None = None, **_: Any):
-        """Initialize StatePrototype from API data."""
-        self.value_prototypes = (
-            [ValuePrototype(**vp) for vp in value_prototypes]
-            if value_prototypes
-            else []
-        )
-
-
-@define(init=False, kw_only=True)
-class UIProfileState:
-    """UI profile state definition."""
-
-    name: str
-    prototype: StatePrototype | None = None
-    description: str | None = None
-
-    def __init__(
-        self,
-        name: str,
-        prototype: dict | None = None,
-        description: str | None = None,
-        **_: Any,
-    ):
-        """Initialize UIProfileState from API data."""
-        self.name = name
-        self.prototype = StatePrototype(**prototype) if prototype else None
-        self.description = description
-
-
-@define(init=False, kw_only=True)
-class UIProfileDefinition:
-    """UI profile definition from the reference API.
-
-    Describes device capabilities through available commands and states.
+    Without this, cattrs would auto-structure these by introspecting
+    their attrs fields, which fails because their ``__init__`` accepts
+    different parameters than the field definitions.
     """
+    from pyoverkiz.converters import converter
 
-    name: str
-    commands: list[UIProfileCommand]
-    states: list[UIProfileState]
-    form_factor: bool
-
-    def __init__(
-        self,
-        name: str,
-        commands: list[dict] | None = None,
-        states: list[dict] | None = None,
-        form_factor: bool = False,
-        **_: Any,
-    ):
-        """Initialize UIProfileDefinition from API data."""
-        self.name = name
-        self.commands = (
-            [UIProfileCommand(**cmd) for cmd in commands] if commands else []
+    for cls in [
+        DeviceIdentifier,
+        Device,
+        StateDefinition,
+        Definition,
+        CommandDefinition,
+        CommandDefinitions,
+        States,
+        Command,
+        Action,
+        ServerConfig,
+    ]:
+        converter.register_structure_hook(
+            cls,
+            lambda d, _, c=cls: c(**d) if isinstance(d, dict) else d,
         )
-        self.states = [UIProfileState(**s) for s in states] if states else []
-        self.form_factor = form_factor
+
+
+_register_custom_init_models()
