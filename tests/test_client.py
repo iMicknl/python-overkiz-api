@@ -328,6 +328,11 @@ class TestOverkizClient:
                 400,
             ),
             (
+                "cloud/application-not-allowed.json",
+                exceptions.ApplicationNotAllowedException,
+                400,
+            ),
+            (
                 "cloud/bad-credentials.json",
                 exceptions.BadCredentialsException,
                 400,

@@ -44,6 +44,7 @@ from pyoverkiz.enums import APIType, Server
 from pyoverkiz.exceptions import (
     AccessDeniedToGatewayException,
     ActionGroupSetupNotFoundException,
+    ApplicationNotAllowedException,
     BadCredentialsException,
     CozyTouchBadCredentialsException,
     CozyTouchServiceException,
@@ -970,6 +971,10 @@ class OverkizClient:
             # {"errorCode": "RESOURCE_ACCESS_DENIED", "error": "Access denied to gateway #1234-5678-1234 for action ADD_TOKEN"}
             if "Access denied to gateway" in message:
                 raise AccessDeniedToGatewayException(message)
+
+            # {"errorCode": "RESOURCE_ACCESS_DENIED", "error": "Your setup cannot be accessed through this application"}
+            if message == "Your setup cannot be accessed through this application":
+                raise ApplicationNotAllowedException(message)
 
         # Undefined Overkiz exception
         raise OverkizException(result)
