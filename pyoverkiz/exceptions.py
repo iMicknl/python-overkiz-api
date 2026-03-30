@@ -29,7 +29,11 @@ class NoSuchResourceException(BaseOverkizException):
     """Raised when an invalid API call is made."""
 
 
-class NotAuthenticatedException(BaseOverkizException):
+class ResourceAccessDeniedException(BaseOverkizException):
+    """Raised when the API returns a RESOURCE_ACCESS_DENIED error."""
+
+
+class NotAuthenticatedException(ResourceAccessDeniedException):
     """Raised when the user is not authenticated."""
 
 
@@ -61,7 +65,7 @@ class MissingAPIKeyException(BaseOverkizException):
     """Raised when the API key is missing."""
 
 
-class MissingAuthorizationTokenException(BaseOverkizException):
+class MissingAuthorizationTokenException(ResourceAccessDeniedException):
     """Raised when the authorization token is missing."""
 
 
@@ -97,8 +101,12 @@ class UnknownObjectException(BaseOverkizException):
     """Raised when an unknown object is provided."""
 
 
-class AccessDeniedToGatewayException(BaseOverkizException):
+class AccessDeniedToGatewayException(ResourceAccessDeniedException):
     """Raised when access is denied to the gateway. This often happens when the user is not the owner of the gateway."""
+
+
+class ApplicationNotAllowedException(ResourceAccessDeniedException):
+    """Raised when the setup cannot be accessed through the application."""
 
 
 # Nexity
