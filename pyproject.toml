@@ -89,3 +89,8 @@ ignore_missing_imports = true
 
 [tool.ty.src]
 exclude = ["tests/"]
+
+[tool.ty.rules]
+# This project uses both mypy and ty; mypy's `type: ignore` comments
+# should not be flagged as unused by ty.
+unused-type-ignore-comment = "ignore"
