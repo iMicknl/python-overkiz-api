@@ -304,7 +304,7 @@ class Setup:
     features: list[Feature] | None = None
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class DeviceIdentifier:
     """Parsed components from a device URL."""
 
@@ -312,22 +312,14 @@ class DeviceIdentifier:
     gateway_id: str = field(repr=obfuscate_id)
     device_address: str = field(repr=obfuscate_id)
     subsystem_id: int | None = None
-    base_device_url: str = field(repr=obfuscate_id, init=False)
+    base_device_url: str = field(repr=obfuscate_id, default="")
 
-    def __init__(
-        self,
-        *,
-        protocol: Protocol,
-        gateway_id: str,
-        device_address: str,
-        subsystem_id: int | None = None,
-    ) -> None:
-        """Initialize DeviceIdentifier with required URL components."""
-        self.protocol = protocol
-        self.gateway_id = gateway_id
-        self.device_address = device_address
-        self.subsystem_id = subsystem_id
-        self.base_device_url = f"{protocol}://{gateway_id}/{device_address}"
+    def __attrs_post_init__(self) -> None:
+        """Compute base_device_url from components."""
+        if not self.base_device_url:
+            self.base_device_url = (
+                f"{self.protocol}://{self.gateway_id}/{self.device_address}"
+            )
 
     @property
     def is_sub_device(self) -> bool:
@@ -345,7 +337,7 @@ class DeviceIdentifier:
             int(match.group("subsystemId")) if match.group("subsystemId") else None
         )
 
-        return cls(
+        return cls(  # type: ignore[call-arg]
             protocol=Protocol(match.group("protocol")),
             gateway_id=match.group("gatewayId"),
             device_address=match.group("deviceAddress"),
@@ -491,33 +483,20 @@ class Device:
         return self.attributes.select_value(attributes)
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class StateDefinition:
     """Definition metadata for a state (qualified name, type and possible values)."""
 
-    qualified_name: str
+    qualified_name: str = ""
+    name: str | None = None
     type: str | None = None
     values: list[str] | None = None
     event_based: bool | None = None
 
-    def __init__(
-        self,
-        name: str | None = None,
-        qualified_name: str | None = None,
-        type: str | None = None,
-        values: list[str] | None = None,
-        event_based: bool | None = None,
-        **_: Any,
-    ) -> None:
-        """Initialize StateDefinition and set qualified name from either `name` or `qualified_name`."""
-        self.type = type
-        self.values = values
-        self.event_based = event_based
-
-        if qualified_name:
-            self.qualified_name = qualified_name
-        elif name:
-            self.qualified_name = name
+    def __attrs_post_init__(self) -> None:
+        """Set qualified_name from name if not provided directly."""
+        if not self.qualified_name and self.name:
+            self.qualified_name = self.name
 
 
 @define(init=False, kw_only=True)
@@ -551,10 +530,16 @@ class Definition:
         **_: Any,
     ) -> None:
         """Initialize Definition and construct nested command/state definitions."""
+        from pyoverkiz.converters import structure
+
         self.commands = CommandDefinitions(commands)
-        self.states = [StateDefinition(**sd) for sd in states] if states else []
+        self.states = (
+            [structure(sd, StateDefinition) for sd in states] if states else []
+        )
         self.data_properties = (
-            [DataProperty(**dp) for dp in data_properties] if data_properties else []
+            [structure(dp, DataProperty) for dp in data_properties]
+            if data_properties
+            else []
         )
         self.widget_name = widget_name
         self.ui_class = ui_class
@@ -577,17 +562,12 @@ class Definition:
         return self.get_state_definition(states) is not None
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class CommandDefinition:
     """Metadata for a single command definition (name and parameter count)."""
 
     command_name: str
     nparams: int
-
-    def __init__(self, command_name: str, nparams: int, **_: Any) -> None:
-        """Initialize CommandDefinition."""
-        self.command_name = command_name
-        self.nparams = nparams
 
 
 @define(init=False)
@@ -598,7 +578,10 @@ class CommandDefinitions:
 
     def __init__(self, commands: list[dict[str, Any]]):
         """Build the inner list of CommandDefinition objects from raw data."""
-        self._commands = [CommandDefinition(**command) for command in commands]
+        self._commands = [
+            CommandDefinition(command_name=c["command_name"], nparams=c["nparams"])  # type: ignore[call-arg]
+            for c in commands
+        ]
 
     def __iter__(self) -> Iterator[CommandDefinition]:
         """Iterate over defined commands."""
@@ -933,31 +916,26 @@ class ServerConfig:
         self.configuration_url = configuration_url
 
 
-def _register_custom_init_models() -> None:
-    """Register models that have a custom ``__init__`` with the cattrs converter.
+def _structure_device(data: Any, _: type) -> Device:
+    return Device(**data) if isinstance(data, dict) else data
 
-    Without this, cattrs would auto-structure these by introspecting
-    their attrs fields, which fails because their ``__init__`` accepts
-    different parameters than the field definitions.
+
+def _structure_action(data: Any, _: type) -> Action:
+    return Action(**data) if isinstance(data, dict) else data
+
+
+def _register_structure_hooks() -> None:
+    """Register hooks for models that cattrs encounters during recursive structuring.
+
+    Device and Action have custom ``__init__`` methods, so cattrs cannot
+    auto-generate structure functions for them. They are nested inside
+    auto-init models (Setup contains Device, ActionGroup contains Action),
+    so cattrs needs to know how to structure them.
     """
     from pyoverkiz.converters import converter
 
-    for cls in [
-        DeviceIdentifier,
-        Device,
-        StateDefinition,
-        Definition,
-        CommandDefinition,
-        CommandDefinitions,
-        States,
-        Command,
-        Action,
-        ServerConfig,
-    ]:
-        converter.register_structure_hook(
-            cls,
-            lambda d, _, c=cls: c(**d) if isinstance(d, dict) else d,
-        )
+    converter.register_structure_hook(Device, _structure_device)
+    converter.register_structure_hook(Action, _structure_action)
 
 
-_register_custom_init_models()
+_register_structure_hooks()
