@@ -44,6 +44,7 @@ from pyoverkiz.enums import APIType, Server
 from pyoverkiz.exceptions import (
     AccessDeniedToGatewayException,
     ActionGroupSetupNotFoundException,
+    ApplicationNotAllowedException,
     BadCredentialsException,
     CozyTouchBadCredentialsException,
     CozyTouchServiceException,
@@ -61,7 +62,6 @@ from pyoverkiz.exceptions import (
     NoSuchResourceException,
     NotAuthenticatedException,
     NotSuchTokenException,
-    ApplicationNotAllowedException,
     OverkizException,
     ServiceUnavailableException,
     SessionAndBearerInSameRequestException,

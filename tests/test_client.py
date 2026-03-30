@@ -328,7 +328,7 @@ class TestOverkizClient:
                 400,
             ),
             (
-                "cloud/resource-access-denied.json",
+                "cloud/application-not-allowed.json",
                 exceptions.ApplicationNotAllowedException,
                 400,
             ),
