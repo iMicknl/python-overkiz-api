@@ -87,5 +87,15 @@ only-packages = true
 exclude = ["tests/"]
 ignore_missing_imports = true
 
+[tool.ty.environment]
+# Use Python 3.11 for type checking so ty resolves StrEnum from the stdlib
+# instead of requiring the backports.strenum package (only needed for 3.10).
+python-version = "3.11"
+
 [tool.ty.src]
 exclude = ["tests/"]
+
+[tool.ty.rules]
+# This project uses both mypy and ty; mypy's `type: ignore` comments
+# should not be flagged as unused by ty.
+unused-type-ignore-comment = "ignore"
