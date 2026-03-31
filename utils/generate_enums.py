@@ -4,6 +4,7 @@
 
 from __future__ import annotations
 
+import argparse
 import asyncio
 import os
 import re
@@ -36,13 +37,13 @@ ADDITIONAL_WIDGETS = [
 ]
 
 
-async def generate_protocol_enum() -> None:
+async def generate_protocol_enum(server: Server) -> None:
     """Generate the Protocol enum from the Overkiz API."""
     username = os.environ["OVERKIZ_USERNAME"]
     password = os.environ["OVERKIZ_PASSWORD"]
 
     async with OverkizClient(
-        server=Server.SOMFY_EUROPE,
+        server=server,
         credentials=UsernamePasswordCredentials(username, password),
     ) as client:
         await client.login()
@@ -113,13 +114,13 @@ async def generate_protocol_enum() -> None:
         print(f"✓ Total: {len(protocols)} protocols")
 
 
-async def generate_ui_enums() -> None:
+async def generate_ui_enums(server: Server) -> None:
     """Generate the UIClass and UIWidget enums from the Overkiz API."""
     username = os.environ["OVERKIZ_USERNAME"]
     password = os.environ["OVERKIZ_PASSWORD"]
 
     async with OverkizClient(
-        server=Server.SOMFY_EUROPE,
+        server=server,
         credentials=UsernamePasswordCredentials(username, password),
     ) as client:
         await client.login()
@@ -241,13 +242,13 @@ async def generate_ui_enums() -> None:
         print(f"✓ Added {len(sorted_classifiers)} UI classifiers")
 
 
-async def generate_ui_profiles() -> None:
+async def generate_ui_profiles(server: Server) -> None:
     """Generate the UIProfile enum from the Overkiz API."""
     username = os.environ["OVERKIZ_USERNAME"]
     password = os.environ["OVERKIZ_PASSWORD"]
 
     async with OverkizClient(
-        server=Server.SOMFY_EUROPE,
+        server=server,
         credentials=UsernamePasswordCredentials(username, password),
     ) as client:
         await client.login()
@@ -680,16 +681,34 @@ async def generate_command_enums() -> None:
     print(f"✓ Total: {len(all_param_values)} parameters")
 
 
-async def generate_all() -> None:
+async def generate_all(server: Server) -> None:
     """Generate all enums from the Overkiz API."""
-    await generate_protocol_enum()
+    print(f"Using server: {server.name} ({server.value})")
     print()
-    await generate_ui_enums()
+    await generate_protocol_enum(server)
     print()
-    await generate_ui_profiles()
+    await generate_ui_enums(server)
+    print()
+    await generate_ui_profiles(server)
     print()
     await generate_command_enums()
 
 
+def parse_args() -> argparse.Namespace:
+    """Parse command-line arguments."""
+    server_choices = [s.value for s in Server]
+    parser = argparse.ArgumentParser(
+        description="Generate enum files from the Overkiz API."
+    )
+    parser.add_argument(
+        "--server",
+        choices=server_choices,
+        default=Server.SOMFY_EUROPE.value,
+        help=f"Server to connect to (default: {Server.SOMFY_EUROPE.value})",
+    )
+    return parser.parse_args()
+
+
 if __name__ == "__main__":
-    asyncio.run(generate_all())
+    args = parse_args()
+    asyncio.run(generate_all(Server(args.server)))
