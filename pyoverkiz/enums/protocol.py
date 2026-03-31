@@ -29,7 +29,7 @@ class Protocol(UnknownEnumMixin, StrEnum):
     IO = "io"  # 1: IO HomeControl©
     JSW = "jsw"  # 30: JSW Webservices
     MODBUS = "modbus"  # 20: Modbus
-    MODBUSLINK = "modbuslink"
+    MODBUSLINK = "modbuslink"  # 44: ModbusLink
     MYFOX = "myfox"  # 25: MyFox Webservices
     NETATMO = "netatmo"  # 38: Netatmo Webservices
     OGCP = "ogcp"  # 62: Overkiz Generic Cloud Protocol

@@ -8,6 +8,7 @@ import argparse
 import asyncio
 import os
 import re
+import subprocess
 from pathlib import Path
 from typing import cast
 
@@ -18,11 +19,11 @@ from pyoverkiz.exceptions import OverkizException
 from pyoverkiz.models import UIProfileDefinition, ValuePrototype
 
 # Hardcoded protocols that may not be available on all servers
-# Format: (name, prefix)
-ADDITIONAL_PROTOCOLS = [
-    ("HLRR_WIFI", "hlrrwifi"),
-    ("MODBUSLINK", "modbuslink"),  # 44: ModbusLink (via atlantic_cozytouch)
-    ("RTN", "rtn"),
+# Format: (name, prefix, id, label)
+ADDITIONAL_PROTOCOLS: list[tuple[str, str, int | None, str | None]] = [
+    ("HLRR_WIFI", "hlrrwifi", None, None),
+    ("MODBUSLINK", "modbuslink", 44, "ModbusLink"),  # via Atlantic Cozytouch
+    ("RTN", "rtn", None, None),
 ]
 
 # Hardcoded widgets that may not be available on all servers
@@ -61,9 +62,9 @@ async def generate_protocol_enum(server: Server) -> None:
 
         # Add hardcoded protocols that may not be on all servers (avoid duplicates)
         fetched_prefixes = {p.prefix for p in protocol_types}
-        for name, prefix in ADDITIONAL_PROTOCOLS:
+        for name, prefix, proto_id, proto_label in ADDITIONAL_PROTOCOLS:
             if prefix not in fetched_prefixes:
-                protocols.append((name, prefix, None, None))
+                protocols.append((name, prefix, proto_id, proto_label))
 
         # Sort by name for consistent output
         protocols.sort(key=lambda p: p[0])
@@ -685,6 +686,26 @@ async def generate_command_enums() -> None:
     print(f"✓ Total: {len(all_param_values)} parameters")
 
 
+def format_generated_files() -> None:
+    """Run ruff format and ruff check --fix on all generated enum files."""
+    enums_dir = Path(__file__).parent.parent / "pyoverkiz" / "enums"
+    generated_files = [
+        str(enums_dir / "protocol.py"),
+        str(enums_dir / "ui.py"),
+        str(enums_dir / "ui_profile.py"),
+        str(enums_dir / "command.py"),
+    ]
+    subprocess.run(  # noqa: S603
+        ["uv", "run", "ruff", "check", "--fix", *generated_files],  # noqa: S607
+        check=False,
+    )
+    subprocess.run(  # noqa: S603
+        ["uv", "run", "ruff", "format", *generated_files],  # noqa: S607
+        check=True,
+    )
+    print("✓ Formatted generated files with ruff")
+
+
 async def generate_all(server: Server) -> None:
     """Generate all enums from the Overkiz API."""
     print(f"Using server: {server.name} ({server.value})")
@@ -696,6 +717,8 @@ async def generate_all(server: Server) -> None:
     await generate_ui_profiles(server)
     print()
     await generate_command_enums()
+    print()
+    format_generated_files()
 
 
 def parse_args() -> argparse.Namespace:
