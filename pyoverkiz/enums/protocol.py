@@ -43,6 +43,7 @@ class Protocol(UnknownEnumMixin, StrEnum):
     RTN = "rtn"
     RTS = "rts"  # 2: Somfy RTS
     SOMFY_THERMOSTAT = "somfythermostat"  # 39: Somfy Thermostat Webservice
+    SONOS = "sonos"  # 52: Sonos Cloud Protocol
     UPNP_CONTROL = "upnpcontrol"  # 43: UPnP Control
     VERISURE = "verisure"  # 23: Verisure Webservices
     WISER = "wiser"  # 54: Schneider Wiser
