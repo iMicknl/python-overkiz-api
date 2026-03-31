@@ -21,7 +21,7 @@ from pyoverkiz.models import UIProfileDefinition, ValuePrototype
 # Format: (name, prefix)
 ADDITIONAL_PROTOCOLS = [
     ("HLRR_WIFI", "hlrrwifi"),
-    ("MODBUSLINK", "modbuslink"),
+    ("MODBUSLINK", "modbuslink"),  # 44: ModbusLink (via atlantic_cozytouch)
     ("RTN", "rtn"),
 ]
 
@@ -34,6 +34,10 @@ ADDITIONAL_WIDGETS = [
     ("DISCRETE_GATE_WITH_PEDESTRIAN_POSITION", "DiscreteGateWithPedestrianPosition"),
     ("HLRR_WIFI_BRIDGE", "HLRRWifiBridge"),
     ("NODE", "Node"),
+    (
+        "SWIMMING_POOL_ROLLER_SHUTTER",
+        "SwimmingPoolRollerShutter",
+    ),  # (via atlantic_cozytouch)
 ]
 
 

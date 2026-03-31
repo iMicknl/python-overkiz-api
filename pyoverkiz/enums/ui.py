@@ -401,6 +401,7 @@ class UIWidget(UnknownEnumMixin, StrEnum):
     SUN_ENERGY_SENSOR = "SunEnergySensor"
     SUN_INTENSITY_SENSOR = "SunIntensitySensor"
     SWIMMING_POOL = "SwimmingPool"
+    SWIMMING_POOL_ROLLER_SHUTTER = "SwimmingPoolRollerShutter"
     SWINGING_SHUTTER = "SwingingShutter"
     TSK_ALARM_CONTROLLER = "TSKAlarmController"
     TEMPERATURE_SENSOR = "TemperatureSensor"
