@@ -27,18 +27,15 @@ ADDITIONAL_PROTOCOLS: list[tuple[str, str, int | None, str | None]] = [
 ]
 
 # Hardcoded widgets that may not be available on all servers
-# Format: (enum_name, value)
+# Enum names are derived automatically via to_enum_name()
 ADDITIONAL_WIDGETS = [
-    ("ALARM_PANEL_CONTROLLER", "AlarmPanelController"),
-    ("CYCLIC_GARAGE_DOOR", "CyclicGarageDoor"),
-    ("CYCLIC_SWINGING_GATE_OPENER", "CyclicSwingingGateOpener"),
-    ("DISCRETE_GATE_WITH_PEDESTRIAN_POSITION", "DiscreteGateWithPedestrianPosition"),
-    ("HLRR_WIFI_BRIDGE", "HLRRWifiBridge"),
-    ("NODE", "Node"),
-    (
-        "SWIMMING_POOL_ROLLER_SHUTTER",
-        "SwimmingPoolRollerShutter",
-    ),  # (via atlantic_cozytouch)
+    "AlarmPanelController",
+    "CyclicGarageDoor",
+    "CyclicSwingingGateOpener",
+    "DiscreteGateWithPedestrianPosition",
+    "HLRRWifiBridge",
+    "Node",
+    "SwimmingPoolRollerShutter",  # via atlantic_cozytouch
 ]
 
 
@@ -198,7 +195,7 @@ async def generate_ui_enums(server: Server) -> None:
 
         # Add hardcoded widgets that may not be on all servers (avoid duplicates)
         fetched_widget_values = set(ui_widgets)
-        for _enum_name, widget_value in ADDITIONAL_WIDGETS:
+        for widget_value in ADDITIONAL_WIDGETS:
             if widget_value not in fetched_widget_values:
                 sorted_widgets.append(widget_value)
 
@@ -696,8 +693,8 @@ def format_generated_files() -> None:
         str(enums_dir / "command.py"),
     ]
     subprocess.run(  # noqa: S603
-        ["uv", "run", "ruff", "check", "--fix", *generated_files],  # noqa: S607
-        check=False,
+        ["uv", "run", "ruff", "check", "--fix", "--exit-zero", *generated_files],  # noqa: S607
+        check=True,
     )
     subprocess.run(  # noqa: S603
         ["uv", "run", "ruff", "format", *generated_files],  # noqa: S607
