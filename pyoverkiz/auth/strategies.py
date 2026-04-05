@@ -279,7 +279,7 @@ class NexityAuthStrategy(SessionLoginStrategy):
 
     async def login(self) -> None:
         """Perform login using Nexity username and password."""
-        loop = asyncio.get_event_loop()
+        loop = asyncio.get_running_loop()
 
         def _client() -> BaseClient:
             return boto3.client(
