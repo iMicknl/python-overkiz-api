@@ -8,9 +8,10 @@ from collections.abc import Callable, Coroutine, Generator
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
+from pyoverkiz.models import Action
+
 if TYPE_CHECKING:
     from pyoverkiz.enums import CommandMode
-    from pyoverkiz.models import Action
 
 
 @dataclass(frozen=True, slots=True)
@@ -108,6 +109,15 @@ class ActionQueue:
         self._flush_task: asyncio.Task[None] | None = None
         self._lock = asyncio.Lock()
 
+    @staticmethod
+    def _copy_action(action: Action) -> Action:
+        """Return an `Action` copy with an independent commands list.
+
+        The queue merges commands for duplicate devices, so caller-owned action
+        instances must be copied to avoid mutating user input while batching.
+        """
+        return Action(device_url=action.device_url, commands=list(action.commands))
+
     async def add(
         self,
         actions: list[Action],
@@ -142,8 +152,9 @@ class ActionQueue:
         for action in actions:
             existing = normalized_index.get(action.device_url)
             if existing is None:
-                normalized_actions.append(action)
-                normalized_index[action.device_url] = action
+                action_copy = self._copy_action(action)
+                normalized_actions.append(action_copy)
+                normalized_index[action.device_url] = action_copy
             else:
                 existing.commands.extend(action.commands)
 
@@ -155,17 +166,15 @@ class ActionQueue:
                 batches_to_execute.append(self._prepare_flush())
 
             # Add actions to pending queue
+            pending_index = {
+                pending_action.device_url: pending_action
+                for pending_action in self._pending_actions
+            }
             for action in normalized_actions:
-                pending = next(
-                    (
-                        pending_action
-                        for pending_action in self._pending_actions
-                        if pending_action.device_url == action.device_url
-                    ),
-                    None,
-                )
+                pending = pending_index.get(action.device_url)
                 if pending is None:
                     self._pending_actions.append(action)
+                    pending_index[action.device_url] = action
                 else:
                     pending.commands.extend(action.commands)
             self._pending_mode = mode
