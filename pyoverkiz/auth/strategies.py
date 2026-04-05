@@ -213,17 +213,6 @@ class SomfyAuthStrategy(BaseAuthStrategy):
 class CozytouchAuthStrategy(SessionLoginStrategy):
     """Authentication strategy using Cozytouch session-based login."""
 
-    def __init__(
-        self,
-        credentials: UsernamePasswordCredentials,
-        session: ClientSession,
-        server: ServerConfig,
-        ssl_context: ssl.SSLContext | bool,
-        api_type: APIType,
-    ) -> None:
-        """Initialize CozytouchAuthStrategy with given parameters."""
-        super().__init__(credentials, session, server, ssl_context, api_type)
-
     async def login(self) -> None:
         """Perform login using Cozytouch username and password."""
         form = FormData(
@@ -265,17 +254,6 @@ class CozytouchAuthStrategy(SessionLoginStrategy):
 
 class NexityAuthStrategy(SessionLoginStrategy):
     """Authentication strategy using Nexity session-based login."""
-
-    def __init__(
-        self,
-        credentials: UsernamePasswordCredentials,
-        session: ClientSession,
-        server: ServerConfig,
-        ssl_context: ssl.SSLContext | bool,
-        api_type: APIType,
-    ) -> None:
-        """Initialize NexityAuthStrategy with given parameters."""
-        super().__init__(credentials, session, server, ssl_context, api_type)
 
     async def login(self) -> None:
         """Perform login using Nexity username and password."""
