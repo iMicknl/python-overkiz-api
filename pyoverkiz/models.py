@@ -31,7 +31,9 @@ from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 # pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
 
 # <protocol>://<gatewayId>/<deviceAddress>[#<subsystemId>]
-DEVICE_URL_RE = r"(?P<protocol>.+)://(?P<gatewayId>[^/]+)/(?P<deviceAddress>[^#]+)(#(?P<subsystemId>\d+))?"
+DEVICE_URL_RE = re.compile(
+    r"(?P<protocol>[^:]+)://(?P<gatewayId>[^/]+)/(?P<deviceAddress>[^#]+)(#(?P<subsystemId>\d+))?"
+)
 
 
 @define(init=False, kw_only=True)
@@ -180,7 +182,7 @@ class DeviceIdentifier:
     @classmethod
     def from_device_url(cls, device_url: str) -> DeviceIdentifier:
         """Parse a device URL into its structured identifier components."""
-        match = re.search(DEVICE_URL_RE, device_url)
+        match = DEVICE_URL_RE.fullmatch(device_url)
         if not match:
             raise ValueError(f"Invalid device URL: {device_url}")
 

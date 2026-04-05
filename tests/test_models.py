@@ -183,11 +183,18 @@ class TestDevice:
         assert device.identifier.subsystem_id == subsystem_id
         assert device.identifier.is_sub_device == is_sub_device
 
-    def test_invalid_device_url_raises(self):
+    @pytest.mark.parametrize(
+        "device_url",
+        [
+            "foo://whatever",
+            "io://1234-5678-9012/10077486#8 trailing",
+        ],
+    )
+    def test_invalid_device_url_raises(self, device_url: str):
         """Invalid device URLs should raise during identifier parsing."""
         test_device = {
             **RAW_DEVICES,
-            **{"deviceURL": "foo://whatever"},
+            **{"deviceURL": device_url},
         }
         hump_device = humps.decamelize(test_device)
 
