@@ -739,6 +739,11 @@ class OverkizClient:
             ssl=self._ssl,
         ) as response:
             await self.check_response(response)
+
+            # 204 has no body.
+            if response.status == 204:
+                return None
+
             return await response.json()
 
     async def _post(
@@ -756,6 +761,9 @@ class OverkizClient:
             ssl=self._ssl,
         ) as response:
             await self.check_response(response)
+            # 204 has no body.
+            if response.status == 204:
+                return None
             return await response.json()
 
     async def _delete(self, path: str) -> None:

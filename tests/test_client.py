@@ -481,6 +481,40 @@ class TestOverkizClient:
                 assert isinstance(option, Option)
 
     @pytest.mark.asyncio
+    async def test_get_returns_none_for_204_without_json_parse(
+        self, client: OverkizClient
+    ) -> None:
+        """Ensure `_get` skips JSON parsing for 204 responses and returns `None`."""
+        resp = MockResponse("", status=204)
+        resp.json = AsyncMock(return_value={})
+
+        with (
+            patch.object(client, "_refresh_token_if_expired", new=AsyncMock()),
+            patch.object(aiohttp.ClientSession, "get", return_value=resp),
+        ):
+            result = await client._get("setup/options")
+
+        assert result is None
+        assert not resp.json.called
+
+    @pytest.mark.asyncio
+    async def test_post_returns_none_for_204_without_json_parse(
+        self, client: OverkizClient
+    ) -> None:
+        """Ensure `_post` skips JSON parsing for 204 responses and returns `None`."""
+        resp = MockResponse("", status=204)
+        resp.json = AsyncMock(return_value={})
+
+        with (
+            patch.object(client, "_refresh_token_if_expired", new=AsyncMock()),
+            patch.object(aiohttp.ClientSession, "post", return_value=resp),
+        ):
+            result = await client._post("setup/devices/states/refresh")
+
+        assert result is None
+        assert not resp.json.called
+
+    @pytest.mark.asyncio
     async def test_execute_action_group_omits_none_fields(self, client: OverkizClient):
         """Ensure `type` and `parameters` that are None are omitted from the request payload."""
         from pyoverkiz.enums.command import OverkizCommand
