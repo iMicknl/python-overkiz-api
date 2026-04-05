@@ -5,7 +5,9 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import asyncio
+import json
 import os
 import re
 import subprocess
@@ -233,7 +235,11 @@ async def generate_ui_enums(server: Server) -> None:
         output_path.write_text("\n".join(lines))
 
         additional_widget_count = len(
-            [w for w in ADDITIONAL_WIDGETS if w[1] not in fetched_widget_values]
+            [
+                widget
+                for widget in ADDITIONAL_WIDGETS
+                if widget not in fetched_widget_values
+            ]
         )
 
         print(f"✓ Generated {output_path}")
@@ -439,8 +445,6 @@ def extract_commands_from_fixtures(fixtures_dir: Path) -> set[str]:
     Reads all JSON fixture files and collects unique command names from device
     definitions. Commands are returned as camelCase values.
     """
-    import json
-
     commands: set[str] = set()
 
     for fixture_file in fixtures_dir.glob("*.json"):
@@ -473,8 +477,6 @@ def extract_state_values_from_fixtures(fixtures_dir: Path) -> set[str]:
     Reads all JSON fixture files and collects unique state values from device
     definitions. Values are extracted from DiscreteState types.
     """
-    import json
-
     values: set[str] = set()
 
     for fixture_file in fixtures_dir.glob("*.json"):
@@ -517,6 +519,44 @@ def command_to_enum_name(command_name: str) -> str:
     return name.upper()
 
 
+def extract_enum_members(content: str, class_name: str) -> dict[str, str]:
+    """Extract enum member names keyed by their string value from a class definition."""
+    module = ast.parse(content)
+
+    for node in module.body:
+        if not isinstance(node, ast.ClassDef) or node.name != class_name:
+            continue
+
+        members: dict[str, str] = {}
+        for statement in node.body:
+            if not isinstance(statement, ast.Assign):
+                continue
+            if len(statement.targets) != 1:
+                continue
+
+            target = statement.targets[0]
+            if not isinstance(target, ast.Name):
+                continue
+            if not isinstance(statement.value, ast.Constant):
+                continue
+            if not isinstance(statement.value.value, str):
+                continue
+
+            members[statement.value.value] = target.id
+
+        return members
+
+    raise ValueError(f"Could not find enum class {class_name}")
+
+
+def find_class_start(content: str, class_name: str) -> int:
+    """Return the start index of a generated enum class declaration."""
+    class_start = content.find(f"@unique\nclass {class_name}")
+    if class_start == -1:
+        raise ValueError(f"Could not find class {class_name}")
+    return class_start
+
+
 async def generate_command_enums() -> None:
     """Generate the OverkizCommand enum and update OverkizCommandParam from fixture files."""
     fixtures_dir = Path(__file__).parent.parent / "tests" / "fixtures" / "setup"
@@ -529,51 +569,10 @@ async def generate_command_enums() -> None:
     command_file = Path(__file__).parent.parent / "pyoverkiz" / "enums" / "command.py"
     content = command_file.read_text()
 
-    # Find the OverkizCommandParam class
-    param_class_start_idx = content.find("@unique\nclass OverkizCommandParam")
-    command_mode_class_start_idx = content.find("@unique\nclass CommandMode")
+    find_class_start(content, "CommandMode")
 
-    # Parse existing commands from OverkizCommand
-    existing_commands: dict[str, str] = {}
-    in_overkiz_command = False
-    lines_before_param = content[:param_class_start_idx].split("\n")
-
-    for line in lines_before_param:
-        if "class OverkizCommand" in line:
-            in_overkiz_command = True
-            continue
-        if in_overkiz_command and line.strip() and not line.startswith(" "):
-            break
-        if in_overkiz_command and " = " in line and not line.strip().startswith("#"):
-            parts = line.strip().split(" = ")
-            if len(parts) == 2:
-                enum_name = parts[0].strip()
-                value_part = parts[1].split("#")[0].strip()
-                if value_part.startswith('"') and value_part.endswith('"'):
-                    command_value = value_part[1:-1]
-                    existing_commands[command_value] = enum_name
-
-    # Parse existing parameters from OverkizCommandParam
-    existing_params: dict[str, str] = {}
-    in_param_class = False
-    lines_param_section = content[
-        param_class_start_idx:command_mode_class_start_idx
-    ].split("\n")
-
-    for line in lines_param_section:
-        if "class OverkizCommandParam" in line:
-            in_param_class = True
-            continue
-        if in_param_class and line.strip() and not line.startswith(" "):
-            break
-        if in_param_class and " = " in line and not line.strip().startswith("#"):
-            parts = line.strip().split(" = ")
-            if len(parts) == 2:
-                enum_name = parts[0].strip()
-                value_part = parts[1].split("#")[0].strip()
-                if value_part.startswith('"') and value_part.endswith('"'):
-                    param_value = value_part[1:-1]
-                    existing_params[param_value] = enum_name
+    existing_commands = extract_enum_members(content, "OverkizCommand")
+    existing_params = extract_enum_members(content, "OverkizCommandParam")
 
     # Merge: keep existing commands and add new ones from fixtures
     all_command_values = set(existing_commands.keys()) | fixture_commands
@@ -613,9 +612,6 @@ async def generate_command_enums() -> None:
         if enum_name not in param_enum_names:
             param_tuples.append((enum_name, param_value))
             param_enum_names.add(enum_name)
-
-    # Sort alphabetically by enum name
-    param_tuples.sort(key=lambda x: x[0])
 
     # Sort alphabetically by enum name
     param_tuples.sort(key=lambda x: x[0])
