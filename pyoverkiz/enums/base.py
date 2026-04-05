@@ -15,6 +15,18 @@ class UnknownEnumMixin:
 
     __missing_message__ = "Unsupported value %s has been returned for %s"
 
+    def __init_subclass__(cls, **kwargs: object) -> None:
+        """Validate that concrete enum subclasses define an `UNKNOWN` member."""
+        super().__init_subclass__(**kwargs)
+
+        # _member_map_ is only present on concrete Enum subclasses.
+        member_map: dict[str, object] | None = getattr(cls, "_member_map_", None)
+        if member_map is not None and "UNKNOWN" not in member_map:
+            raise TypeError(
+                f"{cls.__name__} uses UnknownEnumMixin but does not define "
+                f"an UNKNOWN member"
+            )
+
     @classmethod
     def _missing_(cls, value: object) -> Self:  # type: ignore[override]
         """Return `UNKNOWN` and log unrecognized values.
