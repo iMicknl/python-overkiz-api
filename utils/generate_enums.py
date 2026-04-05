@@ -4,9 +4,13 @@
 
 from __future__ import annotations
 
+import argparse
+import ast
 import asyncio
+import json
 import os
 import re
+import subprocess
 from pathlib import Path
 from typing import cast
 
@@ -17,32 +21,33 @@ from pyoverkiz.exceptions import OverkizException
 from pyoverkiz.models import UIProfileDefinition, ValuePrototype
 
 # Hardcoded protocols that may not be available on all servers
-# Format: (name, prefix)
-ADDITIONAL_PROTOCOLS = [
-    ("HLRR_WIFI", "hlrrwifi"),
-    ("MODBUSLINK", "modbuslink"),
-    ("RTN", "rtn"),
+# Format: (name, prefix, id, label)
+ADDITIONAL_PROTOCOLS: list[tuple[str, str, int | None, str | None]] = [
+    ("HLRR_WIFI", "hlrrwifi", None, None),
+    ("MODBUSLINK", "modbuslink", 44, "ModbusLink"),  # via Atlantic Cozytouch
+    ("RTN", "rtn", None, None),
 ]
 
 # Hardcoded widgets that may not be available on all servers
-# Format: (enum_name, value)
+# Enum names are derived automatically via to_enum_name()
 ADDITIONAL_WIDGETS = [
-    ("ALARM_PANEL_CONTROLLER", "AlarmPanelController"),
-    ("CYCLIC_GARAGE_DOOR", "CyclicGarageDoor"),
-    ("CYCLIC_SWINGING_GATE_OPENER", "CyclicSwingingGateOpener"),
-    ("DISCRETE_GATE_WITH_PEDESTRIAN_POSITION", "DiscreteGateWithPedestrianPosition"),
-    ("HLRR_WIFI_BRIDGE", "HLRRWifiBridge"),
-    ("NODE", "Node"),
+    "AlarmPanelController",
+    "CyclicGarageDoor",
+    "CyclicSwingingGateOpener",
+    "DiscreteGateWithPedestrianPosition",
+    "HLRRWifiBridge",
+    "Node",
+    "SwimmingPoolRollerShutter",  # via atlantic_cozytouch
 ]
 
 
-async def generate_protocol_enum() -> None:
+async def generate_protocol_enum(server: Server) -> None:
     """Generate the Protocol enum from the Overkiz API."""
     username = os.environ["OVERKIZ_USERNAME"]
     password = os.environ["OVERKIZ_PASSWORD"]
 
     async with OverkizClient(
-        server=Server.SOMFY_EUROPE,
+        server=server,
         credentials=UsernamePasswordCredentials(username, password),
     ) as client:
         await client.login()
@@ -56,9 +61,9 @@ async def generate_protocol_enum() -> None:
 
         # Add hardcoded protocols that may not be on all servers (avoid duplicates)
         fetched_prefixes = {p.prefix for p in protocol_types}
-        for name, prefix in ADDITIONAL_PROTOCOLS:
+        for name, prefix, proto_id, proto_label in ADDITIONAL_PROTOCOLS:
             if prefix not in fetched_prefixes:
-                protocols.append((name, prefix, None, None))
+                protocols.append((name, prefix, proto_id, proto_label))
 
         # Sort by name for consistent output
         protocols.sort(key=lambda p: p[0])
@@ -113,13 +118,13 @@ async def generate_protocol_enum() -> None:
         print(f"✓ Total: {len(protocols)} protocols")
 
 
-async def generate_ui_enums() -> None:
+async def generate_ui_enums(server: Server) -> None:
     """Generate the UIClass and UIWidget enums from the Overkiz API."""
     username = os.environ["OVERKIZ_USERNAME"]
     password = os.environ["OVERKIZ_PASSWORD"]
 
     async with OverkizClient(
-        server=Server.SOMFY_EUROPE,
+        server=server,
         credentials=UsernamePasswordCredentials(username, password),
     ) as client:
         await client.login()
@@ -192,7 +197,7 @@ async def generate_ui_enums() -> None:
 
         # Add hardcoded widgets that may not be on all servers (avoid duplicates)
         fetched_widget_values = set(ui_widgets)
-        for _enum_name, widget_value in ADDITIONAL_WIDGETS:
+        for widget_value in ADDITIONAL_WIDGETS:
             if widget_value not in fetched_widget_values:
                 sorted_widgets.append(widget_value)
 
@@ -230,7 +235,11 @@ async def generate_ui_enums() -> None:
         output_path.write_text("\n".join(lines))
 
         additional_widget_count = len(
-            [w for w in ADDITIONAL_WIDGETS if w[1] not in fetched_widget_values]
+            [
+                widget
+                for widget in ADDITIONAL_WIDGETS
+                if widget not in fetched_widget_values
+            ]
         )
 
         print(f"✓ Generated {output_path}")
@@ -241,13 +250,13 @@ async def generate_ui_enums() -> None:
         print(f"✓ Added {len(sorted_classifiers)} UI classifiers")
 
 
-async def generate_ui_profiles() -> None:
+async def generate_ui_profiles(server: Server) -> None:
     """Generate the UIProfile enum from the Overkiz API."""
     username = os.environ["OVERKIZ_USERNAME"]
     password = os.environ["OVERKIZ_PASSWORD"]
 
     async with OverkizClient(
-        server=Server.SOMFY_EUROPE,
+        server=server,
         credentials=UsernamePasswordCredentials(username, password),
     ) as client:
         await client.login()
@@ -436,8 +445,6 @@ def extract_commands_from_fixtures(fixtures_dir: Path) -> set[str]:
     Reads all JSON fixture files and collects unique command names from device
     definitions. Commands are returned as camelCase values.
     """
-    import json
-
     commands: set[str] = set()
 
     for fixture_file in fixtures_dir.glob("*.json"):
@@ -470,8 +477,6 @@ def extract_state_values_from_fixtures(fixtures_dir: Path) -> set[str]:
     Reads all JSON fixture files and collects unique state values from device
     definitions. Values are extracted from DiscreteState types.
     """
-    import json
-
     values: set[str] = set()
 
     for fixture_file in fixtures_dir.glob("*.json"):
@@ -514,6 +519,44 @@ def command_to_enum_name(command_name: str) -> str:
     return name.upper()
 
 
+def extract_enum_members(content: str, class_name: str) -> dict[str, str]:
+    """Extract enum member names keyed by their string value from a class definition."""
+    module = ast.parse(content)
+
+    for node in module.body:
+        if not isinstance(node, ast.ClassDef) or node.name != class_name:
+            continue
+
+        members: dict[str, str] = {}
+        for statement in node.body:
+            if not isinstance(statement, ast.Assign):
+                continue
+            if len(statement.targets) != 1:
+                continue
+
+            target = statement.targets[0]
+            if not isinstance(target, ast.Name):
+                continue
+            if not isinstance(statement.value, ast.Constant):
+                continue
+            if not isinstance(statement.value.value, str):
+                continue
+
+            members[statement.value.value] = target.id
+
+        return members
+
+    raise ValueError(f"Could not find enum class {class_name}")
+
+
+def find_class_start(content: str, class_name: str) -> int:
+    """Return the start index of a generated enum class declaration."""
+    class_start = content.find(f"@unique\nclass {class_name}")
+    if class_start == -1:
+        raise ValueError(f"Could not find class {class_name}")
+    return class_start
+
+
 async def generate_command_enums() -> None:
     """Generate the OverkizCommand enum and update OverkizCommandParam from fixture files."""
     fixtures_dir = Path(__file__).parent.parent / "tests" / "fixtures" / "setup"
@@ -526,51 +569,10 @@ async def generate_command_enums() -> None:
     command_file = Path(__file__).parent.parent / "pyoverkiz" / "enums" / "command.py"
     content = command_file.read_text()
 
-    # Find the OverkizCommandParam class
-    param_class_start_idx = content.find("@unique\nclass OverkizCommandParam")
-    command_mode_class_start_idx = content.find("@unique\nclass CommandMode")
+    find_class_start(content, "CommandMode")
 
-    # Parse existing commands from OverkizCommand
-    existing_commands: dict[str, str] = {}
-    in_overkiz_command = False
-    lines_before_param = content[:param_class_start_idx].split("\n")
-
-    for line in lines_before_param:
-        if "class OverkizCommand" in line:
-            in_overkiz_command = True
-            continue
-        if in_overkiz_command and line.strip() and not line.startswith(" "):
-            break
-        if in_overkiz_command and " = " in line and not line.strip().startswith("#"):
-            parts = line.strip().split(" = ")
-            if len(parts) == 2:
-                enum_name = parts[0].strip()
-                value_part = parts[1].split("#")[0].strip()
-                if value_part.startswith('"') and value_part.endswith('"'):
-                    command_value = value_part[1:-1]
-                    existing_commands[command_value] = enum_name
-
-    # Parse existing parameters from OverkizCommandParam
-    existing_params: dict[str, str] = {}
-    in_param_class = False
-    lines_param_section = content[
-        param_class_start_idx:command_mode_class_start_idx
-    ].split("\n")
-
-    for line in lines_param_section:
-        if "class OverkizCommandParam" in line:
-            in_param_class = True
-            continue
-        if in_param_class and line.strip() and not line.startswith(" "):
-            break
-        if in_param_class and " = " in line and not line.strip().startswith("#"):
-            parts = line.strip().split(" = ")
-            if len(parts) == 2:
-                enum_name = parts[0].strip()
-                value_part = parts[1].split("#")[0].strip()
-                if value_part.startswith('"') and value_part.endswith('"'):
-                    param_value = value_part[1:-1]
-                    existing_params[param_value] = enum_name
+    existing_commands = extract_enum_members(content, "OverkizCommand")
+    existing_params = extract_enum_members(content, "OverkizCommandParam")
 
     # Merge: keep existing commands and add new ones from fixtures
     all_command_values = set(existing_commands.keys()) | fixture_commands
@@ -610,9 +612,6 @@ async def generate_command_enums() -> None:
         if enum_name not in param_enum_names:
             param_tuples.append((enum_name, param_value))
             param_enum_names.add(enum_name)
-
-    # Sort alphabetically by enum name
-    param_tuples.sort(key=lambda x: x[0])
 
     # Sort alphabetically by enum name
     param_tuples.sort(key=lambda x: x[0])
@@ -680,16 +679,56 @@ async def generate_command_enums() -> None:
     print(f"✓ Total: {len(all_param_values)} parameters")
 
 
-async def generate_all() -> None:
+def format_generated_files() -> None:
+    """Run ruff fixes and formatting on all generated enum files."""
+    enums_dir = Path(__file__).parent.parent / "pyoverkiz" / "enums"
+    generated_files = [
+        str(enums_dir / "protocol.py"),
+        str(enums_dir / "ui.py"),
+        str(enums_dir / "ui_profile.py"),
+        str(enums_dir / "command.py"),
+    ]
+    subprocess.run(  # noqa: S603
+        ["uv", "run", "ruff", "check", "--fix", *generated_files],  # noqa: S607
+        check=True,
+    )
+    subprocess.run(  # noqa: S603
+        ["uv", "run", "ruff", "format", *generated_files],  # noqa: S607
+        check=True,
+    )
+    print("✓ Formatted generated files with ruff")
+
+
+async def generate_all(server: Server) -> None:
     """Generate all enums from the Overkiz API."""
-    await generate_protocol_enum()
+    print(f"Using server: {server.name} ({server.value})")
     print()
-    await generate_ui_enums()
+    await generate_protocol_enum(server)
     print()
-    await generate_ui_profiles()
+    await generate_ui_enums(server)
+    print()
+    await generate_ui_profiles(server)
     print()
     await generate_command_enums()
+    print()
+    format_generated_files()
+
+
+def parse_args() -> argparse.Namespace:
+    """Parse command-line arguments."""
+    server_choices = [s.value for s in Server]
+    parser = argparse.ArgumentParser(
+        description="Generate enum files from the Overkiz API."
+    )
+    parser.add_argument(
+        "--server",
+        choices=server_choices,
+        default=Server.SOMFY_EUROPE.value,
+        help=f"Server to connect to (default: {Server.SOMFY_EUROPE.value})",
+    )
+    return parser.parse_args()
 
 
 if __name__ == "__main__":
-    asyncio.run(generate_all())
+    args = parse_args()
+    asyncio.run(generate_all(Server(args.server)))

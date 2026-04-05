@@ -29,7 +29,7 @@ class Protocol(UnknownEnumMixin, StrEnum):
     IO = "io"  # 1: IO HomeControl©
     JSW = "jsw"  # 30: JSW Webservices
     MODBUS = "modbus"  # 20: Modbus
-    MODBUSLINK = "modbuslink"
+    MODBUSLINK = "modbuslink"  # 44: ModbusLink
     MYFOX = "myfox"  # 25: MyFox Webservices
     NETATMO = "netatmo"  # 38: Netatmo Webservices
     OGCP = "ogcp"  # 62: Overkiz Generic Cloud Protocol
@@ -43,6 +43,7 @@ class Protocol(UnknownEnumMixin, StrEnum):
     RTN = "rtn"
     RTS = "rts"  # 2: Somfy RTS
     SOMFY_THERMOSTAT = "somfythermostat"  # 39: Somfy Thermostat Webservice
+    SONOS = "sonos"  # 52: Sonos Cloud Protocol
     UPNP_CONTROL = "upnpcontrol"  # 43: UPnP Control
     VERISURE = "verisure"  # 23: Verisure Webservices
     WISER = "wiser"  # 54: Schneider Wiser

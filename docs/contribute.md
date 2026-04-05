@@ -36,6 +36,37 @@ uv run pytest
 uv run prek run --all-files
 ```
 
+## Enum generation
+
+Several enum files in `pyoverkiz/enums/` are **auto-generated** — do not edit them manually. The generator script (`utils/generate_enums.py`) fetches reference data from the Overkiz API and merges it with commands/state values found in local fixture files.
+
+Generated files: `protocol.py`, `ui.py`, `ui_profile.py`, `command.py`.
+
+### Running the generator
+
+Run the script with credentials inline:
+
+```bash
+OVERKIZ_USERNAME="your@email.com" OVERKIZ_PASSWORD="your-password" uv run utils/generate_enums.py
+```
+
+By default the script connects to `somfy_europe`. Pass `--server` to use a different one (e.g. `atlantic_cozytouch`, `thermor_cozytouch`):
+
+```bash
+uv run utils/generate_enums.py --server atlantic_cozytouch
+```
+
+The generated files are automatically formatted with `ruff`.
+
+Some protocols and widgets only exist on specific servers. These are hardcoded at the top of the script (`ADDITIONAL_PROTOCOLS`, `ADDITIONAL_WIDGETS`) and merged in automatically.
+
+After regenerating, run linting and tests:
+
+```bash
+uv run prek run --all-files
+uv run pytest
+```
+
 ## Project guidelines
 
 - Use Python 3.10+ features and type annotations.
