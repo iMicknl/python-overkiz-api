@@ -44,12 +44,10 @@ Generated files: `protocol.py`, `ui.py`, `ui_profile.py`, `command.py`.
 
 ### Running the generator
 
-Set your Overkiz credentials, then run the script:
+Run the script with credentials inline:
 
 ```bash
-export OVERKIZ_USERNAME="your@email.com"
-export OVERKIZ_PASSWORD="your-password"
-uv run utils/generate_enums.py
+OVERKIZ_USERNAME="your@email.com" OVERKIZ_PASSWORD="your-password" uv run utils/generate_enums.py
 ```
 
 By default the script connects to `somfy_europe`. Pass `--server` to use a different one (e.g. `atlantic_cozytouch`, `thermor_cozytouch`):
@@ -59,9 +57,6 @@ uv run utils/generate_enums.py --server atlantic_cozytouch
 ```
 
 The generated files are automatically formatted with `ruff`.
-
-!!! note
-    `command.py` is generated from local fixtures only and does **not** require API credentials.
 
 Some protocols and widgets only exist on specific servers. These are hardcoded at the top of the script (`ADDITIONAL_PROTOCOLS`, `ADDITIONAL_WIDGETS`) and merged in automatically.
 
