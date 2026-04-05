@@ -11,6 +11,7 @@ from pyoverkiz.models import (
     Definition,
     Device,
     State,
+    StateDefinition,
     States,
 )
 
@@ -493,6 +494,18 @@ class TestDefinition:
         """has_state_definition() returns False for definitions with no states."""
         definition = Definition(commands=[], states=[])
         assert not definition.has_state_definition(["core:ClosureState"])
+
+
+class TestStateDefinition:
+    """Tests for StateDefinition initialization behavior."""
+
+    def test_requires_name_or_qualified_name(self):
+        """StateDefinition should reject payloads with neither identifier field."""
+        with pytest.raises(
+            ValueError,
+            match=r"StateDefinition requires either `name` or `qualified_name`\.",
+        ):
+            StateDefinition()
 
 
 class TestState:
