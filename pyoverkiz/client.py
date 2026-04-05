@@ -278,7 +278,7 @@ class OverkizClient:
 
     async def login(
         self,
-        register_event_listener: bool | None = True,
+        register_event_listener: bool = True,
     ) -> bool:
         """Authenticate and create an API session allowing access to the other operations.
 
