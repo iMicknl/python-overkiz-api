@@ -510,11 +510,21 @@ class TestNexityAuthStrategy:
         )
         warrant_instance = MagicMock()
         warrant_instance.authenticate_user.side_effect = bad_credentials_error
+        boto3_module = MagicMock()
+        boto3_module.client.return_value = MagicMock()
+        config_class = MagicMock()
+        client_error_class = ClientError
+        warrant_lite_class = MagicMock(return_value=warrant_instance)
 
         with (
-            patch("pyoverkiz.auth.strategies.boto3.client", return_value=MagicMock()),
             patch(
-                "pyoverkiz.auth.strategies.WarrantLite", return_value=warrant_instance
+                "pyoverkiz.auth.strategies._load_nexity_auth_dependencies",
+                return_value=(
+                    boto3_module,
+                    config_class,
+                    client_error_class,
+                    warrant_lite_class,
+                ),
             ),
             pytest.raises(NexityBadCredentialsException),
         ):
@@ -542,11 +552,21 @@ class TestNexityAuthStrategy:
         )
         warrant_instance = MagicMock()
         warrant_instance.authenticate_user.side_effect = service_error
+        boto3_module = MagicMock()
+        boto3_module.client.return_value = MagicMock()
+        config_class = MagicMock()
+        client_error_class = ClientError
+        warrant_lite_class = MagicMock(return_value=warrant_instance)
 
         with (
-            patch("pyoverkiz.auth.strategies.boto3.client", return_value=MagicMock()),
             patch(
-                "pyoverkiz.auth.strategies.WarrantLite", return_value=warrant_instance
+                "pyoverkiz.auth.strategies._load_nexity_auth_dependencies",
+                return_value=(
+                    boto3_module,
+                    config_class,
+                    client_error_class,
+                    warrant_lite_class,
+                ),
             ),
             pytest.raises(ClientError, match="InternalErrorException"),
         ):

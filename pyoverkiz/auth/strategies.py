@@ -6,17 +6,13 @@ import asyncio
 import base64
 import binascii
 import datetime
+import importlib
 import json
 import ssl
 from collections.abc import Mapping
 from typing import Any, cast
 
-import boto3
 from aiohttp import ClientSession, FormData
-from botocore.client import BaseClient
-from botocore.config import Config
-from botocore.exceptions import ClientError
-from warrant_lite import WarrantLite
 
 from pyoverkiz.auth.base import AuthContext, AuthStrategy
 from pyoverkiz.auth.credentials import (
@@ -258,14 +254,17 @@ class NexityAuthStrategy(SessionLoginStrategy):
     async def login(self) -> None:
         """Perform login using Nexity username and password."""
         loop = asyncio.get_running_loop()
+        boto3_module, config_class, client_error_class, warrant_lite_class = (
+            _load_nexity_auth_dependencies()
+        )
 
-        def _client() -> BaseClient:
-            return boto3.client(
-                "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
+        def _client() -> Any:
+            return boto3_module.client(
+                "cognito-idp", config=config_class(region_name=NEXITY_COGNITO_REGION)
             )
 
         client = await loop.run_in_executor(None, _client)
-        aws = WarrantLite(
+        aws = warrant_lite_class(
             username=self.credentials.username,
             password=self.credentials.password,
             pool_id=NEXITY_COGNITO_USER_POOL,
@@ -275,8 +274,9 @@ class NexityAuthStrategy(SessionLoginStrategy):
 
         try:
             tokens = await loop.run_in_executor(None, aws.authenticate_user)
-        except ClientError as error:
-            code = error.response.get("Error", {}).get("Code")
+        except client_error_class as error:
+            client_error = cast(Any, error)
+            code = client_error.response.get("Error", {}).get("Code")
             if code in {"NotAuthorizedException", "UserNotFoundException"}:
                 raise NexityBadCredentialsException() from error
             raise
@@ -436,6 +436,27 @@ class BearerTokenAuthStrategy(BaseAuthStrategy):
         if self.credentials.token:
             return {"Authorization": f"Bearer {self.credentials.token}"}
         return {}
+
+
+def _load_nexity_auth_dependencies() -> tuple[Any, Any, type[Exception], Any]:
+    """Load Nexity optional dependencies only when Nexity auth is used."""
+    try:
+        boto3_module = importlib.import_module("boto3")
+        botocore_config_module = importlib.import_module("botocore.config")
+        botocore_exceptions_module = importlib.import_module("botocore.exceptions")
+        warrant_lite_module = importlib.import_module("warrant_lite")
+    except ImportError as error:
+        raise NexityServiceException(
+            "Nexity authentication requires optional dependencies. Install with the "
+            "Nexity auth extras."
+        ) from error
+
+    return (
+        boto3_module,
+        botocore_config_module.Config,
+        cast(type[Exception], botocore_exceptions_module.ClientError),
+        warrant_lite_module.WarrantLite,
+    )
 
 
 def _decode_jwt_payload(token: str) -> dict[str, Any]:
