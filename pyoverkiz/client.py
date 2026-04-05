@@ -3,10 +3,10 @@
 from __future__ import annotations
 
 import logging
-import os
 import ssl
 import urllib.parse
 from json import JSONDecodeError
+from pathlib import Path
 from types import TracebackType
 from typing import Any, cast
 
@@ -145,7 +145,7 @@ def _create_local_ssl_context() -> ssl.SSLContext:
     because it will load certificates from disk and do other blocking I/O.
     """
     context = ssl.create_default_context(
-        cafile=os.path.dirname(os.path.realpath(__file__)) + "/overkiz-root-ca-2048.crt"
+        cafile=str(Path(__file__).resolve().parent / "overkiz-root-ca-2048.crt")
     )
 
     # Disable strict validation introduced in Python 3.13, which doesn't work with
