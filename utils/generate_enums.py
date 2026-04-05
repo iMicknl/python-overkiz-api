@@ -680,7 +680,7 @@ async def generate_command_enums() -> None:
 
 
 def format_generated_files() -> None:
-    """Run ruff format and ruff check --fix on all generated enum files."""
+    """Run ruff fixes and formatting on all generated enum files."""
     enums_dir = Path(__file__).parent.parent / "pyoverkiz" / "enums"
     generated_files = [
         str(enums_dir / "protocol.py"),
@@ -689,7 +689,7 @@ def format_generated_files() -> None:
         str(enums_dir / "command.py"),
     ]
     subprocess.run(  # noqa: S603
-        ["uv", "run", "ruff", "check", "--fix", "--exit-zero", *generated_files],  # noqa: S607
+        ["uv", "run", "ruff", "check", "--fix", *generated_files],  # noqa: S607
         check=True,
     )
     subprocess.run(  # noqa: S603
