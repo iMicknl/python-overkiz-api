@@ -8,10 +8,11 @@ from __future__ import annotations
 import base64
 import datetime
 import json
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from aiohttp import ClientSession
+from botocore.exceptions import ClientError
 
 from pyoverkiz.auth.base import AuthContext
 from pyoverkiz.auth.credentials import (
@@ -37,7 +38,7 @@ from pyoverkiz.auth.strategies import (
     _decode_jwt_payload,
 )
 from pyoverkiz.enums import APIType, Server
-from pyoverkiz.exceptions import InvalidTokenException
+from pyoverkiz.exceptions import InvalidTokenException, NexityBadCredentialsException
 from pyoverkiz.models import ServerConfig
 
 
@@ -485,6 +486,74 @@ class TestBearerTokenAuthStrategy:
         headers = strategy.auth_headers()
 
         assert headers == {"Authorization": "Bearer my_bearer_token"}
+
+
+class TestNexityAuthStrategy:
+    """Tests for Nexity auth error mapping behavior."""
+
+    @pytest.mark.asyncio
+    async def test_login_maps_invalid_credentials_client_error(self):
+        """Map Cognito bad-credential errors to NexityBadCredentialsException."""
+        server_config = ServerConfig(
+            server=Server.NEXITY,
+            name="Nexity",
+            endpoint="https://api.nexity.com",
+            manufacturer="Nexity",
+            type=APIType.CLOUD,
+        )
+        credentials = UsernamePasswordCredentials("user", "pass")
+        session = AsyncMock(spec=ClientSession)
+
+        bad_credentials_error = ClientError(
+            error_response={"Error": {"Code": "NotAuthorizedException"}},
+            operation_name="InitiateAuth",
+        )
+        warrant_instance = MagicMock()
+        warrant_instance.authenticate_user.side_effect = bad_credentials_error
+
+        with (
+            patch("pyoverkiz.auth.strategies.boto3.client", return_value=MagicMock()),
+            patch(
+                "pyoverkiz.auth.strategies.WarrantLite", return_value=warrant_instance
+            ),
+            pytest.raises(NexityBadCredentialsException),
+        ):
+            strategy = NexityAuthStrategy(
+                credentials, session, server_config, True, APIType.CLOUD
+            )
+            await strategy.login()
+
+    @pytest.mark.asyncio
+    async def test_login_propagates_non_auth_client_error(self):
+        """Propagate non-auth Cognito errors to preserve failure context."""
+        server_config = ServerConfig(
+            server=Server.NEXITY,
+            name="Nexity",
+            endpoint="https://api.nexity.com",
+            manufacturer="Nexity",
+            type=APIType.CLOUD,
+        )
+        credentials = UsernamePasswordCredentials("user", "pass")
+        session = AsyncMock(spec=ClientSession)
+
+        service_error = ClientError(
+            error_response={"Error": {"Code": "InternalErrorException"}},
+            operation_name="InitiateAuth",
+        )
+        warrant_instance = MagicMock()
+        warrant_instance.authenticate_user.side_effect = service_error
+
+        with (
+            patch("pyoverkiz.auth.strategies.boto3.client", return_value=MagicMock()),
+            patch(
+                "pyoverkiz.auth.strategies.WarrantLite", return_value=warrant_instance
+            ),
+            pytest.raises(ClientError, match="InternalErrorException"),
+        ):
+            strategy = NexityAuthStrategy(
+                credentials, session, server_config, True, APIType.CLOUD
+            )
+            await strategy.login()
 
 
 class TestRexelAuthStrategy:

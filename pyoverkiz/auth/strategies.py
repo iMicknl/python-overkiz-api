@@ -15,6 +15,7 @@ import boto3
 from aiohttp import ClientSession, FormData
 from botocore.client import BaseClient
 from botocore.config import Config
+from botocore.exceptions import ClientError
 from warrant_lite import WarrantLite
 
 from pyoverkiz.auth.base import AuthContext, AuthStrategy
@@ -296,8 +297,11 @@ class NexityAuthStrategy(SessionLoginStrategy):
 
         try:
             tokens = await loop.run_in_executor(None, aws.authenticate_user)
-        except Exception as error:
-            raise NexityBadCredentialsException() from error
+        except ClientError as error:
+            code = error.response.get("Error", {}).get("Code")
+            if code in {"NotAuthorizedException", "UserNotFoundException"}:
+                raise NexityBadCredentialsException() from error
+            raise
 
         id_token = tokens["AuthenticationResult"]["IdToken"]
 
