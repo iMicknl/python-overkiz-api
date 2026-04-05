@@ -120,10 +120,15 @@ class ActionQueue:
         into a single action to respect the gateway limitation of one action per
         device in each action group.
 
-        :param actions: Actions to queue
-        :param mode: Command mode (will flush if different from pending mode)
-        :param label: Label for the action group
-        :return: QueuedExecution that resolves to exec_id when batch executes
+        Args:
+            actions: Actions to queue.
+            mode: Command mode, which triggers a flush if it differs from the
+                pending mode.
+            label: Label for the action group.
+
+        Returns:
+            A `QueuedExecution` that resolves to the `exec_id` when the batch
+            executes.
         """
         batches_to_execute: list[
             tuple[list[Action], CommandMode | None, str | None, list[QueuedExecution]]

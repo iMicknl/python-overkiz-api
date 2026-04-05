@@ -380,6 +380,10 @@ class StateDefinition:
             self.qualified_name = qualified_name
         elif name:
             self.qualified_name = name
+        else:
+            raise ValueError(
+                "StateDefinition requires either `name` or `qualified_name`."
+            )
 
 
 @define(init=False, kw_only=True)
