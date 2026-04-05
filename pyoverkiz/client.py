@@ -544,15 +544,19 @@ class OverkizClient:
         The API is consistent regardless of queue configuration - always returns
         exec_id string directly.
 
-        :param actions: List of actions to execute
-        :param mode: Command mode (GEOLOCATED, INTERNAL, HIGH_PRIORITY, or None)
-        :param label: Label for the action group
-        :return: exec_id string from the executed action group
+        Args:
+            actions: List of actions to execute.
+            mode: Command mode (`GEOLOCATED`, `INTERNAL`, `HIGH_PRIORITY`,
+                or `None`).
+            label: Label for the action group.
 
-        Example usage::
+        Returns:
+            The `exec_id` string from the executed action group.
 
-            # Works the same with or without queue
+        Example:
+            ```python
             exec_id = await client.execute_action_group([action])
+            ```
         """
         if self._action_queue:
             queued = await self._action_queue.add(actions, mode, label)
