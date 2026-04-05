@@ -116,7 +116,7 @@ class TestOverkizClient:
             patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
             patch.object(
                 OverkizClient,
-                "_OverkizClient__get",
+                "_get",
                 new=AsyncMock(
                     side_effect=[
                         exceptions.NotAuthenticatedException("expired"),
@@ -144,7 +144,7 @@ class TestOverkizClient:
             patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
             patch.object(
                 OverkizClient,
-                "_OverkizClient__post",
+                "_post",
                 new=AsyncMock(
                     side_effect=[
                         exceptions.InvalidEventListenerIdException("bad listener"),
@@ -169,7 +169,7 @@ class TestOverkizClient:
             patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
             patch.object(
                 OverkizClient,
-                "_OverkizClient__post",
+                "_post",
                 new=AsyncMock(
                     side_effect=[
                         exceptions.TooManyConcurrentRequestsException("busy"),

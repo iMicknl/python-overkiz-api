@@ -321,7 +321,7 @@ class OverkizClient:
         if self.setup and not refresh:
             return self.setup
 
-        response = await self.__get("setup")
+        response = await self._get("setup")
 
         setup = Setup(**humps.decamelize(response))
 
@@ -343,7 +343,7 @@ class OverkizClient:
 
         This data will be masked to not return any confidential or PII data.
         """
-        response = await self.__get("setup")
+        response = await self._get("setup")
 
         return obfuscate_sensitive_data(response)
 
@@ -356,7 +356,7 @@ class OverkizClient:
         if self.devices and not refresh:
             return self.devices
 
-        response = await self.__get("setup/devices")
+        response = await self._get("setup/devices")
         devices = [Device(**d) for d in humps.decamelize(response)]
 
         # Cache response
@@ -375,7 +375,7 @@ class OverkizClient:
         if self.gateways and not refresh:
             return self.gateways
 
-        response = await self.__get("setup/gateways")
+        response = await self._get("setup/gateways")
         gateways = [Gateway(**g) for g in humps.decamelize(response)]
 
         # Cache response
@@ -388,7 +388,7 @@ class OverkizClient:
     @retry_on_auth_error
     async def get_execution_history(self) -> list[HistoryExecution]:
         """List execution history."""
-        response = await self.__get("history/executions")
+        response = await self._get("history/executions")
         execution_history = [HistoryExecution(**h) for h in humps.decamelize(response)]
 
         return execution_history
@@ -396,7 +396,7 @@ class OverkizClient:
     @retry_on_auth_error
     async def get_device_definition(self, deviceurl: str) -> JSON | None:
         """Retrieve a particular setup device definition."""
-        response: dict = await self.__get(
+        response: dict = await self._get(
             f"setup/devices/{urllib.parse.quote_plus(deviceurl)}"
         )
 
@@ -405,7 +405,7 @@ class OverkizClient:
     @retry_on_auth_error
     async def get_state(self, deviceurl: str) -> list[State]:
         """Retrieve states of requested device."""
-        response = await self.__get(
+        response = await self._get(
             f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/states"
         )
         state = [State(**s) for s in humps.decamelize(response)]
@@ -415,12 +415,12 @@ class OverkizClient:
     @retry_on_auth_error
     async def refresh_states(self) -> None:
         """Ask the box to refresh all devices states for protocols supporting that operation."""
-        await self.__post("setup/devices/states/refresh")
+        await self._post("setup/devices/states/refresh")
 
     @retry_on_auth_error
     async def refresh_device_states(self, deviceurl: str) -> None:
         """Ask the box to refresh all states of the given device for protocols supporting that operation."""
-        await self.__post(
+        await self._post(
             f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/states/refresh"
         )
 
@@ -435,7 +435,7 @@ class OverkizClient:
         timeout : listening sessions are expected to call the /events/{listenerId}/fetch
         API on a regular basis.
         """
-        response = await self.__post("events/register")
+        response = await self._post("events/register")
         listener_id = cast(str, response.get("id"))
         self.event_listener_id = listener_id
 
@@ -453,7 +453,7 @@ class OverkizClient:
         operation (polling).
         """
         await self._refresh_token_if_expired()
-        response = await self.__post(f"events/{self.event_listener_id}/fetch")
+        response = await self._post(f"events/{self.event_listener_id}/fetch")
         events = [Event(**e) for e in humps.decamelize(response)]
 
         return events
@@ -464,13 +464,13 @@ class OverkizClient:
         API response status is always 200, even on unknown listener ids.
         """
         await self._refresh_token_if_expired()
-        await self.__post(f"events/{self.event_listener_id}/unregister")
+        await self._post(f"events/{self.event_listener_id}/unregister")
         self.event_listener_id = None
 
     @retry_on_auth_error
     async def get_current_execution(self, exec_id: str) -> Execution:
         """Get an action group execution currently running."""
-        response = await self.__get(f"exec/current/{exec_id}")
+        response = await self._get(f"exec/current/{exec_id}")
         execution = Execution(**humps.decamelize(response))
 
         return execution
@@ -478,7 +478,7 @@ class OverkizClient:
     @retry_on_auth_error
     async def get_current_executions(self) -> list[Execution]:
         """Get all action groups executions currently running."""
-        response = await self.__get("exec/current")
+        response = await self._get("exec/current")
         executions = [Execution(**e) for e in humps.decamelize(response)]
 
         return executions
@@ -486,7 +486,7 @@ class OverkizClient:
     @retry_on_auth_error
     async def get_api_version(self) -> str:
         """Get the API version (local only)."""
-        response = await self.__get("apiVersion")
+        response = await self._get("apiVersion")
 
         return cast(str, response["protocolVersion"])
 
@@ -519,7 +519,7 @@ class OverkizClient:
         else:
             url = "exec/apply"
 
-        response: dict = await self.__post(url, final_payload)
+        response: dict = await self._post(url, final_payload)
 
         return cast(str, response["execId"])
 
@@ -582,12 +582,12 @@ class OverkizClient:
     @retry_on_auth_error
     async def cancel_command(self, exec_id: str) -> None:
         """Cancel a running setup-level execution."""
-        await self.__delete(f"exec/current/setup/{exec_id}")
+        await self._delete(f"exec/current/setup/{exec_id}")
 
     @retry_on_auth_error
     async def get_action_groups(self) -> list[ActionGroup]:
         """List the action groups (scenarios)."""
-        response = await self.__get("actionGroups")
+        response = await self._get("actionGroups")
         return [
             ActionGroup(**action_group) for action_group in humps.decamelize(response)
         ]
@@ -595,20 +595,20 @@ class OverkizClient:
     @retry_on_auth_error
     async def get_places(self) -> Place:
         """List the places."""
-        response = await self.__get("setup/places")
+        response = await self._get("setup/places")
         places = Place(**humps.decamelize(response))
         return places
 
     @retry_on_auth_error
     async def execute_scenario(self, oid: str) -> str:
         """Execute a scenario."""
-        response = await self.__post(f"exec/{oid}")
+        response = await self._post(f"exec/{oid}")
         return cast(str, response["execId"])
 
     @retry_on_auth_error
     async def execute_scheduled_scenario(self, oid: str, timestamp: int) -> str:
         """Execute a scheduled scenario."""
-        response = await self.__post(f"exec/schedule/{oid}/{timestamp}")
+        response = await self._post(f"exec/schedule/{oid}/{timestamp}")
         return cast(str, response["triggerId"])
 
     @retry_on_auth_error
@@ -618,7 +618,7 @@ class OverkizClient:
         Per-session rate-limit : 1 calls per 1d period for this particular operation (bulk-load)
         Access scope : Full enduser API access (enduser/*).
         """
-        response = await self.__get("setup/options")
+        response = await self._get("setup/options")
         options = [Option(**o) for o in humps.decamelize(response)]
 
         return options
@@ -629,7 +629,7 @@ class OverkizClient:
 
         For example `developerMode-{gateway_id}` to understand if developer mode is on.
         """
-        response = await self.__get(f"setup/options/{option}")
+        response = await self._get(f"setup/options/{option}")
 
         if response:
             return Option(**humps.decamelize(response))
@@ -647,7 +647,7 @@ class OverkizClient:
         If the option is not available, an OverkizException will be thrown.
         If the parameter is not available you will receive None.
         """
-        response = await self.__get(f"setup/options/{option}/{parameter}")
+        response = await self._get(f"setup/options/{option}/{parameter}")
 
         if response:
             return OptionParameter(**humps.decamelize(response))
@@ -657,19 +657,19 @@ class OverkizClient:
     @retry_on_auth_error
     async def get_reference_controllable(self, controllable_name: str) -> JSON:
         """Get a controllable definition."""
-        return await self.__get(
+        return await self._get(
             f"reference/controllable/{urllib.parse.quote_plus(controllable_name)}"
         )
 
     @retry_on_auth_error
     async def get_reference_controllable_types(self) -> JSON:
         """Get details about all supported controllable types."""
-        return await self.__get("reference/controllableTypes")
+        return await self._get("reference/controllableTypes")
 
     @retry_on_auth_error
     async def search_reference_devices_model(self, payload: JSON) -> JSON:
         """Search reference device models using a POST payload."""
-        return await self.__post("reference/devices/search", payload)
+        return await self._post("reference/devices/search", payload)
 
     @retry_on_auth_error
     async def get_reference_protocol_types(self) -> list[ProtocolType]:
@@ -681,23 +681,23 @@ class OverkizClient:
         - name: Internal protocol name
         - label: Human-readable protocol label
         """
-        response = await self.__get("reference/protocolTypes")
+        response = await self._get("reference/protocolTypes")
         return [ProtocolType(**protocol) for protocol in response]
 
     @retry_on_auth_error
     async def get_reference_timezones(self) -> JSON:
         """Get timezones list."""
-        return await self.__get("reference/timezones")
+        return await self._get("reference/timezones")
 
     @retry_on_auth_error
     async def get_reference_ui_classes(self) -> list[str]:
         """Get a list of all defined UI classes."""
-        return await self.__get("reference/ui/classes")
+        return await self._get("reference/ui/classes")
 
     @retry_on_auth_error
     async def get_reference_ui_classifiers(self) -> list[str]:
         """Get a list of all defined UI classifiers."""
-        return await self.__get("reference/ui/classifiers")
+        return await self._get("reference/ui/classifiers")
 
     @retry_on_auth_error
     async def get_reference_ui_profile(self, profile_name: str) -> UIProfileDefinition:
@@ -709,7 +709,7 @@ class OverkizClient:
         - states: Available states with value types and descriptions
         - form_factor: Whether profile is tied to a specific physical device type
         """
-        response = await self.__get(
+        response = await self._get(
             f"reference/ui/profile/{urllib.parse.quote_plus(profile_name)}"
         )
         return UIProfileDefinition(**humps.decamelize(response))
@@ -717,14 +717,14 @@ class OverkizClient:
     @retry_on_auth_error
     async def get_reference_ui_profile_names(self) -> list[str]:
         """Get a list of all defined UI profiles (and form-factor variants)."""
-        return await self.__get("reference/ui/profileNames")
+        return await self._get("reference/ui/profileNames")
 
     @retry_on_auth_error
     async def get_reference_ui_widgets(self) -> list[str]:
         """Get a list of all defined UI widgets."""
-        return await self.__get("reference/ui/widgets")
+        return await self._get("reference/ui/widgets")
 
-    async def __get(self, path: str) -> Any:
+    async def _get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API."""
         await self._refresh_token_if_expired()
         headers = dict(self._auth.auth_headers(path))
@@ -737,7 +737,7 @@ class OverkizClient:
             await self.check_response(response)
             return await response.json()
 
-    async def __post(
+    async def _post(
         self, path: str, payload: JSON | None = None, data: JSON | None = None
     ) -> Any:
         """Make a POST request to the OverKiz API."""
@@ -754,7 +754,7 @@ class OverkizClient:
             await self.check_response(response)
             return await response.json()
 
-    async def __delete(self, path: str) -> None:
+    async def _delete(self, path: str) -> None:
         """Make a DELETE request to the OverKiz API."""
         await self._refresh_token_if_expired()
         headers = dict(self._auth.auth_headers(path))

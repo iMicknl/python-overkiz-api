@@ -27,9 +27,7 @@ async def test_client_without_queue_executes_immediately():
     )
 
     # Mock the internal execution
-    with patch.object(
-        client, "_OverkizClient__post", new_callable=AsyncMock
-    ) as mock_post:
+    with patch.object(client, "_post", new_callable=AsyncMock) as mock_post:
         mock_post.return_value = {"execId": "exec-123"}
 
         result = await client.execute_action_group([action])
@@ -61,9 +59,7 @@ async def test_client_with_queue_batches_actions():
         for i in range(3)
     ]
 
-    with patch.object(
-        client, "_OverkizClient__post", new_callable=AsyncMock
-    ) as mock_post:
+    with patch.object(client, "_post", new_callable=AsyncMock) as mock_post:
         mock_post.return_value = {"execId": "exec-batched"}
 
         # Queue multiple actions quickly - start them as tasks to allow batching
@@ -110,9 +106,7 @@ async def test_client_manual_flush():
         commands=[Command(name=OverkizCommand.CLOSE)],
     )
 
-    with patch.object(
-        client, "_OverkizClient__post", new_callable=AsyncMock
-    ) as mock_post:
+    with patch.object(client, "_post", new_callable=AsyncMock) as mock_post:
         mock_post.return_value = {"execId": "exec-flushed"}
 
         # Start execution as a task to allow checking pending count
@@ -152,9 +146,7 @@ async def test_client_close_flushes_queue():
         commands=[Command(name=OverkizCommand.CLOSE)],
     )
 
-    with patch.object(
-        client, "_OverkizClient__post", new_callable=AsyncMock
-    ) as mock_post:
+    with patch.object(client, "_post", new_callable=AsyncMock) as mock_post:
         mock_post.return_value = {"execId": "exec-closed"}
 
         # Start execution as a task
@@ -193,9 +185,7 @@ async def test_client_queue_respects_max_actions():
         for i in range(3)
     ]
 
-    with patch.object(
-        client, "_OverkizClient__post", new_callable=AsyncMock
-    ) as mock_post:
+    with patch.object(client, "_post", new_callable=AsyncMock) as mock_post:
         mock_post.return_value = {"execId": "exec-123"}
 
         # Add 2 actions as tasks to trigger flush
