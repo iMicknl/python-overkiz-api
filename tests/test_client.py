@@ -325,6 +325,44 @@ class TestOverkizClient:
             diagnostics = await client.get_diagnostic_data()
             assert diagnostics
 
+    @pytest.mark.asyncio
+    async def test_get_diagnostic_data_redacted_by_default(self, client: OverkizClient):
+        """Ensure diagnostics are redacted when no argument is provided."""
+        with open(
+            os.path.join(CURRENT_DIR, "fixtures/setup/setup_tahoma_1.json"),
+            encoding="utf-8",
+        ) as setup_mock:
+            resp = MockResponse(setup_mock.read())
+
+        with (
+            patch.object(aiohttp.ClientSession, "get", return_value=resp),
+            patch(
+                "pyoverkiz.client.obfuscate_sensitive_data",
+                return_value={"masked": True},
+            ) as obfuscate,
+        ):
+            diagnostics = await client.get_diagnostic_data()
+            assert diagnostics == {"masked": True}
+            obfuscate.assert_called_once()
+
+    @pytest.mark.asyncio
+    async def test_get_diagnostic_data_without_masking(self, client: OverkizClient):
+        """Ensure diagnostics can be returned without masking when requested."""
+        with open(
+            os.path.join(CURRENT_DIR, "fixtures/setup/setup_tahoma_1.json"),
+            encoding="utf-8",
+        ) as setup_mock:
+            raw_setup = setup_mock.read()
+            resp = MockResponse(raw_setup)
+
+        with (
+            patch.object(aiohttp.ClientSession, "get", return_value=resp),
+            patch("pyoverkiz.client.obfuscate_sensitive_data") as obfuscate,
+        ):
+            diagnostics = await client.get_diagnostic_data(mask_sensitive_data=False)
+            assert diagnostics == json.loads(raw_setup)
+            obfuscate.assert_not_called()
+
     @pytest.mark.parametrize(
         "fixture_name, exception, status_code",
         [
