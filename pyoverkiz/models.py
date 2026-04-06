@@ -606,17 +606,13 @@ class EventState(State):
         self.value = caster(self.value)
 
     def _cast_json_value(self, raw_value: str) -> StateType:
-        """Cast JSON event state values and keep raw payloads on decode errors."""
+        """Cast JSON event state values; raise on decode errors."""
         try:
             return json.loads(raw_value)
         except json.JSONDecodeError as err:
-            _LOGGER.warning(
-                "Failed to decode JSON event state; keeping raw value for `%s` (%s): %s",
-                self.name,
-                self.type.name,
-                err,
-            )
-            return raw_value
+            raise ValueError(
+                f"Invalid JSON for event state `{self.name}` ({self.type.name}): {err}"
+            ) from err
 
 
 @define(init=False)
