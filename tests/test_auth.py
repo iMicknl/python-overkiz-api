@@ -510,22 +510,12 @@ class TestNexityAuthStrategy:
         )
         warrant_instance = MagicMock()
         warrant_instance.authenticate_user.side_effect = bad_credentials_error
-        boto3_module = MagicMock()
-        boto3_module.client.return_value = MagicMock()
-        config_class = MagicMock()
-        client_error_class = ClientError
-        warrant_lite_class = MagicMock(return_value=warrant_instance)
+        boto3_mock = MagicMock()
+        boto3_mock.client.return_value = MagicMock()
 
         with (
-            patch(
-                "pyoverkiz.auth.strategies._load_nexity_auth_dependencies",
-                return_value=(
-                    boto3_module,
-                    config_class,
-                    client_error_class,
-                    warrant_lite_class,
-                ),
-            ),
+            patch("boto3.client", boto3_mock.client),
+            patch("warrant_lite.WarrantLite", return_value=warrant_instance),
             pytest.raises(NexityBadCredentialsException),
         ):
             strategy = NexityAuthStrategy(
@@ -552,22 +542,12 @@ class TestNexityAuthStrategy:
         )
         warrant_instance = MagicMock()
         warrant_instance.authenticate_user.side_effect = service_error
-        boto3_module = MagicMock()
-        boto3_module.client.return_value = MagicMock()
-        config_class = MagicMock()
-        client_error_class = ClientError
-        warrant_lite_class = MagicMock(return_value=warrant_instance)
+        boto3_mock = MagicMock()
+        boto3_mock.client.return_value = MagicMock()
 
         with (
-            patch(
-                "pyoverkiz.auth.strategies._load_nexity_auth_dependencies",
-                return_value=(
-                    boto3_module,
-                    config_class,
-                    client_error_class,
-                    warrant_lite_class,
-                ),
-            ),
+            patch("boto3.client", boto3_mock.client),
+            patch("warrant_lite.WarrantLite", return_value=warrant_instance),
             pytest.raises(ClientError, match="InternalErrorException"),
         ):
             strategy = NexityAuthStrategy(
