@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import json
+from pathlib import Path
+
 import humps
 import pytest
 
@@ -11,10 +14,12 @@ from pyoverkiz.models import (
     Definition,
     Device,
     EventState,
+    Setup,
     State,
     StateDefinition,
     States,
 )
+from pyoverkiz.obfuscate import obfuscate_id
 
 RAW_STATES = [
     {"name": "core:NameState", "type": 3, "value": "alarm name"},
@@ -71,6 +76,35 @@ RAW_DEVICES = {
 }
 
 STATE = "core:NameState"
+FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures" / "setup"
+
+
+class TestSetup:
+    """Tests for setup-level ID parsing and redaction behavior."""
+
+    def test_id_is_raw_but_repr_is_redacted_when_present(self):
+        """When API provides `id`, keep raw value but redact it in repr output."""
+        raw_setup = json.loads((FIXTURES_DIR / "setup_tahoma_1.json").read_text())
+        setup = Setup(**humps.decamelize(raw_setup))
+        raw_id = "SETUP-1234-1234-8044"
+        redacted_id = obfuscate_id(raw_id)
+
+        assert setup.id == raw_id
+        assert redacted_id in repr(setup)
+        assert raw_id not in repr(setup)
+
+    def test_id_is_none_when_missing(self):
+        """When API omits `id`, setup.id should stay None."""
+        raw_setup = json.loads((FIXTURES_DIR / "setup_local.json").read_text())
+        setup = Setup(**humps.decamelize(raw_setup))
+
+        assert setup.id is None
+
+    def test_id_is_none_without_input_id(self):
+        """Constructing setup without an id keeps setup.id as None."""
+        setup = Setup(gateways=[], devices=[])
+
+        assert setup.id is None
 
 
 class TestDevice:

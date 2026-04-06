@@ -46,7 +46,7 @@ class Setup:
 
     creation_time: int | None = None
     last_update_time: int | None = None
-    id: str = field(repr=obfuscate_id, default=None)
+    id: str | None = field(repr=obfuscate_id, default=None)
     location: Location | None = None
     gateways: list[Gateway]
     devices: list[Device]
@@ -61,7 +61,7 @@ class Setup:
         *,
         creation_time: int | None = None,
         last_update_time: int | None = None,
-        id: str = field(repr=obfuscate_id, default=None),
+        id: str | None = None,
         location: dict[str, Any] | None = None,
         gateways: list[dict[str, Any]],
         devices: list[dict[str, Any]],

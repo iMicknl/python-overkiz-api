@@ -275,6 +275,9 @@ class TestOverkizClient:
             assert len(setup.devices) == device_count
             assert len(setup.gateways) == gateway_count
 
+            if fixture_name.startswith("setup_local"):
+                assert setup.id is None
+
             for device in setup.devices:
                 assert device.identifier.gateway_id
                 assert device.identifier.device_address
