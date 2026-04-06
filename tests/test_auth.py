@@ -156,7 +156,7 @@ class TestAuthFactory:
             name="Somfy",
             endpoint="https://api.somfy.com",
             manufacturer="Somfy",
-            type=APIType.CLOUD,
+            api_type=APIType.CLOUD,
         )
         credentials = UsernamePasswordCredentials("user", "pass")
         session = AsyncMock(spec=ClientSession)
@@ -178,7 +178,7 @@ class TestAuthFactory:
             name="Cozytouch",
             endpoint="https://api.cozytouch.com",
             manufacturer="Atlantic",
-            type=APIType.CLOUD,
+            api_type=APIType.CLOUD,
         )
         credentials = UsernamePasswordCredentials("user", "pass")
         session = AsyncMock(spec=ClientSession)
@@ -200,7 +200,7 @@ class TestAuthFactory:
             name="Nexity",
             endpoint="https://api.nexity.com",
             manufacturer="Nexity",
-            type=APIType.CLOUD,
+            api_type=APIType.CLOUD,
         )
         credentials = UsernamePasswordCredentials("user", "pass")
         session = AsyncMock(spec=ClientSession)
@@ -222,7 +222,7 @@ class TestAuthFactory:
             name="Rexel",
             endpoint="https://api.rexel.com",
             manufacturer="Rexel",
-            type=APIType.CLOUD,
+            api_type=APIType.CLOUD,
         )
         credentials = RexelOAuthCodeCredentials("code", "http://redirect.uri")
         session = AsyncMock(spec=ClientSession)
@@ -244,7 +244,7 @@ class TestAuthFactory:
             name="Local",
             endpoint="https://gateway.local",
             manufacturer="Overkiz",
-            type=APIType.LOCAL,
+            api_type=APIType.LOCAL,
         )
         credentials = LocalTokenCredentials("local_token")
         session = AsyncMock(spec=ClientSession)
@@ -266,7 +266,7 @@ class TestAuthFactory:
             name="Local",
             endpoint="https://gateway.local",
             manufacturer="Overkiz",
-            type=APIType.LOCAL,
+            api_type=APIType.LOCAL,
         )
         credentials = TokenCredentials("bearer_token")
         session = AsyncMock(spec=ClientSession)
@@ -288,7 +288,7 @@ class TestAuthFactory:
             name="Somfy Oceania",
             endpoint="https://api.somfy.com.au",
             manufacturer="Somfy",
-            type=APIType.CLOUD,
+            api_type=APIType.CLOUD,
         )
         credentials = TokenCredentials("bearer_token")
         session = AsyncMock(spec=ClientSession)
@@ -310,7 +310,7 @@ class TestAuthFactory:
             name="Somfy Oceania",
             endpoint="https://api.somfy.com.au",
             manufacturer="Somfy",
-            type=APIType.CLOUD,
+            api_type=APIType.CLOUD,
         )
         credentials = UsernamePasswordCredentials("user", "pass")
         session = AsyncMock(spec=ClientSession)
@@ -332,7 +332,7 @@ class TestAuthFactory:
             name="Somfy",
             endpoint="https://api.somfy.com",
             manufacturer="Somfy",
-            type=APIType.CLOUD,
+            api_type=APIType.CLOUD,
         )
         credentials = TokenCredentials("token")  # Wrong type for Somfy
         session = AsyncMock(spec=ClientSession)
@@ -357,7 +357,7 @@ class TestSessionLoginStrategy:
             name="Test",
             endpoint="https://api.test.com/",
             manufacturer="Test",
-            type=APIType.CLOUD,
+            api_type=APIType.CLOUD,
         )
         credentials = UsernamePasswordCredentials("user", "pass")
         session = AsyncMock(spec=ClientSession)
@@ -384,7 +384,7 @@ class TestSessionLoginStrategy:
             name="Test",
             endpoint="https://api.test.com/",
             manufacturer="Test",
-            type=APIType.CLOUD,
+            api_type=APIType.CLOUD,
         )
         credentials = UsernamePasswordCredentials("user", "pass")
         session = AsyncMock(spec=ClientSession)
@@ -412,7 +412,7 @@ class TestSessionLoginStrategy:
             name="Test",
             endpoint="https://api.test.com/",
             manufacturer="Test",
-            type=APIType.CLOUD,
+            api_type=APIType.CLOUD,
         )
         credentials = UsernamePasswordCredentials("user", "pass")
         session = AsyncMock(spec=ClientSession)
@@ -431,7 +431,7 @@ class TestSessionLoginStrategy:
             name="Test",
             endpoint="https://api.test.com/",
             manufacturer="Test",
-            type=APIType.CLOUD,
+            api_type=APIType.CLOUD,
         )
         credentials = UsernamePasswordCredentials("user", "pass")
         session = AsyncMock(spec=ClientSession)
@@ -455,7 +455,7 @@ class TestBearerTokenAuthStrategy:
             name="Test",
             endpoint="https://api.test.com/",
             manufacturer="Test",
-            type=APIType.CLOUD,
+            api_type=APIType.CLOUD,
         )
         credentials = TokenCredentials("my_bearer_token")
         session = AsyncMock(spec=ClientSession)
@@ -475,7 +475,7 @@ class TestBearerTokenAuthStrategy:
             name="Test",
             endpoint="https://api.test.com/",
             manufacturer="Test",
-            type=APIType.CLOUD,
+            api_type=APIType.CLOUD,
         )
         credentials = TokenCredentials("my_bearer_token")
         session = AsyncMock(spec=ClientSession)
@@ -499,7 +499,7 @@ class TestNexityAuthStrategy:
             name="Nexity",
             endpoint="https://api.nexity.com",
             manufacturer="Nexity",
-            type=APIType.CLOUD,
+            api_type=APIType.CLOUD,
         )
         credentials = UsernamePasswordCredentials("user", "pass")
         session = AsyncMock(spec=ClientSession)
@@ -531,7 +531,7 @@ class TestNexityAuthStrategy:
             name="Nexity",
             endpoint="https://api.nexity.com",
             manufacturer="Nexity",
-            type=APIType.CLOUD,
+            api_type=APIType.CLOUD,
         )
         credentials = UsernamePasswordCredentials("user", "pass")
         session = AsyncMock(spec=ClientSession)
@@ -567,7 +567,7 @@ class TestRexelAuthStrategy:
             name="Rexel",
             endpoint="https://api.rexel.com",
             manufacturer="Rexel",
-            type=APIType.CLOUD,
+            api_type=APIType.CLOUD,
         )
         credentials = RexelOAuthCodeCredentials("code", "https://redirect")
         session = AsyncMock(spec=ClientSession)

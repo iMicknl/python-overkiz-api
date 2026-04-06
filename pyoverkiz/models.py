@@ -1172,7 +1172,7 @@ class Zone:
         self.oid = oid
 
 
-@define(kw_only=True)
+@define(init=False, kw_only=True)
 class ServerConfig:
     """Connection target details for an Overkiz-compatible server."""
 
@@ -1190,7 +1190,7 @@ class ServerConfig:
         name: str,
         endpoint: str,
         manufacturer: str,
-        type: str | APIType,
+        api_type: str | APIType,
         configuration_url: str | None = None,
         **_: Any,
     ) -> None:
@@ -1201,7 +1201,7 @@ class ServerConfig:
         self.name = name
         self.endpoint = endpoint
         self.manufacturer = manufacturer
-        self.type = type if isinstance(type, APIType) else APIType(type)
+        self.type = api_type if isinstance(api_type, APIType) else APIType(api_type)
         self.configuration_url = configuration_url
 
 
