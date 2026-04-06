@@ -333,7 +333,7 @@ class OverkizClient:
         return setup
 
     @retry_on_auth_error
-    async def get_diagnostic_data(self) -> JSON:
+    async def get_diagnostic_data(self, mask_sensitive_data: bool = True) -> JSON:
         """Get all data about the connected user setup.
 
             -> gateways data (serial number, activation state, ...): <gateways/gateway>
@@ -341,11 +341,15 @@ class OverkizClient:
             -> house places (rooms and floors): <place>
             -> setup devices: <devices>.
 
-        This data will be masked to not return any confidential or PII data.
+        By default, this data is masked to not return confidential or PII data.
+        Set `mask_sensitive_data` to `False` to return the raw setup payload.
         """
         response = await self._get("setup")
 
-        return obfuscate_sensitive_data(response)
+        if mask_sensitive_data:
+            return obfuscate_sensitive_data(response)
+
+        return response
 
     @retry_on_auth_error
     async def get_devices(self, refresh: bool = False) -> list[Device]:
