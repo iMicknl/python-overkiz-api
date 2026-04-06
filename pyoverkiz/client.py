@@ -5,7 +5,6 @@ from __future__ import annotations
 import logging
 import ssl
 import urllib.parse
-from json import JSONDecodeError
 from pathlib import Path
 from types import TracebackType
 from typing import Any, cast
@@ -14,7 +13,6 @@ import backoff
 import humps
 from aiohttp import (
     ClientConnectorError,
-    ClientResponse,
     ClientSession,
     ServerDisconnectedError,
 )
@@ -25,31 +23,13 @@ from pyoverkiz.auth import AuthStrategy, Credentials, build_auth_strategy
 from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.enums import APIType, CommandMode, Server
 from pyoverkiz.exceptions import (
-    AccessDeniedToGatewayException,
-    ActionGroupSetupNotFoundException,
-    ApplicationNotAllowedException,
-    BadCredentialsException,
-    DuplicateActionOnDeviceException,
     ExecutionQueueFullException,
-    InvalidCommandException,
     InvalidEventListenerIdException,
-    InvalidTokenException,
-    MaintenanceException,
-    MissingAPIKeyException,
-    MissingAuthorizationTokenException,
     NoRegisteredEventListenerException,
-    NoSuchResourceException,
     NotAuthenticatedException,
-    NotSuchTokenException,
     OverkizException,
-    ServiceUnavailableException,
-    SessionAndBearerInSameRequestException,
-    TooManyAttemptsBannedException,
     TooManyConcurrentRequestsException,
     TooManyExecutionsException,
-    TooManyRequestsException,
-    UnknownObjectException,
-    UnknownUserException,
 )
 from pyoverkiz.models import (
     Action,
@@ -69,6 +49,7 @@ from pyoverkiz.models import (
     UIProfileDefinition,
 )
 from pyoverkiz.obfuscate import obfuscate_sensitive_data
+from pyoverkiz.response_handler import check_response
 from pyoverkiz.serializers import prepare_payload
 from pyoverkiz.types import JSON
 
@@ -751,7 +732,7 @@ class OverkizClient:
             headers=headers,
             ssl=self._ssl,
         ) as response:
-            await self.check_response(response)
+            await check_response(response)
 
             # 204 has no body.
             if response.status == 204:
@@ -773,10 +754,12 @@ class OverkizClient:
             headers=headers,
             ssl=self._ssl,
         ) as response:
-            await self.check_response(response)
+            await check_response(response)
+
             # 204 has no body.
             if response.status == 204:
                 return None
+
             return await response.json()
 
     async def _delete(self, path: str) -> None:
@@ -789,125 +772,7 @@ class OverkizClient:
             headers=headers,
             ssl=self._ssl,
         ) as response:
-            await self.check_response(response)
-
-    @staticmethod
-    async def check_response(response: ClientResponse) -> None:
-        """Check the response returned by the OverKiz API."""
-        if response.status in [200, 204]:
-            return
-
-        try:
-            result = await response.json(content_type=None)
-        except JSONDecodeError as error:
-            result = await response.text()
-
-            if "is down for maintenance" in result:
-                raise MaintenanceException("Server is down for maintenance") from error
-
-            if response.status == 503:
-                raise ServiceUnavailableException(result) from error
-
-            raise OverkizException(
-                f"Unknown error while requesting {response.url}. {response.status} - {result}"
-            ) from error
-
-        if result.get("errorCode"):
-            # Error messages between cloud and local Overkiz servers can be slightly different
-            # To make it easier to have a strict match for these errors, we remove the double quotes and the period at the end.
-
-            # An error message can have an empty (None) message
-            message = message.strip('".') if (message := result.get("error")) else ""
-
-            # {"errorCode": "DUPLICATE_FIELD_OR_VALUE", "error": "Another action exists on the same device : rts://1234-5689-1234/123456"}
-            if message.startswith("Another action exists on the same device"):
-                raise DuplicateActionOnDeviceException(message)
-
-            # {"errorCode": "INVALID_FIELD_VALUE", "error": "Unable to determine action group setup (no setup for gateway #1234-5678-1234)"}
-            if message.startswith("Unable to determine action group setup"):
-                raise ActionGroupSetupNotFoundException(message)
-
-            # {"errorCode": "AUTHENTICATION_ERROR", "error": "Too many requests, try again later : login with xxx@xxx.tld"}
-            if "Too many requests" in message:
-                raise TooManyRequestsException(message)
-
-            # {"errorCode": "AUTHENTICATION_ERROR", "error": "Bad credentials"}
-            if message == "Bad credentials":
-                raise BadCredentialsException(message)
-
-            # {"errorCode": "RESOURCE_ACCESS_DENIED", "error": "Not authenticated"}
-            if message == "Not authenticated":
-                raise NotAuthenticatedException(message)
-
-            # {"errorCode": "AUTHENTICATION_ERROR", "error": "An API key is required to access this setup"}
-            if message == "An API key is required to access this setup":
-                raise MissingAPIKeyException(message)
-
-            # {"error":"Missing authorization token.","errorCode":"RESOURCE_ACCESS_DENIED"}
-            if message == "Missing authorization token":
-                raise MissingAuthorizationTokenException(message)
-
-            # {"error": "Server busy, please try again later. (Too many executions)"}
-            if message == "Server busy, please try again later. (Too many executions)":
-                raise TooManyExecutionsException(message)
-
-            # {"error": "UNSUPPORTED_OPERATION", "error": "No such command : ..."}
-            if "No such command" in message:
-                raise InvalidCommandException(message)
-
-            # {"errorCode": "UNSPECIFIED_ERROR", "error": "Invalid event listener id : ..."}
-            if "Invalid event listener id" in message:
-                raise InvalidEventListenerIdException(message)
-
-            # {"errorCode": "UNSPECIFIED_ERROR", "error": "No registered event listener"}
-            if message == "No registered event listener":
-                raise NoRegisteredEventListenerException(message)
-
-            # {"errorCode": "AUTHENTICATION_ERROR", "error": "No such user account : xxxxx"}
-            if "No such user account" in message:
-                raise UnknownUserException(message)
-
-            # {"errorCode": "INVALID_API_CALL", "error": "No such resource"}
-            if message == "No such resource":
-                raise NoSuchResourceException(message)
-
-            # {"errorCode": "RESOURCE_ACCESS_DENIED",  "error": "too many concurrent requests"}
-            if message == "too many concurrent requests":
-                raise TooManyConcurrentRequestsException(message)
-
-            # {"errorCode": "EXEC_QUEUE_FULL", "error": "Execution queue is full on gateway: #xxx-yyyy-zzzz (soft limit: 10)"}
-            if "Execution queue is full on gateway" in message:
-                raise ExecutionQueueFullException(message)
-
-            if message == "Cannot use JSESSIONID and bearer token in same request":
-                raise SessionAndBearerInSameRequestException(message)
-
-            if message == "Too many attempts with an invalid token, temporarily banned":
-                raise TooManyAttemptsBannedException(message)
-
-            if "Invalid token : " in message:
-                raise InvalidTokenException(message)
-
-            if "Not such token with UUID: " in message:
-                raise NotSuchTokenException(message)
-
-            if "Unknown user :" in message:
-                raise UnknownUserException(message)
-
-            # {"error":"Unknown object.","errorCode":"UNSPECIFIED_ERROR"}
-            if message == "Unknown object":
-                raise UnknownObjectException(message)
-
-            # {"errorCode": "RESOURCE_ACCESS_DENIED", "error": "Access denied to gateway #1234-5678-1234 for action ADD_TOKEN"}
-            if "Access denied to gateway" in message:
-                raise AccessDeniedToGatewayException(message)
-
-            # {"errorCode": "RESOURCE_ACCESS_DENIED", "error": "Your setup cannot be accessed through this application"}
-            if message == "Your setup cannot be accessed through this application":
-                raise ApplicationNotAllowedException(message)
-
-        # Undefined Overkiz exception
-        raise OverkizException(result)
+            await check_response(response)
 
     async def _refresh_token_if_expired(self) -> None:
         """Check if token is expired and request a new one."""

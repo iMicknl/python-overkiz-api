@@ -22,6 +22,7 @@ from pyoverkiz.auth.credentials import (
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.enums import APIType, DataType, Server
 from pyoverkiz.models import Option
+from pyoverkiz.response_handler import check_response
 from pyoverkiz.utils import create_local_server_config
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -560,7 +561,7 @@ class TestOverkizClient:
             else:
                 resp = MockResponse(None, status_code)
 
-            await client.check_response(resp)
+            await check_response(resp)
 
     @pytest.mark.asyncio
     async def test_get_setup_options(
