@@ -598,7 +598,16 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def get_places(self) -> Place:
-        """List the places."""
+        """Get the hierarchical structure of places (house, rooms, areas, zones).
+
+        The Place model represents a hierarchical organization where the root place is
+        typically the house/property, and `sub_places` contains nested child places
+        (floors, rooms, areas). This structure can be recursively navigated to build
+        a complete map of all locations in the setup. Each place has:
+        - `label`: Human-readable name for the place
+        - `type`: Numeric identifier for the place type
+        - `sub_places`: List of nested places within this location
+        """
         response = await self._get("setup/places")
         places = Place(**humps.decamelize(response))
         return places

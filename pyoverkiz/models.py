@@ -1085,7 +1085,13 @@ class HistoryExecution:
 
 @define(init=False, kw_only=True)
 class Place:
-    """Representation of a place (house/room) in a setup."""
+    """Hierarchical representation of a location (house, room, area) in a setup.
+
+    Places form a tree structure where the root place is typically the entire house
+    or property, and `sub_places` contains nested child locations. This recursive
+    structure allows navigation from house -> floors/rooms -> individual areas.
+    Each place has associated metadata like creation time, label, and type identifier.
+    """
 
     creation_time: int
     last_update_time: int | None = None
