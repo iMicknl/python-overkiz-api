@@ -545,7 +545,6 @@ class TestOverkizClient:
     @pytest.mark.asyncio
     async def test_check_response_exception_handling(
         self,
-        client: OverkizClient,
         fixture_name: str,
         status_code: int,
         exception: Exception,
