@@ -1,0 +1,4 @@
+{
+    "errorCode": "AUTHENTICATION_ERROR",
+    "error": "No such user account : user@example.tld"
+}
