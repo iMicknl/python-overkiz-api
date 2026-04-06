@@ -72,7 +72,7 @@ Use a cloud server when you want to connect through the vendor’s public API. U
 
     async def main() -> None:
         async with OverkizClient(
-            server=create_local_server_config(host="gateway-xxxx-xxxx-xxxx.local"),
+            server=create_local_server_config(host="gateway-xxxx-xxxx-xxxx.local:8443"),
             credentials=LocalTokenCredentials("token-from-your-mobile-app"),
             verify_ssl=True, # disable if you connect via IP
         ) as client:
