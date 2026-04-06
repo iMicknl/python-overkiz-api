@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+import logging
 import re
 from collections.abc import Iterator
 from typing import Any, cast
@@ -31,7 +33,11 @@ from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 # pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
 
 # <protocol>://<gatewayId>/<deviceAddress>[#<subsystemId>]
-DEVICE_URL_RE = r"(?P<protocol>.+)://(?P<gatewayId>[^/]+)/(?P<deviceAddress>[^#]+)(#(?P<subsystemId>\d+))?"
+DEVICE_URL_RE = re.compile(
+    r"(?P<protocol>[^:]+)://(?P<gatewayId>[^/]+)/(?P<deviceAddress>[^#]+)(#(?P<subsystemId>\d+))?"
+)
+
+_LOGGER = logging.getLogger(__name__)
 
 
 @define(init=False, kw_only=True)
@@ -180,7 +186,7 @@ class DeviceIdentifier:
     @classmethod
     def from_device_url(cls, device_url: str) -> DeviceIdentifier:
         """Parse a device URL into its structured identifier components."""
-        match = re.search(DEVICE_URL_RE, device_url)
+        match = DEVICE_URL_RE.fullmatch(device_url)
         if not match:
             raise ValueError(f"Invalid device URL: {device_url}")
 
@@ -589,8 +595,24 @@ class EventState(State):
         # Overkiz (cloud) returns all state values as a string
         # We cast them here based on the data type provided by Overkiz
         # Overkiz (local) returns all state values in the right format
-        if isinstance(self.value, str) and self.type in DATA_TYPE_TO_PYTHON:
-            self.value = DATA_TYPE_TO_PYTHON[self.type](self.value)
+        if not isinstance(self.value, str) or self.type not in DATA_TYPE_TO_PYTHON:
+            return
+
+        caster = DATA_TYPE_TO_PYTHON[self.type]
+        if self.type in (DataType.JSON_ARRAY, DataType.JSON_OBJECT):
+            self.value = self._cast_json_value(self.value)
+            return
+
+        self.value = caster(self.value)
+
+    def _cast_json_value(self, raw_value: str) -> StateType:
+        """Cast JSON event state values; raise on decode errors."""
+        try:
+            return json.loads(raw_value)
+        except json.JSONDecodeError as err:
+            raise ValueError(
+                f"Invalid JSON for event state `{self.name}` ({self.type.name}): {err}"
+            ) from err
 
 
 @define(init=False)
@@ -1059,7 +1081,13 @@ class HistoryExecution:
 
 @define(init=False, kw_only=True)
 class Place:
-    """Representation of a place (house/room) in a setup."""
+    """Hierarchical representation of a location (house, room, area) in a setup.
+
+    Places form a tree structure where the root place is typically the entire house
+    or property, and `sub_places` contains nested child locations. This recursive
+    structure allows navigation from house -> floors/rooms -> individual areas.
+    Each place has associated metadata like creation time, label, and type identifier.
+    """
 
     creation_time: int
     last_update_time: int | None = None

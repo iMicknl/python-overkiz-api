@@ -215,6 +215,29 @@ async def test_action_queue_duplicate_device_merge_order(mock_executor):
 
 
 @pytest.mark.asyncio
+async def test_action_queue_duplicate_device_merge_does_not_mutate_inputs(
+    mock_executor,
+):
+    """Test that merge behavior does not mutate caller-owned Action commands."""
+    queue = ActionQueue(executor=mock_executor, delay=0.1)
+
+    action1 = Action(
+        device_url="io://1234-5678-9012/1",
+        commands=[Command(name=OverkizCommand.CLOSE)],
+    )
+    action2 = Action(
+        device_url="io://1234-5678-9012/1",
+        commands=[Command(name=OverkizCommand.OPEN)],
+    )
+
+    queued = await queue.add([action1, action2])
+    await queued
+
+    assert [command.name for command in action1.commands] == [OverkizCommand.CLOSE]
+    assert [command.name for command in action2.commands] == [OverkizCommand.OPEN]
+
+
+@pytest.mark.asyncio
 async def test_action_queue_manual_flush(mock_executor):
     """Test manual flush of the queue."""
     queue = ActionQueue(executor=mock_executor, delay=10.0)  # Long delay
