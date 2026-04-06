@@ -37,14 +37,16 @@ def create_server_config(
     configuration_url: str | None = None,
 ) -> ServerConfig:
     """Generate server configuration with the provided endpoint and metadata."""
-    # ServerConfig.__init__ accepts str | enum types and converts them internally
+    server = Server(server) if isinstance(server, str) else server
+    type = APIType(type) if isinstance(type, str) else type
+
     return ServerConfig(
-        server=server,  # type: ignore[arg-type]
+        server=server,
         name=name,
         endpoint=endpoint,
         manufacturer=manufacturer,
         configuration_url=configuration_url,
-        type=type,  # type: ignore[arg-type]
+        type=type,
     )
 
 
