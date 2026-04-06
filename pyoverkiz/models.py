@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import json
+import logging
 import re
 from collections.abc import Iterator
 from typing import Any, cast
@@ -34,6 +36,8 @@ from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 DEVICE_URL_RE = re.compile(
     r"(?P<protocol>[^:]+)://(?P<gatewayId>[^/]+)/(?P<deviceAddress>[^#]+)(#(?P<subsystemId>\d+))?"
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 
 @define(init=False, kw_only=True)
@@ -591,8 +595,28 @@ class EventState(State):
         # Overkiz (cloud) returns all state values as a string
         # We cast them here based on the data type provided by Overkiz
         # Overkiz (local) returns all state values in the right format
-        if isinstance(self.value, str) and self.type in DATA_TYPE_TO_PYTHON:
-            self.value = DATA_TYPE_TO_PYTHON[self.type](self.value)
+        if not isinstance(self.value, str) or self.type not in DATA_TYPE_TO_PYTHON:
+            return
+
+        caster = DATA_TYPE_TO_PYTHON[self.type]
+        if self.type in (DataType.JSON_ARRAY, DataType.JSON_OBJECT):
+            self.value = self._cast_json_value(self.value)
+            return
+
+        self.value = caster(self.value)
+
+    def _cast_json_value(self, raw_value: str) -> StateType:
+        """Cast JSON event state values and keep raw payloads on decode errors."""
+        try:
+            return json.loads(raw_value)
+        except json.JSONDecodeError as err:
+            _LOGGER.warning(
+                "Failed to decode JSON event state; keeping raw value for `%s` (%s): %s",
+                self.name,
+                self.type.name,
+                err,
+            )
+            return raw_value
 
 
 @define(init=False)

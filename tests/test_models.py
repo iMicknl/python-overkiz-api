@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import logging
+
 import humps
 import pytest
 
@@ -10,6 +12,7 @@ from pyoverkiz.models import (
     CommandDefinitions,
     Definition,
     Device,
+    EventState,
     State,
     StateDefinition,
     States,
@@ -583,6 +586,37 @@ class TestState:
         state = State(name="state", type=DataType.BOOLEAN, value=False)
         with pytest.raises(TypeError):
             assert state.value_as_list
+
+
+class TestEventState:
+    """Unit tests for EventState cloud payload casting behavior."""
+
+    def test_json_string_is_parsed(self):
+        """Valid JSON payload strings are cast to typed Python values."""
+        state = EventState(name="state", type=DataType.JSON_OBJECT, value='{"foo": 1}')
+
+        assert state.value == {"foo": 1}
+
+    def test_invalid_json_string_is_left_untouched(self):
+        """Malformed JSON payload strings remain raw to avoid hard failures."""
+        state = EventState(
+            name="state",
+            type=DataType.JSON_ARRAY,
+            value="[not-valid-json",
+        )
+
+        assert state.value == "[not-valid-json"
+
+    def test_invalid_json_string_logs_warning(self, caplog: pytest.LogCaptureFixture):
+        """Malformed JSON payload strings emit a warning for easier diagnostics."""
+        with caplog.at_level(logging.WARNING):
+            EventState(
+                name="state",
+                type=DataType.JSON_OBJECT,
+                value="{not-valid-json",
+            )
+
+        assert "Failed to decode JSON event state" in caplog.text
 
 
 def test_command_to_payload_omits_none():
