@@ -84,7 +84,9 @@ class TestSetup:
 
     def test_id_is_raw_but_repr_is_redacted_when_present(self):
         """When API provides `id`, keep raw value but redact it in repr output."""
-        raw_setup = json.loads((FIXTURES_DIR / "setup_tahoma_1.json").read_text())
+        raw_setup = json.loads(
+            (FIXTURES_DIR / "setup_tahoma_1.json").read_text(encoding="utf-8")
+        )
         setup = Setup(**humps.decamelize(raw_setup))
         raw_id = "SETUP-1234-1234-8044"
         redacted_id = obfuscate_id(raw_id)
@@ -95,7 +97,9 @@ class TestSetup:
 
     def test_id_is_none_when_missing(self):
         """When API omits `id`, setup.id should stay None."""
-        raw_setup = json.loads((FIXTURES_DIR / "setup_local.json").read_text())
+        raw_setup = json.loads(
+            (FIXTURES_DIR / "setup_local.json").read_text(encoding="utf-8")
+        )
         setup = Setup(**humps.decamelize(raw_setup))
 
         assert setup.id is None
