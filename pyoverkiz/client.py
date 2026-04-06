@@ -393,9 +393,7 @@ class OverkizClient:
     async def get_execution_history(self) -> list[HistoryExecution]:
         """List execution history."""
         response = await self._get("history/executions")
-        execution_history = [HistoryExecution(**h) for h in humps.decamelize(response)]
-
-        return execution_history
+        return [HistoryExecution(**h) for h in humps.decamelize(response)]
 
     @retry_on_auth_error
     async def get_device_definition(self, deviceurl: str) -> JSON | None:
@@ -412,9 +410,7 @@ class OverkizClient:
         response = await self._get(
             f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/states"
         )
-        state = [State(**s) for s in humps.decamelize(response)]
-
-        return state
+        return [State(**s) for s in humps.decamelize(response)]
 
     @retry_on_auth_error
     async def refresh_states(self) -> None:
@@ -458,9 +454,7 @@ class OverkizClient:
         """
         await self._refresh_token_if_expired()
         response = await self._post(f"events/{self.event_listener_id}/fetch")
-        events = [Event(**e) for e in humps.decamelize(response)]
-
-        return events
+        return [Event(**e) for e in humps.decamelize(response)]
 
     async def unregister_event_listener(self) -> None:
         """Unregister an event listener.
@@ -475,17 +469,13 @@ class OverkizClient:
     async def get_current_execution(self, exec_id: str) -> Execution:
         """Get an action group execution currently running."""
         response = await self._get(f"exec/current/{exec_id}")
-        execution = Execution(**humps.decamelize(response))
-
-        return execution
+        return Execution(**humps.decamelize(response))
 
     @retry_on_auth_error
     async def get_current_executions(self) -> list[Execution]:
         """Get all action groups executions currently running."""
         response = await self._get("exec/current")
-        executions = [Execution(**e) for e in humps.decamelize(response)]
-
-        return executions
+        return [Execution(**e) for e in humps.decamelize(response)]
 
     @retry_on_auth_error
     async def get_api_version(self) -> str:
@@ -613,8 +603,7 @@ class OverkizClient:
         - `sub_places`: List of nested places within this location
         """
         response = await self._get("setup/places")
-        places = Place(**humps.decamelize(response))
-        return places
+        return Place(**humps.decamelize(response))
 
     @retry_on_auth_error
     async def execute_scenario(self, oid: str) -> str:
@@ -636,9 +625,7 @@ class OverkizClient:
         Access scope : Full enduser API access (enduser/*).
         """
         response = await self._get("setup/options")
-        options = [Option(**o) for o in humps.decamelize(response)]
-
-        return options
+        return [Option(**o) for o in humps.decamelize(response)]
 
     @retry_on_auth_error
     async def get_setup_option(self, option: str) -> Option | None:
