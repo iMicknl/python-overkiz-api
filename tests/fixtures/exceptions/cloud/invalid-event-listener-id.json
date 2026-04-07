@@ -1,0 +1,4 @@
+{
+    "errorCode": "UNSPECIFIED_ERROR",
+    "error": "Invalid event listener id : abc-123-def"
+}

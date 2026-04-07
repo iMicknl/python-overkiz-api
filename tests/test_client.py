@@ -22,6 +22,7 @@ from pyoverkiz.auth.credentials import (
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.enums import APIType, DataType, Server
 from pyoverkiz.models import Option
+from pyoverkiz.response_handler import check_response
 from pyoverkiz.utils import create_local_server_config
 
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -408,6 +409,66 @@ class TestOverkizClient:
                 exceptions.TooManyRequestsException,
                 400,
             ),
+            (
+                "cloud/no-such-resource.json",
+                exceptions.NoSuchResourceException,
+                400,
+            ),
+            (
+                "cloud/exec-queue-full.json",
+                exceptions.ExecutionQueueFullException,
+                400,
+            ),
+            (
+                "cloud/missing-api-key.json",
+                exceptions.MissingAPIKeyException,
+                400,
+            ),
+            (
+                "cloud/unknown-user-account.json",
+                exceptions.UnknownUserException,
+                400,
+            ),
+            (
+                "cloud/no-such-command.json",
+                exceptions.InvalidCommandException,
+                400,
+            ),
+            (
+                "cloud/invalid-event-listener-id.json",
+                exceptions.InvalidEventListenerIdException,
+                400,
+            ),
+            (
+                "cloud/session-and-bearer.json",
+                exceptions.SessionAndBearerInSameRequestException,
+                400,
+            ),
+            (
+                "cloud/too-many-attempts-banned.json",
+                exceptions.TooManyAttemptsBannedException,
+                400,
+            ),
+            (
+                "cloud/invalid-token.json",
+                exceptions.InvalidTokenException,
+                400,
+            ),
+            (
+                "cloud/not-such-token.json",
+                exceptions.NotSuchTokenException,
+                400,
+            ),
+            (
+                "cloud/unknown-auth-error.json",
+                exceptions.BadCredentialsException,
+                400,
+            ),
+            (
+                "cloud/unknown-resource-access-denied.json",
+                exceptions.ResourceAccessDeniedException,
+                400,
+            ),
             # (
             #     "local/204-no-corresponding-execId.json",
             #     exceptions.OverkizException,
@@ -484,7 +545,6 @@ class TestOverkizClient:
     @pytest.mark.asyncio
     async def test_check_response_exception_handling(
         self,
-        client: OverkizClient,
         fixture_name: str,
         status_code: int,
         exception: Exception,
@@ -500,7 +560,7 @@ class TestOverkizClient:
             else:
                 resp = MockResponse(None, status_code)
 
-            await client.check_response(resp)
+            await check_response(resp)
 
     @pytest.mark.asyncio
     async def test_get_setup_options(

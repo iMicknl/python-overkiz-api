@@ -1,0 +1,4 @@
+{
+    "errorCode": "EXEC_QUEUE_FULL",
+    "error": "Execution queue is full on gateway: #1234-5678-9012 (soft limit: 10)"
+}

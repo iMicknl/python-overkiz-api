@@ -1,0 +1,4 @@
+{
+    "errorCode": "UNSPECIFIED_ERROR",
+    "error": "Cannot use JSESSIONID and bearer token in same request"
+}
