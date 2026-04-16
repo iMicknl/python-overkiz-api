@@ -120,7 +120,7 @@ class TestOverkizClient:
                 "_get",
                 new=AsyncMock(
                     side_effect=[
-                        exceptions.NotAuthenticatedException("expired"),
+                        exceptions.NotAuthenticatedError("expired"),
                         {"protocolVersion": "1"},
                     ]
                 ),
@@ -148,7 +148,7 @@ class TestOverkizClient:
                 "_post",
                 new=AsyncMock(
                     side_effect=[
-                        exceptions.InvalidEventListenerIdException("bad listener"),
+                        exceptions.InvalidEventListenerIdError("bad listener"),
                         [],
                     ]
                 ),
@@ -173,7 +173,7 @@ class TestOverkizClient:
                 "_post",
                 new=AsyncMock(
                     side_effect=[
-                        exceptions.TooManyConcurrentRequestsException("busy"),
+                        exceptions.TooManyConcurrentRequestsError("busy"),
                         {"id": "listener-3"},
                     ]
                 ),
@@ -367,177 +367,177 @@ class TestOverkizClient:
     @pytest.mark.parametrize(
         "fixture_name, exception, status_code",
         [
-            ("cloud/503-empty.html", exceptions.ServiceUnavailableException, 503),
-            ("cloud/503-maintenance.html", exceptions.MaintenanceException, 503),
+            ("cloud/503-empty.html", exceptions.ServiceUnavailableError, 503),
+            ("cloud/503-maintenance.html", exceptions.MaintenanceError, 503),
             (
                 "cloud/access-denied-to-gateway.json",
-                exceptions.AccessDeniedToGatewayException,
+                exceptions.AccessDeniedToGatewayError,
                 400,
             ),
             (
                 "cloud/application-not-allowed.json",
-                exceptions.ApplicationNotAllowedException,
+                exceptions.ApplicationNotAllowedError,
                 400,
             ),
             (
                 "cloud/bad-credentials.json",
-                exceptions.BadCredentialsException,
+                exceptions.BadCredentialsError,
                 400,
             ),
             (
                 "cloud/missing-authorization-token.json",
-                exceptions.MissingAuthorizationTokenException,
+                exceptions.MissingAuthorizationTokenError,
                 400,
             ),
             (
                 "cloud/no-registered-event-listener.json",
-                exceptions.NoRegisteredEventListenerException,
+                exceptions.NoRegisteredEventListenerError,
                 400,
             ),
             (
                 "cloud/too-many-concurrent-requests.json",
-                exceptions.TooManyConcurrentRequestsException,
+                exceptions.TooManyConcurrentRequestsError,
                 400,
             ),
             (
                 "cloud/too-many-executions.json",
-                exceptions.TooManyExecutionsException,
+                exceptions.TooManyExecutionsError,
                 400,
             ),
             (
                 "cloud/too-many-requests.json",
-                exceptions.TooManyRequestsException,
+                exceptions.TooManyRequestsError,
                 400,
             ),
             (
                 "cloud/no-such-resource.json",
-                exceptions.NoSuchResourceException,
+                exceptions.NoSuchResourceError,
                 400,
             ),
             (
                 "cloud/exec-queue-full.json",
-                exceptions.ExecutionQueueFullException,
+                exceptions.ExecutionQueueFullError,
                 400,
             ),
             (
                 "cloud/missing-api-key.json",
-                exceptions.MissingAPIKeyException,
+                exceptions.MissingAPIKeyError,
                 400,
             ),
             (
                 "cloud/unknown-user-account.json",
-                exceptions.UnknownUserException,
+                exceptions.UnknownUserError,
                 400,
             ),
             (
                 "cloud/no-such-command.json",
-                exceptions.InvalidCommandException,
+                exceptions.InvalidCommandError,
                 400,
             ),
             (
                 "cloud/invalid-event-listener-id.json",
-                exceptions.InvalidEventListenerIdException,
+                exceptions.InvalidEventListenerIdError,
                 400,
             ),
             (
                 "cloud/session-and-bearer.json",
-                exceptions.SessionAndBearerInSameRequestException,
+                exceptions.SessionAndBearerInSameRequestError,
                 400,
             ),
             (
                 "cloud/too-many-attempts-banned.json",
-                exceptions.TooManyAttemptsBannedException,
+                exceptions.TooManyAttemptsBannedError,
                 400,
             ),
             (
                 "cloud/invalid-token.json",
-                exceptions.InvalidTokenException,
+                exceptions.InvalidTokenError,
                 400,
             ),
             (
                 "cloud/not-such-token.json",
-                exceptions.NotSuchTokenException,
+                exceptions.NoSuchTokenError,
                 400,
             ),
             (
                 "cloud/unknown-auth-error.json",
-                exceptions.BadCredentialsException,
+                exceptions.BadCredentialsError,
                 400,
             ),
             (
                 "cloud/unknown-resource-access-denied.json",
-                exceptions.ResourceAccessDeniedException,
+                exceptions.ResourceAccessDeniedError,
                 400,
             ),
             # (
             #     "local/204-no-corresponding-execId.json",
-            #     exceptions.OverkizException,
+            #     exceptions.OverkizError,
             #     204,
             # ),
             (
                 "local/400-bad-parameters.json",
-                exceptions.OverkizException,
+                exceptions.OverkizError,
                 400,
             ),
-            ("local/400-bus-error.json", exceptions.OverkizException, 400),
+            ("local/400-bus-error.json", exceptions.OverkizError, 400),
             (
                 "local/400-malformed-action-group.json",
-                exceptions.OverkizException,
+                exceptions.OverkizError,
                 400,
             ),
             (
                 "local/400-malformed-fetch-id.json",
-                exceptions.OverkizException,
+                exceptions.OverkizError,
                 400,
             ),
             (
                 "local/400-missing-execution-id.json",
-                exceptions.OverkizException,
+                exceptions.OverkizError,
                 400,
             ),
             (
                 "local/400-missing-parameters.json",
-                exceptions.OverkizException,
+                exceptions.OverkizError,
                 400,
             ),
             (
                 "local/400-duplicate-action-on-device.json",
-                exceptions.DuplicateActionOnDeviceException,
+                exceptions.DuplicateActionOnDeviceError,
                 400,
             ),
             (
                 "local/400-action-group-setup-not-found.json",
-                exceptions.ActionGroupSetupNotFoundException,
+                exceptions.ActionGroupSetupNotFoundError,
                 400,
             ),
             (
                 "local/400-no-registered-event-listener.json",
-                exceptions.NoRegisteredEventListenerException,
+                exceptions.NoRegisteredEventListenerError,
                 400,
             ),
             (
                 "local/400-no-such-device.json",
-                exceptions.OverkizException,
+                exceptions.OverkizError,
                 400,
             ),
             (
                 "local/400-unknown-object.json",
-                exceptions.UnknownObjectException,
+                exceptions.UnknownObjectError,
                 400,
             ),
             (
                 "local/400-unspecified-error.json",
-                exceptions.OverkizException,
+                exceptions.OverkizError,
                 400,
             ),
             (
                 "local/401-missing-authorization-token.json",
-                exceptions.MissingAuthorizationTokenException,
+                exceptions.MissingAuthorizationTokenError,
                 401,
             ),
             (
                 "local/401-not-authenticated.json",
-                exceptions.NotAuthenticatedException,
+                exceptions.NotAuthenticatedError,
                 401,
             ),
         ],
@@ -549,7 +549,7 @@ class TestOverkizClient:
         status_code: int,
         exception: Exception,
     ):
-        """Ensure client raises the correct exception for various error fixtures/status codes."""
+        """Ensure client raises the correct error for various error fixtures/status codes."""
         with pytest.raises(exception):
             if fixture_name:
                 with open(

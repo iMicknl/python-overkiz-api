@@ -1,14 +1,14 @@
 # Error handling
 
-## Common exceptions
+## Common errors
 
-- `NotAuthenticatedException`
-- `TooManyRequestsException`
-- `TooManyConcurrentRequestsException`
-- `TooManyExecutionsException`
-- `MaintenanceException`
-- `AccessDeniedToGatewayException`
-- `BadCredentialsException`
+- `NotAuthenticatedError`
+- `TooManyRequestsError`
+- `TooManyConcurrentRequestsError`
+- `TooManyExecutionsError`
+- `MaintenanceError`
+- `AccessDeniedToGatewayError`
+- `BadCredentialsError`
 
 ## Retry and backoff guidance
 
@@ -21,9 +21,9 @@ from pyoverkiz.auth.credentials import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.enums import Server
 from pyoverkiz.exceptions import (
-    NotAuthenticatedException,
-    TooManyConcurrentRequestsException,
-    TooManyRequestsException,
+    NotAuthenticatedError,
+    TooManyConcurrentRequestsError,
+    TooManyRequestsError,
 )
 
 
@@ -38,9 +38,9 @@ async def fetch_devices_with_retry() -> None:
                 devices = await client.get_devices()
                 print(devices)
                 return
-            except (TooManyRequestsException, TooManyConcurrentRequestsException):
+            except (TooManyRequestsError, TooManyConcurrentRequestsError):
                 await asyncio.sleep(0.5 * (attempt + 1))
-            except NotAuthenticatedException:
+            except NotAuthenticatedError:
                 await client.login()
 
 

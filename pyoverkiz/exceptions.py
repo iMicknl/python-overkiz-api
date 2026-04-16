@@ -1,136 +1,139 @@
-"""Exceptions defined for Overkiz API and its integrations."""
+"""Errors defined for Overkiz API and its integrations."""
 
 
-class BaseOverkizException(Exception):
-    """Base exception for Overkiz errors."""
+class BaseOverkizError(Exception):
+    """Base error for Overkiz errors."""
 
 
-class OverkizException(BaseOverkizException):
+class OverkizError(BaseOverkizError):
     """Raised when an undefined error occurs while communicating with the Overkiz API."""
 
 
-class BadCredentialsException(BaseOverkizException):
+class BadCredentialsError(BaseOverkizError):
     """Raised when invalid credentials are provided."""
 
 
-class InvalidCommandException(BaseOverkizException):
+class InvalidCommandError(BaseOverkizError):
     """Raised when an invalid command is provided."""
 
 
-class DuplicateActionOnDeviceException(BaseOverkizException):
+class DuplicateActionOnDeviceError(BaseOverkizError):
     """Raised when another action already exists for the same device."""
 
 
-class ActionGroupSetupNotFoundException(BaseOverkizException):
+class ActionGroupSetupNotFoundError(BaseOverkizError):
     """Raised when an action group setup cannot be determined for a gateway."""
 
 
-class NoSuchResourceException(BaseOverkizException):
+class NoSuchResourceError(BaseOverkizError):
     """Raised when an invalid API call is made."""
 
 
-class ResourceAccessDeniedException(BaseOverkizException):
+class ResourceAccessDeniedError(BaseOverkizError):
     """Raised when the API returns a RESOURCE_ACCESS_DENIED error."""
 
 
-class NotAuthenticatedException(ResourceAccessDeniedException):
+class NotAuthenticatedError(ResourceAccessDeniedError):
     """Raised when the user is not authenticated."""
 
 
-class TooManyExecutionsException(BaseOverkizException):
+class TooManyExecutionsError(BaseOverkizError):
     """Raised when too many executions are requested."""
 
 
-class ExecutionQueueFullException(BaseOverkizException):
+class ExecutionQueueFullError(BaseOverkizError):
     """Raised when the execution queue is full."""
 
 
-class TooManyRequestsException(BaseOverkizException):
+class TooManyRequestsError(BaseOverkizError):
     """Raised when too many requests are made."""
 
 
-class TooManyConcurrentRequestsException(BaseOverkizException):
+class TooManyConcurrentRequestsError(BaseOverkizError):
     """Raised when too many concurrent requests are made."""
 
 
-class ServiceUnavailableException(BaseOverkizException):
+class ServiceUnavailableError(BaseOverkizError):
     """Raised when the service is unavailable."""
 
 
-class MaintenanceException(ServiceUnavailableException):
+class MaintenanceError(ServiceUnavailableError):
     """Raised when the service is under maintenance."""
 
 
-class MissingAPIKeyException(BaseOverkizException):
+class MissingAPIKeyError(BaseOverkizError):
     """Raised when the API key is missing."""
 
 
-class MissingAuthorizationTokenException(ResourceAccessDeniedException):
+class MissingAuthorizationTokenError(ResourceAccessDeniedError):
     """Raised when the authorization token is missing."""
 
 
-class InvalidEventListenerIdException(BaseOverkizException):
+class InvalidEventListenerIdError(BaseOverkizError):
     """Raised when an invalid event listener ID is provided."""
 
 
-class NoRegisteredEventListenerException(BaseOverkizException):
+class NoRegisteredEventListenerError(BaseOverkizError):
     """Raised when no event listener is registered."""
 
 
-class SessionAndBearerInSameRequestException(BaseOverkizException):
+class SessionAndBearerInSameRequestError(BaseOverkizError):
     """Raised when both session and bearer are provided in the same request."""
 
 
-class TooManyAttemptsBannedException(BaseOverkizException):
+class TooManyAttemptsBannedError(BaseOverkizError):
     """Raised when too many attempts are made and the user is (temporarily) banned."""
 
 
-class InvalidTokenException(BaseOverkizException):
+class InvalidTokenError(BaseOverkizError):
     """Raised when an invalid token is provided."""
 
 
-class NotSuchTokenException(BaseOverkizException):
+class NoSuchTokenError(BaseOverkizError):
     """Raised when an invalid token is provided."""
 
 
-class UnknownUserException(BaseOverkizException):
+class UnknownUserError(BaseOverkizError):
     """Raised when an unknown user is provided."""
 
 
-class UnknownObjectException(BaseOverkizException):
+class UnknownObjectError(BaseOverkizError):
     """Raised when an unknown object is provided."""
 
 
-class AccessDeniedToGatewayException(ResourceAccessDeniedException):
-    """Raised when access is denied to the gateway. This often happens when the user is not the owner of the gateway."""
+class AccessDeniedToGatewayError(ResourceAccessDeniedError):
+    """Raised when access is denied to the gateway.
+
+    This often happens when the user is not the owner of the gateway.
+    """
 
 
-class ApplicationNotAllowedException(ResourceAccessDeniedException):
+class ApplicationNotAllowedError(ResourceAccessDeniedError):
     """Raised when the setup cannot be accessed through the application."""
 
 
 # Nexity
-class NexityBadCredentialsException(BadCredentialsException):
+class NexityBadCredentialsError(BadCredentialsError):
     """Raised when invalid credentials are provided to Nexity authentication API."""
 
 
-class NexityServiceException(BaseOverkizException):
+class NexityServiceError(BaseOverkizError):
     """Raised when an error occurs while communicating with the Nexity API."""
 
 
 # CozyTouch
-class CozyTouchBadCredentialsException(BadCredentialsException):
+class CozyTouchBadCredentialsError(BadCredentialsError):
     """Raised when invalid credentials are provided to CozyTouch authentication API."""
 
 
-class CozyTouchServiceException(BaseOverkizException):
+class CozyTouchServiceError(BaseOverkizError):
     """Raised when an error occurs while communicating with the CozyTouch API."""
 
 
 # Somfy
-class SomfyBadCredentialsException(BadCredentialsException):
+class SomfyBadCredentialsError(BadCredentialsError):
     """Raised when invalid credentials are provided to Somfy authentication API."""
 
 
-class SomfyServiceException(BaseOverkizException):
+class SomfyServiceError(BaseOverkizError):
     """Raised when an error occurs while communicating with the Somfy API."""

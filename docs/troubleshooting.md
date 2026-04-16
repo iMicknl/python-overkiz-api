@@ -17,11 +17,11 @@ If the gateway uses a self-signed certificate, pass `verify_ssl=False` when crea
 ## Rate limits and concurrency
 
 - Reduce polling frequency.
-- Back off on `TooManyRequestsException` or `TooManyConcurrentRequestsException`.
+- Back off on `TooManyRequestsError` or `TooManyConcurrentRequestsError`.
 
 ## Listener drops
 
-- Re-register the event listener when you see `InvalidEventListenerIdException`.
+- Re-register the event listener when you see `InvalidEventListenerIdError`.
 - Ensure your fetch loop is running every few seconds.
 
 ## Device not found

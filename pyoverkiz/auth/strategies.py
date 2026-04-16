@@ -42,14 +42,14 @@ from pyoverkiz.const import (
 )
 from pyoverkiz.enums import APIType
 from pyoverkiz.exceptions import (
-    BadCredentialsException,
-    CozyTouchBadCredentialsException,
-    CozyTouchServiceException,
-    InvalidTokenException,
-    NexityBadCredentialsException,
-    NexityServiceException,
-    SomfyBadCredentialsException,
-    SomfyServiceException,
+    BadCredentialsError,
+    CozyTouchBadCredentialsError,
+    CozyTouchServiceError,
+    InvalidTokenError,
+    NexityBadCredentialsError,
+    NexityServiceError,
+    SomfyBadCredentialsError,
+    SomfyServiceError,
 )
 from pyoverkiz.models import ServerConfig
 
@@ -118,7 +118,7 @@ class SessionLoginStrategy(BaseAuthStrategy):
             ssl=self._ssl,
         ) as response:
             if response.status not in (200, 204):
-                raise BadCredentialsException(
+                raise BadCredentialsError(
                     f"Login failed for {self.server.name}: {response.status}"
                 )
 
@@ -128,7 +128,7 @@ class SessionLoginStrategy(BaseAuthStrategy):
 
             result = await response.json()
             if not result.get("success"):
-                raise BadCredentialsException("Login failed: bad credentials")
+                raise BadCredentialsError("Login failed: bad credentials")
 
 
 class SomfyAuthStrategy(BaseAuthStrategy):
@@ -195,11 +195,11 @@ class SomfyAuthStrategy(BaseAuthStrategy):
             token = await response.json()
 
             if token.get("message") == "error.invalid.grant":
-                raise SomfyBadCredentialsException(token["message"])
+                raise SomfyBadCredentialsError(token["message"])
 
             access_token = token.get("access_token")
             if not access_token:
-                raise SomfyServiceException("No Somfy access token provided.")
+                raise SomfyServiceError("No Somfy access token provided.")
 
             self.context.access_token = cast(str, access_token)
             self.context.refresh_token = token.get("refresh_token")
@@ -233,10 +233,10 @@ class CozytouchAuthStrategy(SessionLoginStrategy):
             token = await response.json()
 
             if token.get("error") == "invalid_grant":
-                raise CozyTouchBadCredentialsException(token["error_description"])
+                raise CozyTouchBadCredentialsError(token["error_description"])
 
             if "token_type" not in token:
-                raise CozyTouchServiceException("No CozyTouch token provided.")
+                raise CozyTouchServiceError("No CozyTouch token provided.")
 
         async with self.session.get(
             f"{COZYTOUCH_ATLANTIC_API}/magellan/accounts/jwt",
@@ -245,7 +245,7 @@ class CozytouchAuthStrategy(SessionLoginStrategy):
             jwt = await response.text()
 
             if not jwt:
-                raise CozyTouchServiceException("No JWT token provided.")
+                raise CozyTouchServiceError("No JWT token provided.")
 
             jwt = jwt.strip('"')
 
@@ -278,7 +278,7 @@ class NexityAuthStrategy(SessionLoginStrategy):
         except ClientError as error:
             code = error.response.get("Error", {}).get("Code")
             if code in {"NotAuthorizedException", "UserNotFoundException"}:
-                raise NexityBadCredentialsException() from error
+                raise NexityBadCredentialsError() from error
             raise
 
         id_token = tokens["AuthenticationResult"]["IdToken"]
@@ -290,7 +290,7 @@ class NexityAuthStrategy(SessionLoginStrategy):
             token = await response.json()
 
             if "token" not in token:
-                raise NexityServiceException("No Nexity SSO token provided.")
+                raise NexityServiceError("No Nexity SSO token provided.")
 
             user_id = self.credentials.username.replace("@", "_-_")
             await self._post_login({"ssoToken": token["token"], "userId": user_id})
@@ -314,7 +314,7 @@ class LocalTokenAuthStrategy(BaseAuthStrategy):
     async def login(self) -> None:
         """Validate that a token is provided for local API access."""
         if not self.credentials.token:
-            raise InvalidTokenException("Local API requires a token.")
+            raise InvalidTokenError("Local API requires a token.")
 
     def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
         """Return authentication headers for a request path."""
@@ -385,16 +385,14 @@ class RexelAuthStrategy(BaseAuthStrategy):
             if error:
                 description = token.get("error_description") or token.get("message")
                 if description:
-                    raise InvalidTokenException(
+                    raise InvalidTokenError(
                         f"Error retrieving Rexel access token: {description}"
                     )
-                raise InvalidTokenException(
-                    f"Error retrieving Rexel access token: {error}"
-                )
+                raise InvalidTokenError(f"Error retrieving Rexel access token: {error}")
 
             access_token = token.get("access_token")
             if not access_token:
-                raise InvalidTokenException("No Rexel access token provided.")
+                raise InvalidTokenError("No Rexel access token provided.")
 
             self._ensure_consent(access_token)
             self.context.access_token = cast(str, access_token)
@@ -411,9 +409,7 @@ class RexelAuthStrategy(BaseAuthStrategy):
         payload = _decode_jwt_payload(access_token)
         consent = payload.get("consent")
         if consent != REXEL_REQUIRED_CONSENT:
-            raise InvalidTokenException(
-                "Consent is missing or revoked for Rexel token."
-            )
+            raise InvalidTokenError("Consent is missing or revoked for Rexel token.")
 
 
 class BearerTokenAuthStrategy(BaseAuthStrategy):
@@ -442,7 +438,7 @@ def _decode_jwt_payload(token: str) -> dict[str, Any]:
     """Decode the payload of a JWT token."""
     parts = token.split(".")
     if len(parts) < 2:
-        raise InvalidTokenException("Malformed JWT received.")
+        raise InvalidTokenError("Malformed JWT received.")
 
     payload_segment = parts[1]
     padding = "=" * (-len(payload_segment) % 4)
@@ -450,4 +446,4 @@ def _decode_jwt_payload(token: str) -> dict[str, Any]:
         decoded = base64.urlsafe_b64decode(payload_segment + padding)
         return cast(dict[str, Any], json.loads(decoded))
     except (binascii.Error, json.JSONDecodeError) as error:
-        raise InvalidTokenException("Malformed JWT received.") from error
+        raise InvalidTokenError("Malformed JWT received.") from error

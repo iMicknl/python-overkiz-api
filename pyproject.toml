@@ -72,6 +72,8 @@ select = [
     "T",
     # flake8-comprehensions
     "C4",
+    # pep8-naming
+    "N",
 ]
 ignore = ["E501"] # Line too long
 

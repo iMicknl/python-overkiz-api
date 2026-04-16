@@ -17,7 +17,7 @@ from typing import cast
 from pyoverkiz.auth.credentials import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.enums import Server
-from pyoverkiz.exceptions import OverkizException
+from pyoverkiz.exceptions import OverkizError
 from pyoverkiz.models import UIProfileDefinition, ValuePrototype
 
 # Hardcoded protocols that may not be available on all servers
@@ -271,7 +271,7 @@ async def generate_ui_profiles(server: Server) -> None:
             try:
                 details = await client.get_reference_ui_profile(profile_name)
                 profiles_with_details.append((profile_name, details))
-            except OverkizException:
+            except OverkizError:
                 print(f"  ! Could not fetch details for {profile_name}")
                 profiles_with_details.append((profile_name, None))
 
