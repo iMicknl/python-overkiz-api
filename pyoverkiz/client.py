@@ -42,37 +42,37 @@ from pyoverkiz.const import (
 )
 from pyoverkiz.enums import APIType, Server
 from pyoverkiz.exceptions import (
-    AccessDeniedToGatewayException,
-    ActionGroupSetupNotFoundException,
-    ApplicationNotAllowedException,
-    BadCredentialsException,
-    CozyTouchBadCredentialsException,
-    CozyTouchServiceException,
-    DuplicateActionOnDeviceException,
-    ExecutionQueueFullException,
-    InvalidCommandException,
-    InvalidEventListenerIdException,
-    InvalidTokenException,
-    MaintenanceException,
-    MissingAPIKeyException,
-    MissingAuthorizationTokenException,
-    NexityBadCredentialsException,
-    NexityServiceException,
-    NoRegisteredEventListenerException,
-    NoSuchResourceException,
-    NotAuthenticatedException,
-    NotSuchTokenException,
-    OverkizException,
-    ServiceUnavailableException,
-    SessionAndBearerInSameRequestException,
-    SomfyBadCredentialsException,
-    SomfyServiceException,
-    TooManyAttemptsBannedException,
-    TooManyConcurrentRequestsException,
-    TooManyExecutionsException,
-    TooManyRequestsException,
-    UnknownObjectException,
-    UnknownUserException,
+    AccessDeniedToGatewayError,
+    ActionGroupSetupNotFoundError,
+    ApplicationNotAllowedError,
+    BadCredentialsError,
+    CozyTouchBadCredentialsError,
+    CozyTouchServiceError,
+    DuplicateActionOnDeviceError,
+    ExecutionQueueFullError,
+    InvalidCommandError,
+    InvalidEventListenerIdError,
+    InvalidTokenError,
+    MaintenanceError,
+    MissingAPIKeyError,
+    MissingAuthorizationTokenError,
+    NexityBadCredentialsError,
+    NexityServiceError,
+    NoRegisteredEventListenerError,
+    NoSuchResourceError,
+    NoSuchTokenError,
+    NotAuthenticatedError,
+    OverkizError,
+    ServiceUnavailableError,
+    SessionAndBearerInSameRequestError,
+    SomfyBadCredentialsError,
+    SomfyServiceError,
+    TooManyAttemptsBannedError,
+    TooManyConcurrentRequestsError,
+    TooManyExecutionsError,
+    TooManyRequestsError,
+    UnknownObjectError,
+    UnknownUserError,
 )
 from pyoverkiz.models import (
     Command,
@@ -114,7 +114,7 @@ async def refresh_listener(invocation: Details) -> None:
 # Reusable backoff decorators to reduce code duplication
 retry_on_auth_error = backoff.on_exception(
     backoff.expo,
-    (NotAuthenticatedException, ServerDisconnectedError),
+    (NotAuthenticatedError, ServerDisconnectedError),
     max_tries=2,
     on_backoff=relogin,
     logger=_LOGGER,
@@ -129,21 +129,21 @@ retry_on_connection_failure = backoff.on_exception(
 
 retry_on_concurrent_requests = backoff.on_exception(
     backoff.expo,
-    TooManyConcurrentRequestsException,
+    TooManyConcurrentRequestsError,
     max_tries=5,
     logger=_LOGGER,
 )
 
 retry_on_too_many_executions = backoff.on_exception(
     backoff.expo,
-    TooManyExecutionsException,
+    TooManyExecutionsError,
     max_tries=10,
     logger=_LOGGER,
 )
 
 retry_on_listener_error = backoff.on_exception(
     backoff.expo,
-    (InvalidEventListenerIdException, NoRegisteredEventListenerException),
+    (InvalidEventListenerIdError, NoRegisteredEventListenerError),
     max_tries=2,
     on_backoff=refresh_listener,
     logger=_LOGGER,
@@ -151,7 +151,7 @@ retry_on_listener_error = backoff.on_exception(
 
 retry_on_execution_queue_full = backoff.on_exception(
     backoff.expo,
-    ExecutionQueueFullException,
+    ExecutionQueueFullError,
     max_tries=5,
     logger=_LOGGER,
 )
@@ -335,10 +335,10 @@ class OverkizClient:
 
             # { "message": "error.invalid.grant", "data": [], "uid": "xxx" }
             if "message" in token and token["message"] == "error.invalid.grant":
-                raise SomfyBadCredentialsException(token["message"])
+                raise SomfyBadCredentialsError(token["message"])
 
             if "access_token" not in token:
-                raise SomfyServiceException("No Somfy access token provided.")
+                raise SomfyServiceError("No Somfy access token provided.")
 
             self._access_token = cast(str, token["access_token"])
             self._refresh_token = token["refresh_token"]
@@ -375,10 +375,10 @@ class OverkizClient:
             token = await response.json()
             # { "message": "error.invalid.grant", "data": [], "uid": "xxx" }
             if "message" in token and token["message"] == "error.invalid.grant":
-                raise SomfyBadCredentialsException(token["message"])
+                raise SomfyBadCredentialsError(token["message"])
 
             if "access_token" not in token:
-                raise SomfyServiceException("No Somfy access token provided.")
+                raise SomfyServiceError("No Somfy access token provided.")
 
             self._access_token = cast(str, token["access_token"])
             self._refresh_token = token["refresh_token"]
@@ -408,10 +408,10 @@ class OverkizClient:
             # {'error': 'invalid_grant',
             # 'error_description': 'Provided Authorization Grant is invalid.'}
             if "error" in token and token["error"] == "invalid_grant":
-                raise CozyTouchBadCredentialsException(token["error_description"])
+                raise CozyTouchBadCredentialsError(token["error_description"])
 
             if "token_type" not in token:
-                raise CozyTouchServiceException("No CozyTouch token provided.")
+                raise CozyTouchServiceError("No CozyTouch token provided.")
 
         # Request JWT
         async with self.session.get(
@@ -421,7 +421,7 @@ class OverkizClient:
             jwt = await response.text()
 
             if not jwt:
-                raise CozyTouchServiceException("No JWT token provided.")
+                raise CozyTouchServiceError("No JWT token provided.")
 
             jwt = jwt.strip('"')  # Remove surrounding quotes
 
@@ -450,7 +450,7 @@ class OverkizClient:
         try:
             tokens = await loop.run_in_executor(None, aws.authenticate_user)
         except Exception as error:
-            raise NexityBadCredentialsException() from error
+            raise NexityBadCredentialsError() from error
 
         id_token = tokens["AuthenticationResult"]["IdToken"]
 
@@ -463,7 +463,7 @@ class OverkizClient:
             token = await response.json()
 
             if "token" not in token:
-                raise NexityServiceException("No Nexity SSO token provided.")
+                raise NexityServiceError("No Nexity SSO token provided.")
 
             return cast(str, token["token"])
 
@@ -799,7 +799,7 @@ class OverkizClient:
 
         For example `developerMode-{gateway_id}` and `gatewayId` to understand if developer mode is on.
 
-        If the option is not available, an OverkizException will be thrown.
+        If the option is not available, an OverkizError will be thrown.
         If the parameter is not available you will receive None.
         """
         response = await self.__get(f"setup/options/{option}/{parameter}")
@@ -873,12 +873,12 @@ class OverkizClient:
             result = await response.text()
 
             if "is down for maintenance" in result:
-                raise MaintenanceException("Server is down for maintenance") from error
+                raise MaintenanceError("Server is down for maintenance") from error
 
             if response.status == 503:
-                raise ServiceUnavailableException(result) from error
+                raise ServiceUnavailableError(result) from error
 
-            raise OverkizException(
+            raise OverkizError(
                 f"Unknown error while requesting {response.url}. {response.status} - {result}"
             ) from error
 
@@ -891,93 +891,93 @@ class OverkizClient:
 
             # {"errorCode": "DUPLICATE_FIELD_OR_VALUE", "error": "Another action exists on the same device : rts://1234-5689-1234/123456"}
             if message.startswith("Another action exists on the same device"):
-                raise DuplicateActionOnDeviceException(message)
+                raise DuplicateActionOnDeviceError(message)
 
             # {"errorCode": "INVALID_FIELD_VALUE", "error": "Unable to determine action group setup (no setup for gateway #1234-5678-1234)"}
             if message.startswith("Unable to determine action group setup"):
-                raise ActionGroupSetupNotFoundException(message)
+                raise ActionGroupSetupNotFoundError(message)
 
             # {"errorCode": "AUTHENTICATION_ERROR", "error": "Too many requests, try again later : login with xxx@xxx.tld"}
             if "Too many requests" in message:
-                raise TooManyRequestsException(message)
+                raise TooManyRequestsError(message)
 
             # {"errorCode": "AUTHENTICATION_ERROR", "error": "Bad credentials"}
             if message == "Bad credentials":
-                raise BadCredentialsException(message)
+                raise BadCredentialsError(message)
 
             # {"errorCode": "RESOURCE_ACCESS_DENIED", "error": "Not authenticated"}
             if message == "Not authenticated":
-                raise NotAuthenticatedException(message)
+                raise NotAuthenticatedError(message)
 
             # {"errorCode": "AUTHENTICATION_ERROR", "error": "An API key is required to access this setup"}
             if message == "An API key is required to access this setup":
-                raise MissingAPIKeyException(message)
+                raise MissingAPIKeyError(message)
 
             # {"error":"Missing authorization token.","errorCode":"RESOURCE_ACCESS_DENIED"}
             if message == "Missing authorization token":
-                raise MissingAuthorizationTokenException(message)
+                raise MissingAuthorizationTokenError(message)
 
             # {"error": "Server busy, please try again later. (Too many executions)"}
             if message == "Server busy, please try again later. (Too many executions)":
-                raise TooManyExecutionsException(message)
+                raise TooManyExecutionsError(message)
 
             # {"error": "UNSUPPORTED_OPERATION", "error": "No such command : ..."}
             if "No such command" in message:
-                raise InvalidCommandException(message)
+                raise InvalidCommandError(message)
 
             # {"errorCode": "UNSPECIFIED_ERROR", "error": "Invalid event listener id : ..."}
             if "Invalid event listener id" in message:
-                raise InvalidEventListenerIdException(message)
+                raise InvalidEventListenerIdError(message)
 
             # {"errorCode": "UNSPECIFIED_ERROR", "error": "No registered event listener"}
             if message == "No registered event listener":
-                raise NoRegisteredEventListenerException(message)
+                raise NoRegisteredEventListenerError(message)
 
             # {"errorCode": "AUTHENTICATION_ERROR", "error": "No such user account : xxxxx"}
             if "No such user account" in message:
-                raise UnknownUserException(message)
+                raise UnknownUserError(message)
 
             # {"errorCode": "INVALID_API_CALL", "error": "No such resource"}
             if message == "No such resource":
-                raise NoSuchResourceException(message)
+                raise NoSuchResourceError(message)
 
             # {"errorCode": "RESOURCE_ACCESS_DENIED",  "error": "too many concurrent requests"}
             if message == "too many concurrent requests":
-                raise TooManyConcurrentRequestsException(message)
+                raise TooManyConcurrentRequestsError(message)
 
             # {"errorCode": "EXEC_QUEUE_FULL", "error": "Execution queue is full on gateway: #xxx-yyyy-zzzz (soft limit: 10)"}
             if "Execution queue is full on gateway" in message:
-                raise ExecutionQueueFullException(message)
+                raise ExecutionQueueFullError(message)
 
             if message == "Cannot use JSESSIONID and bearer token in same request":
-                raise SessionAndBearerInSameRequestException(message)
+                raise SessionAndBearerInSameRequestError(message)
 
             if message == "Too many attempts with an invalid token, temporarily banned":
-                raise TooManyAttemptsBannedException(message)
+                raise TooManyAttemptsBannedError(message)
 
             if "Invalid token : " in message:
-                raise InvalidTokenException(message)
+                raise InvalidTokenError(message)
 
             if "Not such token with UUID: " in message:
-                raise NotSuchTokenException(message)
+                raise NoSuchTokenError(message)
 
             if "Unknown user :" in message:
-                raise UnknownUserException(message)
+                raise UnknownUserError(message)
 
             # {"error":"Unknown object.","errorCode":"UNSPECIFIED_ERROR"}
             if message == "Unknown object":
-                raise UnknownObjectException(message)
+                raise UnknownObjectError(message)
 
             # {"errorCode": "RESOURCE_ACCESS_DENIED", "error": "Access denied to gateway #1234-5678-1234 for action ADD_TOKEN"}
             if "Access denied to gateway" in message:
-                raise AccessDeniedToGatewayException(message)
+                raise AccessDeniedToGatewayError(message)
 
             # {"errorCode": "RESOURCE_ACCESS_DENIED", "error": "Your setup cannot be accessed through this application"}
             if message == "Your setup cannot be accessed through this application":
-                raise ApplicationNotAllowedException(message)
+                raise ApplicationNotAllowedError(message)
 
-        # Undefined Overkiz exception
-        raise OverkizException(result)
+        # Undefined Overkiz error
+        raise OverkizError(result)
 
     async def _refresh_token_if_expired(self) -> None:
         """Check if token is expired and request a new one."""
