@@ -10,15 +10,14 @@ from __future__ import annotations
 
 from typing import Any
 
-import humps
+from pyoverkiz._case import camelize
 
-# Small mapping for keys that need special casing beyond simple camelCase.
 _ABBREV_MAP: dict[str, str] = {"deviceUrl": "deviceURL"}
 
 
 def _camelize_key(key: str) -> str:
     """Camelize a single key and apply abbreviation fixes in one step."""
-    camel = humps.camelize(key)
+    camel = camelize(key)
     return _ABBREV_MAP.get(camel, camel)
 
 
