@@ -90,7 +90,7 @@ class InvalidTokenError(BaseOverkizError):
 
 
 class NoSuchTokenError(BaseOverkizError):
-    """Raised when an invalid token is provided."""
+    """Raised when no such token exists."""
 
 
 class UnknownUserError(BaseOverkizError):
