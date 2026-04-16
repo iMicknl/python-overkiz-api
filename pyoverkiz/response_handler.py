@@ -36,7 +36,7 @@ from pyoverkiz.exceptions import (
     UnknownUserError,
 )
 
-# Primary dispatch: (errorCode, message_substring) -> exception class.
+# Primary dispatch: (errorCode, message_substring) -> error class.
 # Checked in order; first match wins. Use errorCode as the primary key to
 # reduce brittleness across cloud vs. local API variants.
 _ERROR_CODE_MESSAGE_MAP: list[tuple[str, str | None, type[BaseOverkizError]]] = [
@@ -141,14 +141,14 @@ async def check_response(response: ClientResponse) -> None:
         message = message.strip('".') if (message := result.get("error")) else ""
 
         # 1. Primary dispatch: match on errorCode (+ optional message substring)
-        for code, pattern, exc_class in _ERROR_CODE_MESSAGE_MAP:
+        for code, pattern, error_class in _ERROR_CODE_MESSAGE_MAP:
             if error_code == code and (pattern is None or pattern in message):
-                raise exc_class(message)
+                raise error_class(message)
 
         # 2. Message-only fallback for patterns that may appear under varying errorCodes
-        for pattern, exc_class in _MESSAGE_FALLBACK_MAP:
+        for pattern, error_class in _MESSAGE_FALLBACK_MAP:
             if pattern in message:
-                raise exc_class(message)
+                raise error_class(message)
 
         # 3. errorCode category fallback (known code, unknown message)
         if error_code in _ERROR_CODE_FALLBACK_MAP:
