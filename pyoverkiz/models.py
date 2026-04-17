@@ -85,6 +85,11 @@ def _to_optional_enum(enum_cls: type) -> Any:
     return convert
 
 
+def _to_str(value: str | None) -> str:
+    """Converter: None -> empty string, otherwise passthrough."""
+    return value or ""
+
+
 def _flexible_init(cls: type) -> type:
     """Class decorator: make attrs ``__init__`` accept (and ignore) unknown kwargs.
 
@@ -677,7 +682,7 @@ class ActionGroup:
     actions: list[Action] = field(converter=_to_list(Action))
     creation_time: int | None = None
     last_update_time: int | None = None
-    label: str | None = field(repr=obfuscate_string, default=None)
+    label: str = field(repr=obfuscate_string, default="", converter=_to_str)
     metadata: str | None = None
     shortcut: bool | None = None
     notification_type_mask: int | None = None
@@ -688,14 +693,12 @@ class ActionGroup:
     id: str | None = field(repr=obfuscate_id, default=None)
 
     def __attrs_post_init__(self) -> None:
-        """Resolve id/oid fallback and ensure label is never None."""
+        """Resolve id/oid fallback."""
         if self.oid is None and self.id is None:
             raise ValueError("Either 'oid' or 'id' must be provided")
         resolved = cast(str, self.oid or self.id)
         self.id = resolved
         self.oid = resolved
-        if self.label is None:
-            self.label = ""
 
 
 @_flexible_init
