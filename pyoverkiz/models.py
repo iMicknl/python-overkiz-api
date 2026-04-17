@@ -730,7 +730,6 @@ class Gateway:
     sub_type: GatewaySubType | None = field(
         default=None, converter=_to_optional_enum(GatewaySubType)
     )
-    id: str = field(repr=obfuscate_id, init=False)
     alive: bool | None = None
     mode: str | None = None
     place_oid: str | None = None
@@ -744,9 +743,10 @@ class Gateway:
         default=None, converter=_to_optional_enum(GatewayType)
     )
 
-    def __attrs_post_init__(self) -> None:
-        """Set id from gateway_id."""
-        self.id = self.gateway_id
+    @property
+    def id(self) -> str:
+        """Alias for gateway_id."""
+        return self.gateway_id
 
 
 @_flexible_init
@@ -803,11 +803,11 @@ class Place:
     type: int
     oid: str
     sub_places: list[Place] = field(factory=list, converter=_to_list("Place"))
-    id: str = field(init=False)
 
-    def __attrs_post_init__(self) -> None:
-        """Set id from oid."""
-        self.id = self.oid
+    @property
+    def id(self) -> str:
+        """Alias for oid."""
+        return self.oid
 
 
 @define(kw_only=True)
