@@ -7,7 +7,6 @@ from __future__ import annotations
 import functools
 import inspect
 import json
-import logging
 import re
 from collections.abc import Iterator
 from typing import Any, cast
@@ -33,8 +32,6 @@ from pyoverkiz.enums.protocol import Protocol
 from pyoverkiz.enums.server import APIType, Server
 from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
-
-# pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
 
 
 def _to_list(cls_or_name: type | str) -> Any:
@@ -114,8 +111,6 @@ def _flexible_init(cls: type) -> type:
 DEVICE_URL_RE = re.compile(
     r"(?P<protocol>[^:]+)://(?P<gatewayId>[^/]+)/(?P<deviceAddress>[^#]+)(#(?P<subsystemId>\d+))?"
 )
-
-_LOGGER = logging.getLogger(__name__)
 
 
 @_flexible_init
