@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from pyoverkiz._case import camelize
+from pyoverkiz._case import _recursive_key_map, camelize
 
 _ABBREV_MAP: dict[str, str] = {"deviceUrl": "deviceURL"}
 
@@ -31,8 +31,4 @@ def prepare_payload(payload: Any) -> Any:
         payload = {"device_url": "x", "commands": [{"name": "close"}]}
         => {"deviceURL": "x", "commands": [{"name": "close"}]}
     """
-    if isinstance(payload, dict):
-        return {_camelize_key(k): prepare_payload(v) for k, v in payload.items()}
-    if isinstance(payload, list):
-        return [prepare_payload(item) for item in payload]
-    return payload
+    return _recursive_key_map(payload, _camelize_key)
