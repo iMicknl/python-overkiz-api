@@ -622,8 +622,8 @@ class TestOverkizClient:
         from pyoverkiz.models import Action, Command
 
         action = Action(
-            "rts://2025-8464-6867/16756006",
-            [Command(name=OverkizCommand.CLOSE, parameters=None, type=None)],
+            device_url="rts://2025-8464-6867/16756006",
+            commands=[Command(name=OverkizCommand.CLOSE, parameters=None, type=None)],
         )
 
         resp = MockResponse('{"execId": "exec-123"}')

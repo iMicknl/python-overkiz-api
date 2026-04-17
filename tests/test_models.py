@@ -662,7 +662,7 @@ def test_action_to_payload_and_parameters_conversion():
     cmd = Command(
         name=OverkizCommand.SET_LEVEL, parameters=[10, OverkizCommandParam.A], type=1
     )
-    action = Action("rts://2025-8464-6867/16756006", [cmd])
+    action = Action(device_url="rts://2025-8464-6867/16756006", commands=[cmd])
 
     payload = action.to_payload()
 
