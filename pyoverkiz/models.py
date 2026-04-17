@@ -791,13 +791,6 @@ class HistoryExecution:
     execution_sub_type: ExecutionSubType = field(converter=ExecutionSubType)
 
 
-def _to_sub_places(items: list[Any] | None) -> list[Any]:
-    """Converter for Place.sub_places (self-referencing)."""
-    if not items:
-        return []
-    return [Place(**p) if isinstance(p, dict) else p for p in items]
-
-
 @_flexible_init
 @define(kw_only=True)
 class Place:
@@ -814,7 +807,7 @@ class Place:
     label: str
     type: int
     oid: str
-    sub_places: list[Place] = field(factory=list, converter=_to_sub_places)
+    sub_places: list[Place] = field(factory=list, converter=_to_list("Place"))
     id: str = field(init=False)
 
     def __attrs_post_init__(self) -> None:
