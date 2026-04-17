@@ -1180,7 +1180,7 @@ class ServerConfig:
     name: str
     endpoint: str
     manufacturer: str
-    type: APIType
+    api_type: APIType
     configuration_url: str | None = None
 
     def __init__(
@@ -1201,7 +1201,7 @@ class ServerConfig:
         self.name = name
         self.endpoint = endpoint
         self.manufacturer = manufacturer
-        self.type = api_type if isinstance(api_type, APIType) else APIType(api_type)
+        self.api_type = api_type if isinstance(api_type, APIType) else APIType(api_type)
         self.configuration_url = configuration_url
 
 
