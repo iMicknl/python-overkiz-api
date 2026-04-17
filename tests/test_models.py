@@ -442,6 +442,44 @@ class TestStates:
         states = States(RAW_STATES)
         assert not states.has_any(["nonexistent", "also_nonexistent"])
 
+    def test_getitem_raises_keyerror_on_missing(self):
+        """Subscript access raises KeyError for missing states."""
+        states = States(RAW_STATES)
+        with pytest.raises(KeyError, match="nonexistent"):
+            states["nonexistent"]
+
+    def test_getitem_returns_state_on_hit(self):
+        """Subscript access returns the State for a known name."""
+        states = States(RAW_STATES)
+        state = states[STATE]
+        assert state.name == STATE
+
+    def test_contains_existing(self):
+        """'in' operator returns True for existing state names."""
+        states = States(RAW_STATES)
+        assert STATE in states
+
+    def test_contains_missing(self):
+        """'in' operator returns False for missing state names."""
+        states = States(RAW_STATES)
+        assert "nonexistent" not in states
+
+    def test_setitem_replaces_existing(self):
+        """Setting an existing state replaces it."""
+        states = States(RAW_STATES)
+        new_state = State(name=STATE, type=DataType.INTEGER, value=42)
+        states[STATE] = new_state
+        assert states.get(STATE).value == 42
+
+    def test_setitem_appends_new(self):
+        """Setting a new state appends it."""
+        states = States(RAW_STATES)
+        initial_len = len(states)
+        new_state = State(name="new:State", type=DataType.INTEGER, value=1)
+        states["new:State"] = new_state
+        assert len(states) == initial_len + 1
+        assert states.get("new:State").value == 1
+
 
 class TestCommandDefinitions:
     """Tests for CommandDefinitions container and helper methods."""
@@ -471,6 +509,33 @@ class TestCommandDefinitions:
         """has_any() returns False when no command matches."""
         cmds = CommandDefinitions([{"command_name": "close", "nparams": 0}])
         assert not cmds.has_any(["nonexistent", "also_nonexistent"])
+
+    def test_getitem_raises_keyerror_on_missing(self):
+        """Subscript access raises KeyError for missing commands."""
+        cmds = CommandDefinitions([{"command_name": "close", "nparams": 0}])
+        with pytest.raises(KeyError, match="nonexistent"):
+            cmds["nonexistent"]
+
+    def test_getitem_returns_command_on_hit(self):
+        """Subscript access returns the CommandDefinition for a known command."""
+        cmds = CommandDefinitions([{"command_name": "close", "nparams": 0}])
+        cmd = cmds["close"]
+        assert cmd.command_name == "close"
+
+    def test_get_returns_none_on_missing(self):
+        """get() returns None for missing commands."""
+        cmds = CommandDefinitions([{"command_name": "close", "nparams": 0}])
+        assert cmds.get("nonexistent") is None
+
+    def test_contains_existing(self):
+        """'in' operator returns True for existing command names."""
+        cmds = CommandDefinitions([{"command_name": "close", "nparams": 0}])
+        assert "close" in cmds
+
+    def test_contains_missing(self):
+        """'in' operator returns False for missing command names."""
+        cmds = CommandDefinitions([{"command_name": "close", "nparams": 0}])
+        assert "nonexistent" not in cmds
 
 
 class TestDefinition:
