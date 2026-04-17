@@ -449,10 +449,12 @@ class CommandDefinitions:
     """Container for command definitions providing convenient lookup by name."""
 
     _commands: list[CommandDefinition]
+    _index: dict[str, CommandDefinition]
 
     def __init__(self, commands: list[dict[str, Any]]):
         """Build the inner list of CommandDefinition objects from raw data."""
         self._commands = [CommandDefinition(**command) for command in commands]
+        self._index = {cd.command_name: cd for cd in self._commands}
 
     def __iter__(self) -> Iterator[CommandDefinition]:
         """Iterate over defined commands."""
@@ -460,14 +462,11 @@ class CommandDefinitions:
 
     def __contains__(self, name: object) -> bool:
         """Return True if a command with `name` exists."""
-        return any(cd.command_name == name for cd in self._commands)
+        return name in self._index
 
     def __getitem__(self, command: str) -> CommandDefinition:
         """Return the command definition or raise KeyError if missing."""
-        result = next((cd for cd in self._commands if cd.command_name == command), None)
-        if result is None:
-            raise KeyError(command)
-        return result
+        return self._index[command]
 
     def __len__(self) -> int:
         """Return number of command definitions."""
@@ -475,12 +474,12 @@ class CommandDefinitions:
 
     def get(self, command: str) -> CommandDefinition | None:
         """Return the command definition or None if missing."""
-        return next((cd for cd in self._commands if cd.command_name == command), None)
+        return self._index.get(command)
 
     def select(self, commands: list[str | OverkizCommand]) -> str | None:
         """Return the first command name that exists in this definition, or None."""
         return next(
-            (str(command) for command in commands if str(command) in self), None
+            (str(command) for command in commands if str(command) in self._index), None
         )
 
     def has_any(self, commands: list[str | OverkizCommand]) -> bool:
@@ -588,6 +587,7 @@ class States:
     """Container of State objects providing lookup and mapping helpers."""
 
     _states: list[State]
+    _index: dict[str, State]
 
     def __init__(self, states: list[dict[str, Any]] | None = None) -> None:
         """Create a container of State objects from raw state dicts or an empty list."""
@@ -595,6 +595,7 @@ class States:
             self._states = [State(**state) for state in states]
         else:
             self._states = []
+        self._index = {state.name: state for state in self._states}
 
     def __iter__(self) -> Iterator[State]:
         """Return an iterator over contained State objects."""
@@ -602,22 +603,20 @@ class States:
 
     def __contains__(self, name: object) -> bool:
         """Return True if a state with the given name exists in the container."""
-        return any(state.name == name for state in self._states)
+        return name in self._index
 
     def __getitem__(self, name: str) -> State:
         """Return the State with the given name or raise KeyError if missing."""
-        result = next((state for state in self._states if state.name == name), None)
-        if result is None:
-            raise KeyError(name)
-        return result
+        return self._index[name]
 
     def __setitem__(self, name: str, state: State) -> None:
         """Set or append a State identified by name."""
-        found = self.get(name)
-        if found is None:
-            self._states.append(state)
+        if name in self._index:
+            idx = self._states.index(self._index[name])
+            self._states[idx] = state
         else:
-            self._states[self._states.index(found)] = state
+            self._states.append(state)
+        self._index[name] = state
 
     def __len__(self) -> int:
         """Return number of states in the container."""
@@ -625,12 +624,12 @@ class States:
 
     def get(self, name: str) -> State | None:
         """Return the State with the given name or None if missing."""
-        return next((state for state in self._states if state.name == name), None)
+        return self._index.get(name)
 
     def select(self, names: list[str]) -> State | None:
         """Return the first State that exists and has a non-None value, or None."""
         for name in names:
-            state = self.get(name)
+            state = self._index.get(name)
             if state is not None and state.value is not None:
                 return state
         return None
