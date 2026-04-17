@@ -25,6 +25,18 @@ class AuthContext:
             datetime.UTC
         ) >= self.expires_at - datetime.timedelta(seconds=skew_seconds)
 
+    def update_from_token(self, token: dict[str, object]) -> None:
+        """Update context from an OAuth token response."""
+        from typing import cast
+
+        self.access_token = cast(str, token["access_token"])
+        self.refresh_token = cast(str | None, token.get("refresh_token"))
+        expires_in = token.get("expires_in")
+        if expires_in:
+            self.expires_at = datetime.datetime.now(datetime.UTC) + datetime.timedelta(
+                seconds=cast(int, expires_in) - 5
+            )
+
 
 class AuthStrategy(Protocol):
     """Protocol for authentication strategies."""
