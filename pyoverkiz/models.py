@@ -36,8 +36,6 @@ from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 
 # pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
 
-T = Any  # generic type alias for converter factories
-
 
 def _to_list(cls_or_name: type | str) -> Any:
     """Converter: list of dicts -> list of model instances.
