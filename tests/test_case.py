@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from pyoverkiz._case import camelize, decamelize
+from pyoverkiz._case import camelize_key, decamelize
 
 
 class TestDecamelize:
@@ -69,15 +69,15 @@ class TestCamelize:
 
     def test_simple_snake_case(self):
         """Simple snake_case keys are converted correctly."""
-        assert camelize("creation_time") == "creationTime"
+        assert camelize_key("creation_time") == "creationTime"
 
     def test_single_word(self):
         """Single word without underscores is unchanged."""
-        assert camelize("name") == "name"
+        assert camelize_key("name") == "name"
 
     def test_device_url(self):
         """device_url camelizes to deviceUrl (abbreviation fix is in serializers)."""
-        assert camelize("device_url") == "deviceUrl"
+        assert camelize_key("device_url") == "deviceUrl"
 
 
 class TestRoundTrip:
@@ -100,4 +100,4 @@ class TestRoundTrip:
     def test_roundtrip(self, camel: str):
         """Decamelize then camelize returns the original key."""
         snake = next(iter(decamelize({camel: None}).keys()))
-        assert camelize(snake) == camel
+        assert camelize_key(snake) == camel
