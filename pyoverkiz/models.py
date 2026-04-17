@@ -691,10 +691,10 @@ class Event:
     condition_groupoid: str | None = None
     place_oid: str | None = None
     label: str | None = None
-    metadata: Any | None = None
+    metadata: str | None = None
     camera_id: str | None = None
-    deleted_raw_devices_count: Any | None = None
-    protocol_type: Any | None = None
+    deleted_raw_devices_count: int | None = None
+    protocol_type: int | None = None
     gateway_id: str | None = field(repr=obfuscate_id, default=None)
     exec_id: str | None = None
     device_url: str | None = field(repr=obfuscate_id, default=None)
