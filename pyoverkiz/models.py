@@ -653,7 +653,16 @@ class Execution:
     description: str
     owner: str = field(repr=obfuscate_email)
     state: str
-    action_group: ActionGroup = field(converter=_to_optional("ActionGroup"))
+    action_group: ActionGroup | None = field(
+        default=None, converter=_to_optional("ActionGroup")
+    )
+    start_time: int | None = None
+    execution_type: ExecutionType | None = field(
+        default=None, converter=_to_optional_enum(ExecutionType)
+    )
+    execution_sub_type: ExecutionSubType | None = field(
+        default=None, converter=_to_optional_enum(ExecutionSubType)
+    )
 
 
 @_flexible_init
