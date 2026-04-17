@@ -164,7 +164,7 @@ class Location:
     dusk_offset: int = 0
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class DeviceIdentifier:
     """Parsed components from a device URL."""
 
@@ -174,20 +174,11 @@ class DeviceIdentifier:
     subsystem_id: int | None = None
     base_device_url: str = field(repr=obfuscate_id, init=False)
 
-    def __init__(
-        self,
-        *,
-        protocol: Protocol,
-        gateway_id: str,
-        device_address: str,
-        subsystem_id: int | None = None,
-    ) -> None:
-        """Initialize DeviceIdentifier with required URL components."""
-        self.protocol = protocol
-        self.gateway_id = gateway_id
-        self.device_address = device_address
-        self.subsystem_id = subsystem_id
-        self.base_device_url = f"{protocol}://{gateway_id}/{device_address}"
+    def __attrs_post_init__(self) -> None:
+        """Compute base_device_url from protocol, gateway_id and device_address."""
+        self.base_device_url = (
+            f"{self.protocol}://{self.gateway_id}/{self.device_address}"
+        )
 
     @property
     def is_sub_device(self) -> bool:
