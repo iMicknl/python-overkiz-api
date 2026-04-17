@@ -198,7 +198,7 @@ await client.execute_action_group(
 
 ## Limitations and rate limits
 
-Gateways impose limits on how many executions can run or be queued simultaneously. If the execution queue is full, the API will raise an `ExecutionQueueFullException`. Most gateways allow up to 10 concurrent executions.
+Gateways impose limits on how many executions can run or be queued simultaneously. If the execution queue is full, the API will raise an `ExecutionQueueFullError`. Most gateways allow up to 10 concurrent executions.
 
 ### Action queue (batching across calls)
 

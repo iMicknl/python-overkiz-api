@@ -23,13 +23,13 @@ from pyoverkiz.auth import AuthStrategy, Credentials, build_auth_strategy
 from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.enums import APIType, CommandMode, Server
 from pyoverkiz.exceptions import (
-    ExecutionQueueFullException,
-    InvalidEventListenerIdException,
-    NoRegisteredEventListenerException,
-    NotAuthenticatedException,
-    OverkizException,
-    TooManyConcurrentRequestsException,
-    TooManyExecutionsException,
+    ExecutionQueueFullError,
+    InvalidEventListenerIdError,
+    NoRegisteredEventListenerError,
+    NotAuthenticatedError,
+    OverkizError,
+    TooManyConcurrentRequestsError,
+    TooManyExecutionsError,
 )
 from pyoverkiz.models import (
     Action,
@@ -74,7 +74,7 @@ async def refresh_listener(invocation: Details) -> None:
 # Reusable backoff decorators to reduce code duplication
 retry_on_auth_error = backoff.on_exception(
     backoff.expo,
-    (NotAuthenticatedException, ServerDisconnectedError),
+    (NotAuthenticatedError, ServerDisconnectedError),
     max_tries=2,
     on_backoff=relogin,
     logger=_LOGGER,
@@ -89,21 +89,21 @@ retry_on_connection_failure = backoff.on_exception(
 
 retry_on_concurrent_requests = backoff.on_exception(
     backoff.expo,
-    TooManyConcurrentRequestsException,
+    TooManyConcurrentRequestsError,
     max_tries=5,
     logger=_LOGGER,
 )
 
 retry_on_too_many_executions = backoff.on_exception(
     backoff.expo,
-    TooManyExecutionsException,
+    TooManyExecutionsError,
     max_tries=10,
     logger=_LOGGER,
 )
 
 retry_on_listener_error = backoff.on_exception(
     backoff.expo,
-    (InvalidEventListenerIdException, NoRegisteredEventListenerException),
+    (InvalidEventListenerIdError, NoRegisteredEventListenerError),
     max_tries=2,
     on_backoff=refresh_listener,
     logger=_LOGGER,
@@ -111,7 +111,7 @@ retry_on_listener_error = backoff.on_exception(
 
 retry_on_execution_queue_full = backoff.on_exception(
     backoff.expo,
-    ExecutionQueueFullException,
+    ExecutionQueueFullError,
     max_tries=5,
     logger=_LOGGER,
 )
@@ -241,7 +241,7 @@ class OverkizClient:
         try:
             return SUPPORTED_SERVERS[server_key]
         except KeyError as error:
-            raise OverkizException(
+            raise OverkizError(
                 f"Unknown server '{server_key}'. Provide a supported server key or ServerConfig instance."
             ) from error
 
@@ -629,7 +629,7 @@ class OverkizClient:
 
         For example `developerMode-{gateway_id}` and `gatewayId` to understand if developer mode is on.
 
-        If the option is not available, an OverkizException will be thrown.
+        If the option is not available, an OverkizError will be thrown.
         If the parameter is not available you will receive None.
         """
         response = await self._get(f"setup/options/{option}/{parameter}")

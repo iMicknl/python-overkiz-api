@@ -32,8 +32,8 @@ from pyoverkiz.auth.credentials import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.enums import Server
 from pyoverkiz.exceptions import (
-    InvalidEventListenerIdException,
-    NoRegisteredEventListenerException,
+    InvalidEventListenerIdError,
+    NoRegisteredEventListenerError,
 )
 
 
@@ -48,7 +48,7 @@ async def main() -> None:
         while True:
             try:
                 events = await client.fetch_events()
-            except (InvalidEventListenerIdException, NoRegisteredEventListenerException):
+            except (InvalidEventListenerIdError, NoRegisteredEventListenerError):
                 await asyncio.sleep(1)
                 await client.register_event_listener()
                 continue
@@ -96,6 +96,6 @@ asyncio.run(main())
 
 ## Reconnect tips
 
-- Re-register the listener when you see `InvalidEventListenerIdException`.
+- Re-register the listener when you see `InvalidEventListenerIdError`.
 - Poll occasionally if your network has unstable connectivity.
 - Keep the fetch loop alive to avoid listener timeout.

@@ -38,7 +38,7 @@ from pyoverkiz.auth.strategies import (
     _decode_jwt_payload,
 )
 from pyoverkiz.enums import APIType, Server
-from pyoverkiz.exceptions import InvalidTokenException, NexityBadCredentialsException
+from pyoverkiz.exceptions import InvalidTokenError, NexityBadCredentialsError
 from pyoverkiz.models import ServerConfig
 
 
@@ -493,7 +493,7 @@ class TestNexityAuthStrategy:
 
     @pytest.mark.asyncio
     async def test_login_maps_invalid_credentials_client_error(self):
-        """Map Cognito bad-credential errors to NexityBadCredentialsException."""
+        """Map Cognito bad-credential errors to NexityBadCredentialsError."""
         server_config = ServerConfig(
             server=Server.NEXITY,
             name="Nexity",
@@ -516,7 +516,7 @@ class TestNexityAuthStrategy:
             patch(
                 "pyoverkiz.auth.strategies.WarrantLite", return_value=warrant_instance
             ),
-            pytest.raises(NexityBadCredentialsException),
+            pytest.raises(NexityBadCredentialsError),
         ):
             strategy = NexityAuthStrategy(
                 credentials, session, server_config, True, APIType.CLOUD
@@ -561,7 +561,7 @@ class TestRexelAuthStrategy:
 
     @pytest.mark.asyncio
     async def test_exchange_token_error_response(self):
-        """Ensure OAuth error payloads raise InvalidTokenException before parsing access token."""
+        """Ensure OAuth error payloads raise InvalidTokenError before parsing access token."""
         server_config = ServerConfig(
             server=Server.REXEL,
             name="Rexel",
@@ -585,7 +585,7 @@ class TestRexelAuthStrategy:
             credentials, session, server_config, True, APIType.CLOUD
         )
 
-        with pytest.raises(InvalidTokenException, match="bad grant"):
+        with pytest.raises(InvalidTokenError, match="bad grant"):
             await strategy._exchange_token({"grant_type": "authorization_code"})
 
     def test_ensure_consent_missing(self):
@@ -597,10 +597,10 @@ class TestRexelAuthStrategy:
         )
         token = f"header.{payload_segment}.sig"
 
-        with pytest.raises(InvalidTokenException, match="Consent is missing"):
+        with pytest.raises(InvalidTokenError, match="Consent is missing"):
             RexelAuthStrategy._ensure_consent(token)
 
     def test_decode_jwt_payload_invalid_format(self):
-        """Malformed tokens raise InvalidTokenException during decoding."""
-        with pytest.raises(InvalidTokenException):
+        """Malformed tokens raise InvalidTokenError during decoding."""
+        with pytest.raises(InvalidTokenError):
             _decode_jwt_payload("invalid.token")
