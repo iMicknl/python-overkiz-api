@@ -854,30 +854,16 @@ class Zone:
     oid: str = ""
 
 
-def _to_server_enum(value: Server | str | None) -> Server | None:
-    """Converter for ServerConfig.server field."""
-    if value is None or isinstance(value, Server):
-        return value
-    return Server(value)
-
-
-def _to_api_type(value: str | APIType) -> APIType:
-    """Converter for ServerConfig.api_type field."""
-    if isinstance(value, APIType):
-        return value
-    return APIType(value)
-
-
 @_flexible_init
 @define(kw_only=True)
 class ServerConfig:
     """Connection target details for an Overkiz-compatible server."""
 
-    server: Server | None = field(default=None, converter=_to_server_enum)
+    server: Server | None = field(default=None, converter=_to_optional_enum(Server))
     name: str
     endpoint: str
     manufacturer: str
-    api_type: APIType = field(converter=_to_api_type)
+    api_type: APIType = field(converter=_to_optional_enum(APIType))
     configuration_url: str | None = None
 
 
