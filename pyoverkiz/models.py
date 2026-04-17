@@ -209,13 +209,6 @@ def _to_states(value: list[dict[str, Any]] | States | None) -> States:
     return States(value)
 
 
-def _to_command_definitions(value: Any) -> Any:
-    """Converter: raw list -> CommandDefinitions, or passthrough."""
-    if isinstance(value, list):
-        return _resolve("CommandDefinitions")(value)
-    return value
-
-
 @_flexible_init
 @define(kw_only=True)
 class Device:
