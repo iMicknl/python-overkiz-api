@@ -50,12 +50,12 @@ class TestOverkizClient:
     @pytest.mark.asyncio
     async def test_get_api_type_cloud(self, client: OverkizClient):
         """Verify that a cloud-configured client reports APIType.CLOUD."""
-        assert client.server_config.type == APIType.CLOUD
+        assert client.server_config.api_type == APIType.CLOUD
 
     @pytest.mark.asyncio
     async def test_get_api_type_local(self, local_client: OverkizClient):
         """Verify that a local-configured client reports APIType.LOCAL."""
-        assert local_client.server_config.type == APIType.LOCAL
+        assert local_client.server_config.api_type == APIType.LOCAL
 
     @pytest.mark.asyncio
     async def test_get_devices_basic(self, client: OverkizClient):
