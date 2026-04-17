@@ -12,6 +12,7 @@ from typing import Any, cast
 import backoff
 from aiohttp import (
     ClientConnectorError,
+    ClientResponse,
     ClientSession,
     ServerDisconnectedError,
 )
@@ -478,23 +479,10 @@ class OverkizClient:
         The executed action group does not have to be persisted on the server before use.
         Per-session rate-limit : 1 calls per 28min 48s period for all operations of the same category (exec)
         """
-        # Build a logical (snake_case) payload using model helpers and convert it
-        # to the exact JSON schema expected by the API (camelCase + small fixes).
         payload = {"label": label, "actions": [a.to_payload() for a in actions]}
+        url = f"exec/apply/{mode.value}" if mode else "exec/apply"
 
-        # Prepare final payload with camelCase keys and special abbreviation handling
-        final_payload = prepare_payload(payload)
-
-        if mode == CommandMode.GEOLOCATED:
-            url = "exec/apply/geolocated"
-        elif mode == CommandMode.INTERNAL:
-            url = "exec/apply/internal"
-        elif mode == CommandMode.HIGH_PRIORITY:
-            url = "exec/apply/highPriority"
-        else:
-            url = "exec/apply"
-
-        response: dict = await self._post(url, final_payload)
+        response: dict = await self._post(url, prepare_payload(payload))
 
         return cast(str, response["execId"])
 
@@ -710,54 +698,47 @@ class OverkizClient:
     async def _get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API."""
         await self._refresh_token_if_expired()
-        headers = dict(self._auth.auth_headers(path))
 
         async with self.session.get(
             f"{self.server_config.endpoint}{path}",
-            headers=headers,
+            headers=self._auth.auth_headers(path),
             ssl=self._ssl,
         ) as response:
-            await check_response(response)
-
-            # 204 has no body.
-            if response.status == 204:
-                return None
-
-            return await response.json()
+            return await self._parse_response(response)
 
     async def _post(
         self, path: str, payload: JSON | None = None, data: JSON | None = None
     ) -> Any:
         """Make a POST request to the OverKiz API."""
         await self._refresh_token_if_expired()
-        headers = dict(self._auth.auth_headers(path))
 
         async with self.session.post(
             f"{self.server_config.endpoint}{path}",
             data=data,
             json=payload,
-            headers=headers,
+            headers=self._auth.auth_headers(path),
             ssl=self._ssl,
         ) as response:
-            await check_response(response)
-
-            # 204 has no body.
-            if response.status == 204:
-                return None
-
-            return await response.json()
+            return await self._parse_response(response)
 
     async def _delete(self, path: str) -> None:
         """Make a DELETE request to the OverKiz API."""
         await self._refresh_token_if_expired()
-        headers = dict(self._auth.auth_headers(path))
 
         async with self.session.delete(
             f"{self.server_config.endpoint}{path}",
-            headers=headers,
+            headers=self._auth.auth_headers(path),
             ssl=self._ssl,
         ) as response:
             await check_response(response)
+
+    @staticmethod
+    async def _parse_response(response: ClientResponse) -> Any:
+        """Check response status and parse JSON body (returns None for 204)."""
+        await check_response(response)
+        if response.status == 204:
+            return None
+        return await response.json()
 
     async def _refresh_token_if_expired(self) -> None:
         """Check if token is expired and request a new one."""
