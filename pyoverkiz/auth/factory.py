@@ -43,7 +43,7 @@ def build_auth_strategy(
             session,
             server_config,
             ssl_context,
-            server_config.type,
+            server_config.api_type,
         )
 
     if server in {
@@ -56,7 +56,7 @@ def build_auth_strategy(
             session,
             server_config,
             ssl_context,
-            server_config.type,
+            server_config.api_type,
         )
 
     if server == Server.NEXITY:
@@ -65,7 +65,7 @@ def build_auth_strategy(
             session,
             server_config,
             ssl_context,
-            server_config.type,
+            server_config.api_type,
         )
 
     if server == Server.REXEL:
@@ -74,27 +74,27 @@ def build_auth_strategy(
             session,
             server_config,
             ssl_context,
-            server_config.type,
+            server_config.api_type,
         )
 
-    if server_config.type == APIType.LOCAL:
+    if server_config.api_type == APIType.LOCAL:
         if isinstance(credentials, LocalTokenCredentials):
             return LocalTokenAuthStrategy(
-                credentials, session, server_config, ssl_context, server_config.type
+                credentials, session, server_config, ssl_context, server_config.api_type
             )
         return BearerTokenAuthStrategy(
             _ensure_token(credentials),
             session,
             server_config,
             ssl_context,
-            server_config.type,
+            server_config.api_type,
         )
 
     if isinstance(credentials, TokenCredentials) and not isinstance(
         credentials, LocalTokenCredentials
     ):
         return BearerTokenAuthStrategy(
-            credentials, session, server_config, ssl_context, server_config.type
+            credentials, session, server_config, ssl_context, server_config.api_type
         )
 
     return SessionLoginStrategy(
@@ -102,7 +102,7 @@ def build_auth_strategy(
         session,
         server_config,
         ssl_context,
-        server_config.type,
+        server_config.api_type,
     )
 
 
