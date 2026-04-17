@@ -5,7 +5,7 @@ from __future__ import annotations
 import datetime
 from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Any, Protocol
 
 
 @dataclass(slots=True)
@@ -24,6 +24,18 @@ class AuthContext:
         return datetime.datetime.now(
             datetime.UTC
         ) >= self.expires_at - datetime.timedelta(seconds=skew_seconds)
+
+    def update_from_token(self, token: dict[str, Any]) -> None:
+        """Update context from an OAuth token response."""
+        self.access_token = str(token["access_token"])
+        self.refresh_token = (
+            str(token["refresh_token"]) if "refresh_token" in token else None
+        )
+        expires_in = token.get("expires_in")
+        if expires_in is not None:
+            self.expires_at = datetime.datetime.now(datetime.UTC) + datetime.timedelta(
+                seconds=int(expires_in) - 5
+            )
 
 
 class AuthStrategy(Protocol):
