@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import functools
 import logging
 import ssl
 import urllib.parse
@@ -119,27 +120,14 @@ retry_on_execution_queue_full = backoff.on_exception(
 # pylint: disable=too-many-instance-attributes, too-many-branches
 
 
-def _create_local_ssl_context() -> ssl.SSLContext:
-    """Create SSL context.
-
-    This method is not async-friendly and should be called from a thread
-    because it will load certificates from disk and do other blocking I/O.
-    """
+@functools.lru_cache(maxsize=1)
+def _get_local_ssl_context() -> ssl.SSLContext:
+    """Return the shared SSL context for local API connections, creating it on first use."""
     context = ssl.create_default_context(
         cafile=str(Path(__file__).resolve().parent / "overkiz-root-ca-2048.crt")
     )
-
-    # Disable strict validation introduced in Python 3.13, which doesn't work with
-    # Overkiz self-signed gateway certificates. Applied once to the shared context.
     context.verify_flags &= ~ssl.VERIFY_X509_STRICT
-
     return context
-
-
-# The default SSLContext objects are created at import time
-# since they do blocking I/O to load certificates from disk,
-# and imports should always be done before the event loop starts or in a thread.
-SSL_CONTEXT_LOCAL_API = _create_local_ssl_context()
 
 
 class OverkizClient:
@@ -188,7 +176,7 @@ class OverkizClient:
 
         if self.server_config.api_type == APIType.LOCAL and verify_ssl:
             # Use the prebuilt SSL context with disabled strict validation for local API.
-            self._ssl = SSL_CONTEXT_LOCAL_API
+            self._ssl = _get_local_ssl_context()
 
         # Initialize action queue if enabled
         queue_settings: ActionQueueSettings | None
