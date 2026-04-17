@@ -10,15 +10,14 @@ from __future__ import annotations
 
 from typing import Any
 
-import humps
+from pyoverkiz._case import camelize_key, recursive_key_map
 
-# Small mapping for keys that need special casing beyond simple camelCase.
 _ABBREV_MAP: dict[str, str] = {"deviceUrl": "deviceURL"}
 
 
 def _camelize_key(key: str) -> str:
     """Camelize a single key and apply abbreviation fixes in one step."""
-    camel = humps.camelize(key)
+    camel = camelize_key(key)
     return _ABBREV_MAP.get(camel, camel)
 
 
@@ -32,8 +31,4 @@ def prepare_payload(payload: Any) -> Any:
         payload = {"device_url": "x", "commands": [{"name": "close"}]}
         => {"deviceURL": "x", "commands": [{"name": "close"}]}
     """
-    if isinstance(payload, dict):
-        return {_camelize_key(k): prepare_payload(v) for k, v in payload.items()}
-    if isinstance(payload, list):
-        return [prepare_payload(item) for item in payload]
-    return payload
+    return recursive_key_map(payload, _camelize_key)
