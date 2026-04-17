@@ -741,7 +741,9 @@ class Gateway:
     """Representation of a gateway, including connectivity and partner info."""
 
     gateway_id: str = field(repr=obfuscate_id)
-    connectivity: Connectivity = field(converter=_to_optional(Connectivity))
+    connectivity: Connectivity | None = field(
+        default=None, converter=_to_optional(Connectivity)
+    )
     partners: list[Partner] = field(factory=list, converter=_to_list(Partner))
     functions: str | None = None
     sub_type: GatewaySubType | None = field(
