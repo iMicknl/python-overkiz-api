@@ -1,8 +1,4 @@
-"""Internal camelCase / snake_case conversion utilities.
-
-Replaces the external ``pyhumps`` dependency with a minimal implementation
-covering only the patterns used by the Overkiz API.
-"""
+"""Internal camelCase / snake_case conversion utilities."""
 
 from __future__ import annotations
 
