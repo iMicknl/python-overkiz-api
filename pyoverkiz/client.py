@@ -186,7 +186,7 @@ class OverkizClient:
         )
         self._ssl = verify_ssl
 
-        if self.server_config.type == APIType.LOCAL and verify_ssl:
+        if self.server_config.api_type == APIType.LOCAL and verify_ssl:
             # Use the prebuilt SSL context with disabled strict validation for local API.
             self._ssl = SSL_CONTEXT_LOCAL_API
 
@@ -267,7 +267,7 @@ class OverkizClient:
         """
         await self._auth.login()
 
-        if self.server_config.type == APIType.LOCAL:
+        if self.server_config.api_type == APIType.LOCAL:
             if register_event_listener:
                 await self.register_event_listener()
             else:
