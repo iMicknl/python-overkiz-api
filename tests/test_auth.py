@@ -8,6 +8,7 @@ from __future__ import annotations
 import base64
 import datetime
 import json
+import sys
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -491,6 +492,26 @@ class TestBearerTokenAuthStrategy:
 class TestNexityAuthStrategy:
     """Tests for Nexity auth error mapping behavior."""
 
+    def test_boto3_not_imported_at_module_load(self):
+        """Verify boto3 and warrant_lite are lazy-imported, not at module load."""
+        saved = {}
+        for mod in ("boto3", "botocore", "warrant_lite"):
+            saved[mod] = sys.modules.pop(mod, None)
+
+        try:
+            import importlib
+
+            import pyoverkiz.auth.strategies
+
+            importlib.reload(pyoverkiz.auth.strategies)
+
+            assert "boto3" not in sys.modules
+            assert "warrant_lite" not in sys.modules
+        finally:
+            for mod, value in saved.items():
+                if value is not None:
+                    sys.modules[mod] = value
+
     @pytest.mark.asyncio
     async def test_login_maps_invalid_credentials_client_error(self):
         """Map Cognito bad-credential errors to NexityBadCredentialsError."""
@@ -512,10 +533,8 @@ class TestNexityAuthStrategy:
         warrant_instance.authenticate_user.side_effect = bad_credentials_error
 
         with (
-            patch("pyoverkiz.auth.strategies.boto3.client", return_value=MagicMock()),
-            patch(
-                "pyoverkiz.auth.strategies.WarrantLite", return_value=warrant_instance
-            ),
+            patch("boto3.client", return_value=MagicMock()),
+            patch("warrant_lite.WarrantLite", return_value=warrant_instance),
             pytest.raises(NexityBadCredentialsError),
         ):
             strategy = NexityAuthStrategy(
@@ -544,10 +563,8 @@ class TestNexityAuthStrategy:
         warrant_instance.authenticate_user.side_effect = service_error
 
         with (
-            patch("pyoverkiz.auth.strategies.boto3.client", return_value=MagicMock()),
-            patch(
-                "pyoverkiz.auth.strategies.WarrantLite", return_value=warrant_instance
-            ),
+            patch("boto3.client", return_value=MagicMock()),
+            patch("warrant_lite.WarrantLite", return_value=warrant_instance),
             pytest.raises(ClientError, match="InternalErrorException"),
         ):
             strategy = NexityAuthStrategy(
