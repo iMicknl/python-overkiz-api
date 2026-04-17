@@ -18,7 +18,7 @@ class TestObfucscate:
             ("contact_-_nexity.com", "c****@****y.com"),
         ],
     )
-    def test_email_obfuscate(self, email: str, obfuscated: str):
+    def test_email_obfuscate(self, email: str, obfuscated: str) -> None:
         """Verify email obfuscation produces the expected masked result."""
         assert obfuscate_email(email) == obfuscated
 
@@ -26,7 +26,7 @@ class TestObfucscate:
 class TestObfucscateSensitive:
     """Tests around obfuscating sensitive structures while preserving non-sensitive content."""
 
-    def test_obfuscate_list_with_none(self):
+    def test_obfuscate_list_with_none(self) -> None:
         """Ensure lists containing None values are handled without modification."""
         input = {
             "d": [

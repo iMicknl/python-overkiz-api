@@ -72,11 +72,10 @@ def _to_optional(cls_or_name: type | str) -> Any:
 def _resolve(cls_or_name: type | str) -> type:
     """Resolve a class from its name (lazy forward reference) or return it directly."""
     if isinstance(cls_or_name, str):
-        # Look up in the module's global namespace
         result = globals().get(cls_or_name)
         if result is None:
             raise NameError(f"Cannot resolve forward reference '{cls_or_name}'")
-        return result
+        return cast(type, result)
     return cls_or_name
 
 
@@ -220,11 +219,22 @@ def _to_states(value: list[dict[str, Any]] | States | None) -> States:
     return States(value)
 
 
-def _to_definition(value: dict[str, Any] | Definition) -> Definition:
-    """Converter: raw dict or Definition -> Definition instance."""
-    if isinstance(value, Definition):
-        return value
-    return Definition(**value)
+def _to_definition(value: Any) -> Any:
+    """Converter: raw dict -> Definition, or passthrough.
+
+    Uses lazy resolution since Definition is defined later in this module.
+    """
+    cls = _resolve("Definition")
+    if isinstance(value, dict):
+        return cls(**value)
+    return value
+
+
+def _to_command_definitions(value: Any) -> Any:
+    """Converter: raw list -> CommandDefinitions, or passthrough."""
+    if isinstance(value, list):
+        return _resolve("CommandDefinitions")(value)
+    return value
 
 
 @define(init=False, kw_only=True)
@@ -399,11 +409,7 @@ class StateDefinition:
 class Definition:
     """Definition of device capabilities: command definitions, state definitions and UI hints."""
 
-    commands: CommandDefinitions = field(
-        converter=lambda v: _resolve("CommandDefinitions")(v)
-        if isinstance(v, list)
-        else v
-    )
+    commands: CommandDefinitions = field(converter=_to_command_definitions)
     states: list[StateDefinition] = field(
         factory=list, converter=_to_list(StateDefinition)
     )
@@ -572,7 +578,7 @@ class EventState(State):
     def _cast_json_value(self, raw_value: str) -> StateType:
         """Cast JSON event state values; raise on decode errors."""
         try:
-            return json.loads(raw_value)
+            return cast(StateType, json.loads(raw_value))
         except json.JSONDecodeError as err:
             raise ValueError(
                 f"Invalid JSON for event state `{self.name}` ({self.type.name}): {err}"

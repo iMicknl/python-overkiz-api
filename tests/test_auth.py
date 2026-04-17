@@ -45,31 +45,31 @@ from pyoverkiz.models import ServerConfig
 class TestAuthContext:
     """Test AuthContext functionality."""
 
-    def test_not_expired_no_expiration(self):
+    def test_not_expired_no_expiration(self) -> None:
         """Test that context without expiration is not expired."""
         context = AuthContext(access_token="test_token")
         assert not context.is_expired()
 
-    def test_not_expired_future_expiration(self):
+    def test_not_expired_future_expiration(self) -> None:
         """Test that context with future expiration is not expired."""
         future = datetime.datetime.now(datetime.UTC) + datetime.timedelta(hours=1)
         context = AuthContext(access_token="test_token", expires_at=future)
         assert not context.is_expired()
 
-    def test_expired_past_expiration(self):
+    def test_expired_past_expiration(self) -> None:
         """Test that context with past expiration is expired."""
         past = datetime.datetime.now(datetime.UTC) - datetime.timedelta(hours=1)
         context = AuthContext(access_token="test_token", expires_at=past)
         assert context.is_expired()
 
-    def test_expired_with_skew(self):
+    def test_expired_with_skew(self) -> None:
         """Test that context respects skew time."""
         # Expires in 3 seconds, but default skew is 5
         soon = datetime.datetime.now(datetime.UTC) + datetime.timedelta(seconds=3)
         context = AuthContext(access_token="test_token", expires_at=soon)
         assert context.is_expired()
 
-    def test_not_expired_with_custom_skew(self):
+    def test_not_expired_with_custom_skew(self) -> None:
         """Test that custom skew time can be provided."""
         soon = datetime.datetime.now(datetime.UTC) + datetime.timedelta(seconds=3)
         context = AuthContext(access_token="test_token", expires_at=soon)
@@ -79,24 +79,24 @@ class TestAuthContext:
 class TestCredentials:
     """Test credential dataclasses."""
 
-    def test_username_password_credentials(self):
+    def test_username_password_credentials(self) -> None:
         """Test UsernamePasswordCredentials creation."""
         creds = UsernamePasswordCredentials("user@example.com", "password123")
         assert creds.username == "user@example.com"
         assert creds.password == "password123"
 
-    def test_token_credentials(self):
+    def test_token_credentials(self) -> None:
         """Test TokenCredentials creation."""
         creds = TokenCredentials("my_token_123")
         assert creds.token == "my_token_123"
 
-    def test_local_token_credentials(self):
+    def test_local_token_credentials(self) -> None:
         """Test LocalTokenCredentials creation."""
         creds = LocalTokenCredentials("local_token_456")
         assert creds.token == "local_token_456"
         assert isinstance(creds, TokenCredentials)
 
-    def test_rexel_oauth_credentials(self):
+    def test_rexel_oauth_credentials(self) -> None:
         """Test RexelOAuthCodeCredentials creation."""
         creds = RexelOAuthCodeCredentials("auth_code_xyz", "http://redirect.uri")
         assert creds.code == "auth_code_xyz"
@@ -106,50 +106,50 @@ class TestCredentials:
 class TestAuthFactory:
     """Test authentication factory functions."""
 
-    def test_ensure_username_password_valid(self):
+    def test_ensure_username_password_valid(self) -> None:
         """Test that valid username/password credentials pass validation."""
         creds = UsernamePasswordCredentials("user", "pass")
         result = _ensure_username_password(creds)
         assert result is creds
 
-    def test_ensure_username_password_invalid(self):
+    def test_ensure_username_password_invalid(self) -> None:
         """Test that invalid credentials raise TypeError."""
         creds = TokenCredentials("token")
         with pytest.raises(TypeError, match="UsernamePasswordCredentials are required"):
             _ensure_username_password(creds)
 
-    def test_ensure_token_valid(self):
+    def test_ensure_token_valid(self) -> None:
         """Test that valid token credentials pass validation."""
         creds = TokenCredentials("token")
         result = _ensure_token(creds)
         assert result is creds
 
-    def test_ensure_token_local_valid(self):
+    def test_ensure_token_local_valid(self) -> None:
         """Test that LocalTokenCredentials also pass token validation."""
         creds = LocalTokenCredentials("local_token")
         result = _ensure_token(creds)
         assert result is creds
 
-    def test_ensure_token_invalid(self):
+    def test_ensure_token_invalid(self) -> None:
         """Test that invalid credentials raise TypeError."""
         creds = UsernamePasswordCredentials("user", "pass")
         with pytest.raises(TypeError, match="TokenCredentials are required"):
             _ensure_token(creds)
 
-    def test_ensure_rexel_valid(self):
+    def test_ensure_rexel_valid(self) -> None:
         """Test that valid Rexel credentials pass validation."""
         creds = RexelOAuthCodeCredentials("code", "uri")
         result = _ensure_rexel(creds)
         assert result is creds
 
-    def test_ensure_rexel_invalid(self):
+    def test_ensure_rexel_invalid(self) -> None:
         """Test that invalid credentials raise TypeError."""
         creds = UsernamePasswordCredentials("user", "pass")
         with pytest.raises(TypeError, match="RexelOAuthCodeCredentials are required"):
             _ensure_rexel(creds)
 
     @pytest.mark.asyncio
-    async def test_build_auth_strategy_somfy(self):
+    async def test_build_auth_strategy_somfy(self) -> None:
         """Test building Somfy auth strategy."""
         server_config = ServerConfig(
             server=Server.SOMFY_EUROPE,
@@ -171,7 +171,7 @@ class TestAuthFactory:
         assert isinstance(strategy, SomfyAuthStrategy)
 
     @pytest.mark.asyncio
-    async def test_build_auth_strategy_cozytouch(self):
+    async def test_build_auth_strategy_cozytouch(self) -> None:
         """Test building Cozytouch auth strategy."""
         server_config = ServerConfig(
             server=Server.ATLANTIC_COZYTOUCH,
@@ -193,7 +193,7 @@ class TestAuthFactory:
         assert isinstance(strategy, CozytouchAuthStrategy)
 
     @pytest.mark.asyncio
-    async def test_build_auth_strategy_nexity(self):
+    async def test_build_auth_strategy_nexity(self) -> None:
         """Test building Nexity auth strategy."""
         server_config = ServerConfig(
             server=Server.NEXITY,
@@ -215,7 +215,7 @@ class TestAuthFactory:
         assert isinstance(strategy, NexityAuthStrategy)
 
     @pytest.mark.asyncio
-    async def test_build_auth_strategy_rexel(self):
+    async def test_build_auth_strategy_rexel(self) -> None:
         """Test building Rexel auth strategy."""
         server_config = ServerConfig(
             server=Server.REXEL,
@@ -237,7 +237,7 @@ class TestAuthFactory:
         assert isinstance(strategy, RexelAuthStrategy)
 
     @pytest.mark.asyncio
-    async def test_build_auth_strategy_local_token(self):
+    async def test_build_auth_strategy_local_token(self) -> None:
         """Test building local token auth strategy."""
         server_config = ServerConfig(
             server=None,
@@ -259,7 +259,7 @@ class TestAuthFactory:
         assert isinstance(strategy, LocalTokenAuthStrategy)
 
     @pytest.mark.asyncio
-    async def test_build_auth_strategy_local_bearer(self):
+    async def test_build_auth_strategy_local_bearer(self) -> None:
         """Test building local bearer token auth strategy."""
         server_config = ServerConfig(
             server=None,
@@ -281,7 +281,7 @@ class TestAuthFactory:
         assert isinstance(strategy, BearerTokenAuthStrategy)
 
     @pytest.mark.asyncio
-    async def test_build_auth_strategy_cloud_bearer(self):
+    async def test_build_auth_strategy_cloud_bearer(self) -> None:
         """Test building cloud bearer token auth strategy."""
         server_config = ServerConfig(
             server=Server.SOMFY_OCEANIA,
@@ -303,7 +303,7 @@ class TestAuthFactory:
         assert isinstance(strategy, BearerTokenAuthStrategy)
 
     @pytest.mark.asyncio
-    async def test_build_auth_strategy_session_login(self):
+    async def test_build_auth_strategy_session_login(self) -> None:
         """Test building generic session login auth strategy."""
         server_config = ServerConfig(
             server=Server.SOMFY_OCEANIA,
@@ -325,7 +325,7 @@ class TestAuthFactory:
         assert isinstance(strategy, SessionLoginStrategy)
 
     @pytest.mark.asyncio
-    async def test_build_auth_strategy_wrong_credentials_type(self):
+    async def test_build_auth_strategy_wrong_credentials_type(self) -> None:
         """Test that wrong credentials type raises TypeError."""
         server_config = ServerConfig(
             server=Server.SOMFY_EUROPE,
@@ -350,7 +350,7 @@ class TestSessionLoginStrategy:
     """Test SessionLoginStrategy."""
 
     @pytest.mark.asyncio
-    async def test_login_success(self):
+    async def test_login_success(self) -> None:
         """Test successful login with 200 response."""
         server_config = ServerConfig(
             server=Server.SOMFY_OCEANIA,
@@ -377,7 +377,7 @@ class TestSessionLoginStrategy:
         session.post.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_login_204_no_content(self):
+    async def test_login_204_no_content(self) -> None:
         """Test login with 204 No Content response."""
         server_config = ServerConfig(
             server=Server.SOMFY_OCEANIA,
@@ -405,7 +405,7 @@ class TestSessionLoginStrategy:
         assert not mock_response.json.called
 
     @pytest.mark.asyncio
-    async def test_refresh_if_needed_no_refresh(self):
+    async def test_refresh_if_needed_no_refresh(self) -> None:
         """Test that refresh_if_needed returns False when no refresh needed."""
         server_config = ServerConfig(
             server=Server.SOMFY_OCEANIA,
@@ -424,7 +424,7 @@ class TestSessionLoginStrategy:
 
         assert not result
 
-    def test_auth_headers_no_token(self):
+    def test_auth_headers_no_token(self) -> None:
         """Test that auth headers return empty dict when no token."""
         server_config = ServerConfig(
             server=Server.SOMFY_OCEANIA,
@@ -448,7 +448,7 @@ class TestBearerTokenAuthStrategy:
     """Test BearerTokenAuthStrategy."""
 
     @pytest.mark.asyncio
-    async def test_login_no_op(self):
+    async def test_login_no_op(self) -> None:
         """Test that login is a no-op for bearer tokens."""
         server_config = ServerConfig(
             server=None,
@@ -463,12 +463,11 @@ class TestBearerTokenAuthStrategy:
         strategy = BearerTokenAuthStrategy(
             credentials, session, server_config, True, APIType.CLOUD
         )
-        result = await strategy.login()
+        await strategy.login()
 
-        # Login should be a no-op
-        assert result is None
+        # Login should be a no-op (returns None implicitly)
 
-    def test_auth_headers_with_token(self):
+    def test_auth_headers_with_token(self) -> None:
         """Test that auth headers include Bearer token."""
         server_config = ServerConfig(
             server=None,
@@ -492,7 +491,7 @@ class TestNexityAuthStrategy:
     """Tests for Nexity auth error mapping behavior."""
 
     @pytest.mark.asyncio
-    async def test_login_maps_invalid_credentials_client_error(self):
+    async def test_login_maps_invalid_credentials_client_error(self) -> None:
         """Map Cognito bad-credential errors to NexityBadCredentialsException."""
         server_config = ServerConfig(
             server=Server.NEXITY,
@@ -524,7 +523,7 @@ class TestNexityAuthStrategy:
             await strategy.login()
 
     @pytest.mark.asyncio
-    async def test_login_propagates_non_auth_client_error(self):
+    async def test_login_propagates_non_auth_client_error(self) -> None:
         """Propagate non-auth Cognito errors to preserve failure context."""
         server_config = ServerConfig(
             server=Server.NEXITY,
@@ -560,7 +559,7 @@ class TestRexelAuthStrategy:
     """Tests for Rexel auth specifics."""
 
     @pytest.mark.asyncio
-    async def test_exchange_token_error_response(self):
+    async def test_exchange_token_error_response(self) -> None:
         """Ensure OAuth error payloads raise InvalidTokenException before parsing access token."""
         server_config = ServerConfig(
             server=Server.REXEL,
@@ -588,7 +587,7 @@ class TestRexelAuthStrategy:
         with pytest.raises(InvalidTokenException, match="bad grant"):
             await strategy._exchange_token({"grant_type": "authorization_code"})
 
-    def test_ensure_consent_missing(self):
+    def test_ensure_consent_missing(self) -> None:
         """Raising when JWT consent claim is missing or incorrect."""
         payload_segment = (
             base64.urlsafe_b64encode(json.dumps({"consent": "other"}).encode())
@@ -600,7 +599,7 @@ class TestRexelAuthStrategy:
         with pytest.raises(InvalidTokenException, match="Consent is missing"):
             RexelAuthStrategy._ensure_consent(token)
 
-    def test_decode_jwt_payload_invalid_format(self):
+    def test_decode_jwt_payload_invalid_format(self) -> None:
         """Malformed tokens raise InvalidTokenException during decoding."""
         with pytest.raises(InvalidTokenException):
             _decode_jwt_payload("invalid.token")

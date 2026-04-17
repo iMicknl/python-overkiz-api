@@ -11,7 +11,7 @@ LOCAL_HOST_BY_IP = "192.168.1.105:8443"
 class TestUtils:
     """Tests for utility helpers like local server generation and gateway checks."""
 
-    def test_create_local_server_config(self):
+    def test_create_local_server_config(self) -> None:
         """Create a local server descriptor using the host and default values."""
         local_server = create_local_server_config(host=LOCAL_HOST)
 
@@ -24,7 +24,7 @@ class TestUtils:
         assert local_server.name == "Somfy Developer Mode"
         assert local_server.configuration_url is None
 
-    def test_create_local_server_config_by_ip(self):
+    def test_create_local_server_config_by_ip(self) -> None:
         """Create a local server descriptor using an IP host and custom fields."""
         local_server = create_local_server_config(
             host=LOCAL_HOST_BY_IP,
@@ -50,6 +50,6 @@ class TestUtils:
             ("SOMFY_THERMOSTAT-19649", False),
         ],
     )
-    def test_is_overkiz_gateway(self, gateway_id: str, overkiz_gateway: bool):
+    def test_is_overkiz_gateway(self, gateway_id: str, overkiz_gateway: bool) -> None:
         """Detect whether a gateway id follows the Overkiz gateway pattern."""
         assert is_overkiz_gateway(gateway_id) == overkiz_gateway

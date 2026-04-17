@@ -330,7 +330,7 @@ class OverkizClient:
         if mask_sensitive_data:
             return obfuscate_sensitive_data(response)
 
-        return response
+        return cast(JSON, response)
 
     @retry_on_auth_error
     async def get_devices(self, refresh: bool = False) -> list[Device]:
@@ -640,19 +640,22 @@ class OverkizClient:
     @retry_on_auth_error
     async def get_reference_controllable(self, controllable_name: str) -> JSON:
         """Get a controllable definition."""
-        return await self._get(
-            f"reference/controllable/{urllib.parse.quote_plus(controllable_name)}"
+        return cast(
+            JSON,
+            await self._get(
+                f"reference/controllable/{urllib.parse.quote_plus(controllable_name)}"
+            ),
         )
 
     @retry_on_auth_error
     async def get_reference_controllable_types(self) -> JSON:
         """Get details about all supported controllable types."""
-        return await self._get("reference/controllableTypes")
+        return cast(JSON, await self._get("reference/controllableTypes"))
 
     @retry_on_auth_error
     async def search_reference_devices_model(self, payload: JSON) -> JSON:
         """Search reference device models using a POST payload."""
-        return await self._post("reference/devices/search", payload)
+        return cast(JSON, await self._post("reference/devices/search", payload))
 
     @retry_on_auth_error
     async def get_reference_protocol_types(self) -> list[ProtocolType]:
@@ -670,17 +673,17 @@ class OverkizClient:
     @retry_on_auth_error
     async def get_reference_timezones(self) -> JSON:
         """Get timezones list."""
-        return await self._get("reference/timezones")
+        return cast(JSON, await self._get("reference/timezones"))
 
     @retry_on_auth_error
     async def get_reference_ui_classes(self) -> list[str]:
         """Get a list of all defined UI classes."""
-        return await self._get("reference/ui/classes")
+        return cast(list[str], await self._get("reference/ui/classes"))
 
     @retry_on_auth_error
     async def get_reference_ui_classifiers(self) -> list[str]:
         """Get a list of all defined UI classifiers."""
-        return await self._get("reference/ui/classifiers")
+        return cast(list[str], await self._get("reference/ui/classifiers"))
 
     @retry_on_auth_error
     async def get_reference_ui_profile(self, profile_name: str) -> UIProfileDefinition:
@@ -700,12 +703,12 @@ class OverkizClient:
     @retry_on_auth_error
     async def get_reference_ui_profile_names(self) -> list[str]:
         """Get a list of all defined UI profiles (and form-factor variants)."""
-        return await self._get("reference/ui/profileNames")
+        return cast(list[str], await self._get("reference/ui/profileNames"))
 
     @retry_on_auth_error
     async def get_reference_ui_widgets(self) -> list[str]:
         """Get a list of all defined UI widgets."""
-        return await self._get("reference/ui/widgets")
+        return cast(list[str], await self._get("reference/ui/widgets"))
 
     async def _get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API."""

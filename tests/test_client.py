@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import os
+from typing import Any
 from unittest.mock import AsyncMock, patch
 
 import aiohttp
@@ -32,7 +33,7 @@ class TestOverkizClient:
     """Tests for the public OverkizClient behaviour (API type, devices, events, setup and diagnostics)."""
 
     @fixture
-    async def client(self):
+    async def client(self) -> OverkizClient:
         """Fixture providing an OverkizClient configured for the cloud server."""
         return OverkizClient(
             server=Server.SOMFY_EUROPE,
@@ -40,7 +41,7 @@ class TestOverkizClient:
         )
 
     @fixture
-    async def local_client(self):
+    async def local_client(self) -> OverkizClient:
         """Fixture providing an OverkizClient configured for a local (developer) server."""
         return OverkizClient(
             server=create_local_server_config(host="gateway-1234-5678-1243.local:8443"),
@@ -48,17 +49,17 @@ class TestOverkizClient:
         )
 
     @pytest.mark.asyncio
-    async def test_get_api_type_cloud(self, client: OverkizClient):
+    async def test_get_api_type_cloud(self, client: OverkizClient) -> None:
         """Verify that a cloud-configured client reports APIType.CLOUD."""
         assert client.server_config.api_type == APIType.CLOUD
 
     @pytest.mark.asyncio
-    async def test_get_api_type_local(self, local_client: OverkizClient):
+    async def test_get_api_type_local(self, local_client: OverkizClient) -> None:
         """Verify that a local-configured client reports APIType.LOCAL."""
         assert local_client.server_config.api_type == APIType.LOCAL
 
     @pytest.mark.asyncio
-    async def test_get_devices_basic(self, client: OverkizClient):
+    async def test_get_devices_basic(self, client: OverkizClient) -> None:
         """Ensure the client can fetch and parse the basic devices fixture."""
         with open(
             os.path.join(CURRENT_DIR, "devices.json"), encoding="utf-8"
@@ -79,7 +80,7 @@ class TestOverkizClient:
     @pytest.mark.asyncio
     async def test_fetch_events_basic(
         self, client: OverkizClient, fixture_name: str, event_length: int
-    ):
+    ) -> None:
         """Parameterised test that fetches events fixture and checks the expected count."""
         with open(
             os.path.join(CURRENT_DIR, "fixtures/event/" + fixture_name),
@@ -92,7 +93,7 @@ class TestOverkizClient:
             assert len(events) == event_length
 
     @pytest.mark.asyncio
-    async def test_fetch_events_simple_cast(self, client: OverkizClient):
+    async def test_fetch_events_simple_cast(self, client: OverkizClient) -> None:
         """Check that event state values from the cloud (strings) are cast to appropriate types."""
         with open(
             os.path.join(CURRENT_DIR, "fixtures/event/events.json"), encoding="utf-8"
@@ -109,9 +110,9 @@ class TestOverkizClient:
             assert int_state_event.type == DataType.INTEGER
 
     @pytest.mark.asyncio
-    async def test_backoff_relogin_on_auth_error(self, client: OverkizClient):
+    async def test_backoff_relogin_on_auth_error(self, client: OverkizClient) -> None:
         """Ensure auth backoff retries and triggers `login()` on failure."""
-        client.login = AsyncMock()
+        client.login = AsyncMock()  # type: ignore[method-assign]
 
         with (
             patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
@@ -130,7 +131,7 @@ class TestOverkizClient:
 
         assert result == "1"
         assert get_mock.await_count == 2
-        assert client.login.await_count == 1
+        assert client.login.await_count == 1  # type: ignore[union-attr]
         assert sleep_mock.await_count == 1
 
     @pytest.mark.asyncio
@@ -139,7 +140,7 @@ class TestOverkizClient:
     ) -> None:
         """Ensure listener backoff retries and triggers `register_event_listener()`."""
         client.event_listener_id = "listener-1"
-        client.register_event_listener = AsyncMock(return_value="listener-2")
+        client.register_event_listener = AsyncMock(return_value="listener-2")  # type: ignore[method-assign]
 
         with (
             patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
@@ -158,7 +159,7 @@ class TestOverkizClient:
 
         assert events == []
         assert post_mock.await_count == 2
-        assert client.register_event_listener.await_count == 1
+        assert client.register_event_listener.await_count == 1  # type: ignore[union-attr]
         assert sleep_mock.await_count == 1
 
     @pytest.mark.asyncio
@@ -193,7 +194,9 @@ class TestOverkizClient:
         ],
     )
     @pytest.mark.asyncio
-    async def test_fetch_events_casting(self, client: OverkizClient, fixture_name: str):
+    async def test_fetch_events_casting(
+        self, client: OverkizClient, fixture_name: str
+    ) -> None:
         """Validate that fetched event states are cast to the expected Python types for each data type."""
         with open(
             os.path.join(CURRENT_DIR, "fixtures/event/" + fixture_name),
@@ -262,7 +265,7 @@ class TestOverkizClient:
         fixture_name: str,
         device_count: int,
         gateway_count: int,
-    ):
+    ) -> None:
         """Ensure setup parsing yields expected device and gateway counts and device metadata."""
         with open(
             os.path.join(CURRENT_DIR, "fixtures/setup/" + fixture_name),
@@ -314,7 +317,9 @@ class TestOverkizClient:
         ],
     )
     @pytest.mark.asyncio
-    async def test_get_diagnostic_data(self, client: OverkizClient, fixture_name: str):
+    async def test_get_diagnostic_data(
+        self, client: OverkizClient, fixture_name: str
+    ) -> None:
         """Verify that diagnostic data can be fetched and is not empty."""
         with open(
             os.path.join(CURRENT_DIR, "fixtures/setup/" + fixture_name),
@@ -327,7 +332,9 @@ class TestOverkizClient:
             assert diagnostics
 
     @pytest.mark.asyncio
-    async def test_get_diagnostic_data_redacted_by_default(self, client: OverkizClient):
+    async def test_get_diagnostic_data_redacted_by_default(
+        self, client: OverkizClient
+    ) -> None:
         """Ensure diagnostics are redacted when no argument is provided."""
         with open(
             os.path.join(CURRENT_DIR, "fixtures/setup/setup_tahoma_1.json"),
@@ -347,7 +354,9 @@ class TestOverkizClient:
             obfuscate.assert_called_once()
 
     @pytest.mark.asyncio
-    async def test_get_diagnostic_data_without_masking(self, client: OverkizClient):
+    async def test_get_diagnostic_data_without_masking(
+        self, client: OverkizClient
+    ) -> None:
         """Ensure diagnostics can be returned without masking when requested."""
         with open(
             os.path.join(CURRENT_DIR, "fixtures/setup/setup_tahoma_1.json"),
@@ -547,8 +556,8 @@ class TestOverkizClient:
         self,
         fixture_name: str,
         status_code: int,
-        exception: Exception,
-    ):
+        exception: type[Exception],
+    ) -> None:
         """Ensure client raises the correct exception for various error fixtures/status codes."""
         with pytest.raises(exception):
             if fixture_name:
@@ -560,13 +569,13 @@ class TestOverkizClient:
             else:
                 resp = MockResponse(None, status_code)
 
-            await check_response(resp)
+            await check_response(resp)  # type: ignore[arg-type]
 
     @pytest.mark.asyncio
     async def test_get_setup_options(
         self,
         client: OverkizClient,
-    ):
+    ) -> None:
         """Check that setup options are parsed and return the expected number of Option instances."""
         with open(
             os.path.join(CURRENT_DIR, "fixtures/endpoints/setup-options.json"),
@@ -587,7 +596,7 @@ class TestOverkizClient:
     ) -> None:
         """Ensure `_get` skips JSON parsing for 204 responses and returns `None`."""
         resp = MockResponse("", status=204)
-        resp.json = AsyncMock(return_value={})
+        resp.json = AsyncMock(return_value={})  # type: ignore[method-assign]
 
         with (
             patch.object(client, "_refresh_token_if_expired", new=AsyncMock()),
@@ -604,7 +613,7 @@ class TestOverkizClient:
     ) -> None:
         """Ensure `_post` skips JSON parsing for 204 responses and returns `None`."""
         resp = MockResponse("", status=204)
-        resp.json = AsyncMock(return_value={})
+        resp.json = AsyncMock(return_value={})  # type: ignore[method-assign]
 
         with (
             patch.object(client, "_refresh_token_if_expired", new=AsyncMock()),
@@ -616,7 +625,9 @@ class TestOverkizClient:
         assert not resp.json.called
 
     @pytest.mark.asyncio
-    async def test_execute_action_group_omits_none_fields(self, client: OverkizClient):
+    async def test_execute_action_group_omits_none_fields(
+        self, client: OverkizClient
+    ) -> None:
         """Ensure `type` and `parameters` that are None are omitted from the request payload."""
         from pyoverkiz.enums.command import OverkizCommand
         from pyoverkiz.models import Action, Command
@@ -667,8 +678,8 @@ class TestOverkizClient:
         client: OverkizClient,
         fixture_name: str,
         option_name: str,
-        instance: Option | None,
-    ):
+        instance: type[Option] | None,
+    ) -> None:
         """Verify retrieval of a single setup option by name, including non-existent options."""
         with open(
             os.path.join(CURRENT_DIR, "fixtures/endpoints/" + fixture_name),
@@ -699,7 +710,7 @@ class TestOverkizClient:
         client: OverkizClient,
         fixture_name: str,
         scenario_count: int,
-    ):
+    ) -> None:
         """Ensure action groups (scenarios) are parsed correctly and contain actions and commands."""
         with open(
             os.path.join(CURRENT_DIR, "fixtures/action_groups/" + fixture_name),
@@ -728,25 +739,30 @@ class TestOverkizClient:
 class MockResponse:
     """Simple stand-in for aiohttp responses used in tests."""
 
-    def __init__(self, text, status=200, url=""):
+    def __init__(self, text: str | None, status: int = 200, url: str = "") -> None:
         """Create a mock response with text payload and optional status/url."""
         self._text = text
         self.status = status
         self.url = url
 
-    async def text(self):
+    async def text(self) -> str | None:
         """Return text payload asynchronously."""
         return self._text
 
     # pylint: disable=unused-argument
-    async def json(self, content_type=None):
+    async def json(self, content_type: str | None = None) -> Any:
         """Return parsed JSON payload asynchronously."""
-        return json.loads(self._text)
+        return json.loads(self._text)  # type: ignore[arg-type]
 
-    async def __aexit__(self, exc_type, exc, tb):
+    async def __aexit__(
+        self,
+        exc_type: type[BaseException] | None,
+        exc: BaseException | None,
+        tb: object,
+    ) -> None:
         """Context manager exit (noop)."""
         pass
 
-    async def __aenter__(self):
+    async def __aenter__(self) -> MockResponse:
         """Context manager enter returning self."""
         return self

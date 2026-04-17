@@ -9,7 +9,7 @@ from pyoverkiz.models import (
 )
 
 
-def test_value_prototype_with_range():
+def test_value_prototype_with_range() -> None:
     """Test ValuePrototype with min/max range."""
     vp = ValuePrototype(type="INT", min_value=0, max_value=100)
     assert vp.type == "INT"
@@ -18,7 +18,7 @@ def test_value_prototype_with_range():
     assert vp.enum_values is None
 
 
-def test_value_prototype_with_enum():
+def test_value_prototype_with_enum() -> None:
     """Test ValuePrototype with enum values."""
     vp = ValuePrototype(
         type="STRING", enum_values=["low", "high"], description="Fan speed mode"
@@ -28,7 +28,7 @@ def test_value_prototype_with_enum():
     assert vp.description == "Fan speed mode"
 
 
-def test_command_parameter():
+def test_command_parameter() -> None:
     """Test CommandParameter with value prototypes."""
     param = CommandParameter(
         optional=False,
@@ -41,7 +41,7 @@ def test_command_parameter():
     assert param.value_prototypes[0].type == "INT"
 
 
-def test_ui_profile_command():
+def test_ui_profile_command() -> None:
     """Test UIProfileCommand with prototype."""
     cmd = UIProfileCommand(
         name="setFanSpeedLevel",
@@ -64,7 +64,7 @@ def test_ui_profile_command():
     assert len(cmd.prototype.parameters) == 1
 
 
-def test_ui_profile_state():
+def test_ui_profile_state() -> None:
     """Test UIProfileState with prototype."""
     state = UIProfileState(
         name="core:TemperatureState",
@@ -81,7 +81,7 @@ def test_ui_profile_state():
     assert len(state.prototype.value_prototypes) == 1
 
 
-def test_ui_profile_definition():
+def test_ui_profile_definition() -> None:
     """Test complete UIProfileDefinition."""
     profile = UIProfileDefinition(
         name="AirFan",
@@ -136,7 +136,7 @@ def test_ui_profile_definition():
     assert len(state.prototype.value_prototypes) == 1
 
 
-def test_ui_profile_definition_minimal():
+def test_ui_profile_definition_minimal() -> None:
     """Test UIProfileDefinition with minimal data."""
     profile = UIProfileDefinition(name="MinimalProfile")
 

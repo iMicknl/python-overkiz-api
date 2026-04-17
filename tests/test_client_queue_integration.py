@@ -13,7 +13,7 @@ from pyoverkiz.models import Action, Command
 
 
 @pytest.mark.asyncio
-async def test_client_without_queue_executes_immediately():
+async def test_client_without_queue_executes_immediately() -> None:
     """Test that client without queue executes actions immediately."""
     client = OverkizClient(
         server=Server.SOMFY_EUROPE,
@@ -43,7 +43,7 @@ async def test_client_without_queue_executes_immediately():
 
 
 @pytest.mark.asyncio
-async def test_client_with_queue_batches_actions():
+async def test_client_with_queue_batches_actions() -> None:
     """Test that client with queue batches multiple actions."""
     client = OverkizClient(
         server=Server.SOMFY_EUROPE,
@@ -93,7 +93,7 @@ async def test_client_with_queue_batches_actions():
 
 
 @pytest.mark.asyncio
-async def test_client_manual_flush():
+async def test_client_manual_flush() -> None:
     """Test manually flushing the queue."""
     client = OverkizClient(
         server=Server.SOMFY_EUROPE,
@@ -133,7 +133,7 @@ async def test_client_manual_flush():
 
 
 @pytest.mark.asyncio
-async def test_client_close_flushes_queue():
+async def test_client_close_flushes_queue() -> None:
     """Test that closing the client flushes pending actions."""
     client = OverkizClient(
         server=Server.SOMFY_EUROPE,
@@ -166,7 +166,7 @@ async def test_client_close_flushes_queue():
 
 
 @pytest.mark.asyncio
-async def test_client_queue_respects_max_actions():
+async def test_client_queue_respects_max_actions() -> None:
     """Test that queue flushes when max actions is reached."""
     client = OverkizClient(
         server=Server.SOMFY_EUROPE,

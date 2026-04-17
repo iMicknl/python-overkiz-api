@@ -14,11 +14,11 @@ from pyoverkiz.enums import (
 class TestGatewayType:
     """Tests for GatewayType enum behaviour (missing / beautify name)."""
 
-    def test_missing(self):
+    def test_missing(self) -> None:
         """Unsupported numeric values map to UNKNOWN."""
         assert GatewayType(102) == GatewayType.UNKNOWN
 
-    def test_beautify_name(self):
+    def test_beautify_name(self) -> None:
         """Check the human friendly name conversion for various gateway types."""
         assert GatewayType.TAHOMA_V2.beautify_name == "TaHoma V2"
         assert (
@@ -31,11 +31,11 @@ class TestGatewayType:
 class TestGatewaySubType:
     """Tests for GatewaySubType enum behaviour (missing / beautify name)."""
 
-    def test_missing(self):
+    def test_missing(self) -> None:
         """Unknown numeric values map to UNKNOWN."""
         assert GatewaySubType(99) == GatewaySubType.UNKNOWN
 
-    def test_beautify_name(self):
+    def test_beautify_name(self) -> None:
         """Check the human friendly name conversion for gateway sub types."""
         assert GatewaySubType.TAHOMA_SECURITY_PRO.beautify_name == "TaHoma Security Pro"
 
@@ -43,15 +43,15 @@ class TestGatewaySubType:
 class TestEventName:
     """Tests for EventName enum handling of unknown values."""
 
-    def test_missing(self):
+    def test_missing(self) -> None:
         """Unknown event codes map to UNKNOWN."""
-        assert EventName(99) == EventName.UNKNOWN
+        assert EventName(99) == EventName.UNKNOWN  # type: ignore[arg-type]
 
 
 class TestFailureType:
     """Tests for FailureType enum handling of unknown values."""
 
-    def test_missing(self):
+    def test_missing(self) -> None:
         """Unknown failure codes map to UNKNOWN."""
         assert FailureType(99) == FailureType.UNKNOWN
 
@@ -59,7 +59,7 @@ class TestFailureType:
 class TestExecutionType:
     """Tests for ExecutionType enum fallback behaviour."""
 
-    def test_missing(self):
+    def test_missing(self) -> None:
         """String values not recognized map to UNKNOWN."""
         assert ExecutionType("test") == ExecutionType.UNKNOWN
 
@@ -67,7 +67,7 @@ class TestExecutionType:
 class TestExecutionSubType:
     """Tests for ExecutionSubType enum fallback behaviour."""
 
-    def test_missing(self):
+    def test_missing(self) -> None:
         """String values not recognized map to UNKNOWN."""
         assert ExecutionSubType("test") == ExecutionSubType.UNKNOWN
 
@@ -75,7 +75,7 @@ class TestExecutionSubType:
 class TestStrEnumBackport:
     """Tests for the backported StrEnum behaviour used in command params."""
 
-    def test_string_concat(self):
+    def test_string_concat(self) -> None:
         """Check that StrEnum members stringify and join as expected."""
         assert (
             f"{OverkizCommandParam.A},{OverkizCommandParam.B},{OverkizCommandParam.C}"
