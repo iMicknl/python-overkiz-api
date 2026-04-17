@@ -220,26 +220,30 @@ def _to_states(value: list[dict[str, Any]] | States | None) -> States:
     return States(value)
 
 
-def _to_definition(value: dict[str, Any] | Definition) -> Definition:
-    """Converter: raw dict or Definition -> Definition instance."""
-    if isinstance(value, Definition):
-        return value
-    return Definition(**value)
+def _to_command_definitions(value: Any) -> Any:
+    """Converter: raw list -> CommandDefinitions, or passthrough."""
+    if isinstance(value, list):
+        return _resolve("CommandDefinitions")(value)
+    return value
 
 
-@define(init=False, kw_only=True)
+@_flexible_init
+@define(kw_only=True)
 class Device:
     """Representation of a device in the setup including parsed fields and states."""
 
-    attributes: States
+    attributes: States = field(factory=lambda: _to_states(None), converter=_to_states)
     available: bool
     enabled: bool
     label: str = field(repr=obfuscate_string)
     device_url: str = field(repr=obfuscate_id)
     controllable_name: str
-    definition: Definition
-    states: States
-    type: ProductType
+    definition: Definition = field(converter=_to_optional("Definition"))
+    states: States = field(factory=lambda: _to_states(None), converter=_to_states)
+    type: ProductType = field(converter=ProductType)
+    ui_class: UIClass | None = field(default=None, converter=_to_optional_enum(UIClass))
+    widget: UIWidget | None = field(default=None, converter=_to_optional_enum(UIWidget))
+    identifier: DeviceIdentifier = field(init=False, repr=False)
     oid: str | None = field(repr=obfuscate_id, default=None)
     place_oid: str | None = None
     creation_time: int | None = None
@@ -248,73 +252,16 @@ class Device:
     metadata: str | None = None
     synced: bool | None = None
     subsystem_id: int | None = None
-    identifier: DeviceIdentifier = field(init=False, repr=False)
-    _ui_class: UIClass | None = field(init=False, repr=False)
-    _widget: UIWidget | None = field(init=False, repr=False)
 
-    def __init__(
-        self,
-        *,
-        attributes: list[dict[str, Any]] | States | None = None,
-        available: bool,
-        enabled: bool,
-        label: str,
-        device_url: str,
-        controllable_name: str,
-        definition: dict[str, Any] | Definition,
-        widget: str | None = None,
-        ui_class: str | None = None,
-        states: list[dict[str, Any]] | States | None = None,
-        type: int | ProductType,
-        oid: str | None = None,
-        place_oid: str | None = None,
-        creation_time: int | None = None,
-        last_update_time: int | None = None,
-        shortcut: bool | None = None,
-        metadata: str | None = None,
-        synced: bool | None = None,
-        subsystem_id: int | None = None,
-        **_: Any,
-    ) -> None:
-        """Initialize Device and parse URL, protocol and nested definitions."""
-        self.attributes = _to_states(attributes)
-        self.available = available
-        self.definition = _to_definition(definition)
-        self.device_url = device_url
-        self.enabled = enabled
-        self.label = label
-        self.controllable_name = controllable_name
-        self.states = _to_states(states)
-        self.type = ProductType(type) if not isinstance(type, ProductType) else type
-        self.oid = oid
-        self.place_oid = place_oid
-        self.creation_time = creation_time
-        self.last_update_time = last_update_time
-        self.shortcut = shortcut
-        self.metadata = metadata
-        self.synced = synced
-        self.subsystem_id = subsystem_id
-        self.identifier = DeviceIdentifier.from_device_url(device_url)
-        self._ui_class = UIClass(ui_class) if ui_class else None
-        self._widget = UIWidget(widget) if widget else None
+    def __attrs_post_init__(self) -> None:
+        """Resolve computed fields from device URL and definition fallbacks."""
+        self.identifier = DeviceIdentifier.from_device_url(self.device_url)
 
-    @property
-    def ui_class(self) -> UIClass:
-        """Return the UI class, falling back to the definition if available."""
-        if self._ui_class is not None:
-            return self._ui_class
-        if self.definition.ui_class:
-            return UIClass(self.definition.ui_class)
-        raise ValueError(f"Device {self.device_url} has no UI class defined")
+        if self.ui_class is None and self.definition.ui_class:
+            self.ui_class = UIClass(self.definition.ui_class)
 
-    @property
-    def widget(self) -> UIWidget:
-        """Return the widget, falling back to the definition if available."""
-        if self._widget is not None:
-            return self._widget
-        if self.definition.widget_name:
-            return UIWidget(self.definition.widget_name)
-        raise ValueError(f"Device {self.device_url} has no widget defined")
+        if self.widget is None and self.definition.widget_name:
+            self.widget = UIWidget(self.definition.widget_name)
 
     def supports_command(self, command: str | OverkizCommand) -> bool:
         """Check if device supports a command."""
