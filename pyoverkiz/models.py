@@ -613,7 +613,7 @@ class Event:
 
     name: EventName = field(converter=EventName)
     timestamp: int | None = None
-    setupoid: str | None = field(repr=obfuscate_id, default=None)
+    setup_oid: str | None = field(repr=obfuscate_id, default=None)
     owner_key: str | None = field(repr=obfuscate_id, default=None)
     type: int | None = None
     sub_type: int | None = None
