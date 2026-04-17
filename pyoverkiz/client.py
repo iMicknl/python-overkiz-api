@@ -22,6 +22,7 @@ from pyoverkiz._case import decamelize
 from pyoverkiz.action_queue import ActionQueue, ActionQueueSettings
 from pyoverkiz.auth import AuthStrategy, Credentials, build_auth_strategy
 from pyoverkiz.const import SUPPORTED_SERVERS
+from pyoverkiz.converter import converter
 from pyoverkiz.enums import APIType, ExecutionMode, Server
 from pyoverkiz.exceptions import (
     ExecutionQueueFullError,
@@ -305,7 +306,7 @@ class OverkizClient:
 
         response = await self._get("setup")
 
-        setup = Setup(**decamelize(response))
+        setup = converter.structure(decamelize(response), Setup)
 
         # Cache response
         self.setup = setup
@@ -343,7 +344,7 @@ class OverkizClient:
             return self.devices
 
         response = await self._get("setup/devices")
-        devices = [Device(**d) for d in decamelize(response)]
+        devices = converter.structure(decamelize(response), list[Device])
 
         # Cache response
         self.devices = devices
@@ -362,7 +363,7 @@ class OverkizClient:
             return self.gateways
 
         response = await self._get("setup/gateways")
-        gateways = [Gateway(**g) for g in decamelize(response)]
+        gateways = converter.structure(decamelize(response), list[Gateway])
 
         # Cache response
         self.gateways = gateways
@@ -375,7 +376,7 @@ class OverkizClient:
     async def get_execution_history(self) -> list[HistoryExecution]:
         """List past executions and their outcomes."""
         response = await self._get("history/executions")
-        return [HistoryExecution(**h) for h in decamelize(response)]
+        return converter.structure(decamelize(response), list[HistoryExecution])
 
     @retry_on_auth_error
     async def get_device_definition(self, deviceurl: str) -> JSON | None:
@@ -392,7 +393,7 @@ class OverkizClient:
         response = await self._get(
             f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/states"
         )
-        return [State(**s) for s in decamelize(response)]
+        return converter.structure(decamelize(response), list[State])
 
     @retry_on_auth_error
     async def refresh_states(self) -> None:
@@ -436,7 +437,7 @@ class OverkizClient:
         """
         await self._refresh_token_if_expired()
         response = await self._post(f"events/{self.event_listener_id}/fetch")
-        return [Event(**e) for e in decamelize(response)]
+        return converter.structure(decamelize(response), list[Event])
 
     async def unregister_event_listener(self) -> None:
         """Unregister an event listener.
@@ -451,13 +452,13 @@ class OverkizClient:
     async def get_current_execution(self, exec_id: str) -> Execution:
         """Get a currently running execution by its exec_id."""
         response = await self._get(f"exec/current/{exec_id}")
-        return Execution(**decamelize(response))
+        return converter.structure(decamelize(response), Execution)
 
     @retry_on_auth_error
     async def get_current_executions(self) -> list[Execution]:
         """Get all currently running executions."""
         response = await self._get("exec/current")
-        return [Execution(**e) for e in decamelize(response)]
+        return converter.structure(decamelize(response), list[Execution])
 
     @retry_on_auth_error
     async def get_api_version(self) -> str:
@@ -550,7 +551,7 @@ class OverkizClient:
     async def get_action_groups(self) -> list[ActionGroup]:
         """List action groups persisted on the server."""
         response = await self._get("actionGroups")
-        return [ActionGroup(**action_group) for action_group in decamelize(response)]
+        return converter.structure(decamelize(response), list[ActionGroup])
 
     @retry_on_auth_error
     async def get_places(self) -> Place:
@@ -565,7 +566,7 @@ class OverkizClient:
         - `sub_places`: List of nested places within this location
         """
         response = await self._get("setup/places")
-        return Place(**decamelize(response))
+        return converter.structure(decamelize(response), Place)
 
     @retry_on_auth_error
     async def execute_persisted_action_group(self, oid: str) -> str:
@@ -587,7 +588,7 @@ class OverkizClient:
         Access scope : Full enduser API access (enduser/*).
         """
         response = await self._get("setup/options")
-        return [Option(**o) for o in decamelize(response)]
+        return converter.structure(decamelize(response), list[Option])
 
     @retry_on_auth_error
     async def get_setup_option(self, option: str) -> Option | None:
@@ -598,7 +599,7 @@ class OverkizClient:
         response = await self._get(f"setup/options/{option}")
 
         if response:
-            return Option(**decamelize(response))
+            return converter.structure(decamelize(response), Option)
 
         return None
 
@@ -616,7 +617,7 @@ class OverkizClient:
         response = await self._get(f"setup/options/{option}/{parameter}")
 
         if response:
-            return OptionParameter(**decamelize(response))
+            return converter.structure(decamelize(response), OptionParameter)
 
         return None
 
@@ -648,7 +649,7 @@ class OverkizClient:
         - label: Human-readable protocol label
         """
         response = await self._get("reference/protocolTypes")
-        return [ProtocolType(**protocol) for protocol in response]
+        return converter.structure(response, list[ProtocolType])
 
     @retry_on_auth_error
     async def get_reference_timezones(self) -> JSON:
@@ -678,7 +679,7 @@ class OverkizClient:
         response = await self._get(
             f"reference/ui/profile/{urllib.parse.quote_plus(profile_name)}"
         )
-        return UIProfileDefinition(**decamelize(response))
+        return converter.structure(decamelize(response), UIProfileDefinition)
 
     @retry_on_auth_error
     async def get_reference_ui_profile_names(self) -> list[str]:

@@ -1,11 +1,7 @@
 """Models representing Overkiz API payloads and convenient accessors."""
 
-# mypy: disable-error-code="misc"
-
 from __future__ import annotations
 
-import functools
-import inspect
 import json
 import re
 from collections.abc import Iterator
@@ -34,100 +30,16 @@ from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 
 # ---------------------------------------------------------------------------
-# Converter helpers
-# ---------------------------------------------------------------------------
-
-
-def _to_list(cls_or_name: type | str) -> Any:
-    """Converter: list of dicts -> list of model instances.
-
-    Accepts a class or a string name for lazy resolution of forward references.
-    """
-
-    def convert(items: list[dict[str, Any]] | None) -> list[Any]:
-        cls = _resolve(cls_or_name)
-        if not items:
-            return []
-        return [cls(**item) if isinstance(item, dict) else item for item in items]
-
-    return convert
-
-
-def _to_optional(cls_or_name: type | str) -> Any:
-    """Converter: dict | None -> model | None.
-
-    Accepts a class or a string name for lazy resolution of forward references.
-    """
-
-    def convert(value: dict[str, Any] | None) -> Any:
-        cls = _resolve(cls_or_name)
-        if value is None:
-            return None
-        return cls(**value) if isinstance(value, dict) else value
-
-    return convert
-
-
-def _resolve(cls_or_name: type | str) -> type:
-    """Resolve a class from its name (lazy forward reference) or return it directly."""
-    if isinstance(cls_or_name, str):
-        result = globals().get(cls_or_name)
-        if result is None:
-            raise NameError(f"Cannot resolve forward reference '{cls_or_name}'")
-        return result
-    return cls_or_name
-
-
-def _to_optional_enum(enum_cls: type) -> Any:
-    """Converter: raw value | None -> enum | None."""
-
-    def convert(value: Any) -> Any:
-        if value is None:
-            return None
-        return enum_cls(value) if not isinstance(value, enum_cls) else value
-
-    return convert
-
-
-def _to_str(value: str | None) -> str:
-    """Converter: None -> empty string, otherwise passthrough."""
-    return value or ""
-
-
-def _flexible_init(cls: type) -> type:
-    """Class decorator: make attrs ``__init__`` accept (and ignore) unknown kwargs.
-
-    attrs-generated ``__init__`` will reject any keyword argument that does not
-    correspond to a declared field.  The Overkiz API may send additional fields
-    at any time, so every model must tolerate extra keys.
-
-    This decorator wraps the generated ``__init__`` so that unknown keys are
-    silently dropped before forwarding to the real constructor.
-    """
-    original_init = cls.__init__
-    params = set(inspect.signature(original_init).parameters.keys()) - {"self"}
-
-    @functools.wraps(original_init)
-    def wrapper(self: Any, **kwargs: Any) -> None:
-        filtered = {k: v for k, v in kwargs.items() if k in params}
-        original_init(self, **filtered)
-
-    cls.__init__ = wrapper  # type: ignore[assignment]
-    return cls
-
-
-# ---------------------------------------------------------------------------
 # State & command primitives
 # ---------------------------------------------------------------------------
 
 
-@_flexible_init
 @define(kw_only=True)
 class State:
     """A single device state with typed accessors for its value."""
 
     name: str
-    type: DataType = field(converter=DataType)
+    type: DataType
     value: StateType = None
 
     @property
@@ -187,7 +99,6 @@ class State:
         raise TypeError(f"{self.name} is not an array")
 
 
-@_flexible_init
 @define(kw_only=True)
 class EventState(State):
     """State variant used when parsing event payloads (casts string values)."""
@@ -223,12 +134,9 @@ class States:
     _states: list[State]
     _index: dict[str, State]
 
-    def __init__(self, states: list[dict[str, Any]] | None = None) -> None:
-        """Create a container of State objects from raw state dicts or an empty list."""
-        if states:
-            self._states = [State(**state) for state in states]
-        else:
-            self._states = []
+    def __init__(self, states: list[State] | None = None) -> None:
+        """Create a States container from a list of State objects or empty."""
+        self._states = list(states) if states else []
         self._index = {state.name: state for state in self._states}
 
     def __iter__(self) -> Iterator[State]:
@@ -279,14 +187,6 @@ class States:
         return self.select(names) is not None
 
 
-def _to_states(value: list[dict[str, Any]] | States | None) -> States:
-    """Converter: raw state list or States instance -> States container."""
-    if isinstance(value, States):
-        return value
-    return States(value)
-
-
-@_flexible_init
 @define(kw_only=True)
 class CommandDefinition:
     """Metadata for a single command definition (name and parameter count)."""
@@ -302,9 +202,9 @@ class CommandDefinitions:
     _commands: list[CommandDefinition]
     _index: dict[str, CommandDefinition]
 
-    def __init__(self, commands: list[dict[str, Any]]):
-        """Build the inner list of CommandDefinition objects from raw data."""
-        self._commands = [CommandDefinition(**command) for command in commands]
+    def __init__(self, commands: list[CommandDefinition] | None = None) -> None:
+        """Build the inner list and index from CommandDefinition objects."""
+        self._commands = list(commands) if commands else []
         self._index = {cd.command_name: cd for cd in self._commands}
 
     def __iter__(self) -> Iterator[CommandDefinition]:
@@ -338,7 +238,6 @@ class CommandDefinitions:
         return self.select(commands) is not None
 
 
-@_flexible_init
 @define(kw_only=True)
 class StateDefinition:
     """Definition metadata for a state (qualified name, type and possible values)."""
@@ -360,7 +259,6 @@ class StateDefinition:
                 )
 
 
-@_flexible_init
 @define(kw_only=True)
 class DataProperty:
     """Data property with qualified name and value."""
@@ -369,7 +267,6 @@ class DataProperty:
     value: str
 
 
-@_flexible_init
 @define(kw_only=True)
 class Command:
     """Represents an OverKiz Command."""
@@ -403,20 +300,13 @@ class Command:
 # ---------------------------------------------------------------------------
 
 
-@_flexible_init
 @define(kw_only=True)
 class Definition:
     """Definition of device capabilities: command definitions, state definitions and UI hints."""
 
-    commands: CommandDefinitions = field(
-        converter=lambda v: CommandDefinitions(v) if isinstance(v, list) else v
-    )
-    states: list[StateDefinition] = field(
-        factory=list, converter=_to_list(StateDefinition)
-    )
-    data_properties: list[DataProperty] = field(
-        factory=list, converter=_to_list(DataProperty)
-    )
+    commands: CommandDefinitions = field(factory=CommandDefinitions)
+    states: list[StateDefinition] = field(factory=list)
+    data_properties: list[DataProperty] = field(factory=list)
     widget_name: str | None = None
     ui_class: str | None = None
     qualified_name: str | None = None
@@ -484,22 +374,21 @@ class DeviceIdentifier:
         )
 
 
-@_flexible_init
 @define(kw_only=True)
 class Device:
     """Representation of a device in the setup including parsed fields and states."""
 
-    attributes: States = field(factory=lambda: _to_states(None), converter=_to_states)
+    attributes: States = field(factory=States)
     available: bool
     enabled: bool
     label: str = field(repr=obfuscate_string)
     device_url: str = field(repr=obfuscate_id)
     controllable_name: str
-    definition: Definition = field(converter=_to_optional(Definition))
-    states: States = field(factory=lambda: _to_states(None), converter=_to_states)
-    type: ProductType = field(converter=ProductType)
-    ui_class: UIClass | None = field(default=None, converter=_to_optional_enum(UIClass))
-    widget: UIWidget | None = field(default=None, converter=_to_optional_enum(UIWidget))
+    definition: Definition | None = None
+    states: States = field(factory=States)
+    type: ProductType
+    ui_class: UIClass | None = None
+    widget: UIWidget | None = None
     identifier: DeviceIdentifier = field(init=False, repr=False)
     oid: str | None = field(repr=obfuscate_id, default=None)
     place_oid: str | None = None
@@ -514,22 +403,27 @@ class Device:
         """Resolve computed fields from device URL and definition fallbacks."""
         self.identifier = DeviceIdentifier.from_device_url(self.device_url)
 
-        if self.ui_class is None and self.definition.ui_class:
-            self.ui_class = UIClass(self.definition.ui_class)
+        if self.definition:
+            if self.ui_class is None and self.definition.ui_class:
+                self.ui_class = UIClass(self.definition.ui_class)
 
-        if self.widget is None and self.definition.widget_name:
-            self.widget = UIWidget(self.definition.widget_name)
+            if self.widget is None and self.definition.widget_name:
+                self.widget = UIWidget(self.definition.widget_name)
 
     def supports_command(self, command: str | OverkizCommand) -> bool:
         """Check if device supports a command."""
-        return str(command) in self.definition.commands
+        return self.definition is not None and str(command) in self.definition.commands
 
     def supports_any_command(self, commands: list[str | OverkizCommand]) -> bool:
         """Check if device supports any of the commands."""
-        return self.definition.commands.has_any(commands)
+        return self.definition is not None and self.definition.commands.has_any(
+            commands
+        )
 
     def select_first_command(self, commands: list[str | OverkizCommand]) -> str | None:
         """Return first supported command name from list, or None."""
+        if self.definition is None:
+            return None
         return self.definition.commands.select(commands)
 
     def get_state_value(self, state: str) -> StateType | None:
@@ -550,12 +444,16 @@ class Device:
 
     def get_state_definition(self, state: str) -> StateDefinition | None:
         """Get StateDefinition for a single state name, or None."""
+        if self.definition is None:
+            return None
         return self.definition.get_state_definition([state])
 
     def select_first_state_definition(
         self, states: list[str]
     ) -> StateDefinition | None:
         """Return first matching StateDefinition from list, or None."""
+        if self.definition is None:
+            return None
         return self.definition.get_state_definition(states)
 
     def get_attribute_value(self, attribute: str) -> StateType | None:
@@ -572,13 +470,12 @@ class Device:
 # ---------------------------------------------------------------------------
 
 
-@_flexible_init
 @define(kw_only=True)
 class Action:
     """An action consists of multiple commands related to a single device, identified by its device URL."""
 
     device_url: str
-    commands: list[Command] = field(converter=_to_list(Command))
+    commands: list[Command] = field(factory=list)
 
     def to_payload(self) -> dict[str, object]:
         """Return a JSON-serializable payload for this action (snake_case).
@@ -591,7 +488,6 @@ class Action:
         }
 
 
-@_flexible_init
 @define(kw_only=True)
 class ActionGroup:
     """An action group is composed of one or more actions.
@@ -600,10 +496,10 @@ class ActionGroup:
     is composed of one or more commands to be executed on that device.
     """
 
-    actions: list[Action] = field(converter=_to_list(Action))
+    actions: list[Action] = field(factory=list)
     creation_time: int | None = None
     last_update_time: int | None = None
-    label: str = field(repr=obfuscate_string, default="", converter=_to_str)
+    label: str = field(repr=obfuscate_string, default="")
     metadata: str | None = None
     shortcut: bool | None = None
     notification_type_mask: int | None = None
@@ -615,6 +511,8 @@ class ActionGroup:
 
     def __attrs_post_init__(self) -> None:
         """Resolve id/oid fallback."""
+        if self.label is None:
+            self.label = ""
         if self.oid is None and self.id is None:
             raise ValueError("Either 'oid' or 'id' must be provided")
         resolved = cast(str, self.oid or self.id)
@@ -622,12 +520,11 @@ class ActionGroup:
         self.oid = resolved
 
 
-@_flexible_init
 @define(kw_only=True)
 class Event:
     """Represents an Overkiz event containing metadata and device states."""
 
-    name: EventName = field(converter=EventName)
+    name: EventName
     timestamp: int | None = None
     setup_oid: str | None = field(repr=obfuscate_id, default=None)
     owner_key: str | None = field(repr=obfuscate_id, default=None)
@@ -635,9 +532,7 @@ class Event:
     sub_type: int | None = None
     time_to_next_state: int | None = None
     failed_commands: list[dict[str, Any]] | None = None
-    failure_type_code: FailureType | None = field(
-        default=None, converter=_to_optional_enum(FailureType)
-    )
+    failure_type_code: FailureType | None = None
     failure_type: str | None = None
     condition_groupoid: str | None = None
     place_oid: str | None = None
@@ -649,18 +544,11 @@ class Event:
     gateway_id: str | None = field(repr=obfuscate_id, default=None)
     exec_id: str | None = None
     device_url: str | None = field(repr=obfuscate_id, default=None)
-    device_states: list[EventState] = field(
-        factory=list, converter=_to_list(EventState)
-    )
-    old_state: ExecutionState | None = field(
-        default=None, converter=_to_optional_enum(ExecutionState)
-    )
-    new_state: ExecutionState | None = field(
-        default=None, converter=_to_optional_enum(ExecutionState)
-    )
+    device_states: list[EventState] = field(factory=list)
+    old_state: ExecutionState | None = None
+    new_state: ExecutionState | None = None
 
 
-@_flexible_init
 @define(kw_only=True)
 class Execution:
     """Execution occurrence with owner, state and action group metadata."""
@@ -669,19 +557,12 @@ class Execution:
     description: str
     owner: str = field(repr=obfuscate_email)
     state: str
-    action_group: ActionGroup | None = field(
-        default=None, converter=_to_optional(ActionGroup)
-    )
+    action_group: ActionGroup | None = None
     start_time: int | None = None
-    execution_type: ExecutionType | None = field(
-        default=None, converter=_to_optional_enum(ExecutionType)
-    )
-    execution_sub_type: ExecutionSubType | None = field(
-        default=None, converter=_to_optional_enum(ExecutionSubType)
-    )
+    execution_type: ExecutionType | None = None
+    execution_sub_type: ExecutionSubType | None = None
 
 
-@_flexible_init
 @define(kw_only=True)
 class HistoryExecutionCommand:
     """A command within a recorded historical execution, including its status and parameters."""
@@ -690,12 +571,11 @@ class HistoryExecutionCommand:
     command: str
     rank: int
     dynamic: bool
-    state: ExecutionState = field(converter=ExecutionState)
+    state: ExecutionState
     failure_type: str
     parameters: list[Any] | None = None
 
 
-@_flexible_init
 @define(kw_only=True)
 class HistoryExecution:
     """A recorded execution entry containing details and its list of commands."""
@@ -709,13 +589,11 @@ class HistoryExecution:
     duration: int
     label: str | None = None
     type: str
-    state: ExecutionState = field(converter=ExecutionState)
+    state: ExecutionState
     failure_type: str
-    commands: list[HistoryExecutionCommand] = field(
-        converter=_to_list(HistoryExecutionCommand)
-    )
-    execution_type: ExecutionType = field(converter=ExecutionType)
-    execution_sub_type: ExecutionSubType = field(converter=ExecutionSubType)
+    commands: list[HistoryExecutionCommand] = field(factory=list)
+    execution_type: ExecutionType
+    execution_sub_type: ExecutionSubType
 
 
 # ---------------------------------------------------------------------------
@@ -723,7 +601,6 @@ class HistoryExecution:
 # ---------------------------------------------------------------------------
 
 
-@_flexible_init
 @define(kw_only=True)
 class Partner:
     """Partner details for a gateway or service provider."""
@@ -734,7 +611,6 @@ class Partner:
     status: str
 
 
-@_flexible_init
 @define(kw_only=True)
 class Connectivity:
     """Connectivity metadata for a gateway update box."""
@@ -743,32 +619,23 @@ class Connectivity:
     protocol_version: str
 
 
-@_flexible_init
 @define(kw_only=True)
 class Gateway:
     """Representation of a gateway, including connectivity and partner info."""
 
     gateway_id: str = field(repr=obfuscate_id)
-    connectivity: Connectivity | None = field(
-        default=None, converter=_to_optional(Connectivity)
-    )
-    partners: list[Partner] = field(factory=list, converter=_to_list(Partner))
+    connectivity: Connectivity | None = None
+    partners: list[Partner] = field(factory=list)
     functions: str | None = None
-    sub_type: GatewaySubType | None = field(
-        default=None, converter=_to_optional_enum(GatewaySubType)
-    )
+    sub_type: GatewaySubType | None = None
     alive: bool | None = None
     mode: str | None = None
     place_oid: str | None = None
     time_reliable: bool | None = None
     up_to_date: bool | None = None
-    update_status: UpdateBoxStatus | None = field(
-        default=None, converter=_to_optional_enum(UpdateBoxStatus)
-    )
+    update_status: UpdateBoxStatus | None = None
     sync_in_progress: bool | None = None
-    type: GatewayType | None = field(
-        default=None, converter=_to_optional_enum(GatewayType)
-    )
+    type: GatewayType | None = None
 
     @property
     def id(self) -> str:
@@ -793,7 +660,6 @@ class ZoneItem:
     device_url: str
 
 
-@_flexible_init
 @define(kw_only=True)
 class Zone:
     """A Zone groups related devices inside a place."""
@@ -802,30 +668,22 @@ class Zone:
     last_update_time: int
     label: str
     type: int
-    items: list[ZoneItem] = field(factory=list, converter=_to_list(ZoneItem))
+    items: list[ZoneItem] = field(factory=list)
     external_oid: str | None = None
     metadata: str | None = None
     oid: str = ""
 
 
-@_flexible_init
 @define(kw_only=True)
 class Place:
-    """Hierarchical representation of a location (house, room, area) in a setup.
-
-    Places form a tree structure where the root place is typically the entire house
-    or property, and `sub_places` contains nested child locations. This recursive
-    structure allows navigation from house -> floors/rooms -> individual areas.
-    Each place has associated metadata like creation time, label, and type identifier.
-    """
+    """Hierarchical representation of a location (house, room, area) in a setup."""
 
     creation_time: int
     last_update_time: int | None = None
     label: str
     type: int
     oid: str
-    # Self-referential: must use string forward reference
-    sub_places: list[Place] = field(factory=list, converter=_to_list("Place"))
+    sub_places: list[Place] = field(factory=list)
 
     @property
     def id(self) -> str:
@@ -833,7 +691,6 @@ class Place:
         return self.oid
 
 
-@_flexible_init
 @define(kw_only=True)
 class Location:
     """Geographical and address metadata for a Setup."""
@@ -871,7 +728,6 @@ class OptionParameter:
     value: str
 
 
-@_flexible_init
 @define(kw_only=True)
 class Option:
     """A subscribed option for a setup including parameters."""
@@ -880,25 +736,21 @@ class Option:
     last_update_time: int
     option_id: str
     start_date: int
-    parameters: list[OptionParameter] = field(
-        factory=list, converter=_to_list(OptionParameter)
-    )
+    parameters: list[OptionParameter] = field(factory=list)
 
 
-@_flexible_init
 @define(kw_only=True)
 class ServerConfig:
     """Connection target details for an Overkiz-compatible server."""
 
-    server: Server | None = field(default=None, converter=_to_optional_enum(Server))
+    server: Server | None = None
     name: str
     endpoint: str
     manufacturer: str
-    api_type: APIType = field(converter=_to_optional_enum(APIType))
+    api_type: APIType
     configuration_url: str | None = None
 
 
-@_flexible_init
 @define(kw_only=True)
 class ProtocolType:
     """Protocol type definition from the reference API."""
@@ -914,7 +766,6 @@ class ProtocolType:
 # ---------------------------------------------------------------------------
 
 
-@_flexible_init
 @define(kw_only=True)
 class ValuePrototype:
     """Value prototype defining parameter/state value constraints."""
@@ -926,63 +777,47 @@ class ValuePrototype:
     description: str | None = None
 
 
-@_flexible_init
 @define(kw_only=True)
 class CommandParameter:
     """Command parameter definition."""
 
     optional: bool
     sensitive: bool
-    value_prototypes: list[ValuePrototype] = field(
-        factory=list, converter=_to_list(ValuePrototype)
-    )
+    value_prototypes: list[ValuePrototype] = field(factory=list)
 
 
-@_flexible_init
 @define(kw_only=True)
 class CommandPrototype:
     """Command prototype defining parameters."""
 
-    parameters: list[CommandParameter] = field(
-        factory=list, converter=_to_list(CommandParameter)
-    )
+    parameters: list[CommandParameter] = field(factory=list)
 
 
-@_flexible_init
 @define(kw_only=True)
 class UIProfileCommand:
     """UI profile command definition."""
 
     name: str
-    prototype: CommandPrototype | None = field(
-        default=None, converter=_to_optional(CommandPrototype)
-    )
+    prototype: CommandPrototype | None = None
     description: str | None = None
 
 
-@_flexible_init
 @define(kw_only=True)
 class StatePrototype:
     """State prototype defining value constraints."""
 
-    value_prototypes: list[ValuePrototype] = field(
-        factory=list, converter=_to_list(ValuePrototype)
-    )
+    value_prototypes: list[ValuePrototype] = field(factory=list)
 
 
-@_flexible_init
 @define(kw_only=True)
 class UIProfileState:
     """UI profile state definition."""
 
     name: str
-    prototype: StatePrototype | None = field(
-        default=None, converter=_to_optional(StatePrototype)
-    )
+    prototype: StatePrototype | None = None
     description: str | None = None
 
 
-@_flexible_init
 @define(kw_only=True)
 class UIProfileDefinition:
     """UI profile definition from the reference API.
@@ -991,12 +826,8 @@ class UIProfileDefinition:
     """
 
     name: str
-    commands: list[UIProfileCommand] = field(
-        factory=list, converter=_to_list(UIProfileCommand)
-    )
-    states: list[UIProfileState] = field(
-        factory=list, converter=_to_list(UIProfileState)
-    )
+    commands: list[UIProfileCommand] = field(factory=list)
+    states: list[UIProfileState] = field(factory=list)
     form_factor: bool = False
 
 
@@ -1005,7 +836,6 @@ class UIProfileDefinition:
 # ---------------------------------------------------------------------------
 
 
-@_flexible_init
 @define(kw_only=True)
 class Setup:
     """Representation of a complete setup returned by the Overkiz API."""
@@ -1013,11 +843,11 @@ class Setup:
     creation_time: int | None = None
     last_update_time: int | None = None
     id: str | None = field(repr=obfuscate_id, default=None)
-    location: Location | None = field(default=None, converter=_to_optional(Location))
-    gateways: list[Gateway] = field(factory=list, converter=_to_list(Gateway))
-    devices: list[Device] = field(factory=list, converter=_to_list(Device))
-    zones: list[Zone] | None = field(default=None, converter=_to_list(Zone))
+    location: Location | None = None
+    gateways: list[Gateway] = field(factory=list)
+    devices: list[Device] = field(factory=list)
+    zones: list[Zone] | None = None
     reseller_delegation_type: str | None = None
     oid: str | None = None
-    root_place: Place | None = field(default=None, converter=_to_optional(Place))
-    features: list[Feature] | None = field(default=None, converter=_to_list(Feature))
+    root_place: Place | None = None
+    features: list[Feature] | None = None
