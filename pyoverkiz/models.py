@@ -454,19 +454,24 @@ class CommandDefinitions:
         """Iterate over defined commands."""
         return self._commands.__iter__()
 
-    def __contains__(self, name: str) -> bool:
+    def __contains__(self, name: object) -> bool:
         """Return True if a command with `name` exists."""
-        return self.__getitem__(name) is not None
+        return any(cd.command_name == name for cd in self._commands)
 
-    def __getitem__(self, command: str) -> CommandDefinition | None:
-        """Return the command definition or None if missing."""
-        return next((cd for cd in self._commands if cd.command_name == command), None)
+    def __getitem__(self, command: str) -> CommandDefinition:
+        """Return the command definition or raise KeyError if missing."""
+        result = next((cd for cd in self._commands if cd.command_name == command), None)
+        if result is None:
+            raise KeyError(command)
+        return result
 
     def __len__(self) -> int:
         """Return number of command definitions."""
         return len(self._commands)
 
-    get = __getitem__
+    def get(self, command: str) -> CommandDefinition | None:
+        """Return the command definition or None if missing."""
+        return next((cd for cd in self._commands if cd.command_name == command), None)
 
     def select(self, commands: list[str | OverkizCommand]) -> str | None:
         """Return the first command name that exists in this definition, or None."""
@@ -591,17 +596,20 @@ class States:
         """Return an iterator over contained State objects."""
         return self._states.__iter__()
 
-    def __contains__(self, name: str) -> bool:
+    def __contains__(self, name: object) -> bool:
         """Return True if a state with the given name exists in the container."""
-        return self.__getitem__(name) is not None
+        return any(state.name == name for state in self._states)
 
-    def __getitem__(self, name: str) -> State | None:
-        """Return the State with the given name or None if missing."""
-        return next((state for state in self._states if state.name == name), None)
+    def __getitem__(self, name: str) -> State:
+        """Return the State with the given name or raise KeyError if missing."""
+        result = next((state for state in self._states if state.name == name), None)
+        if result is None:
+            raise KeyError(name)
+        return result
 
     def __setitem__(self, name: str, state: State) -> None:
         """Set or append a State identified by name."""
-        found = self.__getitem__(name)
+        found = self.get(name)
         if found is None:
             self._states.append(state)
         else:
@@ -611,12 +619,15 @@ class States:
         """Return number of states in the container."""
         return len(self._states)
 
-    get = __getitem__
+    def get(self, name: str) -> State | None:
+        """Return the State with the given name or None if missing."""
+        return next((state for state in self._states if state.name == name), None)
 
     def select(self, names: list[str]) -> State | None:
         """Return the first State that exists and has a non-None value, or None."""
         for name in names:
-            if (state := self[name]) and state.value is not None:
+            state = self.get(name)
+            if state is not None and state.value is not None:
                 return state
         return None
 
