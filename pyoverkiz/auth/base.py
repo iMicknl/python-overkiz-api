@@ -5,7 +5,7 @@ from __future__ import annotations
 import datetime
 from collections.abc import Mapping
 from dataclasses import dataclass
-from typing import Protocol
+from typing import Protocol, cast
 
 
 @dataclass(slots=True)
@@ -27,8 +27,6 @@ class AuthContext:
 
     def update_from_token(self, token: dict[str, object]) -> None:
         """Update context from an OAuth token response."""
-        from typing import cast
-
         self.access_token = cast(str, token["access_token"])
         self.refresh_token = cast(str | None, token.get("refresh_token"))
         expires_in = token.get("expires_in")
