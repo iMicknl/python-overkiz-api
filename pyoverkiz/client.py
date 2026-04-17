@@ -71,11 +71,13 @@ async def refresh_listener(invocation: Details) -> None:
     await _get_client_from_invocation(invocation).register_event_listener()
 
 
-# Reusable backoff decorators to reduce code duplication
+# Reusable backoff decorators with max_tries and max_time to cap total retry duration.
 retry_on_auth_error = backoff.on_exception(
     backoff.expo,
     (NotAuthenticatedException, ServerDisconnectedError),
     max_tries=2,
+    max_time=60,
+    jitter=backoff.full_jitter,
     on_backoff=relogin,
     logger=_LOGGER,
 )
@@ -84,6 +86,8 @@ retry_on_connection_failure = backoff.on_exception(
     backoff.expo,
     (TimeoutError, ClientConnectorError),
     max_tries=5,
+    max_time=120,
+    jitter=backoff.full_jitter,
     logger=_LOGGER,
 )
 
@@ -91,6 +95,8 @@ retry_on_concurrent_requests = backoff.on_exception(
     backoff.expo,
     TooManyConcurrentRequestsException,
     max_tries=5,
+    max_time=120,
+    jitter=backoff.full_jitter,
     logger=_LOGGER,
 )
 
@@ -98,6 +104,8 @@ retry_on_too_many_executions = backoff.on_exception(
     backoff.expo,
     TooManyExecutionsException,
     max_tries=10,
+    max_time=300,
+    jitter=backoff.full_jitter,
     logger=_LOGGER,
 )
 
@@ -105,6 +113,8 @@ retry_on_listener_error = backoff.on_exception(
     backoff.expo,
     (InvalidEventListenerIdException, NoRegisteredEventListenerException),
     max_tries=2,
+    max_time=30,
+    jitter=backoff.full_jitter,
     on_backoff=refresh_listener,
     logger=_LOGGER,
 )
@@ -113,6 +123,8 @@ retry_on_execution_queue_full = backoff.on_exception(
     backoff.expo,
     ExecutionQueueFullException,
     max_tries=5,
+    max_time=120,
+    jitter=backoff.full_jitter,
     logger=_LOGGER,
 )
 
