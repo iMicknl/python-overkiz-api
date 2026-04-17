@@ -511,10 +511,8 @@ class TestNexityAuthStrategy:
         warrant_instance.authenticate_user.side_effect = bad_credentials_error
 
         with (
-            patch("pyoverkiz.auth.strategies.boto3.client", return_value=MagicMock()),
-            patch(
-                "pyoverkiz.auth.strategies.WarrantLite", return_value=warrant_instance
-            ),
+            patch("boto3.client", return_value=MagicMock()),
+            patch("warrant_lite.WarrantLite", return_value=warrant_instance),
             pytest.raises(NexityBadCredentialsException),
         ):
             strategy = NexityAuthStrategy(
@@ -543,10 +541,8 @@ class TestNexityAuthStrategy:
         warrant_instance.authenticate_user.side_effect = service_error
 
         with (
-            patch("pyoverkiz.auth.strategies.boto3.client", return_value=MagicMock()),
-            patch(
-                "pyoverkiz.auth.strategies.WarrantLite", return_value=warrant_instance
-            ),
+            patch("boto3.client", return_value=MagicMock()),
+            patch("warrant_lite.WarrantLite", return_value=warrant_instance),
             pytest.raises(ClientError, match="InternalErrorException"),
         ):
             strategy = NexityAuthStrategy(

@@ -5,18 +5,12 @@ from __future__ import annotations
 import asyncio
 import base64
 import binascii
-import datetime
 import json
 import ssl
 from collections.abc import Mapping
 from typing import Any, cast
 
-import boto3
 from aiohttp import ClientSession, FormData
-from botocore.client import BaseClient
-from botocore.config import Config
-from botocore.exceptions import ClientError
-from warrant_lite import WarrantLite
 
 from pyoverkiz.auth.base import AuthContext, AuthStrategy
 from pyoverkiz.auth.credentials import (
@@ -98,7 +92,7 @@ class SessionLoginStrategy(BaseAuthStrategy):
         ssl_context: ssl.SSLContext | bool,
         api_type: APIType,
     ) -> None:
-        """Initialize SessionLoginStrategy with given parameters."""
+        """Create a session-login strategy bound to the given credentials."""
         super().__init__(session, server, ssl_context, api_type)
         self.credentials = credentials
 
@@ -142,7 +136,7 @@ class SomfyAuthStrategy(BaseAuthStrategy):
         ssl_context: ssl.SSLContext | bool,
         api_type: APIType,
     ) -> None:
-        """Initialize SomfyAuthStrategy with given parameters."""
+        """Create a Somfy OAuth2 strategy with a fresh auth context."""
         super().__init__(session, server, ssl_context, api_type)
         self.credentials = credentials
         self.context = AuthContext()
@@ -201,13 +195,7 @@ class SomfyAuthStrategy(BaseAuthStrategy):
             if not access_token:
                 raise SomfyServiceException("No Somfy access token provided.")
 
-            self.context.access_token = cast(str, access_token)
-            self.context.refresh_token = token.get("refresh_token")
-            expires_in = token.get("expires_in")
-            if expires_in:
-                self.context.expires_at = datetime.datetime.now(
-                    datetime.UTC
-                ) + datetime.timedelta(seconds=cast(int, expires_in) - 5)
+            self.context.update_from_token(token)
 
 
 class CozytouchAuthStrategy(SessionLoginStrategy):
@@ -257,9 +245,14 @@ class NexityAuthStrategy(SessionLoginStrategy):
 
     async def login(self) -> None:
         """Perform login using Nexity username and password."""
+        import boto3
+        from botocore.config import Config
+        from botocore.exceptions import ClientError
+        from warrant_lite import WarrantLite
+
         loop = asyncio.get_running_loop()
 
-        def _client() -> BaseClient:
+        def _client() -> boto3.client:  # type: ignore[type-arg]
             return boto3.client(
                 "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
             )
@@ -307,7 +300,7 @@ class LocalTokenAuthStrategy(BaseAuthStrategy):
         ssl_context: ssl.SSLContext | bool,
         api_type: APIType,
     ) -> None:
-        """Initialize LocalTokenAuthStrategy with given parameters."""
+        """Create a local-token strategy bound to the given credentials."""
         super().__init__(session, server, ssl_context, api_type)
         self.credentials = credentials
 
@@ -332,7 +325,7 @@ class RexelAuthStrategy(BaseAuthStrategy):
         ssl_context: ssl.SSLContext | bool,
         api_type: APIType,
     ) -> None:
-        """Initialize RexelAuthStrategy with given parameters."""
+        """Create a Rexel OAuth2 strategy with a fresh auth context."""
         super().__init__(session, server, ssl_context, api_type)
         self.credentials = credentials
         self.context = AuthContext()
@@ -397,13 +390,7 @@ class RexelAuthStrategy(BaseAuthStrategy):
                 raise InvalidTokenException("No Rexel access token provided.")
 
             self._ensure_consent(access_token)
-            self.context.access_token = cast(str, access_token)
-            self.context.refresh_token = token.get("refresh_token")
-            expires_in = token.get("expires_in")
-            if expires_in:
-                self.context.expires_at = datetime.datetime.now(
-                    datetime.UTC
-                ) + datetime.timedelta(seconds=cast(int, expires_in) - 5)
+            self.context.update_from_token(token)
 
     @staticmethod
     def _ensure_consent(access_token: str) -> None:
@@ -427,7 +414,7 @@ class BearerTokenAuthStrategy(BaseAuthStrategy):
         ssl_context: ssl.SSLContext | bool,
         api_type: APIType,
     ) -> None:
-        """Initialize BearerTokenAuthStrategy with given parameters."""
+        """Create a bearer-token strategy bound to the given credentials."""
         super().__init__(session, server, ssl_context, api_type)
         self.credentials = credentials
 
