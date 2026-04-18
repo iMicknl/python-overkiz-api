@@ -475,7 +475,7 @@ class Device:
 class Action:
     """An action consists of multiple commands related to a single device, identified by its device URL."""
 
-    device_url: str
+    device_url: str = field(repr=obfuscate_id)
     commands: list[Command] = field(factory=list)
 
     def to_payload(self) -> dict[str, object]:

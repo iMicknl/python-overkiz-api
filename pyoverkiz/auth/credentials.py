@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 class Credentials:
@@ -14,14 +14,14 @@ class UsernamePasswordCredentials(Credentials):
     """Credentials using username and password."""
 
     username: str
-    password: str
+    password: str = field(repr=False)
 
 
 @dataclass(slots=True)
 class TokenCredentials(Credentials):
     """Credentials using an (API) token."""
 
-    token: str
+    token: str = field(repr=False)
 
 
 @dataclass(slots=True)
@@ -33,5 +33,5 @@ class LocalTokenCredentials(TokenCredentials):
 class RexelOAuthCodeCredentials(Credentials):
     """Credentials using Rexel OAuth2 authorization code."""
 
-    code: str
+    code: str = field(repr=False)
     redirect_uri: str
