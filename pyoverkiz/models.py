@@ -719,7 +719,7 @@ class Location:
     twilight_offset_enabled: bool = False
     dawn_offset: int = 0
     dusk_offset: int = 0
-    country_code: str | None = None
+    country_code: str | None = field(repr=obfuscate_string, default=None)
     tariff_settings: dict[str, Any] | None = None
 
 
