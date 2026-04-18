@@ -7,7 +7,12 @@ from pyoverkiz.enums.execution import (
     ExecutionSubType,
     ExecutionType,
 )
-from pyoverkiz.enums.gateway import GatewaySubType, GatewayType, UpdateBoxStatus
+from pyoverkiz.enums.gateway import (
+    GatewaySubType,
+    GatewayType,
+    UpdateBoxStatus,
+    UpdateCriticityLevel,
+)
 from pyoverkiz.enums.general import DataType, EventName, FailureType, ProductType
 from pyoverkiz.enums.measured_value_type import MeasuredValueType
 from pyoverkiz.enums.protocol import Protocol
@@ -40,4 +45,5 @@ __all__ = [
     "UIProfile",
     "UIWidget",
     "UpdateBoxStatus",
+    "UpdateCriticityLevel",
 ]

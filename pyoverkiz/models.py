@@ -22,6 +22,7 @@ from pyoverkiz.enums import (
     UIClass,
     UIWidget,
     UpdateBoxStatus,
+    UpdateCriticityLevel,
 )
 from pyoverkiz.enums.command import OverkizCommand, OverkizCommandParam
 from pyoverkiz.enums.protocol import Protocol
@@ -640,7 +641,7 @@ class Gateway:
     sync_in_progress: bool | None = None
     type: GatewayType | None = None
     auto_update_enabled: bool | None = None
-    update_criticity_level: str | None = None
+    update_criticity_level: UpdateCriticityLevel | None = None
     automatic_update: bool | None = None
 
     @property
