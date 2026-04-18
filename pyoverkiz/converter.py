@@ -18,7 +18,11 @@ from pyoverkiz.models import (
 
 
 def _is_primitive_union(t: Any) -> bool:
-    """True for union types containing only JSON-native types and enums (no attrs classes)."""
+    """True for unions of JSON-native types (e.g. StateType).
+
+    Excludes unions containing attrs classes (e.g. Definition | None) since those
+    need actual structuring by cattrs.
+    """
     origin = get_origin(t)
     if origin is not Union and not isinstance(t, types.UnionType):
         return False
@@ -31,7 +35,8 @@ def _is_primitive_union(t: Any) -> bool:
 def _make_converter() -> cattrs.Converter:
     c = cattrs.Converter()
 
-    # Primitive unions like StateType (str | int | float | … | None): pass through as-is
+    # JSON-native unions like StateType (str | int | float | … | None) are already the
+    # correct Python type after JSON parsing — tell cattrs to pass them through as-is.
     c.register_structure_hook_func(_is_primitive_union, lambda v, _: v)
 
     # Enums: call the constructor so UnknownEnumMixin._missing_ can handle unknown values
