@@ -547,6 +547,9 @@ class Event:
     device_states: list[EventState] = field(factory=list)
     old_state: ExecutionState | None = None
     new_state: ExecutionState | None = None
+    actions: list[Action] | None = None
+    owner: str | None = field(repr=obfuscate_email, default=None)
+    source: str | None = None
 
 
 @define(kw_only=True)
@@ -636,6 +639,9 @@ class Gateway:
     update_status: UpdateBoxStatus | None = None
     sync_in_progress: bool | None = None
     type: GatewayType | None = None
+    auto_update_enabled: bool | None = None
+    update_criticity_level: str | None = None
+    automatic_update: bool | None = None
 
     @property
     def id(self) -> str:
@@ -713,6 +719,8 @@ class Location:
     twilight_offset_enabled: bool = False
     dawn_offset: int = 0
     dusk_offset: int = 0
+    country_code: str | None = None
+    tariff_settings: dict[str, Any] | None = None
 
 
 # ---------------------------------------------------------------------------
@@ -851,3 +859,5 @@ class Setup:
     oid: str | None = None
     root_place: Place | None = None
     features: list[Feature] | None = None
+    disconnection_configuration: dict[str, Any] | None = None
+    metadata: str | None = None
