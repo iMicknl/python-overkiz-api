@@ -26,10 +26,11 @@ def _is_primitive_union(t: Any) -> bool:
     origin = get_origin(t)
     if origin is not Union and not isinstance(t, types.UnionType):
         return False
-    return all(
-        arg is type(None) or not (isinstance(arg, type) and attr.has(arg))
-        for arg in get_args(t)
-    )
+    non_none = [arg for arg in get_args(t) if arg is not type(None)]
+    if any(isinstance(arg, type) and attr.has(arg) for arg in non_none):
+        return False
+    # Exclude pure Optional[Enum] unions — those need the Enum structure hook.
+    return not all(isinstance(arg, type) and issubclass(arg, Enum) for arg in non_none)
 
 
 def _make_converter() -> cattrs.Converter:

@@ -10,11 +10,12 @@ import pytest
 
 from pyoverkiz._case import decamelize
 from pyoverkiz.converter import converter
-from pyoverkiz.enums import DataType, Protocol
+from pyoverkiz.enums import DataType, EventName, ExecutionState, FailureType, Protocol
 from pyoverkiz.models import (
     CommandDefinitions,
     Definition,
     Device,
+    Event,
     EventState,
     Setup,
     State,
@@ -723,3 +724,95 @@ def test_action_to_payload_and_parameters_conversion():
     assert payload["commands"][0]["name"] == "setLevel"
     assert payload["commands"][0]["type"] == 1
     assert payload["commands"][0]["parameters"] == [10, "A"]
+
+
+class TestEvent:
+    """Tests for Event structuring via the cattrs converter."""
+
+    def test_execution_state_changed_event(self):
+        """Optional[Enum] fields (old_state, new_state) are structured into enums."""
+        raw = decamelize(
+            {
+                "timestamp": 1631130760744,
+                "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+                "execId": "c6f83624-ac10-3e01-653e-2b025fee956d",
+                "newState": "IN_PROGRESS",
+                "ownerKey": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+                "type": 1,
+                "subType": 1,
+                "oldState": "TRANSMITTED",
+                "timeToNextState": 0,
+                "name": "ExecutionStateChangedEvent",
+            }
+        )
+        event = converter.structure(raw, Event)
+
+        assert event.name == EventName.EXECUTION_STATE_CHANGED
+        assert event.old_state is ExecutionState.TRANSMITTED
+        assert event.new_state is ExecutionState.IN_PROGRESS
+        assert event.setup_oid == "741bc89f-a47b-4ad6-894d-a785c06956c2"
+
+    def test_failure_type_code_structured_as_enum(self):
+        """FailureType | None field is structured into an enum instance."""
+        raw = decamelize(
+            {
+                "name": "ExecutionStateChangedEvent",
+                "timestamp": 123,
+                "failureTypeCode": 0,
+            }
+        )
+        event = converter.structure(raw, Event)
+
+        assert isinstance(event.failure_type_code, FailureType)
+        assert event.failure_type_code is FailureType.NO_FAILURE
+
+    def test_optional_enum_fields_none_when_absent(self):
+        """Optional enum fields default to None when not present in the payload."""
+        raw = decamelize(
+            {
+                "name": "GatewaySynchronizationEndedEvent",
+                "timestamp": 1631130645998,
+                "gatewayId": "9876-1234-8767",
+            }
+        )
+        event = converter.structure(raw, Event)
+
+        assert event.old_state is None
+        assert event.new_state is None
+        assert event.failure_type_code is None
+
+    def test_device_state_changed_event_with_states(self):
+        """DeviceStateChangedEvent payload structures device_states as EventState."""
+        raw = decamelize(
+            {
+                "timestamp": 1631130646544,
+                "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+                "deviceURL": "io://9876-1234-8767/4468654#1",
+                "deviceStates": [
+                    {
+                        "name": "core:ElectricEnergyConsumptionState",
+                        "type": 1,
+                        "value": "23247220",
+                    }
+                ],
+                "name": "DeviceStateChangedEvent",
+            }
+        )
+        event = converter.structure(raw, Event)
+
+        assert event.name == EventName.DEVICE_STATE_CHANGED
+        assert len(event.device_states) == 1
+        assert isinstance(event.device_states[0], EventState)
+
+    def test_event_fixture_structures_all_events(self):
+        """All events in the cloud fixture file structure without errors."""
+        raw_events = json.loads((Path("tests/fixtures/event/events.json")).read_text())
+        events = [converter.structure(decamelize(e), Event) for e in raw_events]
+
+        assert len(events) == len(raw_events)
+        state_changed = [
+            e for e in events if e.name == EventName.EXECUTION_STATE_CHANGED
+        ]
+        for e in state_changed:
+            assert isinstance(e.old_state, ExecutionState)
+            assert isinstance(e.new_state, ExecutionState)
