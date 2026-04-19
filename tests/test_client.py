@@ -988,6 +988,163 @@ class TestOverkizClient:
         with patch.object(aiohttp.ClientSession, "post", return_value=resp):
             await client.refresh_device_states("rts://2025-8464-6867/16756006")
 
+    # --- Local API specific tests ---
+    # The local gateway (KizOs) behaves differently from the cloud API
+    # in several cases. These tests verify the client raises proper errors
+    # instead of crashing when called via the local API.
+
+    @pytest.mark.asyncio
+    async def test_local_get_current_execution_empty_list(
+        self, local_client: OverkizClient
+    ):
+        """Local gateway returns [] for non-existent exec_id (cloud returns {})."""
+        resp = MockResponse("[]")
+
+        with patch.object(aiohttp.ClientSession, "get", return_value=resp):
+            result = await local_client.get_current_execution(
+                "00000000-0000-0000-0000-000000000000"
+            )
+            assert result is None
+
+    @pytest.mark.asyncio
+    async def test_local_get_state_no_such_device(self, local_client: OverkizClient):
+        """Local gateway raises NoSuchDeviceError for unknown device URLs."""
+        resp = MockResponse(
+            '{"error":"No such device : \\"io://0000-0000-0000/12345678\\"","errorCode":"NO_SUCH_DEVICE"}',
+            status=400,
+        )
+
+        with (
+            patch.object(aiohttp.ClientSession, "get", return_value=resp),
+            pytest.raises(exceptions.NoSuchDeviceError),
+        ):
+            await local_client.get_state("io://0000-0000-0000/12345678")
+
+    @pytest.mark.asyncio
+    async def test_local_get_device_definition_no_such_device(
+        self, local_client: OverkizClient
+    ):
+        """Local gateway raises NoSuchDeviceError for unknown device definition lookups."""
+        resp = MockResponse(
+            '{"error":"No such device : \\"io://0000-0000-0000/12345678\\"","errorCode":"NO_SUCH_DEVICE"}',
+            status=400,
+        )
+
+        with (
+            patch.object(aiohttp.ClientSession, "get", return_value=resp),
+            pytest.raises(exceptions.NoSuchDeviceError),
+        ):
+            await local_client.get_device_definition("io://0000-0000-0000/12345678")
+
+    @pytest.mark.asyncio
+    async def test_local_get_setup_option_unknown_object(
+        self, local_client: OverkizClient
+    ):
+        """Local gateway raises UnknownObjectError for non-existent options (cloud returns {})."""
+        resp = MockResponse(
+            '{"error":"Unknown object.","errorCode":"UNSPECIFIED_ERROR"}',
+            status=400,
+        )
+
+        with (
+            patch.object(aiohttp.ClientSession, "get", return_value=resp),
+            pytest.raises(exceptions.UnknownObjectError),
+        ):
+            await local_client.get_setup_option("nonExistentOption")
+
+    @pytest.mark.asyncio
+    async def test_local_refresh_device_states_unknown_object(
+        self, local_client: OverkizClient
+    ):
+        """Local gateway raises UnknownObjectError for unknown device refresh."""
+        resp = MockResponse(
+            '{"error":"Unknown object.","errorCode":"UNSPECIFIED_ERROR"}',
+            status=400,
+        )
+
+        with (
+            patch.object(aiohttp.ClientSession, "post", return_value=resp),
+            pytest.raises(exceptions.UnknownObjectError),
+        ):
+            await local_client.refresh_device_states("io://0000-0000-0000/12345678")
+
+    @pytest.mark.asyncio
+    async def test_local_get_reference_controllable_unknown_object(
+        self, local_client: OverkizClient
+    ):
+        """Local gateway raises UnknownObjectError for unknown controllable names."""
+        resp = MockResponse(
+            '{"error":"Unknown object.","errorCode":"UNSPECIFIED_ERROR"}',
+            status=400,
+        )
+
+        with (
+            patch.object(aiohttp.ClientSession, "get", return_value=resp),
+            pytest.raises(exceptions.UnknownObjectError),
+        ):
+            await local_client.get_reference_controllable("io:NonExistentControllable")
+
+    @pytest.mark.asyncio
+    async def test_local_cancel_execution_succeeds_on_unknown_id(
+        self, local_client: OverkizClient
+    ):
+        """Local gateway returns 200 with [] for cancel on unknown exec_id (idempotent)."""
+        resp = MockResponse("[]", status=200)
+
+        with patch.object(aiohttp.ClientSession, "delete", return_value=resp):
+            await local_client.cancel_execution("00000000-0000-0000-0000-000000000000")
+
+    @pytest.mark.asyncio
+    async def test_local_execute_action_group_rts_close(
+        self, local_client: OverkizClient
+    ):
+        """Verify executing an RTS command via the local API."""
+        action = Action(
+            "rts://2025-8464-6867/16756006",
+            [Command(name="close")],
+        )
+        resp = MockResponse('{"execId": "45e52d27-3c08-4fd5-87f2-03d650b67f4b"}')
+
+        with patch.object(aiohttp.ClientSession, "post") as mock_post:
+            mock_post.return_value = resp
+            exec_id = await local_client.execute_action_group([action])
+
+            assert exec_id == "45e52d27-3c08-4fd5-87f2-03d650b67f4b"
+
+    @pytest.mark.asyncio
+    async def test_local_no_registered_event_listener(
+        self, local_client: OverkizClient
+    ):
+        """Local gateway raises NoRegisteredEventListenerError for unregistered fetch."""
+        resp = MockResponse(
+            '{"error":"\\"No registered event listener.\\"","errorCode":"UNSPECIFIED_ERROR"}',
+            status=400,
+        )
+
+        with (
+            patch.object(aiohttp.ClientSession, "post", return_value=resp),
+            pytest.raises(exceptions.NoRegisteredEventListenerError),
+        ):
+            await check_response(resp)
+
+    @pytest.mark.asyncio
+    async def test_local_schedule_persisted_action_group_unknown_object(
+        self, local_client: OverkizClient
+    ):
+        """Local gateway raises UnknownObjectError when scheduling a non-existent action group."""
+        resp = MockResponse(
+            '{"error":"Unknown object.","errorCode":"UNSPECIFIED_ERROR"}',
+            status=400,
+        )
+
+        with (
+            patch.object(aiohttp.ClientSession, "post", return_value=resp),
+            pytest.raises(exceptions.UnknownObjectError),
+        ):
+            await local_client.schedule_persisted_action_group(
+                "00000000-0000-0000-0000-000000000000", 9999999999
+            )
+
 
 class MockResponse:
     """Simple stand-in for aiohttp responses used in tests."""
