@@ -12,7 +12,7 @@ class TestObfucscate:
     """Tests for obfuscation utilities (emails and sensitive data)."""
 
     @pytest.mark.parametrize(
-        "email, obfuscated",
+        ("email", "obfuscated"),
         [
             ("contact@somfy.com", "c****@****y.com"),
             ("contact_-_nexity.com", "c****@****y.com"),

@@ -523,10 +523,10 @@ class TestNexityAuthStrategy:
         with (
             patch("boto3.client", return_value=MagicMock()),
             patch("warrant_lite.WarrantLite", return_value=warrant_instance),
-            pytest.raises(NexityBadCredentialsError),
         ):
             strategy = NexityAuthStrategy(credentials, session, server_config, True)
-            await strategy.login()
+            with pytest.raises(NexityBadCredentialsError):
+                await strategy.login()
 
     @pytest.mark.asyncio
     async def test_login_propagates_non_auth_client_error(self):
@@ -551,10 +551,10 @@ class TestNexityAuthStrategy:
         with (
             patch("boto3.client", return_value=MagicMock()),
             patch("warrant_lite.WarrantLite", return_value=warrant_instance),
-            pytest.raises(ClientError, match="InternalErrorException"),
         ):
             strategy = NexityAuthStrategy(credentials, session, server_config, True)
-            await strategy.login()
+            with pytest.raises(ClientError, match="InternalErrorException"):
+                await strategy.login()
 
 
 class TestRexelAuthStrategy:
