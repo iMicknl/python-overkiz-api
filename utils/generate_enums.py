@@ -21,7 +21,7 @@ from pyoverkiz.exceptions import OverkizError
 from pyoverkiz.models import UIProfileDefinition, ValuePrototype
 
 # Hardcoded protocols that may not be available on all servers
-# Format: (name, prefix, id, label)
+# Each tuple contains: name, prefix, id, label
 ADDITIONAL_PROTOCOLS: list[tuple[str, str, int | None, str | None]] = [
     ("HLRR_WIFI", "hlrrwifi", None, None),
     ("MODBUSLINK", "modbuslink", 44, "ModbusLink"),  # via Atlantic Cozytouch

@@ -469,11 +469,6 @@ class TestOverkizClient:
                 exceptions.ResourceAccessDeniedError,
                 400,
             ),
-            # (
-            #     "local/204-no-corresponding-execId.json",
-            #     exceptions.OverkizError,
-            #     204,
-            # ),
             (
                 "local/400-bad-parameters.json",
                 exceptions.OverkizError,

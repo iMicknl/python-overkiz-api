@@ -114,6 +114,8 @@ select = [
     "RET",
     # flake8-pie
     "PIE",
+    # eradicate
+    "ERA",
 ]
 ignore = [
     "E501",    # Line too long
