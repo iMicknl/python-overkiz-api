@@ -1121,10 +1121,7 @@ class TestOverkizClient:
             status=400,
         )
 
-        with (
-            patch.object(aiohttp.ClientSession, "post", return_value=resp),
-            pytest.raises(exceptions.NoRegisteredEventListenerError),
-        ):
+        with pytest.raises(exceptions.NoRegisteredEventListenerError):
             await check_response(resp)
 
     @pytest.mark.asyncio
