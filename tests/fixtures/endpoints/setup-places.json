@@ -1,0 +1,25 @@
+{
+    "creationTime": 1650000000000,
+    "lastUpdateTime": 1767003511145,
+    "label": "My House",
+    "type": 0,
+    "oid": "aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee",
+    "subPlaces": [
+        {
+            "creationTime": 1650000100000,
+            "lastUpdateTime": 1767003511145,
+            "label": "Living Room",
+            "type": 1,
+            "oid": "11111111-2222-3333-4444-555555555555",
+            "subPlaces": []
+        },
+        {
+            "creationTime": 1650000200000,
+            "lastUpdateTime": null,
+            "label": "Bedroom",
+            "type": 1,
+            "oid": "66666666-7777-8888-9999-aaaaaaaaaaaa",
+            "subPlaces": []
+        }
+    ]
+}
