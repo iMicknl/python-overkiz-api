@@ -1273,8 +1273,8 @@ class ValuePrototype:
     def __init__(
         self,
         type: str,
-        min_value: int | float | None = None,
-        max_value: int | float | None = None,
+        min_value: float | None = None,
+        max_value: float | None = None,
         enum_values: list[str] | None = None,
         description: str | None = None,
         **_: Any,
