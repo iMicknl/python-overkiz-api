@@ -169,7 +169,7 @@ await client.execute_action_group(
 - Use a single action group to batch multiple device commands.
 
 ```python
-from pyoverkiz.enums import OverkizCommand
+from pyoverkiz.enums import OverkizCommand, OverkizCommandParam
 from pyoverkiz.models import Action, Command
 
 await client.execute_action_group(
@@ -195,6 +195,7 @@ await client.execute_action_group(
     ],
     label="Execution: multiple commands",
 )
+```
 
 ## Limitations and rate limits
 
