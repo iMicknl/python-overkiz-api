@@ -155,7 +155,7 @@ If you use Visual Studio Code with Docker or GitHub Codespaces, you can take adv
 
 - Install [uv](https://docs.astral.sh/uv/getting-started/installation).
 - Clone this repository and navigate to it: `cd python-overkiz-api`
-- Initialize the project with `uv sync`, then run `uv run pre-commit install`
+- Initialize the project with `uv sync`, then run `uv run prek install`
 
 #### Tests
 
