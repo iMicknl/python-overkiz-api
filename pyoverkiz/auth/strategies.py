@@ -66,7 +66,7 @@ class BaseAuthStrategy(AuthStrategy):
 
     async def login(self) -> None:
         """Perform authentication; default is a no-op for subclasses to override."""
-        return None
+        return
 
     async def refresh_if_needed(self) -> bool:
         """Refresh authentication tokens if needed; default returns False."""
@@ -78,7 +78,7 @@ class BaseAuthStrategy(AuthStrategy):
 
     async def close(self) -> None:
         """Close any resources held by the strategy; default is no-op."""
-        return None
+        return
 
 
 class SessionLoginStrategy(BaseAuthStrategy):
@@ -269,7 +269,7 @@ class NexityAuthStrategy(SessionLoginStrategy):
         except ClientError as error:
             code = error.response.get("Error", {}).get("Code")
             if code in {"NotAuthorizedException", "UserNotFoundException"}:
-                raise NexityBadCredentialsError() from error
+                raise NexityBadCredentialsError from error
             raise
 
         id_token = tokens["AuthenticationResult"]["IdToken"]

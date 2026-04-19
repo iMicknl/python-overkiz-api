@@ -363,12 +363,11 @@ async def generate_ui_profiles(server: Server) -> None:
 
                     # Get parameter info
                     if cmd.prototype and cmd.prototype.parameters:
-                        param_strs = []
-                        for param in cmd.prototype.parameters:
-                            if param.value_prototypes:
-                                param_strs.append(
-                                    format_value_prototype(param.value_prototypes[0])
-                                )
+                        param_strs = [
+                            format_value_prototype(param.value_prototypes[0])
+                            for param in cmd.prototype.parameters
+                            if param.value_prototypes
+                        ]
                         param_info = (
                             f"({', '.join(param_strs)})" if param_strs else "()"
                         )

@@ -180,10 +180,8 @@ class OverkizClient:
         self.gateways: list[Gateway] = []
         self.event_listener_id: str | None = None
 
-        self.session = (
-            session
-            if session
-            else ClientSession(headers={"User-Agent": "python-overkiz-api"})
+        self.session = session or ClientSession(
+            headers={"User-Agent": "python-overkiz-api"}
         )
         self._ssl = verify_ssl
 
@@ -519,8 +517,7 @@ class OverkizClient:
         if self._action_queue:
             queued = await self._action_queue.add(actions, mode, label)
             return await queued
-        else:
-            return await self._execute_action_group_direct(actions, mode, label)
+        return await self._execute_action_group_direct(actions, mode, label)
 
     async def flush_action_queue(self) -> None:
         """Force flush all pending actions in the queue immediately.
