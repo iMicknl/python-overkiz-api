@@ -553,7 +553,7 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def get_action_groups(self) -> list[ActionGroup]:
-        """List the persisted action groups (scenarios)."""
+        """List the persisted action groups."""
         response = await self._get("actionGroups")
         return [ActionGroup(**action_group) for action_group in decamelize(response)]
 
@@ -573,14 +573,14 @@ class OverkizClient:
         return Place(**decamelize(response))
 
     @retry_on_auth_error
-    async def execute_scenario(self, oid: str) -> str:
-        """Execute a scenario."""
+    async def execute_persisted_action_group(self, oid: str) -> str:
+        """Execute a persisted action group by its OID."""
         response = await self._post(f"exec/{oid}")
         return cast(str, response["execId"])
 
     @retry_on_auth_error
-    async def execute_scheduled_scenario(self, oid: str, timestamp: int) -> str:
-        """Execute a scheduled scenario."""
+    async def schedule_persisted_action_group(self, oid: str, timestamp: int) -> str:
+        """Schedule a persisted action group for future execution."""
         response = await self._post(f"exec/schedule/{oid}/{timestamp}")
         return cast(str, response["triggerId"])
 
