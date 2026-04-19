@@ -745,7 +745,6 @@ class MockResponse:
 
     async def __aexit__(self, exc_type, exc, tb):
         """Context manager exit (noop)."""
-        pass
 
     async def __aenter__(self):
         """Context manager enter returning self."""

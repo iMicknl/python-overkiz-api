@@ -104,6 +104,16 @@ select = [
     "TRY",
     # flake8-quotes
     "Q",
+    # refurb
+    "FURB",
+    # perflint
+    "PERF",
+    # flake8-raise
+    "RSE",
+    # flake8-return
+    "RET",
+    # flake8-pie
+    "PIE",
 ]
 ignore = [
     "E501",    # Line too long

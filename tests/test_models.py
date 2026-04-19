@@ -218,7 +218,7 @@ class TestDevice:
         """Ensure device URL parsing extracts protocol, gateway and address correctly."""
         test_device = {
             **RAW_DEVICES,
-            **{"deviceURL": device_url},
+            "deviceURL": device_url,
         }
         device_data = decamelize(test_device)
         device = Device(**device_data)
@@ -240,7 +240,7 @@ class TestDevice:
         """Invalid device URLs should raise during identifier parsing."""
         test_device = {
             **RAW_DEVICES,
-            **{"deviceURL": device_url},
+            "deviceURL": device_url,
         }
         device_data = decamelize(test_device)
 
