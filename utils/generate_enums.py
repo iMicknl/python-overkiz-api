@@ -657,9 +657,9 @@ async def generate_command_enums() -> None:
     lines.append("")
 
     # Append ExecutionMode class
-    command_mode_start = content.find("@unique\nclass ExecutionMode")
-    if command_mode_start != -1:
-        lines.append(content[command_mode_start:].rstrip())
+    execution_mode_start = content.find("@unique\nclass ExecutionMode")
+    if execution_mode_start != -1:
+        lines.append(content[execution_mode_start:].rstrip())
     lines.append("")
 
     # Write to the command.py file
