@@ -134,10 +134,8 @@ async def check_response(response: ClientResponse) -> None:
     error_code = result.get("errorCode", "")
 
     if error_code:
-        # Error messages between cloud and local Overkiz servers can be slightly different.
-        # To make it easier to have a strict match for these errors, we remove the double quotes and the period at the end.
-
-        # An error message can have an empty (None) message
+        # Error messages between cloud and local servers differ slightly in quoting and punctuation.
+        # Normalise so substring matching works across both variants.
         message = message.strip('".') if (message := result.get("error")) else ""
 
         # 1. Primary dispatch: match on errorCode (+ optional message substring)
