@@ -35,11 +35,10 @@ pip install pyoverkiz
 
 ```python
 import asyncio
-import time
 
 from pyoverkiz.auth.credentials import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient
-from pyoverkiz.models import Action
+from pyoverkiz.models import Action, Command
 from pyoverkiz.enums import Server, OverkizCommand
 
 USERNAME = ""
@@ -60,7 +59,7 @@ async def main() -> None:
         devices = await client.get_devices()
 
         for device in devices:
-            print(f"{device.label} ({device.id}) - {device.controllable_name}")
+            print(f"{device.label} ({device.device_url}) - {device.controllable_name}")
             print(f"{device.widget} - {device.ui_class}")
 
         await client.execute_action_group(
@@ -80,7 +79,7 @@ async def main() -> None:
             events = await client.fetch_events()
             print(events)
 
-            time.sleep(2)
+            await asyncio.sleep(2)
 
 
 asyncio.run(main())
@@ -90,7 +89,6 @@ asyncio.run(main())
 
 ```python
 import asyncio
-import time
 
 from pyoverkiz.auth.credentials import LocalTokenCredentials
 from pyoverkiz.client import OverkizClient
@@ -110,7 +108,7 @@ async def main() -> None:
     ) as client:
         await client.login()
 
-        print("Local API connection succesfull!")
+        print("Local API connection successful!")
 
         print(await client.get_api_version())
 
@@ -121,14 +119,14 @@ async def main() -> None:
         print(devices)
 
         for device in devices:
-            print(f"{device.label} ({device.id}) - {device.controllable_name}")
+            print(f"{device.label} ({device.device_url}) - {device.controllable_name}")
             print(f"{device.widget} - {device.ui_class}")
 
         while True:
             events = await client.fetch_events()
             print(events)
 
-            time.sleep(2)
+            await asyncio.sleep(2)
 
 
 asyncio.run(main())
