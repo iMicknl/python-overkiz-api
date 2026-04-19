@@ -388,8 +388,8 @@ class Device:
     definition: Definition | None = None
     states: States = field(factory=States)
     type: ProductType
-    ui_class: UIClass | None = None
-    widget: UIWidget | None = None
+    ui_class: UIClass = field(default=None)  # type: ignore[assignment]
+    widget: UIWidget = field(default=None)  # type: ignore[assignment]
     identifier: DeviceIdentifier = field(init=False, repr=False)
     oid: str | None = field(repr=obfuscate_id, default=None)
     place_oid: str | None = None
@@ -410,6 +410,9 @@ class Device:
 
             if self.widget is None and self.definition.widget_name:
                 self.widget = UIWidget(self.definition.widget_name)
+
+        if self.ui_class is None or self.widget is None:
+            raise ValueError(f"Device {self.device_url} is missing ui_class or widget")
 
     def supports_command(self, command: str | OverkizCommand) -> bool:
         """Check if device supports a command."""
