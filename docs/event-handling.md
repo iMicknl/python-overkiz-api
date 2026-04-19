@@ -62,38 +62,6 @@ async def main() -> None:
 asyncio.run(main())
 ```
 
-## Update an in-memory state map
-
-```python
-import asyncio
-
-from pyoverkiz.auth.credentials import UsernamePasswordCredentials
-from pyoverkiz.client import OverkizClient
-from pyoverkiz.enums import Server
-
-
-async def main() -> None:
-    async with OverkizClient(
-        server=Server.SOMFY_EUROPE,
-        credentials=UsernamePasswordCredentials("you@example.com", "password"),
-    ) as client:
-        await client.login()
-        await client.register_event_listener()
-
-        state_map: dict[str, dict[str, object]] = {}
-
-        while True:
-            events = await client.fetch_events()
-            for event in events:
-                device_id = event.device_id
-                state_map.setdefault(device_id, {})[event.state_name] = event.state_value
-
-            await asyncio.sleep(2)
-
-
-asyncio.run(main())
-```
-
 ## Reconnect tips
 
 - Re-register the listener when you see `InvalidEventListenerIdError`.
