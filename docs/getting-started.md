@@ -97,7 +97,7 @@ Use a cloud server when you want to connect through the vendor’s public API. U
 
     async def main() -> None:
         async with OverkizClient(
-            server=Server.SOMFY_EUROPE,
+            server=Server.ATLANTIC_COZYTOUCH,
             credentials=UsernamePasswordCredentials("you@example.com", "password"),
         ) as client:
             await client.login()
