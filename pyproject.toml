@@ -118,6 +118,8 @@ select = [
     "ERA",
     # flake8-pyi
     "PYI",
+    # flake8-pathlib
+    "PTH",
 ]
 ignore = [
     "E501",    # Line too long

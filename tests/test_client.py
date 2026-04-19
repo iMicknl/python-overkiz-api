@@ -1,13 +1,12 @@
 """Unit tests for the high-level OverkizClient behaviour and responses."""
 
-# ruff: noqa: ASYNC230, S106
+# ruff: noqa: S106
 # S106: Test credentials use dummy values.
-# ASYNC230: Blocking open() is acceptable for reading test fixtures
 
 from __future__ import annotations
 
 import json
-import os
+from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
 import aiohttp
@@ -25,7 +24,7 @@ from pyoverkiz.models import Option
 from pyoverkiz.response_handler import check_response
 from pyoverkiz.utils import create_local_server_config
 
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+CURRENT_DIR = Path(__file__).resolve().parent
 
 
 class TestOverkizClient:
@@ -60,9 +59,7 @@ class TestOverkizClient:
     @pytest.mark.asyncio
     async def test_get_devices_basic(self, client: OverkizClient):
         """Ensure the client can fetch and parse the basic devices fixture."""
-        with open(
-            os.path.join(CURRENT_DIR, "devices.json"), encoding="utf-8"
-        ) as raw_devices:
+        with (CURRENT_DIR / "devices.json").open(encoding="utf-8") as raw_devices:
             resp = MockResponse(raw_devices.read())
 
         with patch.object(aiohttp.ClientSession, "get", return_value=resp):
@@ -81,8 +78,7 @@ class TestOverkizClient:
         self, client: OverkizClient, fixture_name: str, event_length: int
     ):
         """Parameterised test that fetches events fixture and checks the expected count."""
-        with open(
-            os.path.join(CURRENT_DIR, "fixtures/event/" + fixture_name),
+        with (CURRENT_DIR / "fixtures" / "event" / fixture_name).open(
             encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
@@ -94,8 +90,8 @@ class TestOverkizClient:
     @pytest.mark.asyncio
     async def test_fetch_events_simple_cast(self, client: OverkizClient):
         """Check that event state values from the cloud (strings) are cast to appropriate types."""
-        with open(
-            os.path.join(CURRENT_DIR, "fixtures/event/events.json"), encoding="utf-8"
+        with (CURRENT_DIR / "fixtures" / "event" / "events.json").open(
+            encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
 
@@ -195,8 +191,7 @@ class TestOverkizClient:
     @pytest.mark.asyncio
     async def test_fetch_events_casting(self, client: OverkizClient, fixture_name: str):
         """Validate that fetched event states are cast to the expected Python types for each data type."""
-        with open(
-            os.path.join(CURRENT_DIR, "fixtures/event/" + fixture_name),
+        with (CURRENT_DIR / "fixtures" / "event" / fixture_name).open(
             encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
@@ -264,8 +259,7 @@ class TestOverkizClient:
         gateway_count: int,
     ):
         """Ensure setup parsing yields expected device and gateway counts and device metadata."""
-        with open(
-            os.path.join(CURRENT_DIR, "fixtures/setup/" + fixture_name),
+        with (CURRENT_DIR / "fixtures" / "setup" / fixture_name).open(
             encoding="utf-8",
         ) as setup_mock:
             resp = MockResponse(setup_mock.read())
@@ -316,8 +310,7 @@ class TestOverkizClient:
     @pytest.mark.asyncio
     async def test_get_diagnostic_data(self, client: OverkizClient, fixture_name: str):
         """Verify that diagnostic data can be fetched and is not empty."""
-        with open(
-            os.path.join(CURRENT_DIR, "fixtures/setup/" + fixture_name),
+        with (CURRENT_DIR / "fixtures" / "setup" / fixture_name).open(
             encoding="utf-8",
         ) as setup_mock:
             resp = MockResponse(setup_mock.read())
@@ -329,8 +322,7 @@ class TestOverkizClient:
     @pytest.mark.asyncio
     async def test_get_diagnostic_data_redacted_by_default(self, client: OverkizClient):
         """Ensure diagnostics are redacted when no argument is provided."""
-        with open(
-            os.path.join(CURRENT_DIR, "fixtures/setup/setup_tahoma_1.json"),
+        with (CURRENT_DIR / "fixtures" / "setup" / "setup_tahoma_1.json").open(
             encoding="utf-8",
         ) as setup_mock:
             resp = MockResponse(setup_mock.read())
@@ -349,8 +341,7 @@ class TestOverkizClient:
     @pytest.mark.asyncio
     async def test_get_diagnostic_data_without_masking(self, client: OverkizClient):
         """Ensure diagnostics can be returned without masking when requested."""
-        with open(
-            os.path.join(CURRENT_DIR, "fixtures/setup/setup_tahoma_1.json"),
+        with (CURRENT_DIR / "fixtures" / "setup" / "setup_tahoma_1.json").open(
             encoding="utf-8",
         ) as setup_mock:
             raw_setup = setup_mock.read()
@@ -546,8 +537,7 @@ class TestOverkizClient:
     ):
         """Ensure client raises the correct error for various error fixtures/status codes."""
         if fixture_name:
-            with open(
-                os.path.join(CURRENT_DIR, "fixtures/exceptions/" + fixture_name),
+            with (CURRENT_DIR / "fixtures" / "exceptions" / fixture_name).open(
                 encoding="utf-8",
             ) as raw_events:
                 resp = MockResponse(raw_events.read(), status_code)
@@ -563,8 +553,7 @@ class TestOverkizClient:
         client: OverkizClient,
     ):
         """Check that setup options are parsed and return the expected number of Option instances."""
-        with open(
-            os.path.join(CURRENT_DIR, "fixtures/endpoints/setup-options.json"),
+        with (CURRENT_DIR / "fixtures" / "endpoints" / "setup-options.json").open(
             encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
@@ -665,8 +654,7 @@ class TestOverkizClient:
         instance: Option | None,
     ):
         """Verify retrieval of a single setup option by name, including non-existent options."""
-        with open(
-            os.path.join(CURRENT_DIR, "fixtures/endpoints/" + fixture_name),
+        with (CURRENT_DIR / "fixtures" / "endpoints" / fixture_name).open(
             encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
@@ -696,8 +684,7 @@ class TestOverkizClient:
         scenario_count: int,
     ):
         """Ensure action groups (scenarios) are parsed correctly and contain actions and commands."""
-        with open(
-            os.path.join(CURRENT_DIR, "fixtures/action_groups/" + fixture_name),
+        with (CURRENT_DIR / "fixtures" / "action_groups" / fixture_name).open(
             encoding="utf-8",
         ) as action_group_mock:
             resp = MockResponse(action_group_mock.read())
