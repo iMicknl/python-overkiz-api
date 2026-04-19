@@ -5,6 +5,7 @@ from __future__ import annotations
 import logging
 import ssl
 import urllib.parse
+from http import HTTPStatus
 from pathlib import Path
 from types import TracebackType
 from typing import Any, Self, cast
@@ -728,7 +729,7 @@ class OverkizClient:
     async def _parse_response(response: ClientResponse) -> Any:
         """Check response status and parse JSON body (returns None for 204)."""
         await check_response(response)
-        if response.status == 204:  # noqa: PLR2004
+        if response.status == HTTPStatus.NO_CONTENT:
             return None
         return await response.json()
 

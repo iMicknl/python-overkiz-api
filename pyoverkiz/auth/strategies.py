@@ -8,6 +8,7 @@ import binascii
 import json
 import ssl
 from collections.abc import Mapping
+from http import HTTPStatus
 from typing import TYPE_CHECKING, Any, cast
 
 if TYPE_CHECKING:
@@ -48,6 +49,8 @@ from pyoverkiz.exceptions import (
     SomfyServiceError,
 )
 from pyoverkiz.models import ServerConfig
+
+MIN_JWT_SEGMENTS = 2
 
 
 class BaseAuthStrategy(AuthStrategy):
@@ -110,13 +113,13 @@ class SessionLoginStrategy(BaseAuthStrategy):
             data=data,
             ssl=self._ssl,
         ) as response:
-            if response.status not in (200, 204):
+            if response.status not in (HTTPStatus.OK, HTTPStatus.NO_CONTENT):
                 raise BadCredentialsError(
                     f"Login failed for {self.server.name}: {response.status}"
                 )
 
             # A 204 No Content response cannot have a body, so skip JSON parsing.
-            if response.status == 204:  # noqa: PLR2004
+            if response.status == HTTPStatus.NO_CONTENT:
                 return
 
             result = await response.json()
@@ -419,7 +422,7 @@ class BearerTokenAuthStrategy(BaseAuthStrategy):
 def _decode_jwt_payload(token: str) -> dict[str, Any]:
     """Decode the payload of a JWT token."""
     parts = token.split(".")
-    if len(parts) < 2:  # noqa: PLR2004
+    if len(parts) < MIN_JWT_SEGMENTS:
         raise InvalidTokenError("Malformed JWT received.")
 
     payload_segment = parts[1]

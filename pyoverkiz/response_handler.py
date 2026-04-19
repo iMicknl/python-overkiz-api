@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from http import HTTPStatus
 from json import JSONDecodeError
 
 from aiohttp import ClientResponse
@@ -113,7 +114,7 @@ _ERROR_CODE_FALLBACK_MAP: dict[str, type[BaseOverkizError]] = {
 
 async def check_response(response: ClientResponse) -> None:
     """Check the response returned by the OverKiz API."""
-    if response.status in [200, 204]:
+    if response.status in (HTTPStatus.OK, HTTPStatus.NO_CONTENT):
         return
 
     try:
@@ -124,7 +125,7 @@ async def check_response(response: ClientResponse) -> None:
         if "is down for maintenance" in result:
             raise MaintenanceError("Server is down for maintenance") from error
 
-        if response.status == 503:  # noqa: PLR2004
+        if response.status == HTTPStatus.SERVICE_UNAVAILABLE:
             raise ServiceUnavailableError(result) from error
 
         raise OverkizError(
