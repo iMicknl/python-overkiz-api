@@ -261,6 +261,8 @@ history = await client.get_execution_history()
 Action groups can be stored on the server (like saved scenes). Use these methods to list and execute them:
 
 ```python
+import time
+
 # List all persisted action groups
 action_groups = await client.get_action_groups()
 
@@ -270,8 +272,10 @@ for ag in action_groups:
 # Execute a persisted action group by OID
 exec_id = await client.execute_persisted_action_group(ag.oid)
 
-# Schedule for future execution (Unix timestamp)
-trigger_id = await client.schedule_persisted_action_group(ag.oid, timestamp=1735689600)
+# Schedule for future execution (e.g. 1 hour from now)
+trigger_id = await client.schedule_persisted_action_group(
+    ag.oid, timestamp=int(time.time()) + 3600
+)
 ```
 
 ## Limitations and rate limits
