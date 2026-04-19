@@ -34,7 +34,7 @@ class AuthContext:
         expires_in = token.get("expires_in")
         if expires_in is not None:
             self.expires_at = datetime.datetime.now(datetime.UTC) + datetime.timedelta(
-                seconds=int(expires_in) - 5
+                seconds=int(expires_in)
             )
 
 
