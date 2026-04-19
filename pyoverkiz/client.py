@@ -447,9 +447,16 @@ class OverkizClient:
         self.event_listener_id = None
 
     @retry_on_auth_error
-    async def get_current_execution(self, exec_id: str) -> Execution:
-        """Get a currently running execution by its exec_id."""
+    async def get_current_execution(self, exec_id: str) -> Execution | None:
+        """Get a currently running execution by its exec_id.
+
+        Returns None if the execution does not exist.
+        """
         response = await self._get(f"exec/current/{exec_id}")
+
+        if not response or not isinstance(response, dict):
+            return None
+
         return Execution(**decamelize(response))
 
     @retry_on_auth_error

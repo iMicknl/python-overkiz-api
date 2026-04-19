@@ -805,8 +805,11 @@ class Execution:
     id: str
     description: str
     owner: str = field(repr=obfuscate_email)
-    state: str
+    state: ExecutionState
     action_group: ActionGroup
+    start_time: int | None = None
+    execution_type: ExecutionType | None = None
+    execution_sub_type: ExecutionSubType | None = None
 
     def __init__(
         self,
@@ -815,14 +818,22 @@ class Execution:
         owner: str,
         state: str,
         action_group: dict[str, Any],
+        start_time: int | None = None,
+        execution_type: str | None = None,
+        execution_sub_type: str | None = None,
         **_: Any,
     ):
         """Initialize Execution object from API fields."""
         self.id = id
         self.description = description
         self.owner = owner
-        self.state = state
+        self.state = ExecutionState(state)
         self.action_group = ActionGroup(**action_group)
+        self.start_time = start_time
+        self.execution_type = ExecutionType(execution_type) if execution_type else None
+        self.execution_sub_type = (
+            ExecutionSubType(execution_sub_type) if execution_sub_type else None
+        )
 
 
 @define(init=False, kw_only=True)
@@ -858,7 +869,7 @@ class ActionGroup:
     is composed of one or more commands to be executed on that device.
     """
 
-    id: str = field(repr=obfuscate_id)
+    id: str | None = field(default=None, repr=obfuscate_id)
     creation_time: int | None = None
     last_update_time: int | None = None
     label: str = field(repr=obfuscate_string)
@@ -869,7 +880,7 @@ class ActionGroup:
     notification_text: str | None = None
     notification_title: str | None = None
     actions: list[Action]
-    oid: str = field(repr=obfuscate_id)
+    oid: str | None = field(default=None, repr=obfuscate_id)
 
     def __init__(
         self,
@@ -888,10 +899,7 @@ class ActionGroup:
         **_: Any,
     ) -> None:
         """Initialize ActionGroup from API data and convert nested actions."""
-        if oid is None and id is None:
-            raise ValueError("Either 'oid' or 'id' must be provided")
-
-        self.id = cast(str, oid or id)
+        self.id = oid or id
         self.creation_time = creation_time
         self.last_update_time = last_update_time
         self.label = (
@@ -904,7 +912,7 @@ class ActionGroup:
         self.notification_text = notification_text
         self.notification_title = notification_title
         self.actions = [Action(**action) for action in actions]
-        self.oid = cast(str, oid or id)
+        self.oid = oid or id
 
 
 @define(init=False, kw_only=True)

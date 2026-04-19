@@ -22,6 +22,8 @@ from pyoverkiz.exceptions import (
     MissingAPIKeyError,
     MissingAuthorizationTokenError,
     NoRegisteredEventListenerError,
+    NoSuchActionGroupError,
+    NoSuchDeviceError,
     NoSuchResourceError,
     NoSuchTokenError,
     NotAuthenticatedError,
@@ -46,6 +48,8 @@ _ERROR_CODE_MESSAGE_MAP: list[tuple[str, str | None, type[BaseOverkizError]]] = 
     ("INVALID_FIELD_VALUE", None, ActionGroupSetupNotFoundError),
     ("INVALID_API_CALL", None, NoSuchResourceError),
     ("EXEC_QUEUE_FULL", None, ExecutionQueueFullError),
+    ("NO_SUCH_DEVICE", None, NoSuchDeviceError),
+    ("NO_SUCH_ACTION_GROUP", None, NoSuchActionGroupError),
     # --- errorCode + message substring ---
     ("AUTHENTICATION_ERROR", "Too many requests", TooManyRequestsError),
     ("AUTHENTICATION_ERROR", "Bad credentials", BadCredentialsError),
