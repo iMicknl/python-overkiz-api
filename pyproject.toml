@@ -53,6 +53,7 @@ select = [
     "ASYNC",
     # pycodestyle
     "E",
+    "W",
     # Pyflakes
     "F",
     # pyupgrade
@@ -75,11 +76,43 @@ select = [
     "N",
     # flake8-pytest-style
     "PT",
+    # flake8-logging
+    "LOG",
+    # flake8-datetimez
+    "DTZ",
+    # flynt
+    "FLY",
+    # flake8-implicit-str-concat
+    "ISC",
+    # pygrep-hooks
+    "PGH",
+    # flake8-self
+    "SLF",
+    # flake8-slots
+    "SLOT",
+    # tidy imports
+    "TID",
+    # flake8-no-pep420
+    "INP",
+    # import conventions
+    "ICN",
+    # flake8-logging-format
+    "G",
+    # blind exception
+    "BLE",
+    # tryceratops
+    "TRY",
+    # flake8-quotes
+    "Q",
 ]
-ignore = ["E501"] # Line too long
+ignore = [
+    "E501",    # Line too long
+    "TRY003",  # Long exception messages are acceptable for domain-specific errors
+]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S101"]  # Allow assert in tests
+"tests/**" = ["S101", "SLF001"]  # Allow assert and private member access in tests
+"utils/**" = ["INP001", "BLE001"]  # Utils are scripts, not packages
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"  # Accepts: "google", "numpy", or "pep257".
