@@ -511,17 +511,16 @@ class ActionGroup:
     notification_text: str | None = None
     notification_title: str | None = None
     oid: str | None = field(repr=obfuscate_id, default=None)
-    id: str | None = field(repr=obfuscate_id, default=None)
 
     def __attrs_post_init__(self) -> None:
-        """Resolve id/oid fallback."""
+        """Default label to empty string when None."""
         if self.label is None:
             self.label = ""
-        if self.oid is None and self.id is None:
-            raise ValueError("Either 'oid' or 'id' must be provided")
-        resolved = cast(str, self.oid or self.id)
-        self.id = resolved
-        self.oid = resolved
+
+    @property
+    def id(self) -> str | None:
+        """Alias for oid."""
+        return self.oid
 
 
 @define(kw_only=True)
