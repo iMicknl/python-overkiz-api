@@ -69,7 +69,7 @@ uv run pytest
 
 ## Project guidelines
 
-- Use Python 3.10+ features and type annotations.
+- Use Python 3.12+ features and type annotations.
 - Keep absolute imports and avoid relative imports.
 - Preserve existing comments and logging unless your change requires updates.
 - Prefer small, focused changes and add tests when behavior changes.

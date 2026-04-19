@@ -6,7 +6,7 @@ This guide will help you install the library, connect to your hub, and perform y
 
 ## Prerequisites
 
-- Python 3.10+
+- Python 3.12+
 - An OverKiz-compatible hub and account
 
 ## Install pyOverkiz from PyPI
