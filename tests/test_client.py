@@ -70,7 +70,7 @@ class TestOverkizClient:
             assert len(devices) == 23
 
     @pytest.mark.parametrize(
-        "fixture_name, event_length",
+        ("fixture_name", "event_length"),
         [
             ("events.json", 16),
             ("local_events.json", 3),
@@ -228,7 +228,7 @@ class TestOverkizClient:
                         assert isinstance(state.value, dict)
 
     @pytest.mark.parametrize(
-        "fixture_name, device_count, gateway_count",
+        ("fixture_name", "device_count", "gateway_count"),
         [
             ("setup_3_gateways.json", 37, 3),
             ("setup_cozytouch.json", 12, 1),
@@ -365,7 +365,7 @@ class TestOverkizClient:
             obfuscate.assert_not_called()
 
     @pytest.mark.parametrize(
-        "fixture_name, exception, status_code",
+        ("fixture_name", "exception", "status_code"),
         [
             ("cloud/503-empty.html", exceptions.ServiceUnavailableError, 503),
             ("cloud/503-maintenance.html", exceptions.MaintenanceError, 503),
@@ -550,16 +550,16 @@ class TestOverkizClient:
         exception: Exception,
     ):
         """Ensure client raises the correct error for various error fixtures/status codes."""
-        with pytest.raises(exception):
-            if fixture_name:
-                with open(
-                    os.path.join(CURRENT_DIR, "fixtures/exceptions/" + fixture_name),
-                    encoding="utf-8",
-                ) as raw_events:
-                    resp = MockResponse(raw_events.read(), status_code)
-            else:
-                resp = MockResponse(None, status_code)
+        if fixture_name:
+            with open(
+                os.path.join(CURRENT_DIR, "fixtures/exceptions/" + fixture_name),
+                encoding="utf-8",
+            ) as raw_events:
+                resp = MockResponse(raw_events.read(), status_code)
+        else:
+            resp = MockResponse(None, status_code)
 
+        with pytest.raises(exception):
             await check_response(resp)
 
     @pytest.mark.asyncio
@@ -651,7 +651,7 @@ class TestOverkizClient:
             assert cmd["name"] == "close"
 
     @pytest.mark.parametrize(
-        "fixture_name, option_name, instance",
+        ("fixture_name", "option_name", "instance"),
         [
             (
                 "setup-options-developerMode.json",
@@ -685,7 +685,7 @@ class TestOverkizClient:
                 assert isinstance(option, instance)
 
     @pytest.mark.parametrize(
-        "fixture_name, scenario_count",
+        ("fixture_name", "scenario_count"),
         [
             ("action-group-cozytouch.json", 9),
             ("action-group-tahoma-box-v1.json", 17),

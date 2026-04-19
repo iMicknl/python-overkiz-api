@@ -115,7 +115,14 @@ class TestDevice:
     """Tests for Device model parsing and property extraction."""
 
     @pytest.mark.parametrize(
-        "device_url, protocol, gateway_id, device_address, subsystem_id, is_sub_device",
+        (
+            "device_url",
+            "protocol",
+            "gateway_id",
+            "device_address",
+            "subsystem_id",
+            "is_sub_device",
+        ),
         [
             (
                 "io://1234-5678-9012/10077486",

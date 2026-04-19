@@ -73,6 +73,8 @@ select = [
     "C4",
     # pep8-naming
     "N",
+    # flake8-pytest-style
+    "PT",
 ]
 ignore = ["E501"] # Line too long
 
