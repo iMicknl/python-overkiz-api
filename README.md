@@ -50,11 +50,7 @@ async def main() -> None:
         server=Server.SOMFY_EUROPE,
         credentials=UsernamePasswordCredentials(USERNAME, PASSWORD),
     ) as client:
-        try:
-            await client.login()
-        except Exception as exception:  # pylint: disable=broad-except
-            print(exception)
-            return
+        await client.login()
 
         devices = await client.get_devices()
 
