@@ -33,5 +33,7 @@ pyOverkiz is an async Python library for interacting with Overkiz-based platform
 - Somfy TaHoma
 - Somfy TaHoma Switch
 - Thermor Cozytouch
-<!-- - Brandt Smart Control **\*** -->
-<!-- - Rexel Energeasy Connect **\*** -->
+- Brandt Smart Control **\***
+- Rexel Energeasy Connect **\***
+
+\[*] _These servers utilize an authentication method that is currently not supported by this library._
