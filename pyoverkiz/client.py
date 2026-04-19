@@ -32,6 +32,7 @@ from pyoverkiz.exceptions import (
     OverkizError,
     TooManyConcurrentRequestsError,
     TooManyExecutionsError,
+    UnsupportedOperationError,
 )
 from pyoverkiz.models import (
     Action,
@@ -39,6 +40,7 @@ from pyoverkiz.models import (
     Device,
     Event,
     Execution,
+    FirmwareStatus,
     Gateway,
     HistoryExecution,
     Option,
@@ -695,6 +697,52 @@ class OverkizClient:
         """Get a list of all defined UI widgets."""
         return await self._get("reference/ui/widgets")
 
+    @retry_on_auth_error
+    async def get_devices_not_up_to_date(self) -> list[Device]:
+        """Get all devices whose firmware is not up to date."""
+        response = await self._get("setup/devices/notUpToDate")
+        return [Device(**d) for d in decamelize(response)]
+
+    @retry_on_auth_error
+    async def get_device_firmware_status(self, deviceurl: str) -> FirmwareStatus | None:
+        """Check if a device's firmware is up to date.
+
+        Returns None if the device does not support firmware status checks.
+        """
+        try:
+            response = await self._get(
+                f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/firmwareUpToDate"
+            )
+        except UnsupportedOperationError:
+            return None
+        return FirmwareStatus(**decamelize(response))
+
+    @retry_on_auth_error
+    async def get_device_firmware_update_capability(self, deviceurl: str) -> bool:
+        """Check if a device supports firmware updates.
+
+        Returns False if the device does not support this query.
+        """
+        try:
+            response = await self._get(
+                f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/firmwareUpdateCapability"
+            )
+        except UnsupportedOperationError:
+            return False
+        return cast(bool, response["supportsFirmwareUpdate"])
+
+    @retry_on_auth_error
+    async def update_device_firmware(self, deviceurl: str) -> None:
+        """Update a device's firmware to the next available version."""
+        await self._put(
+            f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/updateFirmware"
+        )
+
+    @retry_on_auth_error
+    async def update_all_device_firmwares(self) -> None:
+        """Update firmware for all devices that are not up to date."""
+        await self._put("setup/devices/updateFirmwares")
+
     async def _get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API."""
         await self._refresh_token_if_expired()
@@ -715,6 +763,18 @@ class OverkizClient:
         async with self.session.post(
             f"{self.server_config.endpoint}{path}",
             data=data,
+            json=payload,
+            headers=self._auth.auth_headers(path),
+            ssl=self._ssl,
+        ) as response:
+            return await self._parse_response(response)
+
+    async def _put(self, path: str, payload: JSON | None = None) -> Any:
+        """Make a PUT request to the OverKiz API."""
+        await self._refresh_token_if_expired()
+
+        async with self.session.put(
+            f"{self.server_config.endpoint}{path}",
             json=payload,
             headers=self._auth.auth_headers(path),
             ssl=self._ssl,

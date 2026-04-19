@@ -37,6 +37,7 @@ from pyoverkiz.exceptions import (
     TooManyRequestsError,
     UnknownObjectError,
     UnknownUserError,
+    UnsupportedOperationError,
 )
 
 # Primary dispatch: (errorCode, message_substring) -> error class.
@@ -78,6 +79,7 @@ _ERROR_CODE_MESSAGE_MAP: list[tuple[str, str | None, type[BaseOverkizError]]] = 
         ApplicationNotAllowedError,
     ),
     ("UNSUPPORTED_OPERATION", "No such command", InvalidCommandError),
+    ("UNSUPPORTED_OPERATION", None, UnsupportedOperationError),
     (
         "UNSPECIFIED_ERROR",
         "Invalid event listener id",

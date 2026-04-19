@@ -105,6 +105,10 @@ class NoSuchActionGroupError(BaseOverkizError):
     """Raised when the requested action group does not exist."""
 
 
+class UnsupportedOperationError(BaseOverkizError):
+    """Raised when an operation is not supported by the device or gateway."""
+
+
 class UnknownObjectError(BaseOverkizError):
     """Raised when an unknown object is provided."""
 

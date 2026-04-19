@@ -1417,3 +1417,11 @@ class UIProfileDefinition:
         )
         self.states = [UIProfileState(**s) for s in states] if states else []
         self.form_factor = form_factor
+
+
+@define(kw_only=True)
+class FirmwareStatus:
+    """Firmware status of a device."""
+
+    up_to_date: bool
+    notes: list[dict[str, str]]
