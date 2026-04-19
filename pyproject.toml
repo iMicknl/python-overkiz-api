@@ -120,10 +120,13 @@ select = [
     "PYI",
     # flake8-pathlib
     "PTH",
+    # flake8-builtins
+    "A",
 ]
 ignore = [
     "E501",    # Line too long
     "TRY003",  # Long exception messages are acceptable for domain-specific errors
+    "A002",    # Shadowing builtins (id, type) is intentional for API field names
 ]
 
 [tool.ruff.lint.per-file-ignores]
