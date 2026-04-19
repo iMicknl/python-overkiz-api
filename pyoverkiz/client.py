@@ -373,7 +373,7 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def get_execution_history(self) -> list[HistoryExecution]:
-        """List execution history."""
+        """List past executions and their outcomes."""
         response = await self._get("history/executions")
         return [HistoryExecution(**h) for h in decamelize(response)]
 
@@ -449,13 +449,13 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def get_current_execution(self, exec_id: str) -> Execution:
-        """Get an action group execution currently running."""
+        """Get a currently running execution by its exec_id."""
         response = await self._get(f"exec/current/{exec_id}")
         return Execution(**decamelize(response))
 
     @retry_on_auth_error
     async def get_current_executions(self) -> list[Execution]:
-        """Get all action groups executions currently running."""
+        """Get all currently running executions."""
         response = await self._get("exec/current")
         return [Execution(**e) for e in decamelize(response)]
 
@@ -492,34 +492,29 @@ class OverkizClient:
         mode: ExecutionMode | None = None,
         label: str | None = "python-overkiz-api",
     ) -> str:
-        """Execute a non-persistent action group.
+        """Execute an ad-hoc action group built from the given actions.
 
-        When action queue is enabled, actions will be batched with other actions
-        executed within the configured delay window. The method will wait for the
-        batch to execute and return the exec_id.
+        An action group is a batch of device actions submitted as a single
+        execution. Each ``Action`` targets one device and contains one or more
+        ``Command`` instances (e.g. ``open``, ``setClosure(50)``). The gateway
+        allows at most one action per device per action group.
 
-        Gateways only allow a single action per device in each action group. The
-        action queue enforces this by merging commands for the same device into
-        a single action in the batch.
+        When the action queue is enabled, actions are held for a short delay
+        and merged with other actions submitted in the same window. Commands
+        targeting the same device are combined into a single action. The method
+        blocks until the batch executes and returns the resulting exec_id.
 
-        When action queue is disabled, executes immediately and returns exec_id.
-
-        The API is consistent regardless of queue configuration - always returns
-        exec_id string directly.
+        When the action queue is disabled, the action group is sent immediately.
 
         Args:
-            actions: List of actions to execute.
-            mode: Execution mode (`GEOLOCATED`, `INTERNAL`, `HIGH_PRIORITY`,
-                or `None`).
-            label: Label for the action group.
+            actions: One or more actions to execute. Each action targets a
+                single device and holds one or more commands.
+            mode: Optional execution mode (``HIGH_PRIORITY``, ``GEOLOCATED``,
+                or ``INTERNAL``).
+            label: Human-readable label for the execution.
 
         Returns:
-            The `exec_id` string from the executed action group.
-
-        Example:
-            ```python
-            exec_id = await client.execute_action_group([action])
-            ```
+            The ``exec_id`` identifying the execution on the server.
         """
         if self._action_queue:
             queued = await self._action_queue.add(actions, mode, label)
@@ -548,12 +543,12 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def cancel_execution(self, exec_id: str) -> None:
-        """Cancel a running setup-level execution."""
+        """Cancel a running execution by its exec_id."""
         await self._delete(f"exec/current/setup/{exec_id}")
 
     @retry_on_auth_error
     async def get_action_groups(self) -> list[ActionGroup]:
-        """List the persisted action groups."""
+        """List action groups persisted on the server."""
         response = await self._get("actionGroups")
         return [ActionGroup(**action_group) for action_group in decamelize(response)]
 
@@ -574,13 +569,13 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def execute_persisted_action_group(self, oid: str) -> str:
-        """Execute a persisted action group by its OID."""
+        """Execute a server-side action group by its OID (see ``get_action_groups``)."""
         response = await self._post(f"exec/{oid}")
         return cast(str, response["execId"])
 
     @retry_on_auth_error
     async def schedule_persisted_action_group(self, oid: str, timestamp: int) -> str:
-        """Schedule a persisted action group for future execution."""
+        """Schedule a server-side action group for execution at the given timestamp."""
         response = await self._post(f"exec/schedule/{oid}/{timestamp}")
         return cast(str, response["triggerId"])
 

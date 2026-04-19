@@ -142,37 +142,36 @@ if device.identifier.is_sub_device:
     print(f"Sub-device ID: {device.identifier.subsystem_id}")
 ```
 
-## Send a command
+## Send a single command to a device
+
+Create an `Action` with the target device URL and one or more `Command` objects, then wrap it in an action group. The method returns an `exec_id` you can use to track or cancel the execution.
 
 ```python
 from pyoverkiz.enums import OverkizCommand
 from pyoverkiz.models import Action, Command
 
-await client.execute_action_group(
+exec_id = await client.execute_action_group(
     actions=[
         Action(
             device_url="io://1234-5678-1234/12345678",
             commands=[
-                Command(
-                    name=OverkizCommand.SET_CLOSURE,
-                    parameters=[50],
-                )
+                Command(name=OverkizCommand.SET_CLOSURE, parameters=[50])
             ],
         )
-        ],
-    label="Execution: set closure",
+    ],
+    label="Set closure to 50%",
 )
 ```
 
-## Action groups and common patterns
+## Send multiple commands to one device
 
-- Use a single action group to batch multiple device commands.
+A single action can hold multiple commands. They are executed in order on the device.
 
 ```python
 from pyoverkiz.enums import OverkizCommand, OverkizCommandParam
 from pyoverkiz.models import Action, Command
 
-await client.execute_action_group(
+exec_id = await client.execute_action_group(
     actions=[
         Action(
             device_url="io://1234-5678-1234/12345678",
@@ -180,21 +179,99 @@ await client.execute_action_group(
                 Command(
                     name=OverkizCommand.SET_DEROGATION,
                     parameters=[21.5, OverkizCommandParam.FURTHER_NOTICE],
-                )
-            ],
-        ),
-        Action(
-            device_url="io://1234-5678-1234/12345678",
-            commands=[
+                ),
                 Command(
                     name=OverkizCommand.SET_MODE_TEMPERATURE,
                     parameters=[OverkizCommandParam.MANUAL_MODE, 21.5],
-                )
+                ),
             ],
         )
     ],
-    label="Execution: multiple commands",
+    label="Set temperature derogation",
 )
+```
+
+## Control multiple devices at once
+
+An action group can contain one action per device. All actions in the group are submitted as a single execution.
+
+```python
+from pyoverkiz.enums import OverkizCommand
+from pyoverkiz.models import Action, Command
+
+exec_id = await client.execute_action_group(
+    actions=[
+        Action(
+            device_url="io://1234-5678-1234/11111111",
+            commands=[Command(name=OverkizCommand.CLOSE)],
+        ),
+        Action(
+            device_url="io://1234-5678-1234/22222222",
+            commands=[Command(name=OverkizCommand.OPEN)],
+        ),
+    ],
+    label="Close blinds, open garage",
+)
+```
+
+!!! note
+    The gateway allows at most **one action per device** in each action group.
+    If you need to send commands to the same device in separate executions, use
+    separate `execute_action_group()` calls.
+
+## Execution modes
+
+Pass an `ExecutionMode` to change how the gateway processes the action group:
+
+```python
+from pyoverkiz.enums import ExecutionMode, OverkizCommand
+from pyoverkiz.models import Action, Command
+
+exec_id = await client.execute_action_group(
+    actions=[
+        Action(
+            device_url="io://1234-5678-1234/12345678",
+            commands=[Command(name=OverkizCommand.OPEN)],
+        )
+    ],
+    mode=ExecutionMode.HIGH_PRIORITY,
+)
+```
+
+Available modes: `HIGH_PRIORITY`, `GEOLOCATED`, `INTERNAL`. When omitted, the default execution mode is used.
+
+## Track and cancel executions
+
+```python
+# List all running executions
+executions = await client.get_current_executions()
+
+# Get a specific execution
+execution = await client.get_current_execution(exec_id)
+
+# Cancel a running execution
+await client.cancel_execution(exec_id)
+
+# Review past executions
+history = await client.get_execution_history()
+```
+
+## Persisted action groups
+
+Action groups can be stored on the server (like saved scenes). Use these methods to list and execute them:
+
+```python
+# List all persisted action groups
+action_groups = await client.get_action_groups()
+
+for ag in action_groups:
+    print(f"{ag.label} (OID: {ag.oid})")
+
+# Execute a persisted action group by OID
+exec_id = await client.execute_persisted_action_group(ag.oid)
+
+# Schedule for future execution (Unix timestamp)
+trigger_id = await client.schedule_persisted_action_group(ag.oid, timestamp=1735689600)
 ```
 
 ## Limitations and rate limits
