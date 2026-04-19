@@ -124,7 +124,7 @@ async def check_response(response: ClientResponse) -> None:
         if "is down for maintenance" in result:
             raise MaintenanceError("Server is down for maintenance") from error
 
-        if response.status == 503:
+        if response.status == 503:  # noqa: PLR2004
             raise ServiceUnavailableError(result) from error
 
         raise OverkizError(

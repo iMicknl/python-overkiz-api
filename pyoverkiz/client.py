@@ -728,7 +728,7 @@ class OverkizClient:
     async def _parse_response(response: ClientResponse) -> Any:
         """Check response status and parse JSON body (returns None for 204)."""
         await check_response(response)
-        if response.status == 204:
+        if response.status == 204:  # noqa: PLR2004
             return None
         return await response.json()
 

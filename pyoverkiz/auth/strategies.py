@@ -116,7 +116,7 @@ class SessionLoginStrategy(BaseAuthStrategy):
                 )
 
             # A 204 No Content response cannot have a body, so skip JSON parsing.
-            if response.status == 204:
+            if response.status == 204:  # noqa: PLR2004
                 return
 
             result = await response.json()
@@ -419,7 +419,7 @@ class BearerTokenAuthStrategy(BaseAuthStrategy):
 def _decode_jwt_payload(token: str) -> dict[str, Any]:
     """Decode the payload of a JWT token."""
     parts = token.split(".")
-    if len(parts) < 2:
+    if len(parts) < 2:  # noqa: PLR2004
         raise InvalidTokenError("Malformed JWT received.")
 
     payload_segment = parts[1]

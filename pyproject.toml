@@ -122,16 +122,21 @@ select = [
     "PTH",
     # flake8-builtins
     "A",
+    # pylint
+    "PL",
 ]
 ignore = [
     "E501",    # Line too long
     "TRY003",  # Long exception messages are acceptable for domain-specific errors
     "A002",    # Shadowing builtins (id, type) is intentional for API field names
+    "PLR0913", # Too many arguments — expected for API model constructors
+    "PLC0415", # Import not at top level — intentional lazy imports
+    "PLR0911", # Too many return statements — acceptable in factory functions
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S101", "SLF001"]  # Allow assert and private member access in tests
-"utils/**" = ["INP001", "BLE001"]  # Utils are scripts, not packages
+"tests/**" = ["S101", "SLF001", "PLR2004"]  # Allow assert, private member access, and magic values in tests
+"utils/**" = ["INP001", "BLE001", "PLR0912", "PLR0915"]  # Utils are scripts, not packages; complex generators acceptable
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"  # Accepts: "google", "numpy", or "pep257".
