@@ -37,7 +37,6 @@ from pyoverkiz.const import (
     SOMFY_CLIENT_ID,
     SOMFY_CLIENT_SECRET,
 )
-from pyoverkiz.enums import APIType
 from pyoverkiz.exceptions import (
     BadCredentialsError,
     CozyTouchBadCredentialsError,
@@ -59,13 +58,11 @@ class BaseAuthStrategy(AuthStrategy):
         session: ClientSession,
         server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
-        api_type: APIType,
     ) -> None:
         """Store shared auth context for Overkiz API interactions."""
         self.session = session
         self.server = server
         self._ssl = ssl_context
-        self.api_type = api_type
 
     async def login(self) -> None:
         """Perform authentication; default is a no-op for subclasses to override."""
@@ -93,10 +90,9 @@ class SessionLoginStrategy(BaseAuthStrategy):
         session: ClientSession,
         server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
-        api_type: APIType,
     ) -> None:
         """Create a session-login strategy bound to the given credentials."""
-        super().__init__(session, server, ssl_context, api_type)
+        super().__init__(session, server, ssl_context)
         self.credentials = credentials
 
     async def login(self) -> None:
@@ -137,10 +133,9 @@ class SomfyAuthStrategy(BaseAuthStrategy):
         session: ClientSession,
         server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
-        api_type: APIType,
     ) -> None:
         """Create a Somfy OAuth2 strategy with a fresh auth context."""
-        super().__init__(session, server, ssl_context, api_type)
+        super().__init__(session, server, ssl_context)
         self.credentials = credentials
         self.context = AuthContext()
 
@@ -301,10 +296,9 @@ class LocalTokenAuthStrategy(BaseAuthStrategy):
         session: ClientSession,
         server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
-        api_type: APIType,
     ) -> None:
         """Create a local-token strategy bound to the given credentials."""
-        super().__init__(session, server, ssl_context, api_type)
+        super().__init__(session, server, ssl_context)
         self.credentials = credentials
 
     async def login(self) -> None:
@@ -326,10 +320,9 @@ class RexelAuthStrategy(BaseAuthStrategy):
         session: ClientSession,
         server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
-        api_type: APIType,
     ) -> None:
         """Create a Rexel OAuth2 strategy with a fresh auth context."""
-        super().__init__(session, server, ssl_context, api_type)
+        super().__init__(session, server, ssl_context)
         self.credentials = credentials
         self.context = AuthContext()
 
@@ -411,10 +404,9 @@ class BearerTokenAuthStrategy(BaseAuthStrategy):
         session: ClientSession,
         server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
-        api_type: APIType,
     ) -> None:
         """Create a bearer-token strategy bound to the given credentials."""
-        super().__init__(session, server, ssl_context, api_type)
+        super().__init__(session, server, ssl_context)
         self.credentials = credentials
 
     def auth_headers(self, path: str | None = None) -> Mapping[str, str]:

@@ -370,9 +370,7 @@ class TestSessionLoginStrategy:
         mock_response.__aexit__ = AsyncMock(return_value=None)
         session.post = MagicMock(return_value=mock_response)
 
-        strategy = SessionLoginStrategy(
-            credentials, session, server_config, True, APIType.CLOUD
-        )
+        strategy = SessionLoginStrategy(credentials, session, server_config, True)
         await strategy.login()
 
         session.post.assert_called_once()
@@ -397,9 +395,7 @@ class TestSessionLoginStrategy:
         mock_response.__aexit__ = AsyncMock(return_value=None)
         session.post = MagicMock(return_value=mock_response)
 
-        strategy = SessionLoginStrategy(
-            credentials, session, server_config, True, APIType.CLOUD
-        )
+        strategy = SessionLoginStrategy(credentials, session, server_config, True)
         await strategy.login()
 
         # Should not call json() for 204 response
@@ -418,9 +414,7 @@ class TestSessionLoginStrategy:
         credentials = UsernamePasswordCredentials("user", "pass")
         session = AsyncMock(spec=ClientSession)
 
-        strategy = SessionLoginStrategy(
-            credentials, session, server_config, True, APIType.CLOUD
-        )
+        strategy = SessionLoginStrategy(credentials, session, server_config, True)
         result = await strategy.refresh_if_needed()
 
         assert not result
@@ -437,9 +431,7 @@ class TestSessionLoginStrategy:
         credentials = UsernamePasswordCredentials("user", "pass")
         session = AsyncMock(spec=ClientSession)
 
-        strategy = SessionLoginStrategy(
-            credentials, session, server_config, True, APIType.CLOUD
-        )
+        strategy = SessionLoginStrategy(credentials, session, server_config, True)
         headers = strategy.auth_headers()
 
         assert headers == {}
@@ -461,9 +453,7 @@ class TestBearerTokenAuthStrategy:
         credentials = TokenCredentials("my_bearer_token")
         session = AsyncMock(spec=ClientSession)
 
-        strategy = BearerTokenAuthStrategy(
-            credentials, session, server_config, True, APIType.CLOUD
-        )
+        strategy = BearerTokenAuthStrategy(credentials, session, server_config, True)
         result = await strategy.login()
 
         # Login should be a no-op
@@ -481,9 +471,7 @@ class TestBearerTokenAuthStrategy:
         credentials = TokenCredentials("my_bearer_token")
         session = AsyncMock(spec=ClientSession)
 
-        strategy = BearerTokenAuthStrategy(
-            credentials, session, server_config, True, APIType.CLOUD
-        )
+        strategy = BearerTokenAuthStrategy(credentials, session, server_config, True)
         headers = strategy.auth_headers()
 
         assert headers == {"Authorization": "Bearer my_bearer_token"}
@@ -537,9 +525,7 @@ class TestNexityAuthStrategy:
             patch("warrant_lite.WarrantLite", return_value=warrant_instance),
             pytest.raises(NexityBadCredentialsError),
         ):
-            strategy = NexityAuthStrategy(
-                credentials, session, server_config, True, APIType.CLOUD
-            )
+            strategy = NexityAuthStrategy(credentials, session, server_config, True)
             await strategy.login()
 
     @pytest.mark.asyncio
@@ -567,9 +553,7 @@ class TestNexityAuthStrategy:
             patch("warrant_lite.WarrantLite", return_value=warrant_instance),
             pytest.raises(ClientError, match="InternalErrorException"),
         ):
-            strategy = NexityAuthStrategy(
-                credentials, session, server_config, True, APIType.CLOUD
-            )
+            strategy = NexityAuthStrategy(credentials, session, server_config, True)
             await strategy.login()
 
 
@@ -598,9 +582,7 @@ class TestRexelAuthStrategy:
         mock_response.__aexit__ = AsyncMock(return_value=None)
         session.post = MagicMock(return_value=mock_response)
 
-        strategy = RexelAuthStrategy(
-            credentials, session, server_config, True, APIType.CLOUD
-        )
+        strategy = RexelAuthStrategy(credentials, session, server_config, True)
 
         with pytest.raises(InvalidTokenError, match="bad grant"):
             await strategy._exchange_token({"grant_type": "authorization_code"})
