@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import json
-from collections.abc import Callable
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 from pyoverkiz.enums import DataType
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 StateType = str | int | float | bool | dict[str, Any] | list[Any] | None
 

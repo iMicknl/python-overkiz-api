@@ -125,6 +125,8 @@ select = [
     "A",
     # pylint
     "PL",
+    # flake8-type-checking
+    "TC",
 ]
 ignore = [
     "E501",    # Line too long
@@ -133,6 +135,7 @@ ignore = [
     "PLR0913", # Too many arguments — expected for API model constructors
     "PLC0415", # Import not at top level — intentional lazy imports
     "PLR0911", # Too many return statements — acceptable in factory functions
+    "TC006",   # Quoting cast() types hurts IDE autocomplete for no real benefit
 ]
 
 [tool.ruff.lint.per-file-ignores]

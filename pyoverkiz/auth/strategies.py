@@ -6,23 +6,26 @@ import asyncio
 import base64
 import binascii
 import json
-import ssl
-from collections.abc import Mapping
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Any, cast
 
 if TYPE_CHECKING:
+    import ssl
+    from collections.abc import Mapping
+
     from botocore.client import BaseClient
+
+    from pyoverkiz.auth.credentials import (
+        LocalTokenCredentials,
+        RexelOAuthCodeCredentials,
+        TokenCredentials,
+        UsernamePasswordCredentials,
+    )
+    from pyoverkiz.models import ServerConfig
 
 from aiohttp import ClientSession, FormData
 
 from pyoverkiz.auth.base import AuthContext, AuthStrategy
-from pyoverkiz.auth.credentials import (
-    LocalTokenCredentials,
-    RexelOAuthCodeCredentials,
-    TokenCredentials,
-    UsernamePasswordCredentials,
-)
 from pyoverkiz.const import (
     COZYTOUCH_ATLANTIC_API,
     COZYTOUCH_CLIENT_ID,
@@ -48,7 +51,6 @@ from pyoverkiz.exceptions import (
     SomfyBadCredentialsError,
     SomfyServiceError,
 )
-from pyoverkiz.models import ServerConfig
 
 MIN_JWT_SEGMENTS = 2
 
@@ -159,7 +161,7 @@ class SomfyAuthStrategy(BaseAuthStrategy):
 
         await self._request_access_token(
             grant_type="refresh_token",
-            extra_fields={"refresh_token": cast(str, self.context.refresh_token)},
+            extra_fields={"refresh_token": cast("str", self.context.refresh_token)},
         )
         return True
 
@@ -351,7 +353,7 @@ class RexelAuthStrategy(BaseAuthStrategy):
                 "grant_type": "refresh_token",
                 "client_id": REXEL_OAUTH_CLIENT_ID,
                 "scope": REXEL_OAUTH_SCOPE,
-                "refresh_token": cast(str, self.context.refresh_token),
+                "refresh_token": cast("str", self.context.refresh_token),
             }
         )
         return True
@@ -429,6 +431,6 @@ def _decode_jwt_payload(token: str) -> dict[str, Any]:
     padding = "=" * (-len(payload_segment) % 4)
     try:
         decoded = base64.urlsafe_b64decode(payload_segment + padding)
-        return cast(dict[str, Any], json.loads(decoded))
+        return cast("dict[str, Any]", json.loads(decoded))
     except (binascii.Error, json.JSONDecodeError) as error:
         raise InvalidTokenError("Malformed JWT received.") from error

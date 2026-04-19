@@ -4,13 +4,14 @@ from __future__ import annotations
 
 import asyncio
 import contextlib
-from collections.abc import Callable, Coroutine, Generator
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Any
 
 from pyoverkiz.models import Action
 
 if TYPE_CHECKING:
+    from collections.abc import Callable, Coroutine, Generator
+
     from pyoverkiz.enums import ExecutionMode
 
 

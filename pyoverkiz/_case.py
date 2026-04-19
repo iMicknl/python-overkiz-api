@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import functools
 import re
-from collections.abc import Callable
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from collections.abc import Callable
 
 _CAMEL_RE = re.compile(r"([A-Z]+)([A-Z][a-z])|([a-z\d])([A-Z])")
 

@@ -3,9 +3,10 @@
 from __future__ import annotations
 
 import re
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from pyoverkiz.types import JSON
+if TYPE_CHECKING:
+    from pyoverkiz.types import JSON
 
 
 def obfuscate_id(id: str | None) -> str:

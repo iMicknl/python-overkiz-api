@@ -2,9 +2,7 @@
 
 from __future__ import annotations
 
-import ssl
-
-from aiohttp import ClientSession
+from typing import TYPE_CHECKING
 
 from pyoverkiz.auth.credentials import (
     Credentials,
@@ -24,7 +22,13 @@ from pyoverkiz.auth.strategies import (
     SomfyAuthStrategy,
 )
 from pyoverkiz.enums import APIType, Server
-from pyoverkiz.models import ServerConfig
+
+if TYPE_CHECKING:
+    import ssl
+
+    from aiohttp import ClientSession
+
+    from pyoverkiz.models import ServerConfig
 
 
 def build_auth_strategy(

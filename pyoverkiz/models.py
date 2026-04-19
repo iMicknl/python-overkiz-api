@@ -4,8 +4,7 @@ from __future__ import annotations
 
 import json
 import re
-from collections.abc import Iterator
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
 
 from attr import define, field
 
@@ -24,11 +23,15 @@ from pyoverkiz.enums import (
     UpdateBoxStatus,
     UpdateCriticityLevel,
 )
-from pyoverkiz.enums.command import OverkizCommand, OverkizCommandParam
 from pyoverkiz.enums.protocol import Protocol
 from pyoverkiz.enums.server import APIType, Server
 from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
+
+if TYPE_CHECKING:
+    from collections.abc import Iterator
+
+    from pyoverkiz.enums.command import OverkizCommand, OverkizCommandParam
 
 # ---------------------------------------------------------------------------
 # State & command primitives
@@ -49,7 +52,7 @@ class State:
         if self.type == DataType.NONE:
             return None
         if self.type == DataType.INTEGER:
-            return cast(int, self.value)
+            return cast("int", self.value)
         raise TypeError(f"{self.name} is not an integer")
 
     @property
@@ -58,9 +61,9 @@ class State:
         if self.type == DataType.NONE:
             return None
         if self.type == DataType.FLOAT:
-            return cast(float, self.value)
+            return cast("float", self.value)
         if self.type == DataType.INTEGER:
-            return float(cast(int, self.value))
+            return float(cast("int", self.value))
         raise TypeError(f"{self.name} is not a float")
 
     @property
@@ -69,7 +72,7 @@ class State:
         if self.type == DataType.NONE:
             return None
         if self.type == DataType.BOOLEAN:
-            return cast(bool, self.value)
+            return cast("bool", self.value)
         raise TypeError(f"{self.name} is not a boolean")
 
     @property
@@ -78,7 +81,7 @@ class State:
         if self.type == DataType.NONE:
             return None
         if self.type == DataType.STRING:
-            return cast(str, self.value)
+            return cast("str", self.value)
         raise TypeError(f"{self.name} is not a string")
 
     @property
@@ -87,7 +90,7 @@ class State:
         if self.type == DataType.NONE:
             return None
         if self.type == DataType.JSON_OBJECT:
-            return cast(dict, self.value)
+            return cast("dict", self.value)
         raise TypeError(f"{self.name} is not a JSON object")
 
     @property
@@ -96,7 +99,7 @@ class State:
         if self.type == DataType.NONE:
             return None
         if self.type == DataType.JSON_ARRAY:
-            return cast(list, self.value)
+            return cast("list", self.value)
         raise TypeError(f"{self.name} is not an array")
 
 

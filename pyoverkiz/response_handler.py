@@ -4,8 +4,7 @@ from __future__ import annotations
 
 from http import HTTPStatus
 from json import JSONDecodeError
-
-from aiohttp import ClientResponse
+from typing import TYPE_CHECKING
 
 from pyoverkiz.exceptions import (
     AccessDeniedToGatewayError,
@@ -39,6 +38,9 @@ from pyoverkiz.exceptions import (
     UnknownUserError,
     UnsupportedOperationError,
 )
+
+if TYPE_CHECKING:
+    from aiohttp import ClientResponse
 
 # Primary dispatch: (errorCode, message_substring) -> error class.
 # Checked in order; first match wins. Use errorCode as the primary key to
