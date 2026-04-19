@@ -53,6 +53,7 @@ select = [
     "ASYNC",
     # pycodestyle
     "E",
+    "W",
     # Pyflakes
     "F",
     # pyupgrade
@@ -75,6 +76,14 @@ select = [
     "N",
     # flake8-pytest-style
     "PT",
+    # flake8-logging
+    "LOG",
+    # flake8-datetimez
+    "DTZ",
+    # flynt
+    "FLY",
+    # flake8-implicit-str-concat
+    "ISC",
 ]
 ignore = ["E501"] # Line too long
 
