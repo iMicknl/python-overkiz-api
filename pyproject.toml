@@ -116,6 +116,8 @@ select = [
     "PIE",
     # eradicate
     "ERA",
+    # flake8-pyi
+    "PYI",
 ]
 ignore = [
     "E501",    # Line too long

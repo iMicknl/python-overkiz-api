@@ -7,7 +7,7 @@ import ssl
 import urllib.parse
 from pathlib import Path
 from types import TracebackType
-from typing import Any, cast
+from typing import Any, Self, cast
 
 import backoff
 from aiohttp import (
@@ -216,7 +216,7 @@ class OverkizClient:
             ssl_context=self._ssl,
         )
 
-    async def __aenter__(self) -> OverkizClient:
+    async def __aenter__(self) -> Self:
         """Enter async context manager and return the client instance."""
         return self
 
