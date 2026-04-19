@@ -68,7 +68,7 @@ async def main() -> None:
                 )
             ],
             label="Execution via Python",
-            # mode=CommandMode.HIGH_PRIORITY
+            # mode=ExecutionMode.HIGH_PRIORITY
         )
 
         while True:

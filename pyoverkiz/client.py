@@ -22,7 +22,7 @@ from pyoverkiz._case import decamelize
 from pyoverkiz.action_queue import ActionQueue, ActionQueueSettings
 from pyoverkiz.auth import AuthStrategy, Credentials, build_auth_strategy
 from pyoverkiz.const import SUPPORTED_SERVERS
-from pyoverkiz.enums import APIType, CommandMode, Server
+from pyoverkiz.enums import APIType, ExecutionMode, Server
 from pyoverkiz.exceptions import (
     ExecutionQueueFullError,
     InvalidEventListenerIdError,
@@ -471,7 +471,7 @@ class OverkizClient:
     async def _execute_action_group_direct(
         self,
         actions: list[Action],
-        mode: CommandMode | None = None,
+        mode: ExecutionMode | None = None,
         label: str | None = "python-overkiz-api",
     ) -> str:
         """Execute a non-persistent action group directly (internal method).
@@ -489,7 +489,7 @@ class OverkizClient:
     async def execute_action_group(
         self,
         actions: list[Action],
-        mode: CommandMode | None = None,
+        mode: ExecutionMode | None = None,
         label: str | None = "python-overkiz-api",
     ) -> str:
         """Execute a non-persistent action group.
@@ -509,7 +509,7 @@ class OverkizClient:
 
         Args:
             actions: List of actions to execute.
-            mode: Command mode (`GEOLOCATED`, `INTERNAL`, `HIGH_PRIORITY`,
+            mode: Execution mode (`GEOLOCATED`, `INTERNAL`, `HIGH_PRIORITY`,
                 or `None`).
             label: Label for the action group.
 
@@ -547,13 +547,13 @@ class OverkizClient:
         return 0
 
     @retry_on_auth_error
-    async def cancel_command(self, exec_id: str) -> None:
+    async def cancel_execution(self, exec_id: str) -> None:
         """Cancel a running setup-level execution."""
         await self._delete(f"exec/current/setup/{exec_id}")
 
     @retry_on_auth_error
     async def get_action_groups(self) -> list[ActionGroup]:
-        """List the action groups (scenarios)."""
+        """List the persisted action groups (scenarios)."""
         response = await self._get("actionGroups")
         return [ActionGroup(**action_group) for action_group in decamelize(response)]
 

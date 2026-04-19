@@ -6,7 +6,7 @@ from unittest.mock import AsyncMock
 import pytest
 
 from pyoverkiz.action_queue import ActionQueue, QueuedExecution
-from pyoverkiz.enums import CommandMode, OverkizCommand
+from pyoverkiz.enums import ExecutionMode, OverkizCommand
 from pyoverkiz.models import Action, Command
 
 
@@ -112,7 +112,7 @@ async def test_action_queue_max_actions_flush(mock_executor):
 
 @pytest.mark.asyncio
 async def test_action_queue_mode_change_flush(mock_executor):
-    """Test that queue flushes when command mode changes."""
+    """Test that queue flushes when execution mode changes."""
     queue = ActionQueue(executor=mock_executor, delay=0.5)
 
     action = Action(
@@ -124,7 +124,7 @@ async def test_action_queue_mode_change_flush(mock_executor):
     queued1 = await queue.add([action], mode=None)
 
     # Add action with high priority - should flush previous batch
-    queued2 = await queue.add([action], mode=CommandMode.HIGH_PRIORITY)
+    queued2 = await queue.add([action], mode=ExecutionMode.HIGH_PRIORITY)
 
     # Wait for both batches
     exec_id1 = await queued1

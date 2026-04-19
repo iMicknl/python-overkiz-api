@@ -1,7 +1,7 @@
 """Convenience re-exports for the enums package."""
 
 # Explicitly re-export all Enum subclasses to avoid wildcard import issues
-from pyoverkiz.enums.command import CommandMode, OverkizCommand, OverkizCommandParam
+from pyoverkiz.enums.command import ExecutionMode, OverkizCommand, OverkizCommandParam
 from pyoverkiz.enums.execution import (
     ExecutionState,
     ExecutionSubType,
@@ -18,9 +18,9 @@ from pyoverkiz.enums.ui_profile import UIProfile
 
 __all__ = [
     "APIType",
-    "CommandMode",
     "DataType",
     "EventName",
+    "ExecutionMode",
     "ExecutionState",
     "ExecutionSubType",
     "ExecutionType",

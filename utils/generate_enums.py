@@ -569,7 +569,7 @@ async def generate_command_enums() -> None:
     command_file = Path(__file__).parent.parent / "pyoverkiz" / "enums" / "command.py"
     content = command_file.read_text()
 
-    find_class_start(content, "CommandMode")
+    find_class_start(content, "ExecutionMode")
 
     existing_commands = extract_enum_members(content, "OverkizCommand")
     existing_params = extract_enum_members(content, "OverkizCommandParam")
@@ -656,8 +656,8 @@ async def generate_command_enums() -> None:
     lines.append("")
     lines.append("")
 
-    # Append CommandMode class
-    command_mode_start = content.find("@unique\nclass CommandMode")
+    # Append ExecutionMode class
+    command_mode_start = content.find("@unique\nclass ExecutionMode")
     if command_mode_start != -1:
         lines.append(content[command_mode_start:].rstrip())
     lines.append("")
