@@ -10,7 +10,7 @@ from typing import Any
 _CAMEL_RE = re.compile(r"([A-Z]+)([A-Z][a-z])|([a-z\d])([A-Z])")
 
 
-@functools.lru_cache(maxsize=256)
+@functools.lru_cache(maxsize=1024)
 def _decamelize_key(key: str) -> str:
     """Convert a single camelCase key to snake_case."""
     result = _CAMEL_RE.sub(r"\1\3_\2\4", key)
