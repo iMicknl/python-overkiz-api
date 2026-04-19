@@ -11,7 +11,7 @@ from typing import TYPE_CHECKING, Any
 from pyoverkiz.models import Action
 
 if TYPE_CHECKING:
-    from pyoverkiz.enums import CommandMode
+    from pyoverkiz.enums import ExecutionMode
 
 
 @dataclass(frozen=True, slots=True)
@@ -78,7 +78,7 @@ class ActionQueue:
     The batch is flushed when:
     - The delay timer expires
     - The max actions limit is reached
-    - The command mode changes
+    - The execution mode changes
     - The label changes
     - Manual flush is requested
     """
@@ -86,7 +86,7 @@ class ActionQueue:
     def __init__(
         self,
         executor: Callable[
-            [list[Action], CommandMode | None, str | None], Coroutine[None, None, str]
+            [list[Action], ExecutionMode | None, str | None], Coroutine[None, None, str]
         ],
         delay: float = 0.5,
         max_actions: int = 20,
@@ -102,7 +102,7 @@ class ActionQueue:
         self._max_actions = max_actions
 
         self._pending_actions: list[Action] = []
-        self._pending_mode: CommandMode | None = None
+        self._pending_mode: ExecutionMode | None = None
         self._pending_label: str | None = None
         self._pending_waiters: list[QueuedExecution] = []
 
@@ -121,7 +121,7 @@ class ActionQueue:
     async def add(
         self,
         actions: list[Action],
-        mode: CommandMode | None = None,
+        mode: ExecutionMode | None = None,
         label: str | None = None,
     ) -> QueuedExecution:
         """Add actions to the queue.
@@ -132,7 +132,7 @@ class ActionQueue:
 
         Args:
             actions: Actions to queue.
-            mode: Command mode, which triggers a flush if it differs from the
+            mode: Execution mode, which triggers a flush if it differs from the
                 pending mode.
             label: Label for the action group.
 
@@ -141,7 +141,7 @@ class ActionQueue:
             executes.
         """
         batches_to_execute: list[
-            tuple[list[Action], CommandMode | None, str | None, list[QueuedExecution]]
+            tuple[list[Action], ExecutionMode | None, str | None, list[QueuedExecution]]
         ] = []
 
         if not actions:
@@ -235,7 +235,7 @@ class ActionQueue:
 
     def _prepare_flush(
         self,
-    ) -> tuple[list[Action], CommandMode | None, str | None, list[QueuedExecution]]:
+    ) -> tuple[list[Action], ExecutionMode | None, str | None, list[QueuedExecution]]:
         """Prepare a flush by taking snapshot and clearing state (must be called with lock held).
 
         Returns a tuple of (actions, mode, label, waiters) that should be executed
@@ -266,7 +266,7 @@ class ActionQueue:
     async def _execute_batch(
         self,
         actions: list[Action],
-        mode: CommandMode | None,
+        mode: ExecutionMode | None,
         label: str | None,
         waiters: list[QueuedExecution],
     ) -> None:
