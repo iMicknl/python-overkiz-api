@@ -54,6 +54,7 @@ select = [
     "ASYNC",
     # pycodestyle
     "E",
+    "W",
     # Pyflakes
     "F",
     # pyupgrade
@@ -74,11 +75,69 @@ select = [
     "C4",
     # pep8-naming
     "N",
+    # flake8-pytest-style
+    "PT",
+    # flake8-logging
+    "LOG",
+    # flake8-datetimez
+    "DTZ",
+    # flynt
+    "FLY",
+    # flake8-implicit-str-concat
+    "ISC",
+    # pygrep-hooks
+    "PGH",
+    # flake8-self
+    "SLF",
+    # flake8-slots
+    "SLOT",
+    # tidy imports
+    "TID",
+    # flake8-no-pep420
+    "INP",
+    # import conventions
+    "ICN",
+    # flake8-logging-format
+    "G",
+    # blind exception
+    "BLE",
+    # tryceratops
+    "TRY",
+    # flake8-quotes
+    "Q",
+    # refurb
+    "FURB",
+    # perflint
+    "PERF",
+    # flake8-raise
+    "RSE",
+    # flake8-return
+    "RET",
+    # flake8-pie
+    "PIE",
+    # eradicate
+    "ERA",
+    # flake8-pyi
+    "PYI",
+    # flake8-pathlib
+    "PTH",
+    # flake8-builtins
+    "A",
+    # pylint
+    "PL",
 ]
-ignore = ["E501"] # Line too long
+ignore = [
+    "E501",    # Line too long
+    "TRY003",  # Long exception messages are acceptable for domain-specific errors
+    "A002",    # Shadowing builtins (id, type) is intentional for API field names
+    "PLR0913", # Too many arguments — expected for API model constructors
+    "PLC0415", # Import not at top level — intentional lazy imports
+    "PLR0911", # Too many return statements — acceptable in factory functions
+]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S101"]  # Allow assert in tests
+"tests/**" = ["S101", "SLF001", "PLR2004"]  # Allow assert, private member access, and magic values in tests
+"utils/**" = ["INP001", "BLE001", "PLR0912", "PLR0915"]  # Utils are scripts, not packages; complex generators acceptable
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"  # Accepts: "google", "numpy", or "pep257".

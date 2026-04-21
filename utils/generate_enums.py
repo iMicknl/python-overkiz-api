@@ -21,7 +21,7 @@ from pyoverkiz.exceptions import OverkizError
 from pyoverkiz.models import UIProfileDefinition, ValuePrototype
 
 # Hardcoded protocols that may not be available on all servers
-# Format: (name, prefix, id, label)
+# Each tuple contains: name, prefix, id, label
 ADDITIONAL_PROTOCOLS: list[tuple[str, str, int | None, str | None]] = [
     ("HLRR_WIFI", "hlrrwifi", None, None),
     ("MODBUSLINK", "modbuslink", 44, "ModbusLink"),  # via Atlantic Cozytouch
@@ -363,12 +363,11 @@ async def generate_ui_profiles(server: Server) -> None:
 
                     # Get parameter info
                     if cmd.prototype and cmd.prototype.parameters:
-                        param_strs = []
-                        for param in cmd.prototype.parameters:
-                            if param.value_prototypes:
-                                param_strs.append(
-                                    format_value_prototype(param.value_prototypes[0])
-                                )
+                        param_strs = [
+                            format_value_prototype(param.value_prototypes[0])
+                            for param in cmd.prototype.parameters
+                            if param.value_prototypes
+                        ]
                         param_info = (
                             f"({', '.join(param_strs)})" if param_strs else "()"
                         )

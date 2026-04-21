@@ -5,9 +5,10 @@ from __future__ import annotations
 import logging
 import ssl
 import urllib.parse
+from http import HTTPStatus
 from pathlib import Path
 from types import TracebackType
-from typing import Any, cast
+from typing import Any, Self, cast
 
 import backoff
 from aiohttp import (
@@ -32,6 +33,7 @@ from pyoverkiz.exceptions import (
     OverkizError,
     TooManyConcurrentRequestsError,
     TooManyExecutionsError,
+    UnsupportedOperationError,
 )
 from pyoverkiz.models import (
     Action,
@@ -39,6 +41,7 @@ from pyoverkiz.models import (
     Device,
     Event,
     Execution,
+    FirmwareStatus,
     Gateway,
     HistoryExecution,
     Option,
@@ -181,10 +184,8 @@ class OverkizClient:
         self.gateways: list[Gateway] = []
         self.event_listener_id: str | None = None
 
-        self.session = (
-            session
-            if session
-            else ClientSession(headers={"User-Agent": "python-overkiz-api"})
+        self.session = session or ClientSession(
+            headers={"User-Agent": "python-overkiz-api"}
         )
         self._ssl = verify_ssl
 
@@ -219,7 +220,7 @@ class OverkizClient:
             ssl_context=self._ssl,
         )
 
-    async def __aenter__(self) -> OverkizClient:
+    async def __aenter__(self) -> Self:
         """Enter async context manager and return the client instance."""
         return self
 
@@ -449,9 +450,15 @@ class OverkizClient:
         self.event_listener_id = None
 
     @retry_on_auth_error
-    async def get_current_execution(self, exec_id: str) -> Execution:
-        """Get a currently running execution by its exec_id."""
+    async def get_current_execution(self, exec_id: str) -> Execution | None:
+        """Get a currently running execution by its exec_id.
+
+        Returns None if the execution does not exist.
+        """
         response = await self._get(f"exec/current/{exec_id}")
+        if not response or not isinstance(response, dict):
+            return None
+
         return converter.structure(decamelize(response), Execution)
 
     @retry_on_auth_error
@@ -520,8 +527,7 @@ class OverkizClient:
         if self._action_queue:
             queued = await self._action_queue.add(actions, mode, label)
             return await queued
-        else:
-            return await self._execute_action_group_direct(actions, mode, label)
+        return await self._execute_action_group_direct(actions, mode, label)
 
     async def flush_action_queue(self) -> None:
         """Force flush all pending actions in the queue immediately.
@@ -691,6 +697,52 @@ class OverkizClient:
         """Get a list of all defined UI widgets."""
         return await self._get("reference/ui/widgets")
 
+    @retry_on_auth_error
+    async def get_devices_not_up_to_date(self) -> list[Device]:
+        """Get all devices whose firmware is not up to date."""
+        response = await self._get("setup/devices/notUpToDate")
+        return converter.structure(decamelize(response), list[Device])
+
+    @retry_on_auth_error
+    async def get_device_firmware_status(self, deviceurl: str) -> FirmwareStatus | None:
+        """Check if a device's firmware is up to date.
+
+        Returns None if the device does not support firmware status checks.
+        """
+        try:
+            response = await self._get(
+                f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/firmwareUpToDate"
+            )
+        except UnsupportedOperationError:
+            return None
+        return converter.structure(decamelize(response), FirmwareStatus)
+
+    @retry_on_auth_error
+    async def get_device_firmware_update_capability(self, deviceurl: str) -> bool:
+        """Check if a device supports firmware updates.
+
+        Returns False if the device does not support this query.
+        """
+        try:
+            response = await self._get(
+                f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/firmwareUpdateCapability"
+            )
+        except UnsupportedOperationError:
+            return False
+        return cast(bool, response["supportsFirmwareUpdate"])
+
+    @retry_on_auth_error
+    async def update_device_firmware(self, deviceurl: str) -> None:
+        """Update a device's firmware to the next available version."""
+        await self._put(
+            f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/updateFirmware"
+        )
+
+    @retry_on_auth_error
+    async def update_all_device_firmwares(self) -> None:
+        """Update firmware for all devices that are not up to date."""
+        await self._put("setup/devices/updateFirmwares")
+
     async def _get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API."""
         await self._refresh_token_if_expired()
@@ -717,6 +769,18 @@ class OverkizClient:
         ) as response:
             return await self._parse_response(response)
 
+    async def _put(self, path: str, payload: JSON | None = None) -> Any:
+        """Make a PUT request to the OverKiz API."""
+        await self._refresh_token_if_expired()
+
+        async with self.session.put(
+            f"{self.server_config.endpoint}{path}",
+            json=payload,
+            headers=self._auth.auth_headers(path),
+            ssl=self._ssl,
+        ) as response:
+            return await self._parse_response(response)
+
     async def _delete(self, path: str) -> None:
         """Make a DELETE request to the OverKiz API."""
         await self._refresh_token_if_expired()
@@ -732,7 +796,7 @@ class OverkizClient:
     async def _parse_response(response: ClientResponse) -> Any:
         """Check response status and parse JSON body (returns None for 204)."""
         await check_response(response)
-        if response.status == 204:
+        if response.status == HTTPStatus.NO_CONTENT:
             return None
         return await response.json()
 

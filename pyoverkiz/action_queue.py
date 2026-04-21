@@ -284,7 +284,7 @@ class ActionQueue:
             for waiter in waiters:
                 waiter.set_exception(exc)
             raise
-        except Exception as exc:
+        except Exception as exc:  # noqa: BLE001
             # Propagate exceptions to all waiters without swallowing system-level exits.
             for waiter in waiters:
                 waiter.set_exception(exc)

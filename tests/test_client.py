@@ -1,13 +1,12 @@
 """Unit tests for the high-level OverkizClient behaviour and responses."""
 
-# ruff: noqa: ASYNC230, S106
+# ruff: noqa: S106
 # S106: Test credentials use dummy values.
-# ASYNC230: Blocking open() is acceptable for reading test fixtures
 
 from __future__ import annotations
 
 import json
-import os
+from pathlib import Path
 from unittest.mock import AsyncMock, patch
 
 import aiohttp
@@ -20,12 +19,27 @@ from pyoverkiz.auth.credentials import (
     UsernamePasswordCredentials,
 )
 from pyoverkiz.client import OverkizClient
-from pyoverkiz.enums import APIType, DataType, Server
-from pyoverkiz.models import Option
+from pyoverkiz.enums import (
+    APIType,
+    DataType,
+    ExecutionState,
+    ExecutionSubType,
+    ExecutionType,
+    Server,
+)
+from pyoverkiz.models import (
+    Action,
+    Command,
+    Execution,
+    HistoryExecution,
+    Option,
+    Place,
+    State,
+)
 from pyoverkiz.response_handler import check_response
 from pyoverkiz.utils import create_local_server_config
 
-CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+CURRENT_DIR = Path(__file__).resolve().parent
 
 
 class TestOverkizClient:
@@ -60,9 +74,7 @@ class TestOverkizClient:
     @pytest.mark.asyncio
     async def test_get_devices_basic(self, client: OverkizClient):
         """Ensure the client can fetch and parse the basic devices fixture."""
-        with open(
-            os.path.join(CURRENT_DIR, "devices.json"), encoding="utf-8"
-        ) as raw_devices:
+        with (CURRENT_DIR / "devices.json").open(encoding="utf-8") as raw_devices:
             resp = MockResponse(raw_devices.read())
 
         with patch.object(aiohttp.ClientSession, "get", return_value=resp):
@@ -70,7 +82,7 @@ class TestOverkizClient:
             assert len(devices) == 23
 
     @pytest.mark.parametrize(
-        "fixture_name, event_length",
+        ("fixture_name", "event_length"),
         [
             ("events.json", 16),
             ("local_events.json", 3),
@@ -81,8 +93,7 @@ class TestOverkizClient:
         self, client: OverkizClient, fixture_name: str, event_length: int
     ):
         """Parameterised test that fetches events fixture and checks the expected count."""
-        with open(
-            os.path.join(CURRENT_DIR, "fixtures/event/" + fixture_name),
+        with (CURRENT_DIR / "fixtures" / "event" / fixture_name).open(
             encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
@@ -94,8 +105,8 @@ class TestOverkizClient:
     @pytest.mark.asyncio
     async def test_fetch_events_simple_cast(self, client: OverkizClient):
         """Check that event state values from the cloud (strings) are cast to appropriate types."""
-        with open(
-            os.path.join(CURRENT_DIR, "fixtures/event/events.json"), encoding="utf-8"
+        with (CURRENT_DIR / "fixtures" / "event" / "events.json").open(
+            encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
 
@@ -195,8 +206,7 @@ class TestOverkizClient:
     @pytest.mark.asyncio
     async def test_fetch_events_casting(self, client: OverkizClient, fixture_name: str):
         """Validate that fetched event states are cast to the expected Python types for each data type."""
-        with open(
-            os.path.join(CURRENT_DIR, "fixtures/event/" + fixture_name),
+        with (CURRENT_DIR / "fixtures" / "event" / fixture_name).open(
             encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
@@ -228,7 +238,7 @@ class TestOverkizClient:
                         assert isinstance(state.value, dict)
 
     @pytest.mark.parametrize(
-        "fixture_name, device_count, gateway_count",
+        ("fixture_name", "device_count", "gateway_count"),
         [
             ("setup_3_gateways.json", 37, 3),
             ("setup_cozytouch.json", 12, 1),
@@ -264,8 +274,7 @@ class TestOverkizClient:
         gateway_count: int,
     ):
         """Ensure setup parsing yields expected device and gateway counts and device metadata."""
-        with open(
-            os.path.join(CURRENT_DIR, "fixtures/setup/" + fixture_name),
+        with (CURRENT_DIR / "fixtures" / "setup" / fixture_name).open(
             encoding="utf-8",
         ) as setup_mock:
             resp = MockResponse(setup_mock.read())
@@ -316,8 +325,7 @@ class TestOverkizClient:
     @pytest.mark.asyncio
     async def test_get_diagnostic_data(self, client: OverkizClient, fixture_name: str):
         """Verify that diagnostic data can be fetched and is not empty."""
-        with open(
-            os.path.join(CURRENT_DIR, "fixtures/setup/" + fixture_name),
+        with (CURRENT_DIR / "fixtures" / "setup" / fixture_name).open(
             encoding="utf-8",
         ) as setup_mock:
             resp = MockResponse(setup_mock.read())
@@ -329,8 +337,7 @@ class TestOverkizClient:
     @pytest.mark.asyncio
     async def test_get_diagnostic_data_redacted_by_default(self, client: OverkizClient):
         """Ensure diagnostics are redacted when no argument is provided."""
-        with open(
-            os.path.join(CURRENT_DIR, "fixtures/setup/setup_tahoma_1.json"),
+        with (CURRENT_DIR / "fixtures" / "setup" / "setup_tahoma_1.json").open(
             encoding="utf-8",
         ) as setup_mock:
             resp = MockResponse(setup_mock.read())
@@ -349,8 +356,7 @@ class TestOverkizClient:
     @pytest.mark.asyncio
     async def test_get_diagnostic_data_without_masking(self, client: OverkizClient):
         """Ensure diagnostics can be returned without masking when requested."""
-        with open(
-            os.path.join(CURRENT_DIR, "fixtures/setup/setup_tahoma_1.json"),
+        with (CURRENT_DIR / "fixtures" / "setup" / "setup_tahoma_1.json").open(
             encoding="utf-8",
         ) as setup_mock:
             raw_setup = setup_mock.read()
@@ -365,7 +371,7 @@ class TestOverkizClient:
             obfuscate.assert_not_called()
 
     @pytest.mark.parametrize(
-        "fixture_name, exception, status_code",
+        ("fixture_name", "exception", "status_code"),
         [
             ("cloud/503-empty.html", exceptions.ServiceUnavailableError, 503),
             ("cloud/503-maintenance.html", exceptions.MaintenanceError, 503),
@@ -469,11 +475,36 @@ class TestOverkizClient:
                 exceptions.ResourceAccessDeniedError,
                 400,
             ),
-            # (
-            #     "local/204-no-corresponding-execId.json",
-            #     exceptions.OverkizError,
-            #     204,
-            # ),
+            (
+                "cloud/resource-access-denied-device-setup-mismatch.json",
+                exceptions.ResourceAccessDeniedError,
+                400,
+            ),
+            (
+                "cloud/resource-access-denied-gateway-not-in-setup.json",
+                exceptions.ResourceAccessDeniedError,
+                400,
+            ),
+            (
+                "cloud/no-such-action-group.json",
+                exceptions.NoSuchActionGroupError,
+                404,
+            ),
+            (
+                "cloud/action-group-setup-not-found.json",
+                exceptions.ActionGroupSetupNotFoundError,
+                400,
+            ),
+            (
+                "cloud/no-such-controllable.json",
+                exceptions.OverkizError,
+                400,
+            ),
+            (
+                "cloud/no-such-ui-profile.json",
+                exceptions.OverkizError,
+                400,
+            ),
             (
                 "local/400-bad-parameters.json",
                 exceptions.OverkizError,
@@ -517,7 +548,7 @@ class TestOverkizClient:
             ),
             (
                 "local/400-no-such-device.json",
-                exceptions.OverkizError,
+                exceptions.NoSuchDeviceError,
                 400,
             ),
             (
@@ -550,16 +581,15 @@ class TestOverkizClient:
         exception: Exception,
     ):
         """Ensure client raises the correct error for various error fixtures/status codes."""
-        with pytest.raises(exception):
-            if fixture_name:
-                with open(
-                    os.path.join(CURRENT_DIR, "fixtures/exceptions/" + fixture_name),
-                    encoding="utf-8",
-                ) as raw_events:
-                    resp = MockResponse(raw_events.read(), status_code)
-            else:
-                resp = MockResponse(None, status_code)
+        if fixture_name:
+            with (CURRENT_DIR / "fixtures" / "exceptions" / fixture_name).open(
+                encoding="utf-8",
+            ) as raw_events:
+                resp = MockResponse(raw_events.read(), status_code)
+        else:
+            resp = MockResponse(None, status_code)
 
+        with pytest.raises(exception):
             await check_response(resp)
 
     @pytest.mark.asyncio
@@ -568,8 +598,7 @@ class TestOverkizClient:
         client: OverkizClient,
     ):
         """Check that setup options are parsed and return the expected number of Option instances."""
-        with open(
-            os.path.join(CURRENT_DIR, "fixtures/endpoints/setup-options.json"),
+        with (CURRENT_DIR / "fixtures" / "endpoints" / "setup-options.json").open(
             encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
@@ -651,7 +680,7 @@ class TestOverkizClient:
             assert cmd["name"] == "close"
 
     @pytest.mark.parametrize(
-        "fixture_name, option_name, instance",
+        ("fixture_name", "option_name", "instance"),
         [
             (
                 "setup-options-developerMode.json",
@@ -670,8 +699,7 @@ class TestOverkizClient:
         instance: Option | None,
     ):
         """Verify retrieval of a single setup option by name, including non-existent options."""
-        with open(
-            os.path.join(CURRENT_DIR, "fixtures/endpoints/" + fixture_name),
+        with (CURRENT_DIR / "fixtures" / "endpoints" / fixture_name).open(
             encoding="utf-8",
         ) as raw_events:
             resp = MockResponse(raw_events.read())
@@ -685,7 +713,32 @@ class TestOverkizClient:
                 assert isinstance(option, instance)
 
     @pytest.mark.parametrize(
-        "fixture_name, scenario_count",
+        "fixture_name",
+        [
+            "exec-current-empty-object.json",
+            "exec-current-empty-list.json",
+        ],
+    )
+    @pytest.mark.asyncio
+    async def test_get_current_execution_returns_none_for_empty_response(
+        self,
+        client: OverkizClient,
+        fixture_name: str,
+    ):
+        """Cloud returns {} and local returns [] for non-existent exec_ids."""
+        with (CURRENT_DIR / "fixtures" / "endpoints" / fixture_name).open(
+            encoding="utf-8",
+        ) as f:
+            resp = MockResponse(f.read())
+
+        with patch.object(aiohttp.ClientSession, "get", return_value=resp):
+            result = await client.get_current_execution(
+                "00000000-0000-0000-0000-000000000000"
+            )
+            assert result is None
+
+    @pytest.mark.parametrize(
+        ("fixture_name", "scenario_count"),
         [
             ("action-group-cozytouch.json", 9),
             ("action-group-tahoma-box-v1.json", 17),
@@ -701,8 +754,7 @@ class TestOverkizClient:
         scenario_count: int,
     ):
         """Ensure action groups (scenarios) are parsed correctly and contain actions and commands."""
-        with open(
-            os.path.join(CURRENT_DIR, "fixtures/action_groups/" + fixture_name),
+        with (CURRENT_DIR / "fixtures" / "action_groups" / fixture_name).open(
             encoding="utf-8",
         ) as action_group_mock:
             resp = MockResponse(action_group_mock.read())
@@ -723,6 +775,372 @@ class TestOverkizClient:
 
                     for command in action.commands:
                         assert command.name
+
+    @pytest.mark.asyncio
+    async def test_get_current_execution_returns_execution(self, client: OverkizClient):
+        """Verify a running execution is parsed into an Execution model."""
+        with (CURRENT_DIR / "fixtures" / "exec" / "current-single.json").open(
+            encoding="utf-8",
+        ) as f:
+            resp = MockResponse(f.read())
+
+        with patch.object(aiohttp.ClientSession, "get", return_value=resp):
+            result = await client.get_current_execution(
+                "699dd967-0a19-0481-7a62-99b990a2feb8"
+            )
+            assert isinstance(result, Execution)
+            assert result.id == "699dd967-0a19-0481-7a62-99b990a2feb8"
+            assert result.state == ExecutionState.TRANSMITTED
+            assert result.start_time == 1767003511145
+            assert result.execution_type == ExecutionType.IMMEDIATE_EXECUTION
+            assert result.execution_sub_type == ExecutionSubType.MANUAL_CONTROL
+            assert result.action_group.oid is None
+            assert (
+                result.action_group.actions[0].device_url
+                == "rts://1234-5678-1234/12345678"
+            )
+
+    @pytest.mark.asyncio
+    async def test_get_current_executions(self, client: OverkizClient):
+        """Verify parsing a list of running executions with RTS device commands."""
+        with (CURRENT_DIR / "fixtures" / "exec" / "current-tahoma-switch.json").open(
+            encoding="utf-8",
+        ) as f:
+            resp = MockResponse(f.read())
+
+        with patch.object(aiohttp.ClientSession, "get", return_value=resp):
+            executions = await client.get_current_executions()
+            assert len(executions) == 1
+            assert isinstance(executions[0], Execution)
+            assert executions[0].state == ExecutionState.TRANSMITTED
+            assert len(executions[0].action_group.actions) == 2
+            assert executions[0].action_group.actions[0].commands[0].name == "close"
+            assert executions[0].action_group.actions[1].commands[0].name == "identify"
+
+    @pytest.mark.asyncio
+    async def test_get_execution_history(self, client: OverkizClient):
+        """Verify execution history parsing including completed and failed executions."""
+        with (CURRENT_DIR / "fixtures" / "endpoints" / "history-executions.json").open(
+            encoding="utf-8",
+        ) as f:
+            resp = MockResponse(f.read())
+
+        with patch.object(aiohttp.ClientSession, "get", return_value=resp):
+            history = await client.get_execution_history()
+            assert len(history) == 2
+
+            completed = history[0]
+            assert isinstance(completed, HistoryExecution)
+            assert completed.state.value == "COMPLETED"
+            assert completed.failure_type == "NO_FAILURE"
+            assert completed.commands[0].command == "close"
+            assert completed.commands[0].device_url == "rts://2025-8464-6867/16756006"
+
+            failed = history[1]
+            assert failed.state.value == "FAILED"
+            assert failed.failure_type == "CMDCANCELLED"
+            assert failed.commands[0].command == "open"
+
+    @pytest.mark.asyncio
+    async def test_get_state(self, client: OverkizClient):
+        """Verify device state retrieval and parsing."""
+        with (CURRENT_DIR / "fixtures" / "endpoints" / "device-states.json").open(
+            encoding="utf-8",
+        ) as f:
+            resp = MockResponse(f.read())
+
+        with patch.object(aiohttp.ClientSession, "get", return_value=resp):
+            states = await client.get_state("io://1234-5678-1234/12345678")
+            assert len(states) == 3
+            assert all(isinstance(s, State) for s in states)
+            assert states[0].name == "core:StatusState"
+            assert states[0].value == "available"
+            assert states[1].name == "core:ClosureState"
+            assert states[1].value == 0
+            assert states[2].name == "core:OpenClosedState"
+            assert states[2].value == "open"
+
+    @pytest.mark.asyncio
+    async def test_get_places(self, client: OverkizClient):
+        """Verify hierarchical place structure is parsed recursively."""
+        with (CURRENT_DIR / "fixtures" / "endpoints" / "setup-places.json").open(
+            encoding="utf-8",
+        ) as f:
+            resp = MockResponse(f.read())
+
+        with patch.object(aiohttp.ClientSession, "get", return_value=resp):
+            places = await client.get_places()
+            assert isinstance(places, Place)
+            assert places.label == "My House"
+            assert len(places.sub_places) == 2
+            assert places.sub_places[0].label == "Living Room"
+            assert places.sub_places[1].label == "Bedroom"
+            assert places.sub_places[1].last_update_time is None
+
+    @pytest.mark.asyncio
+    async def test_execute_action_group_rts_close(self, client: OverkizClient):
+        """Verify executing a close command on an RTS cover."""
+        action = Action(
+            device_url="rts://2025-8464-6867/16756006",
+            commands=[Command(name="close", parameters=None, type=1)],
+        )
+        resp = MockResponse('{"execId": "ee7a5676-c68f-43a3-956d-6f5efc745954"}')
+
+        with patch.object(aiohttp.ClientSession, "post") as mock_post:
+            mock_post.return_value = resp
+            exec_id = await client.execute_action_group([action])
+
+            assert exec_id == "ee7a5676-c68f-43a3-956d-6f5efc745954"
+            _, kwargs = mock_post.call_args
+            sent_json = kwargs.get("json")
+            assert (
+                sent_json["actions"][0]["deviceURL"] == "rts://2025-8464-6867/16756006"
+            )
+            assert sent_json["actions"][0]["commands"][0]["name"] == "close"
+
+    @pytest.mark.asyncio
+    async def test_execute_action_group_multiple_rts_devices(
+        self, client: OverkizClient
+    ):
+        """Verify executing commands on multiple RTS devices in a single action group."""
+        actions = [
+            Action(
+                device_url="rts://2025-8464-6867/16756006",
+                commands=[Command(name="close", parameters=None, type=1)],
+            ),
+            Action(
+                device_url="rts://2025-8464-6867/16756007",
+                commands=[Command(name="open", parameters=None, type=1)],
+            ),
+        ]
+        resp = MockResponse('{"execId": "aaa-bbb-ccc"}')
+
+        with patch.object(aiohttp.ClientSession, "post") as mock_post:
+            mock_post.return_value = resp
+            exec_id = await client.execute_action_group(actions)
+
+            assert exec_id == "aaa-bbb-ccc"
+            _, kwargs = mock_post.call_args
+            sent_json = kwargs.get("json")
+            assert len(sent_json["actions"]) == 2
+            assert sent_json["actions"][0]["commands"][0]["name"] == "close"
+            assert sent_json["actions"][1]["commands"][0]["name"] == "open"
+
+    @pytest.mark.asyncio
+    async def test_execute_persisted_action_group(self, client: OverkizClient):
+        """Verify executing a persisted action group by OID."""
+        resp = MockResponse('{"execId": "ee7a5676-c68f-43a3-956d-6f5efc745954"}')
+
+        with patch.object(aiohttp.ClientSession, "post", return_value=resp):
+            exec_id = await client.execute_persisted_action_group(
+                "12345678-abcd-efgh-ijkl-123456789012"
+            )
+            assert exec_id == "ee7a5676-c68f-43a3-956d-6f5efc745954"
+
+    @pytest.mark.asyncio
+    async def test_schedule_persisted_action_group(self, client: OverkizClient):
+        """Verify scheduling a persisted action group."""
+        with (CURRENT_DIR / "fixtures" / "endpoints" / "exec-schedule.json").open(
+            encoding="utf-8",
+        ) as f:
+            resp = MockResponse(f.read())
+
+        with patch.object(aiohttp.ClientSession, "post", return_value=resp):
+            trigger_id = await client.schedule_persisted_action_group(
+                "12345678-abcd-efgh-ijkl-123456789012", 1767003511145
+            )
+            assert trigger_id == "abc12345-def6-7890-abcd-ef1234567890"
+
+    @pytest.mark.asyncio
+    async def test_cancel_execution(self, client: OverkizClient):
+        """Verify cancel_execution sends DELETE and does not raise on 204."""
+        resp = MockResponse("", status=204)
+
+        with patch.object(aiohttp.ClientSession, "delete", return_value=resp):
+            await client.cancel_execution("699dd967-0a19-0481-7a62-99b990a2feb8")
+
+    @pytest.mark.asyncio
+    async def test_register_event_listener(self, client: OverkizClient):
+        """Verify event listener registration returns and stores the listener ID."""
+        with (CURRENT_DIR / "fixtures" / "endpoints" / "events-register.json").open(
+            encoding="utf-8",
+        ) as f:
+            resp = MockResponse(f.read())
+
+        with patch.object(aiohttp.ClientSession, "post", return_value=resp):
+            listener_id = await client.register_event_listener()
+            assert listener_id == "a70f6d96-0a19-0483-72d9-ac5f6bd7da26"
+            assert client.event_listener_id == listener_id
+
+    @pytest.mark.asyncio
+    async def test_refresh_states(self, client: OverkizClient):
+        """Verify refresh_states sends POST and does not raise on 204."""
+        resp = MockResponse("", status=204)
+
+        with patch.object(aiohttp.ClientSession, "post", return_value=resp):
+            await client.refresh_states()
+
+    @pytest.mark.asyncio
+    async def test_refresh_device_states(self, client: OverkizClient):
+        """Verify refresh_device_states sends POST for a specific device."""
+        resp = MockResponse("", status=204)
+
+        with patch.object(aiohttp.ClientSession, "post", return_value=resp):
+            await client.refresh_device_states("rts://2025-8464-6867/16756006")
+
+    # --- Local API specific tests ---
+    # The local gateway (KizOs) behaves differently from the cloud API
+    # in several cases. These tests verify the client raises proper errors
+    # instead of crashing when called via the local API.
+
+    @pytest.mark.asyncio
+    async def test_local_get_current_execution_empty_list(
+        self, local_client: OverkizClient
+    ):
+        """Local gateway returns [] for non-existent exec_id (cloud returns {})."""
+        resp = MockResponse("[]")
+
+        with patch.object(aiohttp.ClientSession, "get", return_value=resp):
+            result = await local_client.get_current_execution(
+                "00000000-0000-0000-0000-000000000000"
+            )
+            assert result is None
+
+    @pytest.mark.asyncio
+    async def test_local_get_state_no_such_device(self, local_client: OverkizClient):
+        """Local gateway raises NoSuchDeviceError for unknown device URLs."""
+        resp = MockResponse(
+            '{"error":"No such device : \\"io://0000-0000-0000/12345678\\"","errorCode":"NO_SUCH_DEVICE"}',
+            status=400,
+        )
+
+        with (
+            patch.object(aiohttp.ClientSession, "get", return_value=resp),
+            pytest.raises(exceptions.NoSuchDeviceError),
+        ):
+            await local_client.get_state("io://0000-0000-0000/12345678")
+
+    @pytest.mark.asyncio
+    async def test_local_get_device_definition_no_such_device(
+        self, local_client: OverkizClient
+    ):
+        """Local gateway raises NoSuchDeviceError for unknown device definition lookups."""
+        resp = MockResponse(
+            '{"error":"No such device : \\"io://0000-0000-0000/12345678\\"","errorCode":"NO_SUCH_DEVICE"}',
+            status=400,
+        )
+
+        with (
+            patch.object(aiohttp.ClientSession, "get", return_value=resp),
+            pytest.raises(exceptions.NoSuchDeviceError),
+        ):
+            await local_client.get_device_definition("io://0000-0000-0000/12345678")
+
+    @pytest.mark.asyncio
+    async def test_local_get_setup_option_unknown_object(
+        self, local_client: OverkizClient
+    ):
+        """Local gateway raises UnknownObjectError for non-existent options (cloud returns {})."""
+        resp = MockResponse(
+            '{"error":"Unknown object.","errorCode":"UNSPECIFIED_ERROR"}',
+            status=400,
+        )
+
+        with (
+            patch.object(aiohttp.ClientSession, "get", return_value=resp),
+            pytest.raises(exceptions.UnknownObjectError),
+        ):
+            await local_client.get_setup_option("nonExistentOption")
+
+    @pytest.mark.asyncio
+    async def test_local_refresh_device_states_unknown_object(
+        self, local_client: OverkizClient
+    ):
+        """Local gateway raises UnknownObjectError for unknown device refresh."""
+        resp = MockResponse(
+            '{"error":"Unknown object.","errorCode":"UNSPECIFIED_ERROR"}',
+            status=400,
+        )
+
+        with (
+            patch.object(aiohttp.ClientSession, "post", return_value=resp),
+            pytest.raises(exceptions.UnknownObjectError),
+        ):
+            await local_client.refresh_device_states("io://0000-0000-0000/12345678")
+
+    @pytest.mark.asyncio
+    async def test_local_get_reference_controllable_unknown_object(
+        self, local_client: OverkizClient
+    ):
+        """Local gateway raises UnknownObjectError for unknown controllable names."""
+        resp = MockResponse(
+            '{"error":"Unknown object.","errorCode":"UNSPECIFIED_ERROR"}',
+            status=400,
+        )
+
+        with (
+            patch.object(aiohttp.ClientSession, "get", return_value=resp),
+            pytest.raises(exceptions.UnknownObjectError),
+        ):
+            await local_client.get_reference_controllable("io:NonExistentControllable")
+
+    @pytest.mark.asyncio
+    async def test_local_cancel_execution_succeeds_on_unknown_id(
+        self, local_client: OverkizClient
+    ):
+        """Local gateway returns 200 with [] for cancel on unknown exec_id (idempotent)."""
+        resp = MockResponse("[]", status=200)
+
+        with patch.object(aiohttp.ClientSession, "delete", return_value=resp):
+            await local_client.cancel_execution("00000000-0000-0000-0000-000000000000")
+
+    @pytest.mark.asyncio
+    async def test_local_execute_action_group_rts_close(
+        self, local_client: OverkizClient
+    ):
+        """Verify executing an RTS command via the local API."""
+        action = Action(
+            device_url="rts://2025-8464-6867/16756006",
+            commands=[Command(name="close")],
+        )
+        resp = MockResponse('{"execId": "45e52d27-3c08-4fd5-87f2-03d650b67f4b"}')
+
+        with patch.object(aiohttp.ClientSession, "post") as mock_post:
+            mock_post.return_value = resp
+            exec_id = await local_client.execute_action_group([action])
+
+            assert exec_id == "45e52d27-3c08-4fd5-87f2-03d650b67f4b"
+
+    @pytest.mark.asyncio
+    async def test_local_no_registered_event_listener(
+        self, local_client: OverkizClient
+    ):
+        """Local gateway raises NoRegisteredEventListenerError for unregistered fetch."""
+        resp = MockResponse(
+            '{"error":"\\"No registered event listener.\\"","errorCode":"UNSPECIFIED_ERROR"}',
+            status=400,
+        )
+
+        with pytest.raises(exceptions.NoRegisteredEventListenerError):
+            await check_response(resp)
+
+    @pytest.mark.asyncio
+    async def test_local_schedule_persisted_action_group_unknown_object(
+        self, local_client: OverkizClient
+    ):
+        """Local gateway raises UnknownObjectError when scheduling a non-existent action group."""
+        resp = MockResponse(
+            '{"error":"Unknown object.","errorCode":"UNSPECIFIED_ERROR"}',
+            status=400,
+        )
+
+        with (
+            patch.object(aiohttp.ClientSession, "post", return_value=resp),
+            pytest.raises(exceptions.UnknownObjectError),
+        ):
+            await local_client.schedule_persisted_action_group(
+                "00000000-0000-0000-0000-000000000000", 9999999999
+            )
 
 
 class MockResponse:
@@ -745,7 +1163,6 @@ class MockResponse:
 
     async def __aexit__(self, exc_type, exc, tb):
         """Context manager exit (noop)."""
-        pass
 
     async def __aenter__(self):
         """Context manager enter returning self."""

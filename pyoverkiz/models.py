@@ -842,6 +842,14 @@ class UIProfileDefinition:
     form_factor: bool = False
 
 
+@define(kw_only=True)
+class FirmwareStatus:
+    """Firmware status of a device."""
+
+    up_to_date: bool
+    notes: list[dict[str, str]]
+
+
 # ---------------------------------------------------------------------------
 # Setup (root model — references most other models)
 # ---------------------------------------------------------------------------

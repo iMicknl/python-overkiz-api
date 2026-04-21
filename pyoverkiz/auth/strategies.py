@@ -8,6 +8,7 @@ import binascii
 import json
 import ssl
 from collections.abc import Mapping
+from http import HTTPStatus
 from typing import TYPE_CHECKING, Any, cast
 
 if TYPE_CHECKING:
@@ -49,6 +50,8 @@ from pyoverkiz.exceptions import (
 )
 from pyoverkiz.models import ServerConfig
 
+MIN_JWT_SEGMENTS = 2
+
 
 class BaseAuthStrategy(AuthStrategy):
     """Base class for authentication strategies."""
@@ -66,7 +69,7 @@ class BaseAuthStrategy(AuthStrategy):
 
     async def login(self) -> None:
         """Perform authentication; default is a no-op for subclasses to override."""
-        return None
+        return
 
     async def refresh_if_needed(self) -> bool:
         """Refresh authentication tokens if needed; default returns False."""
@@ -78,7 +81,7 @@ class BaseAuthStrategy(AuthStrategy):
 
     async def close(self) -> None:
         """Close any resources held by the strategy; default is no-op."""
-        return None
+        return
 
 
 class SessionLoginStrategy(BaseAuthStrategy):
@@ -110,13 +113,13 @@ class SessionLoginStrategy(BaseAuthStrategy):
             data=data,
             ssl=self._ssl,
         ) as response:
-            if response.status not in (200, 204):
+            if response.status not in (HTTPStatus.OK, HTTPStatus.NO_CONTENT):
                 raise BadCredentialsError(
                     f"Login failed for {self.server.name}: {response.status}"
                 )
 
             # A 204 No Content response cannot have a body, so skip JSON parsing.
-            if response.status == 204:
+            if response.status == HTTPStatus.NO_CONTENT:
                 return
 
             result = await response.json()
@@ -269,7 +272,7 @@ class NexityAuthStrategy(SessionLoginStrategy):
         except ClientError as error:
             code = error.response.get("Error", {}).get("Code")
             if code in {"NotAuthorizedException", "UserNotFoundException"}:
-                raise NexityBadCredentialsError() from error
+                raise NexityBadCredentialsError from error
             raise
 
         id_token = tokens["AuthenticationResult"]["IdToken"]
@@ -419,7 +422,7 @@ class BearerTokenAuthStrategy(BaseAuthStrategy):
 def _decode_jwt_payload(token: str) -> dict[str, Any]:
     """Decode the payload of a JWT token."""
     parts = token.split(".")
-    if len(parts) < 2:
+    if len(parts) < MIN_JWT_SEGMENTS:
         raise InvalidTokenError("Malformed JWT received.")
 
     payload_segment = parts[1]

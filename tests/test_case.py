@@ -48,7 +48,7 @@ class TestDecamelize:
         assert decamelize({"nparams": 0}) == {"nparams": 0}
 
     @pytest.mark.parametrize(
-        "camel, expected",
+        ("camel", "expected"),
         [
             ("deviceURL", "device_url"),
             ("placeOID", "place_oid"),

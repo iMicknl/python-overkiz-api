@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from http import HTTPStatus
 from json import JSONDecodeError
 
 from aiohttp import ClientResponse
@@ -21,6 +22,8 @@ from pyoverkiz.exceptions import (
     MissingAPIKeyError,
     MissingAuthorizationTokenError,
     NoRegisteredEventListenerError,
+    NoSuchActionGroupError,
+    NoSuchDeviceError,
     NoSuchResourceError,
     NoSuchTokenError,
     NotAuthenticatedError,
@@ -34,6 +37,7 @@ from pyoverkiz.exceptions import (
     TooManyRequestsError,
     UnknownObjectError,
     UnknownUserError,
+    UnsupportedOperationError,
 )
 
 # Primary dispatch: (errorCode, message_substring) -> error class.
@@ -45,6 +49,8 @@ _ERROR_CODE_MESSAGE_MAP: list[tuple[str, str | None, type[BaseOverkizError]]] = 
     ("INVALID_FIELD_VALUE", None, ActionGroupSetupNotFoundError),
     ("INVALID_API_CALL", None, NoSuchResourceError),
     ("EXEC_QUEUE_FULL", None, ExecutionQueueFullError),
+    ("NO_SUCH_DEVICE", None, NoSuchDeviceError),
+    ("NO_SUCH_ACTION_GROUP", None, NoSuchActionGroupError),
     # --- errorCode + message substring ---
     ("AUTHENTICATION_ERROR", "Too many requests", TooManyRequestsError),
     ("AUTHENTICATION_ERROR", "Bad credentials", BadCredentialsError),
@@ -73,6 +79,7 @@ _ERROR_CODE_MESSAGE_MAP: list[tuple[str, str | None, type[BaseOverkizError]]] = 
         ApplicationNotAllowedError,
     ),
     ("UNSUPPORTED_OPERATION", "No such command", InvalidCommandError),
+    ("UNSUPPORTED_OPERATION", None, UnsupportedOperationError),
     (
         "UNSPECIFIED_ERROR",
         "Invalid event listener id",
@@ -113,7 +120,7 @@ _ERROR_CODE_FALLBACK_MAP: dict[str, type[BaseOverkizError]] = {
 
 async def check_response(response: ClientResponse) -> None:
     """Check the response returned by the OverKiz API."""
-    if response.status in [200, 204]:
+    if response.status in (HTTPStatus.OK, HTTPStatus.NO_CONTENT):
         return
 
     try:
@@ -124,7 +131,7 @@ async def check_response(response: ClientResponse) -> None:
         if "is down for maintenance" in result:
             raise MaintenanceError("Server is down for maintenance") from error
 
-        if response.status == 503:
+        if response.status == HTTPStatus.SERVICE_UNAVAILABLE:
             raise ServiceUnavailableError(result) from error
 
         raise OverkizError(
