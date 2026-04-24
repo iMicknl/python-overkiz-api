@@ -28,7 +28,7 @@ from pyoverkiz.models import (
     State,
 )
 from pyoverkiz.response_handler import check_response
-from tests.conftest import MockResponse
+from tests.helpers import MockResponse
 
 CURRENT_DIR = Path(__file__).resolve().parent
 
@@ -307,7 +307,7 @@ class TestOverkizClient:
 
         with patch.object(aiohttp.ClientSession, "get", return_value=resp):
             diagnostics = await client.get_diagnostic_data()
-            assert diagnostics is not None
+            assert diagnostics
 
     @pytest.mark.asyncio
     async def test_get_diagnostic_data_redacted_by_default(self, client: OverkizClient):
