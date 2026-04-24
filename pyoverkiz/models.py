@@ -23,15 +23,14 @@ from pyoverkiz.enums import (
     UpdateBoxStatus,
     UpdateCriticityLevel,
 )
+from pyoverkiz.enums.command import OverkizCommand, OverkizCommandParam  # noqa: TC001
 from pyoverkiz.enums.protocol import Protocol
+from pyoverkiz.enums.server import APIType, Server  # noqa: TC001
 from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 
 if TYPE_CHECKING:
     from collections.abc import Iterator
-
-    from pyoverkiz.enums.command import OverkizCommand, OverkizCommandParam
-    from pyoverkiz.enums.server import APIType, Server
 
 # ---------------------------------------------------------------------------
 # State & command primitives
