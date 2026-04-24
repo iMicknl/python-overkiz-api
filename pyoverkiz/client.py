@@ -67,7 +67,7 @@ _LOGGER = logging.getLogger(__name__)
 
 def _get_client_from_invocation(invocation: Details) -> OverkizClient:
     """Return the `OverkizClient` instance from a backoff invocation."""
-    return cast("OverkizClient", invocation["args"][0])
+    return cast(OverkizClient, invocation["args"][0])
 
 
 async def relogin(invocation: Details) -> None:
@@ -424,7 +424,7 @@ class OverkizClient:
         API on a regular basis.
         """
         response = await self._post("events/register")
-        listener_id = cast("str", response.get("id"))
+        listener_id = cast(str, response.get("id"))
         self.event_listener_id = listener_id
 
         return listener_id
@@ -476,7 +476,7 @@ class OverkizClient:
         """Get the API version (local only)."""
         response = await self._get("apiVersion")
 
-        return cast("str", response["protocolVersion"])
+        return cast(str, response["protocolVersion"])
 
     @retry_on_too_many_executions
     @retry_on_auth_error
@@ -496,7 +496,7 @@ class OverkizClient:
 
         response: dict = await self._post(url, prepare_payload(payload))
 
-        return cast("str", response["execId"])
+        return cast(str, response["execId"])
 
     async def execute_action_group(
         self,
@@ -582,13 +582,13 @@ class OverkizClient:
     async def execute_persisted_action_group(self, oid: str) -> str:
         """Execute a server-side action group by its OID (see ``get_action_groups``)."""
         response = await self._post(f"exec/{oid}")
-        return cast("str", response["execId"])
+        return cast(str, response["execId"])
 
     @retry_on_auth_error
     async def schedule_persisted_action_group(self, oid: str, timestamp: int) -> str:
         """Schedule a server-side action group for execution at the given timestamp."""
         response = await self._post(f"exec/schedule/{oid}/{timestamp}")
-        return cast("str", response["triggerId"])
+        return cast(str, response["triggerId"])
 
     @retry_on_auth_error
     async def get_setup_options(self) -> list[Option]:

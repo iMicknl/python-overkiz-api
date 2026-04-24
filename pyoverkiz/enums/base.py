@@ -36,4 +36,4 @@ class UnknownEnumMixin:
         message = cls.__missing_message__
         logging.getLogger(cls.__module__).warning(message, value, cls)
         # Type checker cannot infer UNKNOWN exists on Self, but all subclasses define it
-        return cast("Self", cls.UNKNOWN)  # type: ignore[attr-defined]
+        return cast(Self, cls.UNKNOWN)  # type: ignore[attr-defined]  # ty: ignore[unresolved-attribute]

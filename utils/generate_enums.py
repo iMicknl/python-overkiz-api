@@ -12,7 +12,7 @@ import os
 import re
 import subprocess
 from pathlib import Path
-from typing import TYPE_CHECKING, cast
+from typing import TYPE_CHECKING
 
 from pyoverkiz.auth.credentials import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient
@@ -131,8 +131,8 @@ async def generate_ui_enums(server: Server) -> None:
     ) as client:
         await client.login()
 
-        ui_classes = cast("list[str]", await client.get_reference_ui_classes())
-        ui_widgets = cast("list[str]", await client.get_reference_ui_widgets())
+        ui_classes = await client.get_reference_ui_classes()
+        ui_widgets = await client.get_reference_ui_widgets()
 
         # Convert camelCase to SCREAMING_SNAKE_CASE for enum names
         def to_enum_name(value: str) -> str:
@@ -212,7 +212,7 @@ async def generate_ui_enums(server: Server) -> None:
         lines.append("")  # End with newline
 
         # Fetch and add UI classifiers
-        ui_classifiers = cast("list[str]", await client.get_reference_ui_classifiers())
+        ui_classifiers = await client.get_reference_ui_classifiers()
 
         lines.append("")
         lines.append("@unique")

@@ -161,7 +161,7 @@ class SomfyAuthStrategy(BaseAuthStrategy):
 
         await self._request_access_token(
             grant_type="refresh_token",
-            extra_fields={"refresh_token": cast("str", self.context.refresh_token)},
+            extra_fields={"refresh_token": cast(str, self.context.refresh_token)},
         )
         return True
 
@@ -353,7 +353,7 @@ class RexelAuthStrategy(BaseAuthStrategy):
                 "grant_type": "refresh_token",
                 "client_id": REXEL_OAUTH_CLIENT_ID,
                 "scope": REXEL_OAUTH_SCOPE,
-                "refresh_token": cast("str", self.context.refresh_token),
+                "refresh_token": cast(str, self.context.refresh_token),
             }
         )
         return True
@@ -431,6 +431,6 @@ def _decode_jwt_payload(token: str) -> dict[str, Any]:
     padding = "=" * (-len(payload_segment) % 4)
     try:
         decoded = base64.urlsafe_b64decode(payload_segment + padding)
-        return cast("dict[str, Any]", json.loads(decoded))
+        return cast(dict[str, Any], json.loads(decoded))
     except (binascii.Error, json.JSONDecodeError) as error:
         raise InvalidTokenError("Malformed JWT received.") from error
