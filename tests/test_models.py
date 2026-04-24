@@ -249,7 +249,7 @@ class TestDevice:
         raw = dict(RAW_DEVICES)
         del raw["states"]
         device = _make_device(raw)
-        assert not device.states.get(STATE)
+        assert device.states.get(STATE) is None
 
     def test_select_first_command(self):
         """Device.select_first_command() returns first supported command from list."""
@@ -379,19 +379,19 @@ class TestStates:
         """An empty list yields an empty States object with no state found."""
         states = self._make_states([])
         assert not states
-        assert not states.get(STATE)
+        assert states.get(STATE) is None
 
     def test_none_states(self):
         """A None value for states should behave as empty."""
         states = self._make_states(None)
         assert not states
-        assert not states.get(STATE)
+        assert states.get(STATE) is None
 
     def test_getter(self):
         """Retrieve a known state and validate its properties."""
         states = self._make_states(RAW_STATES)
         state = states.get(STATE)
-        assert state
+        assert state is not None
         assert state.name == STATE
         assert state.type == DataType.STRING
         assert state.value == "alarm name"
@@ -400,7 +400,7 @@ class TestStates:
         """Requesting a missing state returns falsy (None)."""
         states = self._make_states(RAW_STATES)
         state = states.get("FooState")
-        assert not state
+        assert state is None
 
     def test_select_returns_first_match(self):
         """select() returns the first state with a non-None value."""

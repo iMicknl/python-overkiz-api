@@ -264,9 +264,9 @@ class TestOverkizClient:
                 assert setup.id is None
 
             for device in setup.devices:
-                assert device.identifier.gateway_id
-                assert device.identifier.device_address
-                assert device.identifier.protocol
+                assert device.identifier.gateway_id is not None
+                assert device.identifier.device_address is not None
+                assert device.identifier.protocol is not None
 
     @pytest.mark.parametrize(
         "fixture_name",
@@ -307,7 +307,7 @@ class TestOverkizClient:
 
         with patch.object(aiohttp.ClientSession, "get", return_value=resp):
             diagnostics = await client.get_diagnostic_data()
-            assert diagnostics
+            assert diagnostics is not None
 
     @pytest.mark.asyncio
     async def test_get_diagnostic_data_redacted_by_default(self, client: OverkizClient):
@@ -740,16 +740,16 @@ class TestOverkizClient:
             assert len(action_groups) == scenario_count
 
             for action_group in action_groups:
-                assert action_group.oid
+                assert action_group.oid is not None
                 assert action_group.label is not None
                 assert action_group.actions
 
                 for action in action_group.actions:
-                    assert action.device_url
+                    assert action.device_url is not None
                     assert action.commands
 
                     for command in action.commands:
-                        assert command.name
+                        assert command.name is not None
 
     @pytest.mark.asyncio
     async def test_get_current_execution_returns_execution(self, client: OverkizClient):
