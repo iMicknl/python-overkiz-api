@@ -154,6 +154,8 @@ class States:
 
     def __setitem__(self, name: str, state: State) -> None:
         """Set or append a State identified by name."""
+        if state.name != name:
+            raise ValueError(f"State name {state.name!r} does not match key {name!r}")
         if name in self._index:
             idx = self._states.index(self._index[name])
             self._states[idx] = state
