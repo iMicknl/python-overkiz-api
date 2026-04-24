@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import json
-import logging
 import re
 from collections.abc import Iterator
 from typing import Any, cast
@@ -23,6 +22,7 @@ from pyoverkiz.enums import (
     UIClass,
     UIWidget,
     UpdateBoxStatus,
+    UpdateCriticityLevel,
 )
 from pyoverkiz.enums.command import OverkizCommand, OverkizCommandParam
 from pyoverkiz.enums.protocol import Protocol
@@ -30,496 +30,18 @@ from pyoverkiz.enums.server import APIType, Server
 from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
 
-# pylint: disable=unused-argument, too-many-instance-attributes, too-many-locals
+# ---------------------------------------------------------------------------
+# State & command primitives
+# ---------------------------------------------------------------------------
 
-# <protocol>://<gatewayId>/<deviceAddress>[#<subsystemId>]
-DEVICE_URL_RE = re.compile(
-    r"(?P<protocol>[^:]+)://(?P<gatewayId>[^/]+)/(?P<deviceAddress>[^#]+)(#(?P<subsystemId>\d+))?"
-)
 
-_LOGGER = logging.getLogger(__name__)
-
-
-@define(init=False, kw_only=True)
-class Setup:
-    """Representation of a complete setup returned by the Overkiz API."""
-
-    creation_time: int | None = None
-    last_update_time: int | None = None
-    id: str | None = field(repr=obfuscate_id, default=None)
-    location: Location | None = None
-    gateways: list[Gateway]
-    devices: list[Device]
-    zones: list[Zone] | None = None
-    reseller_delegation_type: str | None = None
-    oid: str | None = None
-    root_place: Place | None = None
-    features: list[Feature] | None = None
-
-    def __init__(
-        self,
-        *,
-        creation_time: int | None = None,
-        last_update_time: int | None = None,
-        id: str | None = None,
-        location: dict[str, Any] | None = None,
-        gateways: list[dict[str, Any]],
-        devices: list[dict[str, Any]],
-        zones: list[dict[str, Any]] | None = None,
-        reseller_delegation_type: str | None = None,
-        oid: str | None = None,
-        root_place: dict[str, Any] | None = None,
-        features: list[dict[str, Any]] | None = None,
-        **_: Any,
-    ) -> None:
-        """Initialize a Setup and construct nested model instances."""
-        self.id = id
-        self.creation_time = creation_time
-        self.last_update_time = last_update_time
-        self.location = Location(**location) if location else None
-        self.gateways = [Gateway(**g) for g in gateways]
-        self.devices = [Device(**d) for d in devices]
-        self.zones = [Zone(**z) for z in zones] if zones else None
-        self.reseller_delegation_type = reseller_delegation_type
-        self.oid = oid
-        self.root_place = Place(**root_place) if root_place else None
-        self.features = [Feature(**f) for f in features] if features else None
-
-
-@define(init=False, kw_only=True)
-class Location:
-    """Geographical and address metadata for a Setup."""
-
-    creation_time: int
-    last_update_time: int | None = None
-    city: str = field(repr=obfuscate_string, default=None)
-    country: str = field(repr=obfuscate_string, default=None)
-    postal_code: str = field(repr=obfuscate_string, default=None)
-    address_line1: str = field(repr=obfuscate_string, default=None)
-    address_line2: str = field(repr=obfuscate_string, default=None)
-    timezone: str
-    longitude: str = field(repr=obfuscate_string, default=None)
-    latitude: str = field(repr=obfuscate_string, default=None)
-    twilight_mode: int
-    twilight_angle: str
-    twilight_city: str | None = None
-    summer_solstice_dusk_minutes: str
-    winter_solstice_dusk_minutes: str
-    twilight_offset_enabled: bool
-    dawn_offset: int
-    dusk_offset: int
-
-    def __init__(
-        self,
-        *,
-        creation_time: int,
-        last_update_time: int | None = None,
-        city: str = field(repr=obfuscate_string, default=None),
-        country: str = field(repr=obfuscate_string, default=None),
-        postal_code: str = field(repr=obfuscate_string, default=None),
-        address_line1: str = field(repr=obfuscate_string, default=None),
-        address_line2: str = field(repr=obfuscate_string, default=None),
-        timezone: str,
-        longitude: str = field(repr=obfuscate_string, default=None),
-        latitude: str = field(repr=obfuscate_string, default=None),
-        twilight_mode: int,
-        twilight_angle: str,
-        twilight_city: str | None = None,
-        summer_solstice_dusk_minutes: str,
-        winter_solstice_dusk_minutes: str,
-        twilight_offset_enabled: bool,
-        dawn_offset: int,
-        dusk_offset: int,
-        **_: Any,
-    ) -> None:
-        """Initialize Location with address and timezone information."""
-        self.creation_time = creation_time
-        self.last_update_time = last_update_time
-        self.city = city
-        self.country = country
-        self.postal_code = postal_code
-        self.address_line1 = address_line1
-        self.address_line2 = address_line2
-        self.timezone = timezone
-        self.longitude = longitude
-        self.latitude = latitude
-        self.twilight_mode = twilight_mode
-        self.twilight_angle = twilight_angle
-        self.twilight_city = twilight_city
-        self.summer_solstice_dusk_minutes = summer_solstice_dusk_minutes
-        self.winter_solstice_dusk_minutes = winter_solstice_dusk_minutes
-        self.twilight_offset_enabled = twilight_offset_enabled
-        self.dawn_offset = dawn_offset
-        self.dusk_offset = dusk_offset
-
-
-@define(init=False, kw_only=True)
-class DeviceIdentifier:
-    """Parsed components from a device URL."""
-
-    protocol: Protocol
-    gateway_id: str = field(repr=obfuscate_id)
-    device_address: str = field(repr=obfuscate_id)
-    subsystem_id: int | None = None
-    base_device_url: str = field(repr=obfuscate_id, init=False)
-
-    def __init__(
-        self,
-        *,
-        protocol: Protocol,
-        gateway_id: str,
-        device_address: str,
-        subsystem_id: int | None = None,
-    ) -> None:
-        """Initialize DeviceIdentifier with required URL components."""
-        self.protocol = protocol
-        self.gateway_id = gateway_id
-        self.device_address = device_address
-        self.subsystem_id = subsystem_id
-        self.base_device_url = f"{protocol}://{gateway_id}/{device_address}"
-
-    @property
-    def is_sub_device(self) -> bool:
-        """Return True if this identifier represents a sub-device (subsystem_id > 1)."""
-        return self.subsystem_id is not None and self.subsystem_id > 1
-
-    @classmethod
-    def from_device_url(cls, device_url: str) -> DeviceIdentifier:
-        """Parse a device URL into its structured identifier components."""
-        match = DEVICE_URL_RE.fullmatch(device_url)
-        if not match:
-            raise ValueError(f"Invalid device URL: {device_url}")
-
-        subsystem_id = (
-            int(match.group("subsystemId")) if match.group("subsystemId") else None
-        )
-
-        return cls(
-            protocol=Protocol(match.group("protocol")),
-            gateway_id=match.group("gatewayId"),
-            device_address=match.group("deviceAddress"),
-            subsystem_id=subsystem_id,
-        )
-
-
-@define(init=False, kw_only=True)
-class Device:
-    """Representation of a device in the setup including parsed fields and states."""
-
-    attributes: States
-    available: bool
-    enabled: bool
-    label: str = field(repr=obfuscate_string)
-    device_url: str = field(repr=obfuscate_id)
-    controllable_name: str
-    definition: Definition
-    states: States
-    type: ProductType
-    oid: str | None = field(repr=obfuscate_id, default=None)
-    place_oid: str | None = None
-    creation_time: int | None = None
-    last_update_time: int | None = None
-    shortcut: bool | None = None
-    metadata: str | None = None
-    synced: bool | None = None  # Local API only
-    subsystem_id: int | None = None  # Local API only
-    identifier: DeviceIdentifier = field(init=False, repr=False)
-    _ui_class: UIClass | None = field(init=False, repr=False)
-    _widget: UIWidget | None = field(init=False, repr=False)
-
-    def __init__(
-        self,
-        *,
-        attributes: list[dict[str, Any]] | None = None,
-        available: bool,
-        enabled: bool,
-        label: str,
-        device_url: str,
-        controllable_name: str,
-        definition: dict[str, Any],
-        widget: str | None = None,
-        ui_class: str | None = None,
-        states: list[dict[str, Any]] | None = None,
-        type: int,
-        oid: str | None = None,
-        place_oid: str | None = None,
-        creation_time: int | None = None,
-        last_update_time: int | None = None,
-        shortcut: bool | None = None,
-        metadata: str | None = None,
-        synced: bool | None = None,
-        subsystem_id: int | None = None,
-        **_: Any,
-    ) -> None:
-        """Initialize Device and parse URL, protocol and nested definitions."""
-        self.attributes = States(attributes)
-        self.available = available
-        self.definition = Definition(**definition)
-        self.device_url = device_url
-        self.enabled = enabled
-        self.label = label
-        self.controllable_name = controllable_name
-        self.states = States(states)
-        self.type = ProductType(type)
-        self.oid = oid
-        self.place_oid = place_oid
-        self.creation_time = creation_time
-        self.last_update_time = last_update_time
-        self.shortcut = shortcut
-        self.metadata = metadata
-        self.synced = synced
-        self.subsystem_id = subsystem_id
-
-        self.identifier = DeviceIdentifier.from_device_url(device_url)
-
-        self._ui_class = UIClass(ui_class) if ui_class else None
-        self._widget = UIWidget(widget) if widget else None
-
-    @property
-    def ui_class(self) -> UIClass:
-        """Return the UI class, falling back to the definition if available."""
-        if self._ui_class is not None:
-            return self._ui_class
-        if self.definition.ui_class:
-            return UIClass(self.definition.ui_class)
-        raise ValueError(f"Device {self.device_url} has no UI class defined")
-
-    @property
-    def widget(self) -> UIWidget:
-        """Return the widget, falling back to the definition if available."""
-        if self._widget is not None:
-            return self._widget
-        if self.definition.widget_name:
-            return UIWidget(self.definition.widget_name)
-        raise ValueError(f"Device {self.device_url} has no widget defined")
-
-    def supports_command(self, command: str | OverkizCommand) -> bool:
-        """Check if device supports a command."""
-        return str(command) in self.definition.commands
-
-    def supports_any_command(self, commands: list[str | OverkizCommand]) -> bool:
-        """Check if device supports any of the commands."""
-        return self.definition.commands.has_any(commands)
-
-    def select_first_command(self, commands: list[str | OverkizCommand]) -> str | None:
-        """Return first supported command name from list, or None."""
-        return self.definition.commands.select(commands)
-
-    def get_state_value(self, state: str) -> StateType | None:
-        """Get value of a single state, or None if not found or None."""
-        return self.states.select_value([state])
-
-    def select_first_state_value(self, states: list[str]) -> StateType | None:
-        """Return value of first state with non-None value from list, or None."""
-        return self.states.select_value(states)
-
-    def has_state_value(self, state: str) -> bool:
-        """Check if a state exists with a non-None value."""
-        return self.states.has_any([state])
-
-    def has_any_state_value(self, states: list[str]) -> bool:
-        """Check if any of the states exist with non-None values."""
-        return self.states.has_any(states)
-
-    def get_state_definition(self, state: str) -> StateDefinition | None:
-        """Get StateDefinition for a single state name, or None."""
-        return self.definition.get_state_definition([state])
-
-    def select_first_state_definition(
-        self, states: list[str]
-    ) -> StateDefinition | None:
-        """Return first matching StateDefinition from list, or None."""
-        return self.definition.get_state_definition(states)
-
-    def get_attribute_value(self, attribute: str) -> StateType | None:
-        """Get value of a single attribute, or None if not found or None."""
-        return self.attributes.select_value([attribute])
-
-    def select_first_attribute_value(self, attributes: list[str]) -> StateType | None:
-        """Return value of first attribute with non-None value from list, or None."""
-        return self.attributes.select_value(attributes)
-
-
-@define(init=False, kw_only=True)
-class DataProperty:
-    """Data property with qualified name and value."""
-
-    qualified_name: str
-    value: str
-
-    def __init__(
-        self,
-        *,
-        qualified_name: str,
-        value: str,
-        **_: Any,
-    ) -> None:
-        """Initialize DataProperty."""
-        self.qualified_name = qualified_name
-        self.value = value
-
-
-@define(init=False, kw_only=True)
-class StateDefinition:
-    """Definition metadata for a state (qualified name, type and possible values)."""
-
-    qualified_name: str
-    type: str | None = None
-    values: list[str] | None = None
-    event_based: bool | None = None
-
-    def __init__(
-        self,
-        name: str | None = None,
-        qualified_name: str | None = None,
-        type: str | None = None,
-        values: list[str] | None = None,
-        event_based: bool | None = None,
-        **_: Any,
-    ) -> None:
-        """Initialize StateDefinition and set qualified name from either `name` or `qualified_name`."""
-        self.type = type
-        self.values = values
-        self.event_based = event_based
-
-        if qualified_name:
-            self.qualified_name = qualified_name
-        elif name:
-            self.qualified_name = name
-        else:
-            raise ValueError(
-                "StateDefinition requires either `name` or `qualified_name`."
-            )
-
-
-@define(init=False, kw_only=True)
-class Definition:
-    """Definition of device capabilities: command definitions, state definitions and UI hints."""
-
-    commands: CommandDefinitions
-    states: list[StateDefinition]
-    data_properties: list[DataProperty]
-    widget_name: str | None = None
-    ui_class: str | None = None
-    qualified_name: str | None = None
-    ui_profiles: list[str] | None = None
-    ui_classifiers: list[str] | None = None
-    type: str | None = None
-    attributes: list[dict[str, Any]] | None = None  # Local API only
-
-    def __init__(
-        self,
-        *,
-        commands: list[dict[str, Any]],
-        states: list[dict[str, Any]] | None = None,
-        data_properties: list[dict[str, Any]] | None = None,
-        widget_name: str | None = None,
-        ui_class: str | None = None,
-        qualified_name: str | None = None,
-        ui_profiles: list[str] | None = None,
-        ui_classifiers: list[str] | None = None,
-        type: str | None = None,
-        attributes: list[dict[str, Any]] | None = None,
-        **_: Any,
-    ) -> None:
-        """Initialize Definition and construct nested command/state definitions."""
-        self.commands = CommandDefinitions(commands)
-        self.states = [StateDefinition(**sd) for sd in states] if states else []
-        self.data_properties = (
-            [DataProperty(**dp) for dp in data_properties] if data_properties else []
-        )
-        self.widget_name = widget_name
-        self.ui_class = ui_class
-        self.qualified_name = qualified_name
-        self.ui_profiles = ui_profiles
-        self.ui_classifiers = ui_classifiers
-        self.type = type
-        self.attributes = attributes
-
-    def get_state_definition(self, states: list[str]) -> StateDefinition | None:
-        """Return the first StateDefinition whose `qualified_name` matches, or None."""
-        states_set = set(states)
-        for state_def in self.states:
-            if state_def.qualified_name in states_set:
-                return state_def
-        return None
-
-    def has_state_definition(self, states: list[str]) -> bool:
-        """Return True if any of the given state definitions exist."""
-        return self.get_state_definition(states) is not None
-
-
-@define(init=False, kw_only=True)
-class CommandDefinition:
-    """Metadata for a single command definition (name and parameter count)."""
-
-    command_name: str
-    nparams: int
-
-    def __init__(self, command_name: str, nparams: int, **_: Any) -> None:
-        """Initialize CommandDefinition."""
-        self.command_name = command_name
-        self.nparams = nparams
-
-
-@define(init=False)
-class CommandDefinitions:
-    """Container for command definitions providing convenient lookup by name."""
-
-    _commands: list[CommandDefinition]
-
-    def __init__(self, commands: list[dict[str, Any]]):
-        """Build the inner list of CommandDefinition objects from raw data."""
-        self._commands = [CommandDefinition(**command) for command in commands]
-
-    def __iter__(self) -> Iterator[CommandDefinition]:
-        """Iterate over defined commands."""
-        return self._commands.__iter__()
-
-    def __contains__(self, name: str) -> bool:
-        """Return True if a command with `name` exists."""
-        return self.__getitem__(name) is not None
-
-    def __getitem__(self, command: str) -> CommandDefinition | None:
-        """Return the command definition or None if missing."""
-        return next((cd for cd in self._commands if cd.command_name == command), None)
-
-    def __len__(self) -> int:
-        """Return number of command definitions."""
-        return len(self._commands)
-
-    get = __getitem__
-
-    def select(self, commands: list[str | OverkizCommand]) -> str | None:
-        """Return the first command name that exists in this definition, or None."""
-        return next(
-            (str(command) for command in commands if str(command) in self), None
-        )
-
-    def has_any(self, commands: list[str | OverkizCommand]) -> bool:
-        """Return True if any of the given commands exist in this definition."""
-        return self.select(commands) is not None
-
-
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class State:
     """A single device state with typed accessors for its value."""
 
     name: str
     type: DataType
-    value: StateType
-
-    def __init__(
-        self,
-        name: str,
-        type: int,
-        value: StateType = None,
-        **_: Any,
-    ) -> None:
-        """Initialize State and set its declared data type."""
-        self.name = name
-        self.value = value
-        self.type = DataType(type)
+    value: StateType = None
 
     @property
     def value_as_int(self) -> int | None:
@@ -578,31 +100,22 @@ class State:
         raise TypeError(f"{self.name} is not an array")
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class EventState(State):
     """State variant used when parsing event payloads (casts string values)."""
 
-    def __init__(
-        self,
-        name: str,
-        type: int,
-        value: str | None = None,
-        **_: Any,
-    ):
-        """Initialize EventState and cast string values based on declared data type."""
-        super().__init__(name, type, value, **_)
-
+    def __attrs_post_init__(self) -> None:
+        """Cast string values based on declared data type."""
         # Overkiz (cloud) returns all state values as a string
-        # We cast them here based on the data type provided by Overkiz
         # Overkiz (local) returns all state values in the right format
         if not isinstance(self.value, str) or self.type not in DATA_TYPE_TO_PYTHON:
             return
 
-        caster = DATA_TYPE_TO_PYTHON[self.type]
         if self.type in (DataType.JSON_ARRAY, DataType.JSON_OBJECT):
             self.value = self._cast_json_value(self.value)
             return
 
+        caster = DATA_TYPE_TO_PYTHON[self.type]
         self.value = caster(self.value)
 
     def _cast_json_value(self, raw_value: str) -> StateType:
@@ -620,44 +133,49 @@ class States:
     """Container of State objects providing lookup and mapping helpers."""
 
     _states: list[State]
+    _index: dict[str, State]
 
-    def __init__(self, states: list[dict[str, Any]] | None = None) -> None:
-        """Create a container of State objects from raw state dicts or an empty list."""
-        if states:
-            self._states = [State(**state) for state in states]
-        else:
-            self._states = []
+    def __init__(self, states: list[State] | None = None) -> None:
+        """Create a States container from a list of State objects or empty."""
+        self._states = list(states) if states else []
+        self._index = {state.name: state for state in self._states}
 
     def __iter__(self) -> Iterator[State]:
         """Return an iterator over contained State objects."""
         return self._states.__iter__()
 
-    def __contains__(self, name: str) -> bool:
+    def __contains__(self, name: object) -> bool:
         """Return True if a state with the given name exists in the container."""
-        return self.__getitem__(name) is not None
+        return isinstance(name, str) and name in self._index
 
-    def __getitem__(self, name: str) -> State | None:
-        """Return the State with the given name or None if missing."""
-        return next((state for state in self._states if state.name == name), None)
+    def __getitem__(self, name: str) -> State:
+        """Return the State with the given name or raise KeyError if missing."""
+        return self._index[name]
 
     def __setitem__(self, name: str, state: State) -> None:
         """Set or append a State identified by name."""
-        found = self.__getitem__(name)
-        if found is None:
-            self._states.append(state)
+        if state.name != name:
+            raise ValueError(f"State name {state.name!r} does not match key {name!r}")
+        if name in self._index:
+            idx = self._states.index(self._index[name])
+            self._states[idx] = state
         else:
-            self._states[self._states.index(found)] = state
+            self._states.append(state)
+        self._index[name] = state
 
     def __len__(self) -> int:
         """Return number of states in the container."""
         return len(self._states)
 
-    get = __getitem__
+    def get(self, name: str) -> State | None:
+        """Return the State with the given name or None if missing."""
+        return self._index.get(name)
 
     def select(self, names: list[str]) -> State | None:
         """Return the first State that exists and has a non-None value, or None."""
         for name in names:
-            if (state := self[name]) and state.value is not None:
+            state = self._index.get(name)
+            if state is not None and state.value is not None:
                 return state
         return None
 
@@ -672,25 +190,93 @@ class States:
         return self.select(names) is not None
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
+class CommandDefinition:
+    """Metadata for a single command definition (name and parameter count)."""
+
+    command_name: str
+    nparams: int
+
+
+@define(init=False)
+class CommandDefinitions:
+    """Container for command definitions providing convenient lookup by name."""
+
+    _commands: list[CommandDefinition]
+    _index: dict[str, CommandDefinition]
+
+    def __init__(self, commands: list[CommandDefinition] | None = None) -> None:
+        """Build the inner list and index from CommandDefinition objects."""
+        self._commands = list(commands) if commands else []
+        self._index = {cd.command_name: cd for cd in self._commands}
+
+    def __iter__(self) -> Iterator[CommandDefinition]:
+        """Iterate over defined commands."""
+        return self._commands.__iter__()
+
+    def __contains__(self, name: object) -> bool:
+        """Return True if a command with `name` exists."""
+        return isinstance(name, str) and name in self._index
+
+    def __getitem__(self, command: str) -> CommandDefinition:
+        """Return the command definition or raise KeyError if missing."""
+        return self._index[command]
+
+    def __len__(self) -> int:
+        """Return number of command definitions."""
+        return len(self._commands)
+
+    def get(self, command: str) -> CommandDefinition | None:
+        """Return the command definition or None if missing."""
+        return self._index.get(command)
+
+    def select(self, commands: list[str | OverkizCommand]) -> str | None:
+        """Return the first command name that exists in this definition, or None."""
+        return next(
+            (str(command) for command in commands if str(command) in self._index), None
+        )
+
+    def has_any(self, commands: list[str | OverkizCommand]) -> bool:
+        """Return True if any of the given commands exist in this definition."""
+        return self.select(commands) is not None
+
+
+@define(kw_only=True)
+class StateDefinition:
+    """Definition metadata for a state (qualified name, type and possible values)."""
+
+    qualified_name: str | None = None
+    name: str | None = field(default=None, init=True, repr=False, eq=False)
+    type: str | None = None
+    values: list[str] | None = None
+    event_based: bool | None = None
+
+    def __attrs_post_init__(self) -> None:
+        """Resolve qualified_name from either `name` or `qualified_name`."""
+        if self.qualified_name is None:
+            if self.name is not None:
+                self.qualified_name = self.name
+            else:
+                raise ValueError(
+                    "StateDefinition requires either `name` or `qualified_name`."
+                )
+
+
+@define(kw_only=True)
+class DataProperty:
+    """Data property with qualified name and value."""
+
+    qualified_name: str
+    value: str
+
+
+@define(kw_only=True)
 class Command:
     """Represents an OverKiz Command."""
 
-    type: int | None = None
     name: str | OverkizCommand
-    parameters: list[str | int | float | OverkizCommandParam] | None
-
-    def __init__(
-        self,
-        name: str | OverkizCommand,
-        parameters: list[str | int | float | OverkizCommandParam] | None = None,
-        type: int | None = None,
-        **_: Any,
-    ):
-        """Initialize a command instance and mirror fields into dict base class."""
-        self.name = name
-        self.parameters = parameters
-        self.type = type
+    parameters: list[str | int | float | OverkizCommandParam] | None = None
+    type: int | None = None
 
     def to_payload(self) -> dict[str, object]:
         """Return a JSON-serializable payload for this command.
@@ -712,132 +298,190 @@ class Command:
         return payload
 
 
-@define(init=False, kw_only=True)
-class Event:
-    """Represents an Overkiz event containing metadata and device states."""
+# ---------------------------------------------------------------------------
+# Device & definition
+# ---------------------------------------------------------------------------
 
-    name: EventName
-    timestamp: int | None
-    setupoid: str | None = field(repr=obfuscate_id, default=None)
-    owner_key: str | None = field(repr=obfuscate_id, default=None)
-    type: int | None = None
-    sub_type: int | None = None
-    time_to_next_state: int | None = None
-    failed_commands: list[dict[str, Any]] | None = None
-    failure_type_code: FailureType | None = None
-    failure_type: str | None = None
-    condition_groupoid: str | None = None
+
+@define(kw_only=True)
+class Definition:
+    """Definition of device capabilities: command definitions, state definitions and UI hints."""
+
+    commands: CommandDefinitions = field(factory=CommandDefinitions)
+    states: list[StateDefinition] = field(factory=list)
+    data_properties: list[DataProperty] = field(factory=list)
+    widget_name: str | None = None
+    ui_class: str | None = None
+    qualified_name: str | None = None
+    ui_profiles: list[str] | None = None
+    ui_classifiers: list[str] | None = None
+    type: str | None = None
+    attributes: list[dict[str, Any]] | None = None
+
+    def get_state_definition(self, states: list[str]) -> StateDefinition | None:
+        """Return the first StateDefinition whose `qualified_name` matches, or None."""
+        states_set = set(states)
+        for state_def in self.states:
+            if state_def.qualified_name in states_set:
+                return state_def
+        return None
+
+    def has_state_definition(self, states: list[str]) -> bool:
+        """Return True if any of the given state definitions exist."""
+        return self.get_state_definition(states) is not None
+
+
+# <protocol>://<gatewayId>/<deviceAddress>[#<subsystemId>]
+DEVICE_URL_RE = re.compile(
+    r"(?P<protocol>[^:]+)://(?P<gatewayId>[^/]+)/(?P<deviceAddress>[^#]+)(#(?P<subsystemId>\d+))?"
+)
+
+
+@define(kw_only=True)
+class DeviceIdentifier:
+    """Parsed components from a device URL."""
+
+    protocol: Protocol
+    gateway_id: str = field(repr=obfuscate_id)
+    device_address: str = field(repr=obfuscate_id)
+    subsystem_id: int | None = None
+    base_device_url: str = field(repr=obfuscate_id, init=False)
+
+    def __attrs_post_init__(self) -> None:
+        """Compute base_device_url from protocol, gateway_id and device_address."""
+        self.base_device_url = (
+            f"{self.protocol}://{self.gateway_id}/{self.device_address}"
+        )
+
+    @property
+    def is_sub_device(self) -> bool:
+        """Return True if this identifier represents a sub-device (subsystem_id > 1)."""
+        return self.subsystem_id is not None and self.subsystem_id > 1
+
+    @classmethod
+    def from_device_url(cls, device_url: str) -> DeviceIdentifier:
+        """Parse a device URL into its structured identifier components."""
+        match = DEVICE_URL_RE.fullmatch(device_url)
+        if not match:
+            raise ValueError(f"Invalid device URL: {device_url}")
+
+        subsystem_id = (
+            int(match.group("subsystemId")) if match.group("subsystemId") else None
+        )
+
+        return cls(
+            protocol=Protocol(match.group("protocol")),
+            gateway_id=match.group("gatewayId"),
+            device_address=match.group("deviceAddress"),
+            subsystem_id=subsystem_id,
+        )
+
+
+@define(kw_only=True)
+class Device:
+    """Representation of a device in the setup including parsed fields and states."""
+
+    attributes: States = field(factory=States)
+    available: bool
+    enabled: bool
+    label: str = field(repr=obfuscate_string)
+    device_url: str = field(repr=obfuscate_id)
+    controllable_name: str
+    definition: Definition | None = None
+    states: States = field(factory=States)
+    type: ProductType
+    ui_class: UIClass = field(default=None)  # type: ignore[assignment]
+    widget: UIWidget = field(default=None)  # type: ignore[assignment]
+    identifier: DeviceIdentifier = field(init=False, repr=False)
+    oid: str | None = field(repr=obfuscate_id, default=None)
     place_oid: str | None = None
-    label: str | None = None
-    metadata: Any | None = None
-    camera_id: str | None = None
-    deleted_raw_devices_count: Any | None = None
-    protocol_type: Any | None = None
-    gateway_id: str | None = field(repr=obfuscate_id, default=None)
-    exec_id: str | None = None
-    device_url: str | None = field(repr=obfuscate_id, default=None)
-    device_states: list[EventState]
-    old_state: ExecutionState | None = None
-    new_state: ExecutionState | None = None
+    creation_time: int | None = None
+    last_update_time: int | None = None
+    shortcut: bool | None = None
+    metadata: str | None = None
+    synced: bool | None = None
+    subsystem_id: int | None = None
 
-    def __init__(
-        self,
-        name: EventName,
-        timestamp: int | None = None,
-        setupoid: str | None = field(repr=obfuscate_id, default=None),
-        owner_key: str | None = None,
-        type: int | None = None,
-        sub_type: int | None = None,
-        time_to_next_state: int | None = None,
-        failed_commands: list[dict[str, Any]] | None = None,
-        failure_type_code: FailureType | None = None,
-        failure_type: str | None = None,
-        condition_groupoid: str | None = None,
-        place_oid: str | None = None,
-        label: str | None = None,
-        metadata: Any | None = None,
-        camera_id: str | None = None,
-        deleted_raw_devices_count: Any | None = None,
-        protocol_type: Any | None = None,
-        gateway_id: str | None = None,
-        exec_id: str | None = None,
-        device_url: str | None = None,
-        device_states: list[dict[str, Any]] | None = None,
-        old_state: ExecutionState | None = None,
-        new_state: ExecutionState | None = None,
-        **_: Any,
-    ):
-        """Initialize Event from raw Overkiz payload fields."""
-        self.timestamp = timestamp
-        self.gateway_id = gateway_id
-        self.exec_id = exec_id
-        self.device_url = device_url
-        self.device_states = (
-            [EventState(**s) for s in device_states] if device_states else []
-        )
-        self.old_state = ExecutionState(old_state) if old_state else None
-        self.new_state = ExecutionState(new_state) if new_state else None
-        self.setupoid = setupoid
-        self.owner_key = owner_key
-        self.type = type
-        self.sub_type = sub_type
-        self.time_to_next_state = time_to_next_state
-        self.failed_commands = failed_commands
+    def __attrs_post_init__(self) -> None:
+        """Resolve computed fields from device URL and definition fallbacks."""
+        self.identifier = DeviceIdentifier.from_device_url(self.device_url)
 
-        self.failure_type = failure_type
-        self.condition_groupoid = condition_groupoid
-        self.place_oid = place_oid
-        self.label = label
-        self.metadata = metadata
-        self.camera_id = camera_id
-        self.deleted_raw_devices_count = deleted_raw_devices_count
-        self.protocol_type = protocol_type
-        self.name = EventName(name)
-        self.failure_type_code = (
-            None if failure_type_code is None else FailureType(failure_type_code)
+        if self.definition:
+            if self.ui_class is None and self.definition.ui_class:
+                self.ui_class = UIClass(self.definition.ui_class)
+
+            if self.widget is None and self.definition.widget_name:
+                self.widget = UIWidget(self.definition.widget_name)
+
+        if self.ui_class is None or self.widget is None:
+            raise ValueError(f"Device {self.device_url} is missing ui_class or widget")
+
+    def supports_command(self, command: str | OverkizCommand) -> bool:
+        """Check if device supports a command."""
+        return self.definition is not None and str(command) in self.definition.commands
+
+    def supports_any_command(self, commands: list[str | OverkizCommand]) -> bool:
+        """Check if device supports any of the commands."""
+        return self.definition is not None and self.definition.commands.has_any(
+            commands
         )
 
+    def select_first_command(self, commands: list[str | OverkizCommand]) -> str | None:
+        """Return first supported command name from list, or None."""
+        if self.definition is None:
+            return None
+        return self.definition.commands.select(commands)
 
-@define(init=False, kw_only=True)
-class Execution:
-    """Execution occurrence with owner, state and action group metadata."""
+    def get_state_value(self, state: str) -> StateType | None:
+        """Get value of a single state, or None if not found or None."""
+        return self.states.select_value([state])
 
-    id: str
-    description: str
-    owner: str = field(repr=obfuscate_email)
-    state: str
-    action_group: ActionGroup
+    def select_first_state_value(self, states: list[str]) -> StateType | None:
+        """Return value of first state with non-None value from list, or None."""
+        return self.states.select_value(states)
 
-    def __init__(
-        self,
-        id: str,
-        description: str,
-        owner: str,
-        state: str,
-        action_group: dict[str, Any],
-        **_: Any,
-    ):
-        """Initialize Execution object from API fields."""
-        self.id = id
-        self.description = description
-        self.owner = owner
-        self.state = state
-        self.action_group = ActionGroup(**action_group)
+    def has_state_value(self, state: str) -> bool:
+        """Check if a state exists with a non-None value."""
+        return self.states.has_any([state])
+
+    def has_any_state_value(self, states: list[str]) -> bool:
+        """Check if any of the states exist with non-None values."""
+        return self.states.has_any(states)
+
+    def get_state_definition(self, state: str) -> StateDefinition | None:
+        """Get StateDefinition for a single state name, or None."""
+        if self.definition is None:
+            return None
+        return self.definition.get_state_definition([state])
+
+    def select_first_state_definition(
+        self, states: list[str]
+    ) -> StateDefinition | None:
+        """Return first matching StateDefinition from list, or None."""
+        if self.definition is None:
+            return None
+        return self.definition.get_state_definition(states)
+
+    def get_attribute_value(self, attribute: str) -> StateType | None:
+        """Get value of a single attribute, or None if not found or None."""
+        return self.attributes.select_value([attribute])
+
+    def select_first_attribute_value(self, attributes: list[str]) -> StateType | None:
+        """Return value of first attribute with non-None value from list, or None."""
+        return self.attributes.select_value(attributes)
 
 
-@define(init=False, kw_only=True)
+# ---------------------------------------------------------------------------
+# Execution & action groups
+# ---------------------------------------------------------------------------
+
+
+@define(kw_only=True)
 class Action:
     """An action consists of multiple commands related to a single device, identified by its device URL."""
 
-    device_url: str
-    commands: list[Command]
-
-    def __init__(self, device_url: str, commands: list[dict[str, Any] | Command]):
-        """Initialize Action from API data and convert nested commands."""
-        self.device_url = device_url
-        self.commands = [
-            c if isinstance(c, Command) else Command(**c) for c in commands
-        ]
+    device_url: str = field(repr=obfuscate_id)
+    commands: list[Command] = field(factory=list)
 
     def to_payload(self) -> dict[str, object]:
         """Return a JSON-serializable payload for this action (snake_case).
@@ -850,7 +494,7 @@ class Action:
         }
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class ActionGroup:
     """An action group is composed of one or more actions.
 
@@ -858,140 +502,76 @@ class ActionGroup:
     is composed of one or more commands to be executed on that device.
     """
 
-    id: str = field(repr=obfuscate_id)
+    actions: list[Action] = field(factory=list)
     creation_time: int | None = None
     last_update_time: int | None = None
-    label: str = field(repr=obfuscate_string)
+    label: str = field(repr=obfuscate_string, default="")
     metadata: str | None = None
     shortcut: bool | None = None
     notification_type_mask: int | None = None
     notification_condition: str | None = None
     notification_text: str | None = None
     notification_title: str | None = None
-    actions: list[Action]
-    oid: str = field(repr=obfuscate_id)
+    oid: str | None = field(repr=obfuscate_id, default=None)
 
-    def __init__(
-        self,
-        actions: list[dict[str, Any]],
-        creation_time: int | None = None,
-        metadata: str | None = None,
-        oid: str | None = None,
-        id: str | None = None,
-        last_update_time: int | None = None,
-        label: str | None = None,
-        shortcut: bool | None = None,
-        notification_type_mask: int | None = None,
-        notification_condition: str | None = None,
-        notification_text: str | None = None,
-        notification_title: str | None = None,
-        **_: Any,
-    ) -> None:
-        """Initialize ActionGroup from API data and convert nested actions."""
-        if oid is None and id is None:
-            raise ValueError("Either 'oid' or 'id' must be provided")
+    def __attrs_post_init__(self) -> None:
+        """Default label to empty string when None."""
+        if self.label is None:
+            self.label = ""
 
-        self.id = cast(str, oid or id)
-        self.creation_time = creation_time
-        self.last_update_time = last_update_time
-        self.label = (
-            label or ""
-        )  # for backwards compatibility we set label to empty string if None
-        self.metadata = metadata
-        self.shortcut = shortcut
-        self.notification_type_mask = notification_type_mask
-        self.notification_condition = notification_condition
-        self.notification_text = notification_text
-        self.notification_title = notification_title
-        self.actions = [Action(**action) for action in actions]
-        self.oid = cast(str, oid or id)
+    @property
+    def id(self) -> str | None:
+        """Alias for oid."""
+        return self.oid
 
 
-@define(init=False, kw_only=True)
-class Partner:
-    """Partner details for a gateway or service provider."""
+@define(kw_only=True)
+class Event:
+    """Represents an Overkiz event containing metadata and device states."""
 
-    activated: bool
-    name: str
-    id: str = field(repr=obfuscate_id)
-    status: str
-
-    def __init__(self, activated: bool, name: str, id: str, status: str, **_: Any):
-        """Initialize Partner information."""
-        self.activated = activated
-        self.name = name
-        self.id = id
-        self.status = status
-
-
-@define(init=False, kw_only=True)
-class Connectivity:
-    """Connectivity metadata for a gateway update box."""
-
-    status: str
-    protocol_version: str
-
-    def __init__(self, status: str, protocol_version: str, **_: Any):
-        """Initialize Connectivity information."""
-        self.status = status
-        self.protocol_version = protocol_version
-
-
-@define(init=False, kw_only=True)
-class Gateway:
-    """Representation of a gateway, including connectivity and partner info."""
-
-    partners: list[Partner]
-    functions: str | None = None
-    sub_type: GatewaySubType | None = None
-    id: str = field(repr=obfuscate_id)
-    gateway_id: str = field(repr=obfuscate_id)
-    alive: bool | None = None
-    mode: str | None = None
+    name: EventName
+    timestamp: int | None = None
+    setup_oid: str | None = field(repr=obfuscate_id, default=None)
+    owner_key: str | None = field(repr=obfuscate_id, default=None)
+    type: int | None = None
+    sub_type: int | None = None
+    time_to_next_state: int | None = None
+    failed_commands: list[dict[str, Any]] | None = None
+    failure_type_code: FailureType | None = None
+    failure_type: str | None = None
+    condition_groupoid: str | None = None
     place_oid: str | None = None
-    time_reliable: bool | None = None
-    connectivity: Connectivity
-    up_to_date: bool | None = None
-    update_status: UpdateBoxStatus | None = None
-    sync_in_progress: bool | None = None
-    type: GatewayType | None = None
-
-    def __init__(
-        self,
-        *,
-        partners: list[dict[str, Any]] | None = None,
-        functions: str | None = None,
-        sub_type: GatewaySubType | None = None,
-        gateway_id: str,
-        alive: bool | None = None,
-        mode: str | None = None,
-        place_oid: str | None = None,
-        time_reliable: bool | None = None,
-        connectivity: dict[str, Any],
-        up_to_date: bool | None = None,
-        update_status: UpdateBoxStatus | None = None,
-        sync_in_progress: bool | None = None,
-        type: GatewayType | None = None,
-        **_: Any,
-    ) -> None:
-        """Initialize Gateway from API data and child objects."""
-        self.id = gateway_id
-        self.gateway_id = gateway_id
-        self.functions = functions
-        self.alive = alive
-        self.mode = mode
-        self.place_oid = place_oid
-        self.time_reliable = time_reliable
-        self.connectivity = Connectivity(**connectivity)
-        self.up_to_date = up_to_date
-        self.update_status = UpdateBoxStatus(update_status) if update_status else None
-        self.sync_in_progress = sync_in_progress
-        self.partners = [Partner(**p) for p in partners] if partners else []
-        self.type = GatewayType(type) if type else None
-        self.sub_type = GatewaySubType(sub_type) if sub_type else None
+    label: str | None = None
+    metadata: str | None = None
+    camera_id: str | None = None
+    deleted_raw_devices_count: int | None = None
+    protocol_type: int | None = None
+    gateway_id: str | None = field(repr=obfuscate_id, default=None)
+    exec_id: str | None = None
+    device_url: str | None = field(repr=obfuscate_id, default=None)
+    device_states: list[EventState] = field(factory=list)
+    old_state: ExecutionState | None = None
+    new_state: ExecutionState | None = None
+    actions: list[Action] | None = None
+    owner: str | None = field(repr=obfuscate_email, default=None)
+    source: str | None = None
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
+class Execution:
+    """Execution occurrence with owner, state and action group metadata."""
+
+    id: str
+    description: str
+    owner: str = field(repr=obfuscate_email)
+    state: str
+    action_group: ActionGroup | None = None
+    start_time: int | None = None
+    execution_type: ExecutionType | None = None
+    execution_sub_type: ExecutionSubType | None = None
+
+
+@define(kw_only=True)
 class HistoryExecutionCommand:
     """A command within a recorded historical execution, including its status and parameters."""
 
@@ -1003,28 +583,8 @@ class HistoryExecutionCommand:
     failure_type: str
     parameters: list[Any] | None = None
 
-    def __init__(
-        self,
-        device_url: str,
-        command: str,
-        rank: int,
-        dynamic: bool,
-        state: ExecutionState,
-        failure_type: str,
-        parameters: list[Any] | None = None,
-        **_: Any,
-    ) -> None:
-        """Initialize HistoryExecutionCommand from API fields."""
-        self.device_url = device_url
-        self.command = command
-        self.parameters = parameters
-        self.rank = rank
-        self.dynamic = dynamic
-        self.state = ExecutionState(state)
-        self.failure_type = failure_type
 
-
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class HistoryExecution:
     """A recorded execution entry containing details and its list of commands."""
 
@@ -1039,83 +599,59 @@ class HistoryExecution:
     type: str
     state: ExecutionState
     failure_type: str
-    commands: list[HistoryExecutionCommand]
+    commands: list[HistoryExecutionCommand] = field(factory=list)
     execution_type: ExecutionType
     execution_sub_type: ExecutionSubType
 
-    def __init__(
-        self,
-        *,
-        id: str,
-        event_time: int,
-        owner: str,
-        source: str,
-        end_time: int | None = None,
-        effective_start_time: int | None = None,
-        duration: int,
-        label: str | None = None,
-        type: str,
-        state: ExecutionState,
-        failure_type: str,
-        commands: list[dict[str, Any]],
-        execution_type: ExecutionType,
-        execution_sub_type: ExecutionSubType,
-        **_: Any,
-    ) -> None:
-        """Initialize HistoryExecution and convert nested command structures."""
-        self.id = id
-        self.event_time = event_time
-        self.owner = owner
-        self.source = source
-        self.end_time = end_time
-        self.effective_start_time = effective_start_time
-        self.duration = duration
-        self.label = label
-        self.type = type
-        self.state = ExecutionState(state)
-        self.failure_type = failure_type
-        self.commands = [HistoryExecutionCommand(**hec) for hec in commands]
-        self.execution_type = ExecutionType(execution_type)
-        self.execution_sub_type = ExecutionSubType(execution_sub_type)
+
+# ---------------------------------------------------------------------------
+# Infrastructure: gateways, places, zones
+# ---------------------------------------------------------------------------
 
 
-@define(init=False, kw_only=True)
-class Place:
-    """Hierarchical representation of a location (house, room, area) in a setup.
+@define(kw_only=True)
+class Partner:
+    """Partner details for a gateway or service provider."""
 
-    Places form a tree structure where the root place is typically the entire house
-    or property, and `sub_places` contains nested child locations. This recursive
-    structure allows navigation from house -> floors/rooms -> individual areas.
-    Each place has associated metadata like creation time, label, and type identifier.
-    """
+    activated: bool
+    name: str
+    id: str = field(repr=obfuscate_id)
+    status: str
 
-    creation_time: int
-    last_update_time: int | None = None
-    label: str
-    type: int
-    id: str
-    oid: str
-    sub_places: list[Place]
 
-    def __init__(
-        self,
-        *,
-        creation_time: int,
-        last_update_time: int | None = None,
-        label: str,
-        type: int,
-        oid: str,
-        sub_places: list[Any] | None,
-        **_: Any,
-    ) -> None:
-        """Initialize Place from API data and convert nested sub-places."""
-        self.id = oid
-        self.creation_time = creation_time
-        self.last_update_time = last_update_time
-        self.label = label
-        self.type = type
-        self.oid = oid
-        self.sub_places = [Place(**p) for p in sub_places] if sub_places else []
+@define(kw_only=True)
+class Connectivity:
+    """Connectivity metadata for a gateway update box."""
+
+    status: str
+    protocol_version: str
+
+
+@define(kw_only=True)
+class Gateway:
+    """Representation of a gateway, including connectivity and partner info."""
+
+    gateway_id: str = field(repr=obfuscate_id)
+    connectivity: Connectivity | None = None
+    partners: list[Partner] = field(factory=list)
+    functions: str | None = None
+    sub_type: GatewaySubType | None = None
+    alive: bool | None = None
+    mode: str | None = None
+    place_oid: str | None = None
+    time_reliable: bool | None = None
+    up_to_date: bool | None = None
+    update_status: UpdateBoxStatus | None = None
+    sync_in_progress: bool | None = None
+    type: GatewayType | None = None
+    auto_update_enabled: bool | None = None
+    update_criticity_level: UpdateCriticityLevel | None = None
+    automatic_update: bool | None = None
+
+    @property
+    def id(self) -> str:
+        """Alias for gateway_id."""
+        return self.gateway_id
 
 
 @define(kw_only=True)
@@ -1135,7 +671,7 @@ class ZoneItem:
     device_url: str
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class Zone:
     """A Zone groups related devices inside a place."""
 
@@ -1143,66 +679,58 @@ class Zone:
     last_update_time: int
     label: str
     type: int
-    items: list[ZoneItem] | None
-    external_oid: str | None
-    metadata: str | None
+    items: list[ZoneItem] = field(factory=list)
+    external_oid: str | None = None
+    metadata: str | None = None
+    oid: str = ""
+
+
+@define(kw_only=True)
+class Place:
+    """Hierarchical representation of a location (house, room, area) in a setup."""
+
+    creation_time: int
+    last_update_time: int | None = None
+    label: str
+    type: int
     oid: str
+    sub_places: list[Place] = field(factory=list)
 
-    def __init__(
-        self,
-        *,
-        creation_time: int,
-        last_update_time: int,
-        label: str,
-        type: int,
-        items: list[dict[str, Any]] | None,
-        external_oid: str | None = None,
-        metadata: str | None = None,
-        oid: str,
-        **_: Any,
-    ) -> None:
-        """Initialize Zone from API data and convert nested items."""
-        self.creation_time = creation_time
-        self.last_update_time = last_update_time
-        self.label = label
-        self.type = type
-        self.items = [ZoneItem(**z) for z in items] if items else []
-        self.external_oid = external_oid
-        self.metadata = metadata
-        self.oid = oid
+    @property
+    def id(self) -> str:
+        """Alias for oid."""
+        return self.oid
 
 
-@define(init=False, kw_only=True)
-class ServerConfig:
-    """Connection target details for an Overkiz-compatible server."""
+@define(kw_only=True)
+class Location:
+    """Geographical and address metadata for a Setup."""
 
-    server: Server | None
-    name: str
-    endpoint: str
-    manufacturer: str
-    type: APIType
-    configuration_url: str | None = None
+    creation_time: int
+    last_update_time: int | None = None
+    city: str | None = field(repr=obfuscate_string, default=None)
+    country: str | None = field(repr=obfuscate_string, default=None)
+    postal_code: str | None = field(repr=obfuscate_string, default=None)
+    address_line1: str | None = field(repr=obfuscate_string, default=None)
+    address_line2: str | None = field(repr=obfuscate_string, default=None)
+    timezone: str = ""
+    longitude: str | None = field(repr=obfuscate_string, default=None)
+    latitude: str | None = field(repr=obfuscate_string, default=None)
+    twilight_mode: int = 0
+    twilight_angle: str = ""
+    twilight_city: str | None = None
+    summer_solstice_dusk_minutes: str = ""
+    winter_solstice_dusk_minutes: str = ""
+    twilight_offset_enabled: bool = False
+    dawn_offset: int = 0
+    dusk_offset: int = 0
+    country_code: str | None = field(repr=obfuscate_string, default=None)
+    tariff_settings: dict[str, Any] | None = None
 
-    def __init__(
-        self,
-        *,
-        server: Server | str | None = None,
-        name: str,
-        endpoint: str,
-        manufacturer: str,
-        api_type: str | APIType,
-        configuration_url: str | None = None,
-        **_: Any,
-    ) -> None:
-        """Initialize ServerConfig and convert enum fields."""
-        self.server = (
-            server if isinstance(server, Server) or server is None else Server(server)
-        )
-        self.name = name
-        self.endpoint = endpoint
-        self.manufacturer = manufacturer
-        self.type = api_type if isinstance(api_type, APIType) else APIType(api_type)
-        self.configuration_url = configuration_url
+
+# ---------------------------------------------------------------------------
+# Configuration & options
+# ---------------------------------------------------------------------------
 
 
 @define(kw_only=True)
@@ -1213,7 +741,7 @@ class OptionParameter:
     value: str
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class Option:
     """A subscribed option for a setup including parameters."""
 
@@ -1221,29 +749,22 @@ class Option:
     last_update_time: int
     option_id: str
     start_date: int
-    parameters: list[OptionParameter] | None
-
-    def __init__(
-        self,
-        *,
-        creation_time: int,
-        last_update_time: int,
-        option_id: str,
-        start_date: int,
-        parameters: list[dict[str, Any]] | None,
-        **_: Any,
-    ) -> None:
-        """Initialize Option from API data and convert nested parameters."""
-        self.creation_time = creation_time
-        self.last_update_time = last_update_time
-        self.option_id = option_id
-        self.start_date = start_date
-        self.parameters = (
-            [OptionParameter(**p) for p in parameters] if parameters else []
-        )
+    parameters: list[OptionParameter] = field(factory=list)
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
+class ServerConfig:
+    """Connection target details for an Overkiz-compatible server."""
+
+    server: Server | None = None
+    name: str
+    endpoint: str
+    manufacturer: str
+    api_type: APIType
+    configuration_url: str | None = None
+
+
+@define(kw_only=True)
 class ProtocolType:
     """Protocol type definition from the reference API."""
 
@@ -1252,15 +773,13 @@ class ProtocolType:
     name: str
     label: str
 
-    def __init__(self, id: int, prefix: str, name: str, label: str, **_: Any):
-        """Initialize ProtocolType from API data."""
-        self.id = id
-        self.prefix = prefix
-        self.name = name
-        self.label = label
+
+# ---------------------------------------------------------------------------
+# UI profile definitions (reference API)
+# ---------------------------------------------------------------------------
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class ValuePrototype:
     """Value prototype defining parameter/state value constraints."""
 
@@ -1270,62 +789,24 @@ class ValuePrototype:
     enum_values: list[str] | None = None
     description: str | None = None
 
-    def __init__(
-        self,
-        type: str,
-        min_value: int | float | None = None,
-        max_value: int | float | None = None,
-        enum_values: list[str] | None = None,
-        description: str | None = None,
-        **_: Any,
-    ):
-        """Initialize ValuePrototype from API data."""
-        self.type = type
-        self.min_value = min_value
-        self.max_value = max_value
-        self.enum_values = enum_values
-        self.description = description
 
-
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class CommandParameter:
     """Command parameter definition."""
 
     optional: bool
     sensitive: bool
-    value_prototypes: list[ValuePrototype]
-
-    def __init__(
-        self,
-        optional: bool,
-        sensitive: bool,
-        value_prototypes: list[dict] | None = None,
-        **_: Any,
-    ):
-        """Initialize CommandParameter from API data."""
-        self.optional = optional
-        self.sensitive = sensitive
-        self.value_prototypes = (
-            [ValuePrototype(**vp) for vp in value_prototypes]
-            if value_prototypes
-            else []
-        )
+    value_prototypes: list[ValuePrototype] = field(factory=list)
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class CommandPrototype:
     """Command prototype defining parameters."""
 
-    parameters: list[CommandParameter]
-
-    def __init__(self, parameters: list[dict] | None = None, **_: Any):
-        """Initialize CommandPrototype from API data."""
-        self.parameters = (
-            [CommandParameter(**p) for p in parameters] if parameters else []
-        )
+    parameters: list[CommandParameter] = field(factory=list)
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class UIProfileCommand:
     """UI profile command definition."""
 
@@ -1333,35 +814,15 @@ class UIProfileCommand:
     prototype: CommandPrototype | None = None
     description: str | None = None
 
-    def __init__(
-        self,
-        name: str,
-        prototype: dict | None = None,
-        description: str | None = None,
-        **_: Any,
-    ):
-        """Initialize UIProfileCommand from API data."""
-        self.name = name
-        self.prototype = CommandPrototype(**prototype) if prototype else None
-        self.description = description
 
-
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class StatePrototype:
     """State prototype defining value constraints."""
 
-    value_prototypes: list[ValuePrototype]
-
-    def __init__(self, value_prototypes: list[dict] | None = None, **_: Any):
-        """Initialize StatePrototype from API data."""
-        self.value_prototypes = (
-            [ValuePrototype(**vp) for vp in value_prototypes]
-            if value_prototypes
-            else []
-        )
+    value_prototypes: list[ValuePrototype] = field(factory=list)
 
 
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class UIProfileState:
     """UI profile state definition."""
 
@@ -1369,20 +830,8 @@ class UIProfileState:
     prototype: StatePrototype | None = None
     description: str | None = None
 
-    def __init__(
-        self,
-        name: str,
-        prototype: dict | None = None,
-        description: str | None = None,
-        **_: Any,
-    ):
-        """Initialize UIProfileState from API data."""
-        self.name = name
-        self.prototype = StatePrototype(**prototype) if prototype else None
-        self.description = description
 
-
-@define(init=False, kw_only=True)
+@define(kw_only=True)
 class UIProfileDefinition:
     """UI profile definition from the reference API.
 
@@ -1390,22 +839,38 @@ class UIProfileDefinition:
     """
 
     name: str
-    commands: list[UIProfileCommand]
-    states: list[UIProfileState]
-    form_factor: bool
+    commands: list[UIProfileCommand] = field(factory=list)
+    states: list[UIProfileState] = field(factory=list)
+    form_factor: bool = False
 
-    def __init__(
-        self,
-        name: str,
-        commands: list[dict] | None = None,
-        states: list[dict] | None = None,
-        form_factor: bool = False,
-        **_: Any,
-    ):
-        """Initialize UIProfileDefinition from API data."""
-        self.name = name
-        self.commands = (
-            [UIProfileCommand(**cmd) for cmd in commands] if commands else []
-        )
-        self.states = [UIProfileState(**s) for s in states] if states else []
-        self.form_factor = form_factor
+
+@define(kw_only=True)
+class FirmwareStatus:
+    """Firmware status of a device."""
+
+    up_to_date: bool
+    notes: list[dict[str, str]]
+
+
+# ---------------------------------------------------------------------------
+# Setup (root model — references most other models)
+# ---------------------------------------------------------------------------
+
+
+@define(kw_only=True)
+class Setup:
+    """Representation of a complete setup returned by the Overkiz API."""
+
+    creation_time: int | None = None
+    last_update_time: int | None = None
+    id: str | None = field(repr=obfuscate_id, default=None)
+    location: Location | None = None
+    gateways: list[Gateway] = field(factory=list)
+    devices: list[Device] = field(factory=list)
+    zones: list[Zone] | None = None
+    reseller_delegation_type: str | None = None
+    oid: str | None = None
+    root_place: Place | None = None
+    features: list[Feature] | None = None
+    disconnection_configuration: dict[str, Any] | None = None
+    metadata: str | None = None

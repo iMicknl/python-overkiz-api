@@ -5,31 +5,35 @@ from __future__ import annotations
 import logging
 import ssl
 import urllib.parse
+from http import HTTPStatus
 from pathlib import Path
 from types import TracebackType
-from typing import Any, cast
+from typing import Any, Self, cast
 
 import backoff
-import humps
 from aiohttp import (
     ClientConnectorError,
+    ClientResponse,
     ClientSession,
     ServerDisconnectedError,
 )
 from backoff.types import Details
 
+from pyoverkiz._case import decamelize
 from pyoverkiz.action_queue import ActionQueue, ActionQueueSettings
 from pyoverkiz.auth import AuthStrategy, Credentials, build_auth_strategy
 from pyoverkiz.const import SUPPORTED_SERVERS
-from pyoverkiz.enums import APIType, CommandMode, Server
+from pyoverkiz.converter import converter
+from pyoverkiz.enums import APIType, ExecutionMode, Server
 from pyoverkiz.exceptions import (
-    ExecutionQueueFullException,
-    InvalidEventListenerIdException,
-    NoRegisteredEventListenerException,
-    NotAuthenticatedException,
-    OverkizException,
-    TooManyConcurrentRequestsException,
-    TooManyExecutionsException,
+    ExecutionQueueFullError,
+    InvalidEventListenerIdError,
+    NoRegisteredEventListenerError,
+    NotAuthenticatedError,
+    OverkizError,
+    TooManyConcurrentRequestsError,
+    TooManyExecutionsError,
+    UnsupportedOperationError,
 )
 from pyoverkiz.models import (
     Action,
@@ -37,6 +41,7 @@ from pyoverkiz.models import (
     Device,
     Event,
     Execution,
+    FirmwareStatus,
     Gateway,
     HistoryExecution,
     Option,
@@ -74,7 +79,7 @@ async def refresh_listener(invocation: Details) -> None:
 # Reusable backoff decorators with max_tries and max_time to cap total retry duration.
 retry_on_auth_error = backoff.on_exception(
     backoff.expo,
-    (NotAuthenticatedException, ServerDisconnectedError),
+    (NotAuthenticatedError, ServerDisconnectedError),
     max_tries=2,
     max_time=60,  # safety net for hung requests
     jitter=backoff.full_jitter,
@@ -93,7 +98,7 @@ retry_on_connection_failure = backoff.on_exception(
 
 retry_on_concurrent_requests = backoff.on_exception(
     backoff.expo,
-    TooManyConcurrentRequestsException,
+    TooManyConcurrentRequestsError,
     max_tries=5,
     max_time=120,
     jitter=backoff.full_jitter,
@@ -102,7 +107,7 @@ retry_on_concurrent_requests = backoff.on_exception(
 
 retry_on_too_many_executions = backoff.on_exception(
     backoff.expo,
-    TooManyExecutionsException,
+    TooManyExecutionsError,
     max_tries=5,
     max_time=300,
     jitter=backoff.full_jitter,
@@ -111,7 +116,7 @@ retry_on_too_many_executions = backoff.on_exception(
 
 retry_on_listener_error = backoff.on_exception(
     backoff.expo,
-    (InvalidEventListenerIdException, NoRegisteredEventListenerException),
+    (InvalidEventListenerIdError, NoRegisteredEventListenerError),
     max_tries=2,
     max_time=30,
     jitter=backoff.full_jitter,
@@ -121,7 +126,7 @@ retry_on_listener_error = backoff.on_exception(
 
 retry_on_execution_queue_full = backoff.on_exception(
     backoff.expo,
-    ExecutionQueueFullException,
+    ExecutionQueueFullError,
     max_tries=5,
     max_time=120,
     jitter=backoff.full_jitter,
@@ -191,14 +196,12 @@ class OverkizClient:
         self.gateways: list[Gateway] = []
         self.event_listener_id: str | None = None
 
-        self.session = (
-            session
-            if session
-            else ClientSession(headers={"User-Agent": "python-overkiz-api"})
+        self.session = session or ClientSession(
+            headers={"User-Agent": "python-overkiz-api"}
         )
         self._ssl = verify_ssl
 
-        if self.server_config.type == APIType.LOCAL and verify_ssl:
+        if self.server_config.api_type == APIType.LOCAL and verify_ssl:
             # Use the prebuilt SSL context with disabled strict validation for local API.
             self._ssl = SSL_CONTEXT_LOCAL_API
 
@@ -229,7 +232,7 @@ class OverkizClient:
             ssl_context=self._ssl,
         )
 
-    async def __aenter__(self) -> OverkizClient:
+    async def __aenter__(self) -> Self:
         """Enter async context manager and return the client instance."""
         return self
 
@@ -253,7 +256,7 @@ class OverkizClient:
         try:
             return SUPPORTED_SERVERS[server_key]
         except KeyError as error:
-            raise OverkizException(
+            raise OverkizError(
                 f"Unknown server '{server_key}'. Provide a supported server key or ServerConfig instance."
             ) from error
 
@@ -279,7 +282,7 @@ class OverkizClient:
         """
         await self._auth.login()
 
-        if self.server_config.type == APIType.LOCAL:
+        if self.server_config.api_type == APIType.LOCAL:
             if register_event_listener:
                 await self.register_event_listener()
             else:
@@ -316,7 +319,7 @@ class OverkizClient:
 
         response = await self._get("setup")
 
-        setup = Setup(**humps.decamelize(response))
+        setup = converter.structure(decamelize(response), Setup)
 
         # Cache response
         self.setup = setup
@@ -354,7 +357,7 @@ class OverkizClient:
             return self.devices
 
         response = await self._get("setup/devices")
-        devices = [Device(**d) for d in humps.decamelize(response)]
+        devices = converter.structure(decamelize(response), list[Device])
 
         # Cache response
         self.devices = devices
@@ -373,7 +376,7 @@ class OverkizClient:
             return self.gateways
 
         response = await self._get("setup/gateways")
-        gateways = [Gateway(**g) for g in humps.decamelize(response)]
+        gateways = converter.structure(decamelize(response), list[Gateway])
 
         # Cache response
         self.gateways = gateways
@@ -384,9 +387,9 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def get_execution_history(self) -> list[HistoryExecution]:
-        """List execution history."""
+        """List past executions and their outcomes."""
         response = await self._get("history/executions")
-        return [HistoryExecution(**h) for h in humps.decamelize(response)]
+        return converter.structure(decamelize(response), list[HistoryExecution])
 
     @retry_on_auth_error
     async def get_device_definition(self, deviceurl: str) -> JSON | None:
@@ -403,7 +406,7 @@ class OverkizClient:
         response = await self._get(
             f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/states"
         )
-        return [State(**s) for s in humps.decamelize(response)]
+        return converter.structure(decamelize(response), list[State])
 
     @retry_on_auth_error
     async def refresh_states(self) -> None:
@@ -447,7 +450,7 @@ class OverkizClient:
         """
         await self._refresh_token_if_expired()
         response = await self._post(f"events/{self.event_listener_id}/fetch")
-        return [Event(**e) for e in humps.decamelize(response)]
+        return converter.structure(decamelize(response), list[Event])
 
     async def unregister_event_listener(self) -> None:
         """Unregister an event listener.
@@ -459,16 +462,22 @@ class OverkizClient:
         self.event_listener_id = None
 
     @retry_on_auth_error
-    async def get_current_execution(self, exec_id: str) -> Execution:
-        """Get an action group execution currently running."""
+    async def get_current_execution(self, exec_id: str) -> Execution | None:
+        """Get a currently running execution by its exec_id.
+
+        Returns None if the execution does not exist.
+        """
         response = await self._get(f"exec/current/{exec_id}")
-        return Execution(**humps.decamelize(response))
+        if not response or not isinstance(response, dict):
+            return None
+
+        return converter.structure(decamelize(response), Execution)
 
     @retry_on_auth_error
     async def get_current_executions(self) -> list[Execution]:
-        """Get all action groups executions currently running."""
+        """Get all currently running executions."""
         response = await self._get("exec/current")
-        return [Execution(**e) for e in humps.decamelize(response)]
+        return converter.structure(decamelize(response), list[Execution])
 
     @retry_on_auth_error
     async def get_api_version(self) -> str:
@@ -482,7 +491,7 @@ class OverkizClient:
     async def _execute_action_group_direct(
         self,
         actions: list[Action],
-        mode: CommandMode | None = None,
+        mode: ExecutionMode | None = None,
         label: str | None = "python-overkiz-api",
     ) -> str:
         """Execute a non-persistent action group directly (internal method).
@@ -490,66 +499,47 @@ class OverkizClient:
         The executed action group does not have to be persisted on the server before use.
         Per-session rate-limit : 1 calls per 28min 48s period for all operations of the same category (exec)
         """
-        # Build a logical (snake_case) payload using model helpers and convert it
-        # to the exact JSON schema expected by the API (camelCase + small fixes).
         payload = {"label": label, "actions": [a.to_payload() for a in actions]}
+        url = f"exec/apply/{mode.value}" if mode else "exec/apply"
 
-        # Prepare final payload with camelCase keys and special abbreviation handling
-        final_payload = prepare_payload(payload)
-
-        if mode == CommandMode.GEOLOCATED:
-            url = "exec/apply/geolocated"
-        elif mode == CommandMode.INTERNAL:
-            url = "exec/apply/internal"
-        elif mode == CommandMode.HIGH_PRIORITY:
-            url = "exec/apply/highPriority"
-        else:
-            url = "exec/apply"
-
-        response: dict = await self._post(url, final_payload)
+        response: dict = await self._post(url, prepare_payload(payload))
 
         return cast(str, response["execId"])
 
     async def execute_action_group(
         self,
         actions: list[Action],
-        mode: CommandMode | None = None,
+        mode: ExecutionMode | None = None,
         label: str | None = "python-overkiz-api",
     ) -> str:
-        """Execute a non-persistent action group.
+        """Execute an ad-hoc action group built from the given actions.
 
-        When action queue is enabled, actions will be batched with other actions
-        executed within the configured delay window. The method will wait for the
-        batch to execute and return the exec_id.
+        An action group is a batch of device actions submitted as a single
+        execution. Each ``Action`` targets one device and contains one or more
+        ``Command`` instances (e.g. ``open``, ``setClosure(50)``). The gateway
+        allows at most one action per device per action group.
 
-        Gateways only allow a single action per device in each action group. The
-        action queue enforces this by merging commands for the same device into
-        a single action in the batch.
+        When the action queue is enabled, actions are held for a short delay
+        and merged with other actions submitted in the same window. Commands
+        targeting the same device are combined into a single action. The method
+        blocks until the batch executes and returns the resulting exec_id.
 
-        When action queue is disabled, executes immediately and returns exec_id.
-
-        The API is consistent regardless of queue configuration - always returns
-        exec_id string directly.
+        When the action queue is disabled, the action group is sent immediately.
 
         Args:
-            actions: List of actions to execute.
-            mode: Command mode (`GEOLOCATED`, `INTERNAL`, `HIGH_PRIORITY`,
-                or `None`).
-            label: Label for the action group.
+            actions: One or more actions to execute. Each action targets a
+                single device and holds one or more commands.
+            mode: Optional execution mode (``HIGH_PRIORITY``, ``GEOLOCATED``,
+                or ``INTERNAL``).
+            label: Human-readable label for the execution.
 
         Returns:
-            The `exec_id` string from the executed action group.
-
-        Example:
-            ```python
-            exec_id = await client.execute_action_group([action])
-            ```
+            The ``exec_id`` identifying the execution on the server.
         """
         if self._action_queue:
             queued = await self._action_queue.add(actions, mode, label)
             return await queued
-        else:
-            return await self._execute_action_group_direct(actions, mode, label)
+        return await self._execute_action_group_direct(actions, mode, label)
 
     async def flush_action_queue(self) -> None:
         """Force flush all pending actions in the queue immediately.
@@ -571,17 +561,15 @@ class OverkizClient:
         return 0
 
     @retry_on_auth_error
-    async def cancel_command(self, exec_id: str) -> None:
-        """Cancel a running setup-level execution."""
+    async def cancel_execution(self, exec_id: str) -> None:
+        """Cancel a running execution by its exec_id."""
         await self._delete(f"exec/current/setup/{exec_id}")
 
     @retry_on_auth_error
     async def get_action_groups(self) -> list[ActionGroup]:
-        """List the action groups (scenarios)."""
+        """List action groups persisted on the server."""
         response = await self._get("actionGroups")
-        return [
-            ActionGroup(**action_group) for action_group in humps.decamelize(response)
-        ]
+        return converter.structure(decamelize(response), list[ActionGroup])
 
     @retry_on_auth_error
     async def get_places(self) -> Place:
@@ -596,17 +584,17 @@ class OverkizClient:
         - `sub_places`: List of nested places within this location
         """
         response = await self._get("setup/places")
-        return Place(**humps.decamelize(response))
+        return converter.structure(decamelize(response), Place)
 
     @retry_on_auth_error
-    async def execute_scenario(self, oid: str) -> str:
-        """Execute a scenario."""
+    async def execute_persisted_action_group(self, oid: str) -> str:
+        """Execute a server-side action group by its OID (see ``get_action_groups``)."""
         response = await self._post(f"exec/{oid}")
         return cast(str, response["execId"])
 
     @retry_on_auth_error
-    async def execute_scheduled_scenario(self, oid: str, timestamp: int) -> str:
-        """Execute a scheduled scenario."""
+    async def schedule_persisted_action_group(self, oid: str, timestamp: int) -> str:
+        """Schedule a server-side action group for execution at the given timestamp."""
         response = await self._post(f"exec/schedule/{oid}/{timestamp}")
         return cast(str, response["triggerId"])
 
@@ -618,7 +606,7 @@ class OverkizClient:
         Access scope : Full enduser API access (enduser/*).
         """
         response = await self._get("setup/options")
-        return [Option(**o) for o in humps.decamelize(response)]
+        return converter.structure(decamelize(response), list[Option])
 
     @retry_on_auth_error
     async def get_setup_option(self, option: str) -> Option | None:
@@ -629,7 +617,7 @@ class OverkizClient:
         response = await self._get(f"setup/options/{option}")
 
         if response:
-            return Option(**humps.decamelize(response))
+            return converter.structure(decamelize(response), Option)
 
         return None
 
@@ -641,13 +629,13 @@ class OverkizClient:
 
         For example `developerMode-{gateway_id}` and `gatewayId` to understand if developer mode is on.
 
-        If the option is not available, an OverkizException will be thrown.
+        If the option is not available, an OverkizError will be thrown.
         If the parameter is not available you will receive None.
         """
         response = await self._get(f"setup/options/{option}/{parameter}")
 
         if response:
-            return OptionParameter(**humps.decamelize(response))
+            return converter.structure(decamelize(response), OptionParameter)
 
         return None
 
@@ -679,7 +667,8 @@ class OverkizClient:
         - label: Human-readable protocol label
         """
         response = await self._get("reference/protocolTypes")
-        return [ProtocolType(**protocol) for protocol in response]
+        # No decamelize — ProtocolType fields are all single-word lowercase already.
+        return converter.structure(response, list[ProtocolType])
 
     @retry_on_auth_error
     async def get_reference_timezones(self) -> JSON:
@@ -709,7 +698,7 @@ class OverkizClient:
         response = await self._get(
             f"reference/ui/profile/{urllib.parse.quote_plus(profile_name)}"
         )
-        return UIProfileDefinition(**humps.decamelize(response))
+        return converter.structure(decamelize(response), UIProfileDefinition)
 
     @retry_on_auth_error
     async def get_reference_ui_profile_names(self) -> list[str]:
@@ -721,57 +710,108 @@ class OverkizClient:
         """Get a list of all defined UI widgets."""
         return await self._get("reference/ui/widgets")
 
+    @retry_on_auth_error
+    async def get_devices_not_up_to_date(self) -> list[Device]:
+        """Get all devices whose firmware is not up to date."""
+        response = await self._get("setup/devices/notUpToDate")
+        return converter.structure(decamelize(response), list[Device])
+
+    @retry_on_auth_error
+    async def get_device_firmware_status(self, deviceurl: str) -> FirmwareStatus | None:
+        """Check if a device's firmware is up to date.
+
+        Returns None if the device does not support firmware status checks.
+        """
+        try:
+            response = await self._get(
+                f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/firmwareUpToDate"
+            )
+        except UnsupportedOperationError:
+            return None
+        return converter.structure(decamelize(response), FirmwareStatus)
+
+    @retry_on_auth_error
+    async def get_device_firmware_update_capability(self, deviceurl: str) -> bool:
+        """Check if a device supports firmware updates.
+
+        Returns False if the device does not support this query.
+        """
+        try:
+            response = await self._get(
+                f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/firmwareUpdateCapability"
+            )
+        except UnsupportedOperationError:
+            return False
+        return cast(bool, response["supportsFirmwareUpdate"])
+
+    @retry_on_auth_error
+    async def update_device_firmware(self, deviceurl: str) -> None:
+        """Update a device's firmware to the next available version."""
+        await self._put(
+            f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/updateFirmware"
+        )
+
+    @retry_on_auth_error
+    async def update_all_device_firmwares(self) -> None:
+        """Update firmware for all devices that are not up to date."""
+        await self._put("setup/devices/updateFirmwares")
+
     async def _get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API."""
         await self._refresh_token_if_expired()
-        headers = dict(self._auth.auth_headers(path))
 
         async with self.session.get(
             f"{self.server_config.endpoint}{path}",
-            headers=headers,
+            headers=self._auth.auth_headers(path),
             ssl=self._ssl,
         ) as response:
-            await check_response(response)
-
-            # 204 has no body.
-            if response.status == 204:
-                return None
-
-            return await response.json()
+            return await self._parse_response(response)
 
     async def _post(
         self, path: str, payload: JSON | None = None, data: JSON | None = None
     ) -> Any:
         """Make a POST request to the OverKiz API."""
         await self._refresh_token_if_expired()
-        headers = dict(self._auth.auth_headers(path))
 
         async with self.session.post(
             f"{self.server_config.endpoint}{path}",
             data=data,
             json=payload,
-            headers=headers,
+            headers=self._auth.auth_headers(path),
             ssl=self._ssl,
         ) as response:
-            await check_response(response)
+            return await self._parse_response(response)
 
-            # 204 has no body.
-            if response.status == 204:
-                return None
+    async def _put(self, path: str, payload: JSON | None = None) -> Any:
+        """Make a PUT request to the OverKiz API."""
+        await self._refresh_token_if_expired()
 
-            return await response.json()
+        async with self.session.put(
+            f"{self.server_config.endpoint}{path}",
+            json=payload,
+            headers=self._auth.auth_headers(path),
+            ssl=self._ssl,
+        ) as response:
+            return await self._parse_response(response)
 
     async def _delete(self, path: str) -> None:
         """Make a DELETE request to the OverKiz API."""
         await self._refresh_token_if_expired()
-        headers = dict(self._auth.auth_headers(path))
 
         async with self.session.delete(
             f"{self.server_config.endpoint}{path}",
-            headers=headers,
+            headers=self._auth.auth_headers(path),
             ssl=self._ssl,
         ) as response:
             await check_response(response)
+
+    @staticmethod
+    async def _parse_response(response: ClientResponse) -> Any:
+        """Check response status and parse JSON body (returns None for 204)."""
+        await check_response(response)
+        if response.status == HTTPStatus.NO_CONTENT:
+            return None
+        return await response.json()
 
     async def _refresh_token_if_expired(self) -> None:
         """Check if token is expired and request a new one."""

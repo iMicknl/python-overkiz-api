@@ -94,7 +94,7 @@ class GatewaySubType(UnknownEnumMixin, IntEnum):
     TAHOMA_PRO = 14
     TAHOMA_SECURITY_SHORT_CHANNEL = 15
     TAHOMA_SECURITY_PRO = 16
-    # TAHOMA_BOX_C_IO = 12  # Note: This is likely 17, but tahomalink.com lists it as 12
+    TAHOMA_BOX_C_IO = 17
 
     @property
     def beautify_name(self) -> str:
@@ -105,6 +105,15 @@ class GatewaySubType(UnknownEnumMixin, IntEnum):
             .replace("Tahoma", "TaHoma")
             .replace("Rts", "RTS")
         )
+
+
+@unique
+class UpdateCriticityLevel(UnknownEnumMixin, StrEnum):
+    """Criticity level of an available gateway update."""
+
+    BUG_FIX = "BUG_FIX"
+    DEVICES_CONTROL_ONLY = "DEVICES_CONTROL_ONLY"
+    UNKNOWN = "UNKNOWN"
 
 
 @unique

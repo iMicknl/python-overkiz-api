@@ -35,11 +35,10 @@ pip install pyoverkiz
 
 ```python
 import asyncio
-import time
 
 from pyoverkiz.auth.credentials import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient
-from pyoverkiz.models import Action
+from pyoverkiz.models import Action, Command
 from pyoverkiz.enums import Server, OverkizCommand
 
 USERNAME = ""
@@ -51,16 +50,12 @@ async def main() -> None:
         server=Server.SOMFY_EUROPE,
         credentials=UsernamePasswordCredentials(USERNAME, PASSWORD),
     ) as client:
-        try:
-            await client.login()
-        except Exception as exception:  # pylint: disable=broad-except
-            print(exception)
-            return
+        await client.login()
 
         devices = await client.get_devices()
 
         for device in devices:
-            print(f"{device.label} ({device.id}) - {device.controllable_name}")
+            print(f"{device.label} ({device.device_url}) - {device.controllable_name}")
             print(f"{device.widget} - {device.ui_class}")
 
         await client.execute_action_group(
@@ -73,14 +68,14 @@ async def main() -> None:
                 )
             ],
             label="Execution via Python",
-            # mode=CommandMode.HIGH_PRIORITY
+            # mode=ExecutionMode.HIGH_PRIORITY
         )
 
         while True:
             events = await client.fetch_events()
             print(events)
 
-            time.sleep(2)
+            await asyncio.sleep(2)
 
 
 asyncio.run(main())
@@ -90,7 +85,6 @@ asyncio.run(main())
 
 ```python
 import asyncio
-import time
 
 from pyoverkiz.auth.credentials import LocalTokenCredentials
 from pyoverkiz.client import OverkizClient
@@ -110,7 +104,7 @@ async def main() -> None:
     ) as client:
         await client.login()
 
-        print("Local API connection succesfull!")
+        print("Local API connection successful!")
 
         print(await client.get_api_version())
 
@@ -121,14 +115,14 @@ async def main() -> None:
         print(devices)
 
         for device in devices:
-            print(f"{device.label} ({device.id}) - {device.controllable_name}")
+            print(f"{device.label} ({device.device_url}) - {device.controllable_name}")
             print(f"{device.widget} - {device.ui_class}")
 
         while True:
             events = await client.fetch_events()
             print(events)
 
-            time.sleep(2)
+            await asyncio.sleep(2)
 
 
 asyncio.run(main())
@@ -157,7 +151,7 @@ If you use Visual Studio Code with Docker or GitHub Codespaces, you can take adv
 
 - Install [uv](https://docs.astral.sh/uv/getting-started/installation).
 - Clone this repository and navigate to it: `cd python-overkiz-api`
-- Initialize the project with `uv sync`, then run `uv run pre-commit install`
+- Initialize the project with `uv sync`, then run `uv run prek install`
 
 #### Tests
 

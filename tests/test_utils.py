@@ -43,7 +43,7 @@ class TestUtils:
         assert local_server.configuration_url == "https://somfy.com"
 
     @pytest.mark.parametrize(
-        "gateway_id, overkiz_gateway",
+        ("gateway_id", "overkiz_gateway"),
         [
             ("1234-5678-6968", True),
             ("SOMFY_PROTECT-v0NT53occUBPyuJRzx59kalW1hFfzimN", False),

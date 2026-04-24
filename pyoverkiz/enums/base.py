@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import logging
-from typing import Self, cast
+from typing import Self
 
 
 class UnknownEnumMixin:
@@ -35,5 +35,4 @@ class UnknownEnumMixin:
         """
         message = cls.__missing_message__
         logging.getLogger(cls.__module__).warning(message, value, cls)
-        # Type checker cannot infer UNKNOWN exists on Self, but all subclasses define it
-        return cast(Self, cls.UNKNOWN)  # type: ignore[attr-defined]
+        return cls.UNKNOWN  # type: ignore[attr-defined]  # ty: ignore[unresolved-attribute]

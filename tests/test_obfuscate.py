@@ -12,7 +12,7 @@ class TestObfucscate:
     """Tests for obfuscation utilities (emails and sensitive data)."""
 
     @pytest.mark.parametrize(
-        "email, obfuscated",
+        ("email", "obfuscated"),
         [
             ("contact@somfy.com", "c****@****y.com"),
             ("contact_-_nexity.com", "c****@****y.com"),
@@ -28,7 +28,7 @@ class TestObfucscateSensitive:
 
     def test_obfuscate_list_with_none(self):
         """Ensure lists containing None values are handled without modification."""
-        input = {
+        data = {
             "d": [
                 0,
                 0,
@@ -56,4 +56,4 @@ class TestObfucscateSensitive:
                 None,
             ]
         }
-        assert obfuscate_sensitive_data(input) == input
+        assert obfuscate_sensitive_data(data) == data

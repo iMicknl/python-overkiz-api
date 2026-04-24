@@ -8,6 +8,7 @@ from __future__ import annotations
 import base64
 import datetime
 import json
+import sys
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -38,7 +39,7 @@ from pyoverkiz.auth.strategies import (
     _decode_jwt_payload,
 )
 from pyoverkiz.enums import APIType, Server
-from pyoverkiz.exceptions import InvalidTokenException, NexityBadCredentialsException
+from pyoverkiz.exceptions import InvalidTokenError, NexityBadCredentialsError
 from pyoverkiz.models import ServerConfig
 
 
@@ -369,9 +370,7 @@ class TestSessionLoginStrategy:
         mock_response.__aexit__ = AsyncMock(return_value=None)
         session.post = MagicMock(return_value=mock_response)
 
-        strategy = SessionLoginStrategy(
-            credentials, session, server_config, True, APIType.CLOUD
-        )
+        strategy = SessionLoginStrategy(credentials, session, server_config, True)
         await strategy.login()
 
         session.post.assert_called_once()
@@ -396,9 +395,7 @@ class TestSessionLoginStrategy:
         mock_response.__aexit__ = AsyncMock(return_value=None)
         session.post = MagicMock(return_value=mock_response)
 
-        strategy = SessionLoginStrategy(
-            credentials, session, server_config, True, APIType.CLOUD
-        )
+        strategy = SessionLoginStrategy(credentials, session, server_config, True)
         await strategy.login()
 
         # Should not call json() for 204 response
@@ -417,9 +414,7 @@ class TestSessionLoginStrategy:
         credentials = UsernamePasswordCredentials("user", "pass")
         session = AsyncMock(spec=ClientSession)
 
-        strategy = SessionLoginStrategy(
-            credentials, session, server_config, True, APIType.CLOUD
-        )
+        strategy = SessionLoginStrategy(credentials, session, server_config, True)
         result = await strategy.refresh_if_needed()
 
         assert not result
@@ -436,9 +431,7 @@ class TestSessionLoginStrategy:
         credentials = UsernamePasswordCredentials("user", "pass")
         session = AsyncMock(spec=ClientSession)
 
-        strategy = SessionLoginStrategy(
-            credentials, session, server_config, True, APIType.CLOUD
-        )
+        strategy = SessionLoginStrategy(credentials, session, server_config, True)
         headers = strategy.auth_headers()
 
         assert headers == {}
@@ -460,9 +453,7 @@ class TestBearerTokenAuthStrategy:
         credentials = TokenCredentials("my_bearer_token")
         session = AsyncMock(spec=ClientSession)
 
-        strategy = BearerTokenAuthStrategy(
-            credentials, session, server_config, True, APIType.CLOUD
-        )
+        strategy = BearerTokenAuthStrategy(credentials, session, server_config, True)
         result = await strategy.login()
 
         # Login should be a no-op
@@ -480,9 +471,7 @@ class TestBearerTokenAuthStrategy:
         credentials = TokenCredentials("my_bearer_token")
         session = AsyncMock(spec=ClientSession)
 
-        strategy = BearerTokenAuthStrategy(
-            credentials, session, server_config, True, APIType.CLOUD
-        )
+        strategy = BearerTokenAuthStrategy(credentials, session, server_config, True)
         headers = strategy.auth_headers()
 
         assert headers == {"Authorization": "Bearer my_bearer_token"}
@@ -491,9 +480,29 @@ class TestBearerTokenAuthStrategy:
 class TestNexityAuthStrategy:
     """Tests for Nexity auth error mapping behavior."""
 
+    def test_boto3_not_imported_at_module_load(self):
+        """Verify boto3 and warrant_lite are lazy-imported, not at module load."""
+        saved = {}
+        for mod in ("boto3", "botocore", "warrant_lite"):
+            saved[mod] = sys.modules.pop(mod, None)
+
+        try:
+            import importlib
+
+            import pyoverkiz.auth.strategies
+
+            importlib.reload(pyoverkiz.auth.strategies)
+
+            assert "boto3" not in sys.modules
+            assert "warrant_lite" not in sys.modules
+        finally:
+            for mod, value in saved.items():
+                if value is not None:
+                    sys.modules[mod] = value
+
     @pytest.mark.asyncio
     async def test_login_maps_invalid_credentials_client_error(self):
-        """Map Cognito bad-credential errors to NexityBadCredentialsException."""
+        """Map Cognito bad-credential errors to NexityBadCredentialsError."""
         server_config = ServerConfig(
             server=Server.NEXITY,
             name="Nexity",
@@ -512,16 +521,12 @@ class TestNexityAuthStrategy:
         warrant_instance.authenticate_user.side_effect = bad_credentials_error
 
         with (
-            patch("pyoverkiz.auth.strategies.boto3.client", return_value=MagicMock()),
-            patch(
-                "pyoverkiz.auth.strategies.WarrantLite", return_value=warrant_instance
-            ),
-            pytest.raises(NexityBadCredentialsException),
+            patch("boto3.client", return_value=MagicMock()),
+            patch("warrant_lite.WarrantLite", return_value=warrant_instance),
         ):
-            strategy = NexityAuthStrategy(
-                credentials, session, server_config, True, APIType.CLOUD
-            )
-            await strategy.login()
+            strategy = NexityAuthStrategy(credentials, session, server_config, True)
+            with pytest.raises(NexityBadCredentialsError):
+                await strategy.login()
 
     @pytest.mark.asyncio
     async def test_login_propagates_non_auth_client_error(self):
@@ -544,16 +549,12 @@ class TestNexityAuthStrategy:
         warrant_instance.authenticate_user.side_effect = service_error
 
         with (
-            patch("pyoverkiz.auth.strategies.boto3.client", return_value=MagicMock()),
-            patch(
-                "pyoverkiz.auth.strategies.WarrantLite", return_value=warrant_instance
-            ),
-            pytest.raises(ClientError, match="InternalErrorException"),
+            patch("boto3.client", return_value=MagicMock()),
+            patch("warrant_lite.WarrantLite", return_value=warrant_instance),
         ):
-            strategy = NexityAuthStrategy(
-                credentials, session, server_config, True, APIType.CLOUD
-            )
-            await strategy.login()
+            strategy = NexityAuthStrategy(credentials, session, server_config, True)
+            with pytest.raises(ClientError, match="InternalErrorException"):
+                await strategy.login()
 
 
 class TestRexelAuthStrategy:
@@ -561,7 +562,7 @@ class TestRexelAuthStrategy:
 
     @pytest.mark.asyncio
     async def test_exchange_token_error_response(self):
-        """Ensure OAuth error payloads raise InvalidTokenException before parsing access token."""
+        """Ensure OAuth error payloads raise InvalidTokenError before parsing access token."""
         server_config = ServerConfig(
             server=Server.REXEL,
             name="Rexel",
@@ -581,11 +582,9 @@ class TestRexelAuthStrategy:
         mock_response.__aexit__ = AsyncMock(return_value=None)
         session.post = MagicMock(return_value=mock_response)
 
-        strategy = RexelAuthStrategy(
-            credentials, session, server_config, True, APIType.CLOUD
-        )
+        strategy = RexelAuthStrategy(credentials, session, server_config, True)
 
-        with pytest.raises(InvalidTokenException, match="bad grant"):
+        with pytest.raises(InvalidTokenError, match="bad grant"):
             await strategy._exchange_token({"grant_type": "authorization_code"})
 
     def test_ensure_consent_missing(self):
@@ -597,10 +596,10 @@ class TestRexelAuthStrategy:
         )
         token = f"header.{payload_segment}.sig"
 
-        with pytest.raises(InvalidTokenException, match="Consent is missing"):
+        with pytest.raises(InvalidTokenError, match="Consent is missing"):
             RexelAuthStrategy._ensure_consent(token)
 
     def test_decode_jwt_payload_invalid_format(self):
-        """Malformed tokens raise InvalidTokenException during decoding."""
-        with pytest.raises(InvalidTokenException):
+        """Malformed tokens raise InvalidTokenError during decoding."""
+        with pytest.raises(InvalidTokenError):
             _decode_jwt_payload("invalid.token")

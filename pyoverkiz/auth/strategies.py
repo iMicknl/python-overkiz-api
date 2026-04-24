@@ -5,18 +5,16 @@ from __future__ import annotations
 import asyncio
 import base64
 import binascii
-import datetime
 import json
 import ssl
 from collections.abc import Mapping
-from typing import Any, cast
+from http import HTTPStatus
+from typing import TYPE_CHECKING, Any, cast
 
-import boto3
+if TYPE_CHECKING:
+    from botocore.client import BaseClient
+
 from aiohttp import ClientSession, FormData
-from botocore.client import BaseClient
-from botocore.config import Config
-from botocore.exceptions import ClientError
-from warrant_lite import WarrantLite
 
 from pyoverkiz.auth.base import AuthContext, AuthStrategy
 from pyoverkiz.auth.credentials import (
@@ -40,18 +38,19 @@ from pyoverkiz.const import (
     SOMFY_CLIENT_ID,
     SOMFY_CLIENT_SECRET,
 )
-from pyoverkiz.enums import APIType
 from pyoverkiz.exceptions import (
-    BadCredentialsException,
-    CozyTouchBadCredentialsException,
-    CozyTouchServiceException,
-    InvalidTokenException,
-    NexityBadCredentialsException,
-    NexityServiceException,
-    SomfyBadCredentialsException,
-    SomfyServiceException,
+    BadCredentialsError,
+    CozyTouchBadCredentialsError,
+    CozyTouchServiceError,
+    InvalidTokenError,
+    NexityBadCredentialsError,
+    NexityServiceError,
+    SomfyBadCredentialsError,
+    SomfyServiceError,
 )
 from pyoverkiz.models import ServerConfig
+
+MIN_JWT_SEGMENTS = 2
 
 
 class BaseAuthStrategy(AuthStrategy):
@@ -62,17 +61,15 @@ class BaseAuthStrategy(AuthStrategy):
         session: ClientSession,
         server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
-        api_type: APIType,
     ) -> None:
         """Store shared auth context for Overkiz API interactions."""
         self.session = session
         self.server = server
         self._ssl = ssl_context
-        self.api_type = api_type
 
     async def login(self) -> None:
         """Perform authentication; default is a no-op for subclasses to override."""
-        return None
+        return
 
     async def refresh_if_needed(self) -> bool:
         """Refresh authentication tokens if needed; default returns False."""
@@ -84,7 +81,7 @@ class BaseAuthStrategy(AuthStrategy):
 
     async def close(self) -> None:
         """Close any resources held by the strategy; default is no-op."""
-        return None
+        return
 
 
 class SessionLoginStrategy(BaseAuthStrategy):
@@ -96,10 +93,9 @@ class SessionLoginStrategy(BaseAuthStrategy):
         session: ClientSession,
         server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
-        api_type: APIType,
     ) -> None:
-        """Initialize SessionLoginStrategy with given parameters."""
-        super().__init__(session, server, ssl_context, api_type)
+        """Create a session-login strategy bound to the given credentials."""
+        super().__init__(session, server, ssl_context)
         self.credentials = credentials
 
     async def login(self) -> None:
@@ -117,18 +113,18 @@ class SessionLoginStrategy(BaseAuthStrategy):
             data=data,
             ssl=self._ssl,
         ) as response:
-            if response.status not in (200, 204):
-                raise BadCredentialsException(
+            if response.status not in (HTTPStatus.OK, HTTPStatus.NO_CONTENT):
+                raise BadCredentialsError(
                     f"Login failed for {self.server.name}: {response.status}"
                 )
 
             # A 204 No Content response cannot have a body, so skip JSON parsing.
-            if response.status == 204:
+            if response.status == HTTPStatus.NO_CONTENT:
                 return
 
             result = await response.json()
             if not result.get("success"):
-                raise BadCredentialsException("Login failed: bad credentials")
+                raise BadCredentialsError("Login failed: bad credentials")
 
 
 class SomfyAuthStrategy(BaseAuthStrategy):
@@ -140,10 +136,9 @@ class SomfyAuthStrategy(BaseAuthStrategy):
         session: ClientSession,
         server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
-        api_type: APIType,
     ) -> None:
-        """Initialize SomfyAuthStrategy with given parameters."""
-        super().__init__(session, server, ssl_context, api_type)
+        """Create a Somfy OAuth2 strategy with a fresh auth context."""
+        super().__init__(session, server, ssl_context)
         self.credentials = credentials
         self.context = AuthContext()
 
@@ -195,19 +190,13 @@ class SomfyAuthStrategy(BaseAuthStrategy):
             token = await response.json()
 
             if token.get("message") == "error.invalid.grant":
-                raise SomfyBadCredentialsException(token["message"])
+                raise SomfyBadCredentialsError(token["message"])
 
             access_token = token.get("access_token")
             if not access_token:
-                raise SomfyServiceException("No Somfy access token provided.")
+                raise SomfyServiceError("No Somfy access token provided.")
 
-            self.context.access_token = cast(str, access_token)
-            self.context.refresh_token = token.get("refresh_token")
-            expires_in = token.get("expires_in")
-            if expires_in:
-                self.context.expires_at = datetime.datetime.now(
-                    datetime.UTC
-                ) + datetime.timedelta(seconds=cast(int, expires_in) - 5)
+            self.context.update_from_token(token)
 
 
 class CozytouchAuthStrategy(SessionLoginStrategy):
@@ -233,10 +222,10 @@ class CozytouchAuthStrategy(SessionLoginStrategy):
             token = await response.json()
 
             if token.get("error") == "invalid_grant":
-                raise CozyTouchBadCredentialsException(token["error_description"])
+                raise CozyTouchBadCredentialsError(token["error_description"])
 
             if "token_type" not in token:
-                raise CozyTouchServiceException("No CozyTouch token provided.")
+                raise CozyTouchServiceError("No CozyTouch token provided.")
 
         async with self.session.get(
             f"{COZYTOUCH_ATLANTIC_API}/magellan/accounts/jwt",
@@ -245,7 +234,7 @@ class CozytouchAuthStrategy(SessionLoginStrategy):
             jwt = await response.text()
 
             if not jwt:
-                raise CozyTouchServiceException("No JWT token provided.")
+                raise CozyTouchServiceError("No JWT token provided.")
 
             jwt = jwt.strip('"')
 
@@ -257,6 +246,11 @@ class NexityAuthStrategy(SessionLoginStrategy):
 
     async def login(self) -> None:
         """Perform login using Nexity username and password."""
+        import boto3
+        from botocore.config import Config
+        from botocore.exceptions import ClientError
+        from warrant_lite import WarrantLite
+
         loop = asyncio.get_running_loop()
 
         def _client() -> BaseClient:
@@ -278,7 +272,7 @@ class NexityAuthStrategy(SessionLoginStrategy):
         except ClientError as error:
             code = error.response.get("Error", {}).get("Code")
             if code in {"NotAuthorizedException", "UserNotFoundException"}:
-                raise NexityBadCredentialsException() from error
+                raise NexityBadCredentialsError from error
             raise
 
         id_token = tokens["AuthenticationResult"]["IdToken"]
@@ -290,7 +284,7 @@ class NexityAuthStrategy(SessionLoginStrategy):
             token = await response.json()
 
             if "token" not in token:
-                raise NexityServiceException("No Nexity SSO token provided.")
+                raise NexityServiceError("No Nexity SSO token provided.")
 
             user_id = self.credentials.username.replace("@", "_-_")
             await self._post_login({"ssoToken": token["token"], "userId": user_id})
@@ -305,16 +299,15 @@ class LocalTokenAuthStrategy(BaseAuthStrategy):
         session: ClientSession,
         server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
-        api_type: APIType,
     ) -> None:
-        """Initialize LocalTokenAuthStrategy with given parameters."""
-        super().__init__(session, server, ssl_context, api_type)
+        """Create a local-token strategy bound to the given credentials."""
+        super().__init__(session, server, ssl_context)
         self.credentials = credentials
 
     async def login(self) -> None:
         """Validate that a token is provided for local API access."""
         if not self.credentials.token:
-            raise InvalidTokenException("Local API requires a token.")
+            raise InvalidTokenError("Local API requires a token.")
 
     def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
         """Return authentication headers for a request path."""
@@ -330,10 +323,9 @@ class RexelAuthStrategy(BaseAuthStrategy):
         session: ClientSession,
         server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
-        api_type: APIType,
     ) -> None:
-        """Initialize RexelAuthStrategy with given parameters."""
-        super().__init__(session, server, ssl_context, api_type)
+        """Create a Rexel OAuth2 strategy with a fresh auth context."""
+        super().__init__(session, server, ssl_context)
         self.credentials = credentials
         self.context = AuthContext()
 
@@ -385,25 +377,17 @@ class RexelAuthStrategy(BaseAuthStrategy):
             if error:
                 description = token.get("error_description") or token.get("message")
                 if description:
-                    raise InvalidTokenException(
+                    raise InvalidTokenError(
                         f"Error retrieving Rexel access token: {description}"
                     )
-                raise InvalidTokenException(
-                    f"Error retrieving Rexel access token: {error}"
-                )
+                raise InvalidTokenError(f"Error retrieving Rexel access token: {error}")
 
             access_token = token.get("access_token")
             if not access_token:
-                raise InvalidTokenException("No Rexel access token provided.")
+                raise InvalidTokenError("No Rexel access token provided.")
 
             self._ensure_consent(access_token)
-            self.context.access_token = cast(str, access_token)
-            self.context.refresh_token = token.get("refresh_token")
-            expires_in = token.get("expires_in")
-            if expires_in:
-                self.context.expires_at = datetime.datetime.now(
-                    datetime.UTC
-                ) + datetime.timedelta(seconds=cast(int, expires_in) - 5)
+            self.context.update_from_token(token)
 
     @staticmethod
     def _ensure_consent(access_token: str) -> None:
@@ -411,9 +395,7 @@ class RexelAuthStrategy(BaseAuthStrategy):
         payload = _decode_jwt_payload(access_token)
         consent = payload.get("consent")
         if consent != REXEL_REQUIRED_CONSENT:
-            raise InvalidTokenException(
-                "Consent is missing or revoked for Rexel token."
-            )
+            raise InvalidTokenError("Consent is missing or revoked for Rexel token.")
 
 
 class BearerTokenAuthStrategy(BaseAuthStrategy):
@@ -425,10 +407,9 @@ class BearerTokenAuthStrategy(BaseAuthStrategy):
         session: ClientSession,
         server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
-        api_type: APIType,
     ) -> None:
-        """Initialize BearerTokenAuthStrategy with given parameters."""
-        super().__init__(session, server, ssl_context, api_type)
+        """Create a bearer-token strategy bound to the given credentials."""
+        super().__init__(session, server, ssl_context)
         self.credentials = credentials
 
     def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
@@ -441,8 +422,8 @@ class BearerTokenAuthStrategy(BaseAuthStrategy):
 def _decode_jwt_payload(token: str) -> dict[str, Any]:
     """Decode the payload of a JWT token."""
     parts = token.split(".")
-    if len(parts) < 2:
-        raise InvalidTokenException("Malformed JWT received.")
+    if len(parts) < MIN_JWT_SEGMENTS:
+        raise InvalidTokenError("Malformed JWT received.")
 
     payload_segment = parts[1]
     padding = "=" * (-len(payload_segment) % 4)
@@ -450,4 +431,4 @@ def _decode_jwt_payload(token: str) -> dict[str, Any]:
         decoded = base64.urlsafe_b64decode(payload_segment + padding)
         return cast(dict[str, Any], json.loads(decoded))
     except (binascii.Error, json.JSONDecodeError) as error:
-        raise InvalidTokenException("Malformed JWT received.") from error
+        raise InvalidTokenError("Malformed JWT received.") from error

@@ -766,8 +766,8 @@ class OverkizCommandParam(StrEnum):
 
 
 @unique
-class CommandMode(StrEnum):
-    """Execution mode flags for commands (e.g., high priority or geolocated)."""
+class ExecutionMode(StrEnum):
+    """Execution mode flags (e.g., high priority or geolocated)."""
 
     HIGH_PRIORITY = "highPriority"
     GEOLOCATED = "geolocated"

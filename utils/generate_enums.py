@@ -12,16 +12,15 @@ import os
 import re
 import subprocess
 from pathlib import Path
-from typing import cast
 
 from pyoverkiz.auth.credentials import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.enums import Server
-from pyoverkiz.exceptions import OverkizException
+from pyoverkiz.exceptions import OverkizError
 from pyoverkiz.models import UIProfileDefinition, ValuePrototype
 
 # Hardcoded protocols that may not be available on all servers
-# Format: (name, prefix, id, label)
+# Each tuple contains: name, prefix, id, label
 ADDITIONAL_PROTOCOLS: list[tuple[str, str, int | None, str | None]] = [
     ("HLRR_WIFI", "hlrrwifi", None, None),
     ("MODBUSLINK", "modbuslink", 44, "ModbusLink"),  # via Atlantic Cozytouch
@@ -129,8 +128,8 @@ async def generate_ui_enums(server: Server) -> None:
     ) as client:
         await client.login()
 
-        ui_classes = cast(list[str], await client.get_reference_ui_classes())
-        ui_widgets = cast(list[str], await client.get_reference_ui_widgets())
+        ui_classes = await client.get_reference_ui_classes()
+        ui_widgets = await client.get_reference_ui_widgets()
 
         # Convert camelCase to SCREAMING_SNAKE_CASE for enum names
         def to_enum_name(value: str) -> str:
@@ -210,7 +209,7 @@ async def generate_ui_enums(server: Server) -> None:
         lines.append("")  # End with newline
 
         # Fetch and add UI classifiers
-        ui_classifiers = cast(list[str], await client.get_reference_ui_classifiers())
+        ui_classifiers = await client.get_reference_ui_classifiers()
 
         lines.append("")
         lines.append("@unique")
@@ -271,7 +270,7 @@ async def generate_ui_profiles(server: Server) -> None:
             try:
                 details = await client.get_reference_ui_profile(profile_name)
                 profiles_with_details.append((profile_name, details))
-            except OverkizException:
+            except OverkizError:
                 print(f"  ! Could not fetch details for {profile_name}")
                 profiles_with_details.append((profile_name, None))
 
@@ -363,12 +362,11 @@ async def generate_ui_profiles(server: Server) -> None:
 
                     # Get parameter info
                     if cmd.prototype and cmd.prototype.parameters:
-                        param_strs = []
-                        for param in cmd.prototype.parameters:
-                            if param.value_prototypes:
-                                param_strs.append(
-                                    format_value_prototype(param.value_prototypes[0])
-                                )
+                        param_strs = [
+                            format_value_prototype(param.value_prototypes[0])
+                            for param in cmd.prototype.parameters
+                            if param.value_prototypes
+                        ]
                         param_info = (
                             f"({', '.join(param_strs)})" if param_strs else "()"
                         )
@@ -569,7 +567,7 @@ async def generate_command_enums() -> None:
     command_file = Path(__file__).parent.parent / "pyoverkiz" / "enums" / "command.py"
     content = command_file.read_text()
 
-    find_class_start(content, "CommandMode")
+    find_class_start(content, "ExecutionMode")
 
     existing_commands = extract_enum_members(content, "OverkizCommand")
     existing_params = extract_enum_members(content, "OverkizCommandParam")
@@ -656,10 +654,10 @@ async def generate_command_enums() -> None:
     lines.append("")
     lines.append("")
 
-    # Append CommandMode class
-    command_mode_start = content.find("@unique\nclass CommandMode")
-    if command_mode_start != -1:
-        lines.append(content[command_mode_start:].rstrip())
+    # Append ExecutionMode class
+    execution_mode_start = content.find("@unique\nclass ExecutionMode")
+    if execution_mode_start != -1:
+        lines.append(content[execution_mode_start:].rstrip())
     lines.append("")
 
     # Write to the command.py file

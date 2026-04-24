@@ -4,16 +4,16 @@ from __future__ import annotations
 
 import datetime
 from collections.abc import Mapping
-from dataclasses import dataclass
-from typing import Protocol
+from dataclasses import dataclass, field
+from typing import Any, Protocol
 
 
 @dataclass(slots=True)
 class AuthContext:
     """Authentication context holding tokens and expiration."""
 
-    access_token: str | None = None
-    refresh_token: str | None = None
+    access_token: str | None = field(default=None, repr=False)
+    refresh_token: str | None = field(default=None, repr=False)
     expires_at: datetime.datetime | None = None
 
     def is_expired(self, *, skew_seconds: int = 5) -> bool:
@@ -24,6 +24,18 @@ class AuthContext:
         return datetime.datetime.now(
             datetime.UTC
         ) >= self.expires_at - datetime.timedelta(seconds=skew_seconds)
+
+    def update_from_token(self, token: dict[str, Any]) -> None:
+        """Update context from an OAuth token response."""
+        self.access_token = str(token["access_token"])
+        self.refresh_token = (
+            str(token["refresh_token"]) if "refresh_token" in token else None
+        )
+        expires_in = token.get("expires_in")
+        if expires_in is not None:
+            self.expires_at = datetime.datetime.now(datetime.UTC) + datetime.timedelta(
+                seconds=int(expires_in)
+            )
 
 
 class AuthStrategy(Protocol):

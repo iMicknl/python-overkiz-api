@@ -48,7 +48,6 @@ nav:
       - Device control: device-control.md
       - Action queue: action-queue.md
       - Event handling: event-handling.md
-      - Error handling: error-handling.md
       - Troubleshooting: troubleshooting.md
   - API Reference: api-reference.md
   - Contribute: contribute.md
