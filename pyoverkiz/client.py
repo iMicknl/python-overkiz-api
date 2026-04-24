@@ -655,6 +655,7 @@ class OverkizClient:
         - label: Human-readable protocol label
         """
         response = await self._get("reference/protocolTypes")
+        # No decamelize — ProtocolType fields are all single-word lowercase already.
         return converter.structure(response, list[ProtocolType])
 
     @retry_on_auth_error
