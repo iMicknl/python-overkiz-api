@@ -146,7 +146,7 @@ class States:
 
     def __contains__(self, name: object) -> bool:
         """Return True if a state with the given name exists in the container."""
-        return name in self._index
+        return isinstance(name, str) and name in self._index
 
     def __getitem__(self, name: str) -> State:
         """Return the State with the given name or raise KeyError if missing."""
@@ -214,7 +214,7 @@ class CommandDefinitions:
 
     def __contains__(self, name: object) -> bool:
         """Return True if a command with `name` exists."""
-        return name in self._index
+        return isinstance(name, str) and name in self._index
 
     def __getitem__(self, command: str) -> CommandDefinition:
         """Return the command definition or raise KeyError if missing."""
