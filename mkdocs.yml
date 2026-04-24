@@ -36,6 +36,7 @@ markdown_extensions:
   - pymdownx.superfences
   - pymdownx.tasklist
   - admonition
+  - pymdownx.details
   - pymdownx.superfences
   - pymdownx.tabbed:
       alternate_style: true
@@ -49,5 +50,6 @@ nav:
       - Action queue: action-queue.md
       - Event handling: event-handling.md
       - Troubleshooting: troubleshooting.md
+      - Migrating from v1: migration-v2.md
   - API Reference: api-reference.md
   - Contribute: contribute.md
