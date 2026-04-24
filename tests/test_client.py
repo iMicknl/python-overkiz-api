@@ -362,7 +362,6 @@ class TestOverkizClient:
                 "action_groups": [{"masked": True}],
             }
             assert obfuscate.call_count == 2
-            assert isinstance(diagnostics["action_groups"], list)
 
     @pytest.mark.asyncio
     async def test_get_diagnostic_data_without_masking(self, client: OverkizClient):
