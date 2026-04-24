@@ -1,8 +1,5 @@
 """Unit tests for the high-level OverkizClient behaviour and responses."""
 
-# ruff: noqa: S106
-# S106: Test credentials use dummy values.
-
 from __future__ import annotations
 
 import json
@@ -11,13 +8,8 @@ from unittest.mock import AsyncMock, patch
 
 import aiohttp
 import pytest
-from pytest_asyncio import fixture
 
 from pyoverkiz import exceptions
-from pyoverkiz.auth.credentials import (
-    LocalTokenCredentials,
-    UsernamePasswordCredentials,
-)
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.enums import (
     APIType,
@@ -25,7 +17,6 @@ from pyoverkiz.enums import (
     ExecutionState,
     ExecutionSubType,
     ExecutionType,
-    Server,
 )
 from pyoverkiz.models import (
     Action,
@@ -37,29 +28,13 @@ from pyoverkiz.models import (
     State,
 )
 from pyoverkiz.response_handler import check_response
-from pyoverkiz.utils import create_local_server_config
+from tests.helpers import MockResponse
 
 CURRENT_DIR = Path(__file__).resolve().parent
 
 
 class TestOverkizClient:
     """Tests for the public OverkizClient behaviour (API type, devices, events, setup and diagnostics)."""
-
-    @fixture
-    async def client(self):
-        """Fixture providing an OverkizClient configured for the cloud server."""
-        return OverkizClient(
-            server=Server.SOMFY_EUROPE,
-            credentials=UsernamePasswordCredentials("username", "password"),
-        )
-
-    @fixture
-    async def local_client(self):
-        """Fixture providing an OverkizClient configured for a local (developer) server."""
-        return OverkizClient(
-            server=create_local_server_config(host="gateway-1234-5678-1243.local:8443"),
-            credentials=LocalTokenCredentials(token="token"),
-        )
 
     @pytest.mark.asyncio
     async def test_get_api_type_cloud(self, client: OverkizClient):
@@ -289,9 +264,9 @@ class TestOverkizClient:
                 assert setup.id is None
 
             for device in setup.devices:
-                assert device.identifier.gateway_id
-                assert device.identifier.device_address
-                assert device.identifier.protocol
+                assert device.identifier.gateway_id is not None
+                assert device.identifier.device_address is not None
+                assert device.identifier.protocol is not None
 
     @pytest.mark.parametrize(
         "fixture_name",
@@ -765,16 +740,16 @@ class TestOverkizClient:
             assert len(action_groups) == scenario_count
 
             for action_group in action_groups:
-                assert action_group.oid
+                assert action_group.oid is not None
                 assert action_group.label is not None
                 assert action_group.actions
 
                 for action in action_group.actions:
-                    assert action.device_url
+                    assert action.device_url is not None
                     assert action.commands
 
                     for command in action.commands:
-                        assert command.name
+                        assert command.name is not None
 
     @pytest.mark.asyncio
     async def test_get_current_execution_returns_execution(self, client: OverkizClient):
@@ -1141,29 +1116,3 @@ class TestOverkizClient:
             await local_client.schedule_persisted_action_group(
                 "00000000-0000-0000-0000-000000000000", 9999999999
             )
-
-
-class MockResponse:
-    """Simple stand-in for aiohttp responses used in tests."""
-
-    def __init__(self, text, status=200, url=""):
-        """Create a mock response with text payload and optional status/url."""
-        self._text = text
-        self.status = status
-        self.url = url
-
-    async def text(self):
-        """Return text payload asynchronously."""
-        return self._text
-
-    # pylint: disable=unused-argument
-    async def json(self, content_type=None):
-        """Return parsed JSON payload asynchronously."""
-        return json.loads(self._text)
-
-    async def __aexit__(self, exc_type, exc, tb):
-        """Context manager exit (noop)."""
-
-    async def __aenter__(self):
-        """Context manager enter returning self."""
-        return self

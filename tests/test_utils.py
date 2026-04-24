@@ -15,7 +15,7 @@ class TestUtils:
         """Create a local server descriptor using the host and default values."""
         local_server = create_local_server_config(host=LOCAL_HOST)
 
-        assert local_server
+        assert local_server is not None
         assert (
             local_server.endpoint
             == "https://gateway-1234-5678-1243.local:8443/enduser-mobile-web/1/enduserAPI/"
@@ -33,7 +33,7 @@ class TestUtils:
             configuration_url="https://somfy.com",
         )
 
-        assert local_server
+        assert local_server is not None
         assert (
             local_server.endpoint
             == "https://192.168.1.105:8443/enduser-mobile-web/1/enduserAPI/"
