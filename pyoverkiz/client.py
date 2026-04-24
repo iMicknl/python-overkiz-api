@@ -76,7 +76,7 @@ retry_on_auth_error = backoff.on_exception(
     backoff.expo,
     (NotAuthenticatedException, ServerDisconnectedError),
     max_tries=2,
-    max_time=60,
+    max_time=60,  # safety net for hung requests
     jitter=backoff.full_jitter,
     on_backoff=relogin,
     logger=_LOGGER,
@@ -103,7 +103,7 @@ retry_on_concurrent_requests = backoff.on_exception(
 retry_on_too_many_executions = backoff.on_exception(
     backoff.expo,
     TooManyExecutionsException,
-    max_tries=10,
+    max_tries=5,
     max_time=300,
     jitter=backoff.full_jitter,
     logger=_LOGGER,
