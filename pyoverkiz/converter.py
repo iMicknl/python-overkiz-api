@@ -34,6 +34,7 @@ def _is_primitive_union(t: Any) -> bool:
 
 
 def _make_converter() -> cattrs.Converter:
+    # Converter (not GenConverter) so unknown API keys are silently dropped for forward-compat.
     c = cattrs.Converter()
 
     # JSON-native unions like StateType (str | int | float | … | None) are already the
