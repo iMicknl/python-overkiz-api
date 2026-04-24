@@ -305,14 +305,21 @@ class TestOverkizClient:
         ) as setup_mock:
             setup_resp = MockResponse(setup_mock.read())
 
-        with (CURRENT_DIR / "fixtures" / "action_groups" / "action-group-tahoma-switch.json").open(
+        with (
+            CURRENT_DIR
+            / "fixtures"
+            / "action_groups"
+            / "action-group-tahoma-switch.json"
+        ).open(
             encoding="utf-8",
         ) as ag_mock:
             ag_resp = MockResponse(ag_mock.read())
 
         responses = iter([setup_resp, ag_resp])
 
-        with patch.object(aiohttp.ClientSession, "get", side_effect=lambda *a, **kw: next(responses)):
+        with patch.object(
+            aiohttp.ClientSession, "get", side_effect=lambda *a, **kw: next(responses)
+        ):
             diagnostics = await client.get_diagnostic_data()
             assert diagnostics
             assert "setup" in diagnostics
@@ -326,7 +333,12 @@ class TestOverkizClient:
         ) as setup_mock:
             setup_resp = MockResponse(setup_mock.read())
 
-        with (CURRENT_DIR / "fixtures" / "action_groups" / "action-group-tahoma-switch.json").open(
+        with (
+            CURRENT_DIR
+            / "fixtures"
+            / "action_groups"
+            / "action-group-tahoma-switch.json"
+        ).open(
             encoding="utf-8",
         ) as ag_mock:
             ag_resp = MockResponse(ag_mock.read())
@@ -334,18 +346,23 @@ class TestOverkizClient:
         responses = iter([setup_resp, ag_resp])
 
         with (
-            patch.object(aiohttp.ClientSession, "get", side_effect=lambda *a, **kw: next(responses)),
+            patch.object(
+                aiohttp.ClientSession,
+                "get",
+                side_effect=lambda *a, **kw: next(responses),
+            ),
             patch(
                 "pyoverkiz.client.obfuscate_sensitive_data",
-                return_value={"masked": True},
+                side_effect=[{"masked": True}, [{"masked": True}]],
             ) as obfuscate,
         ):
             diagnostics = await client.get_diagnostic_data()
             assert diagnostics == {
                 "setup": {"masked": True},
-                "action_groups": {"masked": True},
+                "action_groups": [{"masked": True}],
             }
             assert obfuscate.call_count == 2
+            assert isinstance(diagnostics["action_groups"], list)
 
     @pytest.mark.asyncio
     async def test_get_diagnostic_data_without_masking(self, client: OverkizClient):
@@ -356,7 +373,12 @@ class TestOverkizClient:
             raw_setup = setup_mock.read()
             setup_resp = MockResponse(raw_setup)
 
-        with (CURRENT_DIR / "fixtures" / "action_groups" / "action-group-tahoma-switch.json").open(
+        with (
+            CURRENT_DIR
+            / "fixtures"
+            / "action_groups"
+            / "action-group-tahoma-switch.json"
+        ).open(
             encoding="utf-8",
         ) as ag_mock:
             raw_ag = ag_mock.read()
@@ -365,7 +387,11 @@ class TestOverkizClient:
         responses = iter([setup_resp, ag_resp])
 
         with (
-            patch.object(aiohttp.ClientSession, "get", side_effect=lambda *a, **kw: next(responses)),
+            patch.object(
+                aiohttp.ClientSession,
+                "get",
+                side_effect=lambda *a, **kw: next(responses),
+            ),
             patch("pyoverkiz.client.obfuscate_sensitive_data") as obfuscate,
         ):
             diagnostics = await client.get_diagnostic_data(mask_sensitive_data=False)
@@ -376,21 +402,30 @@ class TestOverkizClient:
             obfuscate.assert_not_called()
 
     @pytest.mark.asyncio
-    async def test_get_diagnostic_data_returns_structured_dict(self, client: OverkizClient):
+    async def test_get_diagnostic_data_returns_structured_dict(
+        self, client: OverkizClient
+    ):
         """Verify diagnostic data returns a dict with setup and action_groups sections."""
         with (CURRENT_DIR / "fixtures" / "setup" / "setup_tahoma_1.json").open(
             encoding="utf-8",
         ) as setup_mock:
             setup_resp = MockResponse(setup_mock.read())
 
-        with (CURRENT_DIR / "fixtures" / "action_groups" / "action-group-tahoma-switch.json").open(
+        with (
+            CURRENT_DIR
+            / "fixtures"
+            / "action_groups"
+            / "action-group-tahoma-switch.json"
+        ).open(
             encoding="utf-8",
         ) as ag_mock:
             ag_resp = MockResponse(ag_mock.read())
 
         responses = iter([setup_resp, ag_resp])
 
-        with patch.object(aiohttp.ClientSession, "get", side_effect=lambda *a, **kw: next(responses)):
+        with patch.object(
+            aiohttp.ClientSession, "get", side_effect=lambda *a, **kw: next(responses)
+        ):
             diagnostics = await client.get_diagnostic_data(mask_sensitive_data=False)
 
         assert "setup" in diagnostics

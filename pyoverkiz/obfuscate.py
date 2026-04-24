@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import re
-from typing import Any
+from typing import Any, cast
 
 
 def obfuscate_id(id: str | None) -> str:
@@ -27,7 +27,9 @@ def obfuscate_sensitive_data(
 ) -> dict[str, Any] | list[dict[str, Any]]:
     """Mask Overkiz JSON data to remove sensitive data."""
     if isinstance(data, list):
-        return [obfuscate_sensitive_data(item) for item in data]
+        return cast(
+            list[dict[str, Any]], [obfuscate_sensitive_data(item) for item in data]
+        )
 
     mask_next_value = False
 

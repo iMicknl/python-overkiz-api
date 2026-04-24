@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import ssl
 import urllib.parse
@@ -329,7 +330,9 @@ class OverkizClient:
         return setup
 
     @retry_on_auth_error
-    async def get_diagnostic_data(self, mask_sensitive_data: bool = True) -> dict[str, Any]:
+    async def get_diagnostic_data(
+        self, mask_sensitive_data: bool = True
+    ) -> dict[str, Any]:
         """Get diagnostic data for the connected user setup.
 
             -> gateways data (serial number, activation state, ...): <gateways/gateway>
@@ -341,8 +344,10 @@ class OverkizClient:
         By default, this data is masked to not return confidential or PII data.
         Set `mask_sensitive_data` to `False` to return the raw payloads.
         """
-        setup = await self._get("setup")
-        action_groups = await self._get("actionGroups")
+        setup, action_groups = await asyncio.gather(
+            self._get("setup"),
+            self._get("actionGroups"),
+        )
 
         if mask_sensitive_data:
             setup = obfuscate_sensitive_data(setup)

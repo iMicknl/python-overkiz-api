@@ -4,7 +4,7 @@
 
 **Goal:** Expand `get_diagnostic_data()` to return a structured dict containing both setup and action group data, with per-section obfuscation.
 
-**Architecture:** The method fetches two API endpoints (`setup` and `actionGroups`) concurrently, wraps them in a `{"setup": ..., "action_groups": [...]}` dict, and applies `obfuscate_sensitive_data` to each section individually. The obfuscation function is extended to accept lists of dicts in addition to plain dicts.
+**Architecture:** The method fetches two API endpoints (`setup` and `actionGroups`) concurrently using `asyncio.gather`, wraps them in a `{"setup": ..., "action_groups": [...]}` dict, and applies `obfuscate_sensitive_data` to each section individually. The obfuscation function is extended to accept lists of dicts in addition to plain dicts.
 
 **Tech Stack:** Python 3.12+, aiohttp, pytest, pytest-asyncio
 
