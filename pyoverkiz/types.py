@@ -12,12 +12,10 @@ StateType = str | int | float | bool | dict[str, Any] | list[Any] | None
 
 
 def _parse_bool(value: str) -> bool:
-    # Parse cloud API boolean strings,
-    # plain bool() won't work since bool("false") is True.
     return value.lower() in ("true", "1")
 
 
-DATA_TYPE_TO_PYTHON: dict[DataType, Callable[[Any], StateType]] = {
+DATA_TYPE_TO_PYTHON: dict[DataType, Callable[[str], StateType]] = {
     DataType.INTEGER: int,
     DataType.DATE: int,
     DataType.FLOAT: float,

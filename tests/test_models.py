@@ -738,10 +738,17 @@ class TestEventState:
         [
             ("42", DataType.INTEGER, 42),
             ("-1", DataType.INTEGER, -1),
-            ("3.14", DataType.FLOAT, pytest.approx(3.14)),
             ("0", DataType.INTEGER, 0),
+            ("3.14", DataType.FLOAT, pytest.approx(3.14)),
+            ("-1.5", DataType.FLOAT, pytest.approx(-1.5)),
+            ("0.0", DataType.FLOAT, pytest.approx(0.0)),
+            ("0", DataType.FLOAT, pytest.approx(0.0)),
             ("12345", DataType.DATE, 12345),
+            ("0", DataType.DATE, 0),
             ("[1, 2]", DataType.JSON_ARRAY, [1, 2]),
+            ("[]", DataType.JSON_ARRAY, []),
+            ('{"foo": 1}', DataType.JSON_OBJECT, {"foo": 1}),
+            ("{}", DataType.JSON_OBJECT, {}),
         ],
     )
     def test_other_type_casting(self, raw: str, data_type: DataType, expected):
@@ -750,18 +757,47 @@ class TestEventState:
 
         assert state.value == expected
 
+    @pytest.mark.parametrize(
+        ("raw", "data_type"),
+        [
+            ("abc", DataType.INTEGER),
+            ("abc", DataType.FLOAT),
+        ],
+    )
+    def test_invalid_numeric_string_raises(self, raw: str, data_type: DataType):
+        """Non-numeric strings raise ValueError for numeric types."""
+        with pytest.raises(ValueError, match="abc"):
+            EventState(name="state", type=data_type, value=raw)
+
     def test_string_type_not_cast(self):
         """STRING type values are left as-is, not passed through any caster."""
         state = EventState(name="state", type=DataType.STRING, value="hello")
 
         assert state.value == "hello"
 
-    def test_non_string_value_not_cast(self):
-        """Already-typed values (from local API) skip casting entirely."""
-        state = EventState(name="state", type=DataType.INTEGER, value=42)
+    def test_empty_string_type_not_cast(self):
+        """Empty STRING type values are preserved."""
+        state = EventState(name="state", type=DataType.STRING, value="")
 
-        assert state.value == 42
-        assert isinstance(state.value, int)
+        assert state.value == ""
+
+    @pytest.mark.parametrize(
+        ("value", "data_type"),
+        [
+            (42, DataType.INTEGER),
+            (0, DataType.INTEGER),
+            (3.14, DataType.FLOAT),
+            (0.0, DataType.FLOAT),
+            ({"foo": 1}, DataType.JSON_OBJECT),
+            ([1, 2], DataType.JSON_ARRAY),
+        ],
+    )
+    def test_native_value_not_cast(self, value: object, data_type: DataType):
+        """Already-typed values (from local API) skip casting entirely."""
+        state = EventState(name="state", type=data_type, value=value)
+
+        assert state.value == value
+        assert type(state.value) is type(value)
 
 
 def test_command_to_payload_omits_none():
