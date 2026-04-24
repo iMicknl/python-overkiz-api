@@ -24,7 +24,7 @@ from pyoverkiz.auth.strategies import (
 from pyoverkiz.enums import APIType, Server
 
 if TYPE_CHECKING:
-    import ssl
+    from ssl import SSLContext
 
     from aiohttp import ClientSession
 
@@ -36,7 +36,7 @@ def build_auth_strategy(
     server_config: ServerConfig,
     credentials: Credentials,
     session: ClientSession,
-    ssl_context: ssl.SSLContext | bool,
+    ssl_context: SSLContext | bool,
 ) -> AuthStrategy:
     """Build the correct auth strategy for the given server and credentials."""
     server: Server | None = server_config.server

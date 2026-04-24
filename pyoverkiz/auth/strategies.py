@@ -10,8 +10,8 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING, Any, cast
 
 if TYPE_CHECKING:
-    import ssl
     from collections.abc import Mapping
+    from ssl import SSLContext
 
     from botocore.client import BaseClient
 
@@ -62,7 +62,7 @@ class BaseAuthStrategy(AuthStrategy):
         self,
         session: ClientSession,
         server: ServerConfig,
-        ssl_context: ssl.SSLContext | bool,
+        ssl_context: SSLContext | bool,
     ) -> None:
         """Store shared auth context for Overkiz API interactions."""
         self.session = session
@@ -94,7 +94,7 @@ class SessionLoginStrategy(BaseAuthStrategy):
         credentials: UsernamePasswordCredentials,
         session: ClientSession,
         server: ServerConfig,
-        ssl_context: ssl.SSLContext | bool,
+        ssl_context: SSLContext | bool,
     ) -> None:
         """Create a session-login strategy bound to the given credentials."""
         super().__init__(session, server, ssl_context)
@@ -137,7 +137,7 @@ class SomfyAuthStrategy(BaseAuthStrategy):
         credentials: UsernamePasswordCredentials,
         session: ClientSession,
         server: ServerConfig,
-        ssl_context: ssl.SSLContext | bool,
+        ssl_context: SSLContext | bool,
     ) -> None:
         """Create a Somfy OAuth2 strategy with a fresh auth context."""
         super().__init__(session, server, ssl_context)
@@ -300,7 +300,7 @@ class LocalTokenAuthStrategy(BaseAuthStrategy):
         credentials: LocalTokenCredentials,
         session: ClientSession,
         server: ServerConfig,
-        ssl_context: ssl.SSLContext | bool,
+        ssl_context: SSLContext | bool,
     ) -> None:
         """Create a local-token strategy bound to the given credentials."""
         super().__init__(session, server, ssl_context)
@@ -324,7 +324,7 @@ class RexelAuthStrategy(BaseAuthStrategy):
         credentials: RexelOAuthCodeCredentials,
         session: ClientSession,
         server: ServerConfig,
-        ssl_context: ssl.SSLContext | bool,
+        ssl_context: SSLContext | bool,
     ) -> None:
         """Create a Rexel OAuth2 strategy with a fresh auth context."""
         super().__init__(session, server, ssl_context)
@@ -408,7 +408,7 @@ class BearerTokenAuthStrategy(BaseAuthStrategy):
         credentials: TokenCredentials,
         session: ClientSession,
         server: ServerConfig,
-        ssl_context: ssl.SSLContext | bool,
+        ssl_context: SSLContext | bool,
     ) -> None:
         """Create a bearer-token strategy bound to the given credentials."""
         super().__init__(session, server, ssl_context)
