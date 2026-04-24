@@ -5,8 +5,6 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from pyoverkiz.types import JSON
-
 
 def obfuscate_id(id: str | None) -> str:
     """Mask id."""
