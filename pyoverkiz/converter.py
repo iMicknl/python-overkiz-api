@@ -53,6 +53,8 @@ def _make_converter() -> cattrs.Converter:
         return States([c.structure(s, State) for s in val])
 
     def _structure_command_definitions(val: Any, _: type) -> CommandDefinitions:
+        if val is None:
+            return CommandDefinitions()
         return CommandDefinitions([c.structure(cd, CommandDefinition) for cd in val])
 
     c.register_structure_hook(States, _structure_states)
