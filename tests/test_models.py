@@ -703,6 +703,66 @@ class TestEventState:
                 value="[not-valid-json",
             )
 
+    @pytest.mark.parametrize(
+        ("raw", "expected"),
+        [
+            ("true", True),
+            ("True", True),
+            ("TRUE", True),
+            ("1", True),
+            ("false", False),
+            ("False", False),
+            ("FALSE", False),
+            ("0", False),
+            ("", False),
+            ("yes", False),
+            ("no", False),
+        ],
+    )
+    def test_boolean_string_casting(self, raw: str, expected: bool):
+        """Cloud API returns booleans as strings; only 'true'/'1' are truthy."""
+        state = EventState(name="state", type=DataType.BOOLEAN, value=raw)
+
+        assert state.value is expected
+
+    def test_boolean_native_passthrough(self):
+        """Local API returns native booleans; they must not be re-cast."""
+        true_state = EventState(name="state", type=DataType.BOOLEAN, value=True)
+        false_state = EventState(name="state", type=DataType.BOOLEAN, value=False)
+
+        assert true_state.value is True
+        assert false_state.value is False
+
+    @pytest.mark.parametrize(
+        ("raw", "data_type", "expected"),
+        [
+            ("42", DataType.INTEGER, 42),
+            ("-1", DataType.INTEGER, -1),
+            ("3.14", DataType.FLOAT, pytest.approx(3.14)),
+            ("0", DataType.INTEGER, 0),
+            ("12345", DataType.DATE, 12345),
+            ("[1, 2]", DataType.JSON_ARRAY, [1, 2]),
+        ],
+    )
+    def test_other_type_casting(self, raw: str, data_type: DataType, expected):
+        """Non-boolean string values are cast correctly."""
+        state = EventState(name="state", type=data_type, value=raw)
+
+        assert state.value == expected
+
+    def test_string_type_not_cast(self):
+        """STRING type values are left as-is, not passed through any caster."""
+        state = EventState(name="state", type=DataType.STRING, value="hello")
+
+        assert state.value == "hello"
+
+    def test_non_string_value_not_cast(self):
+        """Already-typed values (from local API) skip casting entirely."""
+        state = EventState(name="state", type=DataType.INTEGER, value=42)
+
+        assert state.value == 42
+        assert isinstance(state.value, int)
+
 
 def test_command_to_payload_omits_none():
     """Command.to_payload omits None fields from the resulting payload."""
