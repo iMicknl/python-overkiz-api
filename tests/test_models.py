@@ -627,7 +627,7 @@ class TestState:
         """Accessor raises TypeError if the state type mismatches expected int."""
         state = State(name="state", type=DataType.BOOLEAN, value=False)
         with pytest.raises(TypeError):
-            assert state.value_as_int
+            _ = state.value_as_int
 
     def test_float_value(self):
         """Float typed state returns proper float accessor."""
@@ -638,7 +638,7 @@ class TestState:
         """Accessor raises TypeError if the state type mismatches expected float."""
         state = State(name="state", type=DataType.BOOLEAN, value=False)
         with pytest.raises(TypeError):
-            assert state.value_as_float
+            _ = state.value_as_float
 
     def test_bool_value(self):
         """Boolean typed state returns proper boolean accessor."""
@@ -649,7 +649,7 @@ class TestState:
         """Accessor raises TypeError if the state type mismatches expected bool."""
         state = State(name="state", type=DataType.INTEGER, value=1)
         with pytest.raises(TypeError):
-            assert state.value_as_bool
+            _ = state.value_as_bool
 
     def test_str_value(self):
         """String typed state returns proper string accessor."""
@@ -660,7 +660,7 @@ class TestState:
         """Accessor raises TypeError if the state type mismatches expected string."""
         state = State(name="state", type=DataType.BOOLEAN, value=False)
         with pytest.raises(TypeError):
-            assert state.value_as_str
+            _ = state.value_as_str
 
     def test_dict_value(self):
         """JSON object typed state returns proper dict accessor."""
@@ -671,7 +671,7 @@ class TestState:
         """Accessor raises TypeError if the state type mismatches expected dict."""
         state = State(name="state", type=DataType.BOOLEAN, value=False)
         with pytest.raises(TypeError):
-            assert state.value_as_dict
+            _ = state.value_as_dict
 
     def test_list_value(self):
         """JSON array typed state returns proper list accessor."""
@@ -682,7 +682,7 @@ class TestState:
         """Accessor raises TypeError if the state type mismatches expected list."""
         state = State(name="state", type=DataType.BOOLEAN, value=False)
         with pytest.raises(TypeError):
-            assert state.value_as_list
+            _ = state.value_as_list
 
 
 class TestEventState:
