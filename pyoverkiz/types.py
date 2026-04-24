@@ -11,11 +11,15 @@ from pyoverkiz.enums import DataType
 StateType = str | int | float | bool | dict[str, Any] | list[Any] | None
 
 
-DATA_TYPE_TO_PYTHON: dict[DataType, Callable[[Any], StateType]] = {
+def _parse_bool(value: str) -> bool:
+    return value.lower() in ("true", "1")
+
+
+DATA_TYPE_TO_PYTHON: dict[DataType, Callable[[str], StateType]] = {
     DataType.INTEGER: int,
     DataType.DATE: int,
     DataType.FLOAT: float,
-    DataType.BOOLEAN: bool,
+    DataType.BOOLEAN: _parse_bool,
     DataType.JSON_ARRAY: json.loads,
     DataType.JSON_OBJECT: json.loads,
 }

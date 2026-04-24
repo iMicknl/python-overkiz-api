@@ -703,6 +703,102 @@ class TestEventState:
                 value="[not-valid-json",
             )
 
+    @pytest.mark.parametrize(
+        ("raw", "expected"),
+        [
+            ("true", True),
+            ("True", True),
+            ("TRUE", True),
+            ("1", True),
+            ("false", False),
+            ("False", False),
+            ("FALSE", False),
+            ("0", False),
+            ("", False),
+            ("yes", False),
+            ("no", False),
+        ],
+    )
+    def test_boolean_string_casting(self, raw: str, expected: bool):
+        """Cloud API returns booleans as strings; only 'true'/'1' are truthy."""
+        state = EventState(name="state", type=DataType.BOOLEAN, value=raw)
+
+        assert state.value is expected
+
+    def test_boolean_native_passthrough(self):
+        """Local API returns native booleans; they must not be re-cast."""
+        true_state = EventState(name="state", type=DataType.BOOLEAN, value=True)
+        false_state = EventState(name="state", type=DataType.BOOLEAN, value=False)
+
+        assert true_state.value is True
+        assert false_state.value is False
+
+    @pytest.mark.parametrize(
+        ("raw", "data_type", "expected"),
+        [
+            ("42", DataType.INTEGER, 42),
+            ("-1", DataType.INTEGER, -1),
+            ("0", DataType.INTEGER, 0),
+            ("3.14", DataType.FLOAT, pytest.approx(3.14)),
+            ("-1.5", DataType.FLOAT, pytest.approx(-1.5)),
+            ("0.0", DataType.FLOAT, pytest.approx(0.0)),
+            ("0", DataType.FLOAT, pytest.approx(0.0)),
+            ("12345", DataType.DATE, 12345),
+            ("0", DataType.DATE, 0),
+            ("[1, 2]", DataType.JSON_ARRAY, [1, 2]),
+            ("[]", DataType.JSON_ARRAY, []),
+            ('{"foo": 1}', DataType.JSON_OBJECT, {"foo": 1}),
+            ("{}", DataType.JSON_OBJECT, {}),
+        ],
+    )
+    def test_other_type_casting(self, raw: str, data_type: DataType, expected):
+        """Non-boolean string values are cast correctly."""
+        state = EventState(name="state", type=data_type, value=raw)
+
+        assert state.value == expected
+
+    @pytest.mark.parametrize(
+        ("raw", "data_type"),
+        [
+            ("abc", DataType.INTEGER),
+            ("abc", DataType.FLOAT),
+        ],
+    )
+    def test_invalid_numeric_string_raises(self, raw: str, data_type: DataType):
+        """Non-numeric strings raise ValueError for numeric types."""
+        with pytest.raises(ValueError, match="abc"):
+            EventState(name="state", type=data_type, value=raw)
+
+    def test_string_type_not_cast(self):
+        """STRING type values are left as-is, not passed through any caster."""
+        state = EventState(name="state", type=DataType.STRING, value="hello")
+
+        assert state.value == "hello"
+
+    def test_empty_string_type_not_cast(self):
+        """Empty STRING type values are preserved."""
+        state = EventState(name="state", type=DataType.STRING, value="")
+
+        assert state.value == ""
+
+    @pytest.mark.parametrize(
+        ("value", "data_type"),
+        [
+            (42, DataType.INTEGER),
+            (0, DataType.INTEGER),
+            (3.14, DataType.FLOAT),
+            (0.0, DataType.FLOAT),
+            ({"foo": 1}, DataType.JSON_OBJECT),
+            ([1, 2], DataType.JSON_ARRAY),
+        ],
+    )
+    def test_native_value_not_cast(self, value: object, data_type: DataType):
+        """Already-typed values (from local API) skip casting entirely."""
+        state = EventState(name="state", type=data_type, value=value)
+
+        assert state.value == value
+        assert type(state.value) is type(value)
+
 
 def test_command_to_payload_omits_none():
     """Command.to_payload omits None fields from the resulting payload."""
