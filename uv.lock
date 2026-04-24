@@ -1182,7 +1182,7 @@ requires-dist = [
     { name = "attrs", specifier = ">=21.2" },
     { name = "backoff", specifier = ">=1.10.0,<3.0" },
     { name = "boto3", specifier = ">=1.18.59,<2.0.0" },
-    { name = "cattrs", specifier = ">=26.1.0" },
+    { name = "cattrs", specifier = ">=23.2" },
     { name = "mkdocs", marker = "extra == 'docs'", specifier = ">=1.5.0" },
     { name = "mkdocs-autorefs", marker = "extra == 'docs'", specifier = ">=1.0.0" },
     { name = "mkdocs-material", marker = "extra == 'docs'", specifier = ">=9.5.0" },
