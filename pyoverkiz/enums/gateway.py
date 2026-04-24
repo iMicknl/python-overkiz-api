@@ -108,6 +108,15 @@ class GatewaySubType(UnknownEnumMixin, IntEnum):
 
 
 @unique
+class UpdateCriticityLevel(UnknownEnumMixin, StrEnum):
+    """Criticity level of an available gateway update."""
+
+    BUG_FIX = "BUG_FIX"
+    DEVICES_CONTROL_ONLY = "DEVICES_CONTROL_ONLY"
+    UNKNOWN = "UNKNOWN"
+
+
+@unique
 class UpdateBoxStatus(StrEnum):
     """Status of the gateway update box indicating its updateability."""
 

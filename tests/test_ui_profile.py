@@ -1,7 +1,10 @@
 """Tests for UIProfileDefinition models."""
 
+from pyoverkiz.converter import converter
 from pyoverkiz.models import (
     CommandParameter,
+    CommandPrototype,
+    StatePrototype,
     UIProfileCommand,
     UIProfileDefinition,
     UIProfileState,
@@ -33,7 +36,7 @@ def test_command_parameter():
     param = CommandParameter(
         optional=False,
         sensitive=False,
-        value_prototypes=[{"type": "INT", "min_value": 0, "max_value": 100}],
+        value_prototypes=[ValuePrototype(type="INT", min_value=0, max_value=100)],
     )
     assert param.optional is False
     assert param.sensitive is False
@@ -45,17 +48,17 @@ def test_ui_profile_command():
     """Test UIProfileCommand with prototype."""
     cmd = UIProfileCommand(
         name="setFanSpeedLevel",
-        prototype={
-            "parameters": [
-                {
-                    "optional": False,
-                    "sensitive": False,
-                    "value_prototypes": [
-                        {"type": "INT", "min_value": 0, "max_value": 100}
+        prototype=CommandPrototype(
+            parameters=[
+                CommandParameter(
+                    optional=False,
+                    sensitive=False,
+                    value_prototypes=[
+                        ValuePrototype(type="INT", min_value=0, max_value=100)
                     ],
-                }
+                )
             ]
-        },
+        ),
         description="Set the device fan speed level",
     )
     assert cmd.name == "setFanSpeedLevel"
@@ -68,11 +71,11 @@ def test_ui_profile_state():
     """Test UIProfileState with prototype."""
     state = UIProfileState(
         name="core:TemperatureState",
-        prototype={
-            "value_prototypes": [
-                {"type": "FLOAT", "min_value": -100.0, "max_value": 100.0}
+        prototype=StatePrototype(
+            value_prototypes=[
+                ValuePrototype(type="FLOAT", min_value=-100.0, max_value=100.0)
             ]
-        },
+        ),
         description="Current room temperature",
     )
     assert state.name == "core:TemperatureState"
@@ -81,11 +84,11 @@ def test_ui_profile_state():
     assert len(state.prototype.value_prototypes) == 1
 
 
-def test_ui_profile_definition():
-    """Test complete UIProfileDefinition."""
-    profile = UIProfileDefinition(
-        name="AirFan",
-        commands=[
+def test_ui_profile_definition_from_api():
+    """Test complete UIProfileDefinition structured from API-like dict."""
+    raw = {
+        "name": "AirFan",
+        "commands": [
             {
                 "name": "setFanSpeedLevel",
                 "prototype": {
@@ -102,7 +105,7 @@ def test_ui_profile_definition():
                 "description": "Set fan speed",
             }
         ],
-        states=[
+        "states": [
             {
                 "name": "core:FanSpeedState",
                 "prototype": {
@@ -113,22 +116,21 @@ def test_ui_profile_definition():
                 "description": "Current fan speed",
             }
         ],
-        form_factor=False,
-    )
+        "form_factor": False,
+    }
+    profile = converter.structure(raw, UIProfileDefinition)
 
     assert profile.name == "AirFan"
     assert len(profile.commands) == 1
     assert len(profile.states) == 1
     assert profile.form_factor is False
 
-    # Verify command structure
     cmd = profile.commands[0]
     assert cmd.name == "setFanSpeedLevel"
     assert cmd.description == "Set fan speed"
     assert cmd.prototype is not None
     assert len(cmd.prototype.parameters) == 1
 
-    # Verify state structure
     state = profile.states[0]
     assert state.name == "core:FanSpeedState"
     assert state.description == "Current fan speed"

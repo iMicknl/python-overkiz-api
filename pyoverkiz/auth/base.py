@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import datetime
 from collections.abc import Mapping
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import Any, Protocol
 
 
@@ -12,8 +12,8 @@ from typing import Any, Protocol
 class AuthContext:
     """Authentication context holding tokens and expiration."""
 
-    access_token: str | None = None
-    refresh_token: str | None = None
+    access_token: str | None = field(default=None, repr=False)
+    refresh_token: str | None = field(default=None, repr=False)
     expires_at: datetime.datetime | None = None
 
     def is_expired(self, *, skew_seconds: int = 5) -> bool:

@@ -5,14 +5,17 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import cattrs.errors
 import pytest
 
 from pyoverkiz._case import decamelize
-from pyoverkiz.enums import DataType, Protocol
+from pyoverkiz.converter import converter
+from pyoverkiz.enums import DataType, EventName, ExecutionState, FailureType, Protocol
 from pyoverkiz.models import (
     CommandDefinitions,
     Definition,
     Device,
+    Event,
     EventState,
     Setup,
     State,
@@ -79,6 +82,11 @@ STATE = "core:NameState"
 FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures" / "setup"
 
 
+def _make_device(raw: dict | None = None) -> Device:
+    """Create a Device from raw camelCase dict via the converter."""
+    return converter.structure(decamelize(raw or RAW_DEVICES), Device)
+
+
 class TestSetup:
     """Tests for setup-level ID parsing and redaction behavior."""
 
@@ -87,7 +95,7 @@ class TestSetup:
         raw_setup = json.loads(
             (FIXTURES_DIR / "setup_tahoma_1.json").read_text(encoding="utf-8")
         )
-        setup = Setup(**decamelize(raw_setup))
+        setup = converter.structure(decamelize(raw_setup), Setup)
         raw_id = "SETUP-1234-1234-8044"
         redacted_id = obfuscate_id(raw_id)
 
@@ -100,7 +108,7 @@ class TestSetup:
         raw_setup = json.loads(
             (FIXTURES_DIR / "setup_local.json").read_text(encoding="utf-8")
         )
-        setup = Setup(**decamelize(raw_setup))
+        setup = converter.structure(decamelize(raw_setup), Setup)
 
         assert setup.id is None
 
@@ -216,12 +224,7 @@ class TestDevice:
         is_sub_device: bool,
     ):
         """Ensure device URL parsing extracts protocol, gateway and address correctly."""
-        test_device = {
-            **RAW_DEVICES,
-            "deviceURL": device_url,
-        }
-        device_data = decamelize(test_device)
-        device = Device(**device_data)
+        device = _make_device({**RAW_DEVICES, "deviceURL": device_url})
 
         assert device.identifier.protocol == protocol
         assert device.identifier.gateway_id == gateway_id
@@ -238,76 +241,62 @@ class TestDevice:
     )
     def test_invalid_device_url_raises(self, device_url: str):
         """Invalid device URLs should raise during identifier parsing."""
-        test_device = {
-            **RAW_DEVICES,
-            "deviceURL": device_url,
-        }
-        device_data = decamelize(test_device)
-
-        with pytest.raises(ValueError, match="Invalid device URL"):
-            Device(**device_data)
+        with pytest.raises(cattrs.errors.ClassValidationError):
+            _make_device({**RAW_DEVICES, "deviceURL": device_url})
 
     def test_none_states(self):
         """Devices without a `states` field should provide an empty States object."""
-        device_data = decamelize(RAW_DEVICES)
-        del device_data["states"]
-        device = Device(**device_data)
+        raw = dict(RAW_DEVICES)
+        del raw["states"]
+        device = _make_device(raw)
         assert not device.states.get(STATE)
 
     def test_select_first_command(self):
         """Device.select_first_command() returns first supported command from list."""
-        device_data = decamelize(RAW_DEVICES)
-        device = Device(**device_data)
+        device = _make_device()
         assert device.select_first_command(["nonexistent", "open", "close"]) == "open"
         assert device.select_first_command(["nonexistent"]) is None
 
     def test_supports_command(self):
         """Device.supports_command() checks if device supports a single command."""
-        device_data = decamelize(RAW_DEVICES)
-        device = Device(**device_data)
+        device = _make_device()
         assert device.supports_command("open")
         assert not device.supports_command("nonexistent")
 
     def test_supports_any_command(self):
         """Device.supports_any_command() checks if device supports any command."""
-        device_data = decamelize(RAW_DEVICES)
-        device = Device(**device_data)
+        device = _make_device()
         assert device.supports_any_command(["nonexistent", "open"])
         assert not device.supports_any_command(["nonexistent"])
 
     def test_get_state_value(self):
         """Device.get_state_value() returns value of a single state."""
-        device_data = decamelize(RAW_DEVICES)
-        device = Device(**device_data)
+        device = _make_device()
         value = device.get_state_value("core:ClosureState")
         assert value == 100
         assert device.get_state_value("nonexistent") is None
 
     def test_select_first_state_value(self):
         """Device.select_first_state_value() returns value of first matching state from list."""
-        device_data = decamelize(RAW_DEVICES)
-        device = Device(**device_data)
+        device = _make_device()
         value = device.select_first_state_value(["nonexistent", "core:ClosureState"])
         assert value == 100
 
     def test_has_state_value(self):
         """Device.has_state_value() checks if a single state exists with non-None value."""
-        device_data = decamelize(RAW_DEVICES)
-        device = Device(**device_data)
+        device = _make_device()
         assert device.has_state_value("core:ClosureState")
         assert not device.has_state_value("nonexistent")
 
     def test_has_any_state_value(self):
         """Device.has_any_state_value() checks if any state exists with non-None value."""
-        device_data = decamelize(RAW_DEVICES)
-        device = Device(**device_data)
+        device = _make_device()
         assert device.has_any_state_value(["nonexistent", "core:ClosureState"])
         assert not device.has_any_state_value(["nonexistent"])
 
     def test_get_state_definition(self):
         """Device.get_state_definition() returns StateDefinition for a single state."""
-        device_data = decamelize(RAW_DEVICES)
-        device = Device(**device_data)
+        device = _make_device()
         state_def = device.get_state_definition("core:ClosureState")
         assert state_def is not None
         assert state_def.qualified_name == "core:ClosureState"
@@ -315,8 +304,7 @@ class TestDevice:
 
     def test_select_first_state_definition(self):
         """Device.select_first_state_definition() returns first matching StateDefinition from list."""
-        device_data = decamelize(RAW_DEVICES)
-        device = Device(**device_data)
+        device = _make_device()
         state_def = device.select_first_state_definition(
             ["nonexistent", "core:ClosureState"]
         )
@@ -325,30 +313,30 @@ class TestDevice:
 
     def test_get_attribute_value(self):
         """Device.get_attribute_value() returns value of a single attribute."""
-        test_device = {
-            **RAW_DEVICES,
-            "attributes": [
-                {"name": "core:Manufacturer", "type": 3, "value": "VELUX"},
-                {"name": "core:Model", "type": 3, "value": "WINDOW 100"},
-            ],
-        }
-        device_data = decamelize(test_device)
-        device = Device(**device_data)
+        device = _make_device(
+            {
+                **RAW_DEVICES,
+                "attributes": [
+                    {"name": "core:Manufacturer", "type": 3, "value": "VELUX"},
+                    {"name": "core:Model", "type": 3, "value": "WINDOW 100"},
+                ],
+            }
+        )
         value = device.get_attribute_value("core:Model")
         assert value == "WINDOW 100"
         assert device.get_attribute_value("nonexistent") is None
 
     def test_select_first_attribute_value_returns_first_match(self):
         """Device.select_first_attribute_value() returns value of first matching attribute from list."""
-        test_device = {
-            **RAW_DEVICES,
-            "attributes": [
-                {"name": "core:Manufacturer", "type": 3, "value": "VELUX"},
-                {"name": "core:Model", "type": 3, "value": "WINDOW 100"},
-            ],
-        }
-        device_data = decamelize(test_device)
-        device = Device(**device_data)
+        device = _make_device(
+            {
+                **RAW_DEVICES,
+                "attributes": [
+                    {"name": "core:Manufacturer", "type": 3, "value": "VELUX"},
+                    {"name": "core:Model", "type": 3, "value": "WINDOW 100"},
+                ],
+            }
+        )
         value = device.select_first_attribute_value(
             ["nonexistent", "core:Model", "core:Manufacturer"]
         )
@@ -356,30 +344,27 @@ class TestDevice:
 
     def test_select_first_attribute_value_returns_none_when_no_match(self):
         """Device.select_first_attribute_value() returns None when no attribute matches."""
-        device_data = decamelize(RAW_DEVICES)
-        device = Device(**device_data)
+        device = _make_device()
         value = device.select_first_attribute_value(["nonexistent", "also_nonexistent"])
         assert value is None
 
     def test_select_first_attribute_value_empty_attributes(self):
         """Device.select_first_attribute_value() returns None for devices with no attributes."""
-        test_device = {**RAW_DEVICES, "attributes": []}
-        device_data = decamelize(test_device)
-        device = Device(**device_data)
+        device = _make_device({**RAW_DEVICES, "attributes": []})
         value = device.select_first_attribute_value(["core:Manufacturer"])
         assert value is None
 
     def test_select_first_attribute_value_with_none_values(self):
         """Device.select_first_attribute_value() skips attributes with None values."""
-        test_device = {
-            **RAW_DEVICES,
-            "attributes": [
-                {"name": "core:Model", "type": 3, "value": None},
-                {"name": "core:Manufacturer", "type": 3, "value": "VELUX"},
-            ],
-        }
-        device_data = decamelize(test_device)
-        device = Device(**device_data)
+        device = _make_device(
+            {
+                **RAW_DEVICES,
+                "attributes": [
+                    {"name": "core:Model", "type": 3, "value": None},
+                    {"name": "core:Manufacturer", "type": 3, "value": "VELUX"},
+                ],
+            }
+        )
         value = device.select_first_attribute_value(["core:Model", "core:Manufacturer"])
         assert value == "VELUX"
 
@@ -387,21 +372,24 @@ class TestDevice:
 class TestStates:
     """Tests for the States container behaviour and getter semantics."""
 
+    def _make_states(self, raw: list[dict] | None = None) -> States:
+        return converter.structure(raw, States)
+
     def test_empty_states(self):
         """An empty list yields an empty States object with no state found."""
-        states = States([])
+        states = self._make_states([])
         assert not states
         assert not states.get(STATE)
 
     def test_none_states(self):
         """A None value for states should behave as empty."""
-        states = States(None)
+        states = self._make_states(None)
         assert not states
         assert not states.get(STATE)
 
     def test_getter(self):
         """Retrieve a known state and validate its properties."""
-        states = States(RAW_STATES)
+        states = self._make_states(RAW_STATES)
         state = states.get(STATE)
         assert state
         assert state.name == STATE
@@ -410,13 +398,13 @@ class TestStates:
 
     def test_getter_missing(self):
         """Requesting a missing state returns falsy (None)."""
-        states = States(RAW_STATES)
+        states = self._make_states(RAW_STATES)
         state = states.get("FooState")
         assert not state
 
     def test_select_returns_first_match(self):
         """select() returns the first state with a non-None value."""
-        states = States(RAW_STATES)
+        states = self._make_states(RAW_STATES)
         state = states.select(
             ["nonexistent", "core:NameState", "internal:AlarmDelayState"]
         )
@@ -425,37 +413,78 @@ class TestStates:
 
     def test_select_returns_none_when_no_match(self):
         """select() returns None when no state matches."""
-        states = States(RAW_STATES)
+        states = self._make_states(RAW_STATES)
         assert states.select(["nonexistent", "also_nonexistent"]) is None
 
     def test_select_value_returns_first_value(self):
         """select_value() returns the value of the first matching state."""
-        states = States(RAW_STATES)
+        states = self._make_states(RAW_STATES)
         value = states.select_value(["nonexistent", "core:NameState"])
         assert value == "alarm name"
 
     def test_select_value_returns_none_when_no_match(self):
         """select_value() returns None when no state matches."""
-        states = States(RAW_STATES)
+        states = self._make_states(RAW_STATES)
         assert states.select_value(["nonexistent"]) is None
 
     def test_has_any_true(self):
         """has_any() returns True when at least one state exists."""
-        states = States(RAW_STATES)
+        states = self._make_states(RAW_STATES)
         assert states.has_any(["nonexistent", "core:NameState"])
 
     def test_has_any_false(self):
         """has_any() returns False when no state exists."""
-        states = States(RAW_STATES)
+        states = self._make_states(RAW_STATES)
         assert not states.has_any(["nonexistent", "also_nonexistent"])
+
+    def test_getitem_raises_keyerror_on_missing(self):
+        """Subscript access raises KeyError for missing states."""
+        states = self._make_states(RAW_STATES)
+        with pytest.raises(KeyError, match="nonexistent"):
+            states["nonexistent"]
+
+    def test_getitem_returns_state_on_hit(self):
+        """Subscript access returns the State for a known name."""
+        states = self._make_states(RAW_STATES)
+        state = states[STATE]
+        assert state.name == STATE
+
+    def test_contains_existing(self):
+        """'in' operator returns True for existing state names."""
+        states = self._make_states(RAW_STATES)
+        assert STATE in states
+
+    def test_contains_missing(self):
+        """'in' operator returns False for missing state names."""
+        states = self._make_states(RAW_STATES)
+        assert "nonexistent" not in states
+
+    def test_setitem_replaces_existing(self):
+        """Setting an existing state replaces it."""
+        states = self._make_states(RAW_STATES)
+        new_state = State(name=STATE, type=DataType.INTEGER, value=42)
+        states[STATE] = new_state
+        assert states.get(STATE).value == 42
+
+    def test_setitem_appends_new(self):
+        """Setting a new state appends it."""
+        states = self._make_states(RAW_STATES)
+        initial_len = len(states)
+        new_state = State(name="new:State", type=DataType.INTEGER, value=1)
+        states["new:State"] = new_state
+        assert len(states) == initial_len + 1
+        assert states.get("new:State").value == 1
 
 
 class TestCommandDefinitions:
     """Tests for CommandDefinitions container and helper methods."""
 
+    def _make_cmds(self, raw: list[dict]) -> CommandDefinitions:
+        return converter.structure(raw, CommandDefinitions)
+
     def test_select_returns_first_match(self):
         """select() returns the first command name that exists."""
-        cmds = CommandDefinitions(
+        cmds = self._make_cmds(
             [
                 {"command_name": "close", "nparams": 0},
                 {"command_name": "open", "nparams": 0},
@@ -466,66 +495,89 @@ class TestCommandDefinitions:
 
     def test_select_returns_none_when_no_match(self):
         """select() returns None when no command matches."""
-        cmds = CommandDefinitions([{"command_name": "close", "nparams": 0}])
+        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
         assert cmds.select(["nonexistent", "also_nonexistent"]) is None
 
     def test_has_any_true(self):
         """has_any() returns True when at least one command exists."""
-        cmds = CommandDefinitions([{"command_name": "close", "nparams": 0}])
+        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
         assert cmds.has_any(["nonexistent", "close"])
 
     def test_has_any_false(self):
         """has_any() returns False when no command matches."""
-        cmds = CommandDefinitions([{"command_name": "close", "nparams": 0}])
+        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
         assert not cmds.has_any(["nonexistent", "also_nonexistent"])
+
+    def test_getitem_raises_keyerror_on_missing(self):
+        """Subscript access raises KeyError for missing commands."""
+        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        with pytest.raises(KeyError, match="nonexistent"):
+            cmds["nonexistent"]
+
+    def test_getitem_returns_command_on_hit(self):
+        """Subscript access returns the CommandDefinition for a known command."""
+        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        cmd = cmds["close"]
+        assert cmd.command_name == "close"
+
+    def test_get_returns_none_on_missing(self):
+        """get() returns None for missing commands."""
+        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        assert cmds.get("nonexistent") is None
+
+    def test_contains_existing(self):
+        """'in' operator returns True for existing command names."""
+        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        assert "close" in cmds
+
+    def test_contains_missing(self):
+        """'in' operator returns False for missing command names."""
+        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        assert "nonexistent" not in cmds
 
 
 class TestDefinition:
     """Tests for Definition model and its helper methods."""
 
     def test_get_state_definition_returns_first_match(self):
-        """get_state_definition() returns the first StateDefinition in definition.states.
-
-        The definition is matched by `qualified_name` against the input list.
-        """
+        """get_state_definition() returns the first StateDefinition in definition.states."""
         definition = Definition(
-            commands=[],
+            commands=CommandDefinitions(),
             states=[
-                {"qualified_name": "core:ClosureState", "type": "ContinuousState"},
-                {
-                    "qualified_name": "core:TargetClosureState",
-                    "type": "ContinuousState",
-                },
+                StateDefinition(
+                    qualified_name="core:ClosureState", type="ContinuousState"
+                ),
+                StateDefinition(
+                    qualified_name="core:TargetClosureState", type="ContinuousState"
+                ),
             ],
         )
-        # Iterates definition.states in order, returns first match found
         state_def = definition.get_state_definition(
             ["core:TargetClosureState", "core:ClosureState"]
         )
         assert state_def is not None
-        # core:ClosureState appears first in definition.states, so it's returned
         assert state_def.qualified_name == "core:ClosureState"
 
-        # Only asking for TargetClosureState works
         state_def2 = definition.get_state_definition(["core:TargetClosureState"])
         assert state_def2 is not None
         assert state_def2.qualified_name == "core:TargetClosureState"
 
     def test_get_state_definition_returns_none_when_no_match(self):
         """get_state_definition() returns None when no state definition matches."""
-        definition = Definition(commands=[], states=[])
+        definition = Definition(commands=CommandDefinitions(), states=[])
         assert definition.get_state_definition(["nonexistent"]) is None
 
     def test_has_state_definition_returns_true(self):
         """has_state_definition() returns True when a state definition matches."""
         definition = Definition(
-            commands=[],
+            commands=CommandDefinitions(),
             states=[
-                {"qualified_name": "core:ClosureState", "type": "ContinuousState"},
-                {
-                    "qualified_name": "core:TargetClosureState",
-                    "type": "ContinuousState",
-                },
+                StateDefinition(
+                    qualified_name="core:ClosureState", type="ContinuousState"
+                ),
+                StateDefinition(
+                    qualified_name="core:TargetClosureState", type="ContinuousState"
+                ),
             ],
         )
         assert definition.has_state_definition(["core:ClosureState"])
@@ -536,16 +588,18 @@ class TestDefinition:
     def test_has_state_definition_returns_false(self):
         """has_state_definition() returns False when no state definition matches."""
         definition = Definition(
-            commands=[],
+            commands=CommandDefinitions(),
             states=[
-                {"qualified_name": "core:ClosureState", "type": "ContinuousState"},
+                StateDefinition(
+                    qualified_name="core:ClosureState", type="ContinuousState"
+                ),
             ],
         )
         assert not definition.has_state_definition(["nonexistent", "also_nonexistent"])
 
     def test_has_state_definition_empty_states(self):
         """has_state_definition() returns False for definitions with no states."""
-        definition = Definition(commands=[], states=[])
+        definition = Definition(commands=CommandDefinitions(), states=[])
         assert not definition.has_state_definition(["core:ClosureState"])
 
 
@@ -669,12 +723,103 @@ def test_action_to_payload_and_parameters_conversion():
     cmd = Command(
         name=OverkizCommand.SET_LEVEL, parameters=[10, OverkizCommandParam.A], type=1
     )
-    action = Action("rts://2025-8464-6867/16756006", [cmd])
+    action = Action(device_url="rts://2025-8464-6867/16756006", commands=[cmd])
 
     payload = action.to_payload()
 
     assert payload["device_url"] == "rts://2025-8464-6867/16756006"
     assert payload["commands"][0]["name"] == "setLevel"
     assert payload["commands"][0]["type"] == 1
-    # parameters should be converted to primitives (enum -> str)
     assert payload["commands"][0]["parameters"] == [10, "A"]
+
+
+class TestEvent:
+    """Tests for Event structuring via the cattrs converter."""
+
+    def test_execution_state_changed_event(self):
+        """Optional[Enum] fields (old_state, new_state) are structured into enums."""
+        raw = decamelize(
+            {
+                "timestamp": 1631130760744,
+                "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+                "execId": "c6f83624-ac10-3e01-653e-2b025fee956d",
+                "newState": "IN_PROGRESS",
+                "ownerKey": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+                "type": 1,
+                "subType": 1,
+                "oldState": "TRANSMITTED",
+                "timeToNextState": 0,
+                "name": "ExecutionStateChangedEvent",
+            }
+        )
+        event = converter.structure(raw, Event)
+
+        assert event.name == EventName.EXECUTION_STATE_CHANGED
+        assert event.old_state is ExecutionState.TRANSMITTED
+        assert event.new_state is ExecutionState.IN_PROGRESS
+        assert event.setup_oid == "741bc89f-a47b-4ad6-894d-a785c06956c2"
+
+    def test_failure_type_code_structured_as_enum(self):
+        """FailureType | None field is structured into an enum instance."""
+        raw = decamelize(
+            {
+                "name": "ExecutionStateChangedEvent",
+                "timestamp": 123,
+                "failureTypeCode": 0,
+            }
+        )
+        event = converter.structure(raw, Event)
+
+        assert isinstance(event.failure_type_code, FailureType)
+        assert event.failure_type_code is FailureType.NO_FAILURE
+
+    def test_optional_enum_fields_none_when_absent(self):
+        """Optional enum fields default to None when not present in the payload."""
+        raw = decamelize(
+            {
+                "name": "GatewaySynchronizationEndedEvent",
+                "timestamp": 1631130645998,
+                "gatewayId": "9876-1234-8767",
+            }
+        )
+        event = converter.structure(raw, Event)
+
+        assert event.old_state is None
+        assert event.new_state is None
+        assert event.failure_type_code is None
+
+    def test_device_state_changed_event_with_states(self):
+        """DeviceStateChangedEvent payload structures device_states as EventState."""
+        raw = decamelize(
+            {
+                "timestamp": 1631130646544,
+                "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+                "deviceURL": "io://9876-1234-8767/4468654#1",
+                "deviceStates": [
+                    {
+                        "name": "core:ElectricEnergyConsumptionState",
+                        "type": 1,
+                        "value": "23247220",
+                    }
+                ],
+                "name": "DeviceStateChangedEvent",
+            }
+        )
+        event = converter.structure(raw, Event)
+
+        assert event.name == EventName.DEVICE_STATE_CHANGED
+        assert len(event.device_states) == 1
+        assert isinstance(event.device_states[0], EventState)
+
+    def test_event_fixture_structures_all_events(self):
+        """All events in the cloud fixture file structure without errors."""
+        raw_events = json.loads((Path("tests/fixtures/event/events.json")).read_text())
+        events = [converter.structure(decamelize(e), Event) for e in raw_events]
+
+        assert len(events) == len(raw_events)
+        state_changed = [
+            e for e in events if e.name == EventName.EXECUTION_STATE_CHANGED
+        ]
+        for e in state_changed:
+            assert isinstance(e.old_state, ExecutionState)
+            assert isinstance(e.new_state, ExecutionState)

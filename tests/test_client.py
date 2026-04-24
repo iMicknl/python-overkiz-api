@@ -651,8 +651,8 @@ class TestOverkizClient:
         from pyoverkiz.models import Action, Command
 
         action = Action(
-            "rts://2025-8464-6867/16756006",
-            [Command(name=OverkizCommand.CLOSE, parameters=None, type=None)],
+            device_url="rts://2025-8464-6867/16756006",
+            commands=[Command(name=OverkizCommand.CLOSE, parameters=None, type=None)],
         )
 
         resp = MockResponse('{"execId": "exec-123"}')
@@ -881,8 +881,8 @@ class TestOverkizClient:
     async def test_execute_action_group_rts_close(self, client: OverkizClient):
         """Verify executing a close command on an RTS cover."""
         action = Action(
-            "rts://2025-8464-6867/16756006",
-            [Command(name="close", parameters=None, type=1)],
+            device_url="rts://2025-8464-6867/16756006",
+            commands=[Command(name="close", parameters=None, type=1)],
         )
         resp = MockResponse('{"execId": "ee7a5676-c68f-43a3-956d-6f5efc745954"}')
 
@@ -905,12 +905,12 @@ class TestOverkizClient:
         """Verify executing commands on multiple RTS devices in a single action group."""
         actions = [
             Action(
-                "rts://2025-8464-6867/16756006",
-                [Command(name="close", parameters=None, type=1)],
+                device_url="rts://2025-8464-6867/16756006",
+                commands=[Command(name="close", parameters=None, type=1)],
             ),
             Action(
-                "rts://2025-8464-6867/16756007",
-                [Command(name="open", parameters=None, type=1)],
+                device_url="rts://2025-8464-6867/16756007",
+                commands=[Command(name="open", parameters=None, type=1)],
             ),
         ]
         resp = MockResponse('{"execId": "aaa-bbb-ccc"}')
@@ -1100,8 +1100,8 @@ class TestOverkizClient:
     ):
         """Verify executing an RTS command via the local API."""
         action = Action(
-            "rts://2025-8464-6867/16756006",
-            [Command(name="close")],
+            device_url="rts://2025-8464-6867/16756006",
+            commands=[Command(name="close")],
         )
         resp = MockResponse('{"execId": "45e52d27-3c08-4fd5-87f2-03d650b67f4b"}')
 
