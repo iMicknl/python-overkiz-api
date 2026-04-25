@@ -9,10 +9,7 @@ import json
 import ssl
 from collections.abc import Mapping
 from http import HTTPStatus
-from typing import TYPE_CHECKING, Any, cast
-
-if TYPE_CHECKING:
-    from botocore.client import BaseClient
+from typing import Any, cast
 
 from aiohttp import ClientSession, FormData
 
@@ -246,14 +243,20 @@ class NexityAuthStrategy(SessionLoginStrategy):
 
     async def login(self) -> None:
         """Perform login using Nexity username and password."""
-        import boto3
-        from botocore.config import Config
-        from botocore.exceptions import ClientError
-        from warrant_lite import WarrantLite
+        try:
+            import boto3
+            from botocore.config import Config
+            from botocore.exceptions import ClientError
+            from warrant_lite import WarrantLite
+        except ImportError as err:
+            raise ImportError(
+                "Nexity authentication requires the 'nexity' extra. "
+                "Install it with: pip install pyoverkiz[nexity]"
+            ) from err
 
         loop = asyncio.get_running_loop()
 
-        def _client() -> BaseClient:
+        def _client() -> Any:
             return boto3.client(
                 "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
             )

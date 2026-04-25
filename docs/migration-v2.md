@@ -297,4 +297,4 @@ These are not breaking, but worth knowing about when migrating:
 - **Device helpers** — `Device.get_command_definition()` for looking up command metadata.
 - **Reference endpoints** — query server metadata: `get_reference_ui_classes()`, `get_reference_ui_widgets()`, `get_reference_ui_profile()`, `get_reference_controllable_types()`, etc.
 - **Firmware management** — `get_devices_not_up_to_date()`, `get_device_firmware_status()`, `update_device_firmware()`.
-- **boto3 lazy import** — `boto3` is only imported when the Nexity auth strategy is actually used.
+- **Optional Nexity dependencies** — `boto3` and `warrant-lite` are no longer installed by default. Install them with `pip install pyoverkiz[nexity]` if you use the Nexity server. A clear `ImportError` is raised at login time if the extra is missing.
