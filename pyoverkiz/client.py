@@ -222,8 +222,7 @@ class OverkizClient:
             queue_settings.validate()
             self._action_queue = ActionQueue(
                 executor=self._execute_action_group_direct,
-                delay=queue_settings.delay,
-                max_actions=queue_settings.max_actions,
+                settings=queue_settings,
             )
 
         self._auth = build_auth_strategy(

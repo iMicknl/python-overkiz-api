@@ -134,11 +134,13 @@ class States:
 
     _states: list[State]
     _index: dict[str, State]
+    _pos: dict[str, int]
 
     def __init__(self, states: list[State] | None = None) -> None:
         """Create a States container from a list of State objects or empty."""
         self._states = list(states) if states else []
         self._index = {state.name: state for state in self._states}
+        self._pos = {state.name: i for i, state in enumerate(self._states)}
 
     def __iter__(self) -> Iterator[State]:
         """Return an iterator over contained State objects."""
@@ -159,10 +161,10 @@ class States:
         """Set or append a State identified by name."""
         if state.name != name:
             raise ValueError(f"State name {state.name!r} does not match key {name!r}")
-        if name in self._index:
-            idx = self._states.index(self._index[name])
-            self._states[idx] = state
+        if name in self._pos:
+            self._states[self._pos[name]] = state
         else:
+            self._pos[name] = len(self._states)
             self._states.append(state)
         self._index[name] = state
 

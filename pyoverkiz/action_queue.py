@@ -88,18 +88,17 @@ class ActionQueue:
         executor: Callable[
             [list[Action], ExecutionMode | None, str | None], Coroutine[None, None, str]
         ],
-        delay: float = 0.5,
-        max_actions: int = 20,
+        settings: ActionQueueSettings | None = None,
     ) -> None:
         """Initialize the action queue.
 
         :param executor: Async function to execute batched actions
-        :param delay: Seconds to wait before auto-flushing (default 0.5)
-        :param max_actions: Maximum actions per batch before forced flush (default 20)
+        :param settings: Queue configuration (uses defaults if None)
         """
         self._executor = executor
-        self._delay = delay
-        self._max_actions = max_actions
+        settings = settings or ActionQueueSettings()
+        self._delay = settings.delay
+        self._max_actions = settings.max_actions
 
         self._pending_actions: list[Action] = []
         self._pending_mode: ExecutionMode | None = None

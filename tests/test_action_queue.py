@@ -5,7 +5,7 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-from pyoverkiz.action_queue import ActionQueue, QueuedExecution
+from pyoverkiz.action_queue import ActionQueue, ActionQueueSettings, QueuedExecution
 from pyoverkiz.enums import ExecutionMode, OverkizCommand
 from pyoverkiz.models import Action, Command
 
@@ -24,7 +24,7 @@ def mock_executor():
 @pytest.mark.asyncio
 async def test_action_queue_single_action(mock_executor):
     """Test queue with a single action."""
-    queue = ActionQueue(executor=mock_executor, delay=0.1)
+    queue = ActionQueue(executor=mock_executor, settings=ActionQueueSettings(delay=0.1))
 
     action = Action(
         device_url="io://1234-5678-9012/1",
@@ -45,7 +45,7 @@ async def test_action_queue_single_action(mock_executor):
 @pytest.mark.asyncio
 async def test_action_queue_batching(mock_executor):
     """Test that multiple actions are batched together."""
-    queue = ActionQueue(executor=mock_executor, delay=0.2)
+    queue = ActionQueue(executor=mock_executor, settings=ActionQueueSettings(delay=0.2))
 
     actions = [
         Action(
@@ -75,7 +75,9 @@ async def test_action_queue_batching(mock_executor):
 @pytest.mark.asyncio
 async def test_action_queue_max_actions_flush(mock_executor):
     """Test that queue flushes when max actions is reached."""
-    queue = ActionQueue(executor=mock_executor, delay=10.0, max_actions=3)
+    queue = ActionQueue(
+        executor=mock_executor, settings=ActionQueueSettings(delay=10.0, max_actions=3)
+    )
 
     actions = [
         Action(
@@ -112,8 +114,8 @@ async def test_action_queue_max_actions_flush(mock_executor):
 
 @pytest.mark.asyncio
 async def test_action_queue_mode_change_flush(mock_executor):
-    """Test that queue flushes when execution mode changes."""
-    queue = ActionQueue(executor=mock_executor, delay=0.5)
+    """Test that queue flushes when command mode changes."""
+    queue = ActionQueue(executor=mock_executor, settings=ActionQueueSettings(delay=0.5))
 
     action = Action(
         device_url="io://1234-5678-9012/1",
@@ -140,7 +142,7 @@ async def test_action_queue_mode_change_flush(mock_executor):
 @pytest.mark.asyncio
 async def test_action_queue_label_change_flush(mock_executor):
     """Test that queue flushes when label changes."""
-    queue = ActionQueue(executor=mock_executor, delay=0.5)
+    queue = ActionQueue(executor=mock_executor, settings=ActionQueueSettings(delay=0.5))
 
     action = Action(
         device_url="io://1234-5678-9012/1",
@@ -167,7 +169,7 @@ async def test_action_queue_label_change_flush(mock_executor):
 @pytest.mark.asyncio
 async def test_action_queue_duplicate_device_merge(mock_executor):
     """Test that queue merges commands for duplicate devices."""
-    queue = ActionQueue(executor=mock_executor, delay=0.5)
+    queue = ActionQueue(executor=mock_executor, settings=ActionQueueSettings(delay=0.5))
 
     action1 = Action(
         device_url="io://1234-5678-9012/1",
@@ -191,7 +193,7 @@ async def test_action_queue_duplicate_device_merge(mock_executor):
 @pytest.mark.asyncio
 async def test_action_queue_duplicate_device_merge_order(mock_executor):
     """Test that command order is preserved when merging."""
-    queue = ActionQueue(executor=mock_executor, delay=0.1)
+    queue = ActionQueue(executor=mock_executor, settings=ActionQueueSettings(delay=0.1))
 
     action1 = Action(
         device_url="io://1234-5678-9012/1",
@@ -219,7 +221,7 @@ async def test_action_queue_duplicate_device_merge_does_not_mutate_inputs(
     mock_executor,
 ):
     """Test that merge behavior does not mutate caller-owned Action commands."""
-    queue = ActionQueue(executor=mock_executor, delay=0.1)
+    queue = ActionQueue(executor=mock_executor, settings=ActionQueueSettings(delay=0.1))
 
     action1 = Action(
         device_url="io://1234-5678-9012/1",
@@ -240,7 +242,9 @@ async def test_action_queue_duplicate_device_merge_does_not_mutate_inputs(
 @pytest.mark.asyncio
 async def test_action_queue_manual_flush(mock_executor):
     """Test manual flush of the queue."""
-    queue = ActionQueue(executor=mock_executor, delay=10.0)  # Long delay
+    queue = ActionQueue(
+        executor=mock_executor, settings=ActionQueueSettings(delay=10.0)
+    )  # Long delay
 
     action = Action(
         device_url="io://1234-5678-9012/1",
@@ -261,7 +265,9 @@ async def test_action_queue_manual_flush(mock_executor):
 @pytest.mark.asyncio
 async def test_action_queue_shutdown(mock_executor):
     """Test that shutdown flushes pending actions."""
-    queue = ActionQueue(executor=mock_executor, delay=10.0)
+    queue = ActionQueue(
+        executor=mock_executor, settings=ActionQueueSettings(delay=10.0)
+    )
 
     action = Action(
         device_url="io://1234-5678-9012/1",
@@ -284,7 +290,7 @@ async def test_action_queue_error_propagation(mock_executor):
     # Make executor raise an exception
     mock_executor.side_effect = ValueError("API Error")
 
-    queue = ActionQueue(executor=mock_executor, delay=0.1)
+    queue = ActionQueue(executor=mock_executor, settings=ActionQueueSettings(delay=0.1))
 
     action = Action(
         device_url="io://1234-5678-9012/1",
@@ -306,7 +312,7 @@ async def test_action_queue_error_propagation(mock_executor):
 async def test_action_queue_get_pending_count():
     """Test getting pending action count."""
     mock_executor = AsyncMock(return_value="exec-123")
-    queue = ActionQueue(executor=mock_executor, delay=0.5)
+    queue = ActionQueue(executor=mock_executor, settings=ActionQueueSettings(delay=0.5))
 
     assert queue.get_pending_count() == 0
 
