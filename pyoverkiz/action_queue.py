@@ -96,9 +96,7 @@ class ActionQueue:
         :param settings: Queue configuration (uses defaults if None)
         """
         self._executor = executor
-        settings = settings or ActionQueueSettings()
-        self._delay = settings.delay
-        self._max_actions = settings.max_actions
+        self._settings = settings or ActionQueueSettings()
 
         self._pending_actions: list[Action] = []
         self._pending_mode: ExecutionMode | None = None
@@ -187,7 +185,7 @@ class ActionQueue:
             self._pending_waiters.append(waiter)
 
             # If we hit max actions, flush immediately
-            if len(self._pending_actions) >= self._max_actions:
+            if len(self._pending_actions) >= self._settings.max_actions:
                 # Prepare the current batch for flushing (which includes the actions
                 # we just added). If we already flushed due to mode change, this is
                 # a second batch.
@@ -207,7 +205,7 @@ class ActionQueue:
         """Wait for the delay period, then flush the queue."""
         waiters: list[QueuedExecution] = []
         try:
-            await asyncio.sleep(self._delay)
+            await asyncio.sleep(self._settings.delay)
             async with self._lock:
                 if not self._pending_actions:
                     return

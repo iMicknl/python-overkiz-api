@@ -37,7 +37,7 @@ from pyoverkiz.auth.strategies import (
     _decode_jwt_payload,
 )
 from pyoverkiz.enums import APIType, Server
-from pyoverkiz.exceptions import InvalidTokenError
+from pyoverkiz.exceptions import InvalidTokenError, NexityBadCredentialsError
 from pyoverkiz.models import ServerConfig
 
 
@@ -523,7 +523,8 @@ class TestNexityAuthStrategy:
             patch("warrant_lite.WarrantLite", return_value=warrant_instance),
         ):
             strategy = NexityAuthStrategy(credentials, session, server_config, True)
-            await strategy.login()
+            with pytest.raises(NexityBadCredentialsError):
+                await strategy.login()
 
     @pytest.mark.asyncio
     async def test_login_propagates_non_auth_client_error(self):
@@ -550,7 +551,8 @@ class TestNexityAuthStrategy:
             patch("warrant_lite.WarrantLite", return_value=warrant_instance),
         ):
             strategy = NexityAuthStrategy(credentials, session, server_config, True)
-            await strategy.login()
+            with pytest.raises(ClientError, match="InternalErrorException"):
+                await strategy.login()
 
 
 class TestRexelAuthStrategy:
