@@ -212,8 +212,8 @@ async def test_rts_device_not_in_devices_list_skipped(client_with_rts):
 
 
 @pytest.mark.asyncio
-async def test_rts_device_without_definition_skipped(client_with_rts):
-    """RTS device without definition doesn't crash, just skips injection."""
+async def test_rts_device_without_command_definitions_skipped(client_with_rts):
+    """RTS device without command definitions doesn't crash, just skips injection."""
     device = Device(
         attributes=States(),
         available=True,
