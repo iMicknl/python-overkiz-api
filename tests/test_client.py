@@ -10,13 +10,17 @@ import aiohttp
 import pytest
 
 from pyoverkiz import exceptions
+from pyoverkiz.action_queue import ActionQueueSettings
+from pyoverkiz.auth import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient
+from pyoverkiz.client_settings import OverkizClientSettings
 from pyoverkiz.enums import (
     APIType,
     DataType,
     ExecutionState,
     ExecutionSubType,
     ExecutionType,
+    Server,
 )
 from pyoverkiz.models import (
     Action,
@@ -1203,3 +1207,32 @@ class TestOverkizClient:
             await local_client.schedule_persisted_action_group(
                 "00000000-0000-0000-0000-000000000000", 9999999999
             )
+
+
+class TestOverkizClientSettings:
+    """Tests for the OverkizClientSettings integration with OverkizClient."""
+
+    def test_client_with_settings_none(self, client: OverkizClient) -> None:
+        """Client without settings has no action queue and no RTS duration."""
+        assert client._action_queue is None
+        assert client._rts_command_duration is None
+
+    @pytest.mark.asyncio
+    async def test_client_with_rts_duration(self) -> None:
+        """Client stores RTS command duration from settings."""
+        client = OverkizClient(
+            server=Server.SOMFY_EUROPE,
+            credentials=UsernamePasswordCredentials("user", "pass"),
+            settings=OverkizClientSettings(rts_command_duration=0),
+        )
+        assert client._rts_command_duration == 0
+
+    @pytest.mark.asyncio
+    async def test_client_with_action_queue_via_settings(self) -> None:
+        """Client creates action queue from settings."""
+        client = OverkizClient(
+            server=Server.SOMFY_EUROPE,
+            credentials=UsernamePasswordCredentials("user", "pass"),
+            settings=OverkizClientSettings(action_queue=ActionQueueSettings()),
+        )
+        assert client._action_queue is not None

@@ -21,8 +21,9 @@ from aiohttp import (
 from backoff.types import Details
 
 from pyoverkiz._case import decamelize
-from pyoverkiz.action_queue import ActionQueue, ActionQueueSettings
+from pyoverkiz.action_queue import ActionQueue
 from pyoverkiz.auth import AuthStrategy, Credentials, build_auth_strategy
+from pyoverkiz.client_settings import OverkizClientSettings
 from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.converter import converter
 from pyoverkiz.enums import APIType, ExecutionMode, Server
@@ -172,6 +173,7 @@ class OverkizClient:
     _ssl: ssl.SSLContext | bool = True
     _auth: AuthStrategy
     _action_queue: ActionQueue | None = None
+    _rts_command_duration: int | None = None
 
     def __init__(
         self,
@@ -180,7 +182,7 @@ class OverkizClient:
         credentials: Credentials,
         verify_ssl: bool = True,
         session: ClientSession | None = None,
-        action_queue: bool | ActionQueueSettings = False,
+        settings: OverkizClientSettings | None = None,
     ) -> None:
         """Constructor.
 
@@ -188,7 +190,7 @@ class OverkizClient:
         :param credentials: Credentials for authentication
         :param verify_ssl: Enable SSL certificate verification
         :param session: optional ClientSession
-        :param action_queue: enable batching or provide queue settings (default False)
+        :param settings: behavioral settings for the client (default None)
         """
         self.server_config = self._normalize_server(server)
 
@@ -206,23 +208,15 @@ class OverkizClient:
             # Use the prebuilt SSL context with disabled strict validation for local API.
             self._ssl = SSL_CONTEXT_LOCAL_API
 
-        # Initialize action queue if enabled
-        queue_settings: ActionQueueSettings | None
-        if isinstance(action_queue, ActionQueueSettings):
-            queue_settings = action_queue
-        elif isinstance(action_queue, bool):
-            queue_settings = ActionQueueSettings() if action_queue else None
-        else:
-            raise TypeError(
-                "action_queue must be a bool or ActionQueueSettings, "
-                f"got {type(action_queue).__name__}"
-            )
+        # Apply behavioral settings
+        resolved_settings = settings or OverkizClientSettings()
+        self._rts_command_duration = resolved_settings.rts_command_duration
 
-        if queue_settings:
-            queue_settings.validate()
+        if resolved_settings.action_queue:
+            resolved_settings.action_queue.validate()
             self._action_queue = ActionQueue(
                 executor=self._execute_action_group_direct,
-                settings=queue_settings,
+                settings=resolved_settings.action_queue,
             )
 
         self._auth = build_auth_strategy(
