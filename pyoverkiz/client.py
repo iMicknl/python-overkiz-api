@@ -545,7 +545,7 @@ class OverkizClient:
         self,
         actions: list[Action],
         mode: ExecutionMode | None = None,
-        label: str | None = "python-overkiz-api",
+        label: str | None = "pyOverkiz",
     ) -> str:
         """Execute a non-persistent action group directly (internal method).
 
@@ -563,7 +563,7 @@ class OverkizClient:
         self,
         actions: list[Action],
         mode: ExecutionMode | None = None,
-        label: str | None = "python-overkiz-api",
+        label: str | None = "pyOverkiz",
     ) -> str:
         """Execute an ad-hoc action group built from the given actions.
 
