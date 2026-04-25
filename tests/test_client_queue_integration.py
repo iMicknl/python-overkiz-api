@@ -7,7 +7,7 @@ import pytest
 
 from pyoverkiz.action_queue import ActionQueueSettings
 from pyoverkiz.auth import UsernamePasswordCredentials
-from pyoverkiz.client import OverkizClient
+from pyoverkiz.client import OverkizClient, OverkizClientSettings
 from pyoverkiz.enums import OverkizCommand, Server
 from pyoverkiz.models import Action, Command
 
@@ -18,7 +18,6 @@ async def test_client_without_queue_executes_immediately():
     client = OverkizClient(
         server=Server.SOMFY_EUROPE,
         credentials=UsernamePasswordCredentials("test@example.com", "test"),
-        action_queue=False,
     )
 
     action = Action(
@@ -48,7 +47,7 @@ async def test_client_with_queue_batches_actions():
     client = OverkizClient(
         server=Server.SOMFY_EUROPE,
         credentials=UsernamePasswordCredentials("test@example.com", "test"),
-        action_queue=ActionQueueSettings(delay=0.1),
+        settings=OverkizClientSettings(action_queue=ActionQueueSettings(delay=0.1)),
     )
 
     actions = [
@@ -98,7 +97,9 @@ async def test_client_manual_flush():
     client = OverkizClient(
         server=Server.SOMFY_EUROPE,
         credentials=UsernamePasswordCredentials("test@example.com", "test"),
-        action_queue=ActionQueueSettings(delay=10.0),  # Long delay
+        settings=OverkizClientSettings(
+            action_queue=ActionQueueSettings(delay=10.0)
+        ),  # Long delay
     )
 
     action = Action(
@@ -138,7 +139,7 @@ async def test_client_close_flushes_queue():
     client = OverkizClient(
         server=Server.SOMFY_EUROPE,
         credentials=UsernamePasswordCredentials("test@example.com", "test"),
-        action_queue=ActionQueueSettings(delay=10.0),
+        settings=OverkizClientSettings(action_queue=ActionQueueSettings(delay=10.0)),
     )
 
     action = Action(
@@ -171,9 +172,11 @@ async def test_client_queue_respects_max_actions():
     client = OverkizClient(
         server=Server.SOMFY_EUROPE,
         credentials=UsernamePasswordCredentials("test@example.com", "test"),
-        action_queue=ActionQueueSettings(
-            delay=10.0,
-            max_actions=2,  # Max 2 actions
+        settings=OverkizClientSettings(
+            action_queue=ActionQueueSettings(
+                delay=10.0,
+                max_actions=2,  # Max 2 actions
+            ),
         ),
     )
 

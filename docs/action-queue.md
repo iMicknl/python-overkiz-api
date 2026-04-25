@@ -11,20 +11,22 @@ Important limitation:
 
 ## Enable with defaults
 
-Set `action_queue=True` to enable batching with default settings:
+Pass `ActionQueueSettings()` via `OverkizClientSettings` to enable batching with default settings:
 
 ```python
 import asyncio
 
+from pyoverkiz.action_queue import ActionQueueSettings
 from pyoverkiz.auth import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient
+from pyoverkiz.client import OverkizClientSettings
 from pyoverkiz.enums import OverkizCommand, Server
 from pyoverkiz.models import Action, Command
 
 client = OverkizClient(
     server=Server.SOMFY_EUROPE,
     credentials=UsernamePasswordCredentials("user@example.com", "password"),
-    action_queue=True,  # uses defaults
+    settings=OverkizClientSettings(action_queue=ActionQueueSettings()),
 )
 
 action1 = Action(
@@ -49,13 +51,14 @@ Defaults:
 
 ## Advanced settings
 
-If you need to tune batching behavior, pass `ActionQueueSettings`:
+If you need to tune batching behavior, pass custom values to `ActionQueueSettings`:
 
 ```python
 import asyncio
 
 from pyoverkiz.action_queue import ActionQueueSettings
 from pyoverkiz.client import OverkizClient
+from pyoverkiz.client import OverkizClientSettings
 from pyoverkiz.auth import UsernamePasswordCredentials
 from pyoverkiz.enums import OverkizCommand, Server
 from pyoverkiz.models import Action, Command
@@ -63,9 +66,11 @@ from pyoverkiz.models import Action, Command
 client = OverkizClient(
     server=Server.SOMFY_EUROPE,
     credentials=UsernamePasswordCredentials("user@example.com", "password"),
-    action_queue=ActionQueueSettings(
-        delay=0.5,  # seconds to wait before auto-flush
-        max_actions=20,  # auto-flush when this count is reached
+    settings=OverkizClientSettings(
+        action_queue=ActionQueueSettings(
+            delay=0.5,  # seconds to wait before auto-flush
+            max_actions=20,  # auto-flush when this count is reached
+        ),
     ),
 )
 ```
@@ -75,10 +80,11 @@ client = OverkizClient(
 Normally, queued actions are sent after the delay window or when `max_actions` is reached. Call `flush_action_queue()` to force the queue to execute immediately, which is useful when you want to send any pending actions without waiting for the delay timer to expire.
 
 ```python
-from pyoverkiz.action_queue import ActionQueueSettings
 import asyncio
 
+from pyoverkiz.action_queue import ActionQueueSettings
 from pyoverkiz.client import OverkizClient
+from pyoverkiz.client import OverkizClientSettings
 from pyoverkiz.auth import UsernamePasswordCredentials
 from pyoverkiz.enums import OverkizCommand, Server
 from pyoverkiz.models import Action, Command
@@ -86,7 +92,9 @@ from pyoverkiz.models import Action, Command
 client = OverkizClient(
     server=Server.SOMFY_EUROPE,
     credentials=UsernamePasswordCredentials("user@example.com", "password"),
-    action_queue=ActionQueueSettings(delay=10.0),  # long delay
+    settings=OverkizClientSettings(
+        action_queue=ActionQueueSettings(delay=10.0),  # long delay
+    ),
 )
 
 action = Action(
@@ -115,7 +123,9 @@ Why this matters:
 `get_pending_actions_count()` returns a snapshot of how many actions are currently queued. Because the queue can change concurrently (and the method does not acquire the queue lock), the value is approximate. Use it for logging, diagnostics, or UI hints—not for critical control flow.
 
 ```python
+from pyoverkiz.action_queue import ActionQueueSettings
 from pyoverkiz.client import OverkizClient
+from pyoverkiz.client import OverkizClientSettings
 from pyoverkiz.auth import UsernamePasswordCredentials
 from pyoverkiz.enums import OverkizCommand, Server
 from pyoverkiz.models import Action, Command
@@ -123,7 +133,7 @@ from pyoverkiz.models import Action, Command
 client = OverkizClient(
     server=Server.SOMFY_EUROPE,
     credentials=UsernamePasswordCredentials("user@example.com", "password"),
-    action_queue=True,
+    settings=OverkizClientSettings(action_queue=ActionQueueSettings()),
 )
 
 action = Action(

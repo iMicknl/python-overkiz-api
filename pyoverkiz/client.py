@@ -6,6 +6,7 @@ import asyncio
 import logging
 import ssl
 import urllib.parse
+from dataclasses import dataclass
 from http import HTTPStatus
 from pathlib import Path
 from types import TracebackType
@@ -25,7 +26,7 @@ from pyoverkiz.action_queue import ActionQueue, ActionQueueSettings
 from pyoverkiz.auth import AuthStrategy, Credentials, build_auth_strategy
 from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.converter import converter
-from pyoverkiz.enums import APIType, ExecutionMode, Server
+from pyoverkiz.enums import APIType, ExecutionMode, Protocol, Server
 from pyoverkiz.exceptions import (
     ExecutionQueueFullError,
     InvalidEventListenerIdError,
@@ -38,6 +39,7 @@ from pyoverkiz.exceptions import (
 )
 from pyoverkiz.models import (
     Action,
+    Command,
     Device,
     Event,
     Execution,
@@ -160,6 +162,17 @@ def _create_local_ssl_context() -> ssl.SSLContext:
 SSL_CONTEXT_LOCAL_API = _create_local_ssl_context()
 
 
+@dataclass(frozen=True, slots=True)
+class OverkizClientSettings:
+    """Behavioral configuration for OverkizClient.
+
+    All fields are optional and default to passive behavior.
+    """
+
+    action_queue: ActionQueueSettings | None = None
+    rts_command_duration: int | None = None
+
+
 class OverkizClient:
     """Interface class for the Overkiz API."""
 
@@ -172,6 +185,7 @@ class OverkizClient:
     _ssl: ssl.SSLContext | bool = True
     _auth: AuthStrategy
     _action_queue: ActionQueue | None = None
+    settings: OverkizClientSettings
 
     def __init__(
         self,
@@ -180,7 +194,7 @@ class OverkizClient:
         credentials: Credentials,
         verify_ssl: bool = True,
         session: ClientSession | None = None,
-        action_queue: bool | ActionQueueSettings = False,
+        settings: OverkizClientSettings | None = None,
     ) -> None:
         """Constructor.
 
@@ -188,7 +202,7 @@ class OverkizClient:
         :param credentials: Credentials for authentication
         :param verify_ssl: Enable SSL certificate verification
         :param session: optional ClientSession
-        :param action_queue: enable batching or provide queue settings (default False)
+        :param settings: behavioral settings for the client (default None)
         """
         self.server_config = self._normalize_server(server)
 
@@ -206,23 +220,13 @@ class OverkizClient:
             # Use the prebuilt SSL context with disabled strict validation for local API.
             self._ssl = SSL_CONTEXT_LOCAL_API
 
-        # Initialize action queue if enabled
-        queue_settings: ActionQueueSettings | None
-        if isinstance(action_queue, ActionQueueSettings):
-            queue_settings = action_queue
-        elif isinstance(action_queue, bool):
-            queue_settings = ActionQueueSettings() if action_queue else None
-        else:
-            raise TypeError(
-                "action_queue must be a bool or ActionQueueSettings, "
-                f"got {type(action_queue).__name__}"
-            )
+        self.settings = settings or OverkizClientSettings()
 
-        if queue_settings:
-            queue_settings.validate()
+        if self.settings.action_queue:
+            self.settings.action_queue.validate()
             self._action_queue = ActionQueue(
                 executor=self._execute_action_group_direct,
-                settings=queue_settings,
+                settings=self.settings.action_queue,
             )
 
         self._auth = build_auth_strategy(
@@ -494,6 +498,50 @@ class OverkizClient:
 
         return cast(str, response["protocolVersion"])
 
+    def _apply_rts_duration(self, actions: list[Action]) -> list[Action]:
+        """Set the execution duration for RTS commands that support it.
+
+        The default execution duration for RTS devices is 30 seconds, which
+        blocks consecutive commands. This injects the configured duration
+        (typically 0) into commands that accept it, based on the device
+        command definition (nparams).
+        """
+        duration = self.settings.rts_command_duration
+        if duration is None:
+            return actions
+
+        device_index: dict[str, Device] = {d.device_url: d for d in self.devices}
+
+        result: list[Action] = []
+        for action in actions:
+            device = device_index.get(action.device_url)
+
+            if device is None or device.identifier.protocol != Protocol.RTS:
+                result.append(action)
+                continue
+
+            updated_commands: list[Command] = []
+            for cmd in action.commands:
+                cmd_def = device.get_command_definition(str(cmd.name))
+                current_count = len(cmd.parameters) if cmd.parameters else 0
+
+                if cmd_def and current_count < cmd_def.nparams:
+                    updated_commands.append(
+                        Command(
+                            name=cmd.name,
+                            parameters=[*(cmd.parameters or []), duration],
+                            type=cmd.type,
+                        )
+                    )
+                else:
+                    updated_commands.append(cmd)
+
+            result.append(
+                Action(device_url=action.device_url, commands=updated_commands)
+            )
+
+        return result
+
     @retry_on_too_many_executions
     @retry_on_auth_error
     async def _execute_action_group_direct(
@@ -544,6 +592,8 @@ class OverkizClient:
         Returns:
             The ``exec_id`` identifying the execution on the server.
         """
+        actions = self._apply_rts_duration(actions)
+
         if self._action_queue:
             queued = await self._action_queue.add(actions, mode, label)
             return await queued
