@@ -71,16 +71,32 @@ class QueuedExecution:
 
 
 class ActionQueue:
-    """Batches multiple action executions into single API calls.
+    """Batches device actions into single API calls (action groups).
 
-    When actions are added, they are held for a configurable delay period.
-    If more actions arrive during this window, they are batched together.
-    The batch is flushed when:
+    The Overkiz API executes commands via action groups. Each action group
+    contains one Action per device, and each Action holds one or more Commands.
+    The gateway enforces at most one Action per device per action group.
+
+    Batching example — two add() calls arriving within the delay window::
+
+        add([Action("device/1", [close])])
+        add([Action("device/2", [open]), Action("device/1", [setClosure(50)])])
+
+    Produces one action group with two actions::
+
+        ActionGroup(actions=[
+            Action("device/1", [close, setClosure(50)]),  # commands merged
+            Action("device/2", [open]),
+        ])
+
+    Three separate devices would remain three separate actions in the group.
+    Merging only happens when the same device_url appears more than once.
+
+    The queue flushes when:
     - The delay timer expires
     - The max actions limit is reached
-    - The execution mode changes
-    - The label changes
-    - Manual flush is requested
+    - The execution mode or label changes
+    - flush() or shutdown() is called
     """
 
     def __init__(
@@ -114,7 +130,12 @@ class ActionQueue:
         *,
         copy: bool = False,
     ) -> None:
-        """Merge *source* actions into *target*, combining commands for duplicate devices."""
+        """Merge *source* actions into *target*, combining commands for duplicate devices.
+
+        New device_urls are appended to *target*; existing ones get their commands
+        extended. When *copy* is True, source actions are copied to avoid mutating
+        caller-owned objects.
+        """
         for action in source:
             existing = index.get(action.device_url)
             if existing is None:
@@ -194,8 +215,11 @@ class ActionQueue:
 
         # Execute batches outside the lock if we flushed
         for batch in batches_to_execute:
-            if batch[0]:
-                await self._execute_batch(*batch)
+            batch_actions, batch_mode, batch_label, batch_waiters = batch
+            if batch_actions:
+                await self._execute_batch(
+                    batch_actions, batch_mode, batch_label, batch_waiters
+                )
 
         return waiter
 
