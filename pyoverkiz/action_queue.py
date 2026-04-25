@@ -201,20 +201,15 @@ class ActionQueue:
 
     async def _delayed_flush(self) -> None:
         """Wait for the delay period, then flush the queue."""
-        waiters: list[QueuedExecution] = []
-        try:
-            await asyncio.sleep(self._settings.delay)
-            async with self._lock:
-                batch = self._prepare_flush()
-                if not batch[0]:
-                    return
-                actions, mode, label, waiters = batch
+        await asyncio.sleep(self._settings.delay)
+        async with self._lock:
+            self._flush_task = None
+            # Another coroutine may have already flushed the queue before we acquired the lock.
+            actions, mode, label, waiters = self._prepare_flush()
+            if not actions:
+                return
 
-            await self._execute_batch(actions, mode, label, waiters)
-        except asyncio.CancelledError as exc:
-            for waiter in waiters:
-                waiter.set_exception(exc)
-            raise
+        await self._execute_batch(actions, mode, label, waiters)
 
     def _prepare_flush(
         self,
