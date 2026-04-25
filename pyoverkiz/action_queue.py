@@ -107,13 +107,26 @@ class ActionQueue:
         self._lock = asyncio.Lock()
 
     @staticmethod
-    def _copy_action(action: Action) -> Action:
-        """Return an `Action` copy with an independent commands list.
-
-        The queue merges commands for duplicate devices, so caller-owned action
-        instances must be copied to avoid mutating user input while batching.
-        """
-        return Action(device_url=action.device_url, commands=list(action.commands))
+    def _merge_actions(
+        target: list[Action],
+        index: dict[str, Action],
+        source: list[Action],
+        *,
+        copy: bool = False,
+    ) -> None:
+        """Merge *source* actions into *target*, combining commands for duplicate devices."""
+        for action in source:
+            existing = index.get(action.device_url)
+            if existing is None:
+                merged = (
+                    Action(device_url=action.device_url, commands=list(action.commands))
+                    if copy
+                    else action
+                )
+                target.append(merged)
+                index[action.device_url] = merged
+            else:
+                existing.commands.extend(action.commands)
 
     async def add(
         self,
@@ -146,14 +159,7 @@ class ActionQueue:
 
         normalized_actions: list[Action] = []
         normalized_index: dict[str, Action] = {}
-        for action in actions:
-            existing = normalized_index.get(action.device_url)
-            if existing is None:
-                action_copy = self._copy_action(action)
-                normalized_actions.append(action_copy)
-                normalized_index[action.device_url] = action_copy
-            else:
-                existing.commands.extend(action.commands)
+        self._merge_actions(normalized_actions, normalized_index, actions, copy=True)
 
         async with self._lock:
             # If mode or label changes, flush existing queue first
@@ -162,18 +168,10 @@ class ActionQueue:
             ):
                 batches_to_execute.append(self._prepare_flush())
 
-            # Add actions to pending queue
-            pending_index = {
-                pending_action.device_url: pending_action
-                for pending_action in self._pending_actions
-            }
-            for action in normalized_actions:
-                pending = pending_index.get(action.device_url)
-                if pending is None:
-                    self._pending_actions.append(action)
-                    pending_index[action.device_url] = action
-                else:
-                    pending.commands.extend(action.commands)
+            pending_index = {a.device_url: a for a in self._pending_actions}
+            self._merge_actions(
+                self._pending_actions, pending_index, normalized_actions
+            )
             self._pending_mode = mode
             self._pending_label = label
 
@@ -207,25 +205,13 @@ class ActionQueue:
         try:
             await asyncio.sleep(self._settings.delay)
             async with self._lock:
-                if not self._pending_actions:
+                batch = self._prepare_flush()
+                if not batch[0]:
                     return
+                actions, mode, label, waiters = batch
 
-                # Take snapshot and clear state while holding lock
-                actions = self._pending_actions
-                mode = self._pending_mode
-                label = self._pending_label
-                waiters = self._pending_waiters
-
-                self._pending_actions = []
-                self._pending_mode = None
-                self._pending_label = None
-                self._pending_waiters = []
-                self._flush_task = None
-
-            # Execute outside the lock
             await self._execute_batch(actions, mode, label, waiters)
         except asyncio.CancelledError as exc:
-            # Ensure all waiters are notified if this task is cancelled
             for waiter in waiters:
                 waiter.set_exception(exc)
             raise
@@ -317,19 +303,20 @@ class ActionQueue:
 
     async def shutdown(self) -> None:
         """Shutdown the queue, flushing any pending actions."""
+        cancelled_task: asyncio.Task[None] | None = None
         batch_to_execute = None
         async with self._lock:
             if self._flush_task and not self._flush_task.done():
-                task = self._flush_task
-                task.cancel()
+                cancelled_task = self._flush_task
+                cancelled_task.cancel()
                 self._flush_task = None
-                # Wait for cancellation to complete
-                with contextlib.suppress(asyncio.CancelledError):
-                    await task
 
             if self._pending_actions:
                 batch_to_execute = self._prepare_flush()
 
-        # Execute outside the lock
+        if cancelled_task:
+            with contextlib.suppress(asyncio.CancelledError):
+                await cancelled_task
+
         if batch_to_execute:
             await self._execute_batch(*batch_to_execute)
