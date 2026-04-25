@@ -39,7 +39,7 @@ def build_auth_strategy(
 
     if server == Server.SOMFY_EUROPE:
         return SomfyAuthStrategy(
-            _ensure_username_password(credentials),
+            _ensure_credentials(credentials, UsernamePasswordCredentials),
             session,
             server_config,
             ssl_context,
@@ -51,7 +51,7 @@ def build_auth_strategy(
         Server.SAUTER_COZYTOUCH,
     }:
         return CozytouchAuthStrategy(
-            _ensure_username_password(credentials),
+            _ensure_credentials(credentials, UsernamePasswordCredentials),
             session,
             server_config,
             ssl_context,
@@ -59,7 +59,7 @@ def build_auth_strategy(
 
     if server == Server.NEXITY:
         return NexityAuthStrategy(
-            _ensure_username_password(credentials),
+            _ensure_credentials(credentials, UsernamePasswordCredentials),
             session,
             server_config,
             ssl_context,
@@ -67,7 +67,7 @@ def build_auth_strategy(
 
     if server == Server.REXEL:
         return RexelAuthStrategy(
-            _ensure_rexel(credentials),
+            _ensure_credentials(credentials, RexelOAuthCodeCredentials),
             session,
             server_config,
             ssl_context,
@@ -79,7 +79,7 @@ def build_auth_strategy(
                 credentials, session, server_config, ssl_context
             )
         return BearerTokenAuthStrategy(
-            _ensure_token(credentials),
+            _ensure_credentials(credentials, TokenCredentials),
             session,
             server_config,
             ssl_context,
@@ -91,29 +91,17 @@ def build_auth_strategy(
         return BearerTokenAuthStrategy(credentials, session, server_config, ssl_context)
 
     return SessionLoginStrategy(
-        _ensure_username_password(credentials),
+        _ensure_credentials(credentials, UsernamePasswordCredentials),
         session,
         server_config,
         ssl_context,
     )
 
 
-def _ensure_username_password(credentials: Credentials) -> UsernamePasswordCredentials:
-    """Validate that credentials are username/password based."""
-    if not isinstance(credentials, UsernamePasswordCredentials):
-        raise TypeError("UsernamePasswordCredentials are required for this server.")
-    return credentials
-
-
-def _ensure_token(credentials: Credentials) -> TokenCredentials:
-    """Validate that credentials carry a bearer token."""
-    if not isinstance(credentials, TokenCredentials):
-        raise TypeError("TokenCredentials are required for this server.")
-    return credentials
-
-
-def _ensure_rexel(credentials: Credentials) -> RexelOAuthCodeCredentials:
-    """Validate that credentials are of Rexel OAuth code type."""
-    if not isinstance(credentials, RexelOAuthCodeCredentials):
-        raise TypeError("RexelOAuthCodeCredentials are required for this server.")
+def _ensure_credentials[C: Credentials](
+    credentials: Credentials, expected: type[C]
+) -> C:
+    """Validate that credentials match the expected type."""
+    if not isinstance(credentials, expected):
+        raise TypeError(f"{expected.__name__} are required for this server.")
     return credentials

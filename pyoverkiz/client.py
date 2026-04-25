@@ -38,7 +38,6 @@ from pyoverkiz.exceptions import (
 )
 from pyoverkiz.models import (
     Action,
-    ActionGroup,
     Device,
     Event,
     Execution,
@@ -47,6 +46,7 @@ from pyoverkiz.models import (
     HistoryExecution,
     Option,
     OptionParameter,
+    PersistedActionGroup,
     Place,
     ProtocolType,
     ServerConfig,
@@ -222,8 +222,7 @@ class OverkizClient:
             queue_settings.validate()
             self._action_queue = ActionQueue(
                 executor=self._execute_action_group_direct,
-                delay=queue_settings.delay,
-                max_actions=queue_settings.max_actions,
+                settings=queue_settings,
             )
 
         self._auth = build_auth_strategy(
@@ -577,10 +576,10 @@ class OverkizClient:
         await self._delete(f"exec/current/setup/{exec_id}")
 
     @retry_on_auth_error
-    async def get_action_groups(self) -> list[ActionGroup]:
+    async def get_action_groups(self) -> list[PersistedActionGroup]:
         """List action groups persisted on the server."""
         response = await self._get("actionGroups")
-        return converter.structure(decamelize(response), list[ActionGroup])
+        return converter.structure(decamelize(response), list[PersistedActionGroup])
 
     @retry_on_auth_error
     async def get_places(self) -> Place:

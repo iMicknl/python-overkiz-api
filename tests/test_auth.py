@@ -23,9 +23,7 @@ from pyoverkiz.auth.credentials import (
     UsernamePasswordCredentials,
 )
 from pyoverkiz.auth.factory import (
-    _ensure_rexel,
-    _ensure_token,
-    _ensure_username_password,
+    _ensure_credentials,
     build_auth_strategy,
 )
 from pyoverkiz.auth.strategies import (
@@ -107,47 +105,47 @@ class TestCredentials:
 class TestAuthFactory:
     """Test authentication factory functions."""
 
-    def test_ensure_username_password_valid(self):
+    def test_ensure_credentials_username_password_valid(self):
         """Test that valid username/password credentials pass validation."""
         creds = UsernamePasswordCredentials("user", "pass")
-        result = _ensure_username_password(creds)
+        result = _ensure_credentials(creds, UsernamePasswordCredentials)
         assert result is creds
 
-    def test_ensure_username_password_invalid(self):
+    def test_ensure_credentials_username_password_invalid(self):
         """Test that invalid credentials raise TypeError."""
         creds = TokenCredentials("token")
         with pytest.raises(TypeError, match="UsernamePasswordCredentials are required"):
-            _ensure_username_password(creds)
+            _ensure_credentials(creds, UsernamePasswordCredentials)
 
-    def test_ensure_token_valid(self):
+    def test_ensure_credentials_token_valid(self):
         """Test that valid token credentials pass validation."""
         creds = TokenCredentials("token")
-        result = _ensure_token(creds)
+        result = _ensure_credentials(creds, TokenCredentials)
         assert result is creds
 
-    def test_ensure_token_local_valid(self):
+    def test_ensure_credentials_token_local_valid(self):
         """Test that LocalTokenCredentials also pass token validation."""
         creds = LocalTokenCredentials("local_token")
-        result = _ensure_token(creds)
+        result = _ensure_credentials(creds, TokenCredentials)
         assert result is creds
 
-    def test_ensure_token_invalid(self):
+    def test_ensure_credentials_token_invalid(self):
         """Test that invalid credentials raise TypeError."""
         creds = UsernamePasswordCredentials("user", "pass")
         with pytest.raises(TypeError, match="TokenCredentials are required"):
-            _ensure_token(creds)
+            _ensure_credentials(creds, TokenCredentials)
 
-    def test_ensure_rexel_valid(self):
+    def test_ensure_credentials_rexel_valid(self):
         """Test that valid Rexel credentials pass validation."""
         creds = RexelOAuthCodeCredentials("code", "uri")
-        result = _ensure_rexel(creds)
+        result = _ensure_credentials(creds, RexelOAuthCodeCredentials)
         assert result is creds
 
-    def test_ensure_rexel_invalid(self):
+    def test_ensure_credentials_rexel_invalid(self):
         """Test that invalid credentials raise TypeError."""
         creds = UsernamePasswordCredentials("user", "pass")
         with pytest.raises(TypeError, match="RexelOAuthCodeCredentials are required"):
-            _ensure_rexel(creds)
+            _ensure_credentials(creds, RexelOAuthCodeCredentials)
 
     @pytest.mark.asyncio
     async def test_build_auth_strategy_somfy(self):

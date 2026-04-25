@@ -24,6 +24,7 @@ from pyoverkiz.models import (
     Execution,
     HistoryExecution,
     Option,
+    PersistedActionGroup,
     Place,
     State,
 )
@@ -826,8 +827,8 @@ class TestOverkizClient:
             assert len(action_groups) == scenario_count
 
             for action_group in action_groups:
-                assert action_group.oid is not None
-                assert action_group.label is not None
+                assert isinstance(action_group, PersistedActionGroup)
+                assert isinstance(action_group.oid, str)
                 assert action_group.actions
 
                 for action in action_group.actions:
@@ -855,7 +856,7 @@ class TestOverkizClient:
             assert result.start_time == 1767003511145
             assert result.execution_type == ExecutionType.IMMEDIATE_EXECUTION
             assert result.execution_sub_type == ExecutionSubType.MANUAL_CONTROL
-            assert result.action_group.oid is None
+            assert not isinstance(result.action_group, PersistedActionGroup)
             assert (
                 result.action_group.actions[0].device_url
                 == "rts://1234-5678-1234/12345678"

@@ -12,11 +12,15 @@ from pyoverkiz._case import decamelize
 from pyoverkiz.converter import converter
 from pyoverkiz.enums import DataType, EventName, ExecutionState, FailureType, Protocol
 from pyoverkiz.models import (
+    Action,
+    ActionGroup,
+    Command,
     CommandDefinitions,
     Definition,
     Device,
     Event,
     EventState,
+    PersistedActionGroup,
     Setup,
     State,
     StateDefinition,
@@ -919,3 +923,61 @@ class TestEvent:
         for e in state_changed:
             assert isinstance(e.old_state, ExecutionState)
             assert isinstance(e.new_state, ExecutionState)
+
+
+class TestActionGroup:
+    """Tests for ActionGroup and PersistedActionGroup model split."""
+
+    def test_action_group_minimal_construction(self):
+        """ActionGroup can be constructed with just actions."""
+        action = Action(
+            device_url="io://1234-5678-9012/12345678",
+            commands=[Command(name="open")],
+        )
+        group = ActionGroup(actions=[action])
+        assert len(group.actions) == 1
+        assert group.label is None
+        assert not hasattr(group, "oid")
+
+    def test_action_group_with_label(self):
+        """ActionGroup accepts an optional label."""
+        group = ActionGroup(actions=[], label="my scene")
+        assert group.label == "my scene"
+
+    def test_action_group_no_oid_attribute(self):
+        """ActionGroup does not have an oid attribute."""
+        group = ActionGroup(actions=[])
+        assert not hasattr(group, "oid")
+        assert not hasattr(group, "creation_time")
+        assert not hasattr(group, "last_update_time")
+
+    def test_persisted_action_group_inherits_action_group(self):
+        """PersistedActionGroup is a subclass of ActionGroup."""
+        assert issubclass(PersistedActionGroup, ActionGroup)
+
+    def test_persisted_action_group_construction(self):
+        """PersistedActionGroup requires oid and has timestamp defaults."""
+        group = PersistedActionGroup(
+            oid="abc-123",
+            actions=[],
+            label="my scene",
+        )
+        assert group.oid == "abc-123"
+        assert group.id == "abc-123"
+        assert group.label == "my scene"
+        assert group.creation_time == 0
+        assert group.last_update_time == 0
+        assert isinstance(group, ActionGroup)
+
+    def test_persisted_action_group_isinstance_action_group(self):
+        """PersistedActionGroup instances pass isinstance check for ActionGroup."""
+        group = PersistedActionGroup(oid="abc-123", actions=[])
+        assert isinstance(group, ActionGroup)
+        assert isinstance(group, PersistedActionGroup)
+
+    def test_persisted_action_group_id_property_returns_str(self):
+        """The id property returns a str, not str | None."""
+        group = PersistedActionGroup(oid="abc-123", actions=[])
+        result = group.id
+        assert isinstance(result, str)
+        assert result == "abc-123"
