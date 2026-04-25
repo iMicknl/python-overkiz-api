@@ -24,7 +24,7 @@ from backoff.types import Details
 from pyoverkiz._case import decamelize
 from pyoverkiz.action_queue import ActionQueue, ActionQueueSettings
 from pyoverkiz.auth import AuthStrategy, Credentials, build_auth_strategy
-from pyoverkiz.const import SUPPORTED_SERVERS
+from pyoverkiz.const import SUPPORTED_SERVERS, USER_AGENT
 from pyoverkiz.converter import converter
 from pyoverkiz.enums import APIType, ExecutionMode, Protocol, Server
 from pyoverkiz.exceptions import (
@@ -211,9 +211,7 @@ class OverkizClient:
         self.gateways: list[Gateway] = []
         self.event_listener_id: str | None = None
 
-        self.session = session or ClientSession(
-            headers={"User-Agent": "python-overkiz-api"}
-        )
+        self.session = session or ClientSession(headers={"User-Agent": USER_AGENT})
         self._ssl = verify_ssl
 
         if self.server_config.api_type == APIType.LOCAL and verify_ssl:

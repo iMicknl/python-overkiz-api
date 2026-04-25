@@ -13,6 +13,7 @@ from pyoverkiz import exceptions
 from pyoverkiz.action_queue import ActionQueueSettings
 from pyoverkiz.auth import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient, OverkizClientSettings
+from pyoverkiz.const import USER_AGENT
 from pyoverkiz.enums import (
     APIType,
     DataType,
@@ -1206,6 +1207,26 @@ class TestOverkizClient:
             await local_client.schedule_persisted_action_group(
                 "00000000-0000-0000-0000-000000000000", 9999999999
             )
+
+
+class TestUserAgent:
+    """Tests for the User-Agent header sent by OverkizClient."""
+
+    def test_user_agent_contains_version(self):
+        """Verify the USER_AGENT constant follows the pyoverkiz/{version} format."""
+        assert USER_AGENT.startswith("pyoverkiz/")
+        version_part = USER_AGENT.split("/", 1)[1]
+        assert version_part  # not empty
+        assert all(c.isdigit() or c == "." for c in version_part)
+
+    @pytest.mark.asyncio
+    async def test_client_session_uses_user_agent(self):
+        """Verify that a client-created session includes the correct User-Agent header."""
+        client = OverkizClient(
+            server=Server.SOMFY_EUROPE,
+            credentials=UsernamePasswordCredentials("user", "pass"),
+        )
+        assert client.session.headers["User-Agent"] == USER_AGENT
 
 
 class TestOverkizClientSettings:

@@ -2,9 +2,13 @@
 
 from __future__ import annotations
 
+from importlib.metadata import version
+
 from pyoverkiz.enums import Server
 from pyoverkiz.enums.server import APIType
 from pyoverkiz.models import ServerConfig
+
+USER_AGENT = f"pyoverkiz/{version('pyoverkiz')}"
 
 COZYTOUCH_ATLANTIC_API = "https://apis.groupe-atlantic.com"
 COZYTOUCH_CLIENT_ID = (
