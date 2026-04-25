@@ -112,6 +112,30 @@ The command execution API has been consolidated into a single method.
 
 v2 also supports sending actions to **multiple devices** in a single call and choosing an `ExecutionMode` (`HIGH_PRIORITY`, `GEOLOCATED`, `INTERNAL`).
 
+## Diagnostics
+
+`get_diagnostic_data()` now returns a structured dict with named sections instead of a flat setup dump.
+
+| v1 | v2 |
+|----|-----|
+| `data["gateways"]` | `data["setup"]["gateways"]` |
+| (not available) | `data["action_groups"]` |
+
+=== "v1"
+
+    ```python
+    diagnostics = await client.get_diagnostic_data()
+    gateways = diagnostics["gateways"]
+    ```
+
+=== "v2"
+
+    ```python
+    diagnostics = await client.get_diagnostic_data()
+    gateways = diagnostics["setup"]["gateways"]
+    action_groups = diagnostics["action_groups"]
+    ```
+
 ## Scenarios → Action groups
 
 | v1 | v2 |
