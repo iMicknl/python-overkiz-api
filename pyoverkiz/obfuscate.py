@@ -6,9 +6,9 @@ import re
 from typing import Any, cast
 
 
-def obfuscate_id(id: str | None) -> str:
+def obfuscate_id(value: str | None) -> str:
     """Mask id."""
-    return re.sub(r"(SETUP)?\d+-", "****-", str(id))
+    return re.sub(r"(SETUP)?\d+-", "****-", str(value))
 
 
 def obfuscate_email(email: str | None) -> str:
@@ -17,9 +17,9 @@ def obfuscate_email(email: str | None) -> str:
     return re.sub(r"(.).*@.*(.\..*)", r"\1****@****\2", email)
 
 
-def obfuscate_string(input: str) -> str:
+def obfuscate_string(value: str) -> str:
     """Mask string."""
-    return re.sub(r"[a-zA-Z0-9_.-]*", "*", str(input))
+    return re.sub(r"[a-zA-Z0-9_.-]*", "*", str(value))
 
 
 def obfuscate_sensitive_data(
