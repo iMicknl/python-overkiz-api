@@ -6,6 +6,7 @@ import asyncio
 import logging
 import ssl
 import urllib.parse
+from dataclasses import dataclass
 from http import HTTPStatus
 from pathlib import Path
 from types import TracebackType
@@ -21,9 +22,8 @@ from aiohttp import (
 from backoff.types import Details
 
 from pyoverkiz._case import decamelize
-from pyoverkiz.action_queue import ActionQueue
+from pyoverkiz.action_queue import ActionQueue, ActionQueueSettings
 from pyoverkiz.auth import AuthStrategy, Credentials, build_auth_strategy
-from pyoverkiz.client_settings import OverkizClientSettings
 from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.converter import converter
 from pyoverkiz.enums import APIType, ExecutionMode, Protocol, Server
@@ -160,6 +160,17 @@ def _create_local_ssl_context() -> ssl.SSLContext:
 # since they do blocking I/O to load certificates from disk,
 # and imports should always be done before the event loop starts or in a thread.
 SSL_CONTEXT_LOCAL_API = _create_local_ssl_context()
+
+
+@dataclass(frozen=True, slots=True)
+class OverkizClientSettings:
+    """Behavioral configuration for OverkizClient.
+
+    All fields are optional and default to passive behavior.
+    """
+
+    action_queue: ActionQueueSettings | None = None
+    rts_command_duration: int | None = None
 
 
 class OverkizClient:

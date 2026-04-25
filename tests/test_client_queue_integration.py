@@ -7,8 +7,7 @@ import pytest
 
 from pyoverkiz.action_queue import ActionQueueSettings
 from pyoverkiz.auth import UsernamePasswordCredentials
-from pyoverkiz.client import OverkizClient
-from pyoverkiz.client_settings import OverkizClientSettings
+from pyoverkiz.client import OverkizClient, OverkizClientSettings
 from pyoverkiz.enums import OverkizCommand, Server
 from pyoverkiz.models import Action, Command
 

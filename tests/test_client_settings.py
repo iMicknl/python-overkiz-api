@@ -1,7 +1,7 @@
 """Tests for OverkizClientSettings."""
 
 from pyoverkiz.action_queue import ActionQueueSettings
-from pyoverkiz.client_settings import OverkizClientSettings
+from pyoverkiz.client import OverkizClientSettings
 
 
 def test_defaults():

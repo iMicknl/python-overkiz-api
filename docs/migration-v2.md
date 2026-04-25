@@ -291,7 +291,10 @@ Several enum members have been renamed for consistent `UPPER_SNAKE_CASE` or to f
 
 These are not breaking, but worth knowing about when migrating:
 
+- **Client settings** — behavioral configuration is now grouped in `OverkizClientSettings`, passed via the `settings` parameter. This replaces standalone constructor parameters like `action_queue`.
 - **Action queue** — batch device executions automatically. See the [action queue guide](action-queue.md).
+- **RTS command duration** — automatically inject execution duration into RTS commands to prevent the default 30-second blocking behavior. See [RTS command duration](device-control.md#rts-command-duration).
+- **Device helpers** — `Device.get_command_definition()` for looking up command metadata.
 - **Reference endpoints** — query server metadata: `get_reference_ui_classes()`, `get_reference_ui_widgets()`, `get_reference_ui_profile()`, `get_reference_controllable_types()`, etc.
 - **Firmware management** — `get_devices_not_up_to_date()`, `get_device_firmware_status()`, `update_device_firmware()`.
 - **boto3 lazy import** — `boto3` is only imported when the Nexity auth strategy is actually used.

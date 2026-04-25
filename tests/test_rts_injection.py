@@ -9,8 +9,7 @@ import pytest
 import pytest_asyncio
 
 from pyoverkiz.auth.credentials import UsernamePasswordCredentials
-from pyoverkiz.client import OverkizClient
-from pyoverkiz.client_settings import OverkizClientSettings
+from pyoverkiz.client import OverkizClient, OverkizClientSettings
 from pyoverkiz.enums import ProductType, Server
 from pyoverkiz.models import (
     Action,
