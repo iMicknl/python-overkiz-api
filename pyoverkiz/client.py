@@ -26,7 +26,7 @@ from pyoverkiz.auth import AuthStrategy, Credentials, build_auth_strategy
 from pyoverkiz.client_settings import OverkizClientSettings
 from pyoverkiz.const import SUPPORTED_SERVERS
 from pyoverkiz.converter import converter
-from pyoverkiz.enums import APIType, ExecutionMode, Server
+from pyoverkiz.enums import APIType, ExecutionMode, Protocol, Server
 from pyoverkiz.exceptions import (
     ExecutionQueueFullError,
     InvalidEventListenerIdError,
@@ -39,6 +39,7 @@ from pyoverkiz.exceptions import (
 )
 from pyoverkiz.models import (
     Action,
+    Command,
     Device,
     Event,
     Execution,
@@ -490,6 +491,48 @@ class OverkizClient:
 
         return cast(str, response["protocolVersion"])
 
+    def _apply_rts_duration(self, actions: list[Action]) -> list[Action]:
+        """Append rts_command_duration to RTS commands that accept an extra parameter.
+
+        Returns a new list of actions with modified commands where applicable.
+        The original actions are not mutated.
+        """
+        if self._rts_command_duration is None:
+            return actions
+
+        device_index: dict[str, Device] = {d.device_url: d for d in self.devices}
+
+        result: list[Action] = []
+        for action in actions:
+            device = device_index.get(action.device_url)
+
+            if device is None or device.identifier.protocol != Protocol.RTS:
+                result.append(action)
+                continue
+
+            new_commands: list[Command] = []
+            for cmd in action.commands:
+                cmd_def = device.get_command_definition(str(cmd.name))
+                current_count = len(cmd.parameters) if cmd.parameters else 0
+
+                if cmd_def and current_count < cmd_def.nparams:
+                    new_commands.append(
+                        Command(
+                            name=cmd.name,
+                            parameters=[
+                                *(cmd.parameters or []),
+                                self._rts_command_duration,
+                            ],
+                            type=cmd.type,
+                        )
+                    )
+                else:
+                    new_commands.append(cmd)
+
+            result.append(Action(device_url=action.device_url, commands=new_commands))
+
+        return result
+
     @retry_on_too_many_executions
     @retry_on_auth_error
     async def _execute_action_group_direct(
@@ -540,6 +583,8 @@ class OverkizClient:
         Returns:
             The ``exec_id`` identifying the execution on the server.
         """
+        actions = self._apply_rts_duration(actions)
+
         if self._action_queue:
             queued = await self._action_queue.add(actions, mode, label)
             return await queued
