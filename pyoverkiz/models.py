@@ -511,7 +511,7 @@ class ActionGroup:
     actions: list[Action] = field(factory=list)
     creation_time: int | None = None
     last_update_time: int | None = None
-    label: str = field(repr=obfuscate_string, default="")
+    label: str | None = field(repr=obfuscate_string, default=None)
     metadata: str | None = None
     shortcut: bool | None = None
     notification_type_mask: int | None = None
@@ -519,11 +519,6 @@ class ActionGroup:
     notification_text: str | None = None
     notification_title: str | None = None
     oid: str | None = field(repr=obfuscate_id, default=None)
-
-    def __attrs_post_init__(self) -> None:
-        """Default label to empty string when None."""
-        if self.label is None:
-            self.label = ""
 
     @property
     def id(self) -> str | None:
