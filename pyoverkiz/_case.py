@@ -31,6 +31,7 @@ def decamelize(data: Any) -> Any:
     return recursive_key_map(data, _decamelize_key)
 
 
+@functools.lru_cache(maxsize=1024)
 def camelize_key(key: str) -> str:
     """Convert a single snake_case key to camelCase."""
     parts = key.split("_")

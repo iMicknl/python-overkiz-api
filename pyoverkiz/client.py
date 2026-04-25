@@ -458,7 +458,6 @@ class OverkizClient:
         Per-session rate-limit : 1 calls per 1 SECONDS period for this particular
         operation (polling).
         """
-        await self._refresh_token_if_expired()
         response = await self._post(f"events/{self.event_listener_id}/fetch")
         return converter.structure(decamelize(response), list[Event])
 
@@ -467,7 +466,6 @@ class OverkizClient:
 
         API response status is always 200, even on unknown listener ids.
         """
-        await self._refresh_token_if_expired()
         await self._post(f"events/{self.event_listener_id}/unregister")
         self.event_listener_id = None
 

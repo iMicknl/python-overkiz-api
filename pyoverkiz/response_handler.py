@@ -46,7 +46,11 @@ from pyoverkiz.exceptions import (
 _ERROR_CODE_MESSAGE_MAP: list[tuple[str, str | None, type[BaseOverkizError]]] = [
     # --- errorCode is the sole discriminator ---
     ("DUPLICATE_FIELD_OR_VALUE", None, DuplicateActionOnDeviceError),
-    ("INVALID_FIELD_VALUE", None, ActionGroupSetupNotFoundError),
+    (
+        "INVALID_FIELD_VALUE",
+        "Unable to determine action group setup",
+        ActionGroupSetupNotFoundError,
+    ),
     ("INVALID_API_CALL", None, NoSuchResourceError),
     ("EXEC_QUEUE_FULL", None, ExecutionQueueFullError),
     ("NO_SUCH_DEVICE", None, NoSuchDeviceError),
