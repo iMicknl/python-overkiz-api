@@ -12,6 +12,10 @@ StateType = str | int | float | bool | dict[str, Any] | list[Any] | None
 
 
 def _parse_bool(value: str) -> bool:
+    """Parse a string value into a boolean.
+
+    bool() won't work since bool("false") is True.
+    """
     return value.lower() in ("true", "1")
 
 
