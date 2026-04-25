@@ -150,7 +150,10 @@ class States:
 
     def __getitem__(self, name: str) -> State:
         """Return the State with the given name or raise KeyError if missing."""
-        return self._index[name]
+        try:
+            return self._index[name]
+        except KeyError as err:
+            raise KeyError(f"State {name!r} not found") from err
 
     def __setitem__(self, name: str, state: State) -> None:
         """Set or append a State identified by name."""
@@ -220,7 +223,10 @@ class CommandDefinitions:
 
     def __getitem__(self, command: str) -> CommandDefinition:
         """Return the command definition or raise KeyError if missing."""
-        return self._index[command]
+        try:
+            return self._index[command]
+        except KeyError as err:
+            raise KeyError(f"Command {command!r} not found") from err
 
     def __len__(self) -> int:
         """Return number of command definitions."""
