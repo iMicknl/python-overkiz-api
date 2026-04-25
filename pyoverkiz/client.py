@@ -276,10 +276,15 @@ class OverkizClient:
     async def login(
         self,
         register_event_listener: bool = True,
-    ) -> bool:
+    ) -> None:
         """Authenticate and create an API session allowing access to the other operations.
 
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt].
+
+        Raises:
+            BadCredentialsError: When the provided credentials are invalid.
+            TooManyAttemptsBannedError: When too many failed login attempts have been made.
+            TooManyRequestsError: When the API rate limit has been exceeded.
         """
         await self._auth.login()
 
@@ -290,12 +295,12 @@ class OverkizClient:
                 # Validate local API token by calling a simple endpoint
                 await self.get_gateways()
 
-            return True
+            return
 
         if register_event_listener:
             await self.register_event_listener()
 
-        return True
+        return
 
     @retry_on_auth_error
     async def get_setup(self, refresh: bool = False) -> Setup:
