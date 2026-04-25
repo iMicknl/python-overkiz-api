@@ -123,6 +123,19 @@ firmware = device.select_first_attribute_value([
 print(f"Firmware: {firmware}")
 ```
 
+#### Get command definition
+
+```python
+devices = await client.get_devices()
+device = devices[0]
+
+# Get the command definition for a single command
+cmd_def = device.get_command_definition(OverkizCommand.OPEN)
+if cmd_def:
+    print(f"Command: {cmd_def.command_name}")
+    print(f"Number of parameters: {cmd_def.nparams}")
+```
+
 #### Access device identifier
 
 Device URLs are automatically parsed into structured identifier components for easier access:
@@ -277,6 +290,25 @@ trigger_id = await client.schedule_persisted_action_group(
     ag.oid, timestamp=int(time.time()) + 3600
 )
 ```
+
+## RTS command duration
+
+RTS devices have a default execution duration of 30 seconds, which blocks consecutive commands until the duration expires. To avoid this, you can configure `rts_command_duration` in `OverkizClientSettings`. The client will automatically inject the configured duration into RTS commands that support it, based on the command definition (`nparams`).
+
+```python
+from pyoverkiz.auth.credentials import UsernamePasswordCredentials
+from pyoverkiz.client import OverkizClient
+from pyoverkiz.client import OverkizClientSettings
+from pyoverkiz.enums import Server
+
+client = OverkizClient(
+    server=Server.SOMFY_EUROPE,
+    credentials=UsernamePasswordCredentials("user@example.com", "password"),
+    settings=OverkizClientSettings(rts_command_duration=0),
+)
+```
+
+With `rts_command_duration=0`, the execution duration is set to 0 seconds for supported commands, allowing consecutive commands to be sent without delay. Commands that don't accept a duration parameter (like `identify` or `test`) are left unchanged.
 
 ## Limitations and rate limits
 

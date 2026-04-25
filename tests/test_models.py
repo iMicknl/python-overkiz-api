@@ -981,3 +981,56 @@ class TestActionGroup:
         result = group.id
         assert isinstance(result, str)
         assert result == "abc-123"
+
+
+def test_get_command_definition_found():
+    """Device.get_command_definition() returns CommandDefinition when command exists."""
+    from pyoverkiz.models import CommandDefinition
+
+    device = _make_device(
+        {
+            **RAW_DEVICES,
+            "definition": {
+                **RAW_DEVICES["definition"],
+                "commands": [{"commandName": "open", "nparams": 0}],
+            },
+        }
+    )
+    cd = device.get_command_definition("open")
+    assert cd is not None
+    assert isinstance(cd, CommandDefinition)
+    assert cd.nparams == 0
+
+
+def test_get_command_definition_not_found():
+    """Device.get_command_definition() returns None when command doesn't exist."""
+    device = _make_device(
+        {
+            **RAW_DEVICES,
+            "definition": {
+                **RAW_DEVICES["definition"],
+                "commands": [],
+            },
+        }
+    )
+    assert device.get_command_definition("open") is None
+
+
+def test_get_command_definition_no_definition():
+    """Device.get_command_definition() returns None when device has no definition."""
+    from pyoverkiz.enums import ProductType
+    from pyoverkiz.models import States
+
+    device = Device(
+        attributes=States(),
+        available=True,
+        enabled=True,
+        label="Test",
+        device_url="io://1234-5678-9012/1",
+        controllable_name="test",
+        definition=None,
+        type=ProductType.ACTUATOR,
+        widget="SomeWidget",
+        ui_class="RollerShutter",
+    )
+    assert device.get_command_definition("open") is None

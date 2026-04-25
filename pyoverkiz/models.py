@@ -440,6 +440,14 @@ class Device:
             return None
         return self.definition.commands.select(commands)
 
+    def get_command_definition(
+        self, command: str | OverkizCommand
+    ) -> CommandDefinition | None:
+        """Return the CommandDefinition for a command, or None if unavailable."""
+        if self.definition is None:
+            return None
+        return self.definition.commands.get(str(command))
+
     def get_state_value(self, state: str) -> StateType | None:
         """Get value of a single state, or None if not found or None."""
         return self.states.select_value([state])
