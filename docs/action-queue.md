@@ -2,12 +2,65 @@
 
 The action queue automatically groups rapid, consecutive calls to `execute_action_group()` into a single ActionGroup execution. This minimizes the number of API calls and helps prevent rate limiting issues, such as `TooManyRequestsError`, `TooManyConcurrentRequestsError`, `TooManyExecutionsError`, or `ExecutionQueueFullError` which can occur if actions are sent individually in quick succession.
 
-Important limitation:
-- Gateways only allow a single action per device in each action group. The queue
-    merges commands for the same `device_url` into a single action to keep the
-    batch valid and preserve command order for that device.
-- If you pass multiple actions for the same `device_url` in a single
-    `execute_action_group()` call, the queue will merge them for you.
+## How batching and merging works
+
+The Overkiz API uses three levels of nesting:
+
+- **Command** — a single device instruction (e.g. `close`, `setClosure(50)`)
+- **Action** — one device URL + one or more commands
+- **ActionGroup** — a batch of actions submitted as a single API call
+
+The gateway enforces **one action per device** in each action group. The queue handles this automatically: when multiple actions target the same `device_url`, their commands are merged into a single action while preserving order.
+
+### Different devices — no merging needed
+
+Three commands for three different devices produce three actions in one action group:
+
+```python
+# These three calls arrive within the delay window:
+await client.execute_action_group([Action(device_url="io://1234-5678-1234/12345678", commands=[Command(name=OverkizCommand.CLOSE)])])
+await client.execute_action_group([Action(device_url="io://1234-5678-1234/87654321", commands=[Command(name=OverkizCommand.OPEN)])])
+await client.execute_action_group([Action(device_url="io://1234-5678-1234/11111111", commands=[Command(name=OverkizCommand.STOP)])])
+
+# Sent as one API call:
+# ActionGroup(actions=[
+#     Action(device_url="io://…/12345678", commands=[close]),
+#     Action(device_url="io://…/87654321", commands=[open]),
+#     Action(device_url="io://…/11111111", commands=[stop]),
+# ])
+```
+
+### Same device — commands are merged
+
+When two calls target the same device, the queue merges their commands into a single action:
+
+```python
+await client.execute_action_group([Action(device_url="io://1234-5678-1234/12345678", commands=[Command(name=OverkizCommand.CLOSE)])])
+await client.execute_action_group([Action(device_url="io://1234-5678-1234/12345678", commands=[Command(name=OverkizCommand.SET_CLOSURE, parameters=[50])])])
+
+# Sent as one API call:
+# ActionGroup(actions=[
+#     Action(device_url="io://…/12345678", commands=[close, setClosure(50)]),
+# ])
+```
+
+### Mixed — both behaviors combined
+
+```python
+await client.execute_action_group([Action(device_url="io://1234-5678-1234/12345678", commands=[Command(name=OverkizCommand.CLOSE)])])
+await client.execute_action_group([
+    Action(device_url="io://1234-5678-1234/87654321", commands=[Command(name=OverkizCommand.OPEN)]),
+    Action(device_url="io://1234-5678-1234/12345678", commands=[Command(name=OverkizCommand.SET_CLOSURE, parameters=[50])]),
+])
+
+# Sent as one API call:
+# ActionGroup(actions=[
+#     Action(device_url="io://…/12345678", commands=[close, setClosure(50)]),  # merged
+#     Action(device_url="io://…/87654321", commands=[open]),
+# ])
+```
+
+The original action objects passed to `execute_action_group()` are never mutated — the queue works on internal copies.
 
 ## Enable with defaults
 

@@ -71,16 +71,35 @@ class QueuedExecution:
 
 
 class ActionQueue:
-    """Batches multiple action executions into single API calls.
+    """Batches device actions into single API calls (action groups).
 
-    When actions are added, they are held for a configurable delay period.
-    If more actions arrive during this window, they are batched together.
-    The batch is flushed when:
+    The Overkiz API executes commands via action groups. Each action group
+    contains one Action per device, and each Action holds one or more Commands.
+    The gateway enforces at most one Action per device per action group.
+
+    Batching example — two add() calls arriving within the delay window::
+
+        add([Action(device_url="device/1", commands=[close])])
+        add([
+            Action(device_url="device/2", commands=[open]),
+            Action(device_url="device/1", commands=[setClosure(50)]),
+        ])
+
+    Produces one action group with two actions::
+
+        ActionGroup(actions=[
+            Action(device_url="device/1", commands=[close, setClosure(50)]),  # merged
+            Action(device_url="device/2", commands=[open]),
+        ])
+
+    Three separate devices would remain three separate actions in the group.
+    Merging only happens when the same device_url appears more than once.
+
+    The queue flushes when:
     - The delay timer expires
     - The max actions limit is reached
-    - The execution mode changes
-    - The label changes
-    - Manual flush is requested
+    - The execution mode or label changes
+    - flush() or shutdown() is called
     """
 
     def __init__(
@@ -107,13 +126,31 @@ class ActionQueue:
         self._lock = asyncio.Lock()
 
     @staticmethod
-    def _copy_action(action: Action) -> Action:
-        """Return an `Action` copy with an independent commands list.
+    def _merge_actions(
+        target: list[Action],
+        index: dict[str, Action],
+        source: list[Action],
+        *,
+        copy: bool = False,
+    ) -> None:
+        """Merge *source* actions into *target*, combining commands for duplicate devices.
 
-        The queue merges commands for duplicate devices, so caller-owned action
-        instances must be copied to avoid mutating user input while batching.
+        New device_urls are appended to *target*; existing ones get their commands
+        extended. When *copy* is True, source actions are copied to avoid mutating
+        caller-owned objects.
         """
-        return Action(device_url=action.device_url, commands=list(action.commands))
+        for action in source:
+            existing = index.get(action.device_url)
+            if existing is None:
+                merged = (
+                    Action(device_url=action.device_url, commands=list(action.commands))
+                    if copy
+                    else action
+                )
+                target.append(merged)
+                index[action.device_url] = merged
+            else:
+                existing.commands.extend(action.commands)
 
     async def add(
         self,
@@ -146,14 +183,7 @@ class ActionQueue:
 
         normalized_actions: list[Action] = []
         normalized_index: dict[str, Action] = {}
-        for action in actions:
-            existing = normalized_index.get(action.device_url)
-            if existing is None:
-                action_copy = self._copy_action(action)
-                normalized_actions.append(action_copy)
-                normalized_index[action.device_url] = action_copy
-            else:
-                existing.commands.extend(action.commands)
+        self._merge_actions(normalized_actions, normalized_index, actions, copy=True)
 
         async with self._lock:
             # If mode or label changes, flush existing queue first
@@ -162,18 +192,10 @@ class ActionQueue:
             ):
                 batches_to_execute.append(self._prepare_flush())
 
-            # Add actions to pending queue
-            pending_index = {
-                pending_action.device_url: pending_action
-                for pending_action in self._pending_actions
-            }
-            for action in normalized_actions:
-                pending = pending_index.get(action.device_url)
-                if pending is None:
-                    self._pending_actions.append(action)
-                    pending_index[action.device_url] = action
-                else:
-                    pending.commands.extend(action.commands)
+            pending_index = {a.device_url: a for a in self._pending_actions}
+            self._merge_actions(
+                self._pending_actions, pending_index, normalized_actions
+            )
             self._pending_mode = mode
             self._pending_label = label
 
@@ -196,39 +218,25 @@ class ActionQueue:
 
         # Execute batches outside the lock if we flushed
         for batch in batches_to_execute:
-            if batch[0]:
-                await self._execute_batch(*batch)
+            batch_actions, batch_mode, batch_label, batch_waiters = batch
+            if batch_actions:
+                await self._execute_batch(
+                    batch_actions, batch_mode, batch_label, batch_waiters
+                )
 
         return waiter
 
     async def _delayed_flush(self) -> None:
         """Wait for the delay period, then flush the queue."""
-        waiters: list[QueuedExecution] = []
-        try:
-            await asyncio.sleep(self._settings.delay)
-            async with self._lock:
-                if not self._pending_actions:
-                    return
+        await asyncio.sleep(self._settings.delay)
+        async with self._lock:
+            self._flush_task = None
+            # Another coroutine may have already flushed the queue before we acquired the lock.
+            actions, mode, label, waiters = self._prepare_flush()
+            if not actions:
+                return
 
-                # Take snapshot and clear state while holding lock
-                actions = self._pending_actions
-                mode = self._pending_mode
-                label = self._pending_label
-                waiters = self._pending_waiters
-
-                self._pending_actions = []
-                self._pending_mode = None
-                self._pending_label = None
-                self._pending_waiters = []
-                self._flush_task = None
-
-            # Execute outside the lock
-            await self._execute_batch(actions, mode, label, waiters)
-        except asyncio.CancelledError as exc:
-            # Ensure all waiters are notified if this task is cancelled
-            for waiter in waiters:
-                waiter.set_exception(exc)
-            raise
+        await self._execute_batch(actions, mode, label, waiters)
 
     def _prepare_flush(
         self,
@@ -317,19 +325,20 @@ class ActionQueue:
 
     async def shutdown(self) -> None:
         """Shutdown the queue, flushing any pending actions."""
+        cancelled_task: asyncio.Task[None] | None = None
         batch_to_execute = None
         async with self._lock:
             if self._flush_task and not self._flush_task.done():
-                task = self._flush_task
-                task.cancel()
+                cancelled_task = self._flush_task
+                cancelled_task.cancel()
                 self._flush_task = None
-                # Wait for cancellation to complete
-                with contextlib.suppress(asyncio.CancelledError):
-                    await task
 
             if self._pending_actions:
                 batch_to_execute = self._prepare_flush()
 
-        # Execute outside the lock
+        if cancelled_task:
+            with contextlib.suppress(asyncio.CancelledError):
+                await cancelled_task
+
         if batch_to_execute:
             await self._execute_batch(*batch_to_execute)

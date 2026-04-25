@@ -350,3 +350,102 @@ async def test_queued_execution_awaitable():
 
     # Ensure background task has completed
     await task
+
+
+@pytest.mark.asyncio
+async def test_action_queue_settings_validate():
+    """Test that validate raises on invalid settings."""
+    with pytest.raises(ValueError, match="positive"):
+        ActionQueueSettings(delay=-1).validate()
+
+    with pytest.raises(ValueError, match="at least 1"):
+        ActionQueueSettings(max_actions=0).validate()
+
+    # Valid settings should not raise
+    ActionQueueSettings(delay=0.5, max_actions=10).validate()
+
+
+@pytest.mark.asyncio
+async def test_action_queue_add_empty_actions(mock_executor):
+    """Test that add raises ValueError for empty action list."""
+    queue = ActionQueue(executor=mock_executor, settings=ActionQueueSettings(delay=0.1))
+
+    with pytest.raises(ValueError, match="at least one Action"):
+        await queue.add([])
+
+
+@pytest.mark.asyncio
+async def test_action_queue_executor_cancelled_propagates():
+    """Test that CancelledError during execution propagates to waiters."""
+
+    async def cancelling_executor(actions, mode, label):
+        raise asyncio.CancelledError
+
+    queue = ActionQueue(
+        executor=AsyncMock(side_effect=cancelling_executor),
+        settings=ActionQueueSettings(delay=0.05),
+    )
+
+    action = Action(
+        device_url="io://1234-5678-9012/1",
+        commands=[Command(name=OverkizCommand.CLOSE)],
+    )
+
+    queued = await queue.add([action])
+
+    with pytest.raises(asyncio.CancelledError):
+        await queued
+
+
+@pytest.mark.asyncio
+async def test_action_queue_flush_empty(mock_executor):
+    """Test that flushing an empty queue is a no-op."""
+    queue = ActionQueue(executor=mock_executor, settings=ActionQueueSettings(delay=0.1))
+
+    await queue.flush()
+    mock_executor.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_action_queue_shutdown_empty(mock_executor):
+    """Test that shutting down an empty queue is a no-op."""
+    queue = ActionQueue(executor=mock_executor, settings=ActionQueueSettings(delay=0.1))
+
+    await queue.shutdown()
+    mock_executor.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_action_queue_no_self_cancel_during_delayed_flush():
+    """Test that _delayed_flush does not cancel itself via _prepare_flush.
+
+    When _delayed_flush fires and calls _prepare_flush, the flush task is still
+    the running coroutine. _prepare_flush must not cancel it, otherwise the batch
+    would fail with CancelledError when the executor performs I/O.
+    """
+    cancel_detected = False
+
+    async def slow_executor(actions, mode, label):
+        nonlocal cancel_detected
+        try:
+            await asyncio.sleep(0.05)
+        except asyncio.CancelledError:
+            cancel_detected = True
+            raise
+        return "exec-ok"
+
+    queue = ActionQueue(
+        executor=AsyncMock(side_effect=slow_executor),
+        settings=ActionQueueSettings(delay=0.05),
+    )
+
+    action = Action(
+        device_url="io://1234-5678-9012/1",
+        commands=[Command(name=OverkizCommand.CLOSE)],
+    )
+
+    queued = await queue.add([action])
+    exec_id = await queued
+
+    assert exec_id == "exec-ok"
+    assert not cancel_detected, "_delayed_flush cancelled itself via _prepare_flush"
