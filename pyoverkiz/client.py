@@ -174,7 +174,7 @@ class OverkizClient:
     _ssl: ssl.SSLContext | bool = True
     _auth: AuthStrategy
     _action_queue: ActionQueue | None = None
-    _rts_command_duration: int | None = None
+    settings: OverkizClientSettings
 
     def __init__(
         self,
@@ -209,15 +209,13 @@ class OverkizClient:
             # Use the prebuilt SSL context with disabled strict validation for local API.
             self._ssl = SSL_CONTEXT_LOCAL_API
 
-        # Apply behavioral settings
-        resolved_settings = settings or OverkizClientSettings()
-        self._rts_command_duration = resolved_settings.rts_command_duration
+        self.settings = settings or OverkizClientSettings()
 
-        if resolved_settings.action_queue:
-            resolved_settings.action_queue.validate()
+        if self.settings.action_queue:
+            self.settings.action_queue.validate()
             self._action_queue = ActionQueue(
                 executor=self._execute_action_group_direct,
-                settings=resolved_settings.action_queue,
+                settings=self.settings.action_queue,
             )
 
         self._auth = build_auth_strategy(
@@ -490,12 +488,15 @@ class OverkizClient:
         return cast(str, response["protocolVersion"])
 
     def _apply_rts_duration(self, actions: list[Action]) -> list[Action]:
-        """Append rts_command_duration to RTS commands that accept an extra parameter.
+        """Set the execution duration for RTS commands that support it.
 
-        Returns a new list of actions with modified commands where applicable.
-        The original actions are not mutated.
+        The default execution duration for RTS devices is 30 seconds, which
+        blocks consecutive commands. This injects the configured duration
+        (typically 0) into commands that accept it, based on the device
+        command definition (nparams).
         """
-        if self._rts_command_duration is None:
+        duration = self.settings.rts_command_duration
+        if duration is None:
             return actions
 
         device_index: dict[str, Device] = {d.device_url: d for d in self.devices}
@@ -508,26 +509,25 @@ class OverkizClient:
                 result.append(action)
                 continue
 
-            new_commands: list[Command] = []
+            updated_commands: list[Command] = []
             for cmd in action.commands:
                 cmd_def = device.get_command_definition(str(cmd.name))
                 current_count = len(cmd.parameters) if cmd.parameters else 0
 
                 if cmd_def and current_count < cmd_def.nparams:
-                    new_commands.append(
+                    updated_commands.append(
                         Command(
                             name=cmd.name,
-                            parameters=[
-                                *(cmd.parameters or []),
-                                self._rts_command_duration,
-                            ],
+                            parameters=[*(cmd.parameters or []), duration],
                             type=cmd.type,
                         )
                     )
                 else:
-                    new_commands.append(cmd)
+                    updated_commands.append(cmd)
 
-            result.append(Action(device_url=action.device_url, commands=new_commands))
+            result.append(
+                Action(device_url=action.device_url, commands=updated_commands)
+            )
 
         return result
 
