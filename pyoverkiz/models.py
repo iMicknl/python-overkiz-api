@@ -509,8 +509,6 @@ class ActionGroup:
     """
 
     actions: list[Action] = field(factory=list)
-    creation_time: int | None = None
-    last_update_time: int | None = None
     label: str | None = field(repr=obfuscate_string, default=None)
     metadata: str | None = None
     shortcut: bool | None = None
@@ -518,10 +516,18 @@ class ActionGroup:
     notification_condition: str | None = None
     notification_text: str | None = None
     notification_title: str | None = None
-    oid: str | None = field(repr=obfuscate_id, default=None)
+
+
+@define(kw_only=True)
+class PersistedActionGroup(ActionGroup):
+    """A server-persisted action group returned by the /actionGroups endpoint."""
+
+    oid: str = field(repr=obfuscate_id)
+    creation_time: int = 0
+    last_update_time: int = 0
 
     @property
-    def id(self) -> str | None:
+    def id(self) -> str:
         """Alias for oid."""
         return self.oid
 
