@@ -13,7 +13,13 @@ from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from aiohttp import ClientSession
-from botocore.exceptions import ClientError
+
+try:
+    from botocore.exceptions import ClientError
+
+    HAS_NEXITY_DEPS = True
+except ImportError:
+    HAS_NEXITY_DEPS = False
 
 from pyoverkiz.auth.base import AuthContext
 from pyoverkiz.auth.credentials import (
@@ -499,6 +505,28 @@ class TestNexityAuthStrategy:
                     sys.modules[mod] = value
 
     @pytest.mark.asyncio
+    async def test_login_raises_import_error_without_nexity_extra(self):
+        """Login raises ImportError with install hint when nexity extra is missing."""
+        server_config = ServerConfig(
+            server=Server.NEXITY,
+            name="Nexity",
+            endpoint="https://api.nexity.com",
+            manufacturer="Nexity",
+            api_type=APIType.CLOUD,
+        )
+        credentials = UsernamePasswordCredentials("user", "pass")
+        session = AsyncMock(spec=ClientSession)
+
+        strategy = NexityAuthStrategy(credentials, session, server_config, True)
+
+        with (
+            patch.dict(sys.modules, {"boto3": None}),
+            pytest.raises(ImportError, match="pyoverkiz\\[nexity\\]"),
+        ):
+            await strategy.login()
+
+    @pytest.mark.asyncio
+    @pytest.mark.skipif(not HAS_NEXITY_DEPS, reason="nexity extra not installed")
     async def test_login_maps_invalid_credentials_client_error(self):
         """Map Cognito bad-credential errors to NexityBadCredentialsError."""
         server_config = ServerConfig(
@@ -527,6 +555,7 @@ class TestNexityAuthStrategy:
                 await strategy.login()
 
     @pytest.mark.asyncio
+    @pytest.mark.skipif(not HAS_NEXITY_DEPS, reason="nexity extra not installed")
     async def test_login_propagates_non_auth_client_error(self):
         """Propagate non-auth Cognito errors to preserve failure context."""
         server_config = ServerConfig(

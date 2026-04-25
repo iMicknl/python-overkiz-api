@@ -25,6 +25,22 @@ uv add pyoverkiz
 pip install pyoverkiz
 ```
 
+### Optional extras
+
+Some servers require additional dependencies that are not installed by default:
+
+| Extra | Server | Packages |
+|-------|--------|----------|
+| `nexity` | Nexity | boto3, warrant-lite |
+
+Install an extra with:
+
+```bash
+uv add "pyoverkiz[nexity]"
+# or
+pip install "pyoverkiz[nexity]"
+```
+
 ## Choose your server
 
 Use a cloud server when you want to connect through the vendor’s public API. Use a local server when you want LAN access to a gateway.

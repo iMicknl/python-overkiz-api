@@ -17,12 +17,14 @@ dependencies = [
     "aiohttp<4.0.0,>=3.10.3",
     "backoff<3.0,>=1.10.0",
     "attrs>=21.2",
-    "boto3<2.0.0,>=1.18.59",
-    "warrant-lite<2.0.0,>=1.0.4",
     "cattrs>=23.2",
 ]
 
 [project.optional-dependencies]
+nexity = [
+    "boto3<2.0.0,>=1.18.59",
+    "warrant-lite<2.0.0,>=1.0.4",
+]
 docs = [
     "mkdocs>=1.5.0,<2.0",
     "mkdocs-material>=9.5.0",
