@@ -59,7 +59,6 @@ from pyoverkiz.models import (
 from pyoverkiz.obfuscate import obfuscate_sensitive_data
 from pyoverkiz.response_handler import check_response
 from pyoverkiz.serializers import prepare_payload
-from pyoverkiz.types import JSON
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -404,7 +403,7 @@ class OverkizClient:
         return converter.structure(decamelize(response), list[HistoryExecution])
 
     @retry_on_auth_error
-    async def get_device_definition(self, deviceurl: str) -> JSON | None:
+    async def get_device_definition(self, deviceurl: str) -> dict[str, Any] | None:
         """Retrieve a particular setup device definition."""
         response: dict = await self._get(
             f"setup/devices/{urllib.parse.quote_plus(deviceurl)}"
@@ -696,19 +695,23 @@ class OverkizClient:
         return None
 
     @retry_on_auth_error
-    async def get_reference_controllable(self, controllable_name: str) -> JSON:
+    async def get_reference_controllable(
+        self, controllable_name: str
+    ) -> dict[str, Any]:
         """Get a controllable definition."""
         return await self._get(
             f"reference/controllable/{urllib.parse.quote_plus(controllable_name)}"
         )
 
     @retry_on_auth_error
-    async def get_reference_controllable_types(self) -> JSON:
+    async def get_reference_controllable_types(self) -> list[dict[str, Any]]:
         """Get details about all supported controllable types."""
         return await self._get("reference/controllableTypes")
 
     @retry_on_auth_error
-    async def search_reference_devices_model(self, payload: JSON) -> JSON:
+    async def search_reference_devices_model(
+        self, payload: dict[str, Any]
+    ) -> dict[str, Any]:
         """Search reference device models using a POST payload."""
         return await self._post("reference/devices/search", payload)
 
@@ -727,7 +730,7 @@ class OverkizClient:
         return converter.structure(response, list[ProtocolType])
 
     @retry_on_auth_error
-    async def get_reference_timezones(self) -> JSON:
+    async def get_reference_timezones(self) -> list[dict[str, Any]]:
         """Get timezones list."""
         return await self._get("reference/timezones")
 
@@ -824,7 +827,10 @@ class OverkizClient:
             return await self._parse_response(response)
 
     async def _post(
-        self, path: str, payload: JSON | None = None, data: JSON | None = None
+        self,
+        path: str,
+        payload: dict[str, Any] | None = None,
+        data: dict[str, Any] | None = None,
     ) -> Any:
         """Make a POST request to the OverKiz API."""
         await self._refresh_token_if_expired()
@@ -838,7 +844,7 @@ class OverkizClient:
         ) as response:
             return await self._parse_response(response)
 
-    async def _put(self, path: str, payload: JSON | None = None) -> Any:
+    async def _put(self, path: str, payload: dict[str, Any] | None = None) -> Any:
         """Make a PUT request to the OverKiz API."""
         await self._refresh_token_if_expired()
 

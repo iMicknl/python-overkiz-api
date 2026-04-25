@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import re
-from collections.abc import Iterator
+from collections.abc import Iterator, Mapping
 from typing import Any, cast
 
 from attr import define, field
@@ -24,11 +24,11 @@ from pyoverkiz.enums import (
     UpdateBoxStatus,
     UpdateCriticityLevel,
 )
-from pyoverkiz.enums.command import OverkizCommand, OverkizCommandParam
+from pyoverkiz.enums.command import OverkizCommand
 from pyoverkiz.enums.protocol import Protocol
 from pyoverkiz.enums.server import APIType, Server
 from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
-from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
+from pyoverkiz.types import DATA_TYPE_TO_PYTHON, CommandParameterValue, StateType
 
 # ---------------------------------------------------------------------------
 # State & command primitives
@@ -129,8 +129,8 @@ class EventState(State):
 
 
 @define(init=False)
-class States:
-    """Container of State objects providing lookup and mapping helpers."""
+class States(Mapping[str, State]):
+    """Container of State objects implementing Mapping[str, State]."""
 
     _states: list[State]
     _index: dict[str, State]
@@ -142,9 +142,9 @@ class States:
         self._index = {state.name: state for state in self._states}
         self._pos = {state.name: i for i, state in enumerate(self._states)}
 
-    def __iter__(self) -> Iterator[State]:
-        """Return an iterator over contained State objects."""
-        return self._states.__iter__()
+    def __iter__(self) -> Iterator[str]:
+        """Return an iterator over state names."""
+        return iter(self._index)
 
     def __contains__(self, name: object) -> bool:
         """Return True if a state with the given name exists in the container."""
@@ -171,10 +171,6 @@ class States:
     def __len__(self) -> int:
         """Return number of states in the container."""
         return len(self._states)
-
-    def get(self, name: str) -> State | None:
-        """Return the State with the given name or None if missing."""
-        return self._index.get(name)
 
     def select(self, names: list[str]) -> State | None:
         """Return the first State that exists and has a non-None value, or None."""
@@ -204,8 +200,8 @@ class CommandDefinition:
 
 
 @define(init=False)
-class CommandDefinitions:
-    """Container for command definitions providing convenient lookup by name."""
+class CommandDefinitions(Mapping[str, CommandDefinition]):
+    """Container for command definitions implementing Mapping[str, CommandDefinition]."""
 
     _commands: list[CommandDefinition]
     _index: dict[str, CommandDefinition]
@@ -215,9 +211,9 @@ class CommandDefinitions:
         self._commands = list(commands) if commands else []
         self._index = {cd.command_name: cd for cd in self._commands}
 
-    def __iter__(self) -> Iterator[CommandDefinition]:
-        """Iterate over defined commands."""
-        return self._commands.__iter__()
+    def __iter__(self) -> Iterator[str]:
+        """Iterate over command names."""
+        return iter(self._index)
 
     def __contains__(self, name: object) -> bool:
         """Return True if a command with `name` exists."""
@@ -233,10 +229,6 @@ class CommandDefinitions:
     def __len__(self) -> int:
         """Return number of command definitions."""
         return len(self._commands)
-
-    def get(self, command: str) -> CommandDefinition | None:
-        """Return the command definition or None if missing."""
-        return self._index.get(command)
 
     def select(self, commands: list[str | OverkizCommand]) -> str | None:
         """Return the first command name that exists in this definition, or None."""
@@ -283,7 +275,7 @@ class Command:
     """Represents an OverKiz Command."""
 
     name: str | OverkizCommand
-    parameters: list[str | int | float | OverkizCommandParam] | None = None
+    parameters: list[CommandParameterValue] | None = None
     type: int | None = None
 
     def to_payload(self) -> dict[str, object]:
