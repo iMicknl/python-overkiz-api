@@ -18,15 +18,15 @@ Three commands for three different devices produce three actions in one action g
 
 ```python
 # These three calls arrive within the delay window:
-await client.execute_action_group([Action("io://1234-5678-1234/12345678", [Command(name=OverkizCommand.CLOSE)])])
-await client.execute_action_group([Action("io://1234-5678-1234/87654321", [Command(name=OverkizCommand.OPEN)])])
-await client.execute_action_group([Action("io://1234-5678-1234/11111111", [Command(name=OverkizCommand.STOP)])])
+await client.execute_action_group([Action(device_url="io://1234-5678-1234/12345678", commands=[Command(name=OverkizCommand.CLOSE)])])
+await client.execute_action_group([Action(device_url="io://1234-5678-1234/87654321", commands=[Command(name=OverkizCommand.OPEN)])])
+await client.execute_action_group([Action(device_url="io://1234-5678-1234/11111111", commands=[Command(name=OverkizCommand.STOP)])])
 
 # Sent as one API call:
 # ActionGroup(actions=[
-#     Action("io://…/12345678", commands=[close]),
-#     Action("io://…/87654321", commands=[open]),
-#     Action("io://…/11111111", commands=[stop]),
+#     Action(device_url="io://…/12345678", commands=[close]),
+#     Action(device_url="io://…/87654321", commands=[open]),
+#     Action(device_url="io://…/11111111", commands=[stop]),
 # ])
 ```
 
@@ -35,28 +35,28 @@ await client.execute_action_group([Action("io://1234-5678-1234/11111111", [Comma
 When two calls target the same device, the queue merges their commands into a single action:
 
 ```python
-await client.execute_action_group([Action("io://1234-5678-1234/12345678", [Command(name=OverkizCommand.CLOSE)])])
-await client.execute_action_group([Action("io://1234-5678-1234/12345678", [Command(name=OverkizCommand.SET_CLOSURE, parameters=[50])])])
+await client.execute_action_group([Action(device_url="io://1234-5678-1234/12345678", commands=[Command(name=OverkizCommand.CLOSE)])])
+await client.execute_action_group([Action(device_url="io://1234-5678-1234/12345678", commands=[Command(name=OverkizCommand.SET_CLOSURE, parameters=[50])])])
 
 # Sent as one API call:
 # ActionGroup(actions=[
-#     Action("io://…/12345678", commands=[close, setClosure(50)]),
+#     Action(device_url="io://…/12345678", commands=[close, setClosure(50)]),
 # ])
 ```
 
 ### Mixed — both behaviors combined
 
 ```python
-await client.execute_action_group([Action("io://1234-5678-1234/12345678", [Command(name=OverkizCommand.CLOSE)])])
+await client.execute_action_group([Action(device_url="io://1234-5678-1234/12345678", commands=[Command(name=OverkizCommand.CLOSE)])])
 await client.execute_action_group([
-    Action("io://1234-5678-1234/87654321", [Command(name=OverkizCommand.OPEN)]),
-    Action("io://1234-5678-1234/12345678", [Command(name=OverkizCommand.SET_CLOSURE, parameters=[50])]),
+    Action(device_url="io://1234-5678-1234/87654321", commands=[Command(name=OverkizCommand.OPEN)]),
+    Action(device_url="io://1234-5678-1234/12345678", commands=[Command(name=OverkizCommand.SET_CLOSURE, parameters=[50])]),
 ])
 
 # Sent as one API call:
 # ActionGroup(actions=[
-#     Action("io://…/12345678", commands=[close, setClosure(50)]),  # merged
-#     Action("io://…/87654321", commands=[open]),
+#     Action(device_url="io://…/12345678", commands=[close, setClosure(50)]),  # merged
+#     Action(device_url="io://…/87654321", commands=[open]),
 # ])
 ```
 

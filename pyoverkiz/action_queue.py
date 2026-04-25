@@ -79,14 +79,17 @@ class ActionQueue:
 
     Batching example — two add() calls arriving within the delay window::
 
-        add([Action("device/1", [close])])
-        add([Action("device/2", [open]), Action("device/1", [setClosure(50)])])
+        add([Action(device_url="device/1", commands=[close])])
+        add([
+            Action(device_url="device/2", commands=[open]),
+            Action(device_url="device/1", commands=[setClosure(50)]),
+        ])
 
     Produces one action group with two actions::
 
         ActionGroup(actions=[
-            Action("device/1", [close, setClosure(50)]),  # commands merged
-            Action("device/2", [open]),
+            Action(device_url="device/1", commands=[close, setClosure(50)]),  # merged
+            Action(device_url="device/2", commands=[open]),
         ])
 
     Three separate devices would remain three separate actions in the group.
