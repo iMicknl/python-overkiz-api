@@ -2,11 +2,12 @@
 
 from __future__ import annotations
 
+from abc import ABC
 from dataclasses import dataclass, field
 
 
-class Credentials:
-    """Marker base class for auth credentials."""
+class Credentials(ABC):  # noqa: B024 - marker class uses ABC to prevent direct instantiation
+    """Abstract base class for auth credentials."""
 
 
 @dataclass(slots=True)
