@@ -39,6 +39,7 @@ from pyoverkiz.exceptions import (
 from pyoverkiz.models import (
     Action,
     Command,
+    Definition,
     Device,
     Event,
     Execution,
@@ -407,13 +408,17 @@ class OverkizClient:
         return structure_response(response, list[HistoryExecution])
 
     @retry_on_auth_error
-    async def get_device_definition(self, device_url: str) -> dict[str, Any] | None:
+    async def get_device_definition(self, device_url: str) -> Definition | None:
         """Retrieve a particular setup device definition."""
         response: dict = await self._get(
             f"setup/devices/{urllib.parse.quote_plus(device_url)}"
         )
 
-        return response.get("definition")
+        raw = response.get("definition")
+        if raw is None:
+            return None
+
+        return structure_response(raw, Definition)
 
     @retry_on_auth_error
     async def get_state(self, device_url: str) -> list[State]:
