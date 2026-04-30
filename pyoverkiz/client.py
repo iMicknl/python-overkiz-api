@@ -179,12 +179,17 @@ class OverkizClient:
     setup: Setup | None
     devices: list[Device]
     gateways: list[Gateway]
-    event_listener_id: str | None
     session: ClientSession
     _ssl: ssl.SSLContext | bool = True
     _auth: AuthStrategy
     _action_queue: ActionQueue | None = None
+    _event_listener_id: str | None
     settings: OverkizClientSettings
+
+    @property
+    def event_listener_id(self) -> str | None:
+        """Return the current event listener ID (read-only)."""
+        return self._event_listener_id
 
     def __init__(
         self,
@@ -208,7 +213,7 @@ class OverkizClient:
         self.setup: Setup | None = None
         self.devices: list[Device] = []
         self.gateways: list[Gateway] = []
-        self.event_listener_id: str | None = None
+        self._event_listener_id: str | None = None
 
         self.session = session or ClientSession(headers={"User-Agent": USER_AGENT})
         self._ssl = verify_ssl
@@ -453,7 +458,7 @@ class OverkizClient:
         """
         response = await self._post("events/register")
         listener_id = cast(str, response.get("id"))
-        self.event_listener_id = listener_id
+        self._event_listener_id = listener_id
 
         return listener_id
 
@@ -476,8 +481,8 @@ class OverkizClient:
 
         API response status is always 200, even on unknown listener ids.
         """
-        await self._post(f"events/{self.event_listener_id}/unregister")
-        self.event_listener_id = None
+        await self._post(f"events/{self._event_listener_id}/unregister")
+        self._event_listener_id = None
 
     @retry_on_auth_error
     async def get_current_execution(self, exec_id: str) -> Execution | None:
