@@ -69,5 +69,5 @@ converter = _make_converter()
 
 
 def structure_response[T](data: Any, cls: type[T]) -> T:
-    """Decamelize an API response and structure it into a typed model instance."""
+    """Decamelize an API response and structure it into the target type."""
     return converter.structure(decamelize(data), cls)
