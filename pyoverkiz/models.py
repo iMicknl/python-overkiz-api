@@ -722,17 +722,17 @@ class Location:
     postal_code: str | None = field(repr=obfuscate_string, default=None)
     address_line1: str | None = field(repr=obfuscate_string, default=None)
     address_line2: str | None = field(repr=obfuscate_string, default=None)
-    timezone: str = ""
+    timezone: str | None = None
     longitude: str | None = field(repr=obfuscate_string, default=None)
     latitude: str | None = field(repr=obfuscate_string, default=None)
-    twilight_mode: int = 0
-    twilight_angle: str = ""
+    twilight_mode: int | None = None
+    twilight_angle: str | None = None
     twilight_city: str | None = None
-    summer_solstice_dusk_minutes: str = ""
-    winter_solstice_dusk_minutes: str = ""
+    summer_solstice_dusk_minutes: str | None = None
+    winter_solstice_dusk_minutes: str | None = None
     twilight_offset_enabled: bool = False
-    dawn_offset: int = 0
-    dusk_offset: int = 0
+    dawn_offset: int | None = None
+    dusk_offset: int | None = None
     country_code: str | None = field(repr=obfuscate_string, default=None)
     tariff_settings: dict[str, Any] | None = None
 
