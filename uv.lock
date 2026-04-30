@@ -1011,7 +1011,9 @@ dependencies = [
     { name = "aiohttp" },
     { name = "attrs" },
     { name = "backoff" },
+    { name = "boto3" },
     { name = "cattrs" },
+    { name = "warrant-lite" },
 ]
 
 [package.optional-dependencies]
@@ -1021,10 +1023,6 @@ docs = [
     { name = "mkdocs-material" },
     { name = "mkdocstrings", extra = ["python"] },
     { name = "pymdown-extensions" },
-]
-nexity = [
-    { name = "boto3" },
-    { name = "warrant-lite" },
 ]
 
 [package.dev-dependencies]
@@ -1043,16 +1041,16 @@ requires-dist = [
     { name = "aiohttp", specifier = ">=3.10.3,<4.0.0" },
     { name = "attrs", specifier = ">=21.2" },
     { name = "backoff", specifier = ">=1.10.0,<3.0" },
-    { name = "boto3", marker = "extra == 'nexity'", specifier = ">=1.18.59,<2.0.0" },
+    { name = "boto3", specifier = ">=1.18.59,<2.0.0" },
     { name = "cattrs", specifier = ">=23.2" },
     { name = "mkdocs", marker = "extra == 'docs'", specifier = ">=1.5.0,<2.0" },
     { name = "mkdocs-autorefs", marker = "extra == 'docs'", specifier = ">=1.0.0" },
     { name = "mkdocs-material", marker = "extra == 'docs'", specifier = ">=9.5.0" },
     { name = "mkdocstrings", extras = ["python"], marker = "extra == 'docs'", specifier = ">=0.24.0" },
     { name = "pymdown-extensions", marker = "extra == 'docs'", specifier = ">=10.0" },
-    { name = "warrant-lite", marker = "extra == 'nexity'", specifier = ">=1.0.4,<2.0.0" },
+    { name = "warrant-lite", specifier = ">=1.0.4,<2.0.0" },
 ]
-provides-extras = ["nexity", "docs"]
+provides-extras = ["docs"]
 
 [package.metadata.requires-dev]
 dev = [

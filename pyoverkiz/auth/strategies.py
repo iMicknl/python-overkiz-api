@@ -246,16 +246,10 @@ class NexityAuthStrategy(SessionLoginStrategy):
 
     async def login(self) -> None:
         """Perform login using Nexity username and password."""
-        try:
-            import boto3
-            from botocore.config import Config
-            from botocore.exceptions import ClientError
-            from warrant_lite import WarrantLite
-        except ImportError as err:
-            raise ImportError(
-                "Nexity authentication requires the 'nexity' extra: "
-                "pip install pyoverkiz[nexity]"
-            ) from err
+        import boto3
+        from botocore.config import Config
+        from botocore.exceptions import ClientError
+        from warrant_lite import WarrantLite
 
         loop = asyncio.get_running_loop()
 
