@@ -407,19 +407,19 @@ class OverkizClient:
         return structure_response(response, list[HistoryExecution])
 
     @retry_on_auth_error
-    async def get_device_definition(self, deviceurl: str) -> dict[str, Any] | None:
+    async def get_device_definition(self, device_url: str) -> dict[str, Any] | None:
         """Retrieve a particular setup device definition."""
         response: dict = await self._get(
-            f"setup/devices/{urllib.parse.quote_plus(deviceurl)}"
+            f"setup/devices/{urllib.parse.quote_plus(device_url)}"
         )
 
         return response.get("definition")
 
     @retry_on_auth_error
-    async def get_state(self, deviceurl: str) -> list[State]:
+    async def get_state(self, device_url: str) -> list[State]:
         """Retrieve states of requested device."""
         response = await self._get(
-            f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/states"
+            f"setup/devices/{urllib.parse.quote_plus(device_url)}/states"
         )
         return structure_response(response, list[State])
 
@@ -429,10 +429,10 @@ class OverkizClient:
         await self._post("setup/devices/states/refresh")
 
     @retry_on_auth_error
-    async def refresh_device_states(self, deviceurl: str) -> None:
+    async def refresh_device_states(self, device_url: str) -> None:
         """Ask the box to refresh all states of the given device for protocols supporting that operation."""
         await self._post(
-            f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/states/refresh"
+            f"setup/devices/{urllib.parse.quote_plus(device_url)}/states/refresh"
         )
 
     @retry_on_concurrent_requests
@@ -780,38 +780,40 @@ class OverkizClient:
         return structure_response(response, list[Device])
 
     @retry_on_auth_error
-    async def get_device_firmware_status(self, deviceurl: str) -> FirmwareStatus | None:
+    async def get_device_firmware_status(
+        self, device_url: str
+    ) -> FirmwareStatus | None:
         """Check if a device's firmware is up to date.
 
         Returns None if the device does not support firmware status checks.
         """
         try:
             response = await self._get(
-                f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/firmwareUpToDate"
+                f"setup/devices/{urllib.parse.quote_plus(device_url)}/firmwareUpToDate"
             )
         except UnsupportedOperationError:
             return None
         return structure_response(response, FirmwareStatus)
 
     @retry_on_auth_error
-    async def get_device_firmware_update_capability(self, deviceurl: str) -> bool:
+    async def get_device_firmware_update_capability(self, device_url: str) -> bool:
         """Check if a device supports firmware updates.
 
         Returns False if the device does not support this query.
         """
         try:
             response = await self._get(
-                f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/firmwareUpdateCapability"
+                f"setup/devices/{urllib.parse.quote_plus(device_url)}/firmwareUpdateCapability"
             )
         except UnsupportedOperationError:
             return False
         return cast(bool, response["supportsFirmwareUpdate"])
 
     @retry_on_auth_error
-    async def update_device_firmware(self, deviceurl: str) -> None:
+    async def update_device_firmware(self, device_url: str) -> None:
         """Update a device's firmware to the next available version."""
         await self._put(
-            f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/updateFirmware"
+            f"setup/devices/{urllib.parse.quote_plus(device_url)}/updateFirmware"
         )
 
     @retry_on_auth_error
