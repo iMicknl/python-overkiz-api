@@ -573,7 +573,7 @@ class Execution:
     id: str
     description: str
     owner: str = field(repr=obfuscate_email)
-    state: str
+    state: ExecutionState
     action_group: ActionGroup | None = None
     start_time: int | None = None
     execution_type: ExecutionType | None = None
