@@ -9,6 +9,7 @@ from typing import Any, Union, get_args, get_origin
 import attr
 import cattrs
 
+from pyoverkiz._case import decamelize
 from pyoverkiz.models import (
     CommandDefinition,
     CommandDefinitions,
@@ -65,3 +66,8 @@ def _make_converter() -> cattrs.Converter:
 
 
 converter = _make_converter()
+
+
+def structure_response[T](data: Any, cls: type[T]) -> T:
+    """Decamelize an API response and structure it into a typed model instance."""
+    return converter.structure(decamelize(data), cls)

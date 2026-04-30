@@ -8,8 +8,7 @@ from pathlib import Path
 import cattrs.errors
 import pytest
 
-from pyoverkiz._case import decamelize
-from pyoverkiz.converter import converter
+from pyoverkiz.converter import converter, structure_response
 from pyoverkiz.enums import DataType, EventName, ExecutionState, FailureType, Protocol
 from pyoverkiz.models import (
     Action,
@@ -88,7 +87,7 @@ FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures" / "setup"
 
 def _make_device(raw: dict | None = None) -> Device:
     """Create a Device from raw camelCase dict via the converter."""
-    return converter.structure(decamelize(raw or RAW_DEVICES), Device)
+    return structure_response(raw or RAW_DEVICES, Device)
 
 
 class TestSetup:
@@ -99,7 +98,7 @@ class TestSetup:
         raw_setup = json.loads(
             (FIXTURES_DIR / "setup_tahoma_1.json").read_text(encoding="utf-8")
         )
-        setup = converter.structure(decamelize(raw_setup), Setup)
+        setup = structure_response(raw_setup, Setup)
         raw_id = "SETUP-1234-1234-8044"
         redacted_id = obfuscate_id(raw_id)
 
@@ -112,7 +111,7 @@ class TestSetup:
         raw_setup = json.loads(
             (FIXTURES_DIR / "setup_local.json").read_text(encoding="utf-8")
         )
-        setup = converter.structure(decamelize(raw_setup), Setup)
+        setup = structure_response(raw_setup, Setup)
 
         assert setup.id is None
 
@@ -838,7 +837,7 @@ class TestEvent:
 
     def test_execution_state_changed_event(self):
         """Optional[Enum] fields (old_state, new_state) are structured into enums."""
-        raw = decamelize(
+        event = structure_response(
             {
                 "timestamp": 1631130760744,
                 "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
@@ -850,9 +849,9 @@ class TestEvent:
                 "oldState": "TRANSMITTED",
                 "timeToNextState": 0,
                 "name": "ExecutionStateChangedEvent",
-            }
+            },
+            Event,
         )
-        event = converter.structure(raw, Event)
 
         assert event.name == EventName.EXECUTION_STATE_CHANGED
         assert event.old_state is ExecutionState.TRANSMITTED
@@ -861,28 +860,28 @@ class TestEvent:
 
     def test_failure_type_code_structured_as_enum(self):
         """FailureType | None field is structured into an enum instance."""
-        raw = decamelize(
+        event = structure_response(
             {
                 "name": "ExecutionStateChangedEvent",
                 "timestamp": 123,
                 "failureTypeCode": 0,
-            }
+            },
+            Event,
         )
-        event = converter.structure(raw, Event)
 
         assert isinstance(event.failure_type_code, FailureType)
         assert event.failure_type_code is FailureType.NO_FAILURE
 
     def test_optional_enum_fields_none_when_absent(self):
         """Optional enum fields default to None when not present in the payload."""
-        raw = decamelize(
+        event = structure_response(
             {
                 "name": "GatewaySynchronizationEndedEvent",
                 "timestamp": 1631130645998,
                 "gatewayId": "9876-1234-8767",
-            }
+            },
+            Event,
         )
-        event = converter.structure(raw, Event)
 
         assert event.old_state is None
         assert event.new_state is None
@@ -890,7 +889,7 @@ class TestEvent:
 
     def test_device_state_changed_event_with_states(self):
         """DeviceStateChangedEvent payload structures device_states as EventState."""
-        raw = decamelize(
+        event = structure_response(
             {
                 "timestamp": 1631130646544,
                 "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
@@ -903,9 +902,9 @@ class TestEvent:
                     }
                 ],
                 "name": "DeviceStateChangedEvent",
-            }
+            },
+            Event,
         )
-        event = converter.structure(raw, Event)
 
         assert event.name == EventName.DEVICE_STATE_CHANGED
         assert len(event.device_states) == 1
@@ -914,7 +913,7 @@ class TestEvent:
     def test_event_fixture_structures_all_events(self):
         """All events in the cloud fixture file structure without errors."""
         raw_events = json.loads((Path("tests/fixtures/event/events.json")).read_text())
-        events = [converter.structure(decamelize(e), Event) for e in raw_events]
+        events = [structure_response(e, Event) for e in raw_events]
 
         assert len(events) == len(raw_events)
         state_changed = [
