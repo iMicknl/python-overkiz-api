@@ -326,7 +326,7 @@ async def generate_ui_profiles(server: Server) -> None:
             "class UIProfile(UnknownEnumMixin, StrEnum):",
             '    """',
             "    UI Profiles define device capabilities through commands and states.",
-            "    ",
+            "",
             "    Each profile describes what a device can do (commands) and what information",
             "    it provides (states). Form factor indicates if the profile is tied to a",
             "    specific physical device type.",
