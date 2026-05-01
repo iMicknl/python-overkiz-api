@@ -9,7 +9,10 @@ import json
 import ssl
 from collections.abc import Mapping
 from http import HTTPStatus
-from typing import Any, cast
+from typing import TYPE_CHECKING, Any, cast
+
+if TYPE_CHECKING:
+    from botocore.client import BaseClient
 
 from aiohttp import ClientSession, FormData
 
@@ -256,7 +259,7 @@ class NexityAuthStrategy(SessionLoginStrategy):
 
         loop = asyncio.get_running_loop()
 
-        def _client() -> Any:
+        def _client() -> BaseClient:
             return boto3.client(
                 "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
             )

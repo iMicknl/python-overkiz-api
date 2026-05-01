@@ -7,21 +7,13 @@ from __future__ import annotations
 
 import base64
 import datetime
+import importlib.util
 import json
 import sys
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
 from aiohttp import ClientSession
-
-try:
-    import boto3  # noqa: F401
-    import warrant_lite  # noqa: F401
-    from botocore.exceptions import ClientError
-
-    HAS_NEXITY_DEPS = True
-except ImportError:
-    HAS_NEXITY_DEPS = False
 
 from pyoverkiz.auth.base import AuthContext
 from pyoverkiz.auth.credentials import (
@@ -47,6 +39,11 @@ from pyoverkiz.auth.strategies import (
 from pyoverkiz.enums import APIType, Server
 from pyoverkiz.exceptions import InvalidTokenError, NexityBadCredentialsError
 from pyoverkiz.models import ServerConfig
+
+HAS_NEXITY_DEPS = importlib.util.find_spec("boto3") is not None
+
+if HAS_NEXITY_DEPS:
+    from botocore.exceptions import ClientError
 
 
 class TestAuthContext:
