@@ -129,7 +129,7 @@ class TestOverkizClient:
         self, client: OverkizClient
     ) -> None:
         """Ensure listener backoff retries and triggers `register_event_listener()`."""
-        client.event_listener_id = "listener-1"
+        client._event_listener_id = "listener-1"
         client.register_event_listener = AsyncMock(return_value="listener-2")
 
         with (

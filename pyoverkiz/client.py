@@ -39,6 +39,7 @@ from pyoverkiz.exceptions import (
 from pyoverkiz.models import (
     Action,
     Command,
+    Definition,
     Device,
     Event,
     Execution,
@@ -178,12 +179,17 @@ class OverkizClient:
     setup: Setup | None
     devices: list[Device]
     gateways: list[Gateway]
-    event_listener_id: str | None
     session: ClientSession
     _ssl: ssl.SSLContext | bool = True
     _auth: AuthStrategy
     _action_queue: ActionQueue | None = None
+    _event_listener_id: str | None
     settings: OverkizClientSettings
+
+    @property
+    def event_listener_id(self) -> str | None:
+        """Return the current event listener ID (read-only)."""
+        return self._event_listener_id
 
     def __init__(
         self,
@@ -207,7 +213,7 @@ class OverkizClient:
         self.setup: Setup | None = None
         self.devices: list[Device] = []
         self.gateways: list[Gateway] = []
-        self.event_listener_id: str | None = None
+        self._event_listener_id: str | None = None
 
         self.session = session or ClientSession(headers={"User-Agent": USER_AGENT})
         self._ssl = verify_ssl
@@ -407,19 +413,23 @@ class OverkizClient:
         return structure_response(response, list[HistoryExecution])
 
     @retry_on_auth_error
-    async def get_device_definition(self, deviceurl: str) -> dict[str, Any] | None:
+    async def get_device_definition(self, device_url: str) -> Definition | None:
         """Retrieve a particular setup device definition."""
         response: dict = await self._get(
-            f"setup/devices/{urllib.parse.quote_plus(deviceurl)}"
+            f"setup/devices/{urllib.parse.quote_plus(device_url)}"
         )
 
-        return response.get("definition")
+        raw = response.get("definition")
+        if raw is None:
+            return None
+
+        return structure_response(raw, Definition)
 
     @retry_on_auth_error
-    async def get_state(self, deviceurl: str) -> list[State]:
+    async def get_state(self, device_url: str) -> list[State]:
         """Retrieve states of requested device."""
         response = await self._get(
-            f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/states"
+            f"setup/devices/{urllib.parse.quote_plus(device_url)}/states"
         )
         return structure_response(response, list[State])
 
@@ -429,10 +439,10 @@ class OverkizClient:
         await self._post("setup/devices/states/refresh")
 
     @retry_on_auth_error
-    async def refresh_device_states(self, deviceurl: str) -> None:
+    async def refresh_device_states(self, device_url: str) -> None:
         """Ask the box to refresh all states of the given device for protocols supporting that operation."""
         await self._post(
-            f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/states/refresh"
+            f"setup/devices/{urllib.parse.quote_plus(device_url)}/states/refresh"
         )
 
     @retry_on_concurrent_requests
@@ -448,7 +458,7 @@ class OverkizClient:
         """
         response = await self._post("events/register")
         listener_id = cast(str, response.get("id"))
-        self.event_listener_id = listener_id
+        self._event_listener_id = listener_id
 
         return listener_id
 
@@ -471,8 +481,8 @@ class OverkizClient:
 
         API response status is always 200, even on unknown listener ids.
         """
-        await self._post(f"events/{self.event_listener_id}/unregister")
-        self.event_listener_id = None
+        await self._post(f"events/{self._event_listener_id}/unregister")
+        self._event_listener_id = None
 
     @retry_on_auth_error
     async def get_current_execution(self, exec_id: str) -> Execution | None:
@@ -780,38 +790,40 @@ class OverkizClient:
         return structure_response(response, list[Device])
 
     @retry_on_auth_error
-    async def get_device_firmware_status(self, deviceurl: str) -> FirmwareStatus | None:
+    async def get_device_firmware_status(
+        self, device_url: str
+    ) -> FirmwareStatus | None:
         """Check if a device's firmware is up to date.
 
         Returns None if the device does not support firmware status checks.
         """
         try:
             response = await self._get(
-                f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/firmwareUpToDate"
+                f"setup/devices/{urllib.parse.quote_plus(device_url)}/firmwareUpToDate"
             )
         except UnsupportedOperationError:
             return None
         return structure_response(response, FirmwareStatus)
 
     @retry_on_auth_error
-    async def get_device_firmware_update_capability(self, deviceurl: str) -> bool:
+    async def get_device_firmware_update_capability(self, device_url: str) -> bool:
         """Check if a device supports firmware updates.
 
         Returns False if the device does not support this query.
         """
         try:
             response = await self._get(
-                f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/firmwareUpdateCapability"
+                f"setup/devices/{urllib.parse.quote_plus(device_url)}/firmwareUpdateCapability"
             )
         except UnsupportedOperationError:
             return False
         return cast(bool, response["supportsFirmwareUpdate"])
 
     @retry_on_auth_error
-    async def update_device_firmware(self, deviceurl: str) -> None:
+    async def update_device_firmware(self, device_url: str) -> None:
         """Update a device's firmware to the next available version."""
         await self._put(
-            f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/updateFirmware"
+            f"setup/devices/{urllib.parse.quote_plus(device_url)}/updateFirmware"
         )
 
     @retry_on_auth_error

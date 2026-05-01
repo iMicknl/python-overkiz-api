@@ -27,6 +27,7 @@ from pyoverkiz.enums import (
 from pyoverkiz.enums.command import OverkizCommand
 from pyoverkiz.enums.protocol import Protocol
 from pyoverkiz.enums.server import APIType, Server
+from pyoverkiz.exceptions import OverkizError
 from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, CommandParameterValue, StateType
 
@@ -363,7 +364,7 @@ class DeviceIdentifier:
         """Parse a device URL into its structured identifier components."""
         match = DEVICE_URL_RE.fullmatch(device_url)
         if not match:
-            raise ValueError(f"Invalid device URL: {device_url}")
+            raise OverkizError(f"Invalid device URL: {device_url}")
 
         subsystem_id = (
             int(match.group("subsystemId")) if match.group("subsystemId") else None
@@ -414,7 +415,9 @@ class Device:
                 self.widget = UIWidget(self.definition.widget_name)
 
         if self.ui_class is None or self.widget is None:
-            raise ValueError(f"Device {self.device_url} is missing ui_class or widget")
+            raise OverkizError(
+                f"Device {self.device_url} is missing ui_class or widget"
+            )
 
     def supports_command(self, command: str | OverkizCommand) -> bool:
         """Check if device supports a command."""
@@ -573,7 +576,7 @@ class Execution:
     id: str
     description: str
     owner: str = field(repr=obfuscate_email)
-    state: str
+    state: ExecutionState
     action_group: ActionGroup | None = None
     start_time: int | None = None
     execution_type: ExecutionType | None = None
@@ -722,17 +725,17 @@ class Location:
     postal_code: str | None = field(repr=obfuscate_string, default=None)
     address_line1: str | None = field(repr=obfuscate_string, default=None)
     address_line2: str | None = field(repr=obfuscate_string, default=None)
-    timezone: str = ""
+    timezone: str | None = None
     longitude: str | None = field(repr=obfuscate_string, default=None)
     latitude: str | None = field(repr=obfuscate_string, default=None)
-    twilight_mode: int = 0
-    twilight_angle: str = ""
+    twilight_mode: int | None = None
+    twilight_angle: str | None = None
     twilight_city: str | None = None
-    summer_solstice_dusk_minutes: str = ""
-    winter_solstice_dusk_minutes: str = ""
+    summer_solstice_dusk_minutes: str | None = None
+    winter_solstice_dusk_minutes: str | None = None
     twilight_offset_enabled: bool = False
-    dawn_offset: int = 0
-    dusk_offset: int = 0
+    dawn_offset: int | None = None
+    dusk_offset: int | None = None
     country_code: str | None = field(repr=obfuscate_string, default=None)
     tariff_settings: dict[str, Any] | None = None
 
