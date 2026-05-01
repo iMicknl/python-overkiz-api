@@ -15,6 +15,8 @@ import pytest
 from aiohttp import ClientSession
 
 try:
+    import boto3  # noqa: F401
+    import warrant_lite  # noqa: F401
     from botocore.exceptions import ClientError
 
     HAS_NEXITY_DEPS = True

@@ -251,7 +251,7 @@ class NexityAuthStrategy(SessionLoginStrategy):
         except ImportError as err:
             raise ImportError(
                 "Nexity authentication requires the 'nexity' extra. "
-                "Install it with: pip install pyoverkiz[nexity]"
+                'Install it with: pip install "pyoverkiz[nexity]"'
             ) from err
 
         loop = asyncio.get_running_loop()
