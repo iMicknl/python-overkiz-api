@@ -7,8 +7,11 @@ from collections.abc import Callable
 from typing import Any
 
 from pyoverkiz.enums import DataType
+from pyoverkiz.enums.command import OverkizCommandParam
 
 StateType = str | int | float | bool | dict[str, Any] | list[Any] | None
+
+CommandParameterValue = str | int | float | bool | OverkizCommandParam
 
 
 def _parse_bool(value: str) -> bool:
@@ -27,5 +30,3 @@ DATA_TYPE_TO_PYTHON: dict[DataType, Callable[[str], StateType]] = {
     DataType.JSON_ARRAY: json.loads,
     DataType.JSON_OBJECT: json.loads,
 }
-
-JSON = dict[str, Any] | list[dict[str, Any]]  # pylint: disable=invalid-name

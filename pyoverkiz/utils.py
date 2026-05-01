@@ -12,16 +12,17 @@ from pyoverkiz.models import ServerConfig
 def create_local_server_config(
     *,
     host: str,
+    server: Server | str = Server.SOMFY_DEVELOPER_MODE,
     name: str = "Somfy Developer Mode",
     manufacturer: str = "Somfy",
     configuration_url: str | None = None,
 ) -> ServerConfig:
-    """Generate server configuration for a local API (Somfy Developer mode)."""
+    """Generate server configuration for a local API."""
     return create_server_config(
         name=name,
         endpoint=f"https://{host}{LOCAL_API_PATH}",
         manufacturer=manufacturer,
-        server=Server.SOMFY_DEVELOPER_MODE,
+        server=server,
         configuration_url=configuration_url,
         api_type=APIType.LOCAL,
     )

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import re
-from collections.abc import Iterator
+from collections.abc import Iterator, Mapping
 from typing import Any, cast
 
 from attr import define, field
@@ -24,11 +24,12 @@ from pyoverkiz.enums import (
     UpdateBoxStatus,
     UpdateCriticityLevel,
 )
-from pyoverkiz.enums.command import OverkizCommand, OverkizCommandParam
+from pyoverkiz.enums.command import OverkizCommand
 from pyoverkiz.enums.protocol import Protocol
 from pyoverkiz.enums.server import APIType, Server
+from pyoverkiz.exceptions import OverkizError
 from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
-from pyoverkiz.types import DATA_TYPE_TO_PYTHON, StateType
+from pyoverkiz.types import DATA_TYPE_TO_PYTHON, CommandParameterValue, StateType
 
 # ---------------------------------------------------------------------------
 # State & command primitives
@@ -129,8 +130,8 @@ class EventState(State):
 
 
 @define(init=False)
-class States:
-    """Container of State objects providing lookup and mapping helpers."""
+class States(Mapping[str, State]):
+    """Container of State objects implementing Mapping[str, State]."""
 
     _states: list[State]
     _index: dict[str, State]
@@ -142,9 +143,9 @@ class States:
         self._index = {state.name: state for state in self._states}
         self._pos = {state.name: i for i, state in enumerate(self._states)}
 
-    def __iter__(self) -> Iterator[State]:
-        """Return an iterator over contained State objects."""
-        return self._states.__iter__()
+    def __iter__(self) -> Iterator[str]:
+        """Return an iterator over state names."""
+        return iter(self._index)
 
     def __contains__(self, name: object) -> bool:
         """Return True if a state with the given name exists in the container."""
@@ -171,10 +172,6 @@ class States:
     def __len__(self) -> int:
         """Return number of states in the container."""
         return len(self._states)
-
-    def get(self, name: str) -> State | None:
-        """Return the State with the given name or None if missing."""
-        return self._index.get(name)
 
     def select(self, names: list[str]) -> State | None:
         """Return the first State that exists and has a non-None value, or None."""
@@ -204,8 +201,8 @@ class CommandDefinition:
 
 
 @define(init=False)
-class CommandDefinitions:
-    """Container for command definitions providing convenient lookup by name."""
+class CommandDefinitions(Mapping[str, CommandDefinition]):
+    """Container for command definitions implementing Mapping[str, CommandDefinition]."""
 
     _commands: list[CommandDefinition]
     _index: dict[str, CommandDefinition]
@@ -215,9 +212,9 @@ class CommandDefinitions:
         self._commands = list(commands) if commands else []
         self._index = {cd.command_name: cd for cd in self._commands}
 
-    def __iter__(self) -> Iterator[CommandDefinition]:
-        """Iterate over defined commands."""
-        return self._commands.__iter__()
+    def __iter__(self) -> Iterator[str]:
+        """Iterate over command names."""
+        return iter(self._index)
 
     def __contains__(self, name: object) -> bool:
         """Return True if a command with `name` exists."""
@@ -233,10 +230,6 @@ class CommandDefinitions:
     def __len__(self) -> int:
         """Return number of command definitions."""
         return len(self._commands)
-
-    def get(self, command: str) -> CommandDefinition | None:
-        """Return the command definition or None if missing."""
-        return self._index.get(command)
 
     def select(self, commands: list[str | OverkizCommand]) -> str | None:
         """Return the first command name that exists in this definition, or None."""
@@ -283,7 +276,7 @@ class Command:
     """Represents an OverKiz Command."""
 
     name: str | OverkizCommand
-    parameters: list[str | int | float | OverkizCommandParam] | None = None
+    parameters: list[CommandParameterValue] | None = None
     type: int | None = None
 
     def to_payload(self) -> dict[str, object]:
@@ -371,7 +364,7 @@ class DeviceIdentifier:
         """Parse a device URL into its structured identifier components."""
         match = DEVICE_URL_RE.fullmatch(device_url)
         if not match:
-            raise ValueError(f"Invalid device URL: {device_url}")
+            raise OverkizError(f"Invalid device URL: {device_url}")
 
         subsystem_id = (
             int(match.group("subsystemId")) if match.group("subsystemId") else None
@@ -422,7 +415,9 @@ class Device:
                 self.widget = UIWidget(self.definition.widget_name)
 
         if self.ui_class is None or self.widget is None:
-            raise ValueError(f"Device {self.device_url} is missing ui_class or widget")
+            raise OverkizError(
+                f"Device {self.device_url} is missing ui_class or widget"
+            )
 
     def supports_command(self, command: str | OverkizCommand) -> bool:
         """Check if device supports a command."""
@@ -581,7 +576,7 @@ class Execution:
     id: str
     description: str
     owner: str = field(repr=obfuscate_email)
-    state: str
+    state: ExecutionState
     action_group: ActionGroup | None = None
     start_time: int | None = None
     execution_type: ExecutionType | None = None
@@ -730,17 +725,17 @@ class Location:
     postal_code: str | None = field(repr=obfuscate_string, default=None)
     address_line1: str | None = field(repr=obfuscate_string, default=None)
     address_line2: str | None = field(repr=obfuscate_string, default=None)
-    timezone: str = ""
+    timezone: str | None = None
     longitude: str | None = field(repr=obfuscate_string, default=None)
     latitude: str | None = field(repr=obfuscate_string, default=None)
-    twilight_mode: int = 0
-    twilight_angle: str = ""
+    twilight_mode: int | None = None
+    twilight_angle: str | None = None
     twilight_city: str | None = None
-    summer_solstice_dusk_minutes: str = ""
-    winter_solstice_dusk_minutes: str = ""
+    summer_solstice_dusk_minutes: str | None = None
+    winter_solstice_dusk_minutes: str | None = None
     twilight_offset_enabled: bool = False
-    dawn_offset: int = 0
-    dusk_offset: int = 0
+    dawn_offset: int | None = None
+    dusk_offset: int | None = None
     country_code: str | None = field(repr=obfuscate_string, default=None)
     tariff_settings: dict[str, Any] | None = None
 
