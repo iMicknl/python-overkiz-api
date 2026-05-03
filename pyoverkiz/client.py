@@ -3,95 +3,62 @@
 from __future__ import annotations
 
 import asyncio
-import datetime
 import logging
-import os
 import ssl
 import urllib.parse
-from json import JSONDecodeError
+from dataclasses import dataclass
+from http import HTTPStatus
+from pathlib import Path
 from types import TracebackType
-from typing import Any, cast
+from typing import Any, Self, cast
 
 import backoff
-import boto3
-import humps
 from aiohttp import (
     ClientConnectorError,
     ClientResponse,
     ClientSession,
-    FormData,
     ServerDisconnectedError,
 )
 from backoff.types import Details
-from botocore.client import BaseClient
-from botocore.config import Config
-from warrant_lite import WarrantLite
 
-from pyoverkiz.const import (
-    COZYTOUCH_ATLANTIC_API,
-    COZYTOUCH_CLIENT_ID,
-    LOCAL_API_PATH,
-    NEXITY_API,
-    NEXITY_COGNITO_CLIENT_ID,
-    NEXITY_COGNITO_REGION,
-    NEXITY_COGNITO_USER_POOL,
-    SOMFY_API,
-    SOMFY_CLIENT_ID,
-    SOMFY_CLIENT_SECRET,
-    SUPPORTED_SERVERS,
-)
-from pyoverkiz.enums import APIType, Server
+from pyoverkiz.action_queue import ActionQueue, ActionQueueSettings
+from pyoverkiz.auth import AuthStrategy, Credentials, build_auth_strategy
+from pyoverkiz.const import SUPPORTED_SERVERS, USER_AGENT
+from pyoverkiz.converter import converter, structure_response
+from pyoverkiz.enums import APIType, ExecutionMode, Protocol, Server
 from pyoverkiz.exceptions import (
-    AccessDeniedToGatewayException,
-    ActionGroupSetupNotFoundException,
-    ApplicationNotAllowedException,
-    BadCredentialsException,
-    CozyTouchBadCredentialsException,
-    CozyTouchServiceException,
-    DuplicateActionOnDeviceException,
-    ExecutionQueueFullException,
-    InvalidCommandException,
-    InvalidEventListenerIdException,
-    InvalidTokenException,
-    MaintenanceException,
-    MissingAPIKeyException,
-    MissingAuthorizationTokenException,
-    NexityBadCredentialsException,
-    NexityServiceException,
-    NoRegisteredEventListenerException,
-    NoSuchResourceException,
-    NotAuthenticatedException,
-    NotSuchTokenException,
-    OverkizException,
-    ServiceUnavailableException,
-    SessionAndBearerInSameRequestException,
-    SomfyBadCredentialsException,
-    SomfyServiceException,
-    TooManyAttemptsBannedException,
-    TooManyConcurrentRequestsException,
-    TooManyExecutionsException,
-    TooManyRequestsException,
-    UnknownObjectException,
-    UnknownUserException,
+    ExecutionQueueFullError,
+    InvalidEventListenerIdError,
+    NoRegisteredEventListenerError,
+    NotAuthenticatedError,
+    OverkizError,
+    TooManyConcurrentRequestsError,
+    TooManyExecutionsError,
+    UnsupportedOperationError,
 )
 from pyoverkiz.models import (
+    Action,
     Command,
+    Definition,
     Device,
     Event,
     Execution,
+    FirmwareStatus,
     Gateway,
     HistoryExecution,
-    LocalToken,
     Option,
     OptionParameter,
-    OverkizServer,
+    PersistedActionGroup,
     Place,
-    Scenario,
+    ProtocolType,
+    ServerConfig,
     Setup,
     State,
+    UIProfileDefinition,
 )
 from pyoverkiz.obfuscate import obfuscate_sensitive_data
-from pyoverkiz.types import JSON
+from pyoverkiz.response_handler import check_response
+from pyoverkiz.serializers import prepare_payload
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -111,11 +78,13 @@ async def refresh_listener(invocation: Details) -> None:
     await _get_client_from_invocation(invocation).register_event_listener()
 
 
-# Reusable backoff decorators to reduce code duplication
+# Reusable backoff decorators with max_tries and max_time to cap total retry duration.
 retry_on_auth_error = backoff.on_exception(
     backoff.expo,
-    (NotAuthenticatedException, ServerDisconnectedError),
+    (NotAuthenticatedError, ServerDisconnectedError),
     max_tries=2,
+    max_time=60,  # safety net for hung requests
+    jitter=backoff.full_jitter,
     on_backoff=relogin,
     logger=_LOGGER,
 )
@@ -124,35 +93,45 @@ retry_on_connection_failure = backoff.on_exception(
     backoff.expo,
     (TimeoutError, ClientConnectorError),
     max_tries=5,
+    max_time=120,
+    jitter=backoff.full_jitter,
     logger=_LOGGER,
 )
 
 retry_on_concurrent_requests = backoff.on_exception(
     backoff.expo,
-    TooManyConcurrentRequestsException,
+    TooManyConcurrentRequestsError,
     max_tries=5,
+    max_time=120,
+    jitter=backoff.full_jitter,
     logger=_LOGGER,
 )
 
 retry_on_too_many_executions = backoff.on_exception(
     backoff.expo,
-    TooManyExecutionsException,
-    max_tries=10,
+    TooManyExecutionsError,
+    max_tries=5,
+    max_time=300,
+    jitter=backoff.full_jitter,
     logger=_LOGGER,
 )
 
 retry_on_listener_error = backoff.on_exception(
     backoff.expo,
-    (InvalidEventListenerIdException, NoRegisteredEventListenerException),
+    (InvalidEventListenerIdError, NoRegisteredEventListenerError),
     max_tries=2,
+    max_time=30,
+    jitter=backoff.full_jitter,
     on_backoff=refresh_listener,
     logger=_LOGGER,
 )
 
 retry_on_execution_queue_full = backoff.on_exception(
     backoff.expo,
-    ExecutionQueueFullException,
+    ExecutionQueueFullError,
     max_tries=5,
+    max_time=120,
+    jitter=backoff.full_jitter,
     logger=_LOGGER,
 )
 
@@ -165,9 +144,15 @@ def _create_local_ssl_context() -> ssl.SSLContext:
     This method is not async-friendly and should be called from a thread
     because it will load certificates from disk and do other blocking I/O.
     """
-    return ssl.create_default_context(
-        cafile=os.path.dirname(os.path.realpath(__file__)) + "/overkiz-root-ca-2048.crt"
+    context = ssl.create_default_context(
+        cafile=str(Path(__file__).resolve().parent / "overkiz-root-ca-2048.crt")
     )
+
+    # Disable strict validation introduced in Python 3.13, which doesn't work with
+    # Overkiz self-signed gateway certificates. Applied once to the shared context.
+    context.verify_flags &= ~ssl.VERIFY_X509_STRICT
+
+    return context
 
 
 # The default SSLContext objects are created at import time
@@ -176,69 +161,85 @@ def _create_local_ssl_context() -> ssl.SSLContext:
 SSL_CONTEXT_LOCAL_API = _create_local_ssl_context()
 
 
+@dataclass(frozen=True, slots=True)
+class OverkizClientSettings:
+    """Behavioral configuration for OverkizClient.
+
+    All fields are optional and default to passive behavior.
+    """
+
+    action_queue: ActionQueueSettings | None = None
+    rts_command_duration: int | None = None
+
+
 class OverkizClient:
     """Interface class for the Overkiz API."""
 
-    username: str
-    password: str
-    server: OverkizServer
+    server_config: ServerConfig
     setup: Setup | None
     devices: list[Device]
     gateways: list[Gateway]
-    event_listener_id: str | None
     session: ClientSession
-    api_type: APIType
-
-    _refresh_token: str | None = None
-    _expires_in: datetime.datetime | None = None
-    _access_token: str | None = None
     _ssl: ssl.SSLContext | bool = True
+    _auth: AuthStrategy
+    _action_queue: ActionQueue | None = None
+    _event_listener_id: str | None
+    settings: OverkizClientSettings
+
+    @property
+    def event_listener_id(self) -> str | None:
+        """Return the current event listener ID (read-only)."""
+        return self._event_listener_id
 
     def __init__(
         self,
-        username: str,
-        password: str,
-        server: OverkizServer,
+        *,
+        server: ServerConfig | Server | str,
+        credentials: Credentials,
         verify_ssl: bool = True,
-        token: str | None = None,
         session: ClientSession | None = None,
+        settings: OverkizClientSettings | None = None,
     ) -> None:
         """Constructor.
 
-        :param username: the username
-        :param password: the password
-        :param server: OverkizServer
+        :param server: ServerConfig
+        :param credentials: Credentials for authentication
+        :param verify_ssl: Enable SSL certificate verification
         :param session: optional ClientSession
+        :param settings: behavioral settings for the client (default None)
         """
-        self.username = username
-        self.password = password
-        self.server = server
-        self._access_token = token
+        self.server_config = self._normalize_server(server)
 
         self.setup: Setup | None = None
         self.devices: list[Device] = []
         self.gateways: list[Gateway] = []
-        self.event_listener_id: str | None = None
+        self._event_listener_id: str | None = None
 
-        self.session = session if session else ClientSession()
+        self.session = session or ClientSession(headers={"User-Agent": USER_AGENT})
         self._ssl = verify_ssl
 
-        if LOCAL_API_PATH in self.server.endpoint:
-            self.api_type = APIType.LOCAL
+        if self.server_config.api_type == APIType.LOCAL and verify_ssl:
+            # Use the prebuilt SSL context with disabled strict validation for local API.
+            self._ssl = SSL_CONTEXT_LOCAL_API
 
-            if verify_ssl:
-                # To avoid security issues while authentication to local API, we add the following authority to
-                # our HTTPS client trust store: https://ca.overkiz.com/overkiz-root-ca-2048.crt
-                self._ssl = SSL_CONTEXT_LOCAL_API
+        self.settings = settings or OverkizClientSettings()
 
-                # Disable strict validation introduced in Python 3.13, which doesn't
-                # work with Overkiz self-signed gateway certificates
-                self._ssl.verify_flags &= ~ssl.VERIFY_X509_STRICT
-        else:
-            self.api_type = APIType.CLOUD
+        if self.settings.action_queue:
+            self.settings.action_queue.validate()
+            self._action_queue = ActionQueue(
+                executor=self._execute_action_group_direct,
+                settings=self.settings.action_queue,
+            )
 
-    async def __aenter__(self) -> OverkizClient:
-        """Enter the async context manager and return the client."""
+        self._auth = build_auth_strategy(
+            server_config=self.server_config,
+            credentials=credentials,
+            session=self.session,
+            ssl_context=self._ssl,
+        )
+
+    async def __aenter__(self) -> Self:
+        """Enter async context manager and return the client instance."""
         return self
 
     async def __aexit__(
@@ -250,222 +251,61 @@ class OverkizClient:
         """Exit the async context manager and close the client session."""
         await self.close()
 
+    @staticmethod
+    def _normalize_server(server: ServerConfig | Server | str) -> ServerConfig:
+        """Resolve user-provided server identifiers into a `ServerConfig`."""
+        if isinstance(server, ServerConfig):
+            return server
+
+        server_key = server.value if isinstance(server, Server) else str(server)
+
+        try:
+            return SUPPORTED_SERVERS[server_key]
+        except KeyError as error:
+            raise OverkizError(
+                f"Unknown server '{server_key}'. Provide a supported server key or ServerConfig instance."
+            ) from error
+
     async def close(self) -> None:
         """Close the session."""
+        # Flush any pending actions in queue
+        if self._action_queue:
+            await self._action_queue.shutdown()
+
         if self.event_listener_id:
             await self.unregister_event_listener()
 
+        await self._auth.close()
         await self.session.close()
 
     async def login(
         self,
-        register_event_listener: bool | None = True,
-    ) -> bool:
+        register_event_listener: bool = True,
+    ) -> None:
         """Authenticate and create an API session allowing access to the other operations.
 
         Caller must provide one of [userId+userPassword, userId+ssoToken, accessToken, jwt].
+
+        Raises:
+            BadCredentialsError: When the provided credentials are invalid.
+            TooManyAttemptsBannedError: When too many failed login attempts have been made.
+            TooManyRequestsError: When the API rate limit has been exceeded.
         """
-        # Local authentication
-        if self.api_type == APIType.LOCAL:
+        await self._auth.login()
+
+        if self.server_config.api_type == APIType.LOCAL:
             if register_event_listener:
                 await self.register_event_listener()
             else:
-                # Call a simple endpoint to verify if our token is correct
-                # Since local API does not have a /login endpoint
+                # Validate local API token by calling a simple endpoint
                 await self.get_gateways()
 
-            return True
-
-        # Somfy TaHoma authentication using access_token
-        if self.server == SUPPORTED_SERVERS[Server.SOMFY_EUROPE]:
-            await self.somfy_tahoma_get_access_token()
-
-            if register_event_listener:
-                await self.register_event_listener()
-
-            return True
-
-        # CozyTouch authentication using jwt
-        if self.server in [
-            SUPPORTED_SERVERS[Server.ATLANTIC_COZYTOUCH],
-            SUPPORTED_SERVERS[Server.THERMOR_COZYTOUCH],
-            SUPPORTED_SERVERS[Server.SAUTER_COZYTOUCH],
-        ]:
-            jwt = await self.cozytouch_login()
-            payload = {"jwt": jwt}
-
-        # Nexity authentication using ssoToken
-        elif self.server == SUPPORTED_SERVERS[Server.NEXITY]:
-            sso_token = await self.nexity_login()
-            user_id = self.username.replace("@", "_-_")  # Replace @ for _-_
-            payload = {"ssoToken": sso_token, "userId": user_id}
-
-        # Regular authentication using userId+userPassword
-        else:
-            payload = {"userId": self.username, "userPassword": self.password}
-
-        response = await self.__post("login", data=payload)
-
-        if response.get("success"):
-            if register_event_listener:
-                await self.register_event_listener()
-            return True
-
-        return False
-
-    async def somfy_tahoma_get_access_token(self) -> str:
-        """Authenticate via Somfy identity and acquire access_token."""
-        # Request access token
-        async with self.session.post(
-            SOMFY_API + "/oauth/oauth/v2/token/jwt",
-            data=FormData(
-                {
-                    "grant_type": "password",
-                    "username": self.username,
-                    "password": self.password,
-                    "client_id": SOMFY_CLIENT_ID,
-                    "client_secret": SOMFY_CLIENT_SECRET,
-                }
-            ),
-            headers={
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-        ) as response:
-            token = await response.json()
-
-            # { "message": "error.invalid.grant", "data": [], "uid": "xxx" }
-            if "message" in token and token["message"] == "error.invalid.grant":
-                raise SomfyBadCredentialsException(token["message"])
-
-            if "access_token" not in token:
-                raise SomfyServiceException("No Somfy access token provided.")
-
-            self._access_token = cast(str, token["access_token"])
-            self._refresh_token = token["refresh_token"]
-            self._expires_in = datetime.datetime.now() + datetime.timedelta(
-                seconds=token["expires_in"] - 5
-            )
-
-            return self._access_token
-
-    async def refresh_token(self) -> None:
-        """Update the access and the refresh token. The refresh token will be valid 14 days."""
-        if self.server != SUPPORTED_SERVERS[Server.SOMFY_EUROPE]:
             return
 
-        if not self._refresh_token:
-            raise ValueError("No refresh token provided. Login method must be used.")
+        if register_event_listener:
+            await self.register_event_listener()
 
-        # &grant_type=refresh_token&refresh_token=REFRESH_TOKEN
-        # Request access token
-        async with self.session.post(
-            SOMFY_API + "/oauth/oauth/v2/token/jwt",
-            data=FormData(
-                {
-                    "grant_type": "refresh_token",
-                    "refresh_token": self._refresh_token,
-                    "client_id": SOMFY_CLIENT_ID,
-                    "client_secret": SOMFY_CLIENT_SECRET,
-                }
-            ),
-            headers={
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-        ) as response:
-            token = await response.json()
-            # { "message": "error.invalid.grant", "data": [], "uid": "xxx" }
-            if "message" in token and token["message"] == "error.invalid.grant":
-                raise SomfyBadCredentialsException(token["message"])
-
-            if "access_token" not in token:
-                raise SomfyServiceException("No Somfy access token provided.")
-
-            self._access_token = cast(str, token["access_token"])
-            self._refresh_token = token["refresh_token"]
-            self._expires_in = datetime.datetime.now() + datetime.timedelta(
-                seconds=token["expires_in"] - 5
-            )
-
-    async def cozytouch_login(self) -> str:
-        """Authenticate via CozyTouch identity and acquire JWT token."""
-        # Request access token
-        async with self.session.post(
-            COZYTOUCH_ATLANTIC_API + "/token",
-            data=FormData(
-                {
-                    "grant_type": "password",
-                    "username": "GA-PRIVATEPERSON/" + self.username,
-                    "password": self.password,
-                }
-            ),
-            headers={
-                "Authorization": f"Basic {COZYTOUCH_CLIENT_ID}",
-                "Content-Type": "application/x-www-form-urlencoded",
-            },
-        ) as response:
-            token = await response.json()
-
-            # {'error': 'invalid_grant',
-            # 'error_description': 'Provided Authorization Grant is invalid.'}
-            if "error" in token and token["error"] == "invalid_grant":
-                raise CozyTouchBadCredentialsException(token["error_description"])
-
-            if "token_type" not in token:
-                raise CozyTouchServiceException("No CozyTouch token provided.")
-
-        # Request JWT
-        async with self.session.get(
-            COZYTOUCH_ATLANTIC_API + "/magellan/accounts/jwt",
-            headers={"Authorization": f"Bearer {token['access_token']}"},
-        ) as response:
-            jwt = await response.text()
-
-            if not jwt:
-                raise CozyTouchServiceException("No JWT token provided.")
-
-            jwt = jwt.strip('"')  # Remove surrounding quotes
-
-            return jwt
-
-    async def nexity_login(self) -> str:
-        """Authenticate via Nexity identity and acquire SSO token."""
-        loop = asyncio.get_event_loop()
-
-        def _get_client() -> BaseClient:
-            return boto3.client(
-                "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
-            )
-
-        # Request access token
-        client = await loop.run_in_executor(None, _get_client)
-
-        aws = WarrantLite(
-            username=self.username,
-            password=self.password,
-            pool_id=NEXITY_COGNITO_USER_POOL,
-            client_id=NEXITY_COGNITO_CLIENT_ID,
-            client=client,
-        )
-
-        try:
-            tokens = await loop.run_in_executor(None, aws.authenticate_user)
-        except Exception as error:
-            raise NexityBadCredentialsException() from error
-
-        id_token = tokens["AuthenticationResult"]["IdToken"]
-
-        async with self.session.get(
-            NEXITY_API + "/deploy/api/v1/domotic/token",
-            headers={
-                "Authorization": id_token,
-            },
-        ) as response:
-            token = await response.json()
-
-            if "token" not in token:
-                raise NexityServiceException("No Nexity SSO token provided.")
-
-            return cast(str, token["token"])
+        return
 
     @retry_on_auth_error
     async def get_setup(self, refresh: bool = False) -> Setup:
@@ -488,9 +328,9 @@ class OverkizClient:
         if self.setup and not refresh:
             return self.setup
 
-        response = await self.__get("setup")
+        response = await self._get("setup")
 
-        setup = Setup(**humps.decamelize(response))
+        setup = structure_response(response, Setup)
 
         # Cache response
         self.setup = setup
@@ -500,19 +340,33 @@ class OverkizClient:
         return setup
 
     @retry_on_auth_error
-    async def get_diagnostic_data(self) -> JSON:
-        """Get all data about the connected user setup.
+    async def get_diagnostic_data(
+        self, mask_sensitive_data: bool = True
+    ) -> dict[str, Any]:
+        """Get diagnostic data for the connected user setup.
 
             -> gateways data (serial number, activation state, ...): <gateways/gateway>
             -> setup location: <location>
             -> house places (rooms and floors): <place>
-            -> setup devices: <devices>.
+            -> setup devices: <devices>
+            -> action groups: <actionGroups>
 
-        This data will be masked to not return any confidential or PII data.
+        By default, this data is masked to not return confidential or PII data.
+        Set `mask_sensitive_data` to `False` to return the raw payloads.
         """
-        response = await self.__get("setup")
+        setup, action_groups = await asyncio.gather(
+            self._get("setup"),
+            self._get("actionGroups"),
+        )
 
-        return obfuscate_sensitive_data(response)
+        if mask_sensitive_data:
+            setup = obfuscate_sensitive_data(setup)
+            action_groups = obfuscate_sensitive_data(action_groups)
+
+        return {
+            "setup": setup,
+            "action_groups": action_groups,
+        }
 
     @retry_on_auth_error
     async def get_devices(self, refresh: bool = False) -> list[Device]:
@@ -523,8 +377,8 @@ class OverkizClient:
         if self.devices and not refresh:
             return self.devices
 
-        response = await self.__get("setup/devices")
-        devices = [Device(**d) for d in humps.decamelize(response)]
+        response = await self._get("setup/devices")
+        devices = structure_response(response, list[Device])
 
         # Cache response
         self.devices = devices
@@ -542,8 +396,8 @@ class OverkizClient:
         if self.gateways and not refresh:
             return self.gateways
 
-        response = await self.__get("setup/gateways")
-        gateways = [Gateway(**g) for g in humps.decamelize(response)]
+        response = await self._get("setup/gateways")
+        gateways = structure_response(response, list[Gateway])
 
         # Cache response
         self.gateways = gateways
@@ -554,41 +408,41 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def get_execution_history(self) -> list[HistoryExecution]:
-        """List execution history."""
-        response = await self.__get("history/executions")
-        execution_history = [HistoryExecution(**h) for h in humps.decamelize(response)]
-
-        return execution_history
+        """List past executions and their outcomes."""
+        response = await self._get("history/executions")
+        return structure_response(response, list[HistoryExecution])
 
     @retry_on_auth_error
-    async def get_device_definition(self, deviceurl: str) -> JSON | None:
+    async def get_device_definition(self, device_url: str) -> Definition | None:
         """Retrieve a particular setup device definition."""
-        response: dict = await self.__get(
-            f"setup/devices/{urllib.parse.quote_plus(deviceurl)}"
+        response: dict = await self._get(
+            f"setup/devices/{urllib.parse.quote_plus(device_url)}"
         )
 
-        return response.get("definition")
+        raw = response.get("definition")
+        if raw is None:
+            return None
+
+        return structure_response(raw, Definition)
 
     @retry_on_auth_error
-    async def get_state(self, deviceurl: str) -> list[State]:
+    async def get_state(self, device_url: str) -> list[State]:
         """Retrieve states of requested device."""
-        response = await self.__get(
-            f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/states"
+        response = await self._get(
+            f"setup/devices/{urllib.parse.quote_plus(device_url)}/states"
         )
-        state = [State(**s) for s in humps.decamelize(response)]
-
-        return state
+        return structure_response(response, list[State])
 
     @retry_on_auth_error
     async def refresh_states(self) -> None:
         """Ask the box to refresh all devices states for protocols supporting that operation."""
-        await self.__post("setup/devices/states/refresh")
+        await self._post("setup/devices/states/refresh")
 
     @retry_on_auth_error
-    async def refresh_device_states(self, deviceurl: str) -> None:
+    async def refresh_device_states(self, device_url: str) -> None:
         """Ask the box to refresh all states of the given device for protocols supporting that operation."""
-        await self.__post(
-            f"setup/devices/{urllib.parse.quote_plus(deviceurl)}/states/refresh"
+        await self._post(
+            f"setup/devices/{urllib.parse.quote_plus(device_url)}/states/refresh"
         )
 
     @retry_on_concurrent_requests
@@ -602,9 +456,9 @@ class OverkizClient:
         timeout : listening sessions are expected to call the /events/{listenerId}/fetch
         API on a regular basis.
         """
-        response = await self.__post("events/register")
+        response = await self._post("events/register")
         listener_id = cast(str, response.get("id"))
-        self.event_listener_id = listener_id
+        self._event_listener_id = listener_id
 
         return listener_id
 
@@ -619,151 +473,198 @@ class OverkizClient:
         Per-session rate-limit : 1 calls per 1 SECONDS period for this particular
         operation (polling).
         """
-        await self._refresh_token_if_expired()
-        response = await self.__post(f"events/{self.event_listener_id}/fetch")
-        events = [Event(**e) for e in humps.decamelize(response)]
-
-        return events
+        response = await self._post(f"events/{self.event_listener_id}/fetch")
+        return structure_response(response, list[Event])
 
     async def unregister_event_listener(self) -> None:
         """Unregister an event listener.
 
         API response status is always 200, even on unknown listener ids.
         """
-        await self._refresh_token_if_expired()
-        await self.__post(f"events/{self.event_listener_id}/unregister")
-        self.event_listener_id = None
+        await self._post(f"events/{self._event_listener_id}/unregister")
+        self._event_listener_id = None
 
     @retry_on_auth_error
-    async def get_current_execution(self, exec_id: str) -> Execution:
-        """Get an action group execution currently running."""
-        response = await self.__get(f"exec/current/{exec_id}")
-        execution = Execution(**humps.decamelize(response))
+    async def get_current_execution(self, exec_id: str) -> Execution | None:
+        """Get a currently running execution by its exec_id.
 
-        return execution
+        Returns None if the execution does not exist.
+        """
+        response = await self._get(f"exec/current/{exec_id}")
+        if not response or not isinstance(response, dict):
+            return None
+
+        return structure_response(response, Execution)
 
     @retry_on_auth_error
     async def get_current_executions(self) -> list[Execution]:
-        """Get all action groups executions currently running."""
-        response = await self.__get("exec/current")
-        executions = [Execution(**e) for e in humps.decamelize(response)]
-
-        return executions
+        """Get all currently running executions."""
+        response = await self._get("exec/current")
+        return structure_response(response, list[Execution])
 
     @retry_on_auth_error
     async def get_api_version(self) -> str:
         """Get the API version (local only)."""
-        response = await self.__get("apiVersion")
+        response = await self._get("apiVersion")
 
         return cast(str, response["protocolVersion"])
 
+    def _apply_rts_duration(self, actions: list[Action]) -> list[Action]:
+        """Set the execution duration for RTS commands that support it.
+
+        The default execution duration for RTS devices is 30 seconds, which
+        blocks consecutive commands. This injects the configured duration
+        (typically 0) into commands that accept it, based on the device
+        command definition (nparams).
+        """
+        duration = self.settings.rts_command_duration
+        if duration is None:
+            return actions
+
+        device_index: dict[str, Device] = {d.device_url: d for d in self.devices}
+
+        result: list[Action] = []
+        for action in actions:
+            device = device_index.get(action.device_url)
+
+            if device is None or device.identifier.protocol != Protocol.RTS:
+                result.append(action)
+                continue
+
+            updated_commands: list[Command] = []
+            for cmd in action.commands:
+                cmd_def = device.get_command_definition(str(cmd.name))
+                current_count = len(cmd.parameters) if cmd.parameters else 0
+
+                if cmd_def and current_count < cmd_def.nparams:
+                    updated_commands.append(
+                        Command(
+                            name=cmd.name,
+                            parameters=[*(cmd.parameters or []), duration],
+                            type=cmd.type,
+                        )
+                    )
+                else:
+                    updated_commands.append(cmd)
+
+            result.append(
+                Action(device_url=action.device_url, commands=updated_commands)
+            )
+
+        return result
+
     @retry_on_too_many_executions
     @retry_on_auth_error
-    async def execute_command(
+    async def _execute_action_group_direct(
         self,
-        device_url: str,
-        command: Command | str,
-        label: str | None = "python-overkiz-api",
+        actions: list[Action],
+        mode: ExecutionMode | None = None,
+        label: str | None = "pyOverkiz",
     ) -> str:
-        """Send a command."""
-        if isinstance(command, str):
-            command = Command(command)
+        """Execute a non-persistent action group directly (internal method).
 
-        response: str = await self.execute_commands(device_url, [command], label)
+        The executed action group does not have to be persisted on the server before use.
+        Per-session rate-limit : 1 calls per 28min 48s period for all operations of the same category (exec)
+        """
+        payload = {"label": label, "actions": [a.to_payload() for a in actions]}
+        url = f"exec/apply/{mode.value}" if mode else "exec/apply"
 
-        return response
+        response: dict = await self._post(url, prepare_payload(payload))
 
-    @retry_on_auth_error
-    async def cancel_command(self, exec_id: str) -> None:
-        """Cancel a running setup-level execution."""
-        await self.__delete(f"/exec/current/setup/{exec_id}")
-
-    @retry_on_auth_error
-    async def execute_commands(
-        self,
-        device_url: str,
-        commands: list[Command],
-        label: str | None = "python-overkiz-api",
-    ) -> str:
-        """Send several commands in one call."""
-        payload = {
-            "label": label,
-            "actions": [{"deviceURL": device_url, "commands": commands}],
-        }
-        response: dict = await self.__post("exec/apply", payload)
         return cast(str, response["execId"])
 
+    async def execute_action_group(
+        self,
+        actions: list[Action],
+        mode: ExecutionMode | None = None,
+        label: str | None = "pyOverkiz",
+    ) -> str:
+        """Execute an ad-hoc action group built from the given actions.
+
+        An action group is a batch of device actions submitted as a single
+        execution. Each ``Action`` targets one device and contains one or more
+        ``Command`` instances (e.g. ``open``, ``setClosure(50)``). The gateway
+        allows at most one action per device per action group.
+
+        When the action queue is enabled, actions are held for a short delay
+        and merged with other actions submitted in the same window. Commands
+        targeting the same device are combined into a single action. The method
+        blocks until the batch executes and returns the resulting exec_id.
+
+        When the action queue is disabled, the action group is sent immediately.
+
+        Args:
+            actions: One or more actions to execute. Each action targets a
+                single device and holds one or more commands.
+            mode: Optional execution mode (``HIGH_PRIORITY``, ``GEOLOCATED``,
+                or ``INTERNAL``).
+            label: Human-readable label for the execution.
+
+        Returns:
+            The ``exec_id`` identifying the execution on the server.
+        """
+        actions = self._apply_rts_duration(actions)
+
+        if self._action_queue:
+            queued = await self._action_queue.add(actions, mode, label)
+            return await queued
+        return await self._execute_action_group_direct(actions, mode, label)
+
+    async def flush_action_queue(self) -> None:
+        """Force flush all pending actions in the queue immediately.
+
+        If action queue is disabled, this method does nothing.
+        If there are no pending actions, this method does nothing.
+        """
+        if self._action_queue:
+            await self._action_queue.flush()
+
+    def get_pending_actions_count(self) -> int:
+        """Get the approximate number of actions currently waiting in the queue.
+
+        Returns 0 if action queue is disabled. This is a best-effort snapshot
+        and may be stale if other coroutines modify the queue concurrently.
+        """
+        if self._action_queue:
+            return self._action_queue.get_pending_count()
+        return 0
+
     @retry_on_auth_error
-    async def get_scenarios(self) -> list[Scenario]:
-        """List the scenarios."""
-        response = await self.__get("actionGroups")
-        return [Scenario(**scenario) for scenario in humps.decamelize(response)]
+    async def cancel_execution(self, exec_id: str) -> None:
+        """Cancel a running execution by its exec_id."""
+        await self._delete(f"exec/current/setup/{exec_id}")
+
+    @retry_on_auth_error
+    async def get_action_groups(self) -> list[PersistedActionGroup]:
+        """List action groups persisted on the server."""
+        response = await self._get("actionGroups")
+        return structure_response(response, list[PersistedActionGroup])
 
     @retry_on_auth_error
     async def get_places(self) -> Place:
-        """List the places."""
-        response = await self.__get("setup/places")
-        places = Place(**humps.decamelize(response))
-        return places
+        """Get the hierarchical structure of places (house, rooms, areas, zones).
 
-    @retry_on_auth_error
-    async def generate_local_token(self, gateway_id: str) -> str:
-        """Generates a new token.
-
-        Access scope : Full enduser API access (enduser/*).
+        The Place model represents a hierarchical organization where the root place is
+        typically the house/property, and `sub_places` contains nested child places
+        (floors, rooms, areas). This structure can be recursively navigated to build
+        a complete map of all locations in the setup. Each place has:
+        - `label`: Human-readable name for the place
+        - `type`: Numeric identifier for the place type
+        - `sub_places`: List of nested places within this location
         """
-        response = await self.__get(f"config/{gateway_id}/local/tokens/generate")
-
-        return cast(str, response["token"])
-
-    @retry_on_auth_error
-    async def activate_local_token(
-        self, gateway_id: str, token: str, label: str, scope: str = "devmode"
-    ) -> str:
-        """Create a token.
-
-        Access scope : Full enduser API access (enduser/*).
-        """
-        response = await self.__post(
-            f"config/{gateway_id}/local/tokens",
-            {"label": label, "token": token, "scope": scope},
-        )
-
-        return cast(str, response["requestId"])
+        response = await self._get("setup/places")
+        return structure_response(response, Place)
 
     @retry_on_auth_error
-    async def get_local_tokens(
-        self, gateway_id: str, scope: str = "devmode"
-    ) -> list[LocalToken]:
-        """Get all gateway tokens with the given scope.
-
-        Access scope : Full enduser API access (enduser/*).
-        """
-        response = await self.__get(f"config/{gateway_id}/local/tokens/{scope}")
-        local_tokens = [LocalToken(**lt) for lt in humps.decamelize(response)]
-
-        return local_tokens
-
-    @retry_on_auth_error
-    async def delete_local_token(self, gateway_id: str, uuid: str) -> bool:
-        """Delete a token.
-
-        Access scope : Full enduser API access (enduser/*).
-        """
-        await self.__delete(f"config/{gateway_id}/local/tokens/{uuid}")
-
-        return True
-
-    @retry_on_auth_error
-    async def execute_scenario(self, oid: str) -> str:
-        """Execute a scenario."""
-        response = await self.__post(f"exec/{oid}")
+    async def execute_persisted_action_group(self, oid: str) -> str:
+        """Execute a server-side action group by its OID (see ``get_action_groups``)."""
+        response = await self._post(f"exec/{oid}")
         return cast(str, response["execId"])
 
     @retry_on_auth_error
-    async def execute_scheduled_scenario(self, oid: str, timestamp: int) -> str:
-        """Execute a scheduled scenario."""
-        response = await self.__post(f"exec/schedule/{oid}/{timestamp}")
+    async def schedule_persisted_action_group(self, oid: str, timestamp: int) -> str:
+        """Schedule a server-side action group for execution at the given timestamp."""
+        response = await self._post(f"exec/schedule/{oid}/{timestamp}")
         return cast(str, response["triggerId"])
 
     @retry_on_auth_error
@@ -773,10 +674,8 @@ class OverkizClient:
         Per-session rate-limit : 1 calls per 1d period for this particular operation (bulk-load)
         Access scope : Full enduser API access (enduser/*).
         """
-        response = await self.__get("setup/options")
-        options = [Option(**o) for o in humps.decamelize(response)]
-
-        return options
+        response = await self._get("setup/options")
+        return structure_response(response, list[Option])
 
     @retry_on_auth_error
     async def get_setup_option(self, option: str) -> Option | None:
@@ -784,10 +683,10 @@ class OverkizClient:
 
         For example `developerMode-{gateway_id}` to understand if developer mode is on.
         """
-        response = await self.__get(f"setup/options/{option}")
+        response = await self._get(f"setup/options/{option}")
 
         if response:
-            return Option(**humps.decamelize(response))
+            return structure_response(response, Option)
 
         return None
 
@@ -799,194 +698,202 @@ class OverkizClient:
 
         For example `developerMode-{gateway_id}` and `gatewayId` to understand if developer mode is on.
 
-        If the option is not available, an OverkizException will be thrown.
+        If the option is not available, an OverkizError will be thrown.
         If the parameter is not available you will receive None.
         """
-        response = await self.__get(f"setup/options/{option}/{parameter}")
+        response = await self._get(f"setup/options/{option}/{parameter}")
 
         if response:
-            return OptionParameter(**humps.decamelize(response))
+            return structure_response(response, OptionParameter)
 
         return None
 
-    async def __get(self, path: str) -> Any:
-        """Make a GET request to the OverKiz API."""
-        headers = {}
+    @retry_on_auth_error
+    async def get_reference_controllable(
+        self, controllable_name: str
+    ) -> dict[str, Any]:
+        """Get a controllable definition."""
+        return await self._get(
+            f"reference/controllable/{urllib.parse.quote_plus(controllable_name)}"
+        )
 
+    @retry_on_auth_error
+    async def get_reference_controllable_types(self) -> list[dict[str, Any]]:
+        """Get details about all supported controllable types."""
+        return await self._get("reference/controllableTypes")
+
+    @retry_on_auth_error
+    async def search_reference_devices_model(
+        self, payload: dict[str, Any]
+    ) -> dict[str, Any]:
+        """Search reference device models using a POST payload."""
+        return await self._post("reference/devices/search", payload)
+
+    @retry_on_auth_error
+    async def get_reference_protocol_types(self) -> list[ProtocolType]:
+        """Get details about supported protocol types on that server instance.
+
+        Returns a list of protocol type definitions, each containing:
+        - id: Numeric protocol identifier
+        - prefix: URL prefix used in device addresses
+        - name: Internal protocol name
+        - label: Human-readable protocol label
+        """
+        response = await self._get("reference/protocolTypes")
+        # No decamelize — ProtocolType fields are all single-word lowercase already.
+        return converter.structure(response, list[ProtocolType])
+
+    @retry_on_auth_error
+    async def get_reference_timezones(self) -> list[dict[str, Any]]:
+        """Get timezones list."""
+        return await self._get("reference/timezones")
+
+    @retry_on_auth_error
+    async def get_reference_ui_classes(self) -> list[str]:
+        """Get a list of all defined UI classes."""
+        return await self._get("reference/ui/classes")
+
+    @retry_on_auth_error
+    async def get_reference_ui_classifiers(self) -> list[str]:
+        """Get a list of all defined UI classifiers."""
+        return await self._get("reference/ui/classifiers")
+
+    @retry_on_auth_error
+    async def get_reference_ui_profile(self, profile_name: str) -> UIProfileDefinition:
+        """Get a description of a given UI profile (or form-factor variant).
+
+        Returns a profile definition containing:
+        - name: Profile name
+        - commands: Available commands with parameters and descriptions
+        - states: Available states with value types and descriptions
+        - form_factor: Whether profile is tied to a specific physical device type
+        """
+        response = await self._get(
+            f"reference/ui/profile/{urllib.parse.quote_plus(profile_name)}"
+        )
+        return structure_response(response, UIProfileDefinition)
+
+    @retry_on_auth_error
+    async def get_reference_ui_profile_names(self) -> list[str]:
+        """Get a list of all defined UI profiles (and form-factor variants)."""
+        return await self._get("reference/ui/profileNames")
+
+    @retry_on_auth_error
+    async def get_reference_ui_widgets(self) -> list[str]:
+        """Get a list of all defined UI widgets."""
+        return await self._get("reference/ui/widgets")
+
+    @retry_on_auth_error
+    async def get_devices_not_up_to_date(self) -> list[Device]:
+        """Get all devices whose firmware is not up to date."""
+        response = await self._get("setup/devices/notUpToDate")
+        return structure_response(response, list[Device])
+
+    @retry_on_auth_error
+    async def get_device_firmware_status(
+        self, device_url: str
+    ) -> FirmwareStatus | None:
+        """Check if a device's firmware is up to date.
+
+        Returns None if the device does not support firmware status checks.
+        """
+        try:
+            response = await self._get(
+                f"setup/devices/{urllib.parse.quote_plus(device_url)}/firmwareUpToDate"
+            )
+        except UnsupportedOperationError:
+            return None
+        return structure_response(response, FirmwareStatus)
+
+    @retry_on_auth_error
+    async def get_device_firmware_update_capability(self, device_url: str) -> bool:
+        """Check if a device supports firmware updates.
+
+        Returns False if the device does not support this query.
+        """
+        try:
+            response = await self._get(
+                f"setup/devices/{urllib.parse.quote_plus(device_url)}/firmwareUpdateCapability"
+            )
+        except UnsupportedOperationError:
+            return False
+        return cast(bool, response["supportsFirmwareUpdate"])
+
+    @retry_on_auth_error
+    async def update_device_firmware(self, device_url: str) -> None:
+        """Update a device's firmware to the next available version."""
+        await self._put(
+            f"setup/devices/{urllib.parse.quote_plus(device_url)}/updateFirmware"
+        )
+
+    @retry_on_auth_error
+    async def update_all_device_firmwares(self) -> None:
+        """Update firmware for all devices that are not up to date."""
+        await self._put("setup/devices/updateFirmwares")
+
+    async def _get(self, path: str) -> Any:
+        """Make a GET request to the OverKiz API."""
         await self._refresh_token_if_expired()
-        if self._access_token:
-            headers["Authorization"] = f"Bearer {self._access_token}"
 
         async with self.session.get(
-            f"{self.server.endpoint}{path}",
-            headers=headers,
+            f"{self.server_config.endpoint}{path}",
+            headers=self._auth.auth_headers(path),
             ssl=self._ssl,
         ) as response:
-            await self.check_response(response)
-            return await response.json()
+            return await self._parse_response(response)
 
-    async def __post(
-        self, path: str, payload: JSON | None = None, data: JSON | None = None
+    async def _post(
+        self,
+        path: str,
+        payload: dict[str, Any] | None = None,
+        data: dict[str, Any] | None = None,
     ) -> Any:
         """Make a POST request to the OverKiz API."""
-        headers = {}
-
-        if path != "login" and self._access_token:
-            await self._refresh_token_if_expired()
-            headers["Authorization"] = f"Bearer {self._access_token}"
-
-        async with self.session.post(
-            f"{self.server.endpoint}{path}",
-            data=data,
-            json=payload,
-            headers=headers,
-            ssl=self._ssl,
-        ) as response:
-            await self.check_response(response)
-            return await response.json()
-
-    async def __delete(self, path: str) -> None:
-        """Make a DELETE request to the OverKiz API."""
-        headers = {}
-
         await self._refresh_token_if_expired()
 
-        if self._access_token:
-            headers["Authorization"] = f"Bearer {self._access_token}"
-
-        async with self.session.delete(
-            f"{self.server.endpoint}{path}",
-            headers=headers,
+        async with self.session.post(
+            f"{self.server_config.endpoint}{path}",
+            data=data,
+            json=payload,
+            headers=self._auth.auth_headers(path),
             ssl=self._ssl,
         ) as response:
-            await self.check_response(response)
+            return await self._parse_response(response)
+
+    async def _put(self, path: str, payload: dict[str, Any] | None = None) -> Any:
+        """Make a PUT request to the OverKiz API."""
+        await self._refresh_token_if_expired()
+
+        async with self.session.put(
+            f"{self.server_config.endpoint}{path}",
+            json=payload,
+            headers=self._auth.auth_headers(path),
+            ssl=self._ssl,
+        ) as response:
+            return await self._parse_response(response)
+
+    async def _delete(self, path: str) -> None:
+        """Make a DELETE request to the OverKiz API."""
+        await self._refresh_token_if_expired()
+
+        async with self.session.delete(
+            f"{self.server_config.endpoint}{path}",
+            headers=self._auth.auth_headers(path),
+            ssl=self._ssl,
+        ) as response:
+            await check_response(response)
 
     @staticmethod
-    async def check_response(response: ClientResponse) -> None:
-        """Check the response returned by the OverKiz API."""
-        if response.status in [200, 204]:
-            return
-
-        try:
-            result = await response.json(content_type=None)
-        except JSONDecodeError as error:
-            result = await response.text()
-
-            if "is down for maintenance" in result:
-                raise MaintenanceException("Server is down for maintenance") from error
-
-            if response.status == 503:
-                raise ServiceUnavailableException(result) from error
-
-            raise OverkizException(
-                f"Unknown error while requesting {response.url}. {response.status} - {result}"
-            ) from error
-
-        if result.get("errorCode"):
-            # Error messages between cloud and local Overkiz servers can be slightly different
-            # To make it easier to have a strict match for these errors, we remove the double quotes and the period at the end.
-
-            # An error message can have an empty (None) message
-            message = message.strip('".') if (message := result.get("error")) else ""
-
-            # {"errorCode": "DUPLICATE_FIELD_OR_VALUE", "error": "Another action exists on the same device : rts://1234-5689-1234/123456"}
-            if message.startswith("Another action exists on the same device"):
-                raise DuplicateActionOnDeviceException(message)
-
-            # {"errorCode": "INVALID_FIELD_VALUE", "error": "Unable to determine action group setup (no setup for gateway #1234-5678-1234)"}
-            if message.startswith("Unable to determine action group setup"):
-                raise ActionGroupSetupNotFoundException(message)
-
-            # {"errorCode": "AUTHENTICATION_ERROR", "error": "Too many requests, try again later : login with xxx@xxx.tld"}
-            if "Too many requests" in message:
-                raise TooManyRequestsException(message)
-
-            # {"errorCode": "AUTHENTICATION_ERROR", "error": "Bad credentials"}
-            if message == "Bad credentials":
-                raise BadCredentialsException(message)
-
-            # {"errorCode": "RESOURCE_ACCESS_DENIED", "error": "Not authenticated"}
-            if message == "Not authenticated":
-                raise NotAuthenticatedException(message)
-
-            # {"errorCode": "AUTHENTICATION_ERROR", "error": "An API key is required to access this setup"}
-            if message == "An API key is required to access this setup":
-                raise MissingAPIKeyException(message)
-
-            # {"error":"Missing authorization token.","errorCode":"RESOURCE_ACCESS_DENIED"}
-            if message == "Missing authorization token":
-                raise MissingAuthorizationTokenException(message)
-
-            # {"error": "Server busy, please try again later. (Too many executions)"}
-            if message == "Server busy, please try again later. (Too many executions)":
-                raise TooManyExecutionsException(message)
-
-            # {"error": "UNSUPPORTED_OPERATION", "error": "No such command : ..."}
-            if "No such command" in message:
-                raise InvalidCommandException(message)
-
-            # {"errorCode": "UNSPECIFIED_ERROR", "error": "Invalid event listener id : ..."}
-            if "Invalid event listener id" in message:
-                raise InvalidEventListenerIdException(message)
-
-            # {"errorCode": "UNSPECIFIED_ERROR", "error": "No registered event listener"}
-            if message == "No registered event listener":
-                raise NoRegisteredEventListenerException(message)
-
-            # {"errorCode": "AUTHENTICATION_ERROR", "error": "No such user account : xxxxx"}
-            if "No such user account" in message:
-                raise UnknownUserException(message)
-
-            # {"errorCode": "INVALID_API_CALL", "error": "No such resource"}
-            if message == "No such resource":
-                raise NoSuchResourceException(message)
-
-            # {"errorCode": "RESOURCE_ACCESS_DENIED",  "error": "too many concurrent requests"}
-            if message == "too many concurrent requests":
-                raise TooManyConcurrentRequestsException(message)
-
-            # {"errorCode": "EXEC_QUEUE_FULL", "error": "Execution queue is full on gateway: #xxx-yyyy-zzzz (soft limit: 10)"}
-            if "Execution queue is full on gateway" in message:
-                raise ExecutionQueueFullException(message)
-
-            if message == "Cannot use JSESSIONID and bearer token in same request":
-                raise SessionAndBearerInSameRequestException(message)
-
-            if message == "Too many attempts with an invalid token, temporarily banned":
-                raise TooManyAttemptsBannedException(message)
-
-            if "Invalid token : " in message:
-                raise InvalidTokenException(message)
-
-            if "Not such token with UUID: " in message:
-                raise NotSuchTokenException(message)
-
-            if "Unknown user :" in message:
-                raise UnknownUserException(message)
-
-            # {"error":"Unknown object.","errorCode":"UNSPECIFIED_ERROR"}
-            if message == "Unknown object":
-                raise UnknownObjectException(message)
-
-            # {"errorCode": "RESOURCE_ACCESS_DENIED", "error": "Access denied to gateway #1234-5678-1234 for action ADD_TOKEN"}
-            if "Access denied to gateway" in message:
-                raise AccessDeniedToGatewayException(message)
-
-            # {"errorCode": "RESOURCE_ACCESS_DENIED", "error": "Your setup cannot be accessed through this application"}
-            if message == "Your setup cannot be accessed through this application":
-                raise ApplicationNotAllowedException(message)
-
-        # Undefined Overkiz exception
-        raise OverkizException(result)
+    async def _parse_response(response: ClientResponse) -> Any:
+        """Check response status and parse JSON body (returns None for 204)."""
+        await check_response(response)
+        if response.status == HTTPStatus.NO_CONTENT:
+            return None
+        return await response.json()
 
     async def _refresh_token_if_expired(self) -> None:
         """Check if token is expired and request a new one."""
-        if (
-            self._expires_in
-            and self._refresh_token
-            and self._expires_in <= datetime.datetime.now()
-        ):
-            await self.refresh_token()
+        refreshed = await self._auth.refresh_if_needed()
 
-            if self.event_listener_id:
-                await self.register_event_listener()
+        if refreshed and self.event_listener_id:
+            await self.register_event_listener()

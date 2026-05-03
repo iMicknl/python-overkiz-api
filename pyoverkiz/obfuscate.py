@@ -3,14 +3,12 @@
 from __future__ import annotations
 
 import re
-from typing import Any
-
-from pyoverkiz.types import JSON
+from typing import Any, cast
 
 
-def obfuscate_id(id: str | None) -> str:
+def obfuscate_id(value: str | None) -> str:
     """Mask id."""
-    return re.sub(r"(SETUP)?\d+-", "****-", str(id))
+    return re.sub(r"(SETUP)?\d+-", "****-", str(value))
 
 
 def obfuscate_email(email: str | None) -> str:
@@ -19,50 +17,66 @@ def obfuscate_email(email: str | None) -> str:
     return re.sub(r"(.).*@.*(.\..*)", r"\1****@****\2", email)
 
 
-def obfuscate_string(input: str) -> str:
+def obfuscate_string(value: str) -> str:
     """Mask string."""
-    return re.sub(r"[a-zA-Z0-9_.-]*", "*", str(input))
+    return re.sub(r"[a-zA-Z0-9_.-]*", "*", str(value))
 
 
-def obfuscate_sensitive_data(data: dict[str, Any]) -> JSON:
-    """Mask Overkiz JSON data to remove sensitive data."""
+def _obfuscate_value(key: str, value: Any, mask_next_value: bool) -> tuple[Any, bool]:
+    """Return (obfuscated_value, mask_next_value) for a single key/value pair."""
+    result = value
+
+    if key in {"gatewayId", "id", "deviceURL"}:
+        result = obfuscate_id(value)
+    elif key in {
+        "label",
+        "city",
+        "country",
+        "postalCode",
+        "addressLine1",
+        "addressLine2",
+        "longitude",
+        "latitude",
+    }:
+        result = obfuscate_string(value)
+    elif mask_next_value and key == "value":
+        result = obfuscate_string(value)
+        return result, False
+
+    if result in (
+        "core:NameState",
+        "homekit:SetupCode",
+        "homekit:SetupPayload",
+        "core:SSIDState",
+        "core:NetworkMacState",
+    ):
+        mask_next_value = True
+
+    if isinstance(result, dict):
+        result = obfuscate_sensitive_data(result)
+    elif isinstance(result, list):
+        result = [
+            obfuscate_sensitive_data(item) if isinstance(item, dict) else item
+            for item in result
+        ]
+
+    return result, mask_next_value
+
+
+def obfuscate_sensitive_data(
+    data: dict[str, Any] | list[dict[str, Any]],
+) -> dict[str, Any] | list[dict[str, Any]]:
+    """Return a copy of Overkiz JSON data with sensitive values masked."""
+    if isinstance(data, list):
+        return cast(
+            list[dict[str, Any]], [obfuscate_sensitive_data(item) for item in data]
+        )
+
+    result: dict[str, Any] = {}
     mask_next_value = False
 
     for key, value in data.items():
-        if key in {"gatewayId", "id", "deviceURL"}:
-            data[key] = obfuscate_id(value)
+        obfuscated, mask_next_value = _obfuscate_value(key, value, mask_next_value)
+        result[key] = obfuscated
 
-        if key in {
-            "label",
-            "city",
-            "country",
-            "postalCode",
-            "addressLine1",
-            "addressLine2",
-            "longitude",
-            "latitude",
-        }:
-            data[key] = obfuscate_string(value)
-
-        if value in (
-            "core:NameState",
-            "homekit:SetupCode",
-            "homekit:SetupPayload",
-            "core:SSIDState",
-            "core:NetworkMacState",
-        ):
-            mask_next_value = True
-
-        if mask_next_value and key == "value":
-            data[key] = obfuscate_string(value)
-            mask_next_value = False
-
-        # Mask homekit:SetupCode and homekit:SetupPayload
-        if isinstance(value, dict):
-            obfuscate_sensitive_data(value)
-        elif isinstance(value, list):
-            for val in value:
-                if isinstance(val, dict):
-                    obfuscate_sensitive_data(val)
-
-    return data
+    return result

@@ -1,7 +1,7 @@
 [project]
 name = "pyoverkiz"
-version = "1.20.2"
-description = "Async Python client to interact with internal OverKiz API (e.g. used by Somfy TaHoma)."
+version = "2.0.0"
+description = "A fully asynchronous API client for interaction with smart devices connected to OverKiz, supporting multiple vendors such as Somfy TaHoma and Atlantic Cozytouch."
 readme = "README.md"
 authors = [
     {name = "Mick Vleeshouwer", email = "mick@imick.nl"},
@@ -9,18 +9,28 @@ authors = [
     {name = "Thibaut Etienne"},
 ]
 license = {text = "MIT"}
-requires-python = "<4.0,>=3.10"
+requires-python = "<4.0,>=3.12"
 packages = [
     { include = "pyoverkiz" }
 ]
 dependencies = [
     "aiohttp<4.0.0,>=3.10.3",
-    "pyhumps<4.0.0,>=3.8.0",
     "backoff<3.0,>=1.10.0",
     "attrs>=21.2",
+    "cattrs>=23.2",
+]
+
+[project.optional-dependencies]
+nexity = [
     "boto3<2.0.0,>=1.18.59",
     "warrant-lite<2.0.0,>=1.0.4",
-    "backports-strenum<2.0.0,>=1.2.4; python_version < \"3.11\"",
+]
+docs = [
+    "mkdocs>=1.5.0,<2.0",
+    "mkdocs-material>=9.5.0",
+    "mkdocstrings[python]>=0.24.0",
+    "mkdocs-autorefs>=1.0.0",
+    "pymdown-extensions>=10.0",
 ]
 
 [project.urls]
@@ -31,11 +41,11 @@ repository = "https://github.com/iMicknl/python-overkiz-api"
 dev = [
     "pytest>=8.3.2,<10.0.0",
     "pytest-cov>=5,<8",
-    "pre-commit<5.0,>=3.8",
     "pytest-asyncio>=0.23.8,<1.4.0",
     "ruff>=0.12.0",
     "mypy>=1.16.1",
     "ty>=0.0.8",
+    "prek>=0.2.27",
 ]
 
 [tool.ruff.lint]
@@ -46,6 +56,7 @@ select = [
     "ASYNC",
     # pycodestyle
     "E",
+    "W",
     # Pyflakes
     "F",
     # pyupgrade
@@ -64,8 +75,71 @@ select = [
     "T",
     # flake8-comprehensions
     "C4",
+    # pep8-naming
+    "N",
+    # flake8-pytest-style
+    "PT",
+    # flake8-logging
+    "LOG",
+    # flake8-datetimez
+    "DTZ",
+    # flynt
+    "FLY",
+    # flake8-implicit-str-concat
+    "ISC",
+    # pygrep-hooks
+    "PGH",
+    # flake8-self
+    "SLF",
+    # flake8-slots
+    "SLOT",
+    # tidy imports
+    "TID",
+    # flake8-no-pep420
+    "INP",
+    # import conventions
+    "ICN",
+    # flake8-logging-format
+    "G",
+    # blind exception
+    "BLE",
+    # tryceratops
+    "TRY",
+    # flake8-quotes
+    "Q",
+    # refurb
+    "FURB",
+    # perflint
+    "PERF",
+    # flake8-raise
+    "RSE",
+    # flake8-return
+    "RET",
+    # flake8-pie
+    "PIE",
+    # eradicate
+    "ERA",
+    # flake8-pyi
+    "PYI",
+    # flake8-pathlib
+    "PTH",
+    # flake8-builtins
+    "A",
+    # pylint
+    "PL",
 ]
-ignore = ["E501"] # Line too long
+ignore = [
+    "E501",    # Line too long
+    "TRY003",  # Long exception messages are acceptable for domain-specific errors
+    "A002",    # Shadowing builtins (id, type) is intentional for API field names
+    "PLR0913", # Too many arguments — expected for API model constructors
+    "PLC0415", # Import not at top level — intentional lazy imports
+    "PLR0911", # Too many return statements — acceptable in factory functions
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "SLF001", "PLR2004"]  # Allow assert, private member access, and magic values in tests
+"utils/**" = ["INP001", "BLE001", "PLR0912", "PLR0915"]  # Utils are scripts, not packages; complex generators acceptable
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"  # Accepts: "google", "numpy", or "pep257".
@@ -89,8 +163,3 @@ ignore_missing_imports = true
 
 [tool.ty.src]
 exclude = ["tests/"]
-
-[tool.ty.rules]
-# This project uses both mypy and ty; mypy's `type: ignore` comments
-# should not be flagged as unused by ty.
-unused-type-ignore-comment = "ignore"

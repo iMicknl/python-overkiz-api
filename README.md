@@ -35,11 +35,11 @@ pip install pyoverkiz
 
 ```python
 import asyncio
-import time
 
-from pyoverkiz.const import SUPPORTED_SERVERS
+from pyoverkiz.auth.credentials import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient
-from pyoverkiz.enums import Server
+from pyoverkiz.models import Action, Command
+from pyoverkiz.enums import Server, OverkizCommand
 
 USERNAME = ""
 PASSWORD = ""
@@ -47,25 +47,35 @@ PASSWORD = ""
 
 async def main() -> None:
     async with OverkizClient(
-        USERNAME, PASSWORD, server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE]
+        server=Server.SOMFY_EUROPE,
+        credentials=UsernamePasswordCredentials(USERNAME, PASSWORD),
     ) as client:
-        try:
-            await client.login()
-        except Exception as exception:  # pylint: disable=broad-except
-            print(exception)
-            return
+        await client.login()
 
         devices = await client.get_devices()
 
         for device in devices:
-            print(f"{device.label} ({device.id}) - {device.controllable_name}")
+            print(f"{device.label} ({device.device_url}) - {device.controllable_name}")
             print(f"{device.widget} - {device.ui_class}")
+
+        await client.execute_action_group(
+            actions=[
+                Action(
+                    device_url="io://1234-5678-1234/12345678",
+                    commands=[
+                        Command(name=OverkizCommand.SET_CLOSURE, parameters=[100])
+                    ]
+                )
+            ],
+            label="Execution via Python",
+            # mode=ExecutionMode.HIGH_PRIORITY
+        )
 
         while True:
             events = await client.fetch_events()
             print(events)
 
-            time.sleep(2)
+            await asyncio.sleep(2)
 
 
 asyncio.run(main())
@@ -75,15 +85,11 @@ asyncio.run(main())
 
 ```python
 import asyncio
-import time
-import aiohttp
 
+from pyoverkiz.auth.credentials import LocalTokenCredentials
 from pyoverkiz.client import OverkizClient
-from pyoverkiz.const import SUPPORTED_SERVERS, OverkizServer
-from pyoverkiz.enums import Server
+from pyoverkiz.utils import create_local_server_config
 
-USERNAME = ""
-PASSWORD = ""
 LOCAL_GATEWAY = "gateway-xxxx-xxxx-xxxx.local"  # or use the IP address of your gateway
 VERIFY_SSL = True  # set verify_ssl to False if you don't use the .local hostname
 
@@ -91,27 +97,14 @@ VERIFY_SSL = True  # set verify_ssl to False if you don't use the .local hostnam
 async def main() -> None:
     token = ""  # generate your token via the Somfy app and include it here
 
-    # Local Connection
-    session = aiohttp.ClientSession(
-        connector=aiohttp.TCPConnector(verify_ssl=VERIFY_SSL)
-    )
-
     async with OverkizClient(
-        username="",
-        password="",
-        token=token,
-        session=session,
+        server=create_local_server_config(host=LOCAL_GATEWAY),
+        credentials=LocalTokenCredentials(token),
         verify_ssl=VERIFY_SSL,
-        server=OverkizServer(
-            name="Somfy TaHoma (local)",
-            endpoint=f"https://{LOCAL_GATEWAY}:8443/enduser-mobile-web/1/enduserAPI/",
-            manufacturer="Somfy",
-            configuration_url=None,
-        ),
     ) as client:
         await client.login()
 
-        print("Local API connection succesfull!")
+        print("Local API connection successful!")
 
         print(await client.get_api_version())
 
@@ -122,14 +115,14 @@ async def main() -> None:
         print(devices)
 
         for device in devices:
-            print(f"{device.label} ({device.id}) - {device.controllable_name}")
+            print(f"{device.label} ({device.device_url}) - {device.controllable_name}")
             print(f"{device.widget} - {device.ui_class}")
 
         while True:
             events = await client.fetch_events()
             print(events)
 
-            time.sleep(2)
+            await asyncio.sleep(2)
 
 
 asyncio.run(main())
@@ -158,7 +151,7 @@ If you use Visual Studio Code with Docker or GitHub Codespaces, you can take adv
 
 - Install [uv](https://docs.astral.sh/uv/getting-started/installation).
 - Clone this repository and navigate to it: `cd python-overkiz-api`
-- Initialize the project with `uv sync`, then run `uv run pre-commit install`
+- Initialize the project with `uv sync`, then run `uv run prek install`
 
 #### Tests
 

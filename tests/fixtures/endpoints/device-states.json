@@ -1,0 +1,17 @@
+[
+    {
+        "name": "core:StatusState",
+        "type": 3,
+        "value": "available"
+    },
+    {
+        "name": "core:ClosureState",
+        "type": 1,
+        "value": 0
+    },
+    {
+        "name": "core:OpenClosedState",
+        "type": 3,
+        "value": "open"
+    }
+]
