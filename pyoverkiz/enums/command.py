@@ -365,6 +365,7 @@ class OverkizCommandParam(StrEnum):
     TILT_NEGATIVE = "tiltNegative"
     TOTAL = "total"
     UNDETECTED = "undetected"
+    UNKNOWN = "unknown"
     UPS = "UPS"
     VERTICAL = "vertical"
     VERY_LOW = "verylow"
