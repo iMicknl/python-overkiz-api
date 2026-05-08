@@ -32,6 +32,7 @@ ADDITIONAL_PROTOCOLS: list[tuple[str, str, int | None, str | None]] = [
 ADDITIONAL_WIDGETS = [
     "AlarmPanelController",
     "CyclicGarageDoor",
+    "CyclicSlidingGateOpener",
     "CyclicSwingingGateOpener",
     "DiscreteGateWithPedestrianPosition",
     "HLRRWifiBridge",
