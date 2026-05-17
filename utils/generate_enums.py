@@ -32,9 +32,11 @@ ADDITIONAL_PROTOCOLS: list[tuple[str, str, int | None, str | None]] = [
 ADDITIONAL_WIDGETS = [
     "AlarmPanelController",
     "CyclicGarageDoor",
+    "CyclicSlidingGateOpener",
     "CyclicSwingingGateOpener",
     "DiscreteGateWithPedestrianPosition",
     "HLRRWifiBridge",
+    "MediaRenderer",
     "Node",
     "SwimmingPoolRollerShutter",  # via atlantic_cozytouch
 ]
@@ -509,11 +511,16 @@ def command_to_enum_name(command_name: str) -> str:
 
     Example: "setTargetTemperature" -> "SET_TARGET_TEMPERATURE"
     Spaces are converted to underscores: "long peak" -> "LONG_PEAK"
+    Digits are treated as word boundaries: "setMemorized1Position" -> "SET_MEMORIZED_1_POSITION"
     """
     # First, replace spaces with underscores
     name = command_name.replace(" ", "_")
+    # Insert underscore between letter and digit
+    name = re.sub(r"([a-z])(\d)", r"\1_\2", name)
+    # Insert underscore between digit and letter
+    name = re.sub(r"(\d)([A-Z])", r"\1_\2", name)
     # Insert underscore before uppercase letters
-    name = re.sub(r"([a-z\d])([A-Z])", r"\1_\2", name)
+    name = re.sub(r"([a-z])([A-Z])", r"\1_\2", name)
     return name.upper()
 
 
