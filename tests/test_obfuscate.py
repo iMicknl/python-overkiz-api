@@ -2,7 +2,11 @@
 
 import pytest
 
-from pyoverkiz.obfuscate import obfuscate_email, obfuscate_sensitive_data
+from pyoverkiz.obfuscate import (
+    obfuscate_email,
+    obfuscate_sensitive_data,
+    obfuscate_string,
+)
 
 LOCAL_HOST = "gateway-1234-5678-1243.local:8443"
 LOCAL_HOST_BY_IP = "192.168.1.105:8443"
@@ -21,6 +25,28 @@ class TestObfucscate:
     def test_email_obfuscate(self, email: str, obfuscated: str):
         """Verify email obfuscation produces the expected masked result."""
         assert obfuscate_email(email) == obfuscated
+
+
+class TestObfuscateString:
+    """Tests for obfuscate_string with various character sets."""
+
+    @pytest.mark.parametrize(
+        ("value", "expected"),
+        [
+            ("My Room", "* *"),
+            ("Séjour", "*"),
+            ("Étage", "*"),
+            ("Entrée", "*"),
+            ("Volet Fenêtre", "* *"),
+            ("Ré-de-chaussée", "*"),
+            ("Büro", "*"),
+            ("abc123", "*"),
+            ("", ""),
+        ],
+    )
+    def test_obfuscate_string(self, value: str, expected: str):
+        """Verify string obfuscation handles Unicode characters."""
+        assert obfuscate_string(value) == expected
 
 
 class TestObfucscateSensitive:
@@ -71,3 +97,44 @@ class TestObfucscateSensitive:
         assert result[0]["oid"] == "abc-123"  # oid is not a sensitive key
         assert result[1]["label"] != "Night Mode"
         assert result[1]["deviceURL"] != "io://1234-5678-1234/12345678"
+
+    def test_obfuscate_infra_config_state(self):
+        """Ensure internal:CurrentInfraConfigState value is redacted."""
+        data = {
+            "name": "internal:CurrentInfraConfigState",
+            "type": 3,
+            "value": "wifi_ssid:MyNetwork;password:secret123",
+        }
+        result = obfuscate_sensitive_data(data)
+        assert result["name"] == "internal:CurrentInfraConfigState"
+        assert result["value"] != "wifi_ssid:MyNetwork;password:secret123"
+
+    @pytest.mark.parametrize(
+        "state_name",
+        [
+            "core:NameState",
+            "homekit:SetupCode",
+            "homekit:SetupPayload",
+            "core:SSIDState",
+            "core:NetworkMacState",
+            "internal:CurrentInfraConfigState",
+            "core:LocalIPv4AddressState",
+            "core:IPAddress",
+            "core:MacAddress",
+            "core:SerialNumber",
+            "core:DeviceSerialNumberState",
+        ],
+    )
+    def test_obfuscate_sensitive_states(self, state_name: str):
+        """Ensure all sensitive state names trigger value redaction."""
+        data = {"name": state_name, "type": 3, "value": "sensitive_data"}
+        result = obfuscate_sensitive_data(data)
+        assert result["name"] == state_name
+        assert result["value"] != "sensitive_data"
+
+    def test_obfuscate_unicode_label(self):
+        """Ensure labels with Unicode characters are fully redacted."""
+        data = {"label": "Volet Séjour"}
+        result = obfuscate_sensitive_data(data)
+        assert "Séjour" not in result["label"]
+        assert "é" not in result["label"]
