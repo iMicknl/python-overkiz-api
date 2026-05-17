@@ -19,7 +19,7 @@ def obfuscate_email(email: str | None) -> str:
 
 def obfuscate_string(value: str) -> str:
     """Mask string."""
-    return re.sub(r"[a-zA-Z0-9_.-]*", "*", str(value))
+    return re.sub(r"[\w.-]+", "*", str(value), flags=re.UNICODE)
 
 
 def _obfuscate_value(key: str, value: Any, mask_next_value: bool) -> tuple[Any, bool]:
@@ -49,6 +49,12 @@ def _obfuscate_value(key: str, value: Any, mask_next_value: bool) -> tuple[Any, 
         "homekit:SetupPayload",
         "core:SSIDState",
         "core:NetworkMacState",
+        "internal:CurrentInfraConfigState",
+        "core:LocalIPv4AddressState",
+        "core:IPAddress",
+        "core:MacAddress",
+        "core:SerialNumber",
+        "core:DeviceSerialNumberState",
     ):
         mask_next_value = True
 
