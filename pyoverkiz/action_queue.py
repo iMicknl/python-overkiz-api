@@ -24,10 +24,10 @@ class ActionQueueSettings:
     def validate(self) -> None:
         """Validate configuration values for the action queue."""
         if self.delay <= 0:
-            raise ValueError(f"action_queue_delay must be positive, got {self.delay!r}")
+            raise ValueError(f"delay must be positive, got {self.delay!r}")
         if self.max_actions < 1:
             raise ValueError(
-                f"action_queue_max_actions must be at least 1, got {self.max_actions!r}"
+                f"max_actions must be at least 1, got {self.max_actions!r}"
             )
 
 
