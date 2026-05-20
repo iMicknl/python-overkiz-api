@@ -145,9 +145,7 @@ v2 also supports sending actions to **multiple devices** in a single call and ch
 | `client.execute_scenario(oid)` | `client.execute_persisted_action_group(oid)` |
 | `client.execute_scheduled_scenario(oid, ts)` | `client.schedule_persisted_action_group(oid, ts)` |
 
-`get_action_groups()` now returns `list[PersistedActionGroup]` instead of `list[ActionGroup]`. `PersistedActionGroup` extends `ActionGroup` with `oid`, `creation_time`, and `last_update_time` fields. The base `ActionGroup` no longer has these fields.
-
-`ActionGroup.id` is now `str | None` instead of `str`. `ActionGroup.creation_time` and `ActionGroup.metadata` are now optional.
+`get_action_groups()` now returns `list[PersistedActionGroup]` instead of `list[ActionGroup]`. `PersistedActionGroup` extends `ActionGroup` with `oid`, `creation_time`, `last_update_time`, and a read-only `id` property (alias for `oid`). The base `ActionGroup` no longer has these fields.
 
 ## Execution methods
 
@@ -241,7 +239,7 @@ Update any keyword arguments using the old spelling.
 ## Model defaults
 
 - `Location` fields now default to `None` instead of empty strings.
-- API data validation errors now raise `OverkizError` instead of `ValueError`.
+- `OverkizClient` raises `OverkizError` instead of `ValueError` when server configuration cannot be resolved.
 - `obfuscate_sensitive_data()` returns a new dict instead of mutating the input.
 
 ## Boolean parsing fix
