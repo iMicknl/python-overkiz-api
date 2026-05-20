@@ -13,8 +13,8 @@ from pyoverkiz.auth.credentials import (
     TokenCredentials,
     UsernamePasswordCredentials,
 )
-from pyoverkiz.auth.base import AuthStrategy
 from pyoverkiz.auth.strategies import (
+    AuthStrategy,
     BearerTokenAuthStrategy,
     CozytouchAuthStrategy,
     LocalTokenAuthStrategy,
