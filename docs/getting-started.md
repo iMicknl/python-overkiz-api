@@ -13,16 +13,19 @@ This guide will help you install the library, connect to your hub, and perform y
 
 ## Install pyOverkiz from PyPI
 
+!!! note "Pre-release"
+    pyOverkiz v2 is currently in pre-release. Use the `--prerelease allow` (uv) or `--pre` (pip) flag until the stable release is available on PyPI.
+
 ### With UV <small>recommended</small>
 
 ```bash
-uv add pyoverkiz
+uv add pyoverkiz --prerelease allow
 ```
 
 ### With pip
 
 ```bash
-pip install pyoverkiz
+pip install --pre pyoverkiz
 ```
 
 ### Optional extras
