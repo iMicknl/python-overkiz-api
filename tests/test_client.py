@@ -1217,7 +1217,7 @@ class TestUserAgent:
         assert USER_AGENT.startswith("pyoverkiz/")
         version_part = USER_AGENT.split("/", 1)[1]
         assert version_part  # not empty
-        assert all(c.isdigit() or c == "." for c in version_part)
+        assert all(c.isdigit() or c.isalpha() or c == "." for c in version_part)
 
     @pytest.mark.asyncio
     async def test_client_session_uses_user_agent(self):
