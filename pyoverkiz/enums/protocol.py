@@ -50,6 +50,7 @@ class Protocol(StrEnum):
     RTN = "rtn"
     RTS = "rts"
     SOMFY_THERMOSTAT = "somfythermostat"
+    SONOS = "sonos"
     UPNP_CONTROL = "upnpcontrol"
     VERISURE = "verisure"
     WISER = "wiser"
