@@ -152,21 +152,25 @@ Use a cloud server when you want to connect through the vendor’s public API. U
 
 === "Rexel (cloud)"
 
-    Authentication to the Rexel cloud requires your mobile app username and password.
+    Authentication to the Rexel cloud uses OAuth2 authorization code flow.
+    You need an authorization code and redirect URI obtained from the Rexel OAuth2 consent flow.
 
-    Use `Server.REXEL` with `UsernamePasswordCredentials` to authenticate.
+    Use `Server.REXEL` with `RexelOAuthCodeCredentials` to authenticate.
 
     ```python
     import asyncio
 
-    from pyoverkiz.auth.credentials import UsernamePasswordCredentials
+    from pyoverkiz.auth.credentials import RexelOAuthCodeCredentials
     from pyoverkiz.client import OverkizClient
     from pyoverkiz.enums import Server
 
     async def main() -> None:
         async with OverkizClient(
             server=Server.REXEL,
-            credentials=UsernamePasswordCredentials("you@example.com", "password"),
+            credentials=RexelOAuthCodeCredentials(
+                code="your-authorization-code",
+                redirect_uri="https://your-redirect-uri",
+            ),
         ) as client:
             await client.login()
 

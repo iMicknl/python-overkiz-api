@@ -147,7 +147,8 @@ async def check_response(response: ClientResponse) -> None:
     if error_code:
         # Error messages between cloud and local servers differ slightly in quoting and punctuation.
         # Normalise so substring matching works across both variants.
-        message = message.strip('".') if (message := result.get("error")) else ""
+        raw_message = result.get("error")
+        message = raw_message.strip('".') if raw_message else ""
 
         # 1. Primary dispatch: match on errorCode (+ optional message substring)
         for code, pattern, error_class in _ERROR_CODE_MESSAGE_MAP:
