@@ -17,7 +17,6 @@ else:
 
 
 @unique
-@unique
 class OverkizCommand(StrEnum):
     """Device commands used by Overkiz."""
 
