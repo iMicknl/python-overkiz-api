@@ -150,6 +150,7 @@ Use a cloud server when you want to connect through the vendor’s public API. U
     asyncio.run(main())
     ```
 
+<!-- TODO: Rexel OAuth2 flow not fully working yet
 === "Rexel (cloud)"
 
     Authentication to the Rexel cloud uses OAuth2 authorization code flow.
@@ -176,3 +177,4 @@ Use a cloud server when you want to connect through the vendor’s public API. U
 
     asyncio.run(main())
     ```
+-->
