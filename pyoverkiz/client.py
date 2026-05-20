@@ -202,11 +202,12 @@ class OverkizClient:
     ) -> None:
         """Constructor.
 
-        :param server: ServerConfig
-        :param credentials: Credentials for authentication
-        :param verify_ssl: Enable SSL certificate verification
-        :param session: optional ClientSession
-        :param settings: behavioral settings for the client (default None)
+        Args:
+            server: ServerConfig, Server enum, or server key string.
+            credentials: Credentials for authentication.
+            verify_ssl: Enable SSL certificate verification.
+            session: Optional ClientSession.
+            settings: Behavioral settings for the client.
         """
         self.server_config = self._normalize_server(server)
 

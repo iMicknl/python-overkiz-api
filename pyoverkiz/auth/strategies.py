@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 from aiohttp import ClientSession, FormData
 
-from pyoverkiz.auth.base import AuthContext, AuthStrategy
+from pyoverkiz.auth.base import AuthContext
 from pyoverkiz.auth.credentials import (
     LocalTokenCredentials,
     RexelOAuthCodeCredentials,
@@ -53,8 +53,11 @@ from pyoverkiz.models import ServerConfig
 MIN_JWT_SEGMENTS = 2
 
 
-class BaseAuthStrategy(AuthStrategy):
-    """Base class for authentication strategies."""
+class BaseAuthStrategy:
+    """Base class for authentication strategies.
+
+    Satisfies the AuthStrategy protocol via structural subtyping.
+    """
 
     def __init__(
         self,
