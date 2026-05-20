@@ -145,7 +145,7 @@ v2 also supports sending actions to **multiple devices** in a single call and ch
 | `client.execute_scenario(oid)` | `client.execute_persisted_action_group(oid)` |
 | `client.execute_scheduled_scenario(oid, ts)` | `client.schedule_persisted_action_group(oid, ts)` |
 
-`ActionGroup.id` and `ActionGroup.oid` are now `str | None` instead of `str`. `ActionGroup.creation_time` and `ActionGroup.metadata` are now optional.
+`get_action_groups()` now returns `list[PersistedActionGroup]` instead of `list[ActionGroup]`. `PersistedActionGroup` extends `ActionGroup` with `oid`, `creation_time`, `last_update_time`, and a read-only `id` property (alias for `oid`). The base `ActionGroup` no longer has these fields.
 
 ## Execution methods
 
@@ -155,6 +155,7 @@ v2 also supports sending actions to **multiple devices** in a single call and ch
 | `client.cancel_command(exec_id)` | `client.cancel_execution(exec_id)` |
 | `client.get_current_execution(exec_id)` returns `Execution` | Returns `Execution | None` |
 | `Execution.state` is `str` | `Execution.state` is `ExecutionState` |
+| `Execution.action_group` is `list[Action]` | `Execution.action_group` is `ActionGroup | None` |
 
 ## Device model
 
@@ -185,6 +186,65 @@ The `Device` class now provides convenience methods — see the [device control 
 - `device.supports_command()`, `device.supports_any_command()`, `device.select_first_command()`
 - `device.get_attribute_value()`, `device.select_first_attribute_value()`
 - `device.get_state_definition()`, `device.select_first_state_definition()`
+
+## Collection lookups (States, CommandDefinitions)
+
+`States.__getitem__` and `CommandDefinitions.__getitem__` now raise `KeyError` when the requested key is not found. In v1 they returned `None`.
+
+=== "v1"
+
+    ```python
+    state = device.states["core:ClosureState"]  # returned None if missing
+    if state:
+        ...
+    ```
+
+=== "v2"
+
+    ```python
+    # Option 1: use .get() for the old behavior
+    state = device.states.get("core:ClosureState")
+
+    # Option 2: use [] and handle KeyError
+    try:
+        state = device.states["core:ClosureState"]
+    except KeyError:
+        ...
+    ```
+
+## Gateway model
+
+- `Gateway.connectivity` is now `Connectivity | None` (was always set in v1).
+- `Gateway.id` and `Place.id` are now read-only properties.
+
+## Client internals
+
+These changes affect you if you subclass `OverkizClient` or use internal APIs:
+
+| v1 | v2 |
+|----|-----|
+| `client.check_response(response)` | `from pyoverkiz.response_handler import check_response`; `await check_response(response)` (module-level async function) |
+| `client.event_listener_id = ...` | Read-only property; managed internally |
+| `SUPPORTED_SERVERS[key] = ...` | `SUPPORTED_SERVERS` is now immutable (`MappingProxyType`) |
+| `get_device_definition()` returns `dict` | Returns `Definition | None` |
+
+## Parameter renames
+
+| v1 | v2 |
+|----|-----|
+| `deviceurl` | `device_url` |
+
+Update any keyword arguments using the old spelling.
+
+## Model defaults
+
+- `Location` address/string fields now default to `None` instead of empty strings.
+- `OverkizClient` raises `OverkizError` instead of `ValueError` when server configuration cannot be resolved.
+- `obfuscate_sensitive_data()` returns a new dict instead of mutating the input.
+
+## Boolean parsing fix
+
+The Cloud API boolean parser previously mapped the string `"false"` to `True` (because `bool("false")` is truthy in Python). This is now fixed — `"false"` correctly maps to `False`. If your code relied on this incorrect behavior, update it accordingly.
 
 ## Exceptions
 
@@ -280,6 +340,12 @@ Several enum members have been renamed for consistent `UPPER_SNAKE_CASE` or to f
 - `ExecutionState` — typed states for `Execution.state`.
 - `UpdateCriticityLevel` — criticity level of gateway updates.
 
+## Dependencies
+
+- `pyhumps` has been removed and replaced with an internal `_case` module. No action needed unless you imported from `pyhumps` directly.
+- `cattrs` is a new required dependency (handles model structuring).
+- `boto3` and `warrant-lite` are now optional. Install with `pip install "pyoverkiz[nexity]"` if you use the Nexity server.
+
 ## Other changes
 
 | v1 | v2 |
@@ -297,4 +363,4 @@ These are not breaking, but worth knowing about when migrating:
 - **Device helpers** — `Device.get_command_definition()` for looking up command metadata.
 - **Reference endpoints** — query server metadata: `get_reference_ui_classes()`, `get_reference_ui_widgets()`, `get_reference_ui_profile()`, `get_reference_controllable_types()`, etc.
 - **Firmware management** — `get_devices_not_up_to_date()`, `get_device_firmware_status()`, `update_device_firmware()`.
-- **Optional Nexity dependencies** — `boto3` and `warrant-lite` are no longer installed by default. Install them with `pip install pyoverkiz[nexity]` if you use the Nexity server. A clear `ImportError` is raised at login time if the extra is missing.
+- **Optional Nexity dependencies** — `boto3` and `warrant-lite` are no longer installed by default. Install them with `pip install "pyoverkiz[nexity]"` if you use the Nexity server. A clear `ImportError` is raised at login time if the extra is missing.
