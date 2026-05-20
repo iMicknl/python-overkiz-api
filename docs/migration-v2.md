@@ -223,10 +223,10 @@ These changes affect you if you subclass `OverkizClient` or use internal APIs:
 
 | v1 | v2 |
 |----|-----|
-| `client.check_response(response)` | `from pyoverkiz.response_handler import check_response` (module-level function) |
+| `client.check_response(response)` | `from pyoverkiz.response_handler import check_response`; `await check_response(response)` (module-level async function) |
 | `client.event_listener_id = ...` | Read-only property; managed internally |
 | `SUPPORTED_SERVERS[key] = ...` | `SUPPORTED_SERVERS` is now immutable (`MappingProxyType`) |
-| `get_device_definition()` returns `dict` | Returns `Definition` model |
+| `get_device_definition()` returns `dict` | Returns `Definition | None` |
 
 ## Parameter renames
 
@@ -238,7 +238,7 @@ Update any keyword arguments using the old spelling.
 
 ## Model defaults
 
-- `Location` fields now default to `None` instead of empty strings.
+- `Location` address/string fields now default to `None` instead of empty strings.
 - `OverkizClient` raises `OverkizError` instead of `ValueError` when server configuration cannot be resolved.
 - `obfuscate_sensitive_data()` returns a new dict instead of mutating the input.
 
@@ -344,7 +344,7 @@ Several enum members have been renamed for consistent `UPPER_SNAKE_CASE` or to f
 
 - `pyhumps` has been removed and replaced with an internal `_case` module. No action needed unless you imported from `pyhumps` directly.
 - `cattrs` is a new required dependency (handles model structuring).
-- `boto3` and `warrant-lite` are now optional. Install with `pip install pyoverkiz[nexity]` if you use the Nexity server.
+- `boto3` and `warrant-lite` are now optional. Install with `pip install "pyoverkiz[nexity]"` if you use the Nexity server.
 
 ## Other changes
 
@@ -363,4 +363,4 @@ These are not breaking, but worth knowing about when migrating:
 - **Device helpers** — `Device.get_command_definition()` for looking up command metadata.
 - **Reference endpoints** — query server metadata: `get_reference_ui_classes()`, `get_reference_ui_widgets()`, `get_reference_ui_profile()`, `get_reference_controllable_types()`, etc.
 - **Firmware management** — `get_devices_not_up_to_date()`, `get_device_firmware_status()`, `update_device_firmware()`.
-- **Optional Nexity dependencies** — `boto3` and `warrant-lite` are no longer installed by default. Install them with `pip install pyoverkiz[nexity]` if you use the Nexity server. A clear `ImportError` is raised at login time if the extra is missing.
+- **Optional Nexity dependencies** — `boto3` and `warrant-lite` are no longer installed by default. Install them with `pip install "pyoverkiz[nexity]"` if you use the Nexity server. A clear `ImportError` is raised at login time if the extra is missing.
