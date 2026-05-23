@@ -51,5 +51,7 @@ nav:
       - Event handling: event-handling.md
       - Troubleshooting: troubleshooting.md
       - Migrating from v1: migration-v2.md
-  - API Reference: api-reference.md
+  - Reference:
+      - API Reference: api-reference.md
+      - UI Profiles: ui-profiles.md
   - Contribute: contribute.md
