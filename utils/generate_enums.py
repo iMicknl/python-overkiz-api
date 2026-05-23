@@ -438,6 +438,95 @@ async def generate_ui_profiles(server: Server) -> None:
             f"✓ Profiles without details: {sum(1 for _, d in profiles_with_details if d is None)}"
         )
 
+        generate_ui_profiles_docs(profiles_with_details)
+
+
+def generate_ui_profiles_docs(
+    profiles_with_details: list[tuple[str, UIProfileDefinition | None]],
+) -> None:
+    """Generate a documentation page for UI profiles."""
+
+    def format_type(vp: ValuePrototype) -> str:
+        """Format a value prototype into a readable type string."""
+        type_str = f"`{vp.type.lower()}`"
+        if vp.min_value is not None and vp.max_value is not None:
+            type_str += f" ({vp.min_value}\N{EN DASH}{vp.max_value})"
+        elif vp.min_value is not None:
+            type_str += f" (≥ {vp.min_value})"
+        elif vp.max_value is not None:
+            type_str += f" (≤ {vp.max_value})"
+        if vp.enum_values:
+            type_str += " — " + ", ".join(f"`{v}`" for v in vp.enum_values)
+        return type_str
+
+    lines = [
+        "---",
+        "hide:",
+        "  - toc",
+        "---",
+        "",
+        "# UI Profiles",
+        "",
+        "UI profiles describe device capabilities through the commands they accept and the states they expose. Each device has one or more profiles that define what it can do.",
+        "",
+        "!!! note",
+        "    This page is auto-generated from the Overkiz API. Run `uv run utils/generate_enums.py` to regenerate.",
+        "",
+        f"**{len(profiles_with_details)} profiles** documented below.",
+        "",
+    ]
+
+    for profile_name, details in profiles_with_details:
+        lines.append(f"## {profile_name}")
+        lines.append("")
+
+        if details is None:
+            lines.append("*Details unavailable.*")
+            lines.append("")
+            continue
+
+        if details.form_factor:
+            lines.append(
+                "*Form factor specific* — tied to a specific physical device type."
+            )
+            lines.append("")
+
+        if details.commands:
+            lines.append("### Commands")
+            lines.append("")
+            lines.append("| Command | Parameters | Description |")
+            lines.append("|---------|-----------|-------------|")
+            for cmd in details.commands:
+                params = ""
+                if cmd.prototype and cmd.prototype.parameters:
+                    param_parts = []
+                    for param in cmd.prototype.parameters:
+                        if param.value_prototypes:
+                            param_parts.append(format_type(param.value_prototypes[0]))
+                        else:
+                            param_parts.append("—")
+                    params = ", ".join(param_parts)
+                desc = cmd.description or ""
+                lines.append(f"| `{cmd.name}` | {params} | {desc} |")
+            lines.append("")
+
+        if details.states:
+            lines.append("### States")
+            lines.append("")
+            lines.append("| State | Type | Description |")
+            lines.append("|-------|------|-------------|")
+            for state in details.states:
+                type_info = ""
+                if state.prototype and state.prototype.value_prototypes:
+                    type_info = format_type(state.prototype.value_prototypes[0])
+                desc = state.description or ""
+                lines.append(f"| `{state.name}` | {type_info} | {desc} |")
+            lines.append("")
+
+    output_path = Path(__file__).parent.parent / "docs" / "ui-profiles.md"
+    output_path.write_text("\n".join(lines))
+    print(f"✓ Generated {output_path}")
+
 
 def extract_commands_from_fixtures(fixtures_dir: Path) -> set[str]:
     """Extract all commands from fixture files in the given directory.
