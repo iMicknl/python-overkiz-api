@@ -20,6 +20,8 @@ from pyoverkiz.enums import (
     GatewayType,
     ProductType,
     UIClass,
+    UIClassifier,
+    UIProfile,
     UIWidget,
     UpdateBoxStatus,
     UpdateCriticityLevel,
@@ -377,8 +379,8 @@ class Definition:
     widget_name: str | None = None
     ui_class: str | None = None
     qualified_name: str | None = None
-    ui_profiles: list[str] | None = None
-    ui_classifiers: list[str] | None = None
+    ui_profiles: list[UIProfile] = field(factory=list)
+    ui_classifiers: list[UIClassifier] = field(factory=list)
     type: str | None = None
     attributes: list[dict[str, Any]] | None = None
 

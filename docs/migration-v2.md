@@ -382,8 +382,8 @@ Several enum members have been renamed for consistent `UPPER_SNAKE_CASE` or to f
 
 ### New enums in v2
 
-- `UIProfile` — auto-generated from server definitions.
-- `UIClassifier` — categorizes device types (e.g. `SENSOR`, `EMITTER`, `GENERATOR`).
+- `UIProfile` — describes device capabilities (commands + states) at a higher level than raw command names. Auto-generated from the server's `/reference/ui/profiles` endpoint. Accessible via `device.definition.ui_profiles` (a `list[UIProfile]`). See [UI profiles and classifiers](core-concepts.md#ui-profiles-and-classifiers).
+- `UIClassifier` — categorizes device types (e.g. `SENSOR`, `EMITTER`, `GENERATOR`). Accessible via `device.definition.ui_classifiers` (a `list[UIClassifier]`).
 - `ExecutionState` — typed states for `Execution.state`.
 - `UpdateCriticityLevel` — criticity level of gateway updates.
 
