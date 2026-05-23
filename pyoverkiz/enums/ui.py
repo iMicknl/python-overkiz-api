@@ -1,37 +1,31 @@
-"""UI enums for classes and widgets used to interpret device UI metadata."""
+"""UI enums for classes and widgets used to interpret device UI metadata.
+
+THIS FILE IS AUTO-GENERATED. DO NOT EDIT MANUALLY.
+Run `uv run utils/generate_enums.py` to regenerate.
+"""
 
 # ruff: noqa: S105
 # Enum values contain "PASS" in API names (e.g. PassAPC), not passwords
 
-import logging
-import sys
-from enum import unique
+from enum import StrEnum, unique
 
-_LOGGER = logging.getLogger(__name__)
-
-# Since we support Python versions lower than 3.11, we use
-# a backport for StrEnum when needed.
-if sys.version_info >= (3, 11):
-    from enum import StrEnum
-else:
-    from backports.strenum import (  # ty: ignore[unresolved-import]
-        StrEnum,  # type: ignore[import]
-    )
+from pyoverkiz.enums.base import UnknownEnumMixin
 
 
 @unique
-class UIClass(StrEnum):
+class UIClass(UnknownEnumMixin, StrEnum):
     """Enumeration of UI classes used to describe device categories and behaviors."""
 
-    # A list of all defined UI classes from /reference/ui/classes
+    UNKNOWN = "Unknown"
+
     ADJUSTABLE_SLATS_ROLLER_SHUTTER = "AdjustableSlatsRollerShutter"
     AIR_SENSOR = "AirSensor"
     ALARM = "Alarm"
     AWNING = "Awning"
     BALLAST = "Ballast"
     CAMERA = "Camera"
-    CARBON_DIOXIDE_SENSOR = "CarbonDioxideSensor"
     CAR_BUTTON_SENSOR = "CarButtonSensor"
+    CARBON_DIOXIDE_SENSOR = "CarbonDioxideSensor"
     CIRCUIT_BREAKER = "CircuitBreaker"
     CONFIGURATION_COMPONENT = "ConfigurationComponent"
     CONSUMPTION_SENSOR = "ConsumptionSensor"
@@ -59,8 +53,8 @@ class UIClass(StrEnum):
     LIGHT = "Light"
     LIGHT_SENSOR = "LightSensor"
     MUSIC_PLAYER = "MusicPlayer"
-    NOISE_SENSOR = "NoiseSensor"
     NETWORK_COMPONENT = "NetworkComponent"
+    NOISE_SENSOR = "NoiseSensor"
     OCCUPANCY_SENSOR = "OccupancySensor"
     ON_OFF = "OnOff"
     OVEN = "Oven"
@@ -85,7 +79,7 @@ class UIClass(StrEnum):
     THERMAL_ENERGY_SENSOR = "ThermalEnergySensor"
     THIRD_PARTY_GATEWAY = "ThirdPartyGateway"
     VENETIAN_BLIND = "VenetianBlind"
-    VENTILATION_SYTEM = "VentilationSystem"
+    VENTILATION_SYSTEM = "VentilationSystem"
     WASHING_MACHINE = "WashingMachine"
     WATER_HEATING_SYSTEM = "WaterHeatingSystem"
     WATER_SENSOR = "WaterSensor"
@@ -95,19 +89,13 @@ class UIClass(StrEnum):
     WINDOW = "Window"
     WINDOW_HANDLE = "WindowHandle"
 
-    UNKNOWN = "unknown"
-
-    @classmethod
-    def _missing_(cls, value):  # type: ignore
-        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
-        return cls.UNKNOWN
-
 
 @unique
-class UIWidget(StrEnum):
+class UIWidget(UnknownEnumMixin, StrEnum):
     """Enumeration of UI widgets used by Overkiz for device presentation."""
 
-    # A list of all defined UI widgets from /reference/ui/widgets
+    UNKNOWN = "Unknown"
+
     AIR_FLOW_SENSOR = "AirFlowSensor"
     AIR_QUALITY_SENSOR = "AirQualitySensor"
     ALARM_PANEL_CONTROLLER = "AlarmPanelController"
@@ -135,6 +123,7 @@ class UIWidget(StrEnum):
     BIOCLIMATIC_PERGOLA = "BioclimaticPergola"
     CO2_SENSOR = "CO2Sensor"
     CO_SENSOR = "COSensor"
+    CAMERA = "Camera"
     CAR_BUTTON_SENSOR = "CarButtonSensor"
     CAR_LOCK = "CarLock"
     CARD_SWITCH = "CardSwitch"
@@ -176,7 +165,7 @@ class UIWidget(StrEnum):
     DIMMER_LIGHT = "DimmerLight"
     DIMMER_ON_OFF = "DimmerOnOff"
     DIMMER_ON_OFF_LIGHT = "DimmerOnOffLight"
-    DIMMER_RGBCOLOURED_LIGHT = "DimmerRGBColouredLight"
+    DIMMER_RGB_COLOURED_LIGHT = "DimmerRGBColouredLight"
     DIMPLEX_VENTILATION_INLET_OUTLET = "DimplexVentilationInletOutlet"
     DISCRETE_EXTERIOR_HEATING = "DiscreteExteriorHeating"
     DISCRETE_GATE_WITH_PEDESTRIAN_POSITION = "DiscreteGateWithPedestrianPosition"
@@ -246,15 +235,16 @@ class UIWidget(StrEnum):
     EN_OCEAN_GENERIC_ELECTRIC_COUNTER = "EnOceanGenericElectricCounter"
     EN_OCEAN_TRANSCEIVER = "EnOceanTransceiver"
     EVO_HOME_CONTROLLER = "EvoHomeController"
-    EWATTCH_TICCOUNTER = "EwattchTICCounter"
+    EWATTCH_TIC_COUNTER = "EwattchTICCounter"
     EXTERIOR_VENETIAN_BLIND = "ExteriorVenetianBlind"
     FLOOR_HEATING = "FloorHeating"
     GAS_DHW_CONSUMPTION_SENSOR = "GasDHWConsumptionSensor"
     GAS_HEATER_CONSUMPTION_SENSOR = "GasHeaterConsumptionSensor"
-    GENERIC_16_CHANNELS_COUNTER = "Generic16ChannelsCounter"
-    GENERIC_1_CHANNEL_COUNTER = "Generic1ChannelCounter"
+    GENERIC16_CHANNELS_COUNTER = "Generic16ChannelsCounter"
+    GENERIC1_CHANNEL_COUNTER = "Generic1ChannelCounter"
     GENERIC_CAMERA = "GenericCamera"
     GROUP_CONFIGURATION = "GroupConfiguration"
+    HLRR_WIFI_BRIDGE = "HLRRWifiBridge"
     HEAT_DETECTION_SENSOR = "HeatDetectionSensor"
     HEAT_PUMP = "HeatPump"
     HEATING_SET_POINT = "HeatingSetPoint"
@@ -265,13 +255,12 @@ class UIWidget(StrEnum):
     HITACHI_DHW = "HitachiDHW"
     HITACHI_SWIMMING_POOL = "HitachiSwimmingPool"
     HITACHI_THERMOSTAT = "HitachiThermostat"
-    HLRR_WIFI_BRIDGE = "HLRRWifiBridge"
     HOMEKIT_STACK = "HomekitStack"
     HUE_BRIDGE = "HueBridge"
-    IOGENERIC = "IOGeneric"
-    IOSIREN = "IOSiren"
-    IOSTACK = "IOStack"
-    IRBLASTER = "IRBlaster"
+    IO_GENERIC = "IOGeneric"
+    IO_SIREN = "IOSiren"
+    IO_STACK = "IOStack"
+    IR_BLASTER = "IRBlaster"
     IMHOTEP_HEATING_TEMPERATURE_INTERFACE = "ImhotepHeatingTemperatureInterface"
     INSTANT_ELECTRIC_CURRENT_CONSUMPTION_SENSOR = (
         "InstantElectricCurrentConsumptionSensor"
@@ -281,7 +270,7 @@ class UIWidget(StrEnum):
     INTRUSION_EVENT_SENSOR = "IntrusionEventSensor"
     INTRUSION_SENSOR = "IntrusionSensor"
     INVALID = "Invalid"
-    JSWCAMERA = "JSWCamera"
+    JSW_CAMERA = "JSWCamera"
     KIZ_OTHERM_BRIDGE = "KizOThermBridge"
     KIZ_OTHERM_V2_BRIDGE = "KizOThermV2Bridge"
     LOCK_UNLOCK_DOOR_LOCK_WITH_UNKNOWN_POSITION = (
@@ -295,7 +284,6 @@ class UIWidget(StrEnum):
     MY_FOX_ALARM_CONTROLLER = "MyFoxAlarmController"
     MY_FOX_CAMERA = "MyFoxCamera"
     MY_FOX_SECURITY_CAMERA = "MyFoxSecurityCamera"
-    NODE = "Node"
     NETATMO_CONFIGURATION_COMPONENT = "NetatmoConfigurationComponent"
     NETATMO_GATEWAY = "NetatmoGateway"
     NETATMO_HEATING_TEMPERATURE_INTERFACE = "NetatmoHeatingTemperatureInterface"
@@ -303,8 +291,9 @@ class UIWidget(StrEnum):
     NETATMO_HOME_COACH_CONFIGURATION = "NetatmoHomeCoachConfiguration"
     NETATMO_WEATHER_STATION_CONFIGURATION = "NetatmoWeatherStationConfiguration"
     NEXELEC_AIR_QUALITY_CONFIGURATION_TOOL = "NexelecAirQualityConfigurationTool"
+    NODE = "Node"
     NOISE_SENSOR = "NoiseSensor"
-    OVPGENERIC = "OVPGeneric"
+    OVP_GENERIC = "OVPGeneric"
     OCCUPANCY_SENSOR = "OccupancySensor"
     ON_OFF_COOKING = "OnOffCooking"
     ON_OFF_HEATING_SYSTEM = "OnOffHeatingSystem"
@@ -313,15 +302,15 @@ class UIWidget(StrEnum):
     ON_OFF_REMOTECONTROLLER = "OnOffRemotecontroller"
     ON_OFF_VENTILATION_SPEED = "OnOffVentilationSpeed"
     OPEN_CLOSE_GATE = "OpenCloseGate"
-    OPEN_CLOSE_GATE_4T = "OpenCloseGate4T"
+    OPEN_CLOSE_GATE4_T = "OpenCloseGate4T"
     OPEN_CLOSE_GATE_WITH_PEDESTRIAN_POSITION = "OpenCloseGateWithPedestrianPosition"
     OPEN_CLOSE_SLIDING_GARAGE_DOOR = "OpenCloseSlidingGarageDoor"
-    OPEN_CLOSE_SLIDING_GARAGE_DOOR_4T = "OpenCloseSlidingGarageDoor4T"
+    OPEN_CLOSE_SLIDING_GARAGE_DOOR4_T = "OpenCloseSlidingGarageDoor4T"
     OPEN_CLOSE_SLIDING_GARAGE_DOOR_WITH_PEDESTRIAN_POSITION = (
         "OpenCloseSlidingGarageDoorWithPedestrianPosition"
     )
     OPEN_CLOSE_SLIDING_GATE = "OpenCloseSlidingGate"
-    OPEN_CLOSE_SLIDING_GATE_4T = "OpenCloseSlidingGate4T"
+    OPEN_CLOSE_SLIDING_GATE4_T = "OpenCloseSlidingGate4T"
     OPEN_CLOSE_SLIDING_GATE_WITH_PEDESTRIAN_POSITION = (
         "OpenCloseSlidingGateWithPedestrianPosition"
     )
@@ -379,16 +368,16 @@ class UIWidget(StrEnum):
     RTD_INDOOR_SIREN = "RTDIndoorSiren"
     RTD_OUTDOOR_SIREN = "RTDOutdoorSiren"
     RTS_GENERIC = "RTSGeneric"
-    RTS_GENERIC_4T = "RTSGeneric4T"
+    RTS_GENERIC4_T = "RTSGeneric4T"
     RTS_THERMOSTAT = "RTSThermostat"
     RAIN_SENSOR = "RainSensor"
     RELATIVE_HUMIDITY_SENSOR = "RelativeHumiditySensor"
     REMOTE_CONTROLLER_ONE_WAY = "RemoteControllerOneWay"
     REPEATER = "Repeater"
     ROCKER_SWITCH_AUTO_MANU_UP_DOWN_CONTROLLER = "RockerSwitchAutoManuUpDownController"
-    ROCKER_SWITCHX_1_CONTROLLER = "RockerSwitchx1Controller"
-    ROCKER_SWITCHX_2_CONTROLLER = "RockerSwitchx2Controller"
-    ROCKER_SWITCHX_4_CONTROLLER = "RockerSwitchx4Controller"
+    ROCKER_SWITCHX1_CONTROLLER = "RockerSwitchx1Controller"
+    ROCKER_SWITCHX2_CONTROLLER = "RockerSwitchx2Controller"
+    ROCKER_SWITCHX4_CONTROLLER = "RockerSwitchx4Controller"
     SCENE_CONTROLLER = "SceneController"
     SCHNEIDER_SWITCH_CONFIGURATION = "SchneiderSwitchConfiguration"
     SIREN_STATUS = "SirenStatus"
@@ -415,10 +404,10 @@ class UIWidget(StrEnum):
     SWIMMING_POOL = "SwimmingPool"
     SWIMMING_POOL_ROLLER_SHUTTER = "SwimmingPoolRollerShutter"
     SWINGING_SHUTTER = "SwingingShutter"
-    TSKALARM_CONTROLLER = "TSKAlarmController"
+    TSK_ALARM_CONTROLLER = "TSKAlarmController"
     TEMPERATURE_SENSOR = "TemperatureSensor"
-    THERMOSTAT_HEATING_TEMPERATURE_INTERFACE = "ThermostatHeatingTemperatureInterface"
     THERMOSTAT_DUAL_MODE_AND_FAN = "ThermostatDualModeAndFan"
+    THERMOSTAT_HEATING_TEMPERATURE_INTERFACE = "ThermostatHeatingTemperatureInterface"
     THERMOSTAT_SET_POINT = "ThermostatSetPoint"
     THERMOSTAT_ZONES_CONTROLLER = "ThermostatZonesController"
     THREE_WAY_WINDOW_HANDLE = "ThreeWayWindowHandle"
@@ -437,7 +426,7 @@ class UIWidget(StrEnum):
     UP_DOWN_EXTERIOR_SCREEN = "UpDownExteriorScreen"
     UP_DOWN_EXTERIOR_VENETIAN_BLIND = "UpDownExteriorVenetianBlind"
     UP_DOWN_GARAGE_DOOR = "UpDownGarageDoor"
-    UP_DOWN_GARAGE_DOOR_4T = "UpDownGarageDoor4T"
+    UP_DOWN_GARAGE_DOOR4_T = "UpDownGarageDoor4T"
     UP_DOWN_GARAGE_DOOR_WITH_VENTILATION_POSITION = (
         "UpDownGarageDoorWithVentilationPosition"
     )
@@ -450,42 +439,35 @@ class UIWidget(StrEnum):
     UP_DOWN_VENETIAN_BLIND = "UpDownVenetianBlind"
     UP_DOWN_WINDOW = "UpDownWindow"
     UP_DOWN_ZEBRA_SCREEN = "UpDownZebraScreen"
-    VENETIAN_SLATS = "VenetianSlats"
-    VOCSENSOR = "VOCSensor"
+    VOC_SENSOR = "VOCSensor"
     VALVE_HEATING_TEMPERATURE_INTERFACE = "ValveHeatingTemperatureInterface"
+    VENETIAN_SLATS = "VenetianSlats"
     VENTILATION_INLET = "VentilationInlet"
     VENTILATION_OUTLET = "VentilationOutlet"
     VENTILATION_TRANSFER = "VentilationTransfer"
     WATER_DETECTION_SENSOR = "WaterDetectionSensor"
     WEATHER_FORECAST_SENSOR = "WeatherForecastSensor"
     WIFI = "Wifi"
-    WIND_SPEED_SENSOR = "WindSpeedSensor"
     WIND_SPEED_AND_DIRECTION_SENSOR = "WindSpeedAndDirectionSensor"
+    WIND_SPEED_SENSOR = "WindSpeedSensor"
     WINDOW_LOCK = "WindowLock"
     WINDOW_WITH_TILT_SENSOR = "WindowWithTiltSensor"
     ZWAVE_AEOTEC_CONFIGURATION = "ZWaveAeotecConfiguration"
     ZWAVE_CONFIGURATION = "ZWaveConfiguration"
-    ZWAVE_DANFOSS_RSLINK = "ZWaveDanfossRSLink"
+    ZWAVE_DANFOSS_RS_LINK = "ZWaveDanfossRSLink"
     ZWAVE_DOOR_LOCK_CONFIGURATION = "ZWaveDoorLockConfiguration"
     ZWAVE_FIBARO_ROLLER_SHUTTER_CONFIGURATION = "ZWaveFibaroRollerShutterConfiguration"
     ZWAVE_HEATIT_THERMOSTAT_CONFIGURATION = "ZWaveHeatitThermostatConfiguration"
     ZWAVE_NODON_CONFIGURATION = "ZWaveNodonConfiguration"
     ZWAVE_QUBINO_CONFIGURATION = "ZWaveQubinoConfiguration"
-    ZWAVE_SEDEVICE_CONFIGURATION = "ZWaveSEDeviceConfiguration"
+    ZWAVE_SE_DEVICE_CONFIGURATION = "ZWaveSEDeviceConfiguration"
     ZWAVE_TRANSCEIVER = "ZWaveTransceiver"
     ZIGBEE_NETWORK = "ZigbeeNetwork"
     ZIGBEE_STACK = "ZigbeeStack"
 
-    UNKNOWN = "unknown"
-
-    @classmethod
-    def _missing_(cls, value):  # type: ignore
-        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
-        return cls.UNKNOWN
-
 
 @unique
-class UIClassifier(StrEnum):
+class UIClassifier(UnknownEnumMixin, StrEnum):
     """Enumeration of UI classifiers used to categorize device types."""
 
     UNKNOWN = "unknown"
@@ -495,8 +477,3 @@ class UIClassifier(StrEnum):
     GENERATOR = "generator"
     HEATING_SYSTEM = "heatingSystem"
     SENSOR = "sensor"
-
-    @classmethod
-    def _missing_(cls, value):  # type: ignore
-        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
-        return cls.UNKNOWN

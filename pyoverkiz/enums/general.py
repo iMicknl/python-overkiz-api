@@ -3,20 +3,9 @@
 # ruff: noqa: S105
 # Enum values contain "TOKEN" in API event names, not passwords
 
-import logging
-import sys
-from enum import IntEnum, unique
+from enum import IntEnum, StrEnum, unique
 
-_LOGGER = logging.getLogger(__name__)
-
-# Since we support Python versions lower than 3.11, we use
-# a backport for StrEnum when needed.
-if sys.version_info >= (3, 11):
-    from enum import StrEnum
-else:
-    from backports.strenum import (  # ty: ignore[unresolved-import]
-        StrEnum,  # type: ignore[import]
-    )
+from pyoverkiz.enums.base import UnknownEnumMixin
 
 
 @unique
@@ -50,7 +39,7 @@ class DataType(IntEnum):
 
 
 @unique
-class StateDefinitionType(StrEnum):
+class StateDefinitionType(UnknownEnumMixin, StrEnum):
     """Type of a state definition describing its value semantics."""
 
     CONTINUOUS = "ContinuousState"
@@ -59,14 +48,9 @@ class StateDefinitionType(StrEnum):
 
     UNKNOWN = "unknown"
 
-    @classmethod
-    def _missing_(cls, value):  # type: ignore
-        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
-        return cls.UNKNOWN
-
 
 @unique
-class FailureType(IntEnum):
+class FailureType(UnknownEnumMixin, IntEnum):
     """Failure type codes returned by the API."""
 
     UNKNOWN = -1
@@ -274,14 +258,9 @@ class FailureType(IntEnum):
     TIME_OUT_ON_COMMAND_PROGRESS = 20003
     DEVICE_NO_ANSWER = 60004
 
-    @classmethod
-    def _missing_(cls, value):  # type: ignore
-        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
-        return cls.UNKNOWN
-
 
 @unique
-class EventName(StrEnum):
+class EventName(UnknownEnumMixin, StrEnum):
     """Enumeration of event names emitted by Overkiz."""
 
     UNKNOWN = "Unknown"
@@ -466,8 +445,3 @@ class EventName(StrEnum):
     ZONE_CREATED = "ZoneCreatedEvent"
     ZONE_DELETED = "ZoneDeletedEvent"
     ZONE_UPDATED = "ZoneUpdatedEvent"
-
-    @classmethod
-    def _missing_(cls, value):  # type: ignore
-        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
-        return cls.UNKNOWN

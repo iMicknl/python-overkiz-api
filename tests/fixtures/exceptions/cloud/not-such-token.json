@@ -1,0 +1,4 @@
+{
+    "errorCode": "UNSPECIFIED_ERROR",
+    "error": "Not such token with UUID: abc-123-def"
+}

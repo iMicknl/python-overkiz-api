@@ -1,0 +1,180 @@
+# Getting started
+
+This guide will help you install the library, connect to your hub, and perform your first actions.
+
+> Need the official Overkiz cloud API reference? Visit the [Overkiz API Documentation](https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/doc) ([mirror](/api)). Most endpoints are accessible via the pyOverkiz package.
+
+> Upgrading from pyOverkiz 1.x? See the [migration guide](migration-v2.md) for a full list of breaking changes.
+
+## Prerequisites
+
+- Python 3.12+
+- An OverKiz-compatible hub and account
+
+## Install pyOverkiz from PyPI
+
+!!! note "Pre-release"
+    pyOverkiz v2 is currently in pre-release. Use the `--prerelease allow` (uv) or `--pre` (pip) flag until the stable release is available on PyPI.
+
+### With UV <small>recommended</small>
+
+```bash
+uv add pyoverkiz --prerelease allow
+```
+
+### With pip
+
+```bash
+pip install --pre pyoverkiz
+```
+
+### Optional extras
+
+Some servers require additional dependencies that are not installed by default:
+
+| Extra | Server | Packages |
+|-------|--------|----------|
+| `nexity` | Nexity | boto3, warrant-lite |
+
+Install an extra with:
+
+```bash
+uv add "pyoverkiz[nexity]"
+# or
+pip install "pyoverkiz[nexity]"
+```
+
+## Choose your server
+
+Use a cloud server when you want to connect through the vendor’s public API. Use a local server when you want LAN access to a gateway.
+
+- Cloud servers use the `Server` enum.
+- Local servers use `create_local_server_config` with a hostname or IP address.
+
+## Authentication
+
+=== "Somfy (cloud)"
+
+    Authentication to the Somfy cloud requires your mobile app username and password and your region.
+
+    Use `Server.SOMFY_EUROPE`, `Server.SOMFY_AMERICA`, or `Server.SOMFY_OCEANIA` with `UsernamePasswordCredentials` to select your region and authenticate.
+
+    ```python
+    import asyncio
+
+    from pyoverkiz.auth.credentials import UsernamePasswordCredentials
+    from pyoverkiz.client import OverkizClient
+    from pyoverkiz.enums import Server
+
+
+    async def main() -> None:
+        async with OverkizClient(
+            server=Server.SOMFY_EUROPE,
+            credentials=UsernamePasswordCredentials("you@example.com", "password"),
+        ) as client:
+            await client.login()
+
+    asyncio.run(main())
+    ```
+
+=== "Somfy (local)"
+
+    Local authentication requires a token generated via the official mobile app. For details on obtaining a token, refer to [Somfy TaHoma Developer Mode](https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode).
+
+    Use the helper function `create_local_server_config` to create a `Server` with `LocalTokenCredentials` to provide your token.
+
+    ```python
+    import asyncio
+
+    from pyoverkiz.auth.credentials import LocalTokenCredentials
+    from pyoverkiz.client import OverkizClient
+    from pyoverkiz.utils import create_local_server_config
+
+
+    async def main() -> None:
+        async with OverkizClient(
+            server=create_local_server_config(host="gateway-xxxx-xxxx-xxxx.local:8443"),
+            credentials=LocalTokenCredentials("token-from-your-mobile-app"),
+            verify_ssl=True, # disable if you connect via IP
+        ) as client:
+            await client.login()
+
+    asyncio.run(main())
+    ```
+
+=== "Cozytouch (cloud)"
+
+    Authentication to the Cozytouch cloud requires your mobile app username and password and your vendor.
+
+    Use `Server.ATLANTIC_COZYTOUCH`, `Server.SAUTER_COZYTOUCH`, or `Server.THERMOR_COZYTOUCH` with `UsernamePasswordCredentials` to select your vendor and authenticate.
+
+    ```python
+    import asyncio
+
+    from pyoverkiz.auth.credentials import UsernamePasswordCredentials
+    from pyoverkiz.client import OverkizClient
+    from pyoverkiz.enums import Server
+
+
+    async def main() -> None:
+        async with OverkizClient(
+            server=Server.ATLANTIC_COZYTOUCH,
+            credentials=UsernamePasswordCredentials("you@example.com", "password"),
+        ) as client:
+            await client.login()
+
+    asyncio.run(main())
+    ```
+
+=== "Hitachi Hi Kumo (cloud)"
+
+    Authentication to the Hitachi Hi Kumo cloud requires your mobile app username and password and your region.
+
+    Use `Server.HI_KUMO_ASIA`, `Server.HI_KUMO_EUROPE`, or `Server.HI_KUMO_OCEANIA` with `UsernamePasswordCredentials` to select your region and authenticate.
+
+    ```python
+    import asyncio
+
+    from pyoverkiz.auth.credentials import UsernamePasswordCredentials
+    from pyoverkiz.client import OverkizClient
+    from pyoverkiz.enums import Server
+
+
+    async def main() -> None:
+        async with OverkizClient(
+            server=Server.HI_KUMO_EUROPE,
+            credentials=UsernamePasswordCredentials("you@example.com", "password"),
+        ) as client:
+            await client.login()
+
+    asyncio.run(main())
+    ```
+
+<!-- TODO: Rexel OAuth2 flow not fully working yet
+=== "Rexel (cloud)"
+
+    Authentication to the Rexel cloud uses OAuth2 authorization code flow.
+    You need an authorization code and redirect URI obtained from the Rexel OAuth2 consent flow.
+
+    Use `Server.REXEL` with `RexelOAuthCodeCredentials` to authenticate.
+
+    ```python
+    import asyncio
+
+    from pyoverkiz.auth.credentials import RexelOAuthCodeCredentials
+    from pyoverkiz.client import OverkizClient
+    from pyoverkiz.enums import Server
+
+    async def main() -> None:
+        async with OverkizClient(
+            server=Server.REXEL,
+            credentials=RexelOAuthCodeCredentials(
+                code="your-authorization-code",
+                redirect_uri="https://your-redirect-uri",
+            ),
+        ) as client:
+            await client.login()
+
+    asyncio.run(main())
+    ```
+-->

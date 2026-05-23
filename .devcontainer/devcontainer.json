@@ -12,7 +12,7 @@
 	// Use 'forwardPorts' to make a list of ports inside the container available locally.
 	// "forwardPorts": [],
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "uv sync && uv run pre-commit install",
+	"postCreateCommand": "uv sync --all-extras --dev && uv run prek install",
 	// Configure tool-specific properties.
 	"customizations": {
 		"vscode": {
