@@ -571,6 +571,14 @@ class Event:
     exec_id: str | None = None
     device_url: str | None = field(repr=obfuscate_id, default=None)
     device_states: list[EventState] = field(factory=list)
+
+    def __attrs_post_init__(self) -> None:
+        """Auto-convert dicts in device_states to EventState objects."""
+        states: list[Any] = self.device_states  # type: ignore[assignment]
+        self.device_states = [
+            EventState(**s) if isinstance(s, dict) else s for s in states
+        ]
+
     old_state: ExecutionState | None = None
     new_state: ExecutionState | None = None
     actions: list[Action] | None = None
