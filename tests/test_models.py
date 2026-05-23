@@ -308,9 +308,7 @@ class TestDevice:
     def test_definition_states_first(self):
         """device.definition.states.first() returns first matching StateDefinition from list."""
         device = _make_device()
-        state_def = device.definition.states.first(
-            ["nonexistent", "core:ClosureState"]
-        )
+        state_def = device.definition.states.first(["nonexistent", "core:ClosureState"])
         assert state_def is not None
         assert state_def.qualified_name == "core:ClosureState"
 
@@ -611,9 +609,7 @@ class TestStateDefinitions:
     def test_first_respects_caller_priority(self):
         """first() returns based on names order, not definition order."""
         state_defs = self._make_state_defs()
-        state_def = state_defs.first(
-            ["core:TargetClosureState", "core:ClosureState"]
-        )
+        state_def = state_defs.first(["core:TargetClosureState", "core:ClosureState"])
         assert state_def is not None
         assert state_def.qualified_name == "core:TargetClosureState"
 
