@@ -19,6 +19,7 @@ repos:
         exclude: .devcontainer|.vscode
     -   id: check-yaml
     -   id: check-added-large-files
+        args: ['--maxkb=2048']
     -   id: no-commit-to-branch
         stages: [pre-commit]
         args: [--branch, main]
