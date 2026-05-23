@@ -202,15 +202,19 @@ def generate_docs_page(
             ui_widget = dt.get("uiWidget") or ""
             ctrl_type = dt.get("controllableType") or ""
             type_id = dt.get("typeId")
+            commands = dt.get("commands", [])
+            states = dt.get("states", [])
 
-            heading = f"{ui_class}"
+            # Build summary for the details heading
+            summary = ui_class
             if ui_widget and ui_widget != ui_class:
-                heading += f" ({ui_widget})"
+                summary += f" ({ui_widget})"
+            summary += f" — {len(commands)} commands, {len(states)} states"
 
-            lines.append(f"### {heading}")
+            lines.append(f'??? note "{summary}"')
             lines.append("")
 
-            # Metadata badges
+            # Metadata
             meta_parts = []
             if ctrl_type:
                 meta_parts.append(f"**Type:** {ctrl_type}")
@@ -223,16 +227,15 @@ def generate_docs_page(
                     f"**Profiles:** {', '.join(f'`{p}`' for p in dt['uiProfiles'])}"
                 )
             if meta_parts:
-                lines.append(" | ".join(meta_parts))
+                lines.append(f"    {' | '.join(meta_parts)}")
                 lines.append("")
 
             # Commands table
-            commands = dt.get("commands", [])
             if commands:
-                lines.append("#### Commands")
+                lines.append("    **Commands**")
                 lines.append("")
-                lines.append("| Command | Parameters | Description |")
-                lines.append("|---------|-----------|-------------|")
+                lines.append("    | Command | Parameters | Description |")
+                lines.append("    |---------|-----------|-------------|")
                 for cmd in commands:
                     cmd_name = cmd["commandName"]
                     desc = (
@@ -270,53 +273,55 @@ def generate_docs_page(
                                     vp_str += f" *({', '.join(flags)})*"
                                 param_parts.append(vp_str)
                         params = ", ".join(param_parts)
-                    lines.append(f"| `{cmd_name}` | {params} | {desc} |")
+                    lines.append(f"    | `{cmd_name}` | {params} | {desc} |")
                 lines.append("")
 
             # States table
-            states = dt.get("states", [])
             if states:
-                lines.append("#### States")
+                lines.append("    **States**")
                 lines.append("")
-                lines.append("| State | Type | Event-based | Persistent |")
-                lines.append("|-------|------|-------------|------------|")
+                lines.append("    | State | Type | Range / Values |")
+                lines.append("    |-------|------|----------------|")
                 for state in states:
                     state_name = state["name"]
                     state_type = state.get("type", "")
-                    event_based = "\N{CHECK MARK}" if state.get("eventBased") else ""
-                    persistent = "\N{CHECK MARK}" if state.get("persistent") else ""
+                    range_info = ""
 
-                    type_info = state_type
                     for vp in state.get("valuePrototypes", []):
                         vp_type = vp.get("type", "").lower()
+                        if not state_type:
+                            state_type = vp_type
                         if "minValue" in vp and "maxValue" in vp:
-                            type_info = f"{vp_type} ({vp['minValue']}\N{EN DASH}{vp['maxValue']})"
-                        elif "enumValues" in vp:
-                            vals = ", ".join(f"`{v}`" for v in vp["enumValues"][:5])
-                            if len(vp["enumValues"]) > 5:
+                            range_info = f"{vp['minValue']}\N{EN DASH}{vp['maxValue']}"
+                        elif "minValue" in vp:
+                            range_info = (
+                                f"\N{GREATER-THAN OR EQUAL TO} {vp['minValue']}"
+                            )
+                        elif "maxValue" in vp:
+                            range_info = f"\N{LESS-THAN OR EQUAL TO} {vp['maxValue']}"
+                        if "enumValues" in vp:
+                            vals = ", ".join(f"`{v}`" for v in vp["enumValues"][:8])
+                            if len(vp["enumValues"]) > 8:
                                 vals += ", \N{HORIZONTAL ELLIPSIS}"
-                            type_info = f"{vp_type} — {vals}"
-                        else:
-                            type_info = vp_type
+                            range_info = vals
 
                     lines.append(
-                        f"| `{state_name}` | {type_info} | {event_based} | {persistent} |"
+                        f"    | `{state_name}` | {state_type} | {range_info} |"
                     )
                 lines.append("")
 
             # Attributes
             attributes = dt.get("attributes", [])
             if attributes:
-                lines.append("#### Attributes")
+                lines.append("    **Attributes**")
                 lines.append("")
-                lines.append("| Attribute | Default |")
-                lines.append("|-----------|---------|")
+                lines.append("    | Attribute | Default |")
+                lines.append("    |-----------|---------|")
                 for attr in attributes:
                     default = attr.get("defaultValue", "")
-                    lines.append(f"| `{attr['name']}` | {default} |")
+                    lines.append(f"    | `{attr['name']}` | {default} |")
                 lines.append("")
 
-        lines.append("---")
         lines.append("")
 
     # Controllable definitions section
@@ -332,7 +337,15 @@ def generate_docs_page(
 
         for name in sorted(controllable_definitions.keys()):
             defn = controllable_definitions[name]
-            lines.append(f"### {name}")
+            commands = defn.get("commands", [])
+            states = defn.get("states", [])
+
+            summary = name
+            cmd_count = len(commands)
+            state_count = len(states)
+            summary += f" — {cmd_count} commands, {state_count} states"
+
+            lines.append(f'??? note "{summary}"')
             lines.append("")
 
             ui_class = defn.get("uiClass", "")
@@ -350,21 +363,23 @@ def generate_docs_page(
                     f"**Profiles:** {', '.join(f'`{p}`' for p in defn['uiProfiles'])}"
                 )
             if meta:
-                lines.append(" | ".join(meta))
+                lines.append(f"    {' | '.join(meta)}")
                 lines.append("")
 
-            commands = defn.get("commands", [])
             if commands:
                 cmd_names = [c["commandName"] for c in commands]
-                lines.append(f"**Commands:** {', '.join(f'`{c}`' for c in cmd_names)}")
+                lines.append(
+                    f"    **Commands:** {', '.join(f'`{c}`' for c in cmd_names)}"
+                )
                 lines.append("")
 
-            states = defn.get("states", [])
             if states:
                 state_names = [
                     s.get("qualifiedName", s.get("name", "?")) for s in states
                 ]
-                lines.append(f"**States:** {', '.join(f'`{s}`' for s in state_names)}")
+                lines.append(
+                    f"    **States:** {', '.join(f'`{s}`' for s in state_names)}"
+                )
                 lines.append("")
 
     output_path = DOCS_DIR / "device-types.md"
