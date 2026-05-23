@@ -1,7 +1,7 @@
 """Fetch all reference data from an Overkiz server and save as JSON.
 
 This is the single data-fetching script. It pulls all reference endpoints
-from a server and saves the result to data/servers/<server>.json.
+from a server and saves the result to docs/data/<server>.json.
 
 Other scripts (generate_enums.py, generate_device_catalog.py) read from these
 JSON files to generate code and documentation offline.
@@ -36,7 +36,7 @@ REQUEST_DELAY = 0.5
 MAX_RETRIES = 5
 BACKOFF_BASE = 10
 
-SERVERS_DIR = Path(__file__).parent.parent / "data" / "servers"
+SERVERS_DIR = Path(__file__).parent.parent / "docs" / "data"
 
 
 async def _retry(coro_factory, *, label: str = "request"):

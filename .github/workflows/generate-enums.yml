@@ -51,7 +51,7 @@ jobs:
             Automated weekly regeneration of enum files and documentation from the Overkiz API.
 
             Updated files:
-            - `data/servers/somfy_europe.json`
+            - `docs/data/somfy_europe.json`
             - `pyoverkiz/enums/protocol.py`
             - `pyoverkiz/enums/ui.py`
             - `pyoverkiz/enums/ui_profile.py`

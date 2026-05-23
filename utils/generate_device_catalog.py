@@ -1,6 +1,6 @@
 """Generate device catalog documentation from per-server JSON files.
 
-Reads all server data from data/servers/*.json (produced by
+Reads all server data from docs/data/*.json (produced by
 fetch_server_data.py), merges them, and generates the device-types.md docs page.
 
 No API calls are made — this works entirely offline.
@@ -17,7 +17,7 @@ import json
 from pathlib import Path
 
 DOCS_DIR = Path(__file__).parent.parent / "docs"
-SERVERS_DIR = Path(__file__).parent.parent / "data" / "servers"
+SERVERS_DIR = Path(__file__).parent.parent / "docs" / "data"
 
 
 def _dedupe_device_types(devices: list[dict]) -> list[dict]:
@@ -351,7 +351,7 @@ def _render_states_table(
 if __name__ == "__main__":
     catalog_data, definitions = load_merged_data()
     if not catalog_data.get("protocols"):
-        print("No server data found in data/servers/")
+        print("No server data found in docs/data/")
         print("Run `uv run utils/fetch_server_data.py` first.")
         raise SystemExit(1)
 

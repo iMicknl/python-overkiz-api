@@ -1,6 +1,6 @@
 """Generate enum files from per-server reference data.
 
-Reads all server data from data/servers/*.json (produced by
+Reads all server data from docs/data/*.json (produced by
 fetch_server_data.py) and generates enum source files and docs.
 
 No API calls are made — this works entirely offline.
@@ -19,7 +19,7 @@ import re
 import subprocess
 from pathlib import Path
 
-SERVERS_DIR = Path(__file__).parent.parent / "data" / "servers"
+SERVERS_DIR = Path(__file__).parent.parent / "docs" / "data"
 ENUMS_DIR = Path(__file__).parent.parent / "pyoverkiz" / "enums"
 DOCS_DIR = Path(__file__).parent.parent / "docs"
 FIXTURES_DIR = Path(__file__).parent.parent / "tests" / "fixtures" / "setup"
@@ -954,7 +954,7 @@ def format_generated_files() -> None:
 def generate_all() -> None:
     """Generate all enums from stored server data."""
     if not SERVERS_DIR.exists() or not list(SERVERS_DIR.glob("*.json")):
-        print("No server data found in data/servers/")
+        print("No server data found in docs/data/")
         print("Run `uv run utils/fetch_server_data.py` first.")
         raise SystemExit(1)
 
