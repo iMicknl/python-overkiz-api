@@ -50,6 +50,22 @@ class DataType(IntEnum):
 
 
 @unique
+class StateDefinitionType(StrEnum):
+    """Type of a state definition describing its value semantics."""
+
+    CONTINUOUS = "ContinuousState"
+    DISCRETE = "DiscreteState"
+    DATA = "DataState"
+
+    UNKNOWN = "unknown"
+
+    @classmethod
+    def _missing_(cls, value):  # type: ignore
+        _LOGGER.warning(f"Unsupported value {value} has been returned for {cls}")
+        return cls.UNKNOWN
+
+
+@unique
 class FailureType(IntEnum):
     """Failure type codes returned by the API."""
 

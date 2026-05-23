@@ -8,8 +8,8 @@ from __future__ import annotations
 import humps
 import pytest
 
-from pyoverkiz.enums import DataType, Protocol
-from pyoverkiz.models import Device, State, States
+from pyoverkiz.enums import DataType, Protocol, StateDefinitionType
+from pyoverkiz.models import Device, State, StateDefinition, States
 
 RAW_STATES = [
     {"name": "core:NameState", "type": 3, "value": "alarm name"},
@@ -303,3 +303,70 @@ class TestState:
         state = State(name="state", type=DataType.BOOLEAN, value=False)
         with pytest.raises(TypeError):
             assert state.value_as_list
+
+
+class TestStateDefinition:
+    """Tests for StateDefinition type enum and convenience properties."""
+
+    def test_continuous_type(self):
+        """ContinuousState should be parsed as StateDefinitionType.CONTINUOUS."""
+        sd = StateDefinition(qualified_name="core:ClosureState", type="ContinuousState")
+        assert sd.type == StateDefinitionType.CONTINUOUS
+        assert sd.is_continuous
+        assert not sd.is_discrete
+        assert not sd.is_data
+
+    def test_discrete_type(self):
+        """DiscreteState should be parsed as StateDefinitionType.DISCRETE."""
+        sd = StateDefinition(
+            qualified_name="core:OnOffState",
+            type="DiscreteState",
+            values=["on", "off"],
+        )
+        assert sd.type == StateDefinitionType.DISCRETE
+        assert sd.is_discrete
+        assert not sd.is_continuous
+        assert not sd.is_data
+        assert sd.values == ["on", "off"]
+
+    def test_data_type(self):
+        """DataState should be parsed as StateDefinitionType.DATA."""
+        sd = StateDefinition(qualified_name="core:SomeDataState", type="DataState")
+        assert sd.type == StateDefinitionType.DATA
+        assert sd.is_data
+        assert not sd.is_continuous
+        assert not sd.is_discrete
+
+    def test_none_type(self):
+        """Missing type should result in None and all properties False."""
+        sd = StateDefinition(qualified_name="core:SomeState")
+        assert sd.type is None
+        assert not sd.is_continuous
+        assert not sd.is_discrete
+        assert not sd.is_data
+
+    def test_unknown_type(self):
+        """Unknown type strings should fallback to UNKNOWN."""
+        sd = StateDefinition(qualified_name="core:SomeState", type="FutureState")
+        assert sd.type == StateDefinitionType.UNKNOWN
+        assert not sd.is_continuous
+        assert not sd.is_discrete
+        assert not sd.is_data
+
+    def test_from_device_fixture(self):
+        """StateDefinitions in device fixture should be typed correctly."""
+        device = Device(**humps.decamelize(RAW_DEVICES))
+        closure = next(
+            sd
+            for sd in device.definition.states
+            if sd.qualified_name == "core:ClosureState"
+        )
+        assert closure.is_continuous
+
+        rssi = next(
+            sd
+            for sd in device.definition.states
+            if sd.qualified_name == "core:DiscreteRSSILevelState"
+        )
+        assert rssi.is_discrete
+        assert rssi.values == ["good", "low", "normal", "verylow"]

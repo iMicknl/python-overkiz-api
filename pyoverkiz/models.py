@@ -18,6 +18,7 @@ from pyoverkiz.enums import (
     GatewaySubType,
     GatewayType,
     ProductType,
+    StateDefinitionType,
     UIClass,
     UIWidget,
     UpdateBoxStatus,
@@ -236,7 +237,7 @@ class StateDefinition:
     """Definition metadata for a state (qualified name, type and possible values)."""
 
     qualified_name: str
-    type: str | None = None
+    type: StateDefinitionType | None = None
     values: list[str] | None = None
 
     def __init__(
@@ -248,13 +249,28 @@ class StateDefinition:
         **_: Any,
     ) -> None:
         """Initialize StateDefinition and set qualified name from either `name` or `qualified_name`."""
-        self.type = type
+        self.type = StateDefinitionType(type) if type else None
         self.values = values
 
         if qualified_name:
             self.qualified_name = qualified_name
         elif name:
             self.qualified_name = name
+
+    @property
+    def is_continuous(self) -> bool:
+        """Return True if this state holds a continuous (numeric) value."""
+        return self.type == StateDefinitionType.CONTINUOUS
+
+    @property
+    def is_discrete(self) -> bool:
+        """Return True if this state holds one of a fixed set of string values."""
+        return self.type == StateDefinitionType.DISCRETE
+
+    @property
+    def is_data(self) -> bool:
+        """Return True if this state holds structured/opaque data."""
+        return self.type == StateDefinitionType.DATA
 
 
 @define(init=False, kw_only=True)
