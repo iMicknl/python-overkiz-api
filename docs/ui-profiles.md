@@ -18,7 +18,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setFanSpeedLevel` | `int` (0–100) | Set the device fan speed level (%)  |
+| `setFanSpeedLevel` | `int` (0–100) | Set the device fan speed level (%) |
 
 ## AirFanMode
 
@@ -26,7 +26,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setFanSpeedMode` | `string` — `low`, `high` | Set the device fan speed mode  |
+| `setFanSpeedMode` | `string` — `low`, `high` | Set the device fan speed mode |
 
 ## AirOutputLevelSensor
 
@@ -50,8 +50,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `arm` |  | Arm the system  |
-| `disarm` |  | Disarm the system  |
+| `arm` |  | Arm the system |
+| `disarm` |  | Disarm the system |
 
 ## AmbientNoiseSensor
 
@@ -67,7 +67,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
 
 ## BasicOpenClose
 
@@ -75,8 +75,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device  |
-| `open` |  | Fully open the device  |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
 
 ## BasicUpDown
 
@@ -84,8 +84,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `down` |  | Move the device completely down  |
-| `up` |  | Move the device completely up  |
+| `down` |  | Move the device completely down |
+| `up` |  | Move the device completely up |
 
 ## BatteryStatus
 
@@ -133,8 +133,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## CloseableBlind
 
@@ -144,8 +144,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## CloseableCurtain
 
@@ -155,8 +155,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## CloseableScreen
 
@@ -166,8 +166,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## CloseableShutter
 
@@ -177,8 +177,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## CloseableWindow
 
@@ -188,8 +188,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## ContactAndVibrationDetector
 
@@ -214,7 +214,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point)  |
+| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point) |
 
 ## Cyclic
 
@@ -222,7 +222,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `cycle` |  | Do a cycle of supported motion kinematics or modes  |
+| `cycle` |  | Do a cycle of supported motion kinematics or modes |
 
 ## CyclicGarageOpener
 
@@ -232,7 +232,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `cycle` |  | Do a cycle of supported motion kinematics or modes  |
+| `cycle` |  | Do a cycle of supported motion kinematics or modes |
 
 ## CyclicGateOpener
 
@@ -242,7 +242,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `cycle` |  | Do a cycle of supported motion kinematics or modes  |
+| `cycle` |  | Do a cycle of supported motion kinematics or modes |
 
 ## DHWTemperature
 
@@ -258,7 +258,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setTargetDHWTemperature` | `float` (38.0–60.0) | Set the new water temperature to reach for a Domestic Hot Water system  |
+| `setTargetDHWTemperature` | `float` (38.0–60.0) | Set the new water temperature to reach for a Domestic Hot Water system |
 
 ## DHWThermostatTargetReader
 
@@ -274,8 +274,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `deploy` |  | Fully deploy the device  |
-| `undeploy` |  | Fully undeploy the device  |
+| `deploy` |  | Fully deploy the device |
+| `undeploy` |  | Fully undeploy the device |
 
 ## DeployUndeployAwning
 
@@ -285,8 +285,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `deploy` |  | Fully deploy the device  |
-| `undeploy` |  | Fully undeploy the device  |
+| `deploy` |  | Fully deploy the device |
+| `undeploy` |  | Fully undeploy the device |
 
 ## Deployable
 
@@ -294,7 +294,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed)  |
+| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
 
 ## DeployableAwning
 
@@ -304,7 +304,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed)  |
+| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
 
 ## DeployableVerticalAwning
 
@@ -314,7 +314,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed)  |
+| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
 
 ## Dimmable
 
@@ -322,7 +322,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setIntensity` | `int` (0–100) | Light intensity level (100%=maximum intensity, 0%=off)  |
+| `setIntensity` | `int` (0–100) | Light intensity level (100%=maximum intensity, 0%=off) |
 
 ## DoorContactSensor
 
@@ -350,8 +350,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point)  |
-| `setHeatingTargetTemperature` | `float` (7.0–35.0) | Set the heating target temperature (manual set point)  |
+| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point) |
+| `setHeatingTargetTemperature` | `float` (7.0–35.0) | Set the heating target temperature (manual set point) |
 
 ## ElectricCurrentMeter
 
@@ -420,7 +420,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setHeatingLevel` | `string` — `comfort`, `eco` | Sets the device heating level mode  |
+| `setHeatingLevel` | `string` — `comfort`, `eco` | Sets the device heating level mode |
 
 ## IntrusionDetector
 
@@ -444,7 +444,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setLevel` | `int` (0–100) | Generic device working level (0-100%) Functional meaning depends on device  |
+| `setLevel` | `int` (0–100) | Generic device working level (0-100%) Functional meaning depends on device |
 
 ## LightDimmer
 
@@ -454,7 +454,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setIntensity` | `int` (0–100) | Light intensity level (100%=maximum intensity, 0%=off)  |
+| `setIntensity` | `int` (0–100) | Light intensity level (100%=maximum intensity, 0%=off) |
 
 ## Lock
 
@@ -462,8 +462,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `lock` |  | Lock the device  |
-| `unlock` |  | Unlock the device  |
+| `lock` |  | Lock the device |
+| `unlock` |  | Unlock the device |
 
 ## LockStatus
 
@@ -518,9 +518,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `pause` |  | Pause current action  |
-| `play` |  | Play media  |
-| `setVolume` | `int` (0–100) | Set the device output volume  |
+| `pause` |  | Pause current action |
+| `play` |  | Play media |
+| `setVolume` | `int` (0–100) | Set the device output volume |
 
 ## OccupancyDetector
 
@@ -552,9 +552,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device  |
-| `open` |  | Fully open the device  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OpenCloseBlind
 
@@ -564,9 +564,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device  |
-| `open` |  | Fully open the device  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OpenCloseCameraShutter
 
@@ -576,8 +576,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device  |
-| `open` |  | Fully open the device  |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
 
 ## OpenCloseCurtain
 
@@ -587,9 +587,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device  |
-| `open` |  | Fully open the device  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OpenCloseGarageOpener
 
@@ -599,9 +599,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device  |
-| `open` |  | Fully open the device  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OpenCloseGateOpener
 
@@ -611,9 +611,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device  |
-| `open` |  | Fully open the device  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OpenCloseScreen
 
@@ -623,9 +623,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device  |
-| `open` |  | Fully open the device  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OpenCloseShutter
 
@@ -635,9 +635,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device  |
-| `open` |  | Fully open the device  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OpenCloseShutterSwitch
 
@@ -647,8 +647,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device  |
-| `open` |  | Fully open the device  |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
 
 ## OpenCloseSlidingGateOpener
 
@@ -658,9 +658,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device  |
-| `open` |  | Fully open the device  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OpenCloseSwingingShutter
 
@@ -670,9 +670,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device  |
-| `open` |  | Fully open the device  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OpenCloseWindow
 
@@ -682,9 +682,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device  |
-| `open` |  | Fully open the device  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OpeningStatus
 
@@ -700,7 +700,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setOperatingMode` | `any` | Set an operating mode  |
+| `setOperatingMode` | `any` | Set an operating mode |
 
 ## OrientableAndCloseable
 
@@ -708,7 +708,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosureAndOrientation` | `int` (0–100), `int` (0–100) | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device  |
+| `setClosureAndOrientation` | `int` (0–100), `int` (0–100) | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device |
 
 ## OrientableOrCloseable
 
@@ -724,9 +724,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OrientableSlats
 
@@ -734,7 +734,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats  |
+| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats |
 
 ## PictureCamera
 
@@ -742,7 +742,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `takePicture` |  | Take a still picture  |
+| `takePicture` |  | Take a still picture |
 
 ## PowerCutDetector
 
@@ -798,8 +798,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `ring` |  | Ask the device to start ringing  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `ring` |  | Ask the device to start ringing |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## SlidingPergola
 
@@ -809,7 +809,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed)  |
+| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
 
 ## SmokeDetector
 
@@ -829,8 +829,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `start` |  | Start the default actuator behavior (movement, sound or timer)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `start` |  | Start the default actuator behavior (movement, sound or timer) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## StatefulAirFan
 
@@ -838,7 +838,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setFanSpeedLevel` | `int` (0–100) | Set the device fan speed level (%)  |
+| `setFanSpeedLevel` | `int` (0–100) | Set the device fan speed level (%) |
 
 ### States
 
@@ -852,8 +852,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `arm` |  | Arm the system  |
-| `disarm` |  | Disarm the system  |
+| `arm` |  | Arm the system |
+| `disarm` |  | Disarm the system |
 
 ### States
 
@@ -867,7 +867,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
 
 ### States
 
@@ -881,8 +881,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device  |
-| `open` |  | Fully open the device  |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
 
 ### States
 
@@ -898,7 +898,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats  |
+| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats |
 
 ### States
 
@@ -914,8 +914,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `lock` |  | Lock the device  |
-| `unlock` |  | Unlock the device  |
+| `lock` |  | Lock the device |
+| `unlock` |  | Unlock the device |
 
 ### States
 
@@ -930,8 +930,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -947,7 +947,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
 
 ### States
 
@@ -963,8 +963,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -980,8 +980,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -997,8 +997,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1014,8 +1014,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1031,8 +1031,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1048,8 +1048,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1065,8 +1065,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1082,8 +1082,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1099,8 +1099,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1116,7 +1116,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
 
 ### States
 
@@ -1132,8 +1132,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1147,7 +1147,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point)  |
+| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point) |
 
 ### States
 
@@ -1161,7 +1161,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point)  |
+| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point) |
 
 ### States
 
@@ -1176,7 +1176,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setTargetDHWTemperature` | `float` (38.0–60.0) | Set the new water temperature to reach for a Domestic Hot Water system  |
+| `setTargetDHWTemperature` | `float` (38.0–60.0) | Set the new water temperature to reach for a Domestic Hot Water system |
 
 ### States
 
@@ -1190,8 +1190,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `deploy` |  | Fully deploy the device  |
-| `undeploy` |  | Fully undeploy the device  |
+| `deploy` |  | Fully deploy the device |
+| `undeploy` |  | Fully undeploy the device |
 
 ### States
 
@@ -1207,8 +1207,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `deploy` |  | Fully deploy the device  |
-| `undeploy` |  | Fully undeploy the device  |
+| `deploy` |  | Fully deploy the device |
+| `undeploy` |  | Fully undeploy the device |
 
 ### States
 
@@ -1222,7 +1222,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed)  |
+| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
 
 ### States
 
@@ -1238,7 +1238,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed)  |
+| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
 
 ### States
 
@@ -1254,7 +1254,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed)  |
+| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
 
 ### States
 
@@ -1268,7 +1268,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setIntensity` | `int` (0–100) | Light intensity level (100%=maximum intensity, 0%=off)  |
+| `setIntensity` | `int` (0–100) | Light intensity level (100%=maximum intensity, 0%=off) |
 
 ### States
 
@@ -1284,8 +1284,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `lock` |  | Lock the device  |
-| `unlock` |  | Unlock the device  |
+| `lock` |  | Lock the device |
+| `unlock` |  | Unlock the device |
 
 ### States
 
@@ -1301,8 +1301,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `lock` |  | Lock the device  |
-| `unlock` |  | Unlock the device  |
+| `lock` |  | Lock the device |
+| `unlock` |  | Unlock the device |
 
 ### States
 
@@ -1317,8 +1317,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point)  |
-| `setHeatingTargetTemperature` | `float` (7.0–35.0) | Set the heating target temperature (manual set point)  |
+| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point) |
+| `setHeatingTargetTemperature` | `float` (7.0–35.0) | Set the heating target temperature (manual set point) |
 
 ### States
 
@@ -1333,8 +1333,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point)  |
-| `setHeatingTargetTemperature` | `float` (7.0–35.0) | Set the heating target temperature (manual set point)  |
+| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point) |
+| `setHeatingTargetTemperature` | `float` (7.0–35.0) | Set the heating target temperature (manual set point) |
 
 ### States
 
@@ -1350,7 +1350,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setHeatingLevel` | `string` — `comfort`, `eco` | Sets the device heating level mode  |
+| `setHeatingLevel` | `string` — `comfort`, `eco` | Sets the device heating level mode |
 
 ### States
 
@@ -1364,7 +1364,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setLevel` | `int` (0–100) | Generic device working level (0-100%) Functional meaning depends on device  |
+| `setLevel` | `int` (0–100) | Generic device working level (0-100%) Functional meaning depends on device |
 
 ### States
 
@@ -1380,7 +1380,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setLevel` | `int` (0–100) | Generic device working level (0-100%) Functional meaning depends on device  |
+| `setLevel` | `int` (0–100) | Generic device working level (0-100%) Functional meaning depends on device |
 
 ### States
 
@@ -1396,7 +1396,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setIntensity` | `int` (0–100) | Light intensity level (100%=maximum intensity, 0%=off)  |
+| `setIntensity` | `int` (0–100) | Light intensity level (100%=maximum intensity, 0%=off) |
 
 ### States
 
@@ -1410,8 +1410,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `lock` |  | Lock the device  |
-| `unlock` |  | Unlock the device  |
+| `lock` |  | Lock the device |
+| `unlock` |  | Unlock the device |
 
 ### States
 
@@ -1425,8 +1425,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `lock` |  | Lock the device  |
-| `unlock` |  | Unlock the device  |
+| `lock` |  | Lock the device |
+| `unlock` |  | Unlock the device |
 
 ### States
 
@@ -1441,9 +1441,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device  |
-| `open` |  | Fully open the device  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1459,9 +1459,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device  |
-| `open` |  | Fully open the device  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1477,9 +1477,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device  |
-| `open` |  | Fully open the device  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1495,9 +1495,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device  |
-| `open` |  | Fully open the device  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1513,9 +1513,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device  |
-| `open` |  | Fully open the device  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1531,8 +1531,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device  |
-| `open` |  | Fully open the device  |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
 
 ### States
 
@@ -1546,7 +1546,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setOperatingMode` | `any` | Set an operating mode  |
+| `setOperatingMode` | `any` | Set an operating mode |
 
 ### States
 
@@ -1560,7 +1560,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosureAndOrientation` | `int` (0–100), `int` (0–100) | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device  |
+| `setClosureAndOrientation` | `int` (0–100), `int` (0–100) | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device |
 
 ### States
 
@@ -1577,7 +1577,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosureAndOrientation` | `int` (0–100), `int` (0–100) | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device  |
+| `setClosureAndOrientation` | `int` (0–100), `int` (0–100) | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device |
 
 ### States
 
@@ -1607,9 +1607,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1626,9 +1626,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1645,9 +1645,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)  |
-| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1662,7 +1662,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats  |
+| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats |
 
 ### States
 
@@ -1693,8 +1693,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `ring` |  | Ask the device to start ringing  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `ring` |  | Ask the device to start ringing |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1710,7 +1710,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed)  |
+| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
 
 ### States
 
@@ -1724,8 +1724,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `start` |  | Start the default actuator behavior (movement, sound or timer)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `start` |  | Start the default actuator behavior (movement, sound or timer) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1741,8 +1741,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `start` |  | Start the default actuator behavior (movement, sound or timer)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `start` |  | Start the default actuator behavior (movement, sound or timer) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1758,8 +1758,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `start` |  | Start the default actuator behavior (movement, sound or timer)  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `start` |  | Start the default actuator behavior (movement, sound or timer) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1773,8 +1773,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `off` |  | Turn off the device  |
-| `on` |  | Turn on the device  |
+| `off` |  | Turn off the device |
+| `on` |  | Turn on the device |
 
 ### States
 
@@ -1790,8 +1790,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `off` |  | Turn off the device  |
-| `on` |  | Turn on the device  |
+| `off` |  | Turn off the device |
+| `on` |  | Turn on the device |
 
 ### States
 
@@ -1807,8 +1807,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `off` |  | Turn off the device  |
-| `on` |  | Turn on the device  |
+| `off` |  | Turn off the device |
+| `on` |  | Turn on the device |
 
 ### States
 
@@ -1824,8 +1824,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `off` |  | Turn off the device  |
-| `on` |  | Turn on the device  |
+| `off` |  | Turn off the device |
+| `on` |  | Turn on the device |
 
 ### States
 
@@ -1841,8 +1841,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `off` |  | Turn off the device  |
-| `on` |  | Turn on the device  |
+| `off` |  | Turn off the device |
+| `on` |  | Turn on the device |
 
 ### States
 
@@ -1856,7 +1856,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setTargetTemperature` | `float` (12.0–30.0) | Set the new air temperature to reach  |
+| `setTargetTemperature` | `float` (12.0–30.0) | Set the new air temperature to reach |
 
 ### States
 
@@ -1870,7 +1870,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setTargetTemperature` | `float` (12.0–30.0) | Set the new air temperature to reach  |
+| `setTargetTemperature` | `float` (12.0–30.0) | Set the new air temperature to reach |
 
 ### States
 
@@ -1887,7 +1887,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosureAndOrientation` | `int` (0–100), `int` (0–100) | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device  |
+| `setClosureAndOrientation` | `int` (0–100), `int` (0–100) | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device |
 
 ### States
 
@@ -1904,7 +1904,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats  |
+| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats |
 
 ### States
 
@@ -1920,8 +1920,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `lock` |  | Lock the device  |
-| `unlock` |  | Unlock the device  |
+| `lock` |  | Lock the device |
+| `unlock` |  | Unlock the device |
 
 ### States
 
@@ -1936,10 +1936,10 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `pause` |  | Pause current action  |
-| `play` |  | Play media  |
-| `setVolume` | `int` (0–100) | Set the device output volume  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
+| `pause` |  | Pause current action |
+| `play` |  | Play media |
+| `setVolume` | `int` (0–100) | Set the device output volume |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## Switch
 
@@ -1965,8 +1965,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `off` |  | Turn off the device  |
-| `on` |  | Turn on the device  |
+| `off` |  | Turn off the device |
+| `on` |  | Turn on the device |
 
 ## SwitchableHeating
 
@@ -1976,8 +1976,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `off` |  | Turn off the device  |
-| `on` |  | Turn on the device  |
+| `off` |  | Turn off the device |
+| `on` |  | Turn on the device |
 
 ## SwitchableHeatingStatus
 
@@ -1997,8 +1997,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `off` |  | Turn off the device  |
-| `on` |  | Turn on the device  |
+| `off` |  | Turn off the device |
+| `on` |  | Turn on the device |
 
 ## SwitchablePlug
 
@@ -2008,8 +2008,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `off` |  | Turn off the device  |
-| `on` |  | Turn on the device  |
+| `off` |  | Turn off the device |
+| `on` |  | Turn on the device |
 
 ## SwitchableVentilation
 
@@ -2019,8 +2019,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `off` |  | Turn off the device  |
-| `on` |  | Turn on the device  |
+| `off` |  | Turn off the device |
+| `on` |  | Turn on the device |
 
 ## Temperature
 
@@ -2044,7 +2044,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setTargetTemperature` | `float` (12.0–30.0) | Set the new air temperature to reach  |
+| `setTargetTemperature` | `float` (12.0–30.0) | Set the new air temperature to reach |
 
 ## ThermostatOffsetReader
 
@@ -2096,9 +2096,9 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `down` |  | Move the device completely down  |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)  |
-| `up` |  | Move the device completely up  |
+| `down` |  | Move the device completely down |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+| `up` |  | Move the device completely up |
 
 ## UpdatableComponent
 
@@ -2106,7 +2106,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while.  |
+| `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
 
 ## VOCConcentration
 
@@ -2124,7 +2124,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosureAndOrientation` | `int` (0–100), `int` (0–100) | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device  |
+| `setClosureAndOrientation` | `int` (0–100), `int` (0–100) | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device |
 
 ## VenetianSlats
 
@@ -2134,7 +2134,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats  |
+| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats |
 
 ## VibrationDetector
 
@@ -2150,7 +2150,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setVolume` | `int` (0–100) | Set the device output volume  |
+| `setVolume` | `int` (0–100) | Set the device output volume |
 
 ## WaterConsumption
 

@@ -2036,12 +2036,28 @@ class OverkizState(StrEnum):
     RTDS_STATUS = "rtds:StatusState"
     RTDS_TEMPERATURE_OUT_OF_RANGE_DETECTION = "rtds:TemperatureOutOfRangeDetectionState"
     RTDS_WATER_DETECTION = "rtds:WaterDetectionState"
+    SOMFYTHERMOSTAT_AT_HOME_TARGET_TEMPERATURE = (
+        "somfythermostat:AtHomeTargetTemperatureState"
+    )
+    SOMFYTHERMOSTAT_AWAY_MODE_TARGET_TEMPERATURE = (
+        "somfythermostat:AwayModeTargetTemperatureState"
+    )
+    SOMFYTHERMOSTAT_DEROGATION_HEATING_MODE = (
+        "somfythermostat:DerogationHeatingModeState"
+    )
     SOMFYTHERMOSTAT_DEROGATION_TYPE = "somfythermostat:DerogationTypeState"
+    SOMFYTHERMOSTAT_FREEZE_MODE_TARGET_TEMPERATURE = (
+        "somfythermostat:FreezeModeTargetTemperatureState"
+    )
     SOMFYTHERMOSTAT_GEOFENCING_MODE_TARGET_TEMPERATURE = (
         "somfythermostat:GeofencingModeTargetTemperatureState"
     )
+    SOMFYTHERMOSTAT_HEATING_MODE = "somfythermostat:HeatingModeState"
     SOMFYTHERMOSTAT_MANUAL_MODE_TARGET_TEMPERATURE = (
         "somfythermostat:ManualModeTargetTemperatureState"
+    )
+    SOMFYTHERMOSTAT_SLEEPING_MODE_TARGET_TEMPERATURE = (
+        "somfythermostat:SleepingModeTargetTemperatureState"
     )
     SOMFYTHERMOSTAT_SUDDEN_DROP_MODE_TARGET_TEMPERATURE = (
         "somfythermostat:SuddenDropModeTargetTemperatureState"
