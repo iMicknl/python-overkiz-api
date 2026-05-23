@@ -302,15 +302,15 @@ class UIWidget(UnknownEnumMixin, StrEnum):
     ON_OFF_REMOTECONTROLLER = "OnOffRemotecontroller"
     ON_OFF_VENTILATION_SPEED = "OnOffVentilationSpeed"
     OPEN_CLOSE_GATE = "OpenCloseGate"
-    OPEN_CLOSE_GATE4_T = "OpenCloseGate4T"
+    OPEN_CLOSE_GATE_4T = "OpenCloseGate4T"
     OPEN_CLOSE_GATE_WITH_PEDESTRIAN_POSITION = "OpenCloseGateWithPedestrianPosition"
     OPEN_CLOSE_SLIDING_GARAGE_DOOR = "OpenCloseSlidingGarageDoor"
-    OPEN_CLOSE_SLIDING_GARAGE_DOOR4_T = "OpenCloseSlidingGarageDoor4T"
+    OPEN_CLOSE_SLIDING_GARAGE_DOOR_4T = "OpenCloseSlidingGarageDoor4T"
     OPEN_CLOSE_SLIDING_GARAGE_DOOR_WITH_PEDESTRIAN_POSITION = (
         "OpenCloseSlidingGarageDoorWithPedestrianPosition"
     )
     OPEN_CLOSE_SLIDING_GATE = "OpenCloseSlidingGate"
-    OPEN_CLOSE_SLIDING_GATE4_T = "OpenCloseSlidingGate4T"
+    OPEN_CLOSE_SLIDING_GATE_4T = "OpenCloseSlidingGate4T"
     OPEN_CLOSE_SLIDING_GATE_WITH_PEDESTRIAN_POSITION = (
         "OpenCloseSlidingGateWithPedestrianPosition"
     )
@@ -368,7 +368,7 @@ class UIWidget(UnknownEnumMixin, StrEnum):
     RTD_INDOOR_SIREN = "RTDIndoorSiren"
     RTD_OUTDOOR_SIREN = "RTDOutdoorSiren"
     RTS_GENERIC = "RTSGeneric"
-    RTS_GENERIC4_T = "RTSGeneric4T"
+    RTS_GENERIC_4T = "RTSGeneric4T"
     RTS_THERMOSTAT = "RTSThermostat"
     RAIN_SENSOR = "RainSensor"
     RELATIVE_HUMIDITY_SENSOR = "RelativeHumiditySensor"
@@ -426,7 +426,7 @@ class UIWidget(UnknownEnumMixin, StrEnum):
     UP_DOWN_EXTERIOR_SCREEN = "UpDownExteriorScreen"
     UP_DOWN_EXTERIOR_VENETIAN_BLIND = "UpDownExteriorVenetianBlind"
     UP_DOWN_GARAGE_DOOR = "UpDownGarageDoor"
-    UP_DOWN_GARAGE_DOOR4_T = "UpDownGarageDoor4T"
+    UP_DOWN_GARAGE_DOOR_4T = "UpDownGarageDoor4T"
     UP_DOWN_GARAGE_DOOR_WITH_VENTILATION_POSITION = (
         "UpDownGarageDoorWithVentilationPosition"
     )
