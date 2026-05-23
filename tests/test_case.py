@@ -76,8 +76,8 @@ class TestCamelize:
         assert camelize_key("name") == "name"
 
     def test_device_url(self):
-        """device_url camelizes to deviceUrl (abbreviation fix is in serializers)."""
-        assert camelize_key("device_url") == "deviceUrl"
+        """device_url camelizes to deviceURL (non-standard API casing)."""
+        assert camelize_key("device_url") == "deviceURL"
 
 
 class TestRoundTrip:

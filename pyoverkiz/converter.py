@@ -11,7 +11,7 @@ import attr
 import cattrs
 from cattrs.gen import make_dict_structure_fn, override
 
-from pyoverkiz._case import snake_to_api_key
+from pyoverkiz._case import camelize_key
 from pyoverkiz.models import (
     CommandDefinition,
     CommandDefinitions,
@@ -50,7 +50,7 @@ def _compute_rename_overrides(cls: type) -> dict[str, Any]:
             continue
         if f.alias is not None and f.alias != snake:
             continue
-        api_key = snake_to_api_key(snake)
+        api_key = camelize_key(snake)
         if api_key != snake:
             overrides[snake] = override(rename=api_key)
     return overrides
