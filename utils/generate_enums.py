@@ -94,10 +94,15 @@ def to_enum_name(value: str) -> str:
 
 def command_to_enum_name(command_name: str) -> str:
     """Convert a command name (camelCase) to SCREAMING_SNAKE_CASE."""
-    name = command_name.replace(" ", "_")
+    name = command_name.replace("/", "_")
+    name = name.replace("-", "_")
+    name = name.replace(" ", "_")
+    name = re.sub(r"[^a-zA-Z0-9_]", "_", name)
     name = re.sub(r"([a-z])(\d)", r"\1_\2", name)
     name = re.sub(r"(\d)([A-Z])", r"\1_\2", name)
     name = re.sub(r"([a-z])([A-Z])", r"\1_\2", name)
+    name = re.sub(r"__+", "_", name)
+    name = name.strip("_")
     return name.upper()
 
 
