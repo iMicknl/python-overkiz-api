@@ -14,6 +14,8 @@ from pyoverkiz.models import (
     CommandDefinition,
     CommandDefinitions,
     State,
+    StateDefinition,
+    StateDefinitions,
     States,
 )
 
@@ -59,8 +61,14 @@ def _make_converter() -> cattrs.Converter:
             return CommandDefinitions()
         return CommandDefinitions([c.structure(cd, CommandDefinition) for cd in val])
 
+    def _structure_state_definitions(val: Any, _: type) -> StateDefinitions:
+        if val is None:
+            return StateDefinitions()
+        return StateDefinitions([c.structure(sd, StateDefinition) for sd in val])
+
     c.register_structure_hook(States, _structure_states)
     c.register_structure_hook(CommandDefinitions, _structure_command_definitions)
+    c.register_structure_hook(StateDefinitions, _structure_state_definitions)
 
     return c
 
