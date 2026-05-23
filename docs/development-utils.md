@@ -18,7 +18,7 @@ utils/
   Overkiz API
        │
        ▼
-  fetch_server_data.py  ──►  docs/device-catalog/servers/<server>.json
+  fetch_server_data.py  ──►  data/servers/<server>.json
                                           │
                         ┌─────────────────┼─────────────────┐
                         ▼                 ▼                  ▼
@@ -29,7 +29,7 @@ utils/
                                     docs/ui-profiles.md
 ```
 
-The per-server JSON files in `docs/device-catalog/servers/` are the single source of truth. They are checked into git and accumulate over time as you gain access to more servers.
+The per-server JSON files in `data/servers/` are the single source of truth. They are checked into git and accumulate over time as you gain access to more servers.
 
 ## fetch_server_data.py
 
@@ -48,7 +48,7 @@ OVERKIZ_USERNAME=... OVERKIZ_PASSWORD=... uv run utils/fetch_server_data.py --se
 - Device types per protocol (`/reference/devices/search`)
 - Controllable definitions (`/reference/controllable/<name>`)
 
-**Output:** `docs/device-catalog/servers/<server>.json`
+**Output:** `data/servers/<server>.json`
 
 The script includes rate-limit handling with exponential backoff (starts at 10s, doubles per retry, up to 5 attempts).
 
@@ -96,7 +96,7 @@ Processes all JSON files in `tests/fixtures/setup/` using the library's built-in
 
 ## Per-server JSON schema
 
-Each file in `docs/device-catalog/servers/` follows this structure:
+Each file in `data/servers/` follows this structure:
 
 ```json
 {
@@ -136,5 +136,5 @@ Each file in `docs/device-catalog/servers/` follows this structure:
 
 1. Get credentials for the server
 2. Run `fetch_server_data.py --server <server_name>`
-3. Commit the new `docs/device-catalog/servers/<server>.json`
+3. Commit the new `data/servers/<server>.json`
 4. Run `generate_enums.py` and `generate_device_catalog.py` to regenerate code and docs

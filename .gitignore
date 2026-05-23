@@ -148,5 +148,3 @@ dmypy.json
 # File-based project format
 *.iws
 
-# Generated device catalog (exploration notes, not the per-server source data)
-docs/device-catalog/exploration/
