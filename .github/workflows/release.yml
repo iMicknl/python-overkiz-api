@@ -15,6 +15,7 @@ jobs:
       # IMPORTANT: this permission is mandatory for trusted publishing via PyPi
       id-token: write
       contents: write
+      attestations: write
 
     steps:
       - uses: actions/checkout@v6
@@ -55,5 +56,6 @@ jobs:
             uv build
 
       - name: Publish package to PyPI
-        run: |
-            uv publish
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          attestations: true
