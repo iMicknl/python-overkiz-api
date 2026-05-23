@@ -49,6 +49,7 @@ jobs:
             - `pyoverkiz/enums/ui.py`
             - `pyoverkiz/enums/ui_profile.py`
             - `pyoverkiz/enums/command.py`
+            - `docs/ui-profiles.md`
           branch: automated/generate-enums
           base: main
           delete-branch: true
