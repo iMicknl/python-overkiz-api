@@ -503,6 +503,205 @@ def _generate_ui_profiles_docs(
 
 
 # ---------------------------------------------------------------------------
+# State + Attribute enums
+# ---------------------------------------------------------------------------
+
+
+def extract_states_from_fixtures(fixtures_dir: Path) -> set[str]:
+    """Extract all qualified state names from fixture files."""
+    states: set[str] = set()
+
+    for fixture_file in fixtures_dir.glob("*.json"):
+        try:
+            data = json.loads(fixture_file.read_text())
+            if "devices" not in data:
+                continue
+            for device in data["devices"]:
+                definition = device.get("definition", {})
+                for state in definition.get("states", []):
+                    if "name" in state:
+                        states.add(state["name"])
+        except (json.JSONDecodeError, KeyError, TypeError):
+            continue
+
+    return states
+
+
+def extract_attributes_from_fixtures(fixtures_dir: Path) -> set[str]:
+    """Extract all qualified attribute names from fixture files."""
+    attributes: set[str] = set()
+
+    for fixture_file in fixtures_dir.glob("*.json"):
+        try:
+            data = json.loads(fixture_file.read_text())
+            if "devices" not in data:
+                continue
+            for device in data["devices"]:
+                for attr in device.get("attributes", []):
+                    if "name" in attr:
+                        attributes.add(attr["name"])
+        except (json.JSONDecodeError, KeyError, TypeError):
+            continue
+
+    return attributes
+
+
+def extract_states_from_servers(servers_dir: Path) -> set[str]:
+    """Extract qualified state names from per-server JSON files."""
+    states: set[str] = set()
+
+    if not servers_dir.exists():
+        return states
+
+    for server_file in servers_dir.glob("*.json"):
+        try:
+            data = json.loads(server_file.read_text())
+            # From protocols section (prefix:StateName)
+            for protocol, device_types in data.get("protocols", {}).items():
+                for dt in device_types:
+                    for s in dt.get("states", []):
+                        if "name" in s:
+                            states.add(f"{protocol.lower()}:{s['name']}")
+            # From controllableDefinitions (has qualifiedName)
+            for cd in data.get("controllableDefinitions", {}).values():
+                for s in cd.get("states", []):
+                    qn = s.get("qualifiedName")
+                    if qn:
+                        states.add(qn)
+        except (json.JSONDecodeError, KeyError, TypeError):
+            pass
+
+    return states
+
+
+def extract_attributes_from_servers(servers_dir: Path) -> set[str]:
+    """Extract qualified attribute names from per-server JSON files."""
+    attributes: set[str] = set()
+
+    if not servers_dir.exists():
+        return attributes
+
+    for server_file in servers_dir.glob("*.json"):
+        try:
+            data = json.loads(server_file.read_text())
+            for cd in data.get("controllableDefinitions", {}).values():
+                for attr in cd.get("attributes", []):
+                    qn = attr.get("qualifiedName")
+                    if qn:
+                        attributes.add(qn)
+        except (json.JSONDecodeError, KeyError, TypeError):
+            pass
+
+    return attributes
+
+
+def state_to_enum_name(qualified_name: str) -> str:
+    """Convert a qualified state name like 'core:BatteryState' to CORE_BATTERY."""
+    prefix, name = qualified_name.split(":", 1)
+    name_stripped = name.removesuffix("State")
+    return prefix.upper() + "_" + to_enum_name(name_stripped)
+
+
+def attribute_to_enum_name(qualified_name: str) -> str:
+    """Convert a qualified attribute name like 'core:FirmwareRevision' to CORE_FIRMWARE_REVISION."""
+    prefix, name = qualified_name.split(":", 1)
+    return prefix.upper() + "_" + to_enum_name(name)
+
+
+def generate_state_enums() -> None:
+    """Generate OverkizState and OverkizAttribute enums."""
+    fixture_states = extract_states_from_fixtures(FIXTURES_DIR)
+    catalog_states = extract_states_from_servers(SERVERS_DIR)
+    fixture_attributes = extract_attributes_from_fixtures(FIXTURES_DIR)
+    catalog_attributes = extract_attributes_from_servers(SERVERS_DIR)
+
+    state_file = ENUMS_DIR / "state.py"
+    content = state_file.read_text()
+
+    existing_states = extract_enum_members(content, "OverkizState")
+    existing_attributes = extract_enum_members(content, "OverkizAttribute")
+
+    # Merge all state values
+    all_state_values = set(existing_states.keys()) | fixture_states | catalog_states
+
+    state_enum_names: set[str] = set()
+    state_tuples: list[tuple[str, str]] = []
+    for state_value in sorted(all_state_values):
+        if ":" not in state_value:
+            continue
+        if state_value in existing_states:
+            enum_name = existing_states[state_value]
+        else:
+            enum_name = state_to_enum_name(state_value)
+        if enum_name not in state_enum_names:
+            state_tuples.append((enum_name, state_value))
+            state_enum_names.add(enum_name)
+
+    state_tuples.sort(key=lambda x: x[0])
+
+    # Merge all attribute values
+    all_attribute_values = (
+        set(existing_attributes.keys()) | fixture_attributes | catalog_attributes
+    )
+
+    attribute_enum_names: set[str] = set()
+    attribute_tuples: list[tuple[str, str]] = []
+    for attr_value in sorted(all_attribute_values):
+        if ":" not in attr_value:
+            continue
+        if attr_value in existing_attributes:
+            enum_name = existing_attributes[attr_value]
+        else:
+            enum_name = attribute_to_enum_name(attr_value)
+        if enum_name not in attribute_enum_names:
+            attribute_tuples.append((enum_name, attr_value))
+            attribute_enum_names.add(enum_name)
+
+    attribute_tuples.sort(key=lambda x: x[0])
+
+    # Generate file
+    lines = [
+        '"""State and attribute enums describing Overkiz device states and attributes."""',
+        "",
+        "# ruff: noqa: S105",
+        '# Enum values contain "PASS" or "TOKEN" in API names, not passwords',
+        "",
+        "from enum import StrEnum, unique",
+        "",
+        "",
+        "@unique",
+        "class OverkizAttribute(StrEnum):",
+        '    """Device attributes used by Overkiz."""',
+        "",
+    ]
+
+    for enum_name, attr_value in attribute_tuples:
+        lines.append(f'    {enum_name} = "{attr_value}"')
+
+    lines.append("")
+    lines.append("")
+    lines.append("@unique")
+    lines.append("class OverkizState(StrEnum):")
+    lines.append('    """Device states used by Overkiz."""')
+    lines.append("")
+
+    for enum_name, state_value in state_tuples:
+        lines.append(f'    {enum_name} = "{state_value}"')
+
+    lines.append("")
+
+    state_file.write_text("\n".join(lines))
+
+    new_states = len(all_state_values - set(existing_states.keys()))
+    new_attrs = len(all_attribute_values - set(existing_attributes.keys()))
+    print(
+        f"✓ Generated {state_file} "
+        f"({len(state_tuples)} states [+{new_states} new], "
+        f"{len(attribute_tuples)} attributes [+{new_attrs} new])"
+    )
+
+
+# ---------------------------------------------------------------------------
 # Command + CommandParam enums
 # ---------------------------------------------------------------------------
 
@@ -739,6 +938,7 @@ def format_generated_files() -> None:
         str(ENUMS_DIR / "ui.py"),
         str(ENUMS_DIR / "ui_profile.py"),
         str(ENUMS_DIR / "command.py"),
+        str(ENUMS_DIR / "state.py"),
     ]
     subprocess.run(  # noqa: S603
         ["uv", "run", "ruff", "check", "--fix", *generated_files],  # noqa: S607
@@ -768,6 +968,7 @@ def generate_all() -> None:
     generate_ui_enums(metadata)
     generate_ui_profiles(metadata)
     print()
+    generate_state_enums()
     generate_command_enums()
     print()
     format_generated_files()

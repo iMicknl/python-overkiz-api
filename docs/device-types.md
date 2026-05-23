@@ -8,7 +8,7 @@ hide:
 This page lists all known device types from the Overkiz API, grouped by protocol. Each entry shows the commands it accepts and the states it exposes.
 
 !!! note
-    This page is auto-generated from the Overkiz API. See [Development Utilities](development-utils.md) for details.
+    This page is auto-generated from the Overkiz API. Run `uv run utils/generate_device_catalog.py` to regenerate.
 
 **26 protocols**, **477 unique device types** documented below.
 
