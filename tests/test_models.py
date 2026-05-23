@@ -306,15 +306,12 @@ class TestState:
 
 
 class TestStateDefinition:
-    """Tests for StateDefinition type enum and convenience properties."""
+    """Tests for StateDefinition type enum parsing."""
 
     def test_continuous_type(self):
         """ContinuousState should be parsed as StateDefinitionType.CONTINUOUS."""
         sd = StateDefinition(qualified_name="core:ClosureState", type="ContinuousState")
         assert sd.type == StateDefinitionType.CONTINUOUS
-        assert sd.is_continuous
-        assert not sd.is_discrete
-        assert not sd.is_data
 
     def test_discrete_type(self):
         """DiscreteState should be parsed as StateDefinitionType.DISCRETE."""
@@ -324,34 +321,22 @@ class TestStateDefinition:
             values=["on", "off"],
         )
         assert sd.type == StateDefinitionType.DISCRETE
-        assert sd.is_discrete
-        assert not sd.is_continuous
-        assert not sd.is_data
         assert sd.values == ["on", "off"]
 
     def test_data_type(self):
         """DataState should be parsed as StateDefinitionType.DATA."""
         sd = StateDefinition(qualified_name="core:SomeDataState", type="DataState")
         assert sd.type == StateDefinitionType.DATA
-        assert sd.is_data
-        assert not sd.is_continuous
-        assert not sd.is_discrete
 
     def test_none_type(self):
-        """Missing type should result in None and all properties False."""
+        """Missing type should result in None."""
         sd = StateDefinition(qualified_name="core:SomeState")
         assert sd.type is None
-        assert not sd.is_continuous
-        assert not sd.is_discrete
-        assert not sd.is_data
 
     def test_unknown_type(self):
         """Unknown type strings should fallback to UNKNOWN."""
         sd = StateDefinition(qualified_name="core:SomeState", type="FutureState")
         assert sd.type == StateDefinitionType.UNKNOWN
-        assert not sd.is_continuous
-        assert not sd.is_discrete
-        assert not sd.is_data
 
     def test_from_device_fixture(self):
         """StateDefinitions in device fixture should be typed correctly."""
@@ -361,12 +346,12 @@ class TestStateDefinition:
             for sd in device.definition.states
             if sd.qualified_name == "core:ClosureState"
         )
-        assert closure.is_continuous
+        assert closure.type == StateDefinitionType.CONTINUOUS
 
         rssi = next(
             sd
             for sd in device.definition.states
             if sd.qualified_name == "core:DiscreteRSSILevelState"
         )
-        assert rssi.is_discrete
+        assert rssi.type == StateDefinitionType.DISCRETE
         assert rssi.values == ["good", "low", "normal", "verylow"]

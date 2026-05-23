@@ -257,21 +257,6 @@ class StateDefinition:
         elif name:
             self.qualified_name = name
 
-    @property
-    def is_continuous(self) -> bool:
-        """Return True if this state holds a continuous (numeric) value."""
-        return self.type == StateDefinitionType.CONTINUOUS
-
-    @property
-    def is_discrete(self) -> bool:
-        """Return True if this state holds one of a fixed set of string values."""
-        return self.type == StateDefinitionType.DISCRETE
-
-    @property
-    def is_data(self) -> bool:
-        """Return True if this state holds structured/opaque data."""
-        return self.type == StateDefinitionType.DATA
-
 
 @define(init=False, kw_only=True)
 class Definition:
