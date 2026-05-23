@@ -48,6 +48,27 @@ An optional `ExecutionMode` can be passed when executing an action group:
 - `GEOLOCATED` — Triggered by geolocation rules.
 - `INTERNAL` — Used for internal/system executions.
 
+## UI profiles and classifiers
+
+Each device definition includes **UI profiles** and **UI classifiers** that describe what the device can do at a higher level than raw commands.
+
+- **UIProfile** — Describes a device capability in terms of commands and states. For example, `Closeable` means the device supports `setClosure` and `stop`, while `StatefulCloseable` adds a `core:ClosureState` state. A device can have multiple profiles (e.g. both `Closeable` and `Dimmable`).
+- **UIClassifier** — Categorizes the device's role (e.g. `HEATING_SYSTEM`, `SENSOR`, `EMITTER`).
+
+Profiles enable capability-based routing without checking individual command names:
+
+```python
+from pyoverkiz.enums import UIProfile, UIClassifier
+
+if UIProfile.CLOSEABLE in device.definition.ui_profiles:
+    # This device supports cover operations
+
+if UIClassifier.HEATING_SYSTEM in device.definition.ui_classifiers:
+    # This device is part of a heating system
+```
+
+This is more robust than matching on `ui_class` or `widget` strings, because profiles are standardized across device types and vendors. A device's profiles are auto-generated from the Overkiz server's `/reference/ui/profiles` endpoint.
+
 ## States
 
 States are name/value pairs that represent the current device status, such as closure position or temperature.
