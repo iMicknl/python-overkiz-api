@@ -22,10 +22,24 @@ from pathlib import Path
 from pyoverkiz.auth.credentials import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.enums import Server
-from pyoverkiz.models import DeviceSearchResult, DeviceTypeDefinition
+from pyoverkiz.models import DeviceSearchResult, DeviceTypeDefinition, ValuePrototype
 
 OUTPUT_DIR = Path(__file__).parent.parent / "docs" / "device-catalog"
 DOCS_DIR = Path(__file__).parent.parent / "docs"
+
+
+def _serialize_value_prototype(vp: ValuePrototype) -> dict:
+    """Serialize a ValuePrototype to dict, including all non-None fields."""
+    result: dict = {"type": vp.type}
+    if vp.min_value is not None:
+        result["minValue"] = vp.min_value
+    if vp.max_value is not None:
+        result["maxValue"] = vp.max_value
+    if vp.enum_values:
+        result["enumValues"] = vp.enum_values
+    if vp.description:
+        result["description"] = vp.description
+    return result
 
 
 def device_type_to_dict(dt: DeviceTypeDefinition) -> dict:
@@ -55,24 +69,7 @@ def device_type_to_dict(dt: DeviceTypeDefinition) -> dict:
                                 "optional": p.optional,
                                 "sensitive": p.sensitive,
                                 "valuePrototypes": [
-                                    {
-                                        "type": vp.type,
-                                        **(
-                                            {"minValue": vp.min_value}
-                                            if vp.min_value is not None
-                                            else {}
-                                        ),
-                                        **(
-                                            {"maxValue": vp.max_value}
-                                            if vp.max_value is not None
-                                            else {}
-                                        ),
-                                        **(
-                                            {"enumValues": vp.enum_values}
-                                            if vp.enum_values
-                                            else {}
-                                        ),
-                                    }
+                                    _serialize_value_prototype(vp)
                                     for vp in p.value_prototypes
                                 ],
                             }
@@ -80,6 +77,11 @@ def device_type_to_dict(dt: DeviceTypeDefinition) -> dict:
                         ]
                     }
                     if cmd.prototype and cmd.prototype.parameters
+                    else {}
+                ),
+                **(
+                    {"protocolSpecifics": cmd.protocol_specifics}
+                    if cmd.protocol_specifics
                     else {}
                 ),
             }
@@ -96,28 +98,16 @@ def device_type_to_dict(dt: DeviceTypeDefinition) -> dict:
                 **(
                     {
                         "valuePrototypes": [
-                            {
-                                "type": vp.type,
-                                **(
-                                    {"minValue": vp.min_value}
-                                    if vp.min_value is not None
-                                    else {}
-                                ),
-                                **(
-                                    {"maxValue": vp.max_value}
-                                    if vp.max_value is not None
-                                    else {}
-                                ),
-                                **(
-                                    {"enumValues": vp.enum_values}
-                                    if vp.enum_values
-                                    else {}
-                                ),
-                            }
+                            _serialize_value_prototype(vp)
                             for vp in state.prototype.value_prototypes
                         ]
                     }
                     if state.prototype and state.prototype.value_prototypes
+                    else {}
+                ),
+                **(
+                    {"protocolSpecifics": state.protocol_specifics}
+                    if state.protocol_specifics
                     else {}
                 ),
             }
@@ -132,6 +122,11 @@ def device_type_to_dict(dt: DeviceTypeDefinition) -> dict:
                 **(
                     {"defaultValue": attr.default_value}
                     if attr.default_value is not None
+                    else {}
+                ),
+                **(
+                    {"protocolSpecifics": attr.protocol_specifics}
+                    if attr.protocol_specifics
                     else {}
                 ),
             }
@@ -249,6 +244,11 @@ def generate_docs_page(
                     if "parameters" in cmd:
                         param_parts = []
                         for p in cmd["parameters"]:
+                            flags = []
+                            if p.get("optional"):
+                                flags.append("optional")
+                            if p.get("sensitive"):
+                                flags.append("sensitive")
                             for vp in p.get("valuePrototypes", []):
                                 vp_str = f"`{vp['type'].lower()}`"
                                 if "minValue" in vp and "maxValue" in vp:
@@ -266,6 +266,8 @@ def generate_docs_page(
                                     if len(vp["enumValues"]) > 5:
                                         vals += ", \N{HORIZONTAL ELLIPSIS}"
                                     vp_str += f" — {vals}"
+                                if flags:
+                                    vp_str += f" *({', '.join(flags)})*"
                                 param_parts.append(vp_str)
                         params = ", ".join(param_parts)
                     lines.append(f"| `{cmd_name}` | {params} | {desc} |")
