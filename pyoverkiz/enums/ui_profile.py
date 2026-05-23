@@ -1241,6 +1241,20 @@ class UIProfile(UnknownEnumMixin, StrEnum):
     STATEFUL_OPEN_CLOSE_SHUTTER = "StatefulOpenCloseShutter"
 
     #
+    # StatefulOpenCloseSwimmingPoolShutter
+    #
+    # Commands:
+    #   - close(): Fully close the device
+    #   - open(): Fully open the device
+    #   - stop(): Stop the current actuator behavior (movement, sound or timer)
+    #
+    # States:
+    #   - core:OpenClosedState (string values: 'open', 'closed'): Indicate if the device is open or closed
+    #
+    # Form factor specific: Yes
+    STATEFUL_OPEN_CLOSE_SWIMMING_POOL_SHUTTER = "StatefulOpenCloseSwimmingPoolShutter"
+
+    #
     # StatefulOpenCloseSwingingShutter
     #
     # Commands:

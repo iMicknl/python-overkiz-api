@@ -49,7 +49,9 @@ class OverkizCommand(StrEnum):
     CANCEL_ABSENCE = "cancelAbsence"
     CANCEL_HEATING_LEVEL = "cancelHeatingLevel"
     CANCEL_HOLIDAY_MODE = "cancelHolidayMode"
-    CANCEL_NETATMO_DEROGATED_TARGET_TEMPERATURE = "cancelNetatmoDerogatedTargetTemperature"
+    CANCEL_NETATMO_DEROGATED_TARGET_TEMPERATURE = (
+        "cancelNetatmoDerogatedTargetTemperature"
+    )
     CHECK_EVENT_TRIGGER = "checkEventTrigger"
     CLEAR_ALL_LINKED_DEVICES = "clearAllLinkedDevices"
     CLEAR_CREDENTIALS = "clearCredentials"
@@ -75,7 +77,9 @@ class OverkizCommand(StrEnum):
     DEACTIVATE_TAUGHT_IN_DEVICES = "deactivateTaughtInDevices"
     DEACTIVATE_TIMER = "deactivateTimer"
     DEC = "dec"
-    DECREASE_INTENSITY_FOR_BOUND_CONFIGURATION = "decreaseIntensityForBoundConfiguration"
+    DECREASE_INTENSITY_FOR_BOUND_CONFIGURATION = (
+        "decreaseIntensityForBoundConfiguration"
+    )
     DELAYED_STOP_IDENTIFY = "delayedStopIdentify"
     DELETE_CONTROLLERS = "deleteControllers"
     DELETE_RECORDED_FILE = "deleteRecordedFile"
@@ -141,7 +145,9 @@ class OverkizCommand(StrEnum):
     GO_TO_MEMORIZED_3_POSITION = "goToMemorized3Position"
     IDENTIFY = "identify"
     INC = "inc"
-    INCREASE_INTENSITY_FOR_BOUND_CONFIGURATION = "increaseIntensityForBoundConfiguration"
+    INCREASE_INTENSITY_FOR_BOUND_CONFIGURATION = (
+        "increaseIntensityForBoundConfiguration"
+    )
     INCREASING_FREQUENCY_BIP = "increasingFrequencyBip"
     IS_FAILED_DEVICE = "isFailedDevice"
     JOIN_NETWORK = "joinNetwork"
@@ -179,7 +185,9 @@ class OverkizCommand(StrEnum):
     OPEN_CONFIGURATION = "openConfiguration"
     OPEN_NETWORK = "openNetwork"
     OPEN_NETWORK_MANAGEMENT = "openNetworkManagement"
-    OPEN_NETWORK_WITH_COMMISSIONING_MANAGEMENT = "openNetworkWithCommissioningManagement"
+    OPEN_NETWORK_WITH_COMMISSIONING_MANAGEMENT = (
+        "openNetworkWithCommissioningManagement"
+    )
     OPEN_SLATS = "openSlats"
     OPEN_VALVE = "openValve"
     PAIR = "pair"
@@ -237,8 +245,12 @@ class OverkizCommand(StrEnum):
     REFRESH_BATTERY_LEVEL = "refreshBatteryLevel"
     REFRESH_BATTERY_STATUS = "refreshBatteryStatus"
     REFRESH_BINDING_TABLE = "refreshBindingTable"
-    REFRESH_BLOCK_COOLING_IF_WINTER_YES_NO_STATE = "refreshBlockCoolingIfWinterYesNoState"
-    REFRESH_BLOCK_WARMING_IF_SUMMER_YES_NO_STATE = "refreshBlockWarmingIfSummerYesNoState"
+    REFRESH_BLOCK_COOLING_IF_WINTER_YES_NO_STATE = (
+        "refreshBlockCoolingIfWinterYesNoState"
+    )
+    REFRESH_BLOCK_WARMING_IF_SUMMER_YES_NO_STATE = (
+        "refreshBlockWarmingIfSummerYesNoState"
+    )
     REFRESH_BMSTEMP_CONTROL_YES_NO_STATE = "refreshBMSTempControlYesNoState"
     REFRESH_BOILERS_STARTS_COUNT = "refreshBoilersStartsCount"
     REFRESH_BOILER_INSTALLATION_OPTION = "refreshBoilerInstallationOption"
@@ -254,15 +266,23 @@ class OverkizCommand(StrEnum):
     REFRESH_BOOST_START_DATE = "refreshBoostStartDate"
     REFRESH_BOOTLOADER_VERSION = "refreshBootloaderVersion"
     REFRESH_BOTTOM_TANK_WATER_TEMPERATURE = "refreshBottomTankWaterTemperature"
-    REFRESH_BUTTON_1_AND_3_PROFILE_CONFIGURATION = "refreshButton1And3ProfileConfiguration"
+    REFRESH_BUTTON_1_AND_3_PROFILE_CONFIGURATION = (
+        "refreshButton1And3ProfileConfiguration"
+    )
     REFRESH_BUTTON_1_CONFIGURATION = "refreshButton1Configuration"
-    REFRESH_BUTTON_2_AND_4_PROFILE_CONFIGURATION = "refreshButton2And4ProfileConfiguration"
+    REFRESH_BUTTON_2_AND_4_PROFILE_CONFIGURATION = (
+        "refreshButton2And4ProfileConfiguration"
+    )
     REFRESH_BUTTON_2_CONFIGURATION = "refreshButton2Configuration"
     REFRESH_BUTTON_3_CONFIGURATION = "refreshButton3Configuration"
     REFRESH_BUTTON_4_CONFIGURATION = "refreshButton4Configuration"
     REFRESH_BY_PASS_DAMPER = "refreshByPassDamper"
-    REFRESH_CALCULATED_OUTLET_SET_POINT_TEMPERATURE = "refreshCalculatedOutletSetPointTemperature"
-    REFRESH_CALCULATED_WATER_SET_POINT_TEMPERATURE = "refreshCalculatedWaterSetPointTemperature"
+    REFRESH_CALCULATED_OUTLET_SET_POINT_TEMPERATURE = (
+        "refreshCalculatedOutletSetPointTemperature"
+    )
+    REFRESH_CALCULATED_WATER_SET_POINT_TEMPERATURE = (
+        "refreshCalculatedWaterSetPointTemperature"
+    )
     REFRESH_CASCADE_TEMPERATURE = "refreshCascadeTemperature"
     REFRESH_CENTRAL_SETTING_1 = "refreshCentralSetting1"
     REFRESH_CENTRAL_SETTING_2 = "refreshCentralSetting2"
@@ -275,8 +295,12 @@ class OverkizCommand(StrEnum):
     REFRESH_CO2 = "refreshCO2"
     REFRESH_CO2_HISTORY = "refreshCO2History"
     REFRESH_COLD_CORNER_DEFROST_AIR = "refreshColdCornerDefrostAir"
-    REFRESH_COMFORT_COOLING_TARGET_TEMPERATURE = "refreshComfortCoolingTargetTemperature"
-    REFRESH_COMFORT_HEATING_TARGET_TEMPERATURE = "refreshComfortHeatingTargetTemperature"
+    REFRESH_COMFORT_COOLING_TARGET_TEMPERATURE = (
+        "refreshComfortCoolingTargetTemperature"
+    )
+    REFRESH_COMFORT_HEATING_TARGET_TEMPERATURE = (
+        "refreshComfortHeatingTargetTemperature"
+    )
     REFRESH_COMFORT_TARGET_DWH_TEMPERATURE = "refreshComfortTargetDHWTemperature"
     REFRESH_COMFORT_TEMPERATURE = "refreshComfortTemperature"
     REFRESH_COMFORT_TEMPERATURE_MAX = "refreshComfortTemperatureMax"
@@ -290,7 +314,9 @@ class OverkizCommand(StrEnum):
     REFRESH_CONTROLLER_ADDRESS = "refreshControllerAddress"
     REFRESH_CONTROLLER_SOFTWARE_VERSION = "refreshControllerSoftwareVersion"
     REFRESH_CONTROL_ANTI_LEGIONELLA = "refreshControlAntiLegionella"
-    REFRESH_CONTROL_ANTI_LEGIONELLA_SETTING_TEMPERATURE = "refreshControlAntiLegionellaSettingTemperature"
+    REFRESH_CONTROL_ANTI_LEGIONELLA_SETTING_TEMPERATURE = (
+        "refreshControlAntiLegionellaSettingTemperature"
+    )
     REFRESH_CONTROL_BLOCK_MENU = "refreshControlBlockMenu"
     REFRESH_CONTROL_CIRCUIT_1 = "refreshControlCircuit1"
     REFRESH_CONTROL_CIRCUIT_2 = "refreshControlCircuit2"
@@ -302,7 +328,9 @@ class OverkizCommand(StrEnum):
     REFRESH_CONTROL_HEATING_OTCZONE_1 = "refreshControlHeatingOTCZone1"
     REFRESH_CONTROL_HEATING_OTCZONE_2 = "refreshControlHeatingOTCZone2"
     REFRESH_CONTROL_SWIMMING_POOL = "refreshControlSwimmingPool"
-    REFRESH_CONTROL_SWIMMING_POOL_SETTING_TEMPERATURE = "refreshControlSwimmingPoolSettingTemperature"
+    REFRESH_CONTROL_SWIMMING_POOL_SETTING_TEMPERATURE = (
+        "refreshControlSwimmingPoolSettingTemperature"
+    )
     REFRESH_CONTROL_UNIT = "refreshControlUnit"
     REFRESH_CONTROL_UNIT_MODE = "refreshControlUnitMode"
     REFRESH_CONTROL_WATER_TARGET_TEMPERATURE = "refreshControlWaterTargetTemperature"
@@ -394,7 +422,9 @@ class OverkizCommand(StrEnum):
     REFRESH_FILTER_ALARM_EXHAUST_AIR = "refreshFilterAlarmExhaustAir"
     REFRESH_FILTER_ALARM_SUPPLY_AIR = "refreshFilterAlarmSupplyAir"
     REFRESH_FILTER_OR_FAN_PRESSURE_SWITCH = "refreshFilterOrFanPressureSwitch"
-    REFRESH_FIN_TUBE_EXCHANGER_OUTLET_REFRIGERANT_TEMPERATURE = "refreshFinTubeExchangerOutletRefrigerantTemperature"
+    REFRESH_FIN_TUBE_EXCHANGER_OUTLET_REFRIGERANT_TEMPERATURE = (
+        "refreshFinTubeExchangerOutletRefrigerantTemperature"
+    )
     REFRESH_FIREPLACE_TIMER = "refreshFireplaceTimer"
     REFRESH_FIRE_ALARM = "refreshFireAlarm"
     REFRESH_FIRE_ALARM_FUNCTION_STOP_RUN = "refreshFireAlarmFunctionStopRun"
@@ -447,8 +477,12 @@ class OverkizCommand(StrEnum):
     REFRESH_MANUFACTURER = "refreshManufacturer"
     REFRESH_MANUFACTURER_NAME = "refreshManufacturerName"
     REFRESH_MANUFACTURER_SPECIFIC = "refreshManufacturerSpecific"
-    REFRESH_MAXIMUM_COOLING_TARGET_TEMPERATURE = "refreshMaximumCoolingTargetTemperature"
-    REFRESH_MAXIMUM_HEATING_TARGET_TEMPERATURE = "refreshMaximumHeatingTargetTemperature"
+    REFRESH_MAXIMUM_COOLING_TARGET_TEMPERATURE = (
+        "refreshMaximumCoolingTargetTemperature"
+    )
+    REFRESH_MAXIMUM_HEATING_TARGET_TEMPERATURE = (
+        "refreshMaximumHeatingTargetTemperature"
+    )
     REFRESH_MAXIMUM_TARGET_TEMPERATURE = "refreshMaximumTargetTemperature"
     REFRESH_MAX_SUPPLY_AIR_TEMPERATURE = "refreshMaxSupplyAirTemperature"
     REFRESH_MEMORIZED_1_ORIENTATION = "refreshMemorized1Orientation"
@@ -464,8 +498,12 @@ class OverkizCommand(StrEnum):
     REFRESH_MINIBOX_PROG_MODE = "refreshMiniboxProgMode"
     REFRESH_MINIBOX_PROG_MODE_MAX = "refreshMiniboxProgModeMax"
     REFRESH_MINIBOX_PROG_MODE_MIN = "refreshMiniboxProgModeMin"
-    REFRESH_MINIMUM_COOLING_TARGET_TEMPERATURE = "refreshMinimumCoolingTargetTemperature"
-    REFRESH_MINIMUM_HEATING_TARGET_TEMPERATURE = "refreshMinimumHeatingTargetTemperature"
+    REFRESH_MINIMUM_COOLING_TARGET_TEMPERATURE = (
+        "refreshMinimumCoolingTargetTemperature"
+    )
+    REFRESH_MINIMUM_HEATING_TARGET_TEMPERATURE = (
+        "refreshMinimumHeatingTargetTemperature"
+    )
     REFRESH_MIN_EXTRACT_FAN_SPEED = "refreshMinExtractFanSpeed"
     REFRESH_MIN_SUPPLY_AIR_TEMPERATURE = "refreshMinSupplyAirTemperature"
     REFRESH_MIN_SUPPLY_FAN_SPEED = "refreshMinSupplyFanSpeed"
@@ -474,7 +512,9 @@ class OverkizCommand(StrEnum):
     REFRESH_MODE_SETTINGS = "refreshModeSettings"
     REFRESH_MONDAY_TIME_PROGRAM = "refreshMondayTimeProgram"
     REFRESH_MULTI_CHANNEL_ASSOCIATION = "refreshMultiChannelAssociation"
-    REFRESH_MULTI_CHANNEL_ASSOCIATION_SUPPORTING_GROUPS = "refreshMultiChannelAssociationSupportingGroups"
+    REFRESH_MULTI_CHANNEL_ASSOCIATION_SUPPORTING_GROUPS = (
+        "refreshMultiChannelAssociationSupportingGroups"
+    )
     REFRESH_NATIVE_FUNCTIONAL_LEVEL = "refreshNativeFunctionalLevel"
     REFRESH_NB_SEC_AFTER_LAST_DETECT = "refreshNbSecAfterLastDetect"
     REFRESH_NEIGHBOR_TABLE = "refreshNeighborTable"
@@ -490,8 +530,12 @@ class OverkizCommand(StrEnum):
     REFRESH_ON_OFF_STATE = "refreshOnOffState"
     REFRESH_OPEN_CLOSE_STATE = "refreshOpenCloseState"
     REFRESH_OPEN_WINDOW_DETECTION_ACTIVATION = "refreshOpenWindowDetectionActivation"
-    REFRESH_OPEN_WINDOW_DETECTION_ACTIVATION_MAX = "refreshOpenWindowDetectionActivationMax"
-    REFRESH_OPEN_WINDOW_DETECTION_ACTIVATION_MIN = "refreshOpenWindowDetectionActivationMin"
+    REFRESH_OPEN_WINDOW_DETECTION_ACTIVATION_MAX = (
+        "refreshOpenWindowDetectionActivationMax"
+    )
+    REFRESH_OPEN_WINDOW_DETECTION_ACTIVATION_MIN = (
+        "refreshOpenWindowDetectionActivationMin"
+    )
     REFRESH_OPERATING_HOURS_COUNT = "refreshOperatingHoursCount"
     REFRESH_OPERATING_MODE = "refreshOperatingMode"
     REFRESH_OPERATING_MODE_CAPABILITIES = "refreshOperatingModeCapabilities"
@@ -505,7 +549,9 @@ class OverkizCommand(StrEnum):
     REFRESH_OUTDOOR_EXTRACT_AIR_TEMP_DIFF = "refreshOutdoorExtractAirTempDiff"
     REFRESH_OUTDOOR_SENSOR_TEMPERATURE = "refreshOutdoorSensorTemperature"
     REFRESH_OUTSIDE_TEMPERATURE = "refreshOutsideTemperature"
-    REFRESH_OUTSIDE_TEMPERATURE_SENSOR_AVAILABILITY = "refreshOutsideTemperatureSensorAvailability"
+    REFRESH_OUTSIDE_TEMPERATURE_SENSOR_AVAILABILITY = (
+        "refreshOutsideTemperatureSensorAvailability"
+    )
     REFRESH_OUT_DOOR_AIR = "refreshOutDoorAir"
     REFRESH_OVER_HEATING_ELECTRICAL_HEATER = "refreshOverHeatingElectricalHeater"
     REFRESH_PASS_APCDHWMODE = "refreshPassAPCDHWMode"
@@ -555,10 +601,18 @@ class OverkizCommand(StrEnum):
     REFRESH_RELATIVE_HUMIDITY = "refreshRelativeHumidity"
     REFRESH_REMAINING_HOT_WATER = "refreshRemainingHotWater"
     REFRESH_RHEFAILURE = "refreshRHEFailure"
-    REFRESH_ROOM_AMBIENT_TEMPERATURE_CONTROL_ZONE_1 = "refreshRoomAmbientTemperatureControlZone1"
-    REFRESH_ROOM_AMBIENT_TEMPERATURE_CONTROL_ZONE_2 = "refreshRoomAmbientTemperatureControlZone2"
-    REFRESH_ROOM_AMBIENT_TEMPERATURE_STATUS_ZONE_1 = "refreshRoomAmbientTemperatureStatusZone1"
-    REFRESH_ROOM_AMBIENT_TEMPERATURE_STATUS_ZONE_2 = "refreshRoomAmbientTemperatureStatusZone2"
+    REFRESH_ROOM_AMBIENT_TEMPERATURE_CONTROL_ZONE_1 = (
+        "refreshRoomAmbientTemperatureControlZone1"
+    )
+    REFRESH_ROOM_AMBIENT_TEMPERATURE_CONTROL_ZONE_2 = (
+        "refreshRoomAmbientTemperatureControlZone2"
+    )
+    REFRESH_ROOM_AMBIENT_TEMPERATURE_STATUS_ZONE_1 = (
+        "refreshRoomAmbientTemperatureStatusZone1"
+    )
+    REFRESH_ROOM_AMBIENT_TEMPERATURE_STATUS_ZONE_2 = (
+        "refreshRoomAmbientTemperatureStatusZone2"
+    )
     REFRESH_ROOM_DELETION_THRESHOLD = "refreshRoomDeletionThreshold"
     REFRESH_ROOM_SENSOR_TEMPERATURE = "refreshRoomSensorTemperature"
     REFRESH_ROOM_TEMPERATURE = "refreshRoomTemperature"
@@ -589,7 +643,9 @@ class OverkizCommand(StrEnum):
     REFRESH_SETPOINT_AIR_PRESSURE_BOOST = "refreshSetpointAirPressureBoost"
     REFRESH_SETPOINT_AIR_PRESSURE_NORMAL = "refreshSetpointAirPressureNormal"
     REFRESH_SETPOINT_AIR_PRESSURE_TRICKLE = "refreshSetpointAirPressureTrickle"
-    REFRESH_SETPOINT_LOWERING_TEMPERATURE_IN_PROG_MODE = "refreshSetpointLoweringTemperatureInProgMode"
+    REFRESH_SETPOINT_LOWERING_TEMPERATURE_IN_PROG_MODE = (
+        "refreshSetpointLoweringTemperatureInProgMode"
+    )
     REFRESH_SET_BACK_TEMPERATURE = "refreshSetBackTemperature"
     REFRESH_SET_POINT = "refreshSetPoint"
     REFRESH_SET_POINT_AIR_PRESSURE = "refreshSetPointAirPressure"
@@ -613,7 +669,9 @@ class OverkizCommand(StrEnum):
     REFRESH_STATIC_STATES_2 = "refreshStaticStates2"
     REFRESH_STATUS = "refreshStatus"
     REFRESH_STATUS_ANTI_LEGIONELLA = "refreshStatusAntiLegionella"
-    REFRESH_STATUS_ANTI_LEGIONELLA_SETTING_TEMPERATURE = "refreshStatusAntiLegionellaSettingTemperature"
+    REFRESH_STATUS_ANTI_LEGIONELLA_SETTING_TEMPERATURE = (
+        "refreshStatusAntiLegionellaSettingTemperature"
+    )
     REFRESH_STATUS_BLOCK_MENU = "refreshStatusBlockMenu"
     REFRESH_STATUS_CIRCUIT_1 = "refreshStatusCircuit1"
     REFRESH_STATUS_CIRCUIT_2 = "refreshStatusCircuit2"
@@ -625,7 +683,9 @@ class OverkizCommand(StrEnum):
     REFRESH_STATUS_HEATING_OTCZONE_1 = "refreshStatusHeatingOTCZone1"
     REFRESH_STATUS_HEATING_OTCZONE_2 = "refreshStatusHeatingOTCZone2"
     REFRESH_STATUS_SWIMMING_POOL = "refreshStatusSwimmingPool"
-    REFRESH_STATUS_SWIMMING_POOL_SETTING_TEMPERATURE = "refreshStatusSwimmingPoolSettingTemperature"
+    REFRESH_STATUS_SWIMMING_POOL_SETTING_TEMPERATURE = (
+        "refreshStatusSwimmingPoolSettingTemperature"
+    )
     REFRESH_STATUS_UNIT_MODE = "refreshStatusUnitMode"
     REFRESH_STORAGE_TANK_SENSOR_TEMPERATURE = "refreshStorageTankSensorTemperature"
     REFRESH_SUMMARY_ALARM_COOLER = "refreshSummaryAlarmCooler"
@@ -640,7 +700,9 @@ class OverkizCommand(StrEnum):
     REFRESH_SUPPLY_FAN_SPEED_TRICKLE = "refreshSupplyFanSpeedTrickle"
     REFRESH_SUPPORTED_SCENES_NUMBER = "refreshSupportedScenesNumber"
     REFRESH_SWIMMING_POOL_TEMPERATURE = "refreshSwimmingPoolTemperature"
-    REFRESH_SWIMMING_POOL_WATER_SENSOR_TEMPERATURE = "refreshSwimmingPoolWaterSensorTemperature"
+    REFRESH_SWIMMING_POOL_WATER_SENSOR_TEMPERATURE = (
+        "refreshSwimmingPoolWaterSensorTemperature"
+    )
     REFRESH_SWITCH_TYPE = "refreshSwitchType"
     REFRESH_SYNCHRONISATION_REQUEST = "refreshSynchronisationRequest"
     REFRESH_SYSTEM_CONFIGURATION = "refreshSystemConfiguration"
@@ -654,7 +716,9 @@ class OverkizCommand(StrEnum):
     REFRESH_TECHNICAL_OFFSET_MIN = "refreshTechnicalOffsetMin"
     REFRESH_TEMPERATURE = "refreshTemperature"
     REFRESH_TEMPERATURE_ALARM = "refreshTemperatureAlarm"
-    REFRESH_TEMPERATURE_PROBE_CALIBRATION_OFFSET = "refreshTemperatureProbeCalibrationOffset"
+    REFRESH_TEMPERATURE_PROBE_CALIBRATION_OFFSET = (
+        "refreshTemperatureProbeCalibrationOffset"
+    )
     REFRESH_TEMPORARY_TEMPERATURE = "refreshTemporaryTemperature"
     REFRESH_TEMPORARY_TEMPERATURE_MAX = "refreshTemporaryTemperatureMax"
     REFRESH_TEMPORARY_TEMPERATURE_MIN = "refreshTemporaryTemperatureMin"
@@ -687,14 +751,30 @@ class OverkizCommand(StrEnum):
     REFRESH_WAKE_UP_CAPABILITIES_INTERVAL = "refreshWakeUpCapabilitiesInterval"
     REFRESH_WAKE_UP_INTERVAL = "refreshWakeUpInterval"
     REFRESH_WATER_CONSUMPTION = "refreshWaterConsumption"
-    REFRESH_WATER_COOLING_SETTING_TEMPERATURE_CONTROL_ZONE_1 = "refreshWaterCoolingSettingTemperatureControlZone1"
-    REFRESH_WATER_COOLING_SETTING_TEMPERATURE_CONTROL_ZONE_2 = "refreshWaterCoolingSettingTemperatureControlZone2"
-    REFRESH_WATER_COOLING_SETTING_TEMPERATURE_STATUS_ZONE_1 = "refreshWaterCoolingSettingTemperatureStatusZone1"
-    REFRESH_WATER_COOLING_SETTING_TEMPERATURE_STATUS_ZONE_2 = "refreshWaterCoolingSettingTemperatureStatusZone2"
-    REFRESH_WATER_HEATING_SETTING_TEMPERATURE_CONTROL_ZONE_1 = "refreshWaterHeatingSettingTemperatureControlZone1"
-    REFRESH_WATER_HEATING_SETTING_TEMPERATURE_CONTROL_ZONE_2 = "refreshWaterHeatingSettingTemperatureControlZone2"
-    REFRESH_WATER_HEATING_SETTING_TEMPERATURE_STATUS_ZONE_1 = "refreshWaterHeatingSettingTemperatureStatusZone1"
-    REFRESH_WATER_HEATING_SETTING_TEMPERATURE_STATUS_ZONE_2 = "refreshWaterHeatingSettingTemperatureStatusZone2"
+    REFRESH_WATER_COOLING_SETTING_TEMPERATURE_CONTROL_ZONE_1 = (
+        "refreshWaterCoolingSettingTemperatureControlZone1"
+    )
+    REFRESH_WATER_COOLING_SETTING_TEMPERATURE_CONTROL_ZONE_2 = (
+        "refreshWaterCoolingSettingTemperatureControlZone2"
+    )
+    REFRESH_WATER_COOLING_SETTING_TEMPERATURE_STATUS_ZONE_1 = (
+        "refreshWaterCoolingSettingTemperatureStatusZone1"
+    )
+    REFRESH_WATER_COOLING_SETTING_TEMPERATURE_STATUS_ZONE_2 = (
+        "refreshWaterCoolingSettingTemperatureStatusZone2"
+    )
+    REFRESH_WATER_HEATING_SETTING_TEMPERATURE_CONTROL_ZONE_1 = (
+        "refreshWaterHeatingSettingTemperatureControlZone1"
+    )
+    REFRESH_WATER_HEATING_SETTING_TEMPERATURE_CONTROL_ZONE_2 = (
+        "refreshWaterHeatingSettingTemperatureControlZone2"
+    )
+    REFRESH_WATER_HEATING_SETTING_TEMPERATURE_STATUS_ZONE_1 = (
+        "refreshWaterHeatingSettingTemperatureStatusZone1"
+    )
+    REFRESH_WATER_HEATING_SETTING_TEMPERATURE_STATUS_ZONE_2 = (
+        "refreshWaterHeatingSettingTemperatureStatusZone2"
+    )
     REFRESH_WATER_INLET_UNIT_TEMPERATURE = "refreshWaterInletUnitTemperature"
     REFRESH_WATER_OUTLET_UNIT_TEMPERATURE = "refreshWaterOutletUnitTemperature"
     REFRESH_WATER_PRESSURE = "refreshWaterPressure"
@@ -703,7 +783,9 @@ class OverkizCommand(StrEnum):
     REFRESH_WATER_TEMPERATURE = "refreshWaterTemperature"
     REFRESH_WEDNESDAY_TIME_PROGRAM = "refreshWednesdayTimeProgram"
     REFRESH_WISHED_COMFORT_PERIOD_TEMPERATURE = "refreshWishedComfortPeriodTemperature"
-    REFRESH_WISHED_DOMESTIC_HOT_WATER_TEMPERATURE = "refreshWishedDomesticHotWaterTemperature"
+    REFRESH_WISHED_DOMESTIC_HOT_WATER_TEMPERATURE = (
+        "refreshWishedDomesticHotWaterTemperature"
+    )
     REFRESH_WISHED_REDUCED_PERIOD_TEMPERATURE = "refreshWishedReducedPeriodTemperature"
     REFRESH_WISHED_SWIMMING_POOL_TEMPERATURE = "refreshWishedSwimmingPoolTemperature"
     REFRESH_ZONES_NUMBER = "refreshZonesNumber"
@@ -711,7 +793,9 @@ class OverkizCommand(StrEnum):
     REFRESH_ZONES_PASS_APC_HEATING_PROFILE = "refreshZonesPassAPCHeatingProfile"
     REFRESH_ZONES_TARGET_TEMPERATURE = "refreshZonesTargetTemperature"
     REFRESH_ZONES_TEMPERATURE = "refreshZonesTemperature"
-    REFRESH_ZONES_TEMPERATURE_SENSOR_AVAILABILITY = "refreshZonesTemperatureSensorAvailability"
+    REFRESH_ZONES_TEMPERATURE_SENSOR_AVAILABILITY = (
+        "refreshZonesTemperatureSensorAvailability"
+    )
     REFRESH_ZONES_THERMAL_CONFIGURATION = "refreshZonesThermalConfiguration"
     REFRESH_ZWAVE_INDICATOR_LEVEL = "refreshZWaveIndicatorLevel"
     REFRESH_ZWAVE_POWER_LEVEL = "refreshZWavePowerLevel"
@@ -864,7 +948,9 @@ class OverkizCommand(StrEnum):
     SET_CONSIGN_REGUL = "setConsignRegul"
     SET_CONTEXT_SAVING_ON_POWER_CUT = "setContextSavingOnPowerCut"
     SET_CONTROL_ANTI_LEGIONELLA = "setControlAntiLegionella"
-    SET_CONTROL_ANTI_LEGIONELLA_SETTING_TEMPERATURE = "setControlAntiLegionellaSettingTemperature"
+    SET_CONTROL_ANTI_LEGIONELLA_SETTING_TEMPERATURE = (
+        "setControlAntiLegionellaSettingTemperature"
+    )
     SET_CONTROL_BLOCK_MENU = "setControlBlockMenu"
     SET_CONTROL_CIRCUIT_1 = "setControlCircuit1"
     SET_CONTROL_CIRCUIT_2 = "setControlCircuit2"
@@ -875,9 +961,13 @@ class OverkizCommand(StrEnum):
     SET_CONTROL_DHW_SETTING_TEMPERATURE = "setControlDHWSettingTemperature"
     SET_CONTROL_HEATING_OTCZONE_1 = "setControlHeatingOTCZone1"
     SET_CONTROL_HEATING_OTCZONE_2 = "setControlHeatingOTCZone2"
-    SET_CONTROL_SEQUENCE_OF_THERMOSTAT_OPERATION = "setControlSequenceOfThermostatOperation"
+    SET_CONTROL_SEQUENCE_OF_THERMOSTAT_OPERATION = (
+        "setControlSequenceOfThermostatOperation"
+    )
     SET_CONTROL_SWIMMING_POOL = "setControlSwimmingPool"
-    SET_CONTROL_SWIMMING_POOL_SETTING_TEMPERATURE = "setControlSwimmingPoolSettingTemperature"
+    SET_CONTROL_SWIMMING_POOL_SETTING_TEMPERATURE = (
+        "setControlSwimmingPoolSettingTemperature"
+    )
     SET_CONTROL_UNIT = "setControlUnit"
     SET_CONTROL_UNIT_MODE = "setControlUnitMode"
     SET_COOLING_DXYES_NO_STATE = "setCoolingDXYesNoState"
@@ -969,7 +1059,9 @@ class OverkizCommand(StrEnum):
     SET_HSB = "setHSB"
     SET_HUE = "setHue"
     SET_HUE_AND_SATURATION = "setHueAndSaturation"
-    SET_HUE_AND_SATURATION_WITH_TRANSITION_TIME = "setHueAndSaturationWithTransitionTime"
+    SET_HUE_AND_SATURATION_WITH_TRANSITION_TIME = (
+        "setHueAndSaturationWithTransitionTime"
+    )
     SET_INSTALLATION = "setInstallation"
     SET_INTENSITY = "setIntensity"
     SET_INTENSITY_WITH_TIMER = "setIntensityWithTimer"
@@ -1023,8 +1115,12 @@ class OverkizCommand(StrEnum):
     SET_NAME = "setName"
     SET_NATIVE_LEVELS_LIST = "setNativeLevelsList"
     SET_NB_SEC_AFTER_LAST_DETECT = "setNbSecAfterLastDetect"
-    SET_NETATMO_DEROGATED_TARGET_ROOM_TEMPERATURE = "setNetatmoDerogatedTargetRoomTemperature"
-    SET_NETATMO_DEROGATED_TIME_TARGET_ROOM_TEMPERATURE = "setNetatmoDerogatedTimeTargetRoomTemperature"
+    SET_NETATMO_DEROGATED_TARGET_ROOM_TEMPERATURE = (
+        "setNetatmoDerogatedTargetRoomTemperature"
+    )
+    SET_NETATMO_DEROGATED_TIME_TARGET_ROOM_TEMPERATURE = (
+        "setNetatmoDerogatedTimeTargetRoomTemperature"
+    )
     SET_NETATMO_OPERATING_MODE = "setNetatmoOperatingMode"
     SET_NODE_DEFINITION = "setNodeDefinition"
     SET_NOTIFICATION_STATUS = "setNotificationStatus"
@@ -1076,8 +1172,12 @@ class OverkizCommand(StrEnum):
     SET_RHEFAILURE = "setRHEFailure"
     SET_ROCKER_POSITION = "setRockerPosition"
     SET_ROLLING_OUT = "setRollingOut"
-    SET_ROOM_AMBIENT_TEMPERATURE_CONTROL_ZONE_1 = "setRoomAmbientTemperatureControlZone1"
-    SET_ROOM_AMBIENT_TEMPERATURE_CONTROL_ZONE_2 = "setRoomAmbientTemperatureControlZone2"
+    SET_ROOM_AMBIENT_TEMPERATURE_CONTROL_ZONE_1 = (
+        "setRoomAmbientTemperatureControlZone1"
+    )
+    SET_ROOM_AMBIENT_TEMPERATURE_CONTROL_ZONE_2 = (
+        "setRoomAmbientTemperatureControlZone2"
+    )
     SET_ROOM_DELETION_THRESHOLD = "setRoomDeletionThreshold"
     SET_ROOM_TEMPERATURE = "setRoomTemperature"
     SET_ROTOR_BELT_OFF_ALARM = "setRotorBeltOffAlarm"
@@ -1097,7 +1197,9 @@ class OverkizCommand(StrEnum):
     SET_SENSOR_ERROR_FROST_PROTECT = "setSensorErrorFrostProtect"
     SET_SENSOR_ERROR_OUT_DOOR_TEMP = "setSensorErrorOutDoorTemp"
     SET_SENSOR_ERROR_SUPPLY_TEMP = "setSensorErrorSupplyTemp"
-    SET_SETPOINT_LOWERING_TEMPERATURE_IN_PROG_MODE = "setSetpointLoweringTemperatureInProgMode"
+    SET_SETPOINT_LOWERING_TEMPERATURE_IN_PROG_MODE = (
+        "setSetpointLoweringTemperatureInProgMode"
+    )
     SET_SETPOINT_OVERRIDE = "setSetpointOverride"
     SET_SET_BACK_TEMPERATURE = "setSetBackTemperature"
     SET_SET_POINT = "setSetPoint"
@@ -1135,7 +1237,9 @@ class OverkizCommand(StrEnum):
     SET_TARGET_SPIN_SPEED = "setTargetSpinSpeed"
     SET_TARGET_TEMPERATURE = "setTargetTemperature"
     SET_TARGET_TEMPERATURE_VALUE = "setTargetTemperatureValue"
-    SET_TARGET_TEMPERATURE_WITH_EXTERNAL_MEASURE = "setTargetTemperatureWithExternalMeasure"
+    SET_TARGET_TEMPERATURE_WITH_EXTERNAL_MEASURE = (
+        "setTargetTemperatureWithExternalMeasure"
+    )
     SET_TARGET_TIME = "setTargetTime"
     SET_TARGET_WAKE_UP_INTERVAL = "setTargetWakeUpInterval"
     SET_TARGET_WEIGHT = "setTargetWeight"
@@ -1183,10 +1287,18 @@ class OverkizCommand(StrEnum):
     SET_VENTILATION_MODE = "setVentilationMode"
     SET_VOLUME = "setVolume"
     SET_WAKE_UP_INTERVAL = "setWakeUpInterval"
-    SET_WATER_COOLING_SETTING_TEMPERATURE_CONTROL_ZONE_1 = "setWaterCoolingSettingTemperatureControlZone1"
-    SET_WATER_COOLING_SETTING_TEMPERATURE_CONTROL_ZONE_2 = "setWaterCoolingSettingTemperatureControlZone2"
-    SET_WATER_HEATING_SETTING_TEMPERATURE_CONTROL_ZONE_1 = "setWaterHeatingSettingTemperatureControlZone1"
-    SET_WATER_HEATING_SETTING_TEMPERATURE_CONTROL_ZONE_2 = "setWaterHeatingSettingTemperatureControlZone2"
+    SET_WATER_COOLING_SETTING_TEMPERATURE_CONTROL_ZONE_1 = (
+        "setWaterCoolingSettingTemperatureControlZone1"
+    )
+    SET_WATER_COOLING_SETTING_TEMPERATURE_CONTROL_ZONE_2 = (
+        "setWaterCoolingSettingTemperatureControlZone2"
+    )
+    SET_WATER_HEATING_SETTING_TEMPERATURE_CONTROL_ZONE_1 = (
+        "setWaterHeatingSettingTemperatureControlZone1"
+    )
+    SET_WATER_HEATING_SETTING_TEMPERATURE_CONTROL_ZONE_2 = (
+        "setWaterHeatingSettingTemperatureControlZone2"
+    )
     SET_WATER_PRESSURE = "setWaterPressure"
     SET_WATER_TARGET_TEMPERATURE = "setWaterTargetTemperature"
     SET_WATER_TEMPERATURE = "setWaterTemperature"
@@ -1214,7 +1326,9 @@ class OverkizCommand(StrEnum):
     START_IDENTIFY = "startIdentify"
     START_INCLUSION = "startInclusion"
     START_INCLUSION_WITH_MODE = "startInclusionWithMode"
-    START_INCLUSION_WITH_MODE_AND_SECURITY_LEVEL = "startInclusionWithModeAndSecurityLevel"
+    START_INCLUSION_WITH_MODE_AND_SECURITY_LEVEL = (
+        "startInclusionWithModeAndSecurityLevel"
+    )
     START_JSWLIVE_VIDEO = "startJSWLiveVideo"
     START_JSWRECORDING = "startJSWRecording"
     START_LEARN = "startLearn"
@@ -1256,7 +1370,9 @@ class OverkizCommand(StrEnum):
     UNMUTE = "unmute"
     UNMUTE_GROUP = "unmuteGroup"
     UNPAIR_ALL_ONE_WAY_CONTROLLERS = "unpairAllOneWayControllers"
-    UNPAIR_ALL_ONE_WAY_CONTROLLERS_AND_DELETE_NODE = "unpairAllOneWayControllersAndDeleteNode"
+    UNPAIR_ALL_ONE_WAY_CONTROLLERS_AND_DELETE_NODE = (
+        "unpairAllOneWayControllersAndDeleteNode"
+    )
     UNPAIR_ONE_WAY_CONTROLLER = "unpairOneWayController"
     UP = "up"
     UPDATE = "update"
@@ -1341,7 +1457,9 @@ class OverkizCommandParam(StrEnum):
     DISABLE = "disable"
     DISABLED = "disabled"
     DISARMED = "disarmed"
-    DOUBLE_FLOW_CONTROLLED_MECHANICAL_VENTILATION = "doubleFlowControlledMechanicalVentilation"
+    DOUBLE_FLOW_CONTROLLED_MECHANICAL_VENTILATION = (
+        "doubleFlowControlledMechanicalVentilation"
+    )
     DOUBLE_PRESS = "doublePress"
     DOWN = "down"
     DRY = "dry"
@@ -1420,13 +1538,13 @@ class OverkizCommandParam(StrEnum):
     LONG_PRESS = "longPress"
     LOST = "lost"
     LOW = "low"
+    LOWSPEED = "lowspeed"
+    LOW_BATTERY = "lowBattery"
+    LOW_EXTRACTION_SPEED = "lowExtractionSpeed"
     LOW_HIGH = "low/high"
     LOW_HIGH_AUTO = "low/high/auto"
     LOW_MEDIUM_HIGH = "low/medium/high"
     LOW_MEDIUM_HIGH_AUTO = "low/medium/high/auto"
-    LOWSPEED = "lowspeed"
-    LOW_BATTERY = "lowBattery"
-    LOW_EXTRACTION_SPEED = "lowExtractionSpeed"
     LSC = "LSC"
     MAINTENANCE_REQUIRED = "maintenanceRequired"
     MANU = "manu"
@@ -1458,9 +1576,9 @@ class OverkizCommandParam(StrEnum):
     OFFLINE = "offline"
     OK = "OK"
     ON = "on"
-    ON_AUTO = "on/auto"
     ONLINE = "online"
     ONLY_THERMODYNAMIC = "onlyThermodynamic"
+    ON_AUTO = "on/auto"
     ON_OFF_LIGHT = "onOffLight"
     OPEN = "open"
     OPENED = "opened"
@@ -1506,7 +1624,9 @@ class OverkizCommandParam(StrEnum):
     SILENCE = "silence"
     SILENT = "silent"
     SIMPLE_PRESS = "simplePress"
-    SINGLE_FLOW_CONTROLLED_MECHANICAL_VENTILATION = "singleFlowControlledMechanicalVentilation"
+    SINGLE_FLOW_CONTROLLED_MECHANICAL_VENTILATION = (
+        "singleFlowControlledMechanicalVentilation"
+    )
     SLEEPING_MODE = "sleepingMode"
     SMART = "smart"
     SOS = "sos"
