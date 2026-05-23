@@ -150,3 +150,4 @@ dmypy.json
 
 # Generated device catalog (user-specific API output)
 docs/device-catalog/
+docs/device-types.md
