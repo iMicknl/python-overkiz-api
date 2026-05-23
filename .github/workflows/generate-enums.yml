@@ -7,7 +7,7 @@ on:
 
 jobs:
   generate:
-    name: Generate enums from Overkiz API
+    name: Fetch server data and regenerate enums + docs
     runs-on: ubuntu-latest
     environment: overkiz-api
     permissions:
@@ -30,26 +30,34 @@ jobs:
       - name: Install the project
         run: uv sync --all-extras --dev
 
-      - name: Generate enums
+      - name: Fetch server data (Somfy Europe)
         env:
           OVERKIZ_USERNAME: ${{ secrets.OVERKIZ_USERNAME }}
           OVERKIZ_PASSWORD: ${{ secrets.OVERKIZ_PASSWORD }}
+        run: uv run python utils/fetch_server_data.py --server somfy_europe
+
+      - name: Generate enums
         run: uv run python utils/generate_enums.py
+
+      - name: Generate device catalog docs
+        run: uv run python utils/generate_device_catalog.py
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v7
         with:
-          commit-message: "Update generated enums from Overkiz API"
-          title: "Update generated enums from Overkiz API"
+          commit-message: "Update generated enums and docs from Overkiz API"
+          title: "Update generated enums and docs from Overkiz API"
           body: |
-            Automated weekly regeneration of enum files from the Overkiz API.
+            Automated weekly regeneration of enum files and documentation from the Overkiz API.
 
             Updated files:
+            - `docs/data/somfy_europe.json`
             - `pyoverkiz/enums/protocol.py`
             - `pyoverkiz/enums/ui.py`
             - `pyoverkiz/enums/ui_profile.py`
             - `pyoverkiz/enums/command.py`
             - `docs/ui-profiles.md`
+            - `docs/device-types.md`
           branch: automated/generate-enums
           base: main
           delete-branch: true

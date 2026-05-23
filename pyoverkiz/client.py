@@ -41,6 +41,8 @@ from pyoverkiz.models import (
     Command,
     Definition,
     Device,
+    DeviceManufacturerReference,
+    DeviceSearchResult,
     Event,
     Execution,
     FirmwareStatus,
@@ -724,11 +726,26 @@ class OverkizClient:
         return await self._get("reference/controllableTypes")
 
     @retry_on_auth_error
-    async def search_reference_devices_model(
+    async def search_reference_devices(
         self, payload: dict[str, Any]
-    ) -> dict[str, Any]:
-        """Search reference device models using a POST payload."""
-        return await self._post("reference/devices/search", payload)
+    ) -> DeviceSearchResult:
+        """Search reference device models using a POST payload.
+
+        The payload can filter by protocol types, UI classes, widgets, classifiers,
+        controllable types, or free-text criteria. Additional flags control whether
+        commands, states, attributes and manufacturer references are included.
+
+        Example payload:
+            {
+                "protocolTypes": ["IO"],
+                "withCommands": True,
+                "withStates": True,
+                "withAttributes": True,
+                "withManufacturerReferences": True,
+            }
+        """
+        response = await self._post("reference/devices/search", payload)
+        return structure_response(response, DeviceSearchResult)
 
     @retry_on_auth_error
     async def get_reference_protocol_types(self) -> list[ProtocolType]:
@@ -831,6 +848,44 @@ class OverkizClient:
     async def update_all_device_firmwares(self) -> None:
         """Update firmware for all devices that are not up to date."""
         await self._put("setup/devices/updateFirmwares")
+
+    @retry_on_auth_error
+    async def get_device_controllables(self) -> dict[str, list[str]]:
+        """Get all device URLs grouped by their controllable name.
+
+        Returns a dict mapping controllable names to lists of device URLs
+        that use that controllable.
+        """
+        return await self._get("setup/devices/controllables")
+
+    @retry_on_auth_error
+    async def get_device_controllable_definition(
+        self, device_url: str
+    ) -> Definition | None:
+        """Get the controllable definition for a specific device."""
+        response = await self._get(
+            f"setup/devices/{urllib.parse.quote_plus(device_url)}/controllable"
+        )
+        if response is None:
+            return None
+        return structure_response(response, Definition)
+
+    @retry_on_auth_error
+    async def get_device_alternative_controllables(self, device_url: str) -> list[str]:
+        """Get all alternative controllable names for a device."""
+        return await self._get(
+            f"setup/devices/{urllib.parse.quote_plus(device_url)}/alternativeControllables"
+        )
+
+    @retry_on_auth_error
+    async def get_device_manufacturer_references(
+        self, device_url: str
+    ) -> list[DeviceManufacturerReference]:
+        """Get all manufacturer references for a device."""
+        response = await self._get(
+            f"setup/devices/{urllib.parse.quote_plus(device_url)}/manufacturerReferences"
+        )
+        return structure_response(response, list[DeviceManufacturerReference])
 
     async def _get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API."""

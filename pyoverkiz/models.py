@@ -872,6 +872,98 @@ class UIProfileDefinition:
     form_factor: bool = False
 
 
+# ---------------------------------------------------------------------------
+# Device catalog (reference/devices/search API)
+# ---------------------------------------------------------------------------
+
+
+@define(kw_only=True)
+class DeviceCommandDefinition:
+    """Full command definition from the device catalog."""
+
+    command_name: str
+    nparams: int = 0
+    description: str | None = None
+    prototype: CommandPrototype | None = None
+    protocol_specifics: list[dict[str, Any]] | None = None
+
+
+@define(kw_only=True)
+class DeviceStateDefinition:
+    """Full state definition from the device catalog."""
+
+    name: str
+    type: str | None = None
+    event_based: bool = False
+    persistent: bool = True
+    prototype: StatePrototype | None = None
+    protocol_specifics: list[dict[str, Any]] | None = None
+
+
+@define(kw_only=True)
+class DeviceAttributeDefinition:
+    """Attribute definition from the device catalog."""
+
+    name: str
+    type: int | None = None
+    default_value: str | None = None
+    protocol_specifics: list[dict[str, Any]] | None = None
+
+
+@define(kw_only=True)
+class ManufacturerReferenceTag:
+    """Tag within a manufacturer reference."""
+
+    tag: str
+    type: str | None = None
+
+
+@define(kw_only=True)
+class ManufacturerReference:
+    """Manufacturer reference from the device catalog."""
+
+    provider: str
+    tags: list[ManufacturerReferenceTag] = field(factory=list)
+
+
+@define(kw_only=True)
+class DeviceTypeDefinition:
+    """Complete device type definition from the reference devices search."""
+
+    type_id: int | None = None
+    subsystem_id: int | None = None
+    local_pairing: bool = False
+    commands: list[DeviceCommandDefinition] = field(factory=list)
+    states: list[DeviceStateDefinition] = field(factory=list)
+    attributes: list[DeviceAttributeDefinition] = field(factory=list)
+    manufacturer_references: list[ManufacturerReference] = field(factory=list)
+    ui_classifiers: list[str] = field(factory=list)
+    ui_profiles: list[str] = field(factory=list)
+    ui_class: str | None = None
+    ui_widget: str | None = None
+    controllable_name: str | None = None
+    controllable_type: str | None = None
+    protocol_type: str | None = None
+
+
+@define(kw_only=True)
+class DeviceSearchResult:
+    """Result from POST /reference/devices/search."""
+
+    all_result: bool = True
+    devices_types: list[DeviceTypeDefinition] = field(factory=list)
+
+
+@define(kw_only=True)
+class DeviceManufacturerReference:
+    """Manufacturer reference for a specific device (setup endpoint)."""
+
+    protocol_type: int | None = None
+    provider: str | None = None
+    tag: str | None = None
+    type: str | None = None
+
+
 @define(kw_only=True)
 class FirmwareStatus:
     """Firmware status of a device."""

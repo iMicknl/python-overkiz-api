@@ -8,9 +8,9 @@ hide:
 UI profiles describe device capabilities through the commands they accept and the states they expose. Each device has one or more profiles that define what it can do.
 
 !!! note
-    This page is auto-generated from the Overkiz API. Run `uv run utils/generate_enums.py` to regenerate.
+    This page is auto-generated. Run `uv run utils/generate_enums.py` to regenerate.
 
-**189 profiles** documented below.
+**190 profiles** documented below.
 
 ## AirFan
 
@@ -1470,6 +1470,24 @@ UI profiles describe device capabilities through the commands they accept and th
 | `core:OpenClosedState` | `string` — `open`, `closed` | Indicate if the device is open or closed |
 
 ## StatefulOpenCloseShutter
+
+*Form factor specific* — tied to a specific physical device type.
+
+### Commands
+
+| Command | Parameters | Description |
+|---------|-----------|-------------|
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+
+### States
+
+| State | Type | Description |
+|-------|------|-------------|
+| `core:OpenClosedState` | `string` — `open`, `closed` | Indicate if the device is open or closed |
+
+## StatefulOpenCloseSwimmingPoolShutter
 
 *Form factor specific* — tied to a specific physical device type.
 

@@ -52,6 +52,10 @@ nav:
       - Troubleshooting: troubleshooting.md
       - Migrating from v1: migration-v2.md
   - Reference:
-      - API Reference: api-reference.md
+      - SDK Reference: sdk-reference.md
+      - Device Types: device-types.md
       - UI Profiles: ui-profiles.md
-  - Contribute: contribute.md
+      - API Reference ↗: api/
+  - Development:
+      - Utilities: development-utils.md
+      - Contributing: contribute.md
