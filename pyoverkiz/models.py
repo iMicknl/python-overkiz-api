@@ -19,6 +19,7 @@ from pyoverkiz.enums import (
     GatewaySubType,
     GatewayType,
     ProductType,
+    StateDefinitionType,
     UIClass,
     UIClassifier,
     UIProfile,
@@ -266,7 +267,7 @@ class StateDefinition:
 
     qualified_name: str | None = None
     name: str | None = field(default=None, init=True, repr=False, eq=False)
-    type: str | None = None
+    type: StateDefinitionType | None = None
     values: list[str] | None = None
     event_based: bool | None = None
 

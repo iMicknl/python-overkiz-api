@@ -13,7 +13,13 @@ from pyoverkiz.enums.gateway import (
     UpdateBoxStatus,
     UpdateCriticityLevel,
 )
-from pyoverkiz.enums.general import DataType, EventName, FailureType, ProductType
+from pyoverkiz.enums.general import (
+    DataType,
+    EventName,
+    FailureType,
+    ProductType,
+    StateDefinitionType,
+)
 from pyoverkiz.enums.measured_value_type import MeasuredValueType
 from pyoverkiz.enums.protocol import Protocol
 from pyoverkiz.enums.server import APIType, Server
@@ -40,6 +46,7 @@ __all__ = [
     "ProductType",
     "Protocol",
     "Server",
+    "StateDefinitionType",
     "UIClass",
     "UIClassifier",
     "UIProfile",

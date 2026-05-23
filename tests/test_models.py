@@ -15,6 +15,7 @@ from pyoverkiz.enums import (
     ExecutionState,
     FailureType,
     Protocol,
+    StateDefinitionType,
     UIClassifier,
     UIProfile,
 )
@@ -683,6 +684,51 @@ class TestStateDefinition:
             match=r"StateDefinition requires either `name` or `qualified_name`\.",
         ):
             StateDefinition()
+
+    def test_continuous_type(self):
+        """ContinuousState should be parsed as StateDefinitionType.CONTINUOUS."""
+        sd = converter.structure(
+            {"qualified_name": "core:ClosureState", "type": "ContinuousState"},
+            StateDefinition,
+        )
+        assert sd.type == StateDefinitionType.CONTINUOUS
+
+    def test_discrete_type(self):
+        """DiscreteState should be parsed as StateDefinitionType.DISCRETE."""
+        sd = converter.structure(
+            {
+                "qualified_name": "core:OnOffState",
+                "type": "DiscreteState",
+                "values": ["on", "off"],
+            },
+            StateDefinition,
+        )
+        assert sd.type == StateDefinitionType.DISCRETE
+        assert sd.values == ["on", "off"]
+
+    def test_data_type(self):
+        """DataState should be parsed as StateDefinitionType.DATA."""
+        sd = converter.structure(
+            {"qualified_name": "core:SomeDataState", "type": "DataState"},
+            StateDefinition,
+        )
+        assert sd.type == StateDefinitionType.DATA
+
+    def test_none_type(self):
+        """Missing type should result in None."""
+        sd = converter.structure(
+            {"qualified_name": "core:SomeState"},
+            StateDefinition,
+        )
+        assert sd.type is None
+
+    def test_unknown_type(self):
+        """Unknown type strings should fallback to UNKNOWN."""
+        sd = converter.structure(
+            {"qualified_name": "core:SomeState", "type": "FutureState"},
+            StateDefinition,
+        )
+        assert sd.type == StateDefinitionType.UNKNOWN
 
 
 class TestState:

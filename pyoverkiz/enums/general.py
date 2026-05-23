@@ -39,6 +39,17 @@ class DataType(IntEnum):
 
 
 @unique
+class StateDefinitionType(UnknownEnumMixin, StrEnum):
+    """Type of a state definition describing its value semantics."""
+
+    CONTINUOUS = "ContinuousState"
+    DISCRETE = "DiscreteState"
+    DATA = "DataState"
+
+    UNKNOWN = "Unknown"
+
+
+@unique
 class FailureType(UnknownEnumMixin, IntEnum):
     """Failure type codes returned by the API."""
 
