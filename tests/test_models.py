@@ -254,11 +254,11 @@ class TestDevice:
         device = _make_device(raw)
         assert device.states.get(STATE) is None
 
-    def test_select_first_command(self):
-        """Device.select_first_command() returns first supported command from list."""
+    def test_first_command(self):
+        """Device.first_command() returns first supported command from list."""
         device = _make_device()
-        assert device.select_first_command(["nonexistent", "open", "close"]) == "open"
-        assert device.select_first_command(["nonexistent"]) is None
+        assert device.first_command(["nonexistent", "open", "close"]) == "open"
+        assert device.first_command(["nonexistent"]) is None
 
     def test_supports_command(self):
         """Device.supports_command() checks if device supports a single command."""
@@ -272,50 +272,49 @@ class TestDevice:
         assert device.supports_any_command(["nonexistent", "open"])
         assert not device.supports_any_command(["nonexistent"])
 
-    def test_get_state_value(self):
-        """Device.get_state_value() returns value of a single state."""
+    def test_states_get_value(self):
+        """device.states.get_value() returns value of a single state."""
         device = _make_device()
-        value = device.get_state_value("core:ClosureState")
+        assert device.states.get_value("core:ClosureState") == 100
+        assert device.states.get_value("nonexistent") is None
+
+    def test_states_first_value(self):
+        """device.states.first_value() returns value of first matching state from list."""
+        device = _make_device()
+        value = device.states.first_value(["nonexistent", "core:ClosureState"])
         assert value == 100
-        assert device.get_state_value("nonexistent") is None
 
-    def test_select_first_state_value(self):
-        """Device.select_first_state_value() returns value of first matching state from list."""
+    def test_states_has(self):
+        """device.states.has() checks if a single state exists with non-None value."""
         device = _make_device()
-        value = device.select_first_state_value(["nonexistent", "core:ClosureState"])
-        assert value == 100
+        assert device.states.has("core:ClosureState")
+        assert not device.states.has("nonexistent")
 
-    def test_has_state_value(self):
-        """Device.has_state_value() checks if a single state exists with non-None value."""
+    def test_states_has_any(self):
+        """device.states.has_any() checks if any state exists with non-None value."""
         device = _make_device()
-        assert device.has_state_value("core:ClosureState")
-        assert not device.has_state_value("nonexistent")
+        assert device.states.has_any(["nonexistent", "core:ClosureState"])
+        assert not device.states.has_any(["nonexistent"])
 
-    def test_has_any_state_value(self):
-        """Device.has_any_state_value() checks if any state exists with non-None value."""
+    def test_definition_get_state_definition(self):
+        """device.definition.get_state_definition() returns StateDefinition for a single state."""
         device = _make_device()
-        assert device.has_any_state_value(["nonexistent", "core:ClosureState"])
-        assert not device.has_any_state_value(["nonexistent"])
-
-    def test_get_state_definition(self):
-        """Device.get_state_definition() returns StateDefinition for a single state."""
-        device = _make_device()
-        state_def = device.get_state_definition("core:ClosureState")
+        state_def = device.definition.get_state_definition("core:ClosureState")
         assert state_def is not None
         assert state_def.qualified_name == "core:ClosureState"
-        assert device.get_state_definition("nonexistent") is None
+        assert device.definition.get_state_definition("nonexistent") is None
 
-    def test_select_first_state_definition(self):
-        """Device.select_first_state_definition() returns first matching StateDefinition from list."""
+    def test_definition_first_state_definition(self):
+        """device.definition.first_state_definition() returns first matching StateDefinition from list."""
         device = _make_device()
-        state_def = device.select_first_state_definition(
+        state_def = device.definition.first_state_definition(
             ["nonexistent", "core:ClosureState"]
         )
         assert state_def is not None
         assert state_def.qualified_name == "core:ClosureState"
 
-    def test_get_attribute_value(self):
-        """Device.get_attribute_value() returns value of a single attribute."""
+    def test_attributes_get_value(self):
+        """device.attributes.get_value() returns value of a single attribute."""
         device = _make_device(
             {
                 **RAW_DEVICES,
@@ -325,12 +324,11 @@ class TestDevice:
                 ],
             }
         )
-        value = device.get_attribute_value("core:Model")
-        assert value == "WINDOW 100"
-        assert device.get_attribute_value("nonexistent") is None
+        assert device.attributes.get_value("core:Model") == "WINDOW 100"
+        assert device.attributes.get_value("nonexistent") is None
 
-    def test_select_first_attribute_value_returns_first_match(self):
-        """Device.select_first_attribute_value() returns value of first matching attribute from list."""
+    def test_attributes_first_value_returns_first_match(self):
+        """device.attributes.first_value() returns value of first matching attribute from list."""
         device = _make_device(
             {
                 **RAW_DEVICES,
@@ -340,25 +338,25 @@ class TestDevice:
                 ],
             }
         )
-        value = device.select_first_attribute_value(
+        value = device.attributes.first_value(
             ["nonexistent", "core:Model", "core:Manufacturer"]
         )
         assert value == "WINDOW 100"
 
-    def test_select_first_attribute_value_returns_none_when_no_match(self):
-        """Device.select_first_attribute_value() returns None when no attribute matches."""
+    def test_attributes_first_value_returns_none_when_no_match(self):
+        """device.attributes.first_value() returns None when no attribute matches."""
         device = _make_device()
-        value = device.select_first_attribute_value(["nonexistent", "also_nonexistent"])
-        assert value is None
+        assert (
+            device.attributes.first_value(["nonexistent", "also_nonexistent"]) is None
+        )
 
-    def test_select_first_attribute_value_empty_attributes(self):
-        """Device.select_first_attribute_value() returns None for devices with no attributes."""
+    def test_attributes_first_value_empty_attributes(self):
+        """device.attributes.first_value() returns None for devices with no attributes."""
         device = _make_device({**RAW_DEVICES, "attributes": []})
-        value = device.select_first_attribute_value(["core:Manufacturer"])
-        assert value is None
+        assert device.attributes.first_value(["core:Manufacturer"]) is None
 
-    def test_select_first_attribute_value_with_none_values(self):
-        """Device.select_first_attribute_value() skips attributes with None values."""
+    def test_attributes_first_value_with_none_values(self):
+        """device.attributes.first_value() skips attributes with None values."""
         device = _make_device(
             {
                 **RAW_DEVICES,
@@ -368,7 +366,7 @@ class TestDevice:
                 ],
             }
         )
-        value = device.select_first_attribute_value(["core:Model", "core:Manufacturer"])
+        value = device.attributes.first_value(["core:Model", "core:Manufacturer"])
         assert value == "VELUX"
 
 
@@ -405,30 +403,50 @@ class TestStates:
         state = states.get("FooState")
         assert state is None
 
-    def test_select_returns_first_match(self):
-        """select() returns the first state with a non-None value."""
+    def test_get_value_returns_value(self):
+        """get_value() returns the value of a state by name."""
         states = self._make_states(RAW_STATES)
-        state = states.select(
+        assert states.get_value("core:NameState") == "alarm name"
+
+    def test_get_value_returns_none_when_missing(self):
+        """get_value() returns None for a missing state."""
+        states = self._make_states(RAW_STATES)
+        assert states.get_value("nonexistent") is None
+
+    def test_first_returns_first_match(self):
+        """first() returns the first state with a non-None value."""
+        states = self._make_states(RAW_STATES)
+        state = states.first(
             ["nonexistent", "core:NameState", "internal:AlarmDelayState"]
         )
         assert state is not None
         assert state.name == "core:NameState"
 
-    def test_select_returns_none_when_no_match(self):
-        """select() returns None when no state matches."""
+    def test_first_returns_none_when_no_match(self):
+        """first() returns None when no state matches."""
         states = self._make_states(RAW_STATES)
-        assert states.select(["nonexistent", "also_nonexistent"]) is None
+        assert states.first(["nonexistent", "also_nonexistent"]) is None
 
-    def test_select_value_returns_first_value(self):
-        """select_value() returns the value of the first matching state."""
+    def test_first_value_returns_first_value(self):
+        """first_value() returns the value of the first matching state."""
         states = self._make_states(RAW_STATES)
-        value = states.select_value(["nonexistent", "core:NameState"])
+        value = states.first_value(["nonexistent", "core:NameState"])
         assert value == "alarm name"
 
-    def test_select_value_returns_none_when_no_match(self):
-        """select_value() returns None when no state matches."""
+    def test_first_value_returns_none_when_no_match(self):
+        """first_value() returns None when no state matches."""
         states = self._make_states(RAW_STATES)
-        assert states.select_value(["nonexistent"]) is None
+        assert states.first_value(["nonexistent"]) is None
+
+    def test_has_returns_true(self):
+        """has() returns True when the state exists with a non-None value."""
+        states = self._make_states(RAW_STATES)
+        assert states.has("core:NameState")
+
+    def test_has_returns_false(self):
+        """has() returns False when the state does not exist."""
+        states = self._make_states(RAW_STATES)
+        assert not states.has("nonexistent")
 
     def test_has_any_true(self):
         """has_any() returns True when at least one state exists."""
@@ -485,8 +503,8 @@ class TestCommandDefinitions:
     def _make_cmds(self, raw: list[dict]) -> CommandDefinitions:
         return converter.structure(raw, CommandDefinitions)
 
-    def test_select_returns_first_match(self):
-        """select() returns the first command name that exists."""
+    def test_first_returns_first_match(self):
+        """first() returns the first command name that exists."""
         cmds = self._make_cmds(
             [
                 {"command_name": "close", "nparams": 0},
@@ -494,12 +512,12 @@ class TestCommandDefinitions:
                 {"command_name": "setPosition", "nparams": 1},
             ]
         )
-        assert cmds.select(["nonexistent", "open", "close"]) == "open"
+        assert cmds.first(["nonexistent", "open", "close"]) == "open"
 
-    def test_select_returns_none_when_no_match(self):
-        """select() returns None when no command matches."""
+    def test_first_returns_none_when_no_match(self):
+        """first() returns None when no command matches."""
         cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
-        assert cmds.select(["nonexistent", "also_nonexistent"]) is None
+        assert cmds.first(["nonexistent", "also_nonexistent"]) is None
 
     def test_has_any_true(self):
         """has_any() returns True when at least one command exists."""
@@ -542,8 +560,8 @@ class TestCommandDefinitions:
 class TestDefinition:
     """Tests for Definition model and its helper methods."""
 
-    def test_get_state_definition_returns_first_match(self):
-        """get_state_definition() returns the first StateDefinition in definition.states."""
+    def test_get_state_definition_returns_match(self):
+        """get_state_definition() returns the StateDefinition by qualified name."""
         definition = Definition(
             commands=CommandDefinitions(),
             states=[
@@ -555,20 +573,37 @@ class TestDefinition:
                 ),
             ],
         )
-        state_def = definition.get_state_definition(
-            ["core:TargetClosureState", "core:ClosureState"]
-        )
+        state_def = definition.get_state_definition("core:ClosureState")
         assert state_def is not None
         assert state_def.qualified_name == "core:ClosureState"
 
-        state_def2 = definition.get_state_definition(["core:TargetClosureState"])
+        state_def2 = definition.get_state_definition("core:TargetClosureState")
         assert state_def2 is not None
         assert state_def2.qualified_name == "core:TargetClosureState"
 
     def test_get_state_definition_returns_none_when_no_match(self):
         """get_state_definition() returns None when no state definition matches."""
         definition = Definition(commands=CommandDefinitions(), states=[])
-        assert definition.get_state_definition(["nonexistent"]) is None
+        assert definition.get_state_definition("nonexistent") is None
+
+    def test_first_state_definition_returns_first_match(self):
+        """first_state_definition() returns the first matching StateDefinition."""
+        definition = Definition(
+            commands=CommandDefinitions(),
+            states=[
+                StateDefinition(
+                    qualified_name="core:ClosureState", type="ContinuousState"
+                ),
+                StateDefinition(
+                    qualified_name="core:TargetClosureState", type="ContinuousState"
+                ),
+            ],
+        )
+        state_def = definition.first_state_definition(
+            ["core:TargetClosureState", "core:ClosureState"]
+        )
+        assert state_def is not None
+        assert state_def.qualified_name == "core:ClosureState"
 
     def test_has_state_definition_returns_true(self):
         """has_state_definition() returns True when a state definition matches."""
@@ -578,15 +613,9 @@ class TestDefinition:
                 StateDefinition(
                     qualified_name="core:ClosureState", type="ContinuousState"
                 ),
-                StateDefinition(
-                    qualified_name="core:TargetClosureState", type="ContinuousState"
-                ),
             ],
         )
-        assert definition.has_state_definition(["core:ClosureState"])
-        assert definition.has_state_definition(
-            ["nonexistent", "core:TargetClosureState"]
-        )
+        assert definition.has_state_definition("core:ClosureState")
 
     def test_has_state_definition_returns_false(self):
         """has_state_definition() returns False when no state definition matches."""
@@ -598,12 +627,43 @@ class TestDefinition:
                 ),
             ],
         )
-        assert not definition.has_state_definition(["nonexistent", "also_nonexistent"])
+        assert not definition.has_state_definition("nonexistent")
+
+    def test_has_any_state_definition_returns_true(self):
+        """has_any_state_definition() returns True when any state definition matches."""
+        definition = Definition(
+            commands=CommandDefinitions(),
+            states=[
+                StateDefinition(
+                    qualified_name="core:ClosureState", type="ContinuousState"
+                ),
+                StateDefinition(
+                    qualified_name="core:TargetClosureState", type="ContinuousState"
+                ),
+            ],
+        )
+        assert definition.has_any_state_definition(
+            ["nonexistent", "core:TargetClosureState"]
+        )
+
+    def test_has_any_state_definition_returns_false(self):
+        """has_any_state_definition() returns False when no state definition matches."""
+        definition = Definition(
+            commands=CommandDefinitions(),
+            states=[
+                StateDefinition(
+                    qualified_name="core:ClosureState", type="ContinuousState"
+                ),
+            ],
+        )
+        assert not definition.has_any_state_definition(
+            ["nonexistent", "also_nonexistent"]
+        )
 
     def test_has_state_definition_empty_states(self):
         """has_state_definition() returns False for definitions with no states."""
         definition = Definition(commands=CommandDefinitions(), states=[])
-        assert not definition.has_state_definition(["core:ClosureState"])
+        assert not definition.has_state_definition("core:ClosureState")
 
 
 class TestStateDefinition:

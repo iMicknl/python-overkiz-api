@@ -173,7 +173,14 @@ class States(Mapping[str, State]):
         """Return number of states in the container."""
         return len(self._states)
 
-    def select(self, names: list[str]) -> State | None:
+    def get_value(self, name: str) -> StateType:
+        """Return the value of a state by name, or None if missing."""
+        state = self._index.get(name)
+        if state is not None:
+            return state.value
+        return None
+
+    def first(self, names: list[str]) -> State | None:
         """Return the first State that exists and has a non-None value, or None."""
         for name in names:
             state = self._index.get(name)
@@ -181,15 +188,20 @@ class States(Mapping[str, State]):
                 return state
         return None
 
-    def select_value(self, names: list[str]) -> StateType:
-        """Return the value of the first State that exists with a non-None value."""
-        if state := self.select(names):
+    def first_value(self, names: list[str]) -> StateType:
+        """Return the value of the first State with a non-None value, or None."""
+        if state := self.first(names):
             return state.value
         return None
 
+    def has(self, name: str) -> bool:
+        """Return True if the state exists with a non-None value."""
+        state = self._index.get(name)
+        return state is not None and state.value is not None
+
     def has_any(self, names: list[str]) -> bool:
         """Return True if any of the given state names exist with a non-None value."""
-        return self.select(names) is not None
+        return self.first(names) is not None
 
 
 @define(kw_only=True)
@@ -218,7 +230,11 @@ class CommandDefinitions(Mapping[str, CommandDefinition]):
 
     def __contains__(self, name: object) -> bool:
         """Return True if a command with `name` exists."""
-        return isinstance(name, str) and name in self._index
+        return (
+            str(name) in self._index
+            if isinstance(name, (str, OverkizCommand))
+            else False
+        )
 
     def __getitem__(self, command: str) -> CommandDefinition:
         """Return the command definition or raise KeyError if missing."""
@@ -231,7 +247,7 @@ class CommandDefinitions(Mapping[str, CommandDefinition]):
         """Return number of command definitions."""
         return len(self._commands)
 
-    def select(self, commands: list[str | OverkizCommand]) -> str | None:
+    def first(self, commands: list[str | OverkizCommand]) -> str | None:
         """Return the first command name that exists in this definition, or None."""
         return next(
             (str(command) for command in commands if str(command) in self._index), None
@@ -239,7 +255,7 @@ class CommandDefinitions(Mapping[str, CommandDefinition]):
 
     def has_any(self, commands: list[str | OverkizCommand]) -> bool:
         """Return True if any of the given commands exist in this definition."""
-        return self.select(commands) is not None
+        return self.first(commands) is not None
 
 
 @define(kw_only=True)
@@ -319,17 +335,28 @@ class Definition:
     type: str | None = None
     attributes: list[dict[str, Any]] | None = None
 
-    def get_state_definition(self, states: list[str]) -> StateDefinition | None:
-        """Return the first StateDefinition whose `qualified_name` matches, or None."""
-        states_set = set(states)
+    def get_state_definition(self, name: str) -> StateDefinition | None:
+        """Return the StateDefinition with the given qualified name, or None."""
         for state_def in self.states:
-            if state_def.qualified_name in states_set:
+            if state_def.qualified_name == name:
                 return state_def
         return None
 
-    def has_state_definition(self, states: list[str]) -> bool:
+    def first_state_definition(self, names: list[str]) -> StateDefinition | None:
+        """Return the first StateDefinition whose qualified_name matches, or None."""
+        names_set = set(names)
+        for state_def in self.states:
+            if state_def.qualified_name in names_set:
+                return state_def
+        return None
+
+    def has_state_definition(self, name: str) -> bool:
+        """Return True if the given state definition exists."""
+        return self.get_state_definition(name) is not None
+
+    def has_any_state_definition(self, names: list[str]) -> bool:
         """Return True if any of the given state definitions exist."""
-        return self.get_state_definition(states) is not None
+        return self.first_state_definition(names) is not None
 
 
 # <protocol>://<gatewayId>/<deviceAddress>[#<subsystemId>]
@@ -429,11 +456,11 @@ class Device:
             commands
         )
 
-    def select_first_command(self, commands: list[str | OverkizCommand]) -> str | None:
+    def first_command(self, commands: list[str | OverkizCommand]) -> str | None:
         """Return first supported command name from list, or None."""
         if self.definition is None:
             return None
-        return self.definition.commands.select(commands)
+        return self.definition.commands.first(commands)
 
     def get_command_definition(
         self, command: str | OverkizCommand
@@ -442,44 +469,6 @@ class Device:
         if self.definition is None:
             return None
         return self.definition.commands.get(str(command))
-
-    def get_state_value(self, state: str) -> StateType | None:
-        """Get value of a single state, or None if not found or None."""
-        return self.states.select_value([state])
-
-    def select_first_state_value(self, states: list[str]) -> StateType | None:
-        """Return value of first state with non-None value from list, or None."""
-        return self.states.select_value(states)
-
-    def has_state_value(self, state: str) -> bool:
-        """Check if a state exists with a non-None value."""
-        return self.states.has_any([state])
-
-    def has_any_state_value(self, states: list[str]) -> bool:
-        """Check if any of the states exist with non-None values."""
-        return self.states.has_any(states)
-
-    def get_state_definition(self, state: str) -> StateDefinition | None:
-        """Get StateDefinition for a single state name, or None."""
-        if self.definition is None:
-            return None
-        return self.definition.get_state_definition([state])
-
-    def select_first_state_definition(
-        self, states: list[str]
-    ) -> StateDefinition | None:
-        """Return first matching StateDefinition from list, or None."""
-        if self.definition is None:
-            return None
-        return self.definition.get_state_definition(states)
-
-    def get_attribute_value(self, attribute: str) -> StateType | None:
-        """Get value of a single attribute, or None if not found or None."""
-        return self.attributes.select_value([attribute])
-
-    def select_first_attribute_value(self, attributes: list[str]) -> StateType | None:
-        """Return value of first attribute with non-None value from list, or None."""
-        return self.attributes.select_value(attributes)
 
 
 # ---------------------------------------------------------------------------

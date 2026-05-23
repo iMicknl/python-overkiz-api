@@ -182,10 +182,10 @@ The identifier also provides `device.identifier.base_device_url`.
 
 The `Device` class now provides convenience methods — see the [device control guide](device-control.md) for details:
 
-- `device.get_state_value()`, `device.select_first_state_value()`, `device.has_state_value()`
-- `device.supports_command()`, `device.supports_any_command()`, `device.select_first_command()`
-- `device.get_attribute_value()`, `device.select_first_attribute_value()`
-- `device.get_state_definition()`, `device.select_first_state_definition()`
+- `device.states.get_value()`, `device.states.first_value()`, `device.states.has()`, `device.states.has_any()`
+- `device.supports_command()`, `device.supports_any_command()`, `device.first_command()`
+- `device.attributes.get_value()`, `device.attributes.first_value()`
+- `device.definition.get_state_definition()`, `device.definition.first_state_definition()`
 
 ## Collection lookups (States, CommandDefinitions)
 
