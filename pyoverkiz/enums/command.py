@@ -3,17 +3,7 @@
 # ruff: noqa: S105
 # Enum values contain "PASS" in API names (e.g. PassAPC), not passwords
 
-import sys
-from enum import unique
-
-# Since we support Python versions lower than 3.11, we use
-# a backport for StrEnum when needed.
-if sys.version_info >= (3, 11):
-    from enum import StrEnum
-else:
-    from backports.strenum import (  # ty: ignore[unresolved-import]
-        StrEnum,  # type: ignore[import]
-    )
+from enum import StrEnum, unique
 
 
 @unique
@@ -1506,7 +1496,7 @@ class OverkizCommandParam(StrEnum):
     FULL_CLOSED = "full_closed"
     FULL_OPEN = "full_open"
     FURNACE = "furnace"
-    FURTHER_NOTICE = "further_notice"
+    FURTHER_NOTICE = "furtherNotice"
     GEOFENCING_MODE = "geofencingMode"
     GOOD = "good"
     HALF_OPEN = "half open"  # value with space
@@ -1523,7 +1513,7 @@ class OverkizCommandParam(StrEnum):
     HI = "hi"
     HIGH = "high"
     HIGHEST = "highest"
-    HIGH_DEMAND = "high demand"  # not a typo...
+    HIGH_DEMAND = "high demand"  # value with space
     HISTORICAL = "historical"
     HOLIDAYS = "holidays"
     HORIZONTAL = "horizontal"
@@ -1683,8 +1673,8 @@ class OverkizCommandParam(StrEnum):
 
 
 @unique
-class CommandMode(StrEnum):
-    """Execution mode flags for commands (e.g., high priority or geolocated)."""
+class ExecutionMode(StrEnum):
+    """Execution mode flags (e.g., high priority or geolocated)."""
 
     HIGH_PRIORITY = "highPriority"
     GEOLOCATED = "geolocated"

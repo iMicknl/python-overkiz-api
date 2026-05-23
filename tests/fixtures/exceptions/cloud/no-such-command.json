@@ -1,0 +1,4 @@
+{
+    "errorCode": "UNSUPPORTED_OPERATION",
+    "error": "No such command : fakeCommand"
+}

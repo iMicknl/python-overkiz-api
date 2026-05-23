@@ -1,0 +1,4 @@
+{
+    "errorCode": "AUTHENTICATION_ERROR",
+    "error": "An API key is required to access this setup"
+}

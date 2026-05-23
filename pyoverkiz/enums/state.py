@@ -3,17 +3,7 @@
 # ruff: noqa: S105
 # Enum values contain "PASS" or "TOKEN" in API names, not passwords
 
-import sys
-from enum import unique
-
-# Since we support Python versions lower than 3.11, we use
-# a backport for StrEnum when needed.
-if sys.version_info >= (3, 11):
-    from enum import StrEnum
-else:
-    from backports.strenum import (  # ty: ignore[unresolved-import]
-        StrEnum,  # type: ignore[import]
-    )
+from enum import StrEnum, unique
 
 
 @unique
@@ -764,7 +754,7 @@ class OverkizState(StrEnum):
     INTERNAL_LIGHTING_LED_POD_MODE = "internal:LightingLedPodModeState"
     INTERNAL_LISTENING = "internal:ListeningState"
     INTERNAL_LOCAL_ACCESS_PROOF = "internal:LocalAccessProofState"
-    INTERNAL_LOCAL_I_PV4_ADDRESS = "internal:LocalIPv4AddressState"
+    INTERNAL_LOCAL_IPV4_ADDRESS = "internal:LocalIPv4AddressState"
     INTERNAL_NAME = "internal:NameState"
     INTERNAL_PROVIDER_NAME = "internal:ProviderNameState"
     INTERNAL_RECEIVED_PINGS = "internal:ReceivedPingsState"
@@ -1640,7 +1630,7 @@ class OverkizState(StrEnum):
     OGCP_LIMITATION_SOURCES = "ogcp:LimitationSourcesState"
     OGCP_LIMITATION_TIME = "ogcp:LimitationTimeState"
     OGCP_LOCAL_ACCESS_PROOF = "ogcp:LocalAccessProofState"
-    OGCP_LOCAL_I_PV4_ADDRESS = "ogcp:LocalIPv4AddressState"
+    OGCP_LOCAL_IPV4_ADDRESS = "ogcp:LocalIPv4AddressState"
     OGCP_LOCKED_UNLOCKED = "ogcp:LockedUnlockedState"
     OGCP_LUMINANCE = "ogcp:LuminanceState"
     OGCP_MEDIA_ELEMENT = "ogcp:MediaElementState"
@@ -1797,7 +1787,7 @@ class OverkizState(StrEnum):
     OGP_LIMITATION_SOURCES = "ogp:LimitationSourcesState"
     OGP_LIMITATION_TIME = "ogp:LimitationTimeState"
     OGP_LOCAL_ACCESS_PROOF = "ogp:LocalAccessProofState"
-    OGP_LOCAL_I_PV4_ADDRESS = "ogp:LocalIPv4AddressState"
+    OGP_LOCAL_IPV4_ADDRESS = "ogp:LocalIPv4AddressState"
     OGP_LOCKED_UNLOCKED = "ogp:LockedUnlockedState"
     OGP_LUMINANCE = "ogp:LuminanceState"
     OGP_MEDIA_ELEMENT = "ogp:MediaElementState"
@@ -2096,22 +2086,38 @@ class OverkizState(StrEnum):
     RTDS_STATUS = "rtds:StatusState"
     RTDS_TEMPERATURE_OUT_OF_RANGE_DETECTION = "rtds:TemperatureOutOfRangeDetectionState"
     RTDS_WATER_DETECTION = "rtds:WaterDetectionState"
+    SOMFYTHERMOSTAT_AT_HOME_TARGET_TEMPERATURE = (
+        "somfythermostat:AtHomeTargetTemperatureState"
+    )
+    SOMFYTHERMOSTAT_AWAY_MODE_TARGET_TEMPERATURE = (
+        "somfythermostat:AwayModeTargetTemperatureState"
+    )
+    SOMFYTHERMOSTAT_DEROGATION_HEATING_MODE = (
+        "somfythermostat:DerogationHeatingModeState"
+    )
     SOMFYTHERMOSTAT_DEROGATION_TYPE = "somfythermostat:DerogationTypeState"
+    SOMFYTHERMOSTAT_FREEZE_MODE_TARGET_TEMPERATURE = (
+        "somfythermostat:FreezeModeTargetTemperatureState"
+    )
     SOMFYTHERMOSTAT_GEOFENCING_MODE_TARGET_TEMPERATURE = (
         "somfythermostat:GeofencingModeTargetTemperatureState"
     )
+    SOMFYTHERMOSTAT_HEATING_MODE = "somfythermostat:HeatingModeState"
     SOMFYTHERMOSTAT_MANUAL_MODE_TARGET_TEMPERATURE = (
         "somfythermostat:ManualModeTargetTemperatureState"
+    )
+    SOMFYTHERMOSTAT_SLEEPING_MODE_TARGET_TEMPERATURE = (
+        "somfythermostat:SleepingModeTargetTemperatureState"
     )
     SOMFYTHERMOSTAT_SUDDEN_DROP_MODE_TARGET_TEMPERATURE = (
         "somfythermostat:SuddenDropModeTargetTemperatureState"
     )
     SOMFY_THERMOSTAT_AT_HOME_TARGET_TEMPERATURE = (
-        "somfythermostat:AtHomeTargetTemperatureState"
+        "somfy_thermostat:AtHomeTargetTemperatureState"
     )
     SOMFY_THERMOSTAT_AVAILABILITY = "somfy_thermostat:AvailabilityState"
     SOMFY_THERMOSTAT_AWAY_MODE_TARGET_TEMPERATURE = (
-        "somfythermostat:AwayModeTargetTemperatureState"
+        "somfy_thermostat:AwayModeTargetTemperatureState"
     )
     SOMFY_THERMOSTAT_BATTERY_LEVEL = "somfy_thermostat:BatteryLevelState"
     SOMFY_THERMOSTAT_DEROGATED_TARGET_TEMPERATURE = (
@@ -2124,26 +2130,26 @@ class OverkizState(StrEnum):
         "somfy_thermostat:DerogationEndDateTimeState"
     )
     SOMFY_THERMOSTAT_DEROGATION_HEATING_MODE = (
-        "somfythermostat:DerogationHeatingModeState"
+        "somfy_thermostat:DerogationHeatingModeState"
     )
     SOMFY_THERMOSTAT_DEROGATION_START_DATE_TIME = (
         "somfy_thermostat:DerogationStartDateTimeState"
     )
     SOMFY_THERMOSTAT_DEROGATION_TYPE = "somfy_thermostat:DerogationTypeState"
     SOMFY_THERMOSTAT_FREEZE_MODE_TARGET_TEMPERATURE = (
-        "somfythermostat:FreezeModeTargetTemperatureState"
+        "somfy_thermostat:FreezeModeTargetTemperatureState"
     )
     SOMFY_THERMOSTAT_GEOFENCING_MODE_TARGET_TEMPERATURE = (
         "somfy_thermostat:GeofencingModeTargetTemperatureState"
     )
-    SOMFY_THERMOSTAT_HEATING_MODE = "somfythermostat:HeatingModeState"
+    SOMFY_THERMOSTAT_HEATING_MODE = "somfy_thermostat:HeatingModeState"
     SOMFY_THERMOSTAT_MANUAL_MODE_TARGET_TEMPERATURE = (
         "somfy_thermostat:ManualModeTargetTemperatureState"
     )
     SOMFY_THERMOSTAT_NAME = "somfy_thermostat:NameState"
     SOMFY_THERMOSTAT_RELATIVE_HUMIDITY = "somfy_thermostat:RelativeHumidityState"
     SOMFY_THERMOSTAT_SLEEPING_MODE_TARGET_TEMPERATURE = (
-        "somfythermostat:SleepingModeTargetTemperatureState"
+        "somfy_thermostat:SleepingModeTargetTemperatureState"
     )
     SOMFY_THERMOSTAT_STATUS = "somfy_thermostat:StatusState"
     SOMFY_THERMOSTAT_SUDDEN_DROP_MODE_TARGET_TEMPERATURE = (

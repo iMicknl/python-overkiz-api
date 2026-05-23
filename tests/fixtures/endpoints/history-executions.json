@@ -1,0 +1,52 @@
+[
+    {
+        "id": "699dd967-0a19-0481-7a62-99b990a2feb8",
+        "eventTime": 1767003511145,
+        "owner": "email@email.nl",
+        "source": "modem",
+        "endTime": 1767003514000,
+        "effectiveStartTime": 1767003511500,
+        "duration": 2855,
+        "label": "close - RTS Roller Shutter",
+        "type": "ACTUATOR",
+        "state": "COMPLETED",
+        "failureType": "NO_FAILURE",
+        "commands": [
+            {
+                "deviceURL": "rts://2025-8464-6867/16756006",
+                "command": "close",
+                "parameters": [],
+                "rank": 0,
+                "dynamic": false,
+                "state": "COMPLETED",
+                "failureType": "NO_FAILURE"
+            }
+        ],
+        "executionType": "Immediate execution",
+        "executionSubType": "MANUAL_CONTROL"
+    },
+    {
+        "id": "b2c3d4e5-f6a7-8901-bcde-f23456789012",
+        "eventTime": 1767002400000,
+        "owner": "email@email.nl",
+        "source": "modem",
+        "duration": 0,
+        "label": "open - RTS Roller Shutter",
+        "type": "ACTUATOR",
+        "state": "FAILED",
+        "failureType": "CMDCANCELLED",
+        "commands": [
+            {
+                "deviceURL": "rts://2025-8464-6867/16756006",
+                "command": "open",
+                "parameters": [],
+                "rank": 0,
+                "dynamic": false,
+                "state": "FAILED",
+                "failureType": "CMDCANCELLED"
+            }
+        ],
+        "executionType": "Immediate execution",
+        "executionSubType": "MANUAL_CONTROL"
+    }
+]
