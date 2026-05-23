@@ -941,6 +941,7 @@ class DeviceTypeDefinition:
     ui_profiles: list[str] = field(factory=list)
     ui_class: str | None = None
     ui_widget: str | None = None
+    controllable_name: str | None = None
     controllable_type: str | None = None
     protocol_type: str | None = None
 

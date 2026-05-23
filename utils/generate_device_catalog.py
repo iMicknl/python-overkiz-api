@@ -1,8 +1,11 @@
-"""Generate a device catalog by querying all protocols via /reference/devices/search.
+"""Generate a device catalog from the Overkiz reference API.
 
-Fetches full device type definitions for every protocol supported by the server,
-including commands (with parameter prototypes), states, attributes and manufacturer
-references. Outputs a JSON catalog, a controllable names list, and a docs page.
+Fetches all available reference data:
+- Device type definitions per protocol (commands, states, attributes, manufacturer refs)
+- Controllable definitions with discrete state values and data properties
+- Reference metadata (controllable types, UI classes, widgets, classifiers, protocols)
+
+Outputs JSON files and a browsable docs page.
 
 Usage:
     OVERKIZ_USERNAME=... OVERKIZ_PASSWORD=... uv run utils/generate_device_catalog.py
@@ -22,7 +25,11 @@ from pathlib import Path
 from pyoverkiz.auth.credentials import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.enums import Server
-from pyoverkiz.models import DeviceSearchResult, DeviceTypeDefinition, ValuePrototype
+from pyoverkiz.models import (
+    DeviceSearchResult,
+    DeviceTypeDefinition,
+    ValuePrototype,
+)
 
 OUTPUT_DIR = Path(__file__).parent.parent / "docs" / "device-catalog"
 DOCS_DIR = Path(__file__).parent.parent / "docs"
@@ -52,6 +59,7 @@ def device_type_to_dict(dt: DeviceTypeDefinition) -> dict:
         "uiWidget": dt.ui_widget,
         "uiProfiles": dt.ui_profiles,
         "uiClassifiers": dt.ui_classifiers,
+        "controllableName": dt.controllable_name,
         "controllableType": dt.controllable_type,
         "protocolType": dt.protocol_type,
     }
@@ -172,7 +180,31 @@ def _dedupe_device_types(devices: list[dict]) -> list[dict]:
     return list(seen.values())
 
 
-def generate_docs_page(catalog_data: dict) -> None:
+def _find_controllable_definition(
+    device: dict,
+    proto_prefix: str,
+    definitions: dict[str, dict],
+) -> dict | None:
+    """Find the controllable definition matching a device entry."""
+    widget = device.get("uiWidget", "")
+    ui_class = device.get("uiClass", "")
+    candidates = []
+    if widget:
+        candidates.append(f"{proto_prefix}:{widget}Component")
+        candidates.append(f"{proto_prefix}:{widget}")
+    if ui_class and ui_class != widget:
+        candidates.append(f"{proto_prefix}:{ui_class}Component")
+        candidates.append(f"{proto_prefix}:{ui_class}")
+    for name in candidates:
+        if name in definitions:
+            return definitions[name]
+    return None
+
+
+def generate_docs_page(
+    catalog_data: dict,
+    definitions: dict[str, dict] | None = None,
+) -> None:
     """Generate a browsable markdown docs page for device types.
 
     Uses catalog data from /reference/devices/search as the primary source,
@@ -180,6 +212,8 @@ def generate_docs_page(catalog_data: dict) -> None:
     controllableType, commands and states).
     """
     protocols: dict[str, list[dict]] = catalog_data.get("protocols", {})
+    if definitions is None:
+        definitions = {}
 
     lines = [
         "---",
@@ -226,6 +260,7 @@ def generate_docs_page(catalog_data: dict) -> None:
     # Per-protocol sections
     for proto_name in sorted(deduped.keys()):
         devices = deduped[proto_name]
+        proto_prefix = proto_name.lower()
         lines.append(f"## {proto_name}")
         lines.append("")
         lines.append(f"{len(devices)} device types.")
@@ -239,6 +274,14 @@ def generate_docs_page(catalog_data: dict) -> None:
             states = device.get("states", [])
             profiles = device.get("uiProfiles", [])
             type_ids = device.get("_typeIds", [])
+
+            # Look up the controllable definition for enrichment
+            ctrl_name = device.get("controllableName", "")
+            ctrl_def = definitions.get(ctrl_name) if ctrl_name else None
+            if not ctrl_def:
+                ctrl_def = _find_controllable_definition(
+                    device, proto_prefix, definitions
+                )
 
             if widget and widget != ui_class:
                 title = f"{ui_class}/{widget}"
@@ -256,12 +299,25 @@ def generate_docs_page(catalog_data: dict) -> None:
                 meta_parts.append(
                     f"**Type IDs:** {', '.join(f'`{t}`' for t in type_ids)}"
                 )
+            if ctrl_name:
+                meta_parts.append(f"**Controllable:** `{ctrl_name}`")
             if profiles:
                 meta_parts.append(
                     f"**Profiles:** {', '.join(f'`{p}`' for p in profiles)}"
                 )
             if meta_parts:
                 lines.append(f"    {' | '.join(meta_parts)}")
+                lines.append("")
+
+            # Data properties (from controllable definition)
+            if ctrl_def and ctrl_def.get("dataProperties"):
+                data_props = ctrl_def["dataProperties"]
+                lines.append("    **Data Properties**")
+                lines.append("")
+                for dp in data_props:
+                    dp_name = dp.get("qualifiedName", "?")
+                    dp_value = dp.get("value", "")
+                    lines.append(f"    - `{dp_name}` = `{dp_value}`")
                 lines.append("")
 
             # Commands table
@@ -323,6 +379,16 @@ def generate_docs_page(catalog_data: dict) -> None:
 
             # States table
             if states:
+                # Build lookup for discrete values from controllable definition
+                ctrl_state_values: dict[str, list[str]] = {}
+                if ctrl_def:
+                    for cs in ctrl_def.get("states", []):
+                        qn = cs.get("qualifiedName", "")
+                        if cs.get("values") and qn:
+                            # Map short name (e.g. "OnOffState") to values
+                            short = qn.split(":")[-1] if ":" in qn else qn
+                            ctrl_state_values[short] = cs["values"]
+
                 lines.append("    **States**")
                 lines.append("")
                 lines.append("    | State | Type | Range / Values | Notes |")
@@ -344,6 +410,10 @@ def generate_docs_page(catalog_data: dict) -> None:
                             ):
                                 parts.append(f"[{vp['minValue']}..{vp['maxValue']}]")
                         range_info = "; ".join(parts)
+
+                    # Enrich with discrete values from controllable definition
+                    if not range_info and s_name in ctrl_state_values:
+                        range_info = ", ".join(ctrl_state_values[s_name])
 
                     notes_parts = []
                     if state.get("protocolSpecifics"):
@@ -376,9 +446,29 @@ async def fetch_device_catalog(server: Server) -> None:
     ) as client:
         await client.login()
 
-        # Get all protocol types to iterate over
+        # --- Reference metadata ---
+
+        # Controllable types (ACTUATOR, SENSOR, etc.)
+        print("Fetching /reference/controllableTypes...")
+        controllable_types = await client.get_reference_controllable_types()
+        print(f"  Found {len(controllable_types)} controllable types")
+
+        # UI reference lists
+        print("Fetching UI reference lists...")
+        ui_classes = await client.get_reference_ui_classes()
+        ui_widgets = await client.get_reference_ui_widgets()
+        ui_classifiers = await client.get_reference_ui_classifiers()
+        print(
+            f"  Classes: {len(ui_classes)}, "
+            f"Widgets: {len(ui_widgets)}, "
+            f"Classifiers: {len(ui_classifiers)}"
+        )
+
+        # Protocol types
         protocol_types = await client.get_reference_protocol_types()
-        print(f"Found {len(protocol_types)} protocol types")
+        print(f"  Protocols: {len(protocol_types)}")
+
+        # --- Device type catalog (per protocol) ---
 
         all_device_types: dict[str, list[dict]] = {}
         total_count = 0
@@ -421,33 +511,50 @@ async def fetch_device_catalog(server: Server) -> None:
         if not result_all.all_result:
             print("  WARNING: Response truncated!")
 
-        # Get controllable names from setup
-        print("\nFetching controllables from setup...")
+        # --- Controllable definitions ---
+
+        # Collect controllable names directly from search results
+        all_controllable_names: set[str] = set()
+        for proto_devices in all_device_types.values():
+            for d in proto_devices:
+                name = d.get("controllableName")
+                if name:
+                    all_controllable_names.add(name)
+
+        # Add names from user's setup
         try:
             controllables = await client.get_device_controllables()
-            print(f"  Found {len(controllables)} controllable names in setup")
+            all_controllable_names.update(controllables.keys())
         except Exception as e:
-            print(f"  Could not fetch controllables: {e}")
-            controllables = {}
+            print(f"  Could not fetch setup controllables: {e}")
 
-        # Collect all controllable names
-        all_controllable_names: set[str] = set()
         devices = await client.get_devices()
         for device in devices:
             all_controllable_names.add(device.controllable_name)
-        all_controllable_names.update(controllables.keys())
+
+        print(f"\nFound {len(all_controllable_names)} unique controllable names")
 
         # Fetch individual controllable definitions
-        print(f"\nFetching {len(all_controllable_names)} controllable definitions...")
+        total_candidates = len(all_controllable_names)
+        print(f"\nFetching controllable definitions ({total_candidates} candidates)...")
         definitions_data: dict[str, dict] = {}
-        for name in sorted(all_controllable_names):
+        not_found: list[str] = []
+        for i, name in enumerate(sorted(all_controllable_names), 1):
+            if i % 50 == 0 or i == total_candidates:
+                print(
+                    f"  [{i}/{total_candidates}] "
+                    f"found: {len(definitions_data)}, "
+                    f"not found: {len(not_found)}"
+                )
             try:
                 definition = await client.get_reference_controllable(name)
                 definitions_data[name] = definition
-            except Exception as e:
-                print(f"  ! Could not fetch definition for {name}: {e}")
+            except Exception:
+                not_found.append(name)
 
-        # Write outputs
+        print(f"  Done — found: {len(definitions_data)}, not found: {len(not_found)}")
+
+        # --- Write outputs ---
         OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
         # Full catalog JSON (used by generate_enums.py for command/param enrichment)
@@ -462,14 +569,30 @@ async def fetch_device_catalog(server: Server) -> None:
         )
         print(f"\n✓ Written catalog to {catalog_path}")
 
-        # Controllable names list
+        # Reference metadata JSON
+        reference_data = {
+            "server": server.name,
+            "controllableTypes": controllable_types,
+            "uiClasses": ui_classes,
+            "uiWidgets": ui_widgets,
+            "uiClassifiers": ui_classifiers,
+            "protocolTypes": [
+                {"id": p.id, "prefix": p.prefix, "name": p.name, "label": p.label}
+                for p in protocol_types
+            ],
+        }
+        reference_path = OUTPUT_DIR / "reference_metadata.json"
+        reference_path.write_text(
+            json.dumps(reference_data, indent=2, ensure_ascii=False), encoding="utf-8"
+        )
+        print(f"✓ Written reference metadata to {reference_path}")
+
+        # Controllable names list (resolved names only)
         names_path = OUTPUT_DIR / "controllable_names.txt"
         names_path.write_text(
-            "\n".join(sorted(all_controllable_names)), encoding="utf-8"
+            "\n".join(sorted(definitions_data.keys())), encoding="utf-8"
         )
-        print(
-            f"✓ Written {len(all_controllable_names)} controllable names to {names_path}"
-        )
+        print(f"✓ Written {len(definitions_data)} controllable names to {names_path}")
 
         # Controllable definitions JSON
         definitions_path = OUTPUT_DIR / "controllable_definitions.json"
@@ -479,16 +602,41 @@ async def fetch_device_catalog(server: Server) -> None:
         print(f"✓ Written {len(definitions_data)} definitions to {definitions_path}")
 
         # Generate browsable docs page
-        generate_docs_page(catalog_data)
+        generate_docs_page(catalog_data, definitions_data)
 
         # Summary
-        print(f"\n{'=' * 60}")
-        print(f"Server: {server.name}")
-        print(f"Protocols: {len(protocol_types)}")
-        print(f"Device types (by protocol): {total_count}")
-        print(f"Device types (unfiltered): {len(result_all.devices_types)}")
-        print(f"Controllable names: {len(all_controllable_names)}")
-        print(f"Controllable definitions fetched: {len(definitions_data)}")
+        summary_lines = [
+            f"Device Catalog Summary — Server: {server.name}",
+            "=" * 60,
+            f"Total protocols: {len(protocol_types)}",
+            f"Total device types (by protocol): {total_count}",
+            f"Total device types (unfiltered): {len(result_all.devices_types)}",
+            f"Controllable types: {len(controllable_types)}",
+            f"UI classes: {len(ui_classes)}",
+            f"UI widgets: {len(ui_widgets)}",
+            f"UI classifiers: {len(ui_classifiers)}",
+            f"Controllable definitions found: {len(definitions_data)}",
+            f"Controllable names not resolved: {len(not_found)}",
+            "",
+            "Controllable Types:",
+            *[
+                f"  {ct['name']} (id={ct['id']}, label={ct['label']})"
+                for ct in controllable_types
+            ],
+            "",
+            "Protocols:",
+            *[
+                f"  {proto.name} ({proto.prefix}): "
+                f"{len(all_device_types.get(proto.name, []))} device types"
+                for proto in protocol_types
+            ],
+        ]
+        summary_text = "\n".join(summary_lines)
+        summary_path = OUTPUT_DIR / "summary.txt"
+        summary_path.write_text(summary_text, encoding="utf-8")
+        print(f"✓ Written summary to {summary_path}")
+
+        print(f"\n{summary_text}")
 
 
 def parse_args() -> argparse.Namespace:

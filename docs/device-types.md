@@ -46,7 +46,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "DoorLock (ACTUATOR) — 5 commands, 5 states"
 
-    **Type IDs:** `1` | **Profiles:** `StatefulDoorLock`, `StatefulLock`, `LockStatus`, `Lock`
+    **Type IDs:** `1` | **Controllable:** `august:SmartLockComponent` | **Profiles:** `StatefulDoorLock`, `StatefulLock`, `LockStatus`, `Lock`
 
     **Commands**
 
@@ -65,7 +65,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `LockedUnlockedState` | DiscreteState | locked, unlocked |  |
     | `NameState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `WebhookIdState` | DataState |  |  |
 
 
@@ -75,7 +75,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Camera/GenericCamera (ACTUATOR) — 2 commands, 0 states"
 
-    **Type IDs:** `65536`, `131072` | **Profiles:** `PictureCamera`
+    **Type IDs:** `65536`, `131072` | **Controllable:** `camera:GenericCameraComponent` | **Profiles:** `PictureCamera`
 
     **Commands**
 
@@ -91,7 +91,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "CircuitBreaker (ACTUATOR) — 5 commands, 2 states"
 
-    **Type IDs:** `515` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `515` | **Controllable:** `eliot:CircuitBreakerComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -112,7 +112,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "CircuitBreaker (ACTUATOR) — 6 commands, 3 states"
 
-    **Type IDs:** `517` | **Profiles:** `StatefulSwitchablePlug`, `StatefulOperatingModeHeating`, `OperatingModeHeating`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `517` | **Controllable:** `eliot:CircuitBreakerPeakAndOffPeakHoursComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulOperatingModeHeating`, `OperatingModeHeating`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -135,7 +135,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `257`, `258`, `513`, `514`, `515`, `516`, `517`, `518`, `519` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `257`, `258`, `513`, `514`, `515`, `516`, `517`, `518`, `519` | **Controllable:** `eliot:EliotElectricEnergyConsumptionSensor` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
 
     **States**
 
@@ -146,7 +146,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/StatefulOnOffLight (ACTUATOR) — 6 commands, 2 states"
 
-    **Type IDs:** `257` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `257` | **Controllable:** `eliot:OnOffLightEliotComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -168,7 +168,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerLight (ACTUATOR) — 17 commands, 9 states"
 
-    **Type IDs:** `258` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `258` | **Controllable:** `eliot:DimmerLightEliotComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -208,7 +208,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 6 commands, 2 states"
 
-    **Type IDs:** `513`, `516` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `513`, `516` | **Controllable:** `eliot:OnOffSwitchEliotComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -230,7 +230,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 7 commands, 3 states"
 
-    **Type IDs:** `519` | **Profiles:** `StatefulSwitchablePlug`, `StatefulOperatingModeHeating`, `OperatingModeHeating`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `519` | **Controllable:** `eliot:ElectricVehicleChargerPeakAndOffPeakHoursComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulOperatingModeHeating`, `OperatingModeHeating`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -254,7 +254,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RemoteController/RemoteControllerOneWay (REMOTE_CONTROLLER) — 1 commands, 3 states"
 
-    **Type IDs:** `1025` | **Profiles:** `RockerSwitch`
+    **Type IDs:** `1025` | **Controllable:** `eliot:RemoteEliotComponent` | **Profiles:** `RockerSwitch`
 
     **Commands**
 
@@ -272,7 +272,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/UpDownRollerShutter (ACTUATOR) — 6 commands, 3 states"
 
-    **Type IDs:** `769` | **Profiles:** `StatefulOpenCloseShutter`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `769` | **Controllable:** `eliot:RollerShutterEliotComponent` | **Profiles:** `StatefulOpenCloseShutter`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -295,7 +295,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterHeatingSystem/DomesticHotWaterProduction (ACTUATOR) — 5 commands, 2 states"
 
-    **Type IDs:** `514` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `514` | **Controllable:** `eliot:DomesticHotWaterComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -316,7 +316,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterHeatingSystem/DomesticHotWaterProduction (ACTUATOR) — 6 commands, 3 states"
 
-    **Type IDs:** `518` | **Profiles:** `StatefulSwitchablePlug`, `StatefulOperatingModeHeating`, `OperatingModeHeating`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `518` | **Controllable:** `eliot:DomesticHotWaterPeakAndOffPeakHoursComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulOperatingModeHeating`, `OperatingModeHeating`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -344,7 +344,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 5 commands, 6 states"
 
-    **Type IDs:** `230901871017984`, `230901871018021`, `230901871083631`, `230901938126848`, `230901938192495`, `230901971681350` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `230901871017984`, `230901871018021`, `230901871083631`, `230901938126848`, `230901938192495`, `230901971681350` | **Controllable:** `enocean:EnOceanSwitchOnOffConsumptionSensorType8` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
 
     **Commands**
 
@@ -360,16 +360,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `ElectricEnergyConsumptionState` | ContinuousState |  |  |
     | `ElectricPowerConsumptionState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `EnOceanAutoReportState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `EnOceanAutoReportState` | DiscreteState | energy, off, power |  |
 
 ??? note "Generic/EnOceanGeneric (ACTUATOR) — 3 commands, 1 states"
 
-    **Type IDs:** `270492762112000` | **Profiles:** `Switchable`, `Generic`
+    **Type IDs:** `270492762112000` | **Controllable:** `enocean:EnOceanGenericActuator` | **Profiles:** `Switchable`, `Generic`
 
     **Commands**
 
@@ -383,11 +383,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 10 commands, 13 states"
 
-    **Type IDs:** `181556874313728` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `181556874313728` | **Controllable:** `enocean:EnOceanHVACBatteryPoweredComponent` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Commands**
 
@@ -410,21 +410,21 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `OpenClosedValveState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `SummerModeState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `SummerModeState` | DiscreteState | off, on |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `TargetValvePositionState` | ContinuousState |  |  |
     | `ValvePositionState` | ContinuousState | [0..100] |  |
-    | `EnOceanHVACControlModeState` | DiscreteState |  |  |
-    | `EnergyHarvesterState` | DiscreteState |  |  |
+    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
+    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 11 commands, 13 states"
 
-    **Type IDs:** `181556874313784` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `181556874313784` | **Controllable:** `enocean:EnOceanCaleffiValveComponent` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Commands**
 
@@ -448,21 +448,21 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `OpenClosedValveState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `SummerModeState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `SummerModeState` | DiscreteState | off, on |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `TargetValvePositionState` | ContinuousState |  |  |
     | `ValvePositionState` | ContinuousState | [0..100] |  |
-    | `EnOceanHVACControlModeState` | DiscreteState |  |  |
-    | `EnergyHarvesterState` | DiscreteState |  |  |
+    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
+    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 9 commands, 12 states"
 
-    **Type IDs:** `181556874313801`, `181556874444800`, `181556874444873` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `181556874313801`, `181556874444800`, `181556874444873` | **Controllable:** `enocean:EnOceanMicroPeltValveComponent` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Commands**
 
@@ -484,20 +484,20 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `OpenClosedValveState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `SummerModeState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `SummerModeState` | DiscreteState | off, on |  |
     | `TargetValvePositionState` | ContinuousState |  |  |
     | `ValvePositionState` | ContinuousState | [0..100] |  |
-    | `EnOceanHVACControlModeState` | DiscreteState |  |  |
-    | `EnergyHarvesterState` | DiscreteState |  |  |
+    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
+    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 18 commands, 18 states"
 
-    **Type IDs:** `181556874379337` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `181556874379337` | **Controllable:** `enocean:EnOceanMicroPeltValveV2WithRemoteCommissioningComponent` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Commands**
 
@@ -528,26 +528,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `ExternalReferenceTemperatureState` | ContinuousState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `OpenClosedValveState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `SummerModeState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `SummerModeState` | DiscreteState | off, on |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `TargetValvePositionState` | ContinuousState |  |  |
     | `ValvePositionState` | ContinuousState | [0..100] |  |
-    | `EnOceanHVACControlModeState` | DiscreteState |  |  |
-    | `EnergyHarvesterState` | DiscreteState |  |  |
+    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
+    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
     | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
     | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 27 commands, 18 states"
 
-    **Type IDs:** `181556874379362` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `181556874379362` | **Controllable:** `enocean:EnOceanPMDMValveWithRemoteCommissioning` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Commands**
 
@@ -587,26 +587,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `OpenClosedValveState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RemoteCommissioningDevicesState` | DataState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `SummerModeState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `SummerModeState` | DiscreteState | off, on |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `TargetValvePositionState` | ContinuousState |  |  |
     | `ValvePositionState` | ContinuousState | [0..100] |  |
-    | `EnOceanHVACControlModeState` | DiscreteState |  |  |
-    | `EnergyHarvesterState` | DiscreteState |  |  |
+    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
+    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
     | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
     | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 17 commands, 17 states"
 
-    **Type IDs:** `181556874379370`, `181556958265450` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `181556874379370`, `181556958265450` | **Controllable:** `enocean:EnOceanMicroPeltValveWithRemoteCommissioningComponent` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Commands**
 
@@ -636,25 +636,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `OpenClosedValveState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `SummerModeState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `SummerModeState` | DiscreteState | off, on |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `TargetValvePositionState` | ContinuousState |  |  |
     | `ValvePositionState` | ContinuousState | [0..100] |  |
-    | `EnOceanHVACControlModeState` | DiscreteState |  |  |
-    | `EnergyHarvesterState` | DiscreteState |  |  |
+    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
+    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
     | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
     | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 11 commands, 13 states"
 
-    **Type IDs:** `181556958199808`, `181556958199914` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `181556958199808`, `181556958199914` | **Controllable:** `enocean:EnOceanHarvestingPoweredMicroPeltValveComponent` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Commands**
 
@@ -678,21 +678,21 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `OpenClosedValveState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `SummerModeState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `SummerModeState` | DiscreteState | off, on |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `TargetValvePositionState` | ContinuousState |  |  |
     | `ValvePositionState` | ContinuousState | [0..100] |  |
-    | `EnOceanHVACControlModeState` | DiscreteState |  |  |
-    | `EnergyHarvesterState` | DiscreteState |  |  |
+    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
+    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
 
 ??? note "HeatingSystem/OnOffHeatingSystem (ACTUATOR) — 7 commands, 5 states"
 
-    **Type IDs:** `230901753643008`, `230901871018021` | **Profiles:** `StatefulSwitchableHeating`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `230901753643008`, `230901871018021` | **Controllable:** `enocean:EnOceanOnOffHeatingSystemComponent` | **Profiles:** `StatefulSwitchableHeating`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -710,15 +710,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
-    | `LocalControlState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `LocalControlState` | DiscreteState | off, on |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "HeatingSystem/OnOffHeatingSystem (ACTUATOR) — 13 commands, 10 states"
 
-    **Type IDs:** `230901753643119` | **Profiles:** `StatefulSwitchableHeating`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `230901753643119` | **Controllable:** `enocean:EnOceanOnOffHeatingSystemComponentWithReCom` | **Profiles:** `StatefulSwitchableHeating`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -742,20 +742,20 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
-    | `LocalControlState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `LocalControlState` | DiscreteState | off, on |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RemoteCommissioningDevicesState` | DataState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
     | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
 
 ??? note "HeatingSystem/ElectricalHeater (ACTUATOR) — 6 commands, 6 states"
 
-    **Type IDs:** `230901938126848` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
+    **Type IDs:** `230901938126848` | **Controllable:** `enocean:EnOceanPilotWireComponent` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
 
     **Commands**
 
@@ -772,16 +772,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
-    | `LocalControlState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `LocalControlState` | DiscreteState | off, on |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetHeatingLevelState` | DiscreteState | comfort, comfort-1, comfort-2, eco, frostprotection |  |
-    | `TargetHeatingLevelState` | DiscreteState |  |  |
+    | `TargetHeatingLevelState` | DiscreteState | comfort, comfort-1, comfort-2, eco, frostprotection, off |  |
 
 ??? note "HeatingSystem/ElectricalHeater (ACTUATOR) — 12 commands, 11 states"
 
-    **Type IDs:** `230901938192495` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
+    **Type IDs:** `230901938192495` | **Controllable:** `enocean:EnOceanPilotWireComponentWithReCom` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
 
     **Commands**
 
@@ -804,34 +804,34 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
-    | `LocalControlState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `LocalControlState` | DiscreteState | off, on |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RemoteCommissioningDevicesState` | DataState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetHeatingLevelState` | DiscreteState | comfort, comfort-1, comfort-2, eco, frostprotection |  |
     | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
     | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
-    | `TargetHeatingLevelState` | DiscreteState |  |  |
+    | `TargetHeatingLevelState` | DiscreteState | comfort, comfort-1, comfort-2, eco, frostprotection, off |  |
 
 ??? note "HumiditySensor/RelativeHumiditySensor (SENSOR) — 0 commands, 4 states"
 
-    **Type IDs:** `462911591940096`, `462911591940140`, `462911591940166`, `462911608717312`, `462911608717325` | **Profiles:** `RelativeHumidity`
+    **Type IDs:** `462911591940096`, `462911591940140`, `462911591940166`, `462911608717312`, `462911608717325` | **Controllable:** `enocean:EnOceanHumiditySensor` | **Profiles:** `RelativeHumidity`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RelativeHumidityState` | ContinuousState | [0.0..100.0] |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Light/OnOffLight (ACTUATOR) — 3 commands, 1 states"
 
-    **Type IDs:** `270492762243072` | **Profiles:** `SwitchableLight`, `Switchable`
+    **Type IDs:** `270492762243072` | **Controllable:** `enocean:EnOceanOnOffLight` | **Profiles:** `SwitchableLight`, `Switchable`
 
     **Commands**
 
@@ -845,11 +845,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "NetworkComponent/Repeater (INFRASTRUCTURE_COMPONENT) — 4 commands, 4 states"
 
-    **Type IDs:** `230901753643119`, `230901871083631`, `230901938192495`, `230901988524143`, `230902038855791`, `230918916735087` | **Profiles:** `Specific`
+    **Type IDs:** `230901753643119`, `230901871083631`, `230901938192495`, `230901988524143`, `230902038855791`, `230918916735087` | **Controllable:** `enocean:EnOceanNativeRepeaterComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -864,14 +864,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `RepeaterLevelState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `RepeaterLevelState` | DiscreteState | level1, level2, off |  |
 
 ??? note "NetworkComponent/Repeater (INFRASTRUCTURE_COMPONENT) — 3 commands, 4 states"
 
-    **Type IDs:** `230901988458566`, `230901988524102`, `230902038790214`, `230902038855750`, `230918916669510` | **Profiles:** `Specific`
+    **Type IDs:** `230901988458566`, `230901988524102`, `230902038790214`, `230902038855750`, `230918916669510` | **Controllable:** `enocean:EnOceanRepeaterComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -885,14 +885,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `RepeaterLevelState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `RepeaterLevelState` | DiscreteState | level1, level2, off |  |
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 5 commands, 4 states"
 
-    **Type IDs:** `230901753577472` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `230901753577472` | **Controllable:** `enocean:EnOceanSwitchOnOffType1` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -908,14 +908,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 15 commands, 10 states"
 
-    **Type IDs:** `230901871017984` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `230901871017984` | **Controllable:** `enocean:EnOceanSwitchOnOffType8` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -941,20 +941,20 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `ContextSavingOnPowerCutState` | DiscreteState |  |  |
-    | `DefaultOnOffState` | DiscreteState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
-    | `LocalControlState` | DiscreteState |  |  |
+    | `ContextSavingOnPowerCutState` | DiscreteState | off, on |  |
+    | `DefaultOnOffState` | DiscreteState | off, on, previous, togglePrevious, unknown |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `LocalControlState` | DiscreteState | off, on |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `PowerFailureDetectionState` | DiscreteState |  |  |
-    | `PowerFailureState` | DiscreteState |  |  |
+    | `PowerFailureDetectionState` | DiscreteState | off, on |  |
+    | `PowerFailureState` | DiscreteState | detected, notDetected |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `NightModeState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `NightModeState` | DiscreteState | off, on |  |
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 21 commands, 15 states"
 
-    **Type IDs:** `230901871083631` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `230901871083631` | **Controllable:** `enocean:EnOceanSwitchOnOffType8WithReCom` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -986,25 +986,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `ContextSavingOnPowerCutState` | DiscreteState |  |  |
-    | `DefaultOnOffState` | DiscreteState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
-    | `LocalControlState` | DiscreteState |  |  |
+    | `ContextSavingOnPowerCutState` | DiscreteState | off, on |  |
+    | `DefaultOnOffState` | DiscreteState | off, on, previous, togglePrevious, unknown |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `LocalControlState` | DiscreteState | off, on |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `PowerFailureDetectionState` | DiscreteState |  |  |
-    | `PowerFailureState` | DiscreteState |  |  |
+    | `PowerFailureDetectionState` | DiscreteState | off, on |  |
+    | `PowerFailureState` | DiscreteState | detected, notDetected |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RemoteCommissioningDevicesState` | DataState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `NightModeState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `NightModeState` | DiscreteState | off, on |  |
     | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
     | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 16 commands, 10 states"
 
-    **Type IDs:** `230901971681350` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `230901971681350` | **Controllable:** `enocean:EnOceanSwitchOnOffTypeE` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -1031,20 +1031,20 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `ContextSavingOnPowerCutState` | DiscreteState |  |  |
-    | `DefaultOnOffState` | DiscreteState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
-    | `LocalControlState` | DiscreteState |  |  |
+    | `ContextSavingOnPowerCutState` | DiscreteState | off, on |  |
+    | `DefaultOnOffState` | DiscreteState | off, on, previous, togglePrevious, unknown |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `LocalControlState` | DiscreteState | off, on |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `PowerFailureState` | DiscreteState |  |  |
+    | `PowerFailureState` | DiscreteState | detected, notDetected |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `NightModeState` | DiscreteState |  |  |
-    | `TaughInDevicesState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `NightModeState` | DiscreteState | off, on |  |
+    | `TaughInDevicesState` | DiscreteState | disabled, enabled |  |
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 17 commands, 11 states"
 
-    **Type IDs:** `230901988458496`, `230901988458566`, `230901988458607`, `230902038790144`, `230902038790214`, `230902038790255`, `230902038790259`, `230902038855795` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `230901988458496`, `230901988458566`, `230901988458607`, `230902038790144`, `230902038790214`, `230902038790255`, `230902038790259`, `230902038855795` | **Controllable:** `enocean:EnOceanSwitchOnOffTypeF` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -1072,21 +1072,21 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `ContextSavingOnPowerCutState` | DiscreteState |  |  |
-    | `DefaultOnOffState` | DiscreteState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
-    | `LocalControlState` | DiscreteState |  |  |
+    | `ContextSavingOnPowerCutState` | DiscreteState | off, on |  |
+    | `DefaultOnOffState` | DiscreteState | off, on, previous, togglePrevious, unknown |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `LocalControlState` | DiscreteState | off, on |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `AutoOffTimerState` | ContinuousState |  |  |
     | `DelayOffTimerState` | ContinuousState |  |  |
-    | `NightModeState` | DiscreteState |  |  |
-    | `SwitchExternalInterfaceState` | DiscreteState |  |  |
+    | `NightModeState` | DiscreteState | off, on |  |
+    | `SwitchExternalInterfaceState` | DiscreteState | autoDetection, externalPushButton, externalSwitch, notApplicable |  |
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 33 commands, 16 states"
 
-    **Type IDs:** `230901988524102`, `230902038855750` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `230901988524102`, `230902038855750` | **Controllable:** `enocean:EnOceanSwitchOnOffTypeFWithRemoteCommissioning` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -1130,26 +1130,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `ContextSavingOnPowerCutState` | DiscreteState |  |  |
-    | `DefaultOnOffState` | DiscreteState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
-    | `LocalControlState` | DiscreteState |  |  |
+    | `ContextSavingOnPowerCutState` | DiscreteState | off, on |  |
+    | `DefaultOnOffState` | DiscreteState | off, on, previous, togglePrevious, unknown |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `LocalControlState` | DiscreteState | off, on |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RemoteCommissioningDevicesState` | DataState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `AutoOffTimerState` | ContinuousState |  |  |
     | `DelayOffTimerState` | ContinuousState |  |  |
-    | `NightModeState` | DiscreteState |  |  |
+    | `NightModeState` | DiscreteState | off, on |  |
     | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
     | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
-    | `SwitchExternalInterfaceState` | DiscreteState |  |  |
+    | `SwitchExternalInterfaceState` | DiscreteState | autoDetection, externalPushButton, externalSwitch, notApplicable |  |
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 23 commands, 16 states"
 
-    **Type IDs:** `230901988524143`, `230902038855791` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `230901988524143`, `230902038855791` | **Controllable:** `enocean:EnOceanSwitchOnOffTypeFWithReCom` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -1183,26 +1183,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `ContextSavingOnPowerCutState` | DiscreteState |  |  |
-    | `DefaultOnOffState` | DiscreteState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
-    | `LocalControlState` | DiscreteState |  |  |
+    | `ContextSavingOnPowerCutState` | DiscreteState | off, on |  |
+    | `DefaultOnOffState` | DiscreteState | off, on, previous, togglePrevious, unknown |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `LocalControlState` | DiscreteState | off, on |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RemoteCommissioningDevicesState` | DataState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `AutoOffTimerState` | ContinuousState |  |  |
     | `DelayOffTimerState` | ContinuousState |  |  |
-    | `NightModeState` | DiscreteState |  |  |
+    | `NightModeState` | DiscreteState | off, on |  |
     | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
     | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
-    | `SwitchExternalInterfaceState` | DiscreteState |  |  |
+    | `SwitchExternalInterfaceState` | DiscreteState | autoDetection, externalPushButton, externalSwitch, notApplicable |  |
 
 ??? note "OnOff/StatelessOnOff (ACTUATOR) — 4 commands, 1 states"
 
-    **Type IDs:** `270492762177536` | **Profiles:** `SwitchablePlug`, `Switchable`
+    **Type IDs:** `270492762177536` | **Controllable:** `enocean:EnOceanSwitchOnOff` | **Profiles:** `SwitchablePlug`, `Switchable`
 
     **Commands**
 
@@ -1217,11 +1217,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "RollerShutter/UpDownRollerShutter (ACTUATOR) — 8 commands, 5 states"
 
-    **Type IDs:** `181692132229133` | **Profiles:** `OpenCloseShutter`, `OpenClose`
+    **Type IDs:** `181692132229133` | **Controllable:** `enocean:EnOceanStatefulRollerShutter` | **Profiles:** `OpenCloseShutter`, `OpenClose`
 
     **Commands**
 
@@ -1240,15 +1240,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
-    | `OpenClosedUnknownState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `OpenClosedUnknownState` | DiscreteState | closed, open, unknown |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `UpDownRestState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `UpDownRestState` | DiscreteState | down, rest, up |  |
 
 ??? note "RollerShutter/PositionableRollerShutter (ACTUATOR) — 31 commands, 14 states"
 
-    **Type IDs:** `230918916669510` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `230918916669510` | **Controllable:** `enocean:EnoceanRollerShutterWithRemoteCommissioning` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -1291,23 +1291,23 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RemoteCommissioningDevicesState` | DataState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `CalibrationStatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `CalibrationStatusState` | DiscreteState | calibrated, notCalibrated |  |
     | `CalibrationTimeDownState` | ContinuousState |  |  |
     | `CalibrationTimeUpState` | ContinuousState |  |  |
     | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
     | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
-    | `SwitchTypeState` | DiscreteState |  |  |
+    | `SwitchTypeState` | DiscreteState | bistable, monostable |  |
 
 ??? note "RollerShutter/PositionableRollerShutter (ACTUATOR) — 7 commands, 5 states"
 
-    **Type IDs:** `230918916669551` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `230918916669551` | **Controllable:** `enocean:EnOceanAvidsenRollerShutterComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -1326,14 +1326,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "RollerShutter/PositionableRollerShutter (ACTUATOR) — 14 commands, 10 states"
 
-    **Type IDs:** `230918916735087` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `230918916735087` | **Controllable:** `enocean:EnOceanAvidsenRollerShutterComponentWithReCom` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -1359,19 +1359,19 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RemoteCommissioningDevicesState` | DataState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
     | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
 
 ??? note "RollerShutter/UpDownRollerShutter (ACTUATOR) — 4 commands, 1 states"
 
-    **Type IDs:** `270492762308608` | **Profiles:** `OpenCloseShutterSwitch`, `BasicOpenClose`, `BasicUpDown`
+    **Type IDs:** `270492762308608` | **Controllable:** `enocean:EnOceanRollerShutter` | **Profiles:** `OpenCloseShutterSwitch`, `BasicOpenClose`, `BasicUpDown`
 
     **Commands**
 
@@ -1386,38 +1386,38 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "TemperatureSensor (SENSOR) — 0 commands, 5 states"
 
-    **Type IDs:** `181556874313728`, `181556874313784`, `181556874313801`, `181556874379337`, `181556874379362`, `181556874379370`, `181556874444800`, `181556874444873`, `181556958199808`, `181556958199914`, `181556958265450` | **Profiles:** `Temperature`
+    **Type IDs:** `181556874313728`, `181556874313784`, `181556874313801`, `181556874379337`, `181556874379362`, `181556874379370`, `181556874444800`, `181556874444873`, `181556958199808`, `181556958199914`, `181556958265450` | **Controllable:** `enocean:EnOceanHVACTemperatureSensor` | **Profiles:** `Temperature`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `SensorDefectState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `SensorDefectState` | DiscreteState | dead, lowBattery, maintenanceRequired, noDefect |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
 
 ??? note "TemperatureSensor (SENSOR) — 0 commands, 4 states"
 
-    **Type IDs:** `462903002005504`, `462903069114368`, `462903069114438`, `462903303995392`, `462903303995436`, `462911591940096`, `462911591940140`, `462911591940166`, `462911608717312`, `462911608717325` | **Profiles:** `Temperature`
+    **Type IDs:** `462903002005504`, `462903069114368`, `462903069114438`, `462903303995392`, `462903303995436`, `462911591940096`, `462911591940140`, `462911591940166`, `462911608717312`, `462911608717325` | **Controllable:** `enocean:EnOceanTemperatureSensorType01` | **Profiles:** `Temperature`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
 
 ??? note "VenetianBlind/PositionableVenetianBlind (ACTUATOR) — 6 commands, 6 states"
 
-    **Type IDs:** `230918950223872` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
+    **Type IDs:** `230918950223872` | **Controllable:** `enocean:EnOceanVenetianBlindController` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
 
     **Commands**
 
@@ -1435,15 +1435,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SlateOrientationState` | ContinuousState | [0..100] |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "VenetianBlind/PositionableVenetianBlind (ACTUATOR) — 22 commands, 11 states"
 
-    **Type IDs:** `230918950289408` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
+    **Type IDs:** `230918950289408` | **Controllable:** `enocean:EnOceanVenetianBlindControllerWithRemoteCommissioning` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
 
     **Commands**
 
@@ -1477,20 +1477,20 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RemoteCommissioningDevicesState` | DataState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
     | `SlateOrientationState` | ContinuousState | [0..100] |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
     | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
 
 ??? note "VentilationSystem/DimplexVentilationInletOutlet (ACTUATOR) — 4 commands, 1 states"
 
-    **Type IDs:** `181557142749184` | **Profiles:** `Specific`
+    **Type IDs:** `181557142749184` | **Controllable:** `enocean:EnOceanDimplexVentilationComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -1505,7 +1505,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 
 ## HOMEKIT
@@ -1514,7 +1514,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ProtocolGateway/HomekitStack (PROTOCOL_GATEWAY) — 1 commands, 0 states"
 
-    **Type IDs:** `0` | **Profiles:** `Specific`
+    **Type IDs:** `0` | **Controllable:** `homekit:StackComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -1529,7 +1529,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerHueSatOrCTLight (ACTUATOR) — 16 commands, 10 states"
 
-    **Type IDs:** `72137043618037761`, `72137043618037762`, `72137043618037763`, `72141446093733889`, `72141446093733890`, `72141446093733891`, `72141446093733895`, `72141446093733898`, `72141446093733900`, `72141446093733902`, `72141484463226900`, `72141484630999041`, `72141514813210626`, `72415224354832384` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `72137043618037761`, `72137043618037762`, `72137043618037763`, `72141446093733889`, `72141446093733890`, `72141446093733891`, `72141446093733895`, `72141446093733898`, `72141446093733900`, `72141446093733902`, `72141484463226900`, `72141484630999041`, `72141514813210626`, `72415224354832384` | **Controllable:** `hue:ColorLightModuleHUEComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `3000`
 
     **Commands**
 
@@ -1564,12 +1568,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `LightIntensityState` | ContinuousState | [0..100] |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `HueColorModeState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `HueColorModeState` | DiscreteState | ct, hs, xy |  |
 
 ??? note "Light/DimmerColorTemperatureLight (ACTUATOR) — 11 commands, 6 states"
 
-    **Type IDs:** `72137090862678022`, `72141484630999050`, `72141484630999051`, `72141484630999052`, `72141519158509569`, `72141519158509572`, `72141519158509578`, `72141519158509579`, `72141519158509580`, `72141519158509581`, `72141519158509582`, `72141519158509583`, `72413098346020864` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `72137090862678022`, `72141484630999050`, `72141484630999051`, `72141484630999052`, `72141519158509569`, `72141519158509572`, `72141519158509578`, `72141519158509579`, `72141519158509580`, `72141519158509581`, `72141519158509582`, `72141519158509583`, `72413098346020864` | **Controllable:** `hue:PhoenixHUEComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `3000`
 
     **Commands**
 
@@ -1595,12 +1603,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `LightIntensityState` | ContinuousState | [0..100] |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `HueColorModeState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `HueColorModeState` | DiscreteState | ct, hs, xy |  |
 
 ??? note "Light/DimmerLight (ACTUATOR) — 9 commands, 4 states"
 
-    **Type IDs:** `72141156921638912`, `72141531691089921`, `72141531691089922`, `72141531691089924`, `72141531691089926`, `72141531691089927`, `72141531691089930`, `72141531691089934`, `72141531858862081`, `72339362347483136` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `72141156921638912`, `72141531691089921`, `72141531691089922`, `72141531691089924`, `72141531691089926`, `72141531691089927`, `72141531691089930`, `72141531691089934`, `72141531858862081`, `72339362347483136` | **Controllable:** `hue:HueLuxHUEComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `3000`
 
     **Commands**
 
@@ -1623,11 +1635,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `LightIntensityState` | ContinuousState | [0..100] |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Light/DimmerHueSaturationLight (ACTUATOR) — 14 commands, 9 states"
 
-    **Type IDs:** `72141484463226881`, `72141484463226885`, `72141484463226886`, `72141484463226887`, `72141484463226890`, `72141484463226891`, `72141484463226892`, `72141484463226893`, `72141484463226894`, `72141514813210625`, `72339358052515840` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `72141484463226881`, `72141484463226885`, `72141484463226886`, `72141484463226887`, `72141484463226890`, `72141484463226891`, `72141484463226892`, `72141484463226893`, `72141484463226894`, `72141514813210625`, `72339358052515840` | **Controllable:** `hue:BloomHUEComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `3000`
 
     **Commands**
 
@@ -1659,12 +1675,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `LightIntensityState` | ContinuousState | [0..100] |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `HueColorModeState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `HueColorModeState` | DiscreteState | ct, hs, xy |  |
 
 ??? note "ProtocolGateway/HueBridge (PROTOCOL_GATEWAY) — 0 commands, 1 states"
 
-    **Type IDs:** `16777216`, `16777217`, `16777218` | **Profiles:** `Specific`
+    **Type IDs:** `16777216`, `16777217`, `16777218` | **Controllable:** `hue:BridgeHUEV2Component` | **Profiles:** `Specific`
 
     **States**
 
@@ -1679,7 +1695,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Alarm/TSKAlarmController (ACTUATOR) — 16 commands, 5 states"
 
-    **Type IDs:** `1` | **Profiles:** `Alarm`, `Switchable`
+    **Type IDs:** `1` | **Controllable:** `internal:TSKAlarmComponent` | **Profiles:** `Alarm`, `Switchable`
 
     **Commands**
 
@@ -1708,13 +1724,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `NameState` | DataState |  |  |
     | `AlarmDelayState` | ContinuousState |  |  |
-    | `CurrentAlarmModeState` | DiscreteState |  |  |
-    | `IntrusionDetectedState` | DiscreteState |  |  |
-    | `TargetAlarmModeState` | DiscreteState |  |  |
+    | `CurrentAlarmModeState` | DiscreteState | off, partial1, partial2, total |  |
+    | `IntrusionDetectedState` | DiscreteState | detected, notDetected, pending, sos |  |
+    | `TargetAlarmModeState` | DiscreteState | off, partial1, partial2, sos, total |  |
 
 ??? note "Dock (ACTUATOR) — 25 commands, 14 states"
 
-    **Type IDs:** `3` | **Profiles:** `Specific`
+    **Type IDs:** `3` | **Controllable:** `internal:TSKDockComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -1755,19 +1771,19 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RSSILevelState` | ContinuousState |  |  |
     | `AirplaneModeState` | ContinuousState |  |  |
     | `BatteryStatusState` | ContinuousState |  |  |
-    | `GPRSRegistrationState` | DiscreteState |  |  |
-    | `GSMRegistrationState` | DiscreteState |  |  |
+    | `GPRSRegistrationState` | DiscreteState | false, true |  |
+    | `GSMRegistrationState` | DiscreteState | false, true |  |
     | `LastConnectivitySwitchState` | ContinuousState |  |  |
     | `LightingLedModemModeState` | ContinuousState |  |  |
     | `ProviderNameState` | ContinuousState |  |  |
-    | `SIMCardActivationState` | DiscreteState |  |  |
-    | `SIMCardConnectivityState` | DiscreteState |  |  |
-    | `SIMCardStatusState` | DiscreteState |  |  |
-    | `SirenStatusState` | DiscreteState |  |  |
+    | `SIMCardActivationState` | DiscreteState | false, true |  |
+    | `SIMCardConnectivityState` | DiscreteState | offline, online, registered |  |
+    | `SIMCardStatusState` | DiscreteState | KO, OK, inProgress |  |
+    | `SirenStatusState` | DiscreteState | cyclic, off, on |  |
 
 ??? note "Pod (ACTUATOR) — 2 commands, 1 states"
 
-    **Type IDs:** `2` | **Profiles:** `Specific`
+    **Type IDs:** `2` | **Controllable:** `internal:PodComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -1784,7 +1800,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pod (ACTUATOR) — 11 commands, 8 states"
 
-    **Type IDs:** `4` | **Profiles:** `UpdatableComponent`
+    **Type IDs:** `4` | **Controllable:** `internal:PodMiniComponent` | **Profiles:** `UpdatableComponent`
 
     **Commands**
 
@@ -1806,18 +1822,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `ConnectivityState` | DiscreteState |  |  |
+    | `ConnectivityState` | DiscreteState | offline, online |  |
     | `CountryCodeState` | DataState |  |  |
     | `LocalAccessProofState` | DataState |  |  |
     | `LocalIPv4AddressState` | DataState |  |  |
     | `NameState` | DataState |  |  |
-    | `LastActionConfigButtonState` | DiscreteState |  |  |
+    | `LastActionConfigButtonState` | DiscreteState | doublePress, longPress, simplePress, triplePress, veryLongPress |  |
     | `LightingLedPodModeState` | ContinuousState |  |  |
     | `UpdateStepAndBootStatusState` | DataState |  |  |
 
 ??? note "Pod (ACTUATOR) — 12 commands, 9 states"
 
-    **Type IDs:** `5` | **Profiles:** `UpdatableComponent`
+    **Type IDs:** `5` | **Controllable:** `internal:PodV2Component` | **Profiles:** `UpdatableComponent`
 
     **Commands**
 
@@ -1840,9 +1856,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `ConnectivityState` | DiscreteState |  |  |
+    | `ConnectivityState` | DiscreteState | offline, online |  |
     | `CountryCodeState` | DataState |  |  |
-    | `CyclicButtonState` | DiscreteState |  |  |
+    | `CyclicButtonState` | DiscreteState | pressed, stop |  |
     | `LocalAccessProofState` | DataState |  |  |
     | `LocalIPv4AddressState` | DataState |  |  |
     | `NameState` | DataState |  |  |
@@ -1852,11 +1868,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pod (ACTUATOR) — 0 commands, 0 states"
 
-    **Type IDs:** `6` | **Profiles:** `Specific`
+    **Type IDs:** `6` | **Controllable:** `internal:UPodComponent` | **Profiles:** `Specific`
 
 ??? note "Pod (ACTUATOR) — 0 commands, 2 states"
 
-    **Type IDs:** `7` | **Profiles:** `Specific`
+    **Type IDs:** `7` | **Controllable:** `internal:UPodNetWorkComponent` | **Profiles:** `Specific`
 
     **States**
 
@@ -1867,7 +1883,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pod (ACTUATOR) — 11 commands, 10 states"
 
-    **Type IDs:** `10` | **Profiles:** `UpdatableComponent`
+    **Type IDs:** `10` | **Controllable:** `internal:PodV3Component` | **Profiles:** `UpdatableComponent`
 
     **Commands**
 
@@ -1889,20 +1905,20 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `ConnectivityState` | DiscreteState |  |  |
+    | `ConnectivityState` | DiscreteState | offline, online |  |
     | `CountryCodeState` | DataState |  |  |
     | `LocalAccessProofState` | DataState |  |  |
     | `LocalIPv4AddressState` | DataState |  |  |
     | `NameState` | DataState |  |  |
-    | `Button1State` | DiscreteState |  |  |
-    | `Button2State` | DiscreteState |  |  |
-    | `Button3State` | DiscreteState |  |  |
+    | `Button1State` | DiscreteState | pressed, stop |  |
+    | `Button2State` | DiscreteState | pressed, stop |  |
+    | `Button3State` | DiscreteState | pressed, stop |  |
     | `LightingLedPodModeState` | ContinuousState |  |  |
     | `UpdateStepAndBootStatusState` | DataState |  |  |
 
 ??? note "Pod (ACTUATOR) — 11 commands, 7 states"
 
-    **Type IDs:** `11` | **Profiles:** `UpdatableComponent`
+    **Type IDs:** `11` | **Controllable:** `internal:PodV3RDComponent` | **Profiles:** `UpdatableComponent`
 
     **Commands**
 
@@ -1924,7 +1940,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `ConnectivityState` | DiscreteState |  |  |
+    | `ConnectivityState` | DiscreteState | offline, online |  |
     | `CountryCodeState` | DataState |  |  |
     | `LocalAccessProofState` | DataState |  |  |
     | `LocalIPv4AddressState` | DataState |  |  |
@@ -1934,7 +1950,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pod/MultiGateway (ACTUATOR) — 2 commands, 4 states"
 
-    **Type IDs:** `12` | **Profiles:** `Specific`
+    **Type IDs:** `12` | **Controllable:** `internal:MultiGatewayComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -1954,7 +1970,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Wifi (ACTUATOR) — 3 commands, 3 states"
 
-    **Type IDs:** `9` | **Profiles:** `Specific`
+    **Type IDs:** `9` | **Controllable:** `internal:WifiComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -1979,7 +1995,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "AdjustableSlatsRollerShutter/PositionableOrOrientableRollerShutter (ACTUATOR) — 32 commands, 14 states"
 
-    **Type IDs:** `131328`, `131330` | **Profiles:** `StatefulRockingShutter`, `StatefulOrientableOrCloseable`, `OrientableOrCloseable`, `StatefulCloseable`, `Closeable`, `OpenClose`
+    **Type IDs:** `131328`, `131330` | **Controllable:** `io:AdjustableSlatsRollerShutterIOComponent` | **Profiles:** `StatefulRockingShutter`, `StatefulOrientableOrCloseable`, `OrientableOrCloseable`, `StatefulCloseable`, `Closeable`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -2026,20 +2046,24 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ClosureOrRockerPositionState` | ContinuousState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
-    | `MovingState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SlateOrientationState` | ContinuousState | [0..100] |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Alarm/StatefulAlarmController (ACTUATOR) — 21 commands, 9 states"
 
-    **Type IDs:** `1507328` | **Profiles:** `Alarm`
+    **Type IDs:** `1507328` | **Controllable:** `io:AlarmIOComponent` | **Profiles:** `Alarm`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -2073,17 +2097,21 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActiveZonesState` | DataState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Awning/DynamicAwning (ACTUATOR) — 29 commands, 15 states"
 
-    **Type IDs:** `18691697868802` | **Profiles:** `StatefulDeployUndeployAwning`, `StatefulDeployUndeploy`, `DeployUndeploy`, `StatefulDeployable`, `Deployable`
+    **Type IDs:** `18691697868802` | **Controllable:** `io:DynamicAwningIOComponent` | **Profiles:** `StatefulDeployUndeployAwning`, `StatefulDeployUndeploy`, `DeployUndeploy`, `StatefulDeployable`, `Deployable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -2124,24 +2152,28 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `AdditionalStatusState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `CommandLockLevelsState` | DataState |  |  |
     | `DeployedUndeployedState` | DiscreteState | deployed, undeployed |  |
     | `DeploymentState` | ContinuousState | [0..100] |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `ReachedAliasesState` | DataState |  |  |
     | `RolledUpState` | DataState |  |  |
     | `RollingOutState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Awning/PositionableHorizontalAwning (ACTUATOR) — 35 commands, 15 states"
 
-    **Type IDs:** `1048576` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `1048576` | **Controllable:** `io:HorizontalAwningIOComponent` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -2190,44 +2222,48 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AdditionalStatusState` | DataState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
     | `DeploymentState` | ContinuousState | [0..100] |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
-    | `MovingState` | DiscreteState |  |  |
+    | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "CarButtonSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `590336` | **Profiles:** `PushButtonSensor`
+    **Type IDs:** `590336` | **Controllable:** `io:CarButtonIODeviceSensor` | **Profiles:** `PushButtonSensor`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ButtonState` | DiscreteState | pressed, released, shortPressed |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "ConsumptionSensor/CumulativeFossilEnergyConsumptionSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `1442316` | **Profiles:** `FossilEnergyConsumption`
+    **Type IDs:** `1442316` | **Controllable:** `io:TotalFossilEnergyConsumptionSensor` | **Profiles:** `FossilEnergyConsumption`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `FossilEnergyConsumptionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "DoorLock (ACTUATOR) — 29 commands, 11 states"
 
-    **Type IDs:** `589824`, `589826` | **Profiles:** `StatefulDoorLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `589824`, `589826` | **Controllable:** `io:DoorLockIOComponent` | **Profiles:** `StatefulDoorLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulBasicOpenClose`, `BasicOpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -2269,19 +2305,23 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AdditionalStatusState` | DataState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `LockedUnlockedState` | DiscreteState | locked, unlocked |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "DoorLock/WindowLock (ACTUATOR) — 22 commands, 11 states"
 
-    **Type IDs:** `590080`, `590090` | **Profiles:** `StatefulWindowLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `590080`, `590090` | **Controllable:** `io:WindowLockIOComponent` | **Profiles:** `StatefulWindowLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulBasicOpenClose`, `BasicOpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -2315,20 +2355,24 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `LockedUnlockedState` | DiscreteState | locked, unlocked |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `WindowLockedState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `WindowLockedState` | DiscreteState | daylocked, homesecure, secured |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "DoorLock/CarLock (ACTUATOR) — 22 commands, 10 states"
 
-    **Type IDs:** `590336` | **Profiles:** `StatefulCarLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `590336` | **Controllable:** `io:CarLockIOComponent` | **Profiles:** `StatefulCarLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -2362,19 +2406,19 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `LockedUnlockedState` | DiscreteState | locked, unlocked |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 0 commands, 12 states"
 
-    **Type IDs:** `1442060` | **Profiles:** `ElectricEnergyConsumption`
+    **Type IDs:** `1442060` | **Controllable:** `io:TotalElectricalEnergyConsumptionSensor` | **Profiles:** `ElectricEnergyConsumption`
 
     **States**
 
@@ -2391,11 +2435,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ConsumptionTariff8State` | ContinuousState |  |  |
     | `ConsumptionTariff9State` | ContinuousState |  |  |
     | `ElectricEnergyConsumptionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "ExteriorHeatingSystem/DimmerExteriorHeating (ACTUATOR) — 27 commands, 11 states"
 
-    **Type IDs:** `1376258` | **Profiles:** `StatefulLevelControlHeating`, `StatefulLevelControl`, `LevelControl`, `Switchable`
+    **Type IDs:** `1376258` | **Controllable:** `io:ExteriorHeatingIOComponent` | **Profiles:** `StatefulLevelControlHeating`, `StatefulLevelControl`, `LevelControl`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -2435,19 +2483,23 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AdditionalStatusState` | DataState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `LevelState` | ContinuousState | [0..100] |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "ExteriorHeatingSystem/DiscreteExteriorHeating (ACTUATOR) — 23 commands, 10 states"
 
-    **Type IDs:** `1391106` | **Profiles:** `StatefulSwitchableHeating`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `1391106` | **Controllable:** `io:DiscreteExteriorHeatingIOComponent` | **Profiles:** `StatefulSwitchableHeating`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -2483,18 +2535,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AdditionalStatusState` | DataState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "ExteriorScreen/PositionableScreen (ACTUATOR) — 35 commands, 16 states"
 
-    **Type IDs:** `196608`, `196610` | **Profiles:** `StatefulDeployableVerticalAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulCloseable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `196608`, `196610` | **Controllable:** `io:VerticalExteriorAwningIOComponent` | **Profiles:** `StatefulDeployableVerticalAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulCloseable`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -2544,22 +2600,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `CommandLockLevelsState` | DataState |  |  |
     | `DeploymentState` | ContinuousState | [0..100] |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
-    | `MovingState` | DiscreteState |  |  |
+    | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "ExteriorScreen/PositionableScreen (ACTUATOR) — 32 commands, 15 states"
 
-    **Type IDs:** `196609` | **Profiles:** `StatefulDeployableVerticalAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulCloseable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `196609` | **Controllable:** `io:VerticalExteriorAwningVeluxIOComponent` | **Profiles:** `StatefulDeployableVerticalAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulCloseable`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -2606,21 +2666,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `CommandLockLevelsState` | DataState |  |  |
     | `DeploymentState` | ContinuousState | [0..100] |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
-    | `MovingState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "ExteriorVenetianBlind/PositionableExteriorVenetianBlind (ACTUATOR) — 37 commands, 17 states"
 
-    **Type IDs:** `1114112` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
+    **Type IDs:** `1114112` | **Controllable:** `io:ExteriorVenetianBlindIOComponent` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -2671,24 +2735,28 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AdditionalStatusState` | DataState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `Memorized1OrientationState` | ContinuousState |  |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
-    | `MovingState` | DiscreteState |  |  |
+    | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `SlateOrientationState` | ContinuousState | [0..100] |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "GarageDoor/PositionableGarageDoor (ACTUATOR) — 27 commands, 11 states"
 
-    **Type IDs:** `327680`, `327682` | **Profiles:** `StatefulCloseableGarageOpener`, `StatefulCloseable`, `Closeable`, `OpenClose`
+    **Type IDs:** `327680`, `327682` | **Controllable:** `io:GarageOpenerIOComponent` | **Profiles:** `StatefulCloseableGarageOpener`, `StatefulCloseable`, `Closeable`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -2729,18 +2797,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AdditionalStatusState` | DataState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
-    | `OpenClosedUnknownState` | DiscreteState |  |  |
+    | `OpenClosedUnknownState` | DiscreteState | closed, open, unknown |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "GarageDoor/DiscretePositionableGarageDoor (ACTUATOR) — 26 commands, 10 states"
 
-    **Type IDs:** `342528`, `342530` | **Profiles:** `OpenCloseGarageOpener`, `OpenClose`
+    **Type IDs:** `342528`, `342530` | **Controllable:** `io:DiscreteGarageOpenerIOComponent` | **Profiles:** `OpenCloseGarageOpener`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -2779,18 +2851,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AdditionalStatusState` | DataState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
-    | `OpenClosedUnknownState` | DiscreteState |  |  |
+    | `OpenClosedUnknownState` | DiscreteState | closed, open, unknown |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "GarageDoor/PositionableGarageDoor (ACTUATOR) — 25 commands, 11 states"
 
-    **Type IDs:** `524288`, `524290` | **Profiles:** `StatefulCloseableSlidingDoor`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `524288`, `524290` | **Controllable:** `io:RollingDoorOpenerIOComponent` | **Profiles:** `StatefulCloseableSlidingDoor`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -2829,18 +2905,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AdditionalStatusState` | DataState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Gate/PositionableGateWithPedestrianPosition (ACTUATOR) — 29 commands, 12 states"
 
-    **Type IDs:** `458752`, `458754` | **Profiles:** `StatefulCloseableGateOpener`, `StatefulCloseable`, `Closeable`, `OpenClose`
+    **Type IDs:** `458752`, `458754` | **Controllable:** `io:GateOpenerIOComponent` | **Profiles:** `StatefulCloseableGateOpener`, `StatefulCloseable`, `Closeable`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -2883,19 +2963,23 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AdditionalStatusState` | DataState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
-    | `OpenClosedPedestrianState` | DiscreteState |  |  |
+    | `OpenClosedPedestrianState` | DiscreteState | closed, open, pedestrian, unknown |  |
     | `PedestrianPositionState` | ContinuousState |  |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Gate/SlidingDiscreteGateWithPedestrianPosition (ACTUATOR) — 26 commands, 11 states"
 
-    **Type IDs:** `473600`, `473602` | **Profiles:** `OpenCloseSlidingGateOpener`, `OpenClose`
+    **Type IDs:** `473600`, `473602` | **Controllable:** `io:SlidingDiscreteGateOpenerIOComponent` | **Profiles:** `OpenCloseSlidingGateOpener`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -2934,19 +3018,23 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AdditionalStatusState` | DataState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
-    | `OpenClosedPedestrianState` | DiscreteState |  |  |
+    | `OpenClosedPedestrianState` | DiscreteState | closed, open, pedestrian, unknown |  |
     | `PedestrianPositionState` | ContinuousState |  |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Generic/IOGeneric (ACTUATOR) — 16 commands, 9 states"
 
-    **Type IDs:** `0`, `1179648`, `1245184`, `1376256`, `1572864`, `1573120` | **Profiles:** `StatefulLevelControl`, `LevelControl`, `Generic`
+    **Type IDs:** `0`, `1179648`, `1245184`, `1376256`, `1572864`, `1573120` | **Controllable:** `io:UnknownIOComponent` | **Profiles:** `StatefulLevelControl`, `LevelControl`, `Generic`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -2974,18 +3062,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `LevelState` | ContinuousState | [0..100] |  |
     | `NameState` | DataState |  |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "HeatPumpSystem/HeatPump (ACTUATOR) — 27 commands, 18 states"
 
-    **Type IDs:** `1441792` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`
+    **Type IDs:** `1441792` | **Controllable:** `io:HeatPumpIOComponent` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -3025,7 +3117,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ComfortRoomTemperatureState` | ContinuousState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `EcoRoomTemperatureState` | ContinuousState |  |  |
     | `HaltedRoomTemperatureState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
@@ -3033,18 +3125,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecondaryTemperatureState` | ContinuousState |  |  |
     | `SetBackRoomTemperatureState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetRoomTemperatureState` | ContinuousState |  |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `HeatPumpActivesModesState` | DataState |  |  |
     | `HeatPumpCapabilitiesState` | DataState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "HeatingSystem/KizOThermBridge (ACTUATOR) — 17 commands, 15 states"
 
-    **Type IDs:** `267` | **Profiles:** `DHWThermostatTargetReader`
+    **Type IDs:** `267` | **Controllable:** `io:KizOThermIOComponent` | **Profiles:** `DHWThermostatTargetReader`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -3073,24 +3169,28 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
-    | `OnOffFlameState` | DiscreteState |  |  |
+    | `OnOffFlameState` | DiscreteState | off, on |  |
     | `PrimaryTargetWaterTemperatureState` | ContinuousState |  |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RefreshableObjectsState` | DataState |  |  |
     | `SecondaryTargetWaterTemperatureState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetDHWTemperatureState` | ContinuousState | [38.0..60.0] |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `KizOThermCapabilitiesState` | DataState |  |  |
     | `KizOThermOperatingModesState` | DataState |  |  |
 
 ??? note "HeatingSystem/HeatingTemperatureInterface (ACTUATOR) — 31 commands, 18 states"
 
-    **Type IDs:** `917504` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`
+    **Type IDs:** `917504` | **Controllable:** `io:HeatingTemperatureInterfaceIOComponent` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -3134,26 +3234,30 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ComfortRoomTemperatureState` | ContinuousState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `EcoRoomTemperatureState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionTemperatureState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
-    | `HeatingTemperatureInterfaceActiveModeState` | DiscreteState |  |  |
+    | `HeatingTemperatureInterfaceActiveModeState` | DiscreteState | auto, manu |  |
     | `HeatingTemperatureInterfaceCapabilitiesState` | DataState |  |  |
     | `HeatingTemperatureInterfaceEnergyDemandState` | DataState |  |  |
     | `HeatingTemperatureInterfaceOperatingModeState` | DataState |  |  |
-    | `HeatingTemperatureInterfaceSetPointModeState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `HeatingTemperatureInterfaceSetPointModeState` | DiscreteState | comfort, eco, secured |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "HeatingSystem/AtlanticPassAPCHeatPump (ACTUATOR) — 41 commands, 39 states"
 
-    **Type IDs:** `1442060` | **Profiles:** `Specific`
+    **Type IDs:** `1442060` | **Controllable:** `io:AtlanticPassAPCHeatPumpMainComponent` | **Profiles:** `Specific`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -3211,13 +3315,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AbsenceStartDateTimeState` | DataState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
     | `DeviceSerialNumberState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `ECSPowerConsumptionExtra1State` | ContinuousState |  |  |
     | `ECSPowerConsumptionExtra2State` | ContinuousState |  |  |
     | `ECSPowerConsumptionExtra3State` | ContinuousState |  |  |
     | `ECSPowerConsumptionState` | ContinuousState |  |  |
     | `ErrorCodeState` | DataState |  |  |
-    | `HeatingDerogationAvailabilityState` | DiscreteState |  |  |
+    | `HeatingDerogationAvailabilityState` | DiscreteState | available, unavailable |  |
     | `HeatingPowerConsumptionExtra1State` | ContinuousState |  |  |
     | `HeatingPowerConsumptionExtra2State` | ContinuousState |  |  |
     | `HeatingPowerConsumptionExtra3State` | ContinuousState |  |  |
@@ -3226,28 +3330,28 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `ProductModelNameState` | DataState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TimeProgram1State` | DataState |  |  |
     | `TimeProgram2State` | DataState |  |  |
     | `TimeProgram3State` | DataState |  |  |
     | `TimeProgram4State` | DataState |  |  |
     | `VersionState` | ContinuousState |  |  |
     | `ZonesNumberState` | DataState |  |  |
-    | `AbsenceSchedulingAvailabilityState` | DiscreteState |  |  |
-    | `AbsenceSchedulingModeState` | DiscreteState |  |  |
-    | `DHWAvailabilityState` | DiscreteState |  |  |
-    | `EnergyConsumptionAvailabilityState` | DiscreteState |  |  |
-    | `LastPassAPCOperatingModeState` | DiscreteState |  |  |
-    | `PassAPCOperatingModeState` | DiscreteState |  |  |
-    | `PassAPCProductTypeState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
-    | `ThermalSchedulingAvailabilityState` | DiscreteState |  |  |
-    | `ThermalSchedulingModeState` | DiscreteState |  |  |
+    | `AbsenceSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `AbsenceSchedulingModeState` | DiscreteState | dateScheduling, numberOfDaysScheduling |  |
+    | `DHWAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `EnergyConsumptionAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `LastPassAPCOperatingModeState` | DiscreteState | cooling, drying, heating, stop |  |
+    | `PassAPCOperatingModeState` | DiscreteState | cooling, drying, heating, stop |  |
+    | `PassAPCProductTypeState` | DiscreteState | accumulationDomesticHotWater, airConditioning, boiler, convector, doubleFlowControlledMechanicalVentilation, heatPump, heater, hybrid, singleFlowControlledMechanicalVentilation, thermodynamicDomesticHotWater, zoneController |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
+    | `ThermalSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `ThermalSchedulingModeState` | DiscreteState | heatingAndCoolingCommonScheduling, heatingAndCoolingSeparatedScheduling |  |
 
 ??? note "HeatingSystem/AtlanticPassAPCHeatingAndCoolingZone (ACTUATOR) — 28 commands, 22 states"
 
-    **Type IDs:** `1442060` | **Profiles:** `ThermostatTargetReader`
+    **Type IDs:** `1442060` | **Controllable:** `io:AtlanticPassAPCHeatingAndCoolingZoneComponent` | **Profiles:** `ThermostatTargetReader`
 
     **Commands**
 
@@ -3291,27 +3395,31 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ComfortCoolingTargetTemperatureState` | ContinuousState |  |  |
     | `ComfortHeatingTargetTemperatureState` | ContinuousState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `CoolingOnOffState` | DiscreteState |  |  |
+    | `CoolingOnOffState` | DiscreteState | off, on |  |
     | `DerogatedTargetTemperatureState` | ContinuousState |  |  |
-    | `DerogationOnOffState` | DiscreteState |  |  |
+    | `DerogationOnOffState` | DiscreteState | off, on |  |
     | `EcoCoolingTargetTemperatureState` | ContinuousState |  |  |
     | `EcoHeatingTargetTemperatureState` | ContinuousState |  |  |
-    | `HeatingOnOffState` | DiscreteState |  |  |
+    | `HeatingOnOffState` | DiscreteState | off, on |  |
     | `NameState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
-    | `ThermalConfigurationState` | DiscreteState |  |  |
-    | `CoolingInternalSchedulingAvailabilityState` | DiscreteState |  |  |
+    | `ThermalConfigurationState` | DiscreteState | cooling, heating, heatingAndCooling |  |
+    | `CoolingInternalSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
     | `DerogationRemainingTimeState` | DataState |  |  |
-    | `HeatingInternalSchedulingAvailabilityState` | DiscreteState |  |  |
-    | `PassAPCCoolingModeState` | DiscreteState |  |  |
-    | `PassAPCCoolingProfileState` | DiscreteState |  |  |
-    | `PassAPCHeatingModeState` | DiscreteState |  |  |
-    | `PassAPCHeatingProfileState` | DiscreteState |  |  |
+    | `HeatingInternalSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `PassAPCCoolingModeState` | DiscreteState | absence, auto, comfort, eco, externalScheduling, internalScheduling, manu, stop |  |
+    | `PassAPCCoolingProfileState` | DiscreteState | absence, comfort, derogation, eco, externalSetpoint, frostprotection, manu, stop |  |
+    | `PassAPCHeatingModeState` | DiscreteState | absence, auto, comfort, eco, externalScheduling, internalScheduling, manu, stop |  |
+    | `PassAPCHeatingProfileState` | DiscreteState | absence, comfort, derogation, eco, externalSetpoint, frostprotection, manu, stop |  |
 
 ??? note "HeatingSystem/AtlanticPassAPCBoiler (ACTUATOR) — 38 commands, 38 states"
 
-    **Type IDs:** `1442316` | **Profiles:** `Specific`
+    **Type IDs:** `1442316` | **Controllable:** `io:AtlanticPassAPCBoilerMainComponent` | **Profiles:** `Specific`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -3365,13 +3473,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AbsenceStartDateTimeState` | DataState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
     | `DeviceSerialNumberState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `ECSPowerConsumptionExtra1State` | ContinuousState |  |  |
     | `ECSPowerConsumptionExtra2State` | ContinuousState |  |  |
     | `ECSPowerConsumptionExtra3State` | ContinuousState |  |  |
     | `ECSPowerConsumptionState` | ContinuousState |  |  |
     | `ErrorCodeState` | DataState |  |  |
-    | `HeatingDerogationAvailabilityState` | DiscreteState |  |  |
+    | `HeatingDerogationAvailabilityState` | DiscreteState | available, unavailable |  |
     | `HeatingPowerConsumptionExtra1State` | ContinuousState |  |  |
     | `HeatingPowerConsumptionExtra2State` | ContinuousState |  |  |
     | `HeatingPowerConsumptionExtra3State` | ContinuousState |  |  |
@@ -3380,28 +3488,28 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `ProductModelNameState` | DataState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TimeProgram1State` | DataState |  |  |
     | `TimeProgram2State` | DataState |  |  |
     | `TimeProgram3State` | DataState |  |  |
     | `TimeProgram4State` | DataState |  |  |
     | `VersionState` | ContinuousState |  |  |
     | `ZonesNumberState` | DataState |  |  |
-    | `AbsenceSchedulingAvailabilityState` | DiscreteState |  |  |
-    | `AbsenceSchedulingModeState` | DiscreteState |  |  |
-    | `DHWAvailabilityState` | DiscreteState |  |  |
-    | `EnergyConsumptionAvailabilityState` | DiscreteState |  |  |
-    | `LastPassAPCOperatingModeState` | DiscreteState |  |  |
-    | `PassAPCOperatingModeState` | DiscreteState |  |  |
-    | `PassAPCProductTypeState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
-    | `ThermalSchedulingAvailabilityState` | DiscreteState |  |  |
-    | `ThermalSchedulingModeState` | DiscreteState |  |  |
+    | `AbsenceSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `AbsenceSchedulingModeState` | DiscreteState | dateScheduling, numberOfDaysScheduling |  |
+    | `DHWAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `EnergyConsumptionAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `LastPassAPCOperatingModeState` | DiscreteState | cooling, drying, heating, stop |  |
+    | `PassAPCOperatingModeState` | DiscreteState | cooling, drying, heating, stop |  |
+    | `PassAPCProductTypeState` | DiscreteState | accumulationDomesticHotWater, airConditioning, boiler, convector, doubleFlowControlledMechanicalVentilation, heatPump, heater, hybrid, singleFlowControlledMechanicalVentilation, thermodynamicDomesticHotWater, zoneController |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
+    | `ThermalSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `ThermalSchedulingModeState` | DiscreteState | heatingAndCoolingCommonScheduling, heatingAndCoolingSeparatedScheduling |  |
 
 ??? note "HeatingSystem/AtlanticPassAPCHeatingZone (ACTUATOR) — 19 commands, 15 states"
 
-    **Type IDs:** `1442316` | **Profiles:** `ThermostatTargetReader`
+    **Type IDs:** `1442316` | **Controllable:** `io:AtlanticPassAPCHeatingZoneComponent` | **Profiles:** `ThermostatTargetReader`
 
     **Commands**
 
@@ -3435,21 +3543,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ComfortHeatingTargetTemperatureState` | ContinuousState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
     | `DerogatedTargetTemperatureState` | ContinuousState |  |  |
-    | `DerogationOnOffState` | DiscreteState |  |  |
+    | `DerogationOnOffState` | DiscreteState | off, on |  |
     | `EcoHeatingTargetTemperatureState` | ContinuousState |  |  |
-    | `HeatingOnOffState` | DiscreteState |  |  |
+    | `HeatingOnOffState` | DiscreteState | off, on |  |
     | `NameState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
-    | `ThermalConfigurationState` | DiscreteState |  |  |
+    | `ThermalConfigurationState` | DiscreteState | cooling, heating, heatingAndCooling |  |
     | `DerogationRemainingTimeState` | DataState |  |  |
-    | `HeatingComfortModeAvailabilityState` | DiscreteState |  |  |
-    | `PassAPCHeatingModeState` | DiscreteState |  |  |
-    | `PassAPCHeatingProfileState` | DiscreteState |  |  |
+    | `HeatingComfortModeAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `PassAPCHeatingModeState` | DiscreteState | absence, auto, comfort, eco, externalScheduling, internalScheduling, manu, stop |  |
+    | `PassAPCHeatingProfileState` | DiscreteState | absence, comfort, derogation, eco, externalSetpoint, frostprotection, manu, stop |  |
 
 ??? note "HeatingSystem/AtlanticPassAPCZoneControl (ACTUATOR) — 37 commands, 30 states"
 
-    **Type IDs:** `1835020` | **Profiles:** `Specific`
+    **Type IDs:** `1835020` | **Controllable:** `io:AtlanticPassAPCZoneControlMainComponent` | **Profiles:** `Specific`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -3503,34 +3615,34 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AbsenceStartDateTimeState` | DataState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
     | `DeviceSerialNumberState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `ErrorCodeState` | DataState |  |  |
-    | `HeatingCoolingAutoSwitchState` | DiscreteState |  |  |
-    | `HeatingDerogationAvailabilityState` | DiscreteState |  |  |
+    | `HeatingCoolingAutoSwitchState` | DiscreteState | off, on |  |
+    | `HeatingDerogationAvailabilityState` | DiscreteState | available, unavailable |  |
     | `NameState` | DataState |  |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `ProductModelNameState` | DataState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TimeProgram1State` | DataState |  |  |
     | `TimeProgram2State` | DataState |  |  |
     | `TimeProgram3State` | DataState |  |  |
     | `TimeProgram4State` | DataState |  |  |
     | `VersionState` | ContinuousState |  |  |
     | `ZonesNumberState` | DataState |  |  |
-    | `AbsenceSchedulingAvailabilityState` | DiscreteState |  |  |
-    | `AbsenceSchedulingModeState` | DiscreteState |  |  |
-    | `LastPassAPCOperatingModeState` | DiscreteState |  |  |
-    | `PassAPCOperatingModeState` | DiscreteState |  |  |
-    | `PassAPCProductTypeState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
-    | `ThermalSchedulingAvailabilityState` | DiscreteState |  |  |
-    | `ThermalSchedulingModeState` | DiscreteState |  |  |
+    | `AbsenceSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `AbsenceSchedulingModeState` | DiscreteState | dateScheduling, numberOfDaysScheduling |  |
+    | `LastPassAPCOperatingModeState` | DiscreteState | cooling, drying, heating, stop |  |
+    | `PassAPCOperatingModeState` | DiscreteState | cooling, drying, heating, stop |  |
+    | `PassAPCProductTypeState` | DiscreteState | accumulationDomesticHotWater, airConditioning, boiler, convector, doubleFlowControlledMechanicalVentilation, heatPump, heater, hybrid, singleFlowControlledMechanicalVentilation, thermodynamicDomesticHotWater, zoneController |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
+    | `ThermalSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `ThermalSchedulingModeState` | DiscreteState | heatingAndCoolingCommonScheduling, heatingAndCoolingSeparatedScheduling |  |
 
 ??? note "HeatingSystem/AtlanticPassAPCHeatingAndCoolingZone (ACTUATOR) — 35 commands, 26 states"
 
-    **Type IDs:** `1835020` | **Profiles:** `StatefulCoolingThermostat`, `CoolingThermostat`, `StatefulDualThermostat`, `DualThermostat`, `ThermostatTargetReader`
+    **Type IDs:** `1835020` | **Controllable:** `io:AtlanticPassAPCZoneControlZoneComponent` | **Profiles:** `StatefulCoolingThermostat`, `CoolingThermostat`, `StatefulDualThermostat`, `DualThermostat`, `ThermostatTargetReader`
 
     **Commands**
 
@@ -3581,31 +3693,35 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ComfortCoolingTargetTemperatureState` | ContinuousState |  |  |
     | `ComfortHeatingTargetTemperatureState` | ContinuousState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `CoolingOnOffState` | DiscreteState |  |  |
+    | `CoolingOnOffState` | DiscreteState | off, on |  |
     | `CoolingTargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
-    | `DerogationOnOffState` | DiscreteState |  |  |
+    | `DerogationOnOffState` | DiscreteState | off, on |  |
     | `EcoCoolingTargetTemperatureState` | ContinuousState |  |  |
     | `EcoHeatingTargetTemperatureState` | ContinuousState |  |  |
-    | `HeatingOnOffState` | DiscreteState |  |  |
+    | `HeatingOnOffState` | DiscreteState | off, on |  |
     | `HeatingTargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `MaximumCoolingTargetTemperatureState` | ContinuousState |  |  |
     | `MaximumHeatingTargetTemperatureState` | ContinuousState |  |  |
     | `MinimumCoolingTargetTemperatureState` | ContinuousState |  |  |
     | `MinimumHeatingTargetTemperatureState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
-    | `ThermalConfigurationState` | DiscreteState |  |  |
-    | `CoolingManualModeAvailabilityState` | DiscreteState |  |  |
-    | `HeatingManualModeAvailabilityState` | DiscreteState |  |  |
-    | `PassAPCCoolingModeState` | DiscreteState |  |  |
-    | `PassAPCCoolingProfileState` | DiscreteState |  |  |
-    | `PassAPCHeatingModeState` | DiscreteState |  |  |
-    | `PassAPCHeatingProfileState` | DiscreteState |  |  |
+    | `ThermalConfigurationState` | DiscreteState | cooling, heating, heatingAndCooling |  |
+    | `CoolingManualModeAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `HeatingManualModeAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `PassAPCCoolingModeState` | DiscreteState | absence, auto, comfort, eco, externalScheduling, internalScheduling, manu, stop |  |
+    | `PassAPCCoolingProfileState` | DiscreteState | absence, comfort, derogation, eco, externalSetpoint, frostprotection, manu, stop |  |
+    | `PassAPCHeatingModeState` | DiscreteState | absence, auto, comfort, eco, externalScheduling, internalScheduling, manu, stop |  |
+    | `PassAPCHeatingProfileState` | DiscreteState | absence, comfort, derogation, eco, externalSetpoint, frostprotection, manu, stop |  |
 
 ??? note "Light/DimmerLight (ACTUATOR) — 32 commands, 13 states"
 
-    **Type IDs:** `393216`, `393218` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `393216`, `393218` | **Controllable:** `io:DimmableLightIOComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -3650,7 +3766,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AdditionalStatusState` | DataState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `LightIntensityState` | ContinuousState | [0..100] |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
@@ -3658,13 +3774,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Light/DimmerRGBColouredLight (ACTUATOR) — 34 commands, 16 states"
 
-    **Type IDs:** `393472`, `393474` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `393472`, `393474` | **Controllable:** `io:DimmableRGBLightIOComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -3712,7 +3832,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AdditionalStatusState` | DataState |  |  |
     | `BlueColorIntensityState` | ContinuousState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `GreenColorIntensityState` | ContinuousState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
@@ -3722,13 +3842,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RSSILevelState` | ContinuousState |  |  |
     | `RedColorIntensityState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Light/DimmerColorTemperatureLight (ACTUATOR) — 33 commands, 14 states"
 
-    **Type IDs:** `393730` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `393730` | **Controllable:** `io:DimmableColorTemperatureLightIOComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -3775,7 +3899,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AdditionalStatusState` | DataState |  |  |
     | `ColorTemperatureState` | ContinuousState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `LightIntensityState` | ContinuousState | [0..100] |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
@@ -3783,13 +3907,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Light/StatefulOnOffLight (ACTUATOR) — 25 commands, 10 states"
 
-    **Type IDs:** `408064`, `408066`, `2199023663618` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `408064`, `408066`, `2199023663618` | **Controllable:** `io:OnOffLightIOComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -3827,18 +3955,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AdditionalStatusState` | DataState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Light/TimedOnOffLight (ACTUATOR) — 28 commands, 13 states"
 
-    **Type IDs:** `983554` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `983554` | **Controllable:** `io:LightMicroModuleSomfyIOComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -3879,21 +4011,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AdditionalStatusState` | DataState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TimerState` | ContinuousState |  |  |
     | `PairedMicroModuleWithLowBatteryState` | DataState |  |  |
-    | `PictoState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `PictoState` | DiscreteState | onOffLight |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Light/DimmerLight (ACTUATOR) — 34 commands, 12 states"
 
-    **Type IDs:** `2199023648770` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `2199023648770` | **Controllable:** `io:DimmableLightMicroModuleSomfyIOComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -3940,20 +4076,24 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AdditionalStatusState` | DataState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `LightIntensityState` | ContinuousState | [0..100] |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 20 commands, 9 states"
 
-    **Type IDs:** `983040` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `983040` | **Controllable:** `io:OnOffIOComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -3985,18 +4125,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "OnOff/TimedOnOff (ACTUATOR) — 20 commands, 9 states"
 
-    **Type IDs:** `983552` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `983552` | **Controllable:** `io:SwitchMicroModuleIOComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -4028,18 +4172,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Pergola/PergolaHorizontalAwning (ACTUATOR) — 35 commands, 15 states"
 
-    **Type IDs:** `1048832`, `1048834` | **Profiles:** `StatefulSlidingPergola`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `1048832`, `1048834` | **Controllable:** `io:PergolaRailGuidedAwningIOComponent` | **Profiles:** `StatefulSlidingPergola`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -4088,22 +4236,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AdditionalStatusState` | DataState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
     | `DeploymentState` | ContinuousState | [0..100] |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
-    | `MovingState` | DiscreteState |  |  |
+    | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "RollerShutter/PositionableRollerShutter (ACTUATOR) — 33 commands, 15 states"
 
-    **Type IDs:** `131072`, `131074` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `131072`, `131074` | **Controllable:** `io:RollerShutterGenericIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -4150,22 +4302,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AdditionalStatusState` | DataState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
-    | `MovingState` | DiscreteState |  |  |
+    | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "RollerShutter/PositionableTiltedRollerShutter (ACTUATOR) — 29 commands, 13 states"
 
-    **Type IDs:** `131073` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `131073` | **Controllable:** `io:RollerShutterVeluxIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -4205,23 +4361,27 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "RollerShutter/PositionableProjectionRollerShutter (ACTUATOR) — 29 commands, 13 states"
 
-    **Type IDs:** `131584` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `131584` | **Controllable:** `io:ProjectionRollerShutterIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -4263,7 +4423,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
@@ -4271,13 +4431,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ProjectionAngleState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "RollerShutter/PositionableDualRollerShutter (ACTUATOR) — 43 commands, 16 states"
 
-    **Type IDs:** `851968` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `851968` | **Controllable:** `io:DualRollerShutterIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -4333,24 +4497,28 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `LowerClosureState` | ContinuousState |  |  |
-    | `LowerOpenClosedState` | DiscreteState |  |  |
+    | `LowerOpenClosedState` | DiscreteState | closed, open |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `UpperClosureState` | ContinuousState |  |  |
-    | `UpperOpenClosedState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `UpperOpenClosedState` | DiscreteState | closed, open |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Screen/PositionableScreen (ACTUATOR) — 32 commands, 15 states"
 
-    **Type IDs:** `655360`, `655362` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `655360`, `655362` | **Controllable:** `io:VerticalInteriorBlindGenericIOComponent` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -4396,22 +4564,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AdditionalStatusState` | DataState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
-    | `MovingState` | DiscreteState |  |  |
+    | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Screen/PositionableTiltedScreen (ACTUATOR) — 26 commands, 12 states"
 
-    **Type IDs:** `655361` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `655361` | **Controllable:** `io:VerticalInteriorBlindVeluxIOComponent` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -4450,20 +4622,24 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "SwimmingPool (ACTUATOR) — 19 commands, 9 states"
 
-    **Type IDs:** `393471` | **Profiles:** `SwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `393471` | **Controllable:** `io:SwimmingPoolIOComponent` | **Profiles:** `SwitchableLight`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -4494,18 +4670,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "SwingingShutter (ACTUATOR) — 29 commands, 13 states"
 
-    **Type IDs:** `1572866` | **Profiles:** `StatefulCloseableSwingingShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `1572866` | **Controllable:** `io:SwingingShutterSomfyIOComponent` | **Profiles:** `StatefulCloseableSwingingShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -4548,20 +4728,24 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AdditionalStatusState` | DataState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "SwingingShutter (ACTUATOR) — 26 commands, 11 states"
 
-    **Type IDs:** `1587714` | **Profiles:** `StatefulOpenCloseSwingingShutter`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `1587714` | **Controllable:** `io:DiscreteSwingingShutterSomfyIOComponent` | **Profiles:** `StatefulOpenCloseSwingingShutter`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -4600,30 +4784,34 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AdditionalStatusState` | DataState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "TemperatureSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `267`, `1442060`, `1442316`, `1835020` | **Profiles:** `Temperature`
+    **Type IDs:** `267`, `1442060`, `1442316`, `1835020` | **Controllable:** `io:KizOThermRoomTemperatureSensor` | **Profiles:** `Temperature`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
 
 ??? note "VenetianBlind/PositionableVenetianBlind (ACTUATOR) — 28 commands, 15 states"
 
-    **Type IDs:** `65536` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
+    **Type IDs:** `65536` | **Controllable:** `io:VenetianBlindIOComponent` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -4664,23 +4852,27 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
-    | `MovingState` | DiscreteState |  |  |
+    | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `SlateOrientationState` | ContinuousState | [0..100] |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "VentilationSystem/VentilationInlet (ACTUATOR) — 18 commands, 11 states"
 
-    **Type IDs:** `1310720`, `1310976` | **Profiles:** `SwitchableVentilation`, `Switchable`
+    **Type IDs:** `1310720`, `1310976` | **Controllable:** `io:VentilationPointIOComponent` | **Profiles:** `SwitchableVentilation`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -4711,19 +4903,23 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AirInputState` | ContinuousState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "VentilationSystem/VentilationTransfer (ACTUATOR) — 18 commands, 11 states"
 
-    **Type IDs:** `1311232` | **Profiles:** `SwitchableVentilation`, `Switchable`
+    **Type IDs:** `1311232` | **Controllable:** `io:VentilationPointAirTransferIOComponent` | **Profiles:** `SwitchableVentilation`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -4754,19 +4950,23 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AirTransferState` | ContinuousState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "VentilationSystem/VentilationOutlet (ACTUATOR) — 18 commands, 12 states"
 
-    **Type IDs:** `1311488` | **Profiles:** `SwitchableVentilation`, `AirOutputLevelSensor`, `Switchable`
+    **Type IDs:** `1311488` | **Controllable:** `io:VentilationPointAirOutletIOComponent` | **Profiles:** `SwitchableVentilation`, `AirOutputLevelSensor`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -4798,19 +4998,19 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AirOutputLevelState` | ContinuousState | [0..100] |  |
     | `AirOutputState` | ContinuousState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "WaterHeatingSystem/AtlanticPassAPCDHW (ACTUATOR) — 17 commands, 11 states"
 
-    **Type IDs:** `1442060`, `1442316` | **Profiles:** `DHWThermostatTargetReader`
+    **Type IDs:** `1442060`, `1442316` | **Controllable:** `io:AtlanticPassAPCDHWComponent` | **Profiles:** `DHWThermostatTargetReader`
 
     **Commands**
 
@@ -4838,21 +5038,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `BoostOnOffState` | DiscreteState |  |  |
+    | `BoostOnOffState` | DiscreteState | off, on |  |
     | `ComfortTargetDHWTemperatureState` | ContinuousState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DHWDerogationAvailabilityState` | DiscreteState |  |  |
-    | `DHWOnOffState` | DiscreteState |  |  |
+    | `DHWDerogationAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `DHWOnOffState` | DiscreteState | off, on |  |
     | `EcoTargetDHWTemperatureState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetDHWTemperatureState` | ContinuousState | [38.0..60.0] |  |
-    | `PassAPCDHWConfigurationState` | DiscreteState |  |  |
-    | `PassAPCDHWModeState` | DiscreteState |  |  |
-    | `PassAPCDHWProfileState` | DiscreteState |  |  |
+    | `PassAPCDHWConfigurationState` | DiscreteState | cumulated, snapshot |  |
+    | `PassAPCDHWModeState` | DiscreteState | comfort, eco, externalScheduling, internalScheduling, manu, peakAndOffPeakScheduling, peakAndOffPeakTimes, stop |  |
+    | `PassAPCDHWProfileState` | DiscreteState | absence, comfort, derogation, eco, externalSetpoint, frostprotection, manu, other, stop |  |
 
 ??? note "Window/PositionableWindow (ACTUATOR) — 19 commands, 10 states"
 
-    **Type IDs:** `262144` | **Profiles:** `StatefulCloseableWindow`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `262144` | **Controllable:** `io:WindowOpenerGenericIOComponent` | **Profiles:** `StatefulCloseableWindow`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -4884,18 +5088,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Window/PositionableTiltedWindow (ACTUATOR) — 23 commands, 12 states"
 
-    **Type IDs:** `262145`, `262401` | **Profiles:** `StatefulCloseableWindow`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `262145`, `262401` | **Controllable:** `io:WindowOpenerVeluxIOComponent` | **Profiles:** `StatefulCloseableWindow`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -4929,22 +5137,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `ReachedAliasesState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Window/PositionableSlidingWindow (ACTUATOR) — 25 commands, 11 states"
 
-    **Type IDs:** `1769472` | **Profiles:** `StatefulCloseableSlidingWindow`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `1769472` | **Controllable:** `io:PositionableSlidingWindowComponent` | **Profiles:** `StatefulCloseableSlidingWindow`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -4982,19 +5194,23 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Window/PositionableAndLockableSlidingWindow (ACTUATOR) — 36 commands, 18 states"
 
-    **Type IDs:** `1769730`, `2199025025282` | **Profiles:** `StatefulCloseableSlidingWindow`, `StatefulCloseable`, `Closeable`, `StatefulLock`, `LockStatus`, `Lock`, `OpenClose`
+    **Type IDs:** `1769730`, `2199025025282` | **Controllable:** `io:PositionableAndLockableSlidingWindowComponent` | **Profiles:** `StatefulCloseableSlidingWindow`, `StatefulCloseable`, `Closeable`, `StatefulLock`, `LockStatus`, `Lock`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -5044,21 +5260,21 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AdditionalStatusState` | DataState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `LockedUnlockedState` | DiscreteState | locked, unlocked |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
-    | `OpenClosedSecuredVentilationState` | DiscreteState |  |  |
-    | `OpeningDirectionState` | DiscreteState |  |  |
+    | `OpenClosedSecuredVentilationState` | DiscreteState | open, securedVentilation, closed |  |
+    | `OpeningDirectionState` | DiscreteState | left, right |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RemainingTimeState` | ContinuousState |  |  |
-    | `SecuredVentilationFeatureState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `SecuredVentilationFeatureState` | DiscreteState | enabled, disabled |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TimerActivationState` | DataState |  |  |
     | `TimerState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState |  |  |
-    | `PriorityLockOriginatorState` | DiscreteState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 
 ## JSW
@@ -5067,7 +5283,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Camera/JSWCamera (ACTUATOR) — 12 commands, 2 states"
 
-    **Type IDs:** `0` | **Profiles:** `Specific`
+    **Type IDs:** `0` | **Controllable:** `jsw:CameraController` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -5100,7 +5316,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `14` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `14` | **Controllable:** `modbus:YutakiV2SpaceCoolingElectricalEnergyConsumptionComponent` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
 
     **States**
 
@@ -5111,7 +5327,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/HitachiThermostat (SENSOR) — 0 commands, 1 states"
 
-    **Type IDs:** `12`, `14` | **Profiles:** `Specific`
+    **Type IDs:** `12`, `14` | **Controllable:** `modbus:YutakiRoomThermostatZone1Component` | **Profiles:** `Specific`
 
     **States**
 
@@ -5121,7 +5337,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiAirToWaterMainComponent (ACTUATOR) — 41 commands, 67 states"
 
-    **Type IDs:** `12`, `14` | **Profiles:** `Specific`
+    **Type IDs:** `12`, `14` | **Controllable:** `modbus:YutakiMainComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -5173,7 +5389,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `AutoManuModeState` | DiscreteState |  |  |
+    | `AutoManuModeState` | DiscreteState | auto, manu |  |
     | `AlarmNumberState` | DataState |  |  |
     | `CauseOfStoppageState` | DataState |  |  |
     | `CentralSetting1State` | DataState |  |  |
@@ -5182,10 +5398,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `CompressorCurrentValueState` | DataState |  |  |
     | `CompressorFrequencyState` | DataState |  |  |
     | `CompressorRunningCurrentState` | DataState |  |  |
-    | `ControlBlockMenuState` | DiscreteState |  |  |
-    | `ControlCommunicationAlarmBitState` | DiscreteState |  |  |
-    | `ControlUnitModeState` | DiscreteState |  |  |
-    | `ControlUnitState` | DiscreteState |  |  |
+    | `ControlBlockMenuState` | DiscreteState | block, no |  |
+    | `ControlCommunicationAlarmBitState` | DiscreteState | alarm, no |  |
+    | `ControlUnitModeState` | DiscreteState | cool, heat |  |
+    | `ControlUnitState` | DiscreteState | run, stop |  |
     | `DefrostingState` | DataState |  |  |
     | `DischargeGasTemperatureState` | DataState |  |  |
     | `DischargePressureState` | DataState |  |  |
@@ -5195,7 +5411,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `EvaporatingTemperatureState` | DataState |  |  |
     | `EvaporationTemperatureState` | DataState |  |  |
     | `GasTemperatureState` | DataState |  |  |
-    | `HLinkCommunicationAlarmState` | DiscreteState |  |  |
+    | `HLinkCommunicationAlarmState` | DiscreteState | alarm, noAlarm |  |
     | `HardwareVersionState` | DataState |  |  |
     | `IndoorExpansionValveOpeningState` | DataState |  |  |
     | `IndoorExpansionValveState` | DataState |  |  |
@@ -5205,7 +5421,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `LiquidTemperatureState` | DataState |  |  |
     | `LiquidTemperatureTHMIState` | DataState |  |  |
     | `MixingValvePositionState` | DataState |  |  |
-    | `OperationState` | DiscreteState |  |  |
+    | `OperationState` | DiscreteState | alarm, cool demand-off, cool thermo-off, cool thermo-on, dhw-off, heat demand-off, heat thermo-off, heat thermo-on, off, swp-off |  |
     | `OutdoorAmbientTemperatureState` | DataState |  |  |
     | `OutdoorExpansionValveState` | DataState |  |  |
     | `OutdoorUnitAmbientState` | DataState |  |  |
@@ -5220,15 +5436,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `SecondAmbientTemperatureState` | DataState |  |  |
     | `SoftwareNumberState` | DataState |  |  |
     | `SoftwareVersionState` | DataState |  |  |
-    | `SpaceModeState` | DiscreteState |  |  |
+    | `SpaceModeState` | DiscreteState | comfort, eco |  |
     | `StatusBlockMenuState` | DataState |  |  |
-    | `StatusCommunicationAlarmBitState` | DiscreteState |  |  |
+    | `StatusCommunicationAlarmBitState` | DiscreteState | alarm, no |  |
     | `StatusUnitModeState` | DataState |  |  |
     | `SuctionPressureState` | DataState |  |  |
     | `SuctionTemperatureState` | DataState |  |  |
     | `SystemConfigurationState` | DataState |  |  |
     | `SystemStatus2State` | DataState |  |  |
-    | `TahomaRoomThermostatAvailableState` | DiscreteState |  |  |
+    | `TahomaRoomThermostatAvailableState` | DiscreteState | available, not available |  |
     | `UnitModelState` | DataState |  |  |
     | `VirtualEcoComfortModeState` | DataState |  |  |
     | `WaterFlowLevelState` | DataState |  |  |
@@ -5239,11 +5455,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `WaterOutletUnitTemperatureState` | DataState |  |  |
     | `WaterPumpSpeedState` | DataState |  |  |
     | `WaterTemperatureSettingState` | DataState |  |  |
-    | `YutakiVirtualOperatingModeState` | DiscreteState |  |  |
+    | `YutakiVirtualOperatingModeState` | DiscreteState | auto, holidays, normal, timer |  |
 
 ??? note "HitachiHeatingSystem/HitachiAirToWaterHeatingZone (ACTUATOR) — 24 commands, 17 states"
 
-    **Type IDs:** `12` | **Profiles:** `Specific`
+    **Type IDs:** `12` | **Controllable:** `modbus:YutakiZone1Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -5279,16 +5495,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `AlarmNumberState` | DataState |  |  |
-    | `AutoManuModeZone1State` | DiscreteState |  |  |
-    | `ControlCircuit1State` | DiscreteState |  |  |
-    | `ControlCoolingOTCZone1State` | DiscreteState |  |  |
-    | `ControlHeatingOTCZone1State` | DiscreteState |  |  |
-    | `HolidayModeZone1State` | DiscreteState |  |  |
+    | `AutoManuModeZone1State` | DiscreteState | auto, manu |  |
+    | `ControlCircuit1State` | DiscreteState | run, stop |  |
+    | `ControlCoolingOTCZone1State` | DiscreteState | fix, no, points |  |
+    | `ControlHeatingOTCZone1State` | DiscreteState | fix, gradient, no, points |  |
+    | `HolidayModeZone1State` | DiscreteState | off, on |  |
     | `RoomAmbientTemperatureControlZone1State` | DataState |  |  |
     | `RoomAmbientTemperatureStatusZone1State` | DataState |  |  |
-    | `StatusCircuit1State` | DiscreteState |  |  |
-    | `StatusCoolingOTCZone1State` | DiscreteState |  |  |
-    | `StatusHeatingOTCZone1State` | DiscreteState |  |  |
+    | `StatusCircuit1State` | DiscreteState | run, stop |  |
+    | `StatusCoolingOTCZone1State` | DiscreteState | fix, no, points |  |
+    | `StatusHeatingOTCZone1State` | DiscreteState | fix, gradient, no, points |  |
     | `ThermostatSettingControlZone1State` | DataState |  |  |
     | `ThermostatSettingStatusZone1State` | DataState |  |  |
     | `WaterCoolingSettingTemperatureControlZone1State` | DataState |  |  |
@@ -5298,7 +5514,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiAirToWaterHeatingZone (ACTUATOR) — 24 commands, 17 states"
 
-    **Type IDs:** `12` | **Profiles:** `Specific`
+    **Type IDs:** `12` | **Controllable:** `modbus:YutakiZone2Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -5334,16 +5550,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `AlarmNumberState` | DataState |  |  |
-    | `AutoManuModeZone2State` | DiscreteState |  |  |
-    | `ControlCircuit2State` | DiscreteState |  |  |
-    | `ControlCoolingOTCZone2State` | DiscreteState |  |  |
-    | `ControlHeatingOTCZone2State` | DiscreteState |  |  |
-    | `HolidayModeZone2State` | DiscreteState |  |  |
+    | `AutoManuModeZone2State` | DiscreteState | auto, manu |  |
+    | `ControlCircuit2State` | DiscreteState | run, stop |  |
+    | `ControlCoolingOTCZone2State` | DiscreteState | fix, no, points |  |
+    | `ControlHeatingOTCZone2State` | DiscreteState | fix, gradient, no, points |  |
+    | `HolidayModeZone2State` | DiscreteState | off, on |  |
     | `RoomAmbientTemperatureControlZone2State` | DataState |  |  |
     | `RoomAmbientTemperatureStatusZone2State` | DataState |  |  |
-    | `StatusCircuit2State` | DiscreteState |  |  |
-    | `StatusCoolingOTCZone2State` | DiscreteState |  |  |
-    | `StatusHeatingOTCZone2State` | DiscreteState |  |  |
+    | `StatusCircuit2State` | DiscreteState | run, stop |  |
+    | `StatusCoolingOTCZone2State` | DiscreteState | fix, no, points |  |
+    | `StatusHeatingOTCZone2State` | DiscreteState | fix, gradient, no, points |  |
     | `ThermostatSettingControlZone2State` | DataState |  |  |
     | `ThermostatSettingStatusZone2State` | DataState |  |  |
     | `WaterCoolingSettingTemperatureControlZone2State` | DataState |  |  |
@@ -5353,7 +5569,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiDHW (ACTUATOR) — 16 commands, 13 states"
 
-    **Type IDs:** `12` | **Profiles:** `DHWTemperature`
+    **Type IDs:** `12` | **Controllable:** `modbus:YutakiDHWTComponent` | **Profiles:** `DHWTemperature`
 
     **Commands**
 
@@ -5383,20 +5599,20 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DHWTemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `AlarmNumberState` | DataState |  |  |
     | `ControlAntiLegionellaSettingTemperatureState` | DataState |  |  |
-    | `ControlAntiLegionellaState` | DiscreteState |  |  |
+    | `ControlAntiLegionellaState` | DiscreteState | run, stop |  |
     | `ControlDHWSettingTemperatureState` | DataState |  |  |
-    | `ControlDHWState` | DiscreteState |  |  |
-    | `DHWModeState` | DiscreteState |  |  |
+    | `ControlDHWState` | DiscreteState | run, stop |  |
+    | `DHWModeState` | DiscreteState | high demand, standard |  |
     | `StatusAntiLegionellaSettingTemperatureState` | DataState |  |  |
-    | `StatusAntiLegionellaState` | DiscreteState |  |  |
+    | `StatusAntiLegionellaState` | DiscreteState | run, stop |  |
     | `StatusDHWSettingTemperatureState` | DataState |  |  |
     | `StatusDHWState` | DataState |  |  |
     | `VirtualGlobalControlState` | DataState |  |  |
-    | `YutakiDHWVirtualOperatingModeState` | DiscreteState |  |  |
+    | `YutakiDHWVirtualOperatingModeState` | DiscreteState | high demand, off, standard |  |
 
 ??? note "HitachiHeatingSystem/HitachiSwimmingPool (ACTUATOR) — 7 commands, 6 states"
 
-    **Type IDs:** `12`, `14` | **Profiles:** `Specific`
+    **Type IDs:** `12`, `14` | **Controllable:** `modbus:YutakiSwimmingPoolComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -5416,14 +5632,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AlarmNumberState` | DataState |  |  |
     | `ControlSwimmingPoolSettingTemperatureState` | DataState |  |  |
-    | `ControlSwimmingPoolState` | DiscreteState |  |  |
+    | `ControlSwimmingPoolState` | DiscreteState | run, stop |  |
     | `StatusSwimmingPoolSettingTemperatureState` | DataState |  |  |
-    | `StatusSwimmingPoolState` | DiscreteState |  |  |
+    | `StatusSwimmingPoolState` | DiscreteState | run, stop |  |
     | `SwimmingPoolTemperatureState` | DataState |  |  |
 
 ??? note "HitachiHeatingSystem/HitachiAirToWaterHeatingZone (ACTUATOR) — 26 commands, 19 states"
 
-    **Type IDs:** `14` | **Profiles:** `Specific`
+    **Type IDs:** `14` | **Controllable:** `modbus:YutakiV2Zone1Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -5461,28 +5677,28 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `AlarmNumberState` | DataState |  |  |
-    | `AutoManuModeZone1State` | DiscreteState |  |  |
-    | `ControlCircuit1State` | DiscreteState |  |  |
-    | `ControlCoolingOTCZone1State` | DiscreteState |  |  |
-    | `ControlHeatingOTCZone1State` | DiscreteState |  |  |
-    | `HolidayModeZone1State` | DiscreteState |  |  |
+    | `AutoManuModeZone1State` | DiscreteState | auto, manu |  |
+    | `ControlCircuit1State` | DiscreteState | run, stop |  |
+    | `ControlCoolingOTCZone1State` | DiscreteState | fix, no, points |  |
+    | `ControlHeatingOTCZone1State` | DiscreteState | fix, gradient, no, points |  |
+    | `HolidayModeZone1State` | DiscreteState | off, on |  |
     | `RoomAmbientTemperatureControlZone1State` | DataState |  |  |
     | `RoomAmbientTemperatureStatusZone1State` | DataState |  |  |
-    | `StatusCircuit1State` | DiscreteState |  |  |
-    | `StatusCoolingOTCZone1State` | DiscreteState |  |  |
-    | `StatusHeatingOTCZone1State` | DiscreteState |  |  |
+    | `StatusCircuit1State` | DiscreteState | run, stop |  |
+    | `StatusCoolingOTCZone1State` | DiscreteState | fix, no, points |  |
+    | `StatusHeatingOTCZone1State` | DiscreteState | fix, gradient, no, points |  |
     | `ThermostatSettingControlZone1State` | DataState |  |  |
     | `ThermostatSettingStatusZone1State` | DataState |  |  |
     | `WaterCoolingSettingTemperatureControlZone1State` | DataState |  |  |
     | `WaterCoolingSettingTemperatureStatusZone1State` | DataState |  |  |
     | `WaterHeatingSettingTemperatureControlZone1State` | DataState |  |  |
     | `WaterHeatingSettingTemperatureStatusZone1State` | DataState |  |  |
-    | `YutakiModeState` | DiscreteState |  |  |
-    | `YutakiTargetModeState` | DiscreteState |  |  |
+    | `YutakiModeState` | DiscreteState | comfort, eco |  |
+    | `YutakiTargetModeState` | DiscreteState | comfort, eco |  |
 
 ??? note "HitachiHeatingSystem/HitachiAirToWaterHeatingZone (ACTUATOR) — 26 commands, 19 states"
 
-    **Type IDs:** `14` | **Profiles:** `Specific`
+    **Type IDs:** `14` | **Controllable:** `modbus:YutakiV2Zone2Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -5520,28 +5736,28 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `AlarmNumberState` | DataState |  |  |
-    | `AutoManuModeZone2State` | DiscreteState |  |  |
-    | `ControlCircuit2State` | DiscreteState |  |  |
-    | `ControlCoolingOTCZone2State` | DiscreteState |  |  |
-    | `ControlHeatingOTCZone2State` | DiscreteState |  |  |
-    | `HolidayModeZone2State` | DiscreteState |  |  |
+    | `AutoManuModeZone2State` | DiscreteState | auto, manu |  |
+    | `ControlCircuit2State` | DiscreteState | run, stop |  |
+    | `ControlCoolingOTCZone2State` | DiscreteState | fix, no, points |  |
+    | `ControlHeatingOTCZone2State` | DiscreteState | fix, gradient, no, points |  |
+    | `HolidayModeZone2State` | DiscreteState | off, on |  |
     | `RoomAmbientTemperatureControlZone2State` | DataState |  |  |
     | `RoomAmbientTemperatureStatusZone2State` | DataState |  |  |
-    | `StatusCircuit2State` | DiscreteState |  |  |
-    | `StatusCoolingOTCZone2State` | DiscreteState |  |  |
-    | `StatusHeatingOTCZone2State` | DiscreteState |  |  |
+    | `StatusCircuit2State` | DiscreteState | run, stop |  |
+    | `StatusCoolingOTCZone2State` | DiscreteState | fix, no, points |  |
+    | `StatusHeatingOTCZone2State` | DiscreteState | fix, gradient, no, points |  |
     | `ThermostatSettingControlZone2State` | DataState |  |  |
     | `ThermostatSettingStatusZone2State` | DataState |  |  |
     | `WaterCoolingSettingTemperatureControlZone2State` | DataState |  |  |
     | `WaterCoolingSettingTemperatureStatusZone2State` | DataState |  |  |
     | `WaterHeatingSettingTemperatureControlZone2State` | DataState |  |  |
     | `WaterHeatingSettingTemperatureStatusZone2State` | DataState |  |  |
-    | `YutakiModeState` | DiscreteState |  |  |
-    | `YutakiTargetModeState` | DiscreteState |  |  |
+    | `YutakiModeState` | DiscreteState | comfort, eco |  |
+    | `YutakiTargetModeState` | DiscreteState | comfort, eco |  |
 
 ??? note "HitachiHeatingSystem/HitachiDHW (ACTUATOR) — 18 commands, 15 states"
 
-    **Type IDs:** `14` | **Profiles:** `DHWTemperature`
+    **Type IDs:** `14` | **Controllable:** `modbus:YutakiV2DHWTComponent` | **Profiles:** `DHWTemperature`
 
     **Commands**
 
@@ -5573,22 +5789,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DHWTemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `AlarmNumberState` | DataState |  |  |
     | `ControlAntiLegionellaSettingTemperatureState` | DataState |  |  |
-    | `ControlAntiLegionellaState` | DiscreteState |  |  |
+    | `ControlAntiLegionellaState` | DiscreteState | run, stop |  |
     | `ControlDHWSettingTemperatureState` | DataState |  |  |
-    | `ControlDHWState` | DiscreteState |  |  |
-    | `DHWModeState` | DiscreteState |  |  |
+    | `ControlDHWState` | DiscreteState | run, stop |  |
+    | `DHWModeState` | DiscreteState | high demand, standard |  |
     | `StatusAntiLegionellaSettingTemperatureState` | DataState |  |  |
-    | `StatusAntiLegionellaState` | DiscreteState |  |  |
+    | `StatusAntiLegionellaState` | DiscreteState | run, stop |  |
     | `StatusDHWSettingTemperatureState` | DataState |  |  |
     | `StatusDHWState` | DataState |  |  |
     | `VirtualGlobalControlState` | DataState |  |  |
-    | `YutakiBoostModeState` | DiscreteState |  |  |
-    | `YutakiDHWVirtualOperatingModeState` | DiscreteState |  |  |
-    | `YutakiTargetBoostModeState` | DiscreteState |  |  |
+    | `YutakiBoostModeState` | DiscreteState | disabled, enabled |  |
+    | `YutakiDHWVirtualOperatingModeState` | DiscreteState | high demand, off, standard |  |
+    | `YutakiTargetBoostModeState` | DiscreteState | disabled, enabled |  |
 
 ??? note "unknown (ACTUATOR) — 54 commands, 40 states"
 
-    **Type IDs:** `11` | **Profiles:** `Specific`
+    **Type IDs:** `11` | **Controllable:** `modbus:DeDietrichGatewayComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -5656,14 +5872,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `OperatingHoursCountState` | DataState |  |  |
     | `WaterPressureState` | ContinuousState |  |  |
     | `AverageFlowSensorTemperatureState` | ContinuousState |  |  |
-    | `BoilerTypeState` | DiscreteState |  |  |
+    | `BoilerTypeState` | DiscreteState | SBK, normale |  |
     | `BoilersStartsCountState` | DataState |  |  |
     | `CalculatedOutletSetPointTemperatureState` | ContinuousState |  |  |
     | `CalculatedWaterSetPointTemperatureState` | ContinuousState |  |  |
     | `CascadeTemperatureState` | ContinuousState |  |  |
-    | `CircuitATypeState` | DiscreteState |  |  |
-    | `CircuitBTypeState` | DiscreteState |  |  |
-    | `CircuitCTypeState` | DiscreteState |  |  |
+    | `CircuitATypeState` | DiscreteState | aux, chaud, dhw |  |
+    | `CircuitBTypeState` | DiscreteState | aux, chaud, dhw |  |
+    | `CircuitCTypeState` | DiscreteState | aux, chaud, dhw |  |
     | `CircuitTypeState` | DataState |  |  |
     | `CompressorOutletTemperatureState` | ContinuousState |  |  |
     | `ControllerSoftwareVersionState` | DataState |  |  |
@@ -5688,7 +5904,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `StagesOperatingState` | DataState |  |  |
     | `StorageTankSensorTemperatureState` | ContinuousState |  |  |
     | `SwimmingpoolWaterSensorTemperatureState` | ContinuousState |  |  |
-    | `SystemInputFunctionState` | DiscreteState |  |  |
+    | `SystemInputFunctionState` | DiscreteState | Boucle DHW, Piscine, aux |  |
     | `WishedComfortPeriodTemperatureState` | ContinuousState |  |  |
     | `WishedDomesticHotWaterTemperatureState` | ContinuousState |  |  |
     | `WishedReducedPeriodTemperatureState` | ContinuousState |  |  |
@@ -5696,7 +5912,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "unknown (ACTUATOR) — 177 commands, 119 states"
 
-    **Type IDs:** `13` | **Profiles:** `Specific`
+    **Type IDs:** `13` | **Controllable:** `modbus:FlaktWoodsRS485Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -5884,39 +6100,39 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `AcknowledgeAllState` | DiscreteState |  |  |
+    | `AcknowledgeAllState` | DiscreteState | no, yes |  |
     | `ActiveTemperatureSetpointState` | ContinuousState |  |  |
-    | `AdditionalStandByFanState` | DiscreteState |  |  |
+    | `AdditionalStandByFanState` | DiscreteState | no, yes |  |
     | `AirFlowExtractAirState` | ContinuousState |  |  |
     | `AirFlowSupplyAirState` | ContinuousState |  |  |
-    | `AirflowControlExtractState` | DiscreteState |  |  |
-    | `AirflowControlSupplyState` | DiscreteState |  |  |
-    | `AlarmRelayState` | DiscreteState |  |  |
-    | `BMSTempControlYesNoState` | DiscreteState |  |  |
-    | `BasicHMISpeedState` | DiscreteState |  |  |
-    | `BlockCoolingIfWinterYesNoState` | DiscreteState |  |  |
-    | `BlockWarmingIfSummerYesNoState` | DiscreteState |  |  |
+    | `AirflowControlExtractState` | DiscreteState | no, yes |  |
+    | `AirflowControlSupplyState` | DiscreteState | no, yes |  |
+    | `AlarmRelayState` | DiscreteState | off, on |  |
+    | `BMSTempControlYesNoState` | DiscreteState | no, yes |  |
+    | `BasicHMISpeedState` | DiscreteState | boost, home, trickle |  |
+    | `BlockCoolingIfWinterYesNoState` | DiscreteState | no, yes |  |
+    | `BlockWarmingIfSummerYesNoState` | DiscreteState | no, yes |  |
     | `BoostRunningTimeState` | DataState |  |  |
-    | `BoostRunningTimerState` | DiscreteState |  |  |
+    | `BoostRunningTimerState` | DiscreteState | no, yes |  |
     | `BootloaderVersionState` | ContinuousState |  |  |
-    | `ByPassDamperState` | DiscreteState |  |  |
+    | `ByPassDamperState` | DiscreteState | no, yes |  |
     | `CO2State` | ContinuousState |  |  |
     | `ColdCornerDefrostAirState` | ContinuousState |  |  |
-    | `CommissioningState` | DiscreteState |  |  |
-    | `CookerHoodSwitchState` | DiscreteState |  |  |
-    | `CoolSequenceYesNoState` | DiscreteState |  |  |
-    | `CoolingDXYesNoState` | DiscreteState |  |  |
+    | `CommissioningState` | DiscreteState | complete, notComplete |  |
+    | `CookerHoodSwitchState` | DiscreteState | no, yes |  |
+    | `CoolSequenceYesNoState` | DiscreteState | no, yes |  |
+    | `CoolingDXYesNoState` | DiscreteState | no, yes |  |
     | `CoolingOutputSignalState` | ContinuousState |  |  |
     | `CoolingState` | DataState |  |  |
     | `DeadZoneOutputSignalState` | ContinuousState |  |  |
-    | `DeadZoneYesNoState` | DiscreteState |  |  |
-    | `DecreaseFanSpeedYesNoState` | DiscreteState |  |  |
-    | `DefrostingFunctionRunningState` | DiscreteState |  |  |
+    | `DeadZoneYesNoState` | DiscreteState | no, yes |  |
+    | `DecreaseFanSpeedYesNoState` | DiscreteState | no, yes |  |
+    | `DefrostingFunctionRunningState` | DiscreteState | no, yes |  |
     | `DirtyFilterAlarmTimeState` | DataState |  |  |
-    | `DirtyFilterState` | DiscreteState |  |  |
-    | `ExternalTimer1State` | DiscreteState |  |  |
-    | `ExternalTimer2State` | DiscreteState |  |  |
-    | `ExtractFanErrorState` | DiscreteState |  |  |
+    | `DirtyFilterState` | DiscreteState | no, yes |  |
+    | `ExternalTimer1State` | DiscreteState | no, yes |  |
+    | `ExternalTimer2State` | DiscreteState | no, yes |  |
+    | `ExtractFanErrorState` | DiscreteState | no, yes |  |
     | `ExtractFanSpeedBoostState` | DataState |  |  |
     | `ExtractFanSpeedCookerHoodState` | DataState |  |  |
     | `ExtractFanSpeedFireplaceState` | DataState |  |  |
@@ -5925,59 +6141,59 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ExtractRoomAirState` | ContinuousState |  |  |
     | `FanReduceSpeedOutputSignalState` | ContinuousState |  |  |
     | `FanSpeedExtractAirState` | DataState |  |  |
-    | `FanSpeedFromBMSTimerState` | DiscreteState |  |  |
+    | `FanSpeedFromBMSTimerState` | DiscreteState | boost, home, trickle |  |
     | `FanSpeedSupplyAirState` | DataState |  |  |
-    | `FilterAlarmExhaustAirState` | DiscreteState |  |  |
-    | `FilterAlarmSupplyAirState` | DiscreteState |  |  |
-    | `FilterOrFanPressureSwitchState` | DiscreteState |  |  |
-    | `FireAlarmFunctionStopRunState` | DiscreteState |  |  |
-    | `FireAlarmState` | DiscreteState |  |  |
+    | `FilterAlarmExhaustAirState` | DiscreteState | no, yes |  |
+    | `FilterAlarmSupplyAirState` | DiscreteState | no, yes |  |
+    | `FilterOrFanPressureSwitchState` | DiscreteState | fan, filter |  |
+    | `FireAlarmFunctionStopRunState` | DiscreteState | runAHU, runExtractFan, runSupplyFan, stopAHU |  |
+    | `FireAlarmState` | DiscreteState | no, yes |  |
     | `FireplaceTimerState` | DataState |  |  |
     | `FlaktwoodsSoftwareVersionState` | ContinuousState |  |  |
-    | `FreezingHotWaterBatteryState` | DiscreteState |  |  |
+    | `FreezingHotWaterBatteryState` | DiscreteState | no, yes |  |
     | `FreezingProtectionPostHeaterState` | ContinuousState |  |  |
-    | `FrostAlarmPHEState` | DiscreteState |  |  |
+    | `FrostAlarmPHEState` | DiscreteState | no, yes |  |
     | `HeatExchangeOutputSignalState` | ContinuousState |  |  |
     | `HeatExchangerDeadZoneState` | ContinuousState |  |  |
-    | `HeatExchangerYesNoState` | DiscreteState |  |  |
+    | `HeatExchangerYesNoState` | DiscreteState | no, yes |  |
     | `Humidity1State` | DataState |  |  |
     | `Humidity2State` | DataState |  |  |
-    | `IsAbsoluteCalendarSetpointState` | DiscreteState |  |  |
-    | `MainSwitchState` | DiscreteState |  |  |
+    | `IsAbsoluteCalendarSetpointState` | DiscreteState | no, yes |  |
+    | `MainSwitchState` | DiscreteState | auto, fireplace, hand, off |  |
     | `MaxSupplyAirTemperatureState` | ContinuousState |  |  |
     | `MinExtractFanSpeedState` | DataState |  |  |
     | `MinSupplyAirTemperatureState` | ContinuousState |  |  |
     | `MinSupplyFanSpeedState` | DataState |  |  |
-    | `NightCoolingRunningState` | DiscreteState |  |  |
+    | `NightCoolingRunningState` | DiscreteState | yes |  |
     | `OutDoorAirState` | ContinuousState |  |  |
     | `OutdoorExtractAirTempDiffState` | DataState |  |  |
-    | `OverHeatingElectricalHeaterState` | DiscreteState |  |  |
-    | `PostHeaterOutOfRangeState` | DiscreteState |  |  |
-    | `PostHeaterState` | DiscreteState |  |  |
-    | `PostHeaterYesNoState` | DiscreteState |  |  |
+    | `OverHeatingElectricalHeaterState` | DiscreteState | no, yes |  |
+    | `PostHeaterOutOfRangeState` | DiscreteState | no, yes |  |
+    | `PostHeaterState` | DiscreteState | off, on |  |
+    | `PostHeaterYesNoState` | DiscreteState | no, yes |  |
     | `PostHeatingOutputSignalState` | ContinuousState |  |  |
     | `PostHeatingState` | DataState |  |  |
-    | `PreHeaterOutOfRangeState` | DiscreteState |  |  |
-    | `PreHeaterState` | DiscreteState |  |  |
+    | `PreHeaterOutOfRangeState` | DiscreteState | no, yes |  |
+    | `PreHeaterState` | DiscreteState | off, on |  |
     | `PreHeatingState` | DataState |  |  |
-    | `PressureControlExtractState` | DiscreteState |  |  |
-    | `PressureControlSupplyState` | DiscreteState |  |  |
+    | `PressureControlExtractState` | DiscreteState | no, yes |  |
+    | `PressureControlSupplyState` | DiscreteState | no, yes |  |
     | `PressureExtractAirState` | ContinuousState |  |  |
     | `PressureSupplyAirState` | ContinuousState |  |  |
-    | `PressureSwitchExhaustFilterState` | DiscreteState |  |  |
-    | `PressureSwitchSupplyFilterState` | DiscreteState |  |  |
-    | `PumpCoolingMalfunctionState` | DiscreteState |  |  |
-    | `PumpHeaterMalfunctionState` | DiscreteState |  |  |
-    | `RHEFailureState` | DiscreteState |  |  |
+    | `PressureSwitchExhaustFilterState` | DiscreteState | no, yes |  |
+    | `PressureSwitchSupplyFilterState` | DiscreteState | no, yes |  |
+    | `PumpCoolingMalfunctionState` | DiscreteState | no, yes |  |
+    | `PumpHeaterMalfunctionState` | DiscreteState | no, yes |  |
+    | `RHEFailureState` | DiscreteState | no, yes |  |
     | `RampValueState` | ContinuousState |  |  |
     | `RotaryHeatExchangerState` | DataState |  |  |
-    | `RotorBeltOffAlarmState` | DiscreteState |  |  |
-    | `SensorErrorAI10State` | DiscreteState |  |  |
-    | `SensorErrorAI5State` | DiscreteState |  |  |
-    | `SensorErrorExtractRoomTempState` | DiscreteState |  |  |
-    | `SensorErrorFrostProtectPostHState` | DiscreteState |  |  |
-    | `SensorErrorOutDoorTempState` | DiscreteState |  |  |
-    | `SensorErrorSupplyTempState` | DiscreteState |  |  |
+    | `RotorBeltOffAlarmState` | DiscreteState | no, yes |  |
+    | `SensorErrorAI10State` | DiscreteState | no, yes |  |
+    | `SensorErrorAI5State` | DiscreteState | no, yes |  |
+    | `SensorErrorExtractRoomTempState` | DiscreteState | no, yes |  |
+    | `SensorErrorFrostProtectPostHState` | DiscreteState | no, yes |  |
+    | `SensorErrorOutDoorTempState` | DiscreteState | no, yes |  |
+    | `SensorErrorSupplyTempState` | DiscreteState | no, yes |  |
     | `SetPointCO2State` | ContinuousState |  |  |
     | `SetPointState` | ContinuousState |  |  |
     | `SetpointAirAirflowBoostState` | DataState |  |  |
@@ -5990,17 +6206,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `SetpointAirPressureTrickleState` | DataState |  |  |
     | `ShutdownTimeState` | DataState |  |  |
     | `StartupTimeState` | DataState |  |  |
-    | `SummaryAlarmCoolerState` | DiscreteState |  |  |
-    | `SummerWinterModeState` | DiscreteState |  |  |
+    | `SummaryAlarmCoolerState` | DiscreteState | no, yes |  |
+    | `SummerWinterModeState` | DiscreteState | summer, winter |  |
     | `SupplyAirState` | ContinuousState |  |  |
-    | `SupplyFanErrorState` | DiscreteState |  |  |
+    | `SupplyFanErrorState` | DiscreteState | no, yes |  |
     | `SupplyFanSpeedBoostState` | DataState |  |  |
     | `SupplyFanSpeedCookerHoodState` | DataState |  |  |
     | `SupplyFanSpeedFireplaceState` | DataState |  |  |
     | `SupplyFanSpeedHomeState` | DataState |  |  |
     | `SupplyFanSpeedTrickleState` | DataState |  |  |
-    | `SystemTypeState` | DiscreteState |  |  |
-    | `TemperatureAlarmState` | DiscreteState |  |  |
+    | `SystemTypeState` | DiscreteState | EcoSTAR, Ilox, RDKR, TopMaster |  |
+    | `TemperatureAlarmState` | DiscreteState | no, yes |  |
     | `TotalAlarms1State` | DataState |  |  |
     | `TotalAlarms2State` | DataState |  |  |
 
@@ -6011,7 +6227,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Alarm/MyFoxAlarmController (ACTUATOR) — 5 commands, 4 states"
 
-    **Type IDs:** `1`, `2`, `38` | **Profiles:** `Alarm`
+    **Type IDs:** `1`, `2`, `38` | **Controllable:** `myfox:AlarmController` | **Profiles:** `Alarm`
 
     **Commands**
 
@@ -6027,14 +6243,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `PowerSupplyUpDownState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `AlarmStatusState` | DiscreteState |  |  |
+    | `PowerSupplyUpDownState` | DiscreteState | down, up |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `AlarmStatusState` | DiscreteState | armed, disarmed, partial |  |
     | `AlertTrespassState` | DataState |  |  |
 
 ??? note "Alarm/MyFoxAlarmController (ACTUATOR) — 6 commands, 5 states"
 
-    **Type IDs:** `103` | **Profiles:** `Alarm`, `IntrusionDetector`
+    **Type IDs:** `103` | **Controllable:** `myfox:SomfyProtectAlarmController` | **Profiles:** `Alarm`, `IntrusionDetector`
 
     **Commands**
 
@@ -6051,15 +6267,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `CloudDeviceStatusState` | DiscreteState |  |  |
+    | `CloudDeviceStatusState` | DiscreteState | offline, online, uninstalled |  |
     | `IntrusionState` | DiscreteState | detected, notDetected |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `AlarmStatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `AlarmStatusState` | DiscreteState | armed, disarmed, partial |  |
     | `AlertTrespassState` | DataState |  |  |
 
 ??? note "Camera/MyFoxCamera (ACTUATOR) — 3 commands, 1 states"
 
-    **Type IDs:** `26` | **Profiles:** `PictureCamera`
+    **Type IDs:** `26` | **Controllable:** `myfox:CameraController` | **Profiles:** `PictureCamera`
 
     **Commands**
 
@@ -6073,15 +6289,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Camera/MyFoxSecurityCamera (ACTUATOR) — 0 commands, 0 states"
 
-    **Type IDs:** `63` | **Profiles:** `Specific`
+    **Type IDs:** `63` | **Controllable:** `myfox:SecurityCameraController` | **Profiles:** `Specific`
 
 ??? note "Camera/MyFoxSecurityCamera (ACTUATOR) — 6 commands, 4 states"
 
-    **Type IDs:** `100`, `101`, `104`, `105`, `111` | **Profiles:** `OpenCloseCameraShutter`, `BasicOpenClose`
+    **Type IDs:** `100`, `101`, `104`, `105`, `111` | **Controllable:** `myfox:SomfyProtectSecurityCameraController` | **Profiles:** `OpenCloseCameraShutter`, `BasicOpenClose`
 
     **Commands**
 
@@ -6098,14 +6314,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `CloudDeviceStatusState` | DiscreteState |  |  |
+    | `CloudDeviceStatusState` | DiscreteState | offline, online, uninstalled |  |
     | `NameState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `ShutterStatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `ShutterStatusState` | DiscreteState | closed, opened |  |
 
 ??? note "Camera/MyFoxSecurityCamera (ACTUATOR) — 6 commands, 5 states"
 
-    **Type IDs:** `102` | **Profiles:** `OpenCloseCameraShutter`, `BasicOpenClose`
+    **Type IDs:** `102` | **Controllable:** `myfox:SomfyOnePlusCameraController` | **Profiles:** `OpenCloseCameraShutter`, `BasicOpenClose`
 
     **Commands**
 
@@ -6122,15 +6338,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `CloudDeviceStatusState` | DiscreteState |  |  |
+    | `CloudDeviceStatusState` | DiscreteState | offline, online, uninstalled |  |
     | `NameState` | DataState |  |  |
-    | `PowerSupplyUpDownState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `ShutterStatusState` | DiscreteState |  |  |
+    | `PowerSupplyUpDownState` | DiscreteState | down, up |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `ShutterStatusState` | DiscreteState | closed, opened |  |
 
 ??? note "ContactSensor (SENSOR) — 1 commands, 3 states"
 
-    **Type IDs:** `112` | **Profiles:** `DoorContactSensor`, `ContactDetector`
+    **Type IDs:** `112` | **Controllable:** `myfox:SomfyProtectDoor` | **Profiles:** `DoorContactSensor`, `ContactDetector`
 
     **Commands**
 
@@ -6142,13 +6358,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `ContactState` | DiscreteState | open, closed |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "DoorLock (ACTUATOR) — 3 commands, 4 states"
 
-    **Type IDs:** `112` | **Profiles:** `StatefulDoorLock`, `StatefulLock`, `LockStatus`, `Lock`
+    **Type IDs:** `112` | **Controllable:** `myfox:SomfyProtectDoorLock` | **Profiles:** `StatefulDoorLock`, `StatefulLock`, `LockStatus`, `Lock`
 
     **Commands**
 
@@ -6162,14 +6378,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `LockedUnlockedState` | DiscreteState | locked, unlocked |  |
-    | `MovingState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `MovingState` | DiscreteState | false, true |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Light/StatefulOnOffLight (ACTUATOR) — 5 commands, 2 states"
 
-    **Type IDs:** `105`, `111` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `105`, `111` | **Controllable:** `myfox:LightController` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -6186,7 +6402,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `OnOffState` | DiscreteState | on, off |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 
 ## NETATMO
@@ -6195,62 +6411,62 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "AirSensor/AirQualitySensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `4448` | **Profiles:** `Specific`
+    **Type IDs:** `4448` | **Controllable:** `netatmo:AirQualityComponent` | **Profiles:** `Specific`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `HealthIndexState` | DiscreteState | Healthy, Fine, Fair, Poor, Unhealthy, Error |  |
 
 ??? note "Camera (ACTUATOR) — 0 commands, 7 states"
 
-    **Type IDs:** `257`, `513` | **Profiles:** `CardReader`
+    **Type IDs:** `257`, `513` | **Controllable:** `netatmo:WelcomeCameraController` | **Profiles:** `CardReader`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CardPositionState` | DiscreteState | inserted, removed |  |
-    | `ConnectivityState` | DiscreteState |  |  |
+    | `ConnectivityState` | DiscreteState | offline, online |  |
     | `LastEventState` | DataState |  |  |
     | `LastEventTypeState` | DataState |  |  |
-    | `PowerSupplyUpDownState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `PowerSupplyUpDownState` | DiscreteState | down, up |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `StreamingURLState` | DataState |  |  |
 
 ??? note "Camera (ACTUATOR) — 0 commands, 8 states"
 
-    **Type IDs:** `258`, `514` | **Profiles:** `CardReader`
+    **Type IDs:** `258`, `514` | **Controllable:** `netatmo:PresenceCameraController` | **Profiles:** `CardReader`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CardPositionState` | DiscreteState | inserted, removed |  |
-    | `ConnectivityState` | DiscreteState |  |  |
+    | `ConnectivityState` | DiscreteState | offline, online |  |
     | `LastEventState` | DataState |  |  |
     | `LastEventTypeState` | DataState |  |  |
-    | `PowerSupplyUpDownState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `PowerSupplyUpDownState` | DiscreteState | down, up |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `StreamingURLState` | DataState |  |  |
-    | `NetatmoPresenceLightState` | DiscreteState |  |  |
+    | `NetatmoPresenceLightState` | DiscreteState | auto, off, on |  |
 
 ??? note "CarbonDioxideSensor/CO2Sensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `4448`, `8192`, `8196` | **Profiles:** `CO2Concentration`
+    **Type IDs:** `4448`, `8192`, `8196` | **Controllable:** `netatmo:CO2Component` | **Profiles:** `CO2Concentration`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CO2ConcentrationState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "CircuitBreaker (ACTUATOR) — 6 commands, 8 states"
 
-    **Type IDs:** `4361`, `4393` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `4361`, `4393` | **Controllable:** `netatmo:CircuitBreakerComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -6269,16 +6485,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `FirmwareRevisionState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
-    | `OffloadState` | DiscreteState |  |  |
+    | `OffloadState` | DiscreteState | offload, notOffload |  |
 
 ??? note "CircuitBreaker/CircuitBreakerPeakAndOffPeak (ACTUATOR) — 4 commands, 8 states"
 
-    **Type IDs:** `4377`, `4409` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`
+    **Type IDs:** `4377`, `4409` | **Controllable:** `netatmo:CircuitBreakerPeakAndOffPeakHoursComponent` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`
 
     **Commands**
 
@@ -6295,16 +6511,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `FirmwareRevisionState` | DataState |  |  |
     | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
-    | `OffloadState` | DiscreteState |  |  |
+    | `OffloadState` | DiscreteState | offload, notOffload |  |
 
 ??? note "ConfigurationComponent/NetatmoHome (ACTUATOR) — 10 commands, 8 states"
 
-    **Type IDs:** `1` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`
+    **Type IDs:** `1` | **Controllable:** `netatmo:HomeController` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`
 
     **Commands**
 
@@ -6336,7 +6552,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConfigurationComponent/NetatmoHomeCoachConfiguration (SENSOR) — 1 commands, 8 states"
 
-    **Type IDs:** `4448`, `8192` | **Profiles:** `Specific`
+    **Type IDs:** `4448`, `8192` | **Controllable:** `netatmo:HomeCoachConfigurationComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -6349,17 +6565,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `FirmwareRevisionState` | DataState |  |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
-    | `OffloadState` | DiscreteState |  |  |
+    | `OffloadState` | DiscreteState | offload, notOffload |  |
     | `PowerSourceState` | DiscreteState | Battery, DC source |  |
 
 ??? note "ConfigurationComponent/NetatmoConfigurationComponent (SENSOR) — 0 commands, 9 states"
 
-    **Type IDs:** `8193`, `8194`, `8195`, `8196` | **Profiles:** `Specific`
+    **Type IDs:** `8193`, `8194`, `8195`, `8196` | **Controllable:** `netatmo:ConfigurationComponent` | **Profiles:** `Specific`
 
     **States**
 
@@ -6367,17 +6583,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `FirmwareRevisionState` | DataState |  |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
-    | `OffloadState` | DiscreteState |  |  |
+    | `OffloadState` | DiscreteState | offload, notOffload |  |
     | `PowerSourceState` | DiscreteState | Battery, DC source |  |
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 1 commands, 1 states"
 
-    **Type IDs:** `4098`, `4099` | **Profiles:** `Specific`
+    **Type IDs:** `4098`, `4099` | **Controllable:** `netatmo:NetatmoThermostatElectricalConsumptionSensor` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -6389,23 +6605,23 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 0 commands, 3 states"
 
-    **Type IDs:** `4358`, `4359`, `4360`, `4361`, `4366`, `4376`, `4392`, `4408`, `4424`, `4377`, `4393`, `4409`, `4425`, `4441` | **Profiles:** `ElectricPowerMeter`
+    **Type IDs:** `4358`, `4359`, `4360`, `4361`, `4366`, `4376`, `4392`, `4408`, `4424`, `4377`, `4393`, `4409`, `4425`, `4441` | **Controllable:** `netatmo:ElectricEnergyConsumptionSensor` | **Profiles:** `ElectricPowerMeter`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ElectricPowerConsumptionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `LastEnergyOverconsumptionState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `LastEnergyOverconsumptionState` | DiscreteState | normal, high, critical |  |
 
 ??? note "HeatingSystem/NetatmoHeatingTemperatureInterface (ACTUATOR) — 6 commands, 14 states"
 
-    **Type IDs:** `259`, `515` | **Profiles:** `ThermostatTargetReader`
+    **Type IDs:** `259`, `515` | **Controllable:** `netatmo:NetatmoThermostatController` | **Profiles:** `ThermostatTargetReader`
 
     **Commands**
 
@@ -6428,18 +6644,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `LastDeviceConnectionState` | DataState |  |  |
     | `NameState` | DataState |  |  |
     | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
-    | `PreviousOperatingModeState` | DiscreteState |  |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `PreviousOperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection, manual, max, normal, off, on, program |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `VersionState` | ContinuousState |  |  |
     | `WeeklySchedulesState` | DataState |  |  |
     | `NetatmoLastMeasurementTimeState` | DataState |  |  |
-    | `NetatmoThermostatTypeState` | DiscreteState |  |  |
+    | `NetatmoThermostatTypeState` | DiscreteState | NACamera, NAPlug, NATherm1, NMG, NMH, NMR, NOC, NRV |  |
 
 ??? note "HeatingSystem/NetatmoHeatingTemperatureInterface (ACTUATOR) — 6 commands, 13 states"
 
-    **Type IDs:** `4097`, `4100` | **Profiles:** `StatefulCoolingThermostat`, `CoolingThermostat`, `StatefulOperatingModeHeating`, `OperatingModeHeating`, `StatefulThermostat`, `Thermostat`
+    **Type IDs:** `4097`, `4100` | **Controllable:** `netatmo:NetatmoRoomController` | **Profiles:** `StatefulCoolingThermostat`, `CoolingThermostat`, `StatefulOperatingModeHeating`, `OperatingModeHeating`, `StatefulThermostat`, `Thermostat`
 
     **Commands**
 
@@ -6457,22 +6673,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CoolingDerogationEndTimeState` | DataState |  |  |
-    | `CoolingOperatingModeState` | DiscreteState |  |  |
+    | `CoolingOperatingModeState` | DiscreteState | manual, max, off, home |  |
     | `CoolingTargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `DerogationEndDateTimeState` | DataState |  |  |
     | `NameState` | DataState |  |  |
-    | `OpenWindowDetectionState` | DiscreteState |  |  |
+    | `OpenWindowDetectionState` | DiscreteState | false, true |  |
     | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `UnavailableCommandsState` | DataState |  |  |
     | `WeeklySchedulesState` | DataState |  |  |
     | `AnticipatingHeatingState` | DataState |  |  |
-    | `NetatmoPilotWireModeState` | DiscreteState |  |  |
+    | `NetatmoPilotWireModeState` | DiscreteState | away, comfort, frostprotection, off |  |
 
 ??? note "HeatingSystem/NetatmoHeatingTemperatureInterface (ACTUATOR) — 3 commands, 8 states"
 
-    **Type IDs:** `4098` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`, `StatefulThermostat`, `Thermostat`
+    **Type IDs:** `4098` | **Controllable:** `netatmo:MullerFPNRoomController` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`, `StatefulThermostat`, `Thermostat`
 
     **Commands**
 
@@ -6488,16 +6704,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `DerogationEndDateTimeState` | DataState |  |  |
     | `NameState` | DataState |  |  |
-    | `OpenWindowDetectionState` | DiscreteState |  |  |
+    | `OpenWindowDetectionState` | DiscreteState | false, true |  |
     | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
-    | `PresenceState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `PresenceState` | DiscreteState | false, true |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `WeeklySchedulesState` | DataState |  |  |
 
 ??? note "HeatingSystem/NetatmoHeatingTemperatureInterface (ACTUATOR) — 3 commands, 6 states"
 
-    **Type IDs:** `4099` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`
+    **Type IDs:** `4099` | **Controllable:** `netatmo:MullerFP4RoomController` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`
 
     **Commands**
 
@@ -6514,13 +6730,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DerogationEndDateTimeState` | DataState |  |  |
     | `NameState` | DataState |  |  |
     | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `WeeklySchedulesState` | DataState |  |  |
-    | `NetatmoPilotWireModeState` | DiscreteState |  |  |
+    | `NetatmoPilotWireModeState` | DiscreteState | away, comfort, frostprotection, off |  |
 
 ??? note "HeatingSystem/NetatmoHeatingTemperatureInterface (ACTUATOR) — 1 commands, 10 states"
 
-    **Type IDs:** `4353` | **Profiles:** `BatteryStatus`
+    **Type IDs:** `4353` | **Controllable:** `netatmo:ThermostatComponent` | **Profiles:** `BatteryStatus`
 
     **Commands**
 
@@ -6533,19 +6749,19 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
-    | `BoostOnOffState` | DiscreteState |  |  |
+    | `BoostOnOffState` | DiscreteState | off, on |  |
     | `FirmwareRevisionState` | DataState |  |  |
-    | `HeatingOnOffState` | DiscreteState |  |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `HeatingOnOffState` | DiscreteState | off, on |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
-    | `OffloadState` | DiscreteState |  |  |
+    | `OffloadState` | DiscreteState | offload, notOffload |  |
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 1 commands, 8 states"
 
-    **Type IDs:** `4357` | **Profiles:** `BatteryStatus`
+    **Type IDs:** `4357` | **Controllable:** `netatmo:ValveComponent` | **Profiles:** `BatteryStatus`
 
     **Commands**
 
@@ -6559,16 +6775,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `FirmwareRevisionState` | DataState |  |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
-    | `OffloadState` | DiscreteState |  |  |
+    | `OffloadState` | DiscreteState | offload, notOffload |  |
 
 ??? note "HeatingSystem/NetatmoHeatingTemperatureInterface (ACTUATOR) — 1 commands, 7 states"
 
-    **Type IDs:** `4367` | **Profiles:** `Specific`
+    **Type IDs:** `4367` | **Controllable:** `netatmo:ThermostatHeatingCoolingComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -6580,17 +6796,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `BoostOnOffState` | DiscreteState |  |  |
-    | `CoolingOnOffState` | DiscreteState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `BoostOnOffState` | DiscreteState | off, on |  |
+    | `CoolingOnOffState` | DiscreteState | off, on |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
-    | `HeatingOnOffState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `HeatingOnOffState` | DiscreteState | off, on |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
 
 ??? note "HeatingSystem/NetatmoHeatingTemperatureInterface (ACTUATOR) — 1 commands, 7 states"
 
-    **Type IDs:** `4368` | **Profiles:** `Specific`
+    **Type IDs:** `4368` | **Controllable:** `netatmo:ModulatingThermostatComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -6602,17 +6818,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `BoostOnOffState` | DiscreteState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `BoostOnOffState` | DiscreteState | off, on |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
-    | `HeatingOnOffState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `HeatingOnOffState` | DiscreteState | off, on |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
-    | `BoilerErrorState` | DiscreteState |  |  |
+    | `BoilerErrorState` | DiscreteState | boiler_not_responding, maintenance, water_pressure, boiler_flame, air_pressure, boiler_temperature |  |
 
 ??? note "HeatingSystem/OnOffHeatingSystem (ACTUATOR) — 6 commands, 8 states"
 
-    **Type IDs:** `4376` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `4376` | **Controllable:** `netatmo:OnOffHeatingSystemComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -6631,16 +6847,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `FirmwareRevisionState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
-    | `OffloadState` | DiscreteState |  |  |
+    | `OffloadState` | DiscreteState | offload, notOffload |  |
 
 ??? note "HeatingSystem/OnOffHeatingSystemPilotWire (ACTUATOR) — 1 commands, 8 states"
 
-    **Type IDs:** `4424` | **Profiles:** `Specific`
+    **Type IDs:** `4424` | **Controllable:** `netatmo:OnOffHeatingSystemComponentWithPilotWire` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -6654,27 +6870,27 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `FirmwareRevisionState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
-    | `OffloadState` | DiscreteState |  |  |
+    | `OffloadState` | DiscreteState | offload, notOffload |  |
 
 ??? note "HumiditySensor/RelativeHumiditySensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `4097`, `4100`, `4448`, `8192`, `8193`, `8196` | **Profiles:** `RelativeHumidity`
+    **Type IDs:** `4097`, `4100`, `4448`, `8192`, `8193`, `8196` | **Controllable:** `netatmo:NetatmoHumidityMeasurement` | **Profiles:** `RelativeHumidity`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `RelativeHumidityState` | ContinuousState | [0.0..100.0] |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Light/StatefulOnOffLight (ACTUATOR) — 6 commands, 8 states"
 
-    **Type IDs:** `4358` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `4358` | **Controllable:** `netatmo:OnOffLightComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -6693,16 +6909,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `FirmwareRevisionState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
-    | `OffloadState` | DiscreteState |  |  |
+    | `OffloadState` | DiscreteState | offload, notOffload |  |
 
 ??? note "Light/DimmerLight (ACTUATOR) — 17 commands, 15 states"
 
-    **Type IDs:** `4359` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `4359` | **Controllable:** `netatmo:DimmerLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -6739,27 +6955,27 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Memorized3PositionNameState` | DataState |  |  |
     | `Memorized3PositionState` | ContinuousState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
-    | `OffloadState` | DiscreteState |  |  |
+    | `OffloadState` | DiscreteState | offload, notOffload |  |
 
 ??? note "NoiseSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `4448`, `8192` | **Profiles:** `Specific`
+    **Type IDs:** `4448`, `8192` | **Controllable:** `netatmo:NoiseComponent` | **Profiles:** `Specific`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `NoiseState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 6 commands, 8 states"
 
-    **Type IDs:** `4360`, `4392` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `4360`, `4392` | **Controllable:** `netatmo:OnOffSwitchComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -6778,16 +6994,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `FirmwareRevisionState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
-    | `OffloadState` | DiscreteState |  |  |
+    | `OffloadState` | DiscreteState | offload, notOffload |  |
 
 ??? note "ProtocolGateway/NetatmoGateway (PROTOCOL_GATEWAY) — 1 commands, 8 states"
 
-    **Type IDs:** `4364` | **Profiles:** `Specific`
+    **Type IDs:** `4364` | **Controllable:** `netatmo:BridgeComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -6799,18 +7015,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
-    | `OffloadState` | DiscreteState |  |  |
+    | `OffloadState` | DiscreteState | offload, notOffload |  |
 
 ??? note "ProtocolGateway/NetatmoGateway (PROTOCOL_GATEWAY) — 1 commands, 9 states"
 
-    **Type IDs:** `4365` | **Profiles:** `Specific`
+    **Type IDs:** `4365` | **Controllable:** `netatmo:ThermostatRelayComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -6823,29 +7039,29 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `FirmwareRevisionState` | DataState |  |  |
-    | `HeatingOnOffState` | DiscreteState |  |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `HeatingOnOffState` | DiscreteState | off, on |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
-    | `DHWControlState` | DiscreteState |  |  |
+    | `DHWControlState` | DiscreteState | none, instantaneous, water_tank |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
-    | `OffloadState` | DiscreteState |  |  |
+    | `OffloadState` | DiscreteState | offload, notOffload |  |
 
 ??? note "RainSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `8195` | **Profiles:** `RainDetector`
+    **Type IDs:** `8195` | **Controllable:** `netatmo:RainComponent` | **Profiles:** `RainDetector`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `RainState` | DiscreteState | detected, notDetected |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "RemoteController/RemoteControllerOneWay (REMOTE_CONTROLLER) — 1 commands, 8 states"
 
-    **Type IDs:** `4363` | **Profiles:** `BatteryStatus`
+    **Type IDs:** `4363` | **Controllable:** `netatmo:RemoteControllerComponent` | **Profiles:** `BatteryStatus`
 
     **Commands**
 
@@ -6859,16 +7075,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `FirmwareRevisionState` | DataState |  |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
-    | `OffloadState` | DiscreteState |  |  |
+    | `OffloadState` | DiscreteState | offload, notOffload |  |
 
 ??? note "RollerShutter/UpDownRollerShutter (ACTUATOR) — 8 commands, 10 states"
 
-    **Type IDs:** `4362` | **Profiles:** `UpDown`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `4362` | **Controllable:** `netatmo:RollerShutterComponent` | **Profiles:** `UpDown`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -6890,28 +7106,28 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
     | `MinimumClosureStepState` | ContinuousState |  |  |
-    | `OffloadState` | DiscreteState |  |  |
+    | `OffloadState` | DiscreteState | offload, notOffload |  |
 
 ??? note "TemperatureSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `259`, `515`, `4097`, `4098`, `4100`, `4448`, `8192`, `8193`, `8196` | **Profiles:** `Temperature`
+    **Type IDs:** `259`, `515`, `4097`, `4098`, `4100`, `4448`, `8192`, `8193`, `8196` | **Controllable:** `netatmo:NetatmoThermostatTemperatureSensor` | **Profiles:** `Temperature`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
 
 ??? note "VentilationSystem/OnOffVentilationSpeed (ACTUATOR) — 2 commands, 8 states"
 
-    **Type IDs:** `4366` | **Profiles:** `OnOffStatus`, `AirFanMode`
+    **Type IDs:** `4366` | **Controllable:** `netatmo:NetatmoControlledMechanicalVentilationController` | **Profiles:** `OnOffStatus`, `AirFanMode`
 
     **Commands**
 
@@ -6926,16 +7142,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `FirmwareRevisionState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
-    | `OffloadState` | DiscreteState |  |  |
+    | `OffloadState` | DiscreteState | offload, notOffload |  |
 
 ??? note "WaterHeatingSystem/DomesticHotWaterProduction (ACTUATOR) — 6 commands, 8 states"
 
-    **Type IDs:** `4408`, `4425` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `4408`, `4425` | **Controllable:** `netatmo:OnOffDomesticHotWaterComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -6954,16 +7170,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `FirmwareRevisionState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
-    | `OffloadState` | DiscreteState |  |  |
+    | `OffloadState` | DiscreteState | offload, notOffload |  |
 
 ??? note "WaterHeatingSystem/DomesticHotWaterProductionPeakAndOffPeak (ACTUATOR) — 4 commands, 8 states"
 
-    **Type IDs:** `4441` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`
+    **Type IDs:** `4441` | **Controllable:** `netatmo:DomesticHotWaterPeakAndOffPeakHoursComponent` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`
 
     **Commands**
 
@@ -6980,22 +7196,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `FirmwareRevisionState` | DataState |  |  |
     | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
-    | `OffloadState` | DiscreteState |  |  |
+    | `OffloadState` | DiscreteState | offload, notOffload |  |
 
 ??? note "WindSensor/WindSpeedAndDirectionSensor (SENSOR) — 0 commands, 3 states"
 
-    **Type IDs:** `8194` | **Profiles:** `WindSpeedAndDirection`, `WindDirection`, `WindSpeed`
+    **Type IDs:** `8194` | **Controllable:** `netatmo:WindComponent` | **Profiles:** `WindSpeedAndDirection`, `WindDirection`, `WindSpeed`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `WindDirectionState` | ContinuousState | [0..360] |  |
     | `WindSpeedState` | ContinuousState |  |  |
 
@@ -7006,7 +7222,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "AirSensor/DynamicAirSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `304` | **Profiles:** `CO2Concentration`
+    **Type IDs:** `304` | **Controllable:** `ogp:AirSensor` | **Profiles:** `CO2Concentration`
 
     **Commands**
 
@@ -7025,12 +7241,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AirQualityIndexLevelState` | DiscreteState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AirQualityIndexLevelState` | DiscreteState | good, moderate, unhealthyForSensitiveGroups, unhealthy, veryUnhealthy, hazardous |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `CO2ConcentrationState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -7049,11 +7265,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Alarm/DynamicAlarm (ACTUATOR) — 13 commands, 33 states"
 
-    **Type IDs:** `282` | **Profiles:** `SmokeDetector`, `IntrusionDetector`, `StatefulAlarm`, `Alarm`
+    **Type IDs:** `282` | **Controllable:** `ogp:Alarm` | **Profiles:** `SmokeDetector`, `IntrusionDetector`, `StatefulAlarm`, `Alarm`
 
     **Commands**
 
@@ -7079,17 +7295,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
     | `ArmedState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableModesState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `GroupMembersState` | DataState |  |  |
-    | `IntrusionDetectionEventState` | DiscreteState |  |  |
+    | `IntrusionDetectionEventState` | DiscreteState | panic, intrusion |  |
     | `IntrusionState` | DiscreteState | detected, notDetected |  |
     | `ModeState` | DataState |  |  |
     | `NameState` | DataState |  |  |
@@ -7107,13 +7323,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `SmokeDetectionEventState` | DiscreteState |  |  |
+    | `SmokeDetectionEventState` | DiscreteState | smoke |  |
     | `SmokeState` | DiscreteState | detected, notDetected |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Awning/DynamicAwning (ACTUATOR) — 17 commands, 30 states"
 
-    **Type IDs:** `277` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `StatefulDeployUndeploy`, `DeployUndeploy`
+    **Type IDs:** `277` | **Controllable:** `ogp:Awning` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `StatefulDeployUndeploy`, `DeployUndeploy`
 
     **Commands**
 
@@ -7142,12 +7358,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `DeployedUndeployedState` | DiscreteState | deployed, undeployed |  |
     | `DeploymentState` | ContinuousState | [0..100] |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -7169,12 +7385,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RolledUpState` | DataState |  |  |
     | `RollingOutState` | ContinuousState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "CarbonDioxideSensor/DynamicCarbonDioxideSensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `291` | **Profiles:** `CO2Concentration`
+    **Type IDs:** `291` | **Controllable:** `ogp:CarbonDioxideSensor` | **Profiles:** `CO2Concentration`
 
     **Commands**
 
@@ -7193,11 +7409,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `CO2ConcentrationState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -7216,11 +7432,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "CircuitBreaker/DynamicCircuitBreaker (ACTUATOR) — 13 commands, 25 states"
 
-    **Type IDs:** `286` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`, `Cyclic`
+    **Type IDs:** `286` | **Controllable:** `ogp:CircuitBreaker` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`, `Cyclic`
 
     **Commands**
 
@@ -7245,10 +7461,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -7268,11 +7484,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "ContactSensor/DynamicOpeningSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `272` | **Profiles:** `WindowOpeningStatus`, `OpeningStatus`
+    **Type IDs:** `272` | **Controllable:** `ogp:OpeningSensor` | **Profiles:** `WindowOpeningStatus`, `OpeningStatus`
 
     **Commands**
 
@@ -7291,10 +7507,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -7315,11 +7531,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Curtain/DynamicCurtain (ACTUATOR) — 14 commands, 28 states"
 
-    **Type IDs:** `271` | **Profiles:** `StatefulCloseableCurtain`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `271` | **Controllable:** `ogp:Curtain` | **Profiles:** `StatefulCloseableCurtain`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -7345,11 +7561,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -7370,12 +7586,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ReachedAliasesState` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "ElectricitySensor/DynamicElectricityConsumptionSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `293` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `293` | **Controllable:** `ogp:ElectricityConsumptionSensor` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
 
     **Commands**
 
@@ -7394,12 +7610,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ElectricEnergyConsumptionState` | ContinuousState |  |  |
     | `ElectricPowerConsumptionState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -7418,11 +7634,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "GarageDoor/DynamicGarageDoor (ACTUATOR) — 15 commands, 28 states"
 
-    **Type IDs:** `266` | **Profiles:** `StatefulCloseableGarageOpener`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
+    **Type IDs:** `266` | **Controllable:** `ogp:GarageDoor` | **Profiles:** `StatefulCloseableGarageOpener`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
 
     **Commands**
 
@@ -7449,11 +7665,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -7474,12 +7690,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ReachedAliasesState` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "GasSensor/DynamicGasMeasurementSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `296` | **Profiles:** `GasConsumption`
+    **Type IDs:** `296` | **Controllable:** `ogp:GasMeasurementSensor` | **Profiles:** `GasConsumption`
 
     **Commands**
 
@@ -7498,10 +7714,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -7522,11 +7738,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Gate/DynamicGate (ACTUATOR) — 15 commands, 28 states"
 
-    **Type IDs:** `265` | **Profiles:** `StatefulCloseableGateOpener`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
+    **Type IDs:** `265` | **Controllable:** `ogp:Gate` | **Profiles:** `StatefulCloseableGateOpener`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
 
     **Commands**
 
@@ -7553,11 +7769,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -7578,12 +7794,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ReachedAliasesState` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "Generic/Untyped (ACTUATOR) — 3 commands, 4 states"
 
-    **Type IDs:** `16` | **Profiles:** `Specific`
+    **Type IDs:** `16` | **Controllable:** `ogp:Untyped` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -7597,14 +7813,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `NameState` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "HeatingSystem/DynamicThermostat (ACTUATOR) — 18 commands, 40 states"
 
-    **Type IDs:** `259` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
+    **Type IDs:** `259` | **Controllable:** `ogp:Thermostat` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
 
     **Commands**
 
@@ -7634,16 +7850,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableModesState` | DataState |  |  |
     | `AvailableTargetTemperaturesState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FanSpeedLevelState` | ContinuousState | [0..100] |  |
-    | `FanSpeedState` | DiscreteState |  |  |
+    | `FanSpeedState` | DiscreteState | low, medium, high, 1, 2, 3, 4, 5, 6, 7, 8, 9 |  |
     | `FirmwareHashState` | DataState |  |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ModeState` | DataState |  |  |
@@ -7665,7 +7881,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RelativeHumidityState` | ContinuousState | [0.0..100.0] |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureCurrentLowerBoundState` | ContinuousState |  |  |
     | `TargetTemperatureCurrentUpperBoundState` | ContinuousState |  |  |
     | `TargetTemperatureReachedState` | DataState |  |  |
@@ -7676,7 +7892,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/DynamicHvacCentralUnit (ACTUATOR) — 20 commands, 41 states"
 
-    **Type IDs:** `269` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
+    **Type IDs:** `269` | **Controllable:** `ogp:HvacCentralUnit` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
 
     **Commands**
 
@@ -7708,16 +7924,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableModesState` | DataState |  |  |
     | `AvailableTargetTemperaturesState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FanSpeedLevelState` | ContinuousState | [0..100] |  |
-    | `FanSpeedState` | DiscreteState |  |  |
+    | `FanSpeedState` | DiscreteState | low, medium, high, 1, 2, 3, 4, 5, 6, 7, 8, 9 |  |
     | `FirmwareHashState` | DataState |  |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `GroupMembersState` | DataState |  |  |
@@ -7740,7 +7956,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RelativeHumidityState` | ContinuousState | [0.0..100.0] |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureCurrentLowerBoundState` | ContinuousState |  |  |
     | `TargetTemperatureCurrentUpperBoundState` | ContinuousState |  |  |
     | `TargetTemperatureReachedState` | DataState |  |  |
@@ -7751,7 +7967,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/DynamicHeater (ACTUATOR) — 17 commands, 41 states"
 
-    **Type IDs:** `278` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`
+    **Type IDs:** `278` | **Controllable:** `ogp:Heater` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`
 
     **Commands**
 
@@ -7780,13 +7996,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableModesState` | DataState |  |  |
     | `AvailableTargetTemperaturesState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ElectricPowerConsumptionState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -7812,7 +8028,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RelativeHumidityState` | ContinuousState | [0.0..100.0] |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureCurrentLowerBoundState` | ContinuousState |  |  |
     | `TargetTemperatureCurrentUpperBoundState` | ContinuousState |  |  |
     | `TargetTemperatureReachedState` | DataState |  |  |
@@ -7823,7 +8039,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/DynamicHvacZone (ACTUATOR) — 18 commands, 43 states"
 
-    **Type IDs:** `289` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
+    **Type IDs:** `289` | **Controllable:** `ogp:HvacZone` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
 
     **Commands**
 
@@ -7854,17 +8070,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivatedOptionsState` | DataState |  |  |
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableModesState` | DataState |  |  |
     | `AvailableOptionsState` | DataState |  |  |
     | `AvailableTargetTemperaturesState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FanSpeedLevelState` | ContinuousState | [0..100] |  |
-    | `FanSpeedState` | DiscreteState |  |  |
+    | `FanSpeedState` | DiscreteState | low, medium, high, 1, 2, 3, 4, 5, 6, 7, 8, 9 |  |
     | `FirmwareHashState` | DataState |  |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `HolidayModeConfiguredState` | DataState |  |  |
@@ -7888,7 +8104,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RecommendedTargetTemperatureState` | ContinuousState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureCurrentLowerBoundState` | ContinuousState |  |  |
     | `TargetTemperatureCurrentUpperBoundState` | ContinuousState |  |  |
     | `TargetTemperatureReachedState` | DataState |  |  |
@@ -7898,7 +8114,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HumiditySensor/DynamicHumiditySensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `276` | **Profiles:** `RelativeHumidity`
+    **Type IDs:** `276` | **Controllable:** `ogp:HumiditySensor` | **Profiles:** `RelativeHumidity`
 
     **Commands**
 
@@ -7917,10 +8133,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -7940,11 +8156,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RelativeHumidityState` | ContinuousState | [0.0..100.0] |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "IntrusionSensor/DynamicIntrusionSensor (SENSOR) — 8 commands, 27 states"
 
-    **Type IDs:** `281` | **Profiles:** `IntrusionDetector`
+    **Type IDs:** `281` | **Controllable:** `ogp:IntrusionSensor` | **Profiles:** `IntrusionDetector`
 
     **Commands**
 
@@ -7964,15 +8180,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
     | `FirmwareRevisionState` | DataState |  |  |
-    | `IntrusionDetectionEventState` | DiscreteState |  |  |
+    | `IntrusionDetectionEventState` | DiscreteState | panic, intrusion |  |
     | `IntrusionState` | DiscreteState | detected, notDetected |  |
     | `NameState` | DataState |  |  |
     | `NewFirmwareAvailableState` | DataState |  |  |
@@ -7989,11 +8205,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Light/DynamicLight (ACTUATOR) — 20 commands, 32 states"
 
-    **Type IDs:** `257` | **Profiles:** `StatefulLightDimmer`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`, `Cyclic`
+    **Type IDs:** `257` | **Controllable:** `ogp:Light` | **Profiles:** `StatefulLightDimmer`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`, `Cyclic`
 
     **Commands**
 
@@ -8025,13 +8241,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ColorModeState` | DiscreteState |  |  |
+    | `ColorModeState` | DiscreteState | cieXYZ, hueAndStaturation, temperature, rgb |  |
     | `ColorTemperatureState` | ContinuousState |  |  |
     | `ElectricPowerConsumptionState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -8055,11 +8271,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ReachedAliasesState` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "LightSensor/DynamicLightSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `273` | **Profiles:** `Luminance`
+    **Type IDs:** `273` | **Controllable:** `ogp:LightSensor` | **Profiles:** `Luminance`
 
     **Commands**
 
@@ -8078,10 +8294,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -8102,11 +8318,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "MusicPlayer/DynamicAudioPlayer (ACTUATOR) — 29 commands, 39 states"
 
-    **Type IDs:** `288` | **Profiles:** `StoppableMusicPlayer`, `MusicPlayer`, `StatefulStartStop`, `StartStop`, `VolumeControl`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `288` | **Controllable:** `ogp:AudioPlayer` | **Profiles:** `StoppableMusicPlayer`, `MusicPlayer`, `StatefulStartStop`, `StartStop`, `VolumeControl`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -8148,11 +8364,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivatedOptionsState` | DataState |  |  |
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableOptionsState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -8181,14 +8397,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
     | `StartedStoppedState` | DiscreteState | started, stopped |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TimelineDurationState` | DataState |  |  |
     | `TimelinePositionState` | DataState |  |  |
     | `VolumeLevelState` | DataState |  |  |
 
 ??? note "NoiseSensor/DynamicAmbientNoiseSensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `305` | **Profiles:** `AmbientNoiseSensor`
+    **Type IDs:** `305` | **Controllable:** `ogp:AmbientNoiseSensor` | **Profiles:** `AmbientNoiseSensor`
 
     **Commands**
 
@@ -8208,10 +8424,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
     | `AmbientNoiseState` | ContinuousState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -8230,11 +8446,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "OccupancySensor/DynamicOccupancySensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `280` | **Profiles:** `OccupancyDetector`
+    **Type IDs:** `280` | **Controllable:** `ogp:OccupancySensor` | **Profiles:** `OccupancyDetector`
 
     **Commands**
 
@@ -8253,10 +8469,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -8276,11 +8492,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "OnOff/DynamicOutlet (ACTUATOR) — 16 commands, 29 states"
 
-    **Type IDs:** `261` | **Profiles:** `StatefulSwitchablePlug`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`, `Cyclic`
+    **Type IDs:** `261` | **Controllable:** `ogp:Outlet` | **Profiles:** `StatefulSwitchablePlug`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`, `Cyclic`
 
     **Commands**
 
@@ -8308,11 +8524,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ElectricPowerConsumptionState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -8335,11 +8551,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ReachedAliasesState` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Oven/DynamicOven (ACTUATOR) — 27 commands, 69 states"
 
-    **Type IDs:** `284` | **Profiles:** `StatefulStartStopOven`, `StatefulStartStop`, `StartStop`, `StatefulThermostatWithSensor`, `StatefulLockWithOpeningStatus`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulDimmable`, `Dimmable`
+    **Type IDs:** `284` | **Controllable:** `ogp:Oven` | **Profiles:** `StatefulStartStopOven`, `StatefulStartStop`, `StartStop`, `StatefulThermostatWithSensor`, `StatefulLockWithOpeningStatus`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulDimmable`, `Dimmable`
 
     **Commands**
 
@@ -8379,17 +8595,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivatedOptionsState` | DataState |  |  |
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableModesState` | DataState |  |  |
     | `AvailableOptionsState` | DataState |  |  |
     | `AvailableRecipesState` | DataState |  |  |
     | `AvailableTargetTemperaturesState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `CurrentCycleStageState` | DataState |  |  |
     | `CurrentSoilingState` | ContinuousState |  |  |
     | `CycleStageSequenceState` | DataState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -8426,7 +8642,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RunningTimerState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
     | `StartedStoppedState` | DiscreteState | started, stopped |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetHumidityCurrentLowerBoundState` | ContinuousState |  |  |
     | `TargetHumidityCurrentUpperBoundState` | ContinuousState |  |  |
     | `TargetHumidityState` | ContinuousState |  |  |
@@ -8449,7 +8665,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pergola/DynamicPergola (ACTUATOR) — 18 commands, 31 states"
 
-    **Type IDs:** `287` | **Profiles:** `StatefulOrientablePlusCloseablePergola`, `StatefulOrientablePlusCloseable`, `OrientablePlusCloseable`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `287` | **Controllable:** `ogp:Pergola` | **Profiles:** `StatefulOrientablePlusCloseablePergola`, `StatefulOrientablePlusCloseable`, `OrientablePlusCloseable`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -8479,11 +8695,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -8505,14 +8721,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
     | `SlateOrientationState` | ContinuousState | [0..100] |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TiltState` | ContinuousState |  |  |
-    | `TiltedState` | DiscreteState |  |  |
+    | `TiltedState` | DiscreteState | true, false |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "ProtocolGateway/DynamicBridge (ACTUATOR) — 15 commands, 26 states"
 
-    **Type IDs:** `1` | **Profiles:** `Specific`
+    **Type IDs:** `1` | **Controllable:** `ogp:Bridge` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -8540,11 +8756,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
     | `AuthenticationExpiredState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `CandidatesState` | DataState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -8563,11 +8779,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "ProtocolGateway/DynamicGateway (ACTUATOR) — 10 commands, 35 states"
 
-    **Type IDs:** `2` | **Profiles:** `Specific`
+    **Type IDs:** `2` | **Controllable:** `ogp:Gateway` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -8590,10 +8806,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
     | `ApnState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -8621,12 +8837,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RemovableState` | DataState |  |  |
     | `SSIDState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TimezoneState` | DataState |  |  |
 
 ??? note "RainSensor/DynamicRainSensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `275` | **Profiles:** `RainDetector`
+    **Type IDs:** `275` | **Controllable:** `ogp:RainSensor` | **Profiles:** `RainDetector`
 
     **Commands**
 
@@ -8645,10 +8861,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -8668,11 +8884,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RainState` | DiscreteState | detected, notDetected |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Scene/DynamicScene (ACTUATOR) — 9 commands, 25 states"
 
-    **Type IDs:** `294` | **Profiles:** `Specific`
+    **Type IDs:** `294` | **Controllable:** `ogp:Scene` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -8693,10 +8909,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -8716,11 +8932,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ReachedAliasesState` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "SceneLauncherController/DynamicSceneLauncherController (REMOTE_CONTROLLER) — 7 commands, 28 states"
 
-    **Type IDs:** `292` | **Profiles:** `Switch`, `SwitchEvent`, `ScenarioTrigger`
+    **Type IDs:** `292` | **Controllable:** `ogp:SceneLauncherController` | **Profiles:** `Switch`, `SwitchEvent`, `ScenarioTrigger`
 
     **Commands**
 
@@ -8740,12 +8956,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActionState` | DataState |  |  |
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableActionsState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ButtonActionsEventState` | DataState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -8765,11 +8981,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Screen/DynamicScreen (ACTUATOR) — 14 commands, 28 states"
 
-    **Type IDs:** `263` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `263` | **Controllable:** `ogp:Blind` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -8795,11 +9011,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -8820,12 +9036,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ReachedAliasesState` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "Shutter/DynamicShutter (ACTUATOR) — 17 commands, 35 states"
 
-    **Type IDs:** `262` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
+    **Type IDs:** `262` | **Controllable:** `ogp:Shutter` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
 
     **Commands**
 
@@ -8856,12 +9072,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AccessLimitationState` | DataState |  |  |
     | `ActivatedOptionsState` | DataState |  |  |
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableOptionsState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -8886,12 +9102,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RecommendedOptionsState` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "Switch/DynamicSwitch (ACTUATOR) — 8 commands, 27 states"
 
-    **Type IDs:** `297` | **Profiles:** `SwitchEvent`, `Switch`
+    **Type IDs:** `297` | **Controllable:** `ogp:Switch` | **Profiles:** `SwitchEvent`, `Switch`
 
     **Commands**
 
@@ -8912,12 +9128,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActionState` | DataState |  |  |
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableActionsState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ButtonActionsEventState` | DataState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -8936,11 +9152,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "TemperatureSensor/DynamicTemperatureSensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `270` | **Profiles:** `Temperature`
+    **Type IDs:** `270` | **Controllable:** `ogp:TemperatureSensor` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -8959,10 +9175,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -8981,12 +9197,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
 
 ??? note "ThirdPartyGateway/DynamicThirdPartyGateway (ACTUATOR) — 10 commands, 26 states"
 
-    **Type IDs:** `283` | **Profiles:** `Specific`
+    **Type IDs:** `283` | **Controllable:** `ogp:ThirdPartyGateway` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -9009,10 +9225,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
     | `AuthenticationExpiredState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -9032,11 +9248,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "VenetianBlind/DynamicVenetianBlind (ACTUATOR) — 20 commands, 31 states"
 
-    **Type IDs:** `264` | **Profiles:** `StatefulOrientableShutter`, `StatefulOrientablePlusCloseable`, `OrientablePlusCloseable`, `StatefulOpenClose`, `OpenClose`, `StatefulCloseable`, `Closeable`
+    **Type IDs:** `264` | **Controllable:** `ogp:VenetianBlind` | **Profiles:** `StatefulOrientableShutter`, `StatefulOrientablePlusCloseable`, `OrientablePlusCloseable`, `StatefulOpenClose`, `OpenClose`, `StatefulCloseable`, `Closeable`
 
     **Commands**
 
@@ -9068,11 +9284,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -9094,14 +9310,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
     | `SlateOrientationState` | ContinuousState | [0..100] |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TiltState` | ContinuousState |  |  |
-    | `TiltedState` | DiscreteState |  |  |
+    | `TiltedState` | DiscreteState | true, false |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "VentilationSystem/DynamicVentilation (ACTUATOR) — 17 commands, 32 states"
 
-    **Type IDs:** `260` | **Profiles:** `StatefulSwitchableVentilation`, `Temperature`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
+    **Type IDs:** `260` | **Controllable:** `ogp:Ventilation` | **Profiles:** `StatefulSwitchableVentilation`, `Temperature`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
 
     **Commands**
 
@@ -9130,15 +9346,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableModesState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FanSpeedLevelState` | ContinuousState | [0..100] |  |
-    | `FanSpeedState` | DiscreteState |  |  |
+    | `FanSpeedState` | DiscreteState | low, medium, high, 1, 2, 3, 4, 5, 6, 7, 8, 9 |  |
     | `FirmwareHashState` | DataState |  |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ModeState` | DataState |  |  |
@@ -9158,13 +9374,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ReachedAliasesState` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "VentilationSystem/DynamicAirVent (ACTUATOR) — 18 commands, 33 states"
 
-    **Type IDs:** `268` | **Profiles:** `StatefulCloseableAirVent`, `StatefulOrientableSlats`, `OrientableSlats`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `268` | **Controllable:** `ogp:AirVent` | **Profiles:** `StatefulCloseableAirVent`, `StatefulOrientableSlats`, `OrientableSlats`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Commands**
 
@@ -9194,12 +9410,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableModesState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -9222,14 +9438,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
     | `SlateOrientationState` | ContinuousState | [0..100] |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TiltState` | ContinuousState |  |  |
-    | `TiltedState` | DiscreteState |  |  |
+    | `TiltedState` | DiscreteState | true, false |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "WashingMachine/DynamicWashingMachine (ACTUATOR) — 23 commands, 56 states"
 
-    **Type IDs:** `285` | **Profiles:** `StatefulStartStopWashingMachine`, `StatefulStartStop`, `StartStop`, `StatefulLockWithOpeningStatus`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulLock`, `LockStatus`, `Lock`
+    **Type IDs:** `285` | **Controllable:** `ogp:WashingMachine` | **Profiles:** `StatefulStartStopWashingMachine`, `StatefulStartStop`, `StartStop`, `StatefulLockWithOpeningStatus`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulLock`, `LockStatus`, `Lock`
 
     **Commands**
 
@@ -9265,16 +9481,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivatedOptionsState` | DataState |  |  |
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableModesState` | DataState |  |  |
     | `AvailableOptionsState` | DataState |  |  |
     | `AvailableTargetSpinSpeedsState` | DataState |  |  |
     | `AvailableTargetTemperaturesState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `CurrentCycleStageState` | DataState |  |  |
     | `CycleStageSequenceState` | DataState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -9306,7 +9522,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RunningTimerState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
     | `StartedStoppedState` | DiscreteState | started, stopped |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetSpinSpeedCurrentLowerBoundState` | ContinuousState |  |  |
     | `TargetSpinSpeedCurrentUpperBoundState` | ContinuousState |  |  |
     | `TargetSpinSpeedState` | ContinuousState |  |  |
@@ -9322,7 +9538,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterHeatingSystem/DynamicDomesticHotWaterProduction (ACTUATOR) — 16 commands, 41 states"
 
-    **Type IDs:** `290` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `290` | **Controllable:** `ogp:DomesticHotWater` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -9351,13 +9567,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivatedOptionsState` | DataState |  |  |
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableModesState` | DataState |  |  |
     | `AvailableOptionsState` | DataState |  |  |
     | `AvailableTargetTemperaturesState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -9383,7 +9599,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RecommendedTargetTemperatureState` | ContinuousState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureCurrentLowerBoundState` | ContinuousState |  |  |
     | `TargetTemperatureCurrentUpperBoundState` | ContinuousState |  |  |
     | `TargetTemperatureReachedState` | DataState |  |  |
@@ -9393,7 +9609,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterSensor/DynamicWaterMeasurementSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `295` | **Profiles:** `WaterConsumption`
+    **Type IDs:** `295` | **Controllable:** `ogp:WaterMeasurementSensor` | **Profiles:** `WaterConsumption`
 
     **Commands**
 
@@ -9412,10 +9628,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -9434,13 +9650,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `WaterConsumptionState` | ContinuousState |  |  |
     | `WaterFlowState` | ContinuousState |  |  |
 
 ??? note "WeatherSensor/DynamicWeatherStation (SENSOR) — 7 commands, 34 states"
 
-    **Type IDs:** `279` | **Profiles:** `WindSpeedAndDirection`, `WindSpeed`, `WindDirection`, `Temperature`, `RelativeHumidity`, `RainDetector`, `Luminance`
+    **Type IDs:** `279` | **Controllable:** `ogp:WeatherStation` | **Profiles:** `WindSpeedAndDirection`, `WindSpeed`, `WindDirection`, `Temperature`, `RelativeHumidity`, `RainDetector`, `Luminance`
 
     **Commands**
 
@@ -9459,16 +9675,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
     | `FirmwareRevisionState` | DataState |  |  |
-    | `FrostState` | DiscreteState |  |  |
-    | `IceState` | DiscreteState |  |  |
+    | `FrostState` | DiscreteState | true, false |  |
+    | `IceState` | DiscreteState | true, false |  |
     | `IlluminanceState` | ContinuousState |  |  |
     | `LuminanceState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
@@ -9487,15 +9703,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RelativeHumidityState` | ContinuousState | [0.0..100.0] |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `SnowState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `SnowState` | DiscreteState | true, false |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `WindDirectionState` | ContinuousState | [0..360] |  |
     | `WindSpeedState` | ContinuousState |  |  |
 
 ??? note "WindSensor/DynamicWindSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `274` | **Profiles:** `WindSpeedAndDirection`, `WindSpeed`, `WindDirection`
+    **Type IDs:** `274` | **Controllable:** `ogp:WindSensor` | **Profiles:** `WindSpeedAndDirection`, `WindSpeed`, `WindDirection`
 
     **Commands**
 
@@ -9514,10 +9730,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -9536,13 +9752,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `WindDirectionState` | ContinuousState | [0..360] |  |
     | `WindSpeedState` | ContinuousState |  |  |
 
 ??? note "Window/DynamicWindow (ACTUATOR) — 18 commands, 31 states"
 
-    **Type IDs:** `267` | **Profiles:** `StatefulWindowLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulOpenClose`, `OpenClose`, `StatefulCloseable`, `Closeable`, `StatefulLock`, `LockStatus`, `Lock`, `Cyclic`
+    **Type IDs:** `267` | **Controllable:** `ogp:Window` | **Profiles:** `StatefulWindowLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulOpenClose`, `OpenClose`, `StatefulCloseable`, `Closeable`, `StatefulLock`, `LockStatus`, `Lock`, `Cyclic`
 
     **Commands**
 
@@ -9573,11 +9789,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
     | `AuthenticationExpiredState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -9600,12 +9816,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RemovableState` | DataState |  |  |
     | `SSIDState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "unknown/Invalid (ACTUATOR) — 0 commands, 0 states"
 
-    **Type IDs:** `0` | **Profiles:** `Specific`
+    **Type IDs:** `0` | **Controllable:** `ogp:Invalid` | **Profiles:** `Specific`
 
 
 ## OGP
@@ -9614,7 +9830,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "AirSensor/DynamicAirSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `304` | **Profiles:** `CO2Concentration`
+    **Type IDs:** `304` | **Controllable:** `ogp:AirSensor` | **Profiles:** `CO2Concentration`
 
     **Commands**
 
@@ -9633,12 +9849,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AirQualityIndexLevelState` | DiscreteState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AirQualityIndexLevelState` | DiscreteState | good, moderate, unhealthyForSensitiveGroups, unhealthy, veryUnhealthy, hazardous |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `CO2ConcentrationState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -9657,11 +9873,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Alarm/DynamicAlarm (ACTUATOR) — 13 commands, 33 states"
 
-    **Type IDs:** `282` | **Profiles:** `SmokeDetector`, `IntrusionDetector`, `StatefulAlarm`, `Alarm`
+    **Type IDs:** `282` | **Controllable:** `ogp:Alarm` | **Profiles:** `SmokeDetector`, `IntrusionDetector`, `StatefulAlarm`, `Alarm`
 
     **Commands**
 
@@ -9687,17 +9903,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
     | `ArmedState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableModesState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `GroupMembersState` | DataState |  |  |
-    | `IntrusionDetectionEventState` | DiscreteState |  |  |
+    | `IntrusionDetectionEventState` | DiscreteState | panic, intrusion |  |
     | `IntrusionState` | DiscreteState | detected, notDetected |  |
     | `ModeState` | DataState |  |  |
     | `NameState` | DataState |  |  |
@@ -9715,13 +9931,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `SmokeDetectionEventState` | DiscreteState |  |  |
+    | `SmokeDetectionEventState` | DiscreteState | smoke |  |
     | `SmokeState` | DiscreteState | detected, notDetected |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Awning/DynamicAwning (ACTUATOR) — 17 commands, 30 states"
 
-    **Type IDs:** `277` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `StatefulDeployUndeploy`, `DeployUndeploy`
+    **Type IDs:** `277` | **Controllable:** `ogp:Awning` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `StatefulDeployUndeploy`, `DeployUndeploy`
 
     **Commands**
 
@@ -9750,12 +9966,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `DeployedUndeployedState` | DiscreteState | deployed, undeployed |  |
     | `DeploymentState` | ContinuousState | [0..100] |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -9777,12 +9993,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RolledUpState` | DataState |  |  |
     | `RollingOutState` | ContinuousState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "CarbonDioxideSensor/DynamicCarbonDioxideSensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `291` | **Profiles:** `CO2Concentration`
+    **Type IDs:** `291` | **Controllable:** `ogp:CarbonDioxideSensor` | **Profiles:** `CO2Concentration`
 
     **Commands**
 
@@ -9801,11 +10017,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `CO2ConcentrationState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -9824,11 +10040,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "CircuitBreaker/DynamicCircuitBreaker (ACTUATOR) — 13 commands, 25 states"
 
-    **Type IDs:** `286` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`, `Cyclic`
+    **Type IDs:** `286` | **Controllable:** `ogp:CircuitBreaker` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`, `Cyclic`
 
     **Commands**
 
@@ -9853,10 +10069,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -9876,11 +10092,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "ContactSensor/DynamicOpeningSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `272` | **Profiles:** `WindowOpeningStatus`, `OpeningStatus`
+    **Type IDs:** `272` | **Controllable:** `ogp:OpeningSensor` | **Profiles:** `WindowOpeningStatus`, `OpeningStatus`
 
     **Commands**
 
@@ -9899,10 +10115,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -9923,11 +10139,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Curtain/DynamicCurtain (ACTUATOR) — 14 commands, 28 states"
 
-    **Type IDs:** `271` | **Profiles:** `StatefulCloseableCurtain`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `271` | **Controllable:** `ogp:Curtain` | **Profiles:** `StatefulCloseableCurtain`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -9953,11 +10169,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -9978,12 +10194,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ReachedAliasesState` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "ElectricitySensor/DynamicElectricityConsumptionSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `293` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `293` | **Controllable:** `ogp:ElectricityConsumptionSensor` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
 
     **Commands**
 
@@ -10002,12 +10218,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ElectricEnergyConsumptionState` | ContinuousState |  |  |
     | `ElectricPowerConsumptionState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -10026,11 +10242,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "GarageDoor/DynamicGarageDoor (ACTUATOR) — 15 commands, 28 states"
 
-    **Type IDs:** `266` | **Profiles:** `StatefulCloseableGarageOpener`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
+    **Type IDs:** `266` | **Controllable:** `ogp:GarageDoor` | **Profiles:** `StatefulCloseableGarageOpener`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
 
     **Commands**
 
@@ -10057,11 +10273,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -10082,12 +10298,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ReachedAliasesState` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "GasSensor/DynamicGasMeasurementSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `296` | **Profiles:** `GasConsumption`
+    **Type IDs:** `296` | **Controllable:** `ogp:GasMeasurementSensor` | **Profiles:** `GasConsumption`
 
     **Commands**
 
@@ -10106,10 +10322,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -10130,11 +10346,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Gate/DynamicGate (ACTUATOR) — 15 commands, 28 states"
 
-    **Type IDs:** `265` | **Profiles:** `StatefulCloseableGateOpener`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
+    **Type IDs:** `265` | **Controllable:** `ogp:Gate` | **Profiles:** `StatefulCloseableGateOpener`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
 
     **Commands**
 
@@ -10161,11 +10377,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -10186,12 +10402,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ReachedAliasesState` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "Generic/Untyped (ACTUATOR) — 3 commands, 4 states"
 
-    **Type IDs:** `16` | **Profiles:** `Specific`
+    **Type IDs:** `16` | **Controllable:** `ogp:Untyped` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -10205,14 +10421,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `NameState` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "HeatingSystem/DynamicThermostat (ACTUATOR) — 18 commands, 40 states"
 
-    **Type IDs:** `259` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
+    **Type IDs:** `259` | **Controllable:** `ogp:Thermostat` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
 
     **Commands**
 
@@ -10242,16 +10458,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableModesState` | DataState |  |  |
     | `AvailableTargetTemperaturesState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FanSpeedLevelState` | ContinuousState | [0..100] |  |
-    | `FanSpeedState` | DiscreteState |  |  |
+    | `FanSpeedState` | DiscreteState | low, medium, high, 1, 2, 3, 4, 5, 6, 7, 8, 9 |  |
     | `FirmwareHashState` | DataState |  |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ModeState` | DataState |  |  |
@@ -10273,7 +10489,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RelativeHumidityState` | ContinuousState | [0.0..100.0] |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureCurrentLowerBoundState` | ContinuousState |  |  |
     | `TargetTemperatureCurrentUpperBoundState` | ContinuousState |  |  |
     | `TargetTemperatureReachedState` | DataState |  |  |
@@ -10284,7 +10500,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/DynamicHvacCentralUnit (ACTUATOR) — 20 commands, 41 states"
 
-    **Type IDs:** `269` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
+    **Type IDs:** `269` | **Controllable:** `ogp:HvacCentralUnit` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
 
     **Commands**
 
@@ -10316,16 +10532,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableModesState` | DataState |  |  |
     | `AvailableTargetTemperaturesState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FanSpeedLevelState` | ContinuousState | [0..100] |  |
-    | `FanSpeedState` | DiscreteState |  |  |
+    | `FanSpeedState` | DiscreteState | low, medium, high, 1, 2, 3, 4, 5, 6, 7, 8, 9 |  |
     | `FirmwareHashState` | DataState |  |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `GroupMembersState` | DataState |  |  |
@@ -10348,7 +10564,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RelativeHumidityState` | ContinuousState | [0.0..100.0] |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureCurrentLowerBoundState` | ContinuousState |  |  |
     | `TargetTemperatureCurrentUpperBoundState` | ContinuousState |  |  |
     | `TargetTemperatureReachedState` | DataState |  |  |
@@ -10359,7 +10575,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/DynamicHeater (ACTUATOR) — 17 commands, 41 states"
 
-    **Type IDs:** `278` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`
+    **Type IDs:** `278` | **Controllable:** `ogp:Heater` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`
 
     **Commands**
 
@@ -10388,13 +10604,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableModesState` | DataState |  |  |
     | `AvailableTargetTemperaturesState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ElectricPowerConsumptionState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -10420,7 +10636,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RelativeHumidityState` | ContinuousState | [0.0..100.0] |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureCurrentLowerBoundState` | ContinuousState |  |  |
     | `TargetTemperatureCurrentUpperBoundState` | ContinuousState |  |  |
     | `TargetTemperatureReachedState` | DataState |  |  |
@@ -10431,7 +10647,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/DynamicHvacZone (ACTUATOR) — 18 commands, 43 states"
 
-    **Type IDs:** `289` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
+    **Type IDs:** `289` | **Controllable:** `ogp:HvacZone` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
 
     **Commands**
 
@@ -10462,17 +10678,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivatedOptionsState` | DataState |  |  |
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableModesState` | DataState |  |  |
     | `AvailableOptionsState` | DataState |  |  |
     | `AvailableTargetTemperaturesState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FanSpeedLevelState` | ContinuousState | [0..100] |  |
-    | `FanSpeedState` | DiscreteState |  |  |
+    | `FanSpeedState` | DiscreteState | low, medium, high, 1, 2, 3, 4, 5, 6, 7, 8, 9 |  |
     | `FirmwareHashState` | DataState |  |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `HolidayModeConfiguredState` | DataState |  |  |
@@ -10496,7 +10712,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RecommendedTargetTemperatureState` | ContinuousState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureCurrentLowerBoundState` | ContinuousState |  |  |
     | `TargetTemperatureCurrentUpperBoundState` | ContinuousState |  |  |
     | `TargetTemperatureReachedState` | DataState |  |  |
@@ -10506,7 +10722,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HumiditySensor/DynamicHumiditySensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `276` | **Profiles:** `RelativeHumidity`
+    **Type IDs:** `276` | **Controllable:** `ogp:HumiditySensor` | **Profiles:** `RelativeHumidity`
 
     **Commands**
 
@@ -10525,10 +10741,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -10548,11 +10764,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RelativeHumidityState` | ContinuousState | [0.0..100.0] |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "IntrusionSensor/DynamicIntrusionSensor (SENSOR) — 8 commands, 27 states"
 
-    **Type IDs:** `281` | **Profiles:** `IntrusionDetector`
+    **Type IDs:** `281` | **Controllable:** `ogp:IntrusionSensor` | **Profiles:** `IntrusionDetector`
 
     **Commands**
 
@@ -10572,15 +10788,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
     | `FirmwareRevisionState` | DataState |  |  |
-    | `IntrusionDetectionEventState` | DiscreteState |  |  |
+    | `IntrusionDetectionEventState` | DiscreteState | panic, intrusion |  |
     | `IntrusionState` | DiscreteState | detected, notDetected |  |
     | `NameState` | DataState |  |  |
     | `NewFirmwareAvailableState` | DataState |  |  |
@@ -10597,11 +10813,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Light/DynamicLight (ACTUATOR) — 20 commands, 32 states"
 
-    **Type IDs:** `257` | **Profiles:** `StatefulLightDimmer`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`, `Cyclic`
+    **Type IDs:** `257` | **Controllable:** `ogp:Light` | **Profiles:** `StatefulLightDimmer`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`, `Cyclic`
 
     **Commands**
 
@@ -10633,13 +10849,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ColorModeState` | DiscreteState |  |  |
+    | `ColorModeState` | DiscreteState | cieXYZ, hueAndStaturation, temperature, rgb |  |
     | `ColorTemperatureState` | ContinuousState |  |  |
     | `ElectricPowerConsumptionState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -10663,11 +10879,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ReachedAliasesState` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "LightSensor/DynamicLightSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `273` | **Profiles:** `Luminance`
+    **Type IDs:** `273` | **Controllable:** `ogp:LightSensor` | **Profiles:** `Luminance`
 
     **Commands**
 
@@ -10686,10 +10902,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -10710,11 +10926,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "MusicPlayer/DynamicAudioPlayer (ACTUATOR) — 29 commands, 39 states"
 
-    **Type IDs:** `288` | **Profiles:** `StoppableMusicPlayer`, `MusicPlayer`, `StatefulStartStop`, `StartStop`, `VolumeControl`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `288` | **Controllable:** `ogp:AudioPlayer` | **Profiles:** `StoppableMusicPlayer`, `MusicPlayer`, `StatefulStartStop`, `StartStop`, `VolumeControl`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -10756,11 +10972,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivatedOptionsState` | DataState |  |  |
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableOptionsState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -10789,14 +11005,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
     | `StartedStoppedState` | DiscreteState | started, stopped |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TimelineDurationState` | DataState |  |  |
     | `TimelinePositionState` | DataState |  |  |
     | `VolumeLevelState` | DataState |  |  |
 
 ??? note "NoiseSensor/DynamicAmbientNoiseSensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `305` | **Profiles:** `AmbientNoiseSensor`
+    **Type IDs:** `305` | **Controllable:** `ogp:AmbientNoiseSensor` | **Profiles:** `AmbientNoiseSensor`
 
     **Commands**
 
@@ -10816,10 +11032,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
     | `AmbientNoiseState` | ContinuousState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -10838,11 +11054,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "OccupancySensor/DynamicOccupancySensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `280` | **Profiles:** `OccupancyDetector`
+    **Type IDs:** `280` | **Controllable:** `ogp:OccupancySensor` | **Profiles:** `OccupancyDetector`
 
     **Commands**
 
@@ -10861,10 +11077,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -10884,11 +11100,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "OnOff/DynamicOutlet (ACTUATOR) — 16 commands, 29 states"
 
-    **Type IDs:** `261` | **Profiles:** `StatefulSwitchablePlug`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`, `Cyclic`
+    **Type IDs:** `261` | **Controllable:** `ogp:Outlet` | **Profiles:** `StatefulSwitchablePlug`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`, `Cyclic`
 
     **Commands**
 
@@ -10916,11 +11132,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ElectricPowerConsumptionState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -10943,11 +11159,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ReachedAliasesState` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Oven/DynamicOven (ACTUATOR) — 27 commands, 69 states"
 
-    **Type IDs:** `284` | **Profiles:** `StatefulStartStopOven`, `StatefulStartStop`, `StartStop`, `StatefulThermostatWithSensor`, `StatefulLockWithOpeningStatus`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulDimmable`, `Dimmable`
+    **Type IDs:** `284` | **Controllable:** `ogp:Oven` | **Profiles:** `StatefulStartStopOven`, `StatefulStartStop`, `StartStop`, `StatefulThermostatWithSensor`, `StatefulLockWithOpeningStatus`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulDimmable`, `Dimmable`
 
     **Commands**
 
@@ -10987,17 +11203,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivatedOptionsState` | DataState |  |  |
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableModesState` | DataState |  |  |
     | `AvailableOptionsState` | DataState |  |  |
     | `AvailableRecipesState` | DataState |  |  |
     | `AvailableTargetTemperaturesState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `CurrentCycleStageState` | DataState |  |  |
     | `CurrentSoilingState` | ContinuousState |  |  |
     | `CycleStageSequenceState` | DataState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -11034,7 +11250,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RunningTimerState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
     | `StartedStoppedState` | DiscreteState | started, stopped |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetHumidityCurrentLowerBoundState` | ContinuousState |  |  |
     | `TargetHumidityCurrentUpperBoundState` | ContinuousState |  |  |
     | `TargetHumidityState` | ContinuousState |  |  |
@@ -11057,7 +11273,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pergola/DynamicPergola (ACTUATOR) — 18 commands, 31 states"
 
-    **Type IDs:** `287` | **Profiles:** `StatefulOrientablePlusCloseablePergola`, `StatefulOrientablePlusCloseable`, `OrientablePlusCloseable`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `287` | **Controllable:** `ogp:Pergola` | **Profiles:** `StatefulOrientablePlusCloseablePergola`, `StatefulOrientablePlusCloseable`, `OrientablePlusCloseable`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -11087,11 +11303,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -11113,14 +11329,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
     | `SlateOrientationState` | ContinuousState | [0..100] |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TiltState` | ContinuousState |  |  |
-    | `TiltedState` | DiscreteState |  |  |
+    | `TiltedState` | DiscreteState | true, false |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "ProtocolGateway/DynamicBridge (ACTUATOR) — 15 commands, 26 states"
 
-    **Type IDs:** `1` | **Profiles:** `Specific`
+    **Type IDs:** `1` | **Controllable:** `ogp:Bridge` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -11148,11 +11364,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
     | `AuthenticationExpiredState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `CandidatesState` | DataState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -11171,11 +11387,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "ProtocolGateway/DynamicGateway (ACTUATOR) — 10 commands, 35 states"
 
-    **Type IDs:** `2` | **Profiles:** `Specific`
+    **Type IDs:** `2` | **Controllable:** `ogp:Gateway` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -11198,10 +11414,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
     | `ApnState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -11229,12 +11445,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RemovableState` | DataState |  |  |
     | `SSIDState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TimezoneState` | DataState |  |  |
 
 ??? note "RainSensor/DynamicRainSensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `275` | **Profiles:** `RainDetector`
+    **Type IDs:** `275` | **Controllable:** `ogp:RainSensor` | **Profiles:** `RainDetector`
 
     **Commands**
 
@@ -11253,10 +11469,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -11276,11 +11492,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RainState` | DiscreteState | detected, notDetected |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Scene/DynamicScene (ACTUATOR) — 9 commands, 25 states"
 
-    **Type IDs:** `294` | **Profiles:** `Specific`
+    **Type IDs:** `294` | **Controllable:** `ogp:Scene` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -11301,10 +11517,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -11324,11 +11540,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ReachedAliasesState` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "SceneLauncherController/DynamicSceneLauncherController (REMOTE_CONTROLLER) — 7 commands, 28 states"
 
-    **Type IDs:** `292` | **Profiles:** `Switch`, `SwitchEvent`, `ScenarioTrigger`
+    **Type IDs:** `292` | **Controllable:** `ogp:SceneLauncherController` | **Profiles:** `Switch`, `SwitchEvent`, `ScenarioTrigger`
 
     **Commands**
 
@@ -11348,12 +11564,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActionState` | DataState |  |  |
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableActionsState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ButtonActionsEventState` | DataState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -11373,11 +11589,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Screen/DynamicScreen (ACTUATOR) — 14 commands, 28 states"
 
-    **Type IDs:** `263` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `263` | **Controllable:** `ogp:Blind` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -11403,11 +11619,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -11428,12 +11644,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ReachedAliasesState` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "Shutter/DynamicShutter (ACTUATOR) — 17 commands, 35 states"
 
-    **Type IDs:** `262` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
+    **Type IDs:** `262` | **Controllable:** `ogp:Shutter` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
 
     **Commands**
 
@@ -11464,12 +11680,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AccessLimitationState` | DataState |  |  |
     | `ActivatedOptionsState` | DataState |  |  |
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableOptionsState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -11494,12 +11710,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RecommendedOptionsState` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "Switch/DynamicSwitch (ACTUATOR) — 8 commands, 27 states"
 
-    **Type IDs:** `297` | **Profiles:** `SwitchEvent`, `Switch`
+    **Type IDs:** `297` | **Controllable:** `ogp:Switch` | **Profiles:** `SwitchEvent`, `Switch`
 
     **Commands**
 
@@ -11520,12 +11736,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActionState` | DataState |  |  |
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableActionsState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ButtonActionsEventState` | DataState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -11544,11 +11760,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "TemperatureSensor/DynamicTemperatureSensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `270` | **Profiles:** `Temperature`
+    **Type IDs:** `270` | **Controllable:** `ogp:TemperatureSensor` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -11567,10 +11783,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -11589,12 +11805,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
 
 ??? note "ThirdPartyGateway/DynamicThirdPartyGateway (ACTUATOR) — 10 commands, 26 states"
 
-    **Type IDs:** `283` | **Profiles:** `Specific`
+    **Type IDs:** `283` | **Controllable:** `ogp:ThirdPartyGateway` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -11617,10 +11833,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
     | `AuthenticationExpiredState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -11640,11 +11856,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "VenetianBlind/DynamicVenetianBlind (ACTUATOR) — 20 commands, 31 states"
 
-    **Type IDs:** `264` | **Profiles:** `StatefulOrientableShutter`, `StatefulOrientablePlusCloseable`, `OrientablePlusCloseable`, `StatefulOpenClose`, `OpenClose`, `StatefulCloseable`, `Closeable`
+    **Type IDs:** `264` | **Controllable:** `ogp:VenetianBlind` | **Profiles:** `StatefulOrientableShutter`, `StatefulOrientablePlusCloseable`, `OrientablePlusCloseable`, `StatefulOpenClose`, `OpenClose`, `StatefulCloseable`, `Closeable`
 
     **Commands**
 
@@ -11676,11 +11892,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -11702,14 +11918,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
     | `SlateOrientationState` | ContinuousState | [0..100] |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TiltState` | ContinuousState |  |  |
-    | `TiltedState` | DiscreteState |  |  |
+    | `TiltedState` | DiscreteState | true, false |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "VentilationSystem/DynamicVentilation (ACTUATOR) — 17 commands, 32 states"
 
-    **Type IDs:** `260` | **Profiles:** `StatefulSwitchableVentilation`, `Temperature`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
+    **Type IDs:** `260` | **Controllable:** `ogp:Ventilation` | **Profiles:** `StatefulSwitchableVentilation`, `Temperature`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
 
     **Commands**
 
@@ -11738,15 +11954,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableModesState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FanSpeedLevelState` | ContinuousState | [0..100] |  |
-    | `FanSpeedState` | DiscreteState |  |  |
+    | `FanSpeedState` | DiscreteState | low, medium, high, 1, 2, 3, 4, 5, 6, 7, 8, 9 |  |
     | `FirmwareHashState` | DataState |  |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ModeState` | DataState |  |  |
@@ -11766,13 +11982,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ReachedAliasesState` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "VentilationSystem/DynamicAirVent (ACTUATOR) — 18 commands, 33 states"
 
-    **Type IDs:** `268` | **Profiles:** `StatefulCloseableAirVent`, `StatefulOrientableSlats`, `OrientableSlats`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `268` | **Controllable:** `ogp:AirVent` | **Profiles:** `StatefulCloseableAirVent`, `StatefulOrientableSlats`, `OrientableSlats`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Commands**
 
@@ -11802,12 +12018,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableModesState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -11830,14 +12046,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
     | `SlateOrientationState` | ContinuousState | [0..100] |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TiltState` | ContinuousState |  |  |
-    | `TiltedState` | DiscreteState |  |  |
+    | `TiltedState` | DiscreteState | true, false |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "WashingMachine/DynamicWashingMachine (ACTUATOR) — 23 commands, 56 states"
 
-    **Type IDs:** `285` | **Profiles:** `StatefulStartStopWashingMachine`, `StatefulStartStop`, `StartStop`, `StatefulLockWithOpeningStatus`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulLock`, `LockStatus`, `Lock`
+    **Type IDs:** `285` | **Controllable:** `ogp:WashingMachine` | **Profiles:** `StatefulStartStopWashingMachine`, `StatefulStartStop`, `StartStop`, `StatefulLockWithOpeningStatus`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulLock`, `LockStatus`, `Lock`
 
     **Commands**
 
@@ -11873,16 +12089,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivatedOptionsState` | DataState |  |  |
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableModesState` | DataState |  |  |
     | `AvailableOptionsState` | DataState |  |  |
     | `AvailableTargetSpinSpeedsState` | DataState |  |  |
     | `AvailableTargetTemperaturesState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `CurrentCycleStageState` | DataState |  |  |
     | `CycleStageSequenceState` | DataState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -11914,7 +12130,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RunningTimerState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
     | `StartedStoppedState` | DiscreteState | started, stopped |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetSpinSpeedCurrentLowerBoundState` | ContinuousState |  |  |
     | `TargetSpinSpeedCurrentUpperBoundState` | ContinuousState |  |  |
     | `TargetSpinSpeedState` | ContinuousState |  |  |
@@ -11930,7 +12146,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterHeatingSystem/DynamicDomesticHotWaterProduction (ACTUATOR) — 16 commands, 41 states"
 
-    **Type IDs:** `290` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `290` | **Controllable:** `ogp:DomesticHotWater` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -11959,13 +12175,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivatedOptionsState` | DataState |  |  |
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `AvailableModesState` | DataState |  |  |
     | `AvailableOptionsState` | DataState |  |  |
     | `AvailableTargetTemperaturesState` | DataState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -11991,7 +12207,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RecommendedTargetTemperatureState` | ContinuousState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureCurrentLowerBoundState` | ContinuousState |  |  |
     | `TargetTemperatureCurrentUpperBoundState` | ContinuousState |  |  |
     | `TargetTemperatureReachedState` | DataState |  |  |
@@ -12001,7 +12217,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterSensor/DynamicWaterMeasurementSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `295` | **Profiles:** `WaterConsumption`
+    **Type IDs:** `295` | **Controllable:** `ogp:WaterMeasurementSensor` | **Profiles:** `WaterConsumption`
 
     **Commands**
 
@@ -12020,10 +12236,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -12042,13 +12258,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `WaterConsumptionState` | ContinuousState |  |  |
     | `WaterFlowState` | ContinuousState |  |  |
 
 ??? note "WeatherSensor/DynamicWeatherStation (SENSOR) — 7 commands, 34 states"
 
-    **Type IDs:** `279` | **Profiles:** `WindSpeedAndDirection`, `WindSpeed`, `WindDirection`, `Temperature`, `RelativeHumidity`, `RainDetector`, `Luminance`
+    **Type IDs:** `279` | **Controllable:** `ogp:WeatherStation` | **Profiles:** `WindSpeedAndDirection`, `WindSpeed`, `WindDirection`, `Temperature`, `RelativeHumidity`, `RainDetector`, `Luminance`
 
     **Commands**
 
@@ -12067,16 +12283,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
     | `FirmwareRevisionState` | DataState |  |  |
-    | `FrostState` | DiscreteState |  |  |
-    | `IceState` | DiscreteState |  |  |
+    | `FrostState` | DiscreteState | true, false |  |
+    | `IceState` | DiscreteState | true, false |  |
     | `IlluminanceState` | ContinuousState |  |  |
     | `LuminanceState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
@@ -12095,15 +12311,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RelativeHumidityState` | ContinuousState | [0.0..100.0] |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `SnowState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `SnowState` | DiscreteState | true, false |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `WindDirectionState` | ContinuousState | [0..360] |  |
     | `WindSpeedState` | ContinuousState |  |  |
 
 ??? note "WindSensor/DynamicWindSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `274` | **Profiles:** `WindSpeedAndDirection`, `WindSpeed`, `WindDirection`
+    **Type IDs:** `274` | **Controllable:** `ogp:WindSensor` | **Profiles:** `WindSpeedAndDirection`, `WindSpeed`, `WindDirection`
 
     **Commands**
 
@@ -12122,10 +12338,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -12144,13 +12360,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `WindDirectionState` | ContinuousState | [0..360] |  |
     | `WindSpeedState` | ContinuousState |  |  |
 
 ??? note "Window/DynamicWindow (ACTUATOR) — 18 commands, 31 states"
 
-    **Type IDs:** `267` | **Profiles:** `StatefulWindowLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulOpenClose`, `OpenClose`, `StatefulCloseable`, `Closeable`, `StatefulLock`, `LockStatus`, `Lock`, `Cyclic`
+    **Type IDs:** `267` | **Controllable:** `ogp:Window` | **Profiles:** `StatefulWindowLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulOpenClose`, `OpenClose`, `StatefulCloseable`, `Closeable`, `StatefulLock`, `LockStatus`, `Lock`, `Cyclic`
 
     **Commands**
 
@@ -12181,11 +12397,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActivePartitionState` | DataState |  |  |
     | `AuthenticationExpiredState` | DataState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `BatteryDiscreteLevelState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
-    | `ErrorEventState` | DiscreteState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -12208,12 +12424,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RemovableState` | DataState |  |  |
     | `SSIDState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
 ??? note "unknown/Invalid (ACTUATOR) — 0 commands, 0 states"
 
-    **Type IDs:** `0` | **Profiles:** `Specific`
+    **Type IDs:** `0` | **Controllable:** `ogp:Invalid` | **Profiles:** `Specific`
 
 
 ## OPENDOORS
@@ -12222,7 +12438,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "DoorLock (ACTUATOR) — 3 commands, 5 states"
 
-    **Type IDs:** `16777472` | **Profiles:** `StatefulDoorLock`, `StatefulLock`, `LockStatus`, `Lock`
+    **Type IDs:** `16777472` | **Controllable:** `opendoors:OpenDoorsSmartLockComponent` | **Profiles:** `StatefulDoorLock`, `StatefulLock`, `LockStatus`, `Lock`
 
     **Commands**
 
@@ -12236,11 +12452,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `LockedUnlockedState` | DiscreteState | locked, unlocked |  |
     | `NameState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 
 ## OVP
@@ -12249,18 +12465,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `16842763` | **Profiles:** `ElectricEnergyConsumption`
+    **Type IDs:** `16842763` | **Controllable:** `ovp:CoolingCumulatedElectricalEnergyConsumptionSensor` | **Profiles:** `ElectricEnergyConsumption`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ElectricEnergyConsumptionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Generic/OVPGeneric (ACTUATOR) — 4 commands, 3 states"
 
-    **Type IDs:** `0` | **Profiles:** `StatefulLevelControl`, `LevelControl`, `Generic`
+    **Type IDs:** `0` | **Controllable:** `ovp:UnknownOVPComponent` | **Profiles:** `StatefulLevelControl`, `LevelControl`, `Generic`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -12277,11 +12497,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `LevelState` | ContinuousState | [0..100] |  |
     | `NameState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Generic/unknown (ACTUATOR) — 3 commands, 2 states"
 
-    **Type IDs:** `16843019`, `1099528470795` | **Profiles:** `Specific`
+    **Type IDs:** `16843019`, `1099528470795` | **Controllable:** `ovp:ModbusMainController` | **Profiles:** `Specific`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -12296,11 +12520,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `NameState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "HeatingSystem/SomfyHeatingTemperatureInterface (ACTUATOR) — 19 commands, 12 states"
 
-    **Type IDs:** `917506` | **Profiles:** `OperatingModeHeating`, `ThermostatTargetReader`, `OnOffStatus`
+    **Type IDs:** `917506` | **Controllable:** `ovp:SomfyHeatingTemperatureInterfaceOVPComponent` | **Profiles:** `OperatingModeHeating`, `ThermostatTargetReader`, `OnOffStatus`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -12336,16 +12564,20 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `SecuredPositionTemperatureState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `VersionState` | ContinuousState |  |  |
-    | `HeatingTemperatureInterfaceActiveModeState` | DiscreteState |  |  |
-    | `HeatingTemperatureInterfaceOperatingModeState` | DiscreteState |  |  |
-    | `HeatingTemperatureInterfaceSetPointModeState` | DiscreteState |  |  |
+    | `HeatingTemperatureInterfaceActiveModeState` | DiscreteState | auto, manu |  |
+    | `HeatingTemperatureInterfaceOperatingModeState` | DiscreteState | both, cooling, heating |  |
+    | `HeatingTemperatureInterfaceSetPointModeState` | DiscreteState | comfort, eco, free, secured |  |
 
 ??? note "HeatingSystem/ImhotepHeatingTemperatureInterface (ACTUATOR) — 19 commands, 12 states"
 
-    **Type IDs:** `917515` | **Profiles:** `ThermostatTargetReader`
+    **Type IDs:** `917515` | **Controllable:** `ovp:ImhotepHeatingTemperatureInterfaceOVPComponent` | **Profiles:** `ThermostatTargetReader`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -12381,16 +12613,20 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `EcoRoomTemperatureState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `SecuredPositionTemperatureState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `BoilerOperatingTimeState` | DataState |  |  |
-    | `HeatingTemperatureInterfaceActiveModeState` | DiscreteState |  |  |
-    | `HeatingTemperatureInterfaceSetPointModeState` | DiscreteState |  |  |
-    | `SetSetPointModeInProgressState` | DiscreteState |  |  |
+    | `HeatingTemperatureInterfaceActiveModeState` | DiscreteState | auto, manu |  |
+    | `HeatingTemperatureInterfaceSetPointModeState` | DiscreteState | comfort, eco, free, secured |  |
+    | `SetSetPointModeInProgressState` | DiscreteState | false, true |  |
 
 ??? note "HeatingSystem/StatefulOnOff (ACTUATOR) — 7 commands, 5 states"
 
-    **Type IDs:** `917515` | **Profiles:** `SwitchableHeatingStatus`, `OnOffStatus`
+    **Type IDs:** `917515` | **Controllable:** `ovp:ImhotepHeatingTemperatureRelayOVPComponent` | **Profiles:** `SwitchableHeatingStatus`, `OnOffStatus`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -12408,15 +12644,19 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `AliveDownState` | DiscreteState |  |  |
+    | `AliveDownState` | DiscreteState | alive, down |  |
     | `DeviceSerialNumberState` | DataState |  |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "HeatingSystem/unknown (ACTUATOR) — 7 commands, 7 states"
 
-    **Type IDs:** `3407872` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
+    **Type IDs:** `3407872` | **Controllable:** `ovp:ElectricalHeaterGenericOVPComponent` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -12436,15 +12676,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetHeatingLevelState` | DiscreteState | comfort, eco |  |
-    | `MaximumHeatingLevelState` | DiscreteState |  |  |
-    | `TargetHeatingLevelState` | DiscreteState |  |  |
+    | `MaximumHeatingLevelState` | DiscreteState | boost, comfort, comfort-1, comfort-2, eco, frostprotection, off, secured |  |
+    | `TargetHeatingLevelState` | DiscreteState | boost, comfort, comfort-1, comfort-2, eco, frostprotection, off, secured |  |
     | `TimerForTransitoryStateState` | ContinuousState |  |  |
 
 ??? note "HeatingSystem/DeDietrichBoiler (ACTUATOR) — 3 commands, 4 states"
 
-    **Type IDs:** `16842763` | **Profiles:** `Specific`
+    **Type IDs:** `16842763` | **Controllable:** `ovp:BoilerControllerOVPComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -12460,12 +12700,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AlarmState` | ContinuousState |  |  |
     | `OperatingStateState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `RedAlarmState` | ContinuousState |  |  |
 
 ??? note "HeatingSystem/DeDietrichHeatingCircuit (ACTUATOR) — 14 commands, 9 states"
 
-    **Type IDs:** `16842763` | **Profiles:** `Temperature`
+    **Type IDs:** `16842763` | **Controllable:** `ovp:HeatingCircuitOnCircuitAOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -12495,14 +12735,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
     | `ReducedTemperatureState` | ContinuousState |  |  |
     | `SecuredPositionTemperatureState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `TimeProgramState` | DataState |  |  |
-    | `HeatingDerogationModeState` | DiscreteState |  |  |
+    | `HeatingDerogationModeState` | DiscreteState | auto, comfort, eco, holidays |  |
 
 ??? note "HeatingSystem/CothermThermostat (ACTUATOR) — 113 commands, 89 states"
 
-    **Type IDs:** `17043211` | **Profiles:** `Specific`
+    **Type IDs:** `17043211` | **Controllable:** `ovp:CothermThermostatOVPComponent` | **Profiles:** `Specific`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -12629,10 +12873,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ComfortRoomTemperatureState` | ContinuousState |  |  |
     | `EcoRoomTemperatureState` | ContinuousState |  |  |
     | `FrostProtectionRoomTemperatureState` | ContinuousState |  |  |
-    | `LockedButtonState` | DiscreteState |  |  |
+    | `LockedButtonState` | DiscreteState | locked, unlocked |  |
     | `NameState` | DataState |  |  |
-    | `OpenWindowDetectionActivationState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `OpenWindowDetectionActivationState` | DiscreteState | active, inactive |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `AbscenceTimeMaxState` | DataState |  |  |
     | `AbscenceTimeMinState` | DataState |  |  |
     | `AbscenceTimeState` | DataState |  |  |
@@ -12657,9 +12901,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AutoProgW3J5State` | DataState |  |  |
     | `AutoProgW3J6State` | DataState |  |  |
     | `AutoProgW3J7State` | DataState |  |  |
-    | `BabyCareFunctionActivationMaxState` | DiscreteState |  |  |
-    | `BabyCareFunctionActivationMinState` | DiscreteState |  |  |
-    | `BabyCareFunctionActivationState` | DiscreteState |  |  |
+    | `BabyCareFunctionActivationMaxState` | DiscreteState | active, inactive |  |
+    | `BabyCareFunctionActivationMinState` | DiscreteState | active, inactive |  |
+    | `BabyCareFunctionActivationState` | DiscreteState | active, inactive |  |
     | `ComfortRoomTemperatureMaxState` | ContinuousState |  |  |
     | `ComfortRoomTemperatureMinState` | ContinuousState |  |  |
     | `ConsignRegulState` | ContinuousState |  |  |
@@ -12683,15 +12927,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `HoursEnergyCounterMaxState` | ContinuousState |  |  |
     | `HoursEnergyCounterMinState` | ContinuousState |  |  |
     | `HoursEnergyCounterState` | ContinuousState |  |  |
-    | `MiniboxHolidayModeMaxState` | DiscreteState |  |  |
-    | `MiniboxHolidayModeMinState` | DiscreteState |  |  |
-    | `MiniboxHolidayModeState` | DiscreteState |  |  |
-    | `MiniboxProgModeMaxState` | DiscreteState |  |  |
-    | `MiniboxProgModeMinState` | DiscreteState |  |  |
-    | `MiniboxProgModeState` | DiscreteState |  |  |
+    | `MiniboxHolidayModeMaxState` | DiscreteState | antifrost, comfort, eco, no_program |  |
+    | `MiniboxHolidayModeMinState` | DiscreteState | antifrost, comfort, eco, no_program |  |
+    | `MiniboxHolidayModeState` | DiscreteState | antifrost, comfort, eco, no_program |  |
+    | `MiniboxProgModeMaxState` | DiscreteState | antifrost, comfort, eco, no_program |  |
+    | `MiniboxProgModeMinState` | DiscreteState | antifrost, comfort, eco, no_program |  |
+    | `MiniboxProgModeState` | DiscreteState | antifrost, comfort, eco, no_program |  |
     | `NbSecAfterLastDetectState` | ContinuousState |  |  |
-    | `OpenWindowDetectionActivationMaxState` | DiscreteState |  |  |
-    | `OpenWindowDetectionActivationMinState` | DiscreteState |  |  |
+    | `OpenWindowDetectionActivationMaxState` | DiscreteState | active, inactive |  |
+    | `OpenWindowDetectionActivationMinState` | DiscreteState | active, inactive |  |
     | `ProductTypeState` | DataState |  |  |
     | `ProductVersionState` | DataState |  |  |
     | `RoomTemperatureMaxState` | ContinuousState |  |  |
@@ -12718,7 +12962,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/KizOThermV2Bridge (ACTUATOR) — 6 commands, 23 states"
 
-    **Type IDs:** `1099511628043`, `2199023255819` | **Profiles:** `ThermostatTargetReader`, `DHWThermostatTargetReader`, `DHWTemperature`
+    **Type IDs:** `1099511628043`, `2199023255819` | **Controllable:** `ovp:KizOThermV2OVPComponent` | **Profiles:** `ThermostatTargetReader`, `DHWThermostatTargetReader`, `DHWTemperature`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -12738,21 +12986,21 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DHWTemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `ElectricEnergyGenerationState` | ContinuousState |  |  |
     | `ElectricPowerGenerationState` | ContinuousState |  |  |
-    | `ElectricityGenerationOnOffState` | DiscreteState |  |  |
-    | `FaultState` | DiscreteState |  |  |
+    | `ElectricityGenerationOnOffState` | DiscreteState | off, on |  |
+    | `FaultState` | DiscreteState | fault, noFault |  |
     | `NameState` | DataState |  |  |
-    | `OnOffFlameState` | DiscreteState |  |  |
+    | `OnOffFlameState` | DiscreteState | off, on |  |
     | `PrimaryTargetWaterTemperatureState` | ContinuousState |  |  |
     | `SecondaryTargetWaterTemperatureState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetDHWTemperatureState` | ContinuousState | [38.0..60.0] |  |
     | `TargetRoomTemperatureState` | ContinuousState |  |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `WaterPressureState` | ContinuousState |  |  |
     | `BurnerOperationHoursState` | ContinuousState |  |  |
-    | `CH1ActiveModeState` | DiscreteState |  |  |
-    | `CH2ActiveModeState` | DiscreteState |  |  |
-    | `DHWActiveModeState` | DiscreteState |  |  |
+    | `CH1ActiveModeState` | DiscreteState | active, inactive |  |
+    | `CH2ActiveModeState` | DiscreteState | active, inactive |  |
+    | `DHWActiveModeState` | DiscreteState | active, inactive |  |
     | `KizOThermCapabilitiesState` | DataState |  |  |
     | `KizOThermOperatingModesState` | DataState |  |  |
     | `LowWaterPressureFaultState` | DataState |  |  |
@@ -12761,7 +13009,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/SomfyPilotWireElectricalHeater (ACTUATOR) — 9 commands, 10 states"
 
-    **Type IDs:** `1099515035650` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
+    **Type IDs:** `1099515035650` | **Controllable:** `ovp:SomfyPilotWireElectricalHeaterOVPComponent` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -12784,17 +13036,21 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `IdentifierState` | DataState |  |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetHeatingLevelState` | DiscreteState | comfort, eco |  |
     | `VersionState` | ContinuousState |  |  |
-    | `HeatingTemperatureInterfaceActiveModeState` | DiscreteState |  |  |
-    | `MaximumHeatingLevelState` | DiscreteState |  |  |
-    | `TargetHeatingLevelState` | DiscreteState |  |  |
+    | `HeatingTemperatureInterfaceActiveModeState` | DiscreteState | auto, manu |  |
+    | `MaximumHeatingLevelState` | DiscreteState | boost, comfort, comfort-1, comfort-2, eco, frostprotection, off, secured |  |
+    | `TargetHeatingLevelState` | DiscreteState | boost, comfort, comfort-1, comfort-2, eco, frostprotection, off, secured |  |
     | `TimerForTransitoryStateState` | ContinuousState |  |  |
 
 ??? note "HeatingSystem/SomfyPilotWireHeatingInterface (ACTUATOR) — 11 commands, 7 states"
 
-    **Type IDs:** `1103806726146` | **Profiles:** `SwitchableHeatingStatus`, `OnOffStatus`
+    **Type IDs:** `1103806726146` | **Controllable:** `ovp:SomfyPilotWireHeatingInterfaceOVPComponent` | **Profiles:** `SwitchableHeatingStatus`, `OnOffStatus`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -12820,13 +13076,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `IdentifierState` | DataState |  |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `HeatingTemperatureInterfaceActiveModeState` | DiscreteState |  |  |
-    | `HeatingTemperatureInterfaceSetPointModeState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `HeatingTemperatureInterfaceActiveModeState` | DiscreteState | auto, manu |  |
+    | `HeatingTemperatureInterfaceSetPointModeState` | DiscreteState | comfort, eco, free, secured |  |
 
 ??? note "HitachiHeatingSystem/HitachiAirToAirHeatPump (ACTUATOR) — 7 commands, 17 states"
 
-    **Type IDs:** `1099513069579` | **Profiles:** `ThermostatTargetReader`
+    **Type IDs:** `1099513069579` | **Controllable:** `ovp:HLinkMainController` | **Profiles:** `ThermostatTargetReader`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -12844,27 +13104,31 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `AutoManuModeState` | DiscreteState |  |  |
-    | `HolidaysModeState` | DiscreteState |  |  |
+    | `AutoManuModeState` | DiscreteState | auto, manu |  |
+    | `HolidaysModeState` | DiscreteState | off, on |  |
     | `NameState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `DiagnosticCodeState` | DataState |  |  |
-    | `FanSpeedState` | DiscreteState |  |  |
-    | `FilterConditionState` | DiscreteState |  |  |
-    | `FilterResetState` | DiscreteState |  |  |
-    | `HLinkVirtualOperatingModeState` | DiscreteState |  |  |
-    | `MainOperationState` | DiscreteState |  |  |
-    | `ModeChangeState` | DiscreteState |  |  |
+    | `FanSpeedState` | DiscreteState | Auto FAN, Hi FAN, Lo FAN, Med FAN, silent |  |
+    | `FilterConditionState` | DiscreteState | OK, alert |  |
+    | `FilterResetState` | DiscreteState | normal, reset |  |
+    | `HLinkVirtualOperatingModeState` | DiscreteState | auto, holidays, normal, timer |  |
+    | `MainOperationState` | DiscreteState | off, on |  |
+    | `ModeChangeState` | DiscreteState | auto cooling, auto heating, circulator, cooling, dehumidify, fan, heating |  |
     | `OutdoorTemperatureState` | ContinuousState |  |  |
-    | `RemoconControlState` | DiscreteState |  |  |
+    | `RemoconControlState` | DiscreteState | disable, enable |  |
     | `RoomTemperatureState` | ContinuousState |  |  |
     | `TemperatureChangeState` | ContinuousState |  |  |
-    | `ThermoStatusState` | DiscreteState |  |  |
+    | `ThermoStatusState` | DiscreteState | off, on |  |
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 6 commands, 3 states"
 
-    **Type IDs:** `983040`, `1099512610827` | **Profiles:** `StatefulSwitchable`, `Switchable`, `Generic`
+    **Type IDs:** `983040`, `1099512610827` | **Controllable:** `ovp:OnOffOVPComponent` | **Profiles:** `StatefulSwitchable`, `Switchable`, `Generic`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -12883,11 +13147,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "ProtocolGateway/DeDietrichModbusGateway (PROTOCOL_GATEWAY) — 3 commands, 2 states"
 
-    **Type IDs:** `16842763` | **Profiles:** `Specific`
+    **Type IDs:** `16842763` | **Controllable:** `ovp:DeDietrichModbusGatewayOVPComponent` | **Profiles:** `Specific`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -12902,11 +13170,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `NameState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "SwimmingPool/DeDietrichSwimmingPool (ACTUATOR) — 12 commands, 8 states"
 
-    **Type IDs:** `16842763` | **Profiles:** `Temperature`
+    **Type IDs:** `16842763` | **Controllable:** `ovp:SwimmingPoolOnCircuitBOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -12930,17 +13198,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActiveTimeProgramState` | DataState |  |  |
-    | `AutoModeState` | DiscreteState |  |  |
+    | `AutoModeState` | DiscreteState | false, true |  |
     | `ComfortRoomTemperatureState` | ContinuousState |  |  |
     | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
     | `ReducedTemperatureState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `TimeProgramState` | DataState |  |  |
 
 ??? note "TemperatureSensor (SENSOR) — 2 commands, 3 states"
 
-    **Type IDs:** `917506`, `917515`, `1099511628043`, `2199023255819` | **Profiles:** `Temperature`
+    **Type IDs:** `917506`, `917515`, `1099511628043`, `2199023255819` | **Controllable:** `ovp:HeatingTemperatureInterfaceTemperatureSensor` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -12954,23 +13222,23 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `NameState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
 
 ??? note "TemperatureSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `16842763`, `1099511628043`, `2199023255819` | **Profiles:** `Temperature`
+    **Type IDs:** `16842763`, `1099511628043`, `2199023255819` | **Controllable:** `ovp:OutsideTemperatureSensorOVPComponent` | **Profiles:** `Temperature`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
 
 ??? note "TemperatureSensor (SENSOR) — 2 commands, 4 states"
 
-    **Type IDs:** `4295098368` | **Profiles:** `Temperature`
+    **Type IDs:** `4295098368` | **Controllable:** `ovp:InsideTemperatureSensorOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -12984,13 +13252,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `NameState` | DataState |  |  |
-    | `SensorDefectState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `SensorDefectState` | DiscreteState | dead, lowBattery, maintenanceRequired, noDefect |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
 
 ??? note "TemperatureSensor (SENSOR) — 3 commands, 5 states"
 
-    **Type IDs:** `1103806726146` | **Profiles:** `Temperature`
+    **Type IDs:** `1103806726146` | **Controllable:** `ovp:SomfyPilotWireTemperatureSensorOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -13005,14 +13273,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `NameState` | DataState |  |  |
-    | `SensorDefectState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `SensorDefectState` | DiscreteState | dead, lowBattery, maintenanceRequired, noDefect |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `VersionState` | ContinuousState |  |  |
 
 ??? note "WaterHeatingSystem/DeDietrichDHW (ACTUATOR) — 10 commands, 7 states"
 
-    **Type IDs:** `16842763` | **Profiles:** `Temperature`
+    **Type IDs:** `16842763` | **Controllable:** `ovp:DHW1OnDHWCircuitOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -13036,14 +13304,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ComfortRoomTemperatureState` | ContinuousState |  |  |
     | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
     | `ReducedTemperatureState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `TimeProgramState` | DataState |  |  |
-    | `DHWDerogationModeState` | DiscreteState |  |  |
+    | `DHWDerogationModeState` | DiscreteState | auto, comfort |  |
 
 ??? note "WaterHeatingSystem/DeDietrichDHW (ACTUATOR) — 6 commands, 5 states"
 
-    **Type IDs:** `16842763` | **Profiles:** `Temperature`
+    **Type IDs:** `16842763` | **Controllable:** `ovp:DHW2OnCircuitAOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -13062,13 +13330,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActiveTimeProgramState` | DataState |  |  |
     | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `TimeProgramState` | DataState |  |  |
 
 ??? note "WaterHeatingSystem/DeDietrichDHW (ACTUATOR) — 4 commands, 4 states"
 
-    **Type IDs:** `16842763` | **Profiles:** `Temperature`
+    **Type IDs:** `16842763` | **Controllable:** `ovp:DHW2OnAuxiliaryCircuitOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -13084,13 +13352,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `TimeProgramState` | DataState |  |  |
 
 ??? note "unknown (ACTUATOR) — 1 commands, 1 states"
 
-    **Type IDs:** `16842763` | **Profiles:** `Specific`
+    **Type IDs:** `16842763` | **Controllable:** `ovp:SolarCircuitOVPComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -13102,7 +13370,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 
 ## PROFALUX_868
@@ -13111,7 +13379,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorScreen/UpDownExteriorScreen (ACTUATOR) — 7 commands, 0 states"
 
-    **Type IDs:** `2` | **Profiles:** `OpenCloseScreen`, `OpenClose`
+    **Type IDs:** `2` | **Controllable:** `profalux868:Profalux868ExteriorScreen` | **Profiles:** `OpenCloseScreen`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -13127,7 +13399,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorScreen/UpDownExteriorScreen (ACTUATOR) — 6 commands, 0 states"
 
-    **Type IDs:** `5` | **Profiles:** `OpenCloseScreen`, `OpenClose`
+    **Type IDs:** `5` | **Controllable:** `profalux868:Profalux868ExteriorScreenPlatinum` | **Profiles:** `OpenCloseScreen`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -13142,7 +13418,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorVenetianBlind/UpDownExteriorVenetianBlind (ACTUATOR) — 6 commands, 0 states"
 
-    **Type IDs:** `3`, `6` | **Profiles:** `OpenCloseBlind`, `OpenClose`
+    **Type IDs:** `3`, `6` | **Controllable:** `profalux868:Profalux868ExteriorVenetianBlind` | **Profiles:** `OpenCloseBlind`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -13157,7 +13437,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/UpDownRollerShutter (ACTUATOR) — 7 commands, 0 states"
 
-    **Type IDs:** `1` | **Profiles:** `OpenCloseShutter`, `OpenClose`
+    **Type IDs:** `1` | **Controllable:** `profalux868:Profalux868RollerShutter` | **Profiles:** `OpenCloseShutter`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -13173,7 +13457,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/UpDownRollerShutter (ACTUATOR) — 6 commands, 0 states"
 
-    **Type IDs:** `4` | **Profiles:** `OpenCloseShutter`, `OpenClose`
+    **Type IDs:** `4` | **Controllable:** `profalux868:Profalux868RollerShutterPlatinum` | **Profiles:** `OpenCloseShutter`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -13193,7 +13481,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "EvoHome/HeatingSetPoint (ACTUATOR) — 5 commands, 6 states"
 
-    **Type IDs:** `0` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`
+    **Type IDs:** `0` | **Controllable:** `ramses:EvoHomeZoneSetPoint` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`
 
     **Commands**
 
@@ -13218,7 +13506,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "EvoHome/DHWSetPoint (ACTUATOR) — 2 commands, 4 states"
 
-    **Type IDs:** `1` | **Profiles:** `DHWThermostatTargetReader`, `Temperature`
+    **Type IDs:** `1` | **Controllable:** `ramses:EvoHomeDHWSetPoint` | **Profiles:** `DHWThermostatTargetReader`, `Temperature`
 
     **Commands**
 
@@ -13238,7 +13526,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "EvoHome/EvoHomeController (ACTUATOR) — 1 commands, 2 states"
 
-    **Type IDs:** `2` | **Profiles:** `Specific`
+    **Type IDs:** `2` | **Controllable:** `ramses:EvoHomeController` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -13250,16 +13538,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `RAMSESOperatingModeState` | DiscreteState |  |  |
+    | `RAMSESOperatingModeState` | DiscreteState | auto, eco, holidays, off |  |
     | `RAMSESOperatingModeTimeoutState` | DataState |  |  |
 
 ??? note "EvoHome/OpenThermDiagnostic (ACTUATOR) — 0 commands, 0 states"
 
-    **Type IDs:** `3` | **Profiles:** `Specific`
+    **Type IDs:** `3` | **Controllable:** `ramses:RamsesOpenThermGateway` | **Profiles:** `Specific`
 
 ??? note "TemperatureSensor (SENSOR) — 2 commands, 3 states"
 
-    **Type IDs:** `0` | **Profiles:** `Temperature`
+    **Type IDs:** `0` | **Controllable:** `ramses:EvoHomeZoneSensor` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -13273,12 +13561,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `NameState` | DataState |  |  |
-    | `SensorDefectState` | DiscreteState |  |  |
+    | `SensorDefectState` | DiscreteState | dead, lowBattery, maintenanceRequired, noDefect |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
 
 ??? note "TemperatureSensor (SENSOR) — 1 commands, 2 states"
 
-    **Type IDs:** `1` | **Profiles:** `Temperature`
+    **Type IDs:** `1` | **Controllable:** `ramses:EvoHomeDHWSensor` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -13295,7 +13583,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "TemperatureSensor (SENSOR) — 0 commands, 1 states"
 
-    **Type IDs:** `2` | **Profiles:** `Temperature`
+    **Type IDs:** `2` | **Controllable:** `ramses:EvoHomeControllerSensor` | **Profiles:** `Temperature`
 
     **States**
 
@@ -13310,7 +13598,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Alarm/StatelessAlarmController (ACTUATOR) — 6 commands, 0 states"
 
-    **Type IDs:** `1` | **Profiles:** `Alarm`
+    **Type IDs:** `1` | **Controllable:** `rtd:AlarmRTDComponent` | **Profiles:** `Alarm`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `5000`
 
     **Commands**
 
@@ -13325,7 +13617,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Alarm/IntrusionDetector (ACTUATOR) — 2 commands, 0 states"
 
-    **Type IDs:** `2`, `3`, `4` | **Profiles:** `Specific`
+    **Type IDs:** `2`, `3`, `4` | **Controllable:** `rtd:MotionOrContactSensorRTDComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -13336,11 +13628,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/unknown (ACTUATOR) — 0 commands, 0 states"
 
-    **Type IDs:** `0` | **Profiles:** `Specific`
+    **Type IDs:** `0` | **Controllable:** `rtd:UnknownRTDComponent` | **Profiles:** `Specific`
 
 ??? note "Siren/RTDIndoorSiren (ACTUATOR) — 9 commands, 0 states"
 
-    **Type IDs:** `5` | **Profiles:** `Siren`, `VolumeControl`, `Switchable`
+    **Type IDs:** `5` | **Controllable:** `rtd:IndoorSirenRTDComponent` | **Profiles:** `Siren`, `VolumeControl`, `Switchable`
 
     **Commands**
 
@@ -13358,7 +13650,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Siren/RTDOutdoorSiren (ACTUATOR) — 9 commands, 0 states"
 
-    **Type IDs:** `6` | **Profiles:** `Siren`, `VolumeControl`, `Switchable`
+    **Type IDs:** `6` | **Controllable:** `rtd:OutdoorSirenRTDComponent` | **Profiles:** `Siren`, `VolumeControl`, `Switchable`
 
     **Commands**
 
@@ -13381,77 +13673,77 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "AirSensor/COSensor (SENSOR) — 0 commands, 3 states"
 
-    **Type IDs:** `129` | **Profiles:** `CODetection`
+    **Type IDs:** `129` | **Controllable:** `rtds:RTDSCOSensor` | **Profiles:** `CODetection`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CODetectionState` | DiscreteState | detected, notDetected |  |
-    | `SensorDefectState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `SensorDefectState` | DiscreteState | dead, lowBattery, maintenanceRequired, noDefect |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "AirSensor/AirFlowSensor (SENSOR) — 0 commands, 3 states"
 
-    **Type IDs:** `130` | **Profiles:** `GasDetector`
+    **Type IDs:** `130` | **Controllable:** `rtds:RTDSGasSensor` | **Profiles:** `GasDetector`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `GasDetectionState` | DiscreteState | detected, notDetected |  |
-    | `SensorDefectState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `SensorDefectState` | DiscreteState | dead, lowBattery, maintenanceRequired, noDefect |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "ContactSensor (SENSOR) — 0 commands, 3 states"
 
-    **Type IDs:** `2` | **Profiles:** `DoorContactSensor`, `ContactDetector`
+    **Type IDs:** `2` | **Controllable:** `rtds:RTDSContactSensor` | **Profiles:** `DoorContactSensor`, `ContactDetector`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ContactState` | DiscreteState | open, closed |  |
-    | `SensorDefectState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `SensorDefectState` | DiscreteState | dead, lowBattery, maintenanceRequired, noDefect |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Generic/unknown (SENSOR) — 0 commands, 3 states"
 
-    **Type IDs:** `133` | **Profiles:** `PowerCutDetector`
+    **Type IDs:** `133` | **Controllable:** `rtds:RTDSPowerFailure` | **Profiles:** `PowerCutDetector`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `PowerCutDetectionState` | DiscreteState | detected, notDetected |  |
-    | `SensorDefectState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `SensorDefectState` | DiscreteState | dead, lowBattery, maintenanceRequired, noDefect |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Generic/unknown (SENSOR) — 0 commands, 0 states"
 
-    **Type IDs:** `254` | **Profiles:** `Specific`
+    **Type IDs:** `254` | **Controllable:** `rtds:UnknownRTDSComponent` | **Profiles:** `Specific`
 
 ??? note "OccupancySensor/MotionSensor (SENSOR) — 0 commands, 3 states"
 
-    **Type IDs:** `1` | **Profiles:** `OccupancyDetector`
+    **Type IDs:** `1` | **Controllable:** `rtds:RTDSMotionSensor` | **Profiles:** `OccupancyDetector`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `OccupancyState` | DiscreteState | personInside, noPersonInside |  |
-    | `SensorDefectState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `SensorDefectState` | DiscreteState | dead, lowBattery, maintenanceRequired, noDefect |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "RemoteController/AlarmRemoteController (REMOTE_CONTROLLER) — 0 commands, 7 states"
 
-    **Type IDs:** `0` | **Profiles:** `Specific`
+    **Type IDs:** `0` | **Controllable:** `rtds:RTDSRemoteControllerComponent` | **Profiles:** `Specific`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ControllerBatteryState` | ContinuousState |  |  |
     | `ControllerBipState` | ContinuousState |  |  |
     | `ControllerOrderTypeState` | ContinuousState |  |  |
@@ -13461,51 +13753,51 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Siren/SirenStatus (SENSOR) — 0 commands, 4 states"
 
-    **Type IDs:** `4` | **Profiles:** `Specific`
+    **Type IDs:** `4` | **Controllable:** `rtds:SirenStatusRTDSComponent` | **Profiles:** `Specific`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `AssemblyState` | DiscreteState |  |  |
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AssemblyState` | DiscreteState | closed, open |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "SmokeSensor (SENSOR) — 0 commands, 3 states"
 
-    **Type IDs:** `128` | **Profiles:** `SmokeDetector`
+    **Type IDs:** `128` | **Controllable:** `rtds:RTDSSmokeSensor` | **Profiles:** `SmokeDetector`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `SensorDefectState` | DiscreteState |  |  |
+    | `SensorDefectState` | DiscreteState | dead, lowBattery, maintenanceRequired, noDefect |  |
     | `SmokeState` | DiscreteState | detected, notDetected |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "TemperatureSensor (SENSOR) — 0 commands, 3 states"
 
-    **Type IDs:** `132` | **Profiles:** `Specific`
+    **Type IDs:** `132` | **Controllable:** `rtds:RTDSTemperatureSensor` | **Profiles:** `Specific`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `SensorDefectState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `TemperatureOutOfRangeDetectionState` | DiscreteState |  |  |
+    | `SensorDefectState` | DiscreteState | dead, lowBattery, maintenanceRequired, noDefect |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `TemperatureOutOfRangeDetectionState` | DiscreteState | detected, notDetected |  |
 
 ??? note "WaterSensor/WaterDetectionSensor (SENSOR) — 0 commands, 3 states"
 
-    **Type IDs:** `131` | **Profiles:** `WaterDetector`
+    **Type IDs:** `131` | **Controllable:** `rtds:RTDSWaterSensor` | **Profiles:** `WaterDetector`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `SensorDefectState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `SensorDefectState` | DiscreteState | dead, lowBattery, maintenanceRequired, noDefect |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `WaterDetectionState` | DiscreteState | detected, notDetected |  |
 
 
@@ -13515,7 +13807,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Awning/UpDownHorizontalAwning (ACTUATOR) — 12 commands, 0 states"
 
-    **Type IDs:** `4`, `25`, `65540` | **Profiles:** `DeployUndeployAwning`, `DeployUndeploy`, `OpenClose`
+    **Type IDs:** `4`, `25`, `65540` | **Controllable:** `rts:HorizontalAwningRTSComponent` | **Profiles:** `DeployUndeployAwning`, `DeployUndeploy`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13536,7 +13832,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Curtain/UpDownCurtain (ACTUATOR) — 10 commands, 0 states"
 
-    **Type IDs:** `10`, `65561`, `65562`, `11`, `65546`, `65547` | **Profiles:** `OpenCloseCurtain`, `OpenClose`
+    **Type IDs:** `10`, `65561`, `65562`, `11`, `65546`, `65547` | **Controllable:** `rts:CurtainRTSComponent` | **Profiles:** `OpenCloseCurtain`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13555,7 +13855,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorHeatingSystem/StatelessExteriorHeating (ACTUATOR) — 11 commands, 0 states"
 
-    **Type IDs:** `16`, `65552` | **Profiles:** `SwitchableHeating`, `Switchable`, `UpDown`
+    **Type IDs:** `16`, `65552` | **Controllable:** `rts:ExteriorHeatingRTSComponent` | **Profiles:** `SwitchableHeating`, `Switchable`, `UpDown`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13575,7 +13879,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorScreen/UpDownExteriorScreen (ACTUATOR) — 10 commands, 0 states"
 
-    **Type IDs:** `3`, `65539` | **Profiles:** `OpenCloseBlind`, `OpenClose`
+    **Type IDs:** `3`, `65539` | **Controllable:** `rts:ExteriorBlindRTSComponent` | **Profiles:** `OpenCloseBlind`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13594,7 +13902,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorVenetianBlind/UpDownExteriorVenetianBlind (ACTUATOR) — 13 commands, 0 states"
 
-    **Type IDs:** `2`, `65538` | **Profiles:** `OpenCloseBlind`, `OpenClose`
+    **Type IDs:** `2`, `65538` | **Controllable:** `rts:ExteriorVenetianBlindRTSComponent` | **Profiles:** `OpenCloseBlind`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13616,7 +13928,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GarageDoor/UpDownGarageDoor (ACTUATOR) — 9 commands, 0 states"
 
-    **Type IDs:** `5`, `17`, `65541`, `65553` | **Profiles:** `OpenCloseGarageOpener`, `OpenClose`
+    **Type IDs:** `5`, `17`, `65541`, `65553` | **Controllable:** `rts:GarageDoorRTSComponent` | **Profiles:** `OpenCloseGarageOpener`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13634,7 +13950,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GarageDoor/OpenCloseSlidingGarageDoorWithPedestrianPosition (ACTUATOR) — 10 commands, 0 states"
 
-    **Type IDs:** `18`, `19`, `65554`, `65555` | **Profiles:** `OpenCloseGarageOpener`, `OpenClose`
+    **Type IDs:** `18`, `19`, `65554`, `65555` | **Controllable:** `rts:SlidingGarageDoorWithPedestrianPositionRTSComponent` | **Profiles:** `OpenCloseGarageOpener`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13653,7 +13973,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GarageDoor/UpDownGarageDoor4T (ACTUATOR) — 3 commands, 0 states"
 
-    **Type IDs:** `405`, `417` | **Profiles:** `CyclicGarageOpener`, `Cyclic`
+    **Type IDs:** `405`, `417` | **Controllable:** `rts:GarageDoor4TRTSComponent` | **Profiles:** `CyclicGarageOpener`, `Cyclic`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13665,7 +13989,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Gate/OpenCloseGate (ACTUATOR) — 9 commands, 0 states"
 
-    **Type IDs:** `6`, `21`, `65542`, `65557` | **Profiles:** `OpenCloseGateOpener`, `OpenClose`
+    **Type IDs:** `6`, `21`, `65542`, `65557` | **Controllable:** `rts:GateOpenerRTSComponent` | **Profiles:** `OpenCloseGateOpener`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `5000`
 
     **Commands**
 
@@ -13683,7 +14011,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Gate/OpenCloseGateWithPedestrianPosition (ACTUATOR) — 10 commands, 0 states"
 
-    **Type IDs:** `20`, `22`, `65556`, `65558` | **Profiles:** `OpenCloseGateOpener`, `OpenClose`
+    **Type IDs:** `20`, `22`, `65556`, `65558` | **Controllable:** `rts:GateOpenerWithPedestrianPositionRTSComponent` | **Profiles:** `OpenCloseGateOpener`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13702,7 +14034,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Gate/OpenCloseGate4T (ACTUATOR) — 3 commands, 0 states"
 
-    **Type IDs:** `406`, `421` | **Profiles:** `CyclicGateOpener`, `Cyclic`
+    **Type IDs:** `406`, `421` | **Controllable:** `rts:GateOpenerRTS4TComponent` | **Profiles:** `CyclicGateOpener`, `Cyclic`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13714,7 +14050,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/RTSGeneric (ACTUATOR) — 7 commands, 0 states"
 
-    **Type IDs:** `0`, `65536` | **Profiles:** `UpDown`
+    **Type IDs:** `0`, `65536` | **Controllable:** `rts:GenericRTSComponent` | **Profiles:** `UpDown`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13730,7 +14070,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/RTSGeneric4T (ACTUATOR) — 3 commands, 0 states"
 
-    **Type IDs:** `400` | **Profiles:** `Cyclic`, `Generic`
+    **Type IDs:** `400` | **Controllable:** `rts:Generic4TRTSComponent` | **Profiles:** `Cyclic`, `Generic`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13742,7 +14086,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/RTSGeneric (ACTUATOR) — 1 commands, 0 states"
 
-    **Type IDs:** `16711680` | **Profiles:** `Specific`
+    **Type IDs:** `16711680` | **Controllable:** `rts:UnknowRTSComponent` | **Profiles:** `Specific`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13752,7 +14100,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/RTSThermostat (ACTUATOR) — 11 commands, 0 states"
 
-    **Type IDs:** `9`, `65545` | **Profiles:** `UpDown`
+    **Type IDs:** `9`, `65545` | **Controllable:** `rts:ThermostatRTSComponent` | **Profiles:** `UpDown`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `5000`
 
     **Commands**
 
@@ -13772,7 +14124,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/OnOffLight (ACTUATOR) — 12 commands, 0 states"
 
-    **Type IDs:** `7`, `65543` | **Profiles:** `SwitchableLight`, `Switchable`, `UpDown`
+    **Type IDs:** `7`, `65543` | **Controllable:** `rts:LightRTSComponent` | **Profiles:** `SwitchableLight`, `Switchable`, `UpDown`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13793,7 +14149,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerOnOffLight (ACTUATOR) — 13 commands, 0 states"
 
-    **Type IDs:** `23` | **Profiles:** `SwitchableLight`, `Switchable`, `UpDown`
+    **Type IDs:** `23` | **Controllable:** `rts:DimmableLightRTSComponent` | **Profiles:** `SwitchableLight`, `Switchable`, `UpDown`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13815,7 +14175,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatelessOnOff (ACTUATOR) — 10 commands, 0 states"
 
-    **Type IDs:** `13`, `65549` | **Profiles:** `SwitchablePlug`, `Switchable`, `UpDown`
+    **Type IDs:** `13`, `65549` | **Controllable:** `rts:OnOffRTSComponent` | **Profiles:** `SwitchablePlug`, `Switchable`, `UpDown`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13834,7 +14198,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pergola/UpDownBioclimaticPergola (ACTUATOR) — 13 commands, 0 states"
 
-    **Type IDs:** `426` | **Profiles:** `OpenCloseWindow`, `OpenClose`
+    **Type IDs:** `426` | **Controllable:** `rts:BioclimaticPergolaRTSComponent` | **Profiles:** `OpenCloseWindow`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13856,7 +14224,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/UpDownRollerShutter (ACTUATOR) — 10 commands, 0 states"
 
-    **Type IDs:** `1`, `65537` | **Profiles:** `OpenCloseShutter`, `OpenClose`
+    **Type IDs:** `1`, `65537` | **Controllable:** `rts:RollerShutterRTSComponent` | **Profiles:** `OpenCloseShutter`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13875,7 +14247,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Screen/UpDownScreen (ACTUATOR) — 10 commands, 0 states"
 
-    **Type IDs:** `15`, `65559`, `427`, `428`, `65551` | **Profiles:** `OpenCloseBlind`, `OpenClose`
+    **Type IDs:** `15`, `65559`, `427`, `428`, `65551` | **Controllable:** `rts:BlindRTSComponent` | **Profiles:** `OpenCloseBlind`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13894,7 +14270,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Screen/UpDownZebraScreen (ACTUATOR) — 13 commands, 0 states"
 
-    **Type IDs:** `423` | **Profiles:** `OpenCloseBlind`, `OpenClose`
+    **Type IDs:** `423` | **Controllable:** `rts:ZebraBlindRTSComponent` | **Profiles:** `OpenCloseBlind`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13916,7 +14296,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "SwingingShutter/UpDownSwingingShutter (ACTUATOR) — 10 commands, 0 states"
 
-    **Type IDs:** `12`, `65548` | **Profiles:** `OpenCloseSwingingShutter`, `OpenClose`
+    **Type IDs:** `12`, `65548` | **Controllable:** `rts:SwingingShutterRTSComponent` | **Profiles:** `OpenCloseSwingingShutter`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13935,7 +14319,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VenetianBlind/UpDownVenetianBlind (ACTUATOR) — 13 commands, 0 states"
 
-    **Type IDs:** `14`, `424`, `425`, `65550` | **Profiles:** `OpenCloseBlind`, `OpenClose`
+    **Type IDs:** `14`, `424`, `425`, `65550` | **Controllable:** `rts:VenetianBlindRTSComponent` | **Profiles:** `OpenCloseBlind`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13957,7 +14345,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Window/UpDownWindow (ACTUATOR) — 10 commands, 0 states"
 
-    **Type IDs:** `24` | **Profiles:** `OpenCloseWindow`, `OpenClose`
+    **Type IDs:** `24` | **Controllable:** `rts:WindowsOpenerRTSComponent` | **Profiles:** `OpenCloseWindow`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `0`
 
     **Commands**
 
@@ -13981,7 +14373,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/SomfyThermostat (ACTUATOR) — 8 commands, 19 states"
 
-    **Type IDs:** `65537`, `65538`, `65539`, `131073`, `131074`, `131075`, `131076` | **Profiles:** `ThermostatTargetReader`
+    **Type IDs:** `65537`, `65538`, `65539`, `131073`, `131074`, `131075`, `131076` | **Controllable:** `somfythermostat:SomfyThermostatThermostatComponent` | **Profiles:** `ThermostatTargetReader`
 
     **Commands**
 
@@ -14000,29 +14392,29 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `DerogatedTargetTemperatureState` | ContinuousState |  |  |
-    | `DerogationActivationState` | DiscreteState |  |  |
+    | `DerogationActivationState` | DiscreteState | active, inactive |  |
     | `DerogationEndDateTimeState` | DataState |  |  |
     | `DerogationStartDateTimeState` | DataState |  |  |
     | `NameState` | DataState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `AtHomeTargetTemperatureState` | ContinuousState |  |  |
     | `AwayModeTargetTemperatureState` | ContinuousState |  |  |
-    | `DerogationHeatingModeState` | DiscreteState |  |  |
-    | `DerogationTypeState` | DiscreteState |  |  |
+    | `DerogationHeatingModeState` | DiscreteState | atHomeMode, awayMode, freezeMode, geofencingMode, manualMode, sleepingMode, suddenDropMode |  |
+    | `DerogationTypeState` | DiscreteState | date, furtherNotice, nextMode |  |
     | `FreezeModeTargetTemperatureState` | ContinuousState |  |  |
     | `GeofencingModeTargetTemperatureState` | ContinuousState |  |  |
-    | `HeatingModeState` | DiscreteState |  |  |
+    | `HeatingModeState` | DiscreteState | atHomeMode, awayMode, freezeMode, geofencingMode, manualMode, sleepingMode, suddenDropMode |  |
     | `ManualModeTargetTemperatureState` | ContinuousState |  |  |
     | `SleepingModeTargetTemperatureState` | ContinuousState |  |  |
     | `SuddenDropModeTargetTemperatureState` | ContinuousState |  |  |
 
 ??? note "HumiditySensor/RelativeHumiditySensor (SENSOR) — 1 commands, 3 states"
 
-    **Type IDs:** `65537`, `65538`, `65539`, `131073`, `131074`, `131075`, `131076` | **Profiles:** `RelativeHumidity`
+    **Type IDs:** `65537`, `65538`, `65539`, `131073`, `131074`, `131075`, `131076` | **Controllable:** `somfythermostat:SomfyThermostatHumiditySensor` | **Profiles:** `RelativeHumidity`
 
     **Commands**
 
@@ -14034,13 +14426,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `AvailabilityState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `RelativeHumidityState` | ContinuousState | [0.0..100.0] |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "TemperatureSensor (SENSOR) — 1 commands, 3 states"
 
-    **Type IDs:** `65537`, `65538`, `65539`, `131073`, `131074`, `131075`, `131076` | **Profiles:** `Temperature`
+    **Type IDs:** `65537`, `65538`, `65539`, `131073`, `131074`, `131075`, `131076` | **Controllable:** `somfythermostat:SomfyThermostatTemperatureSensor` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -14052,8 +14444,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `AvailabilityState` | DiscreteState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
 
 
@@ -14063,7 +14455,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ElectricitySensor/CumulativeElectricPowerProductionSensor (SENSOR) — 1 commands, 0 states"
 
-    **Type IDs:** `1`, `2`, `7`, `8`, `9`, `10`, `11`, `12` | **Profiles:** `Specific`
+    **Type IDs:** `1`, `2`, `7`, `8`, `9`, `10`, `11`, `12` | **Controllable:** `wiser:TotalElectricalEnergyProductionSensor` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -14073,7 +14465,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GasSensor/CumulativeGasConsumptionSensor (SENSOR) — 1 commands, 0 states"
 
-    **Type IDs:** `3` | **Profiles:** `Specific`
+    **Type IDs:** `3` | **Controllable:** `wiser:TotalGasConsumptionSensor` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -14083,7 +14475,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ThermalEnergySensor/CumulativeThermalEnergyConsumptionSensor (SENSOR) — 1 commands, 0 states"
 
-    **Type IDs:** `6` | **Profiles:** `Specific`
+    **Type IDs:** `6` | **Controllable:** `wiser:TotalThermalEnergyConsumptionSensor` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -14093,7 +14485,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterSensor/CumulativeWaterConsumptionSensor (SENSOR) — 1 commands, 0 states"
 
-    **Type IDs:** `4`, `5` | **Profiles:** `Specific`
+    **Type IDs:** `4`, `5` | **Controllable:** `wiser:TotalColdWaterConsumptionSensor` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -14108,7 +14500,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Awning/PositionableHorizontalAwning (ACTUATOR) — 13 commands, 12 states"
 
-    **Type IDs:** `2199023387141` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`
+    **Type IDs:** `2199023387141` | **Controllable:** `zigbee:AwningComponent` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -14134,20 +14530,24 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `CommandLockLevelsState` | DataState |  |  |
     | `DeploymentState` | ContinuousState | [0..100] | cluster:258 |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "Ballast (ACTUATOR) — 11 commands, 15 states"
 
-    **Type IDs:** `2199023321345` | **Profiles:** `Specific`
+    **Type IDs:** `2199023321345` | **Controllable:** `zigbee:BallastComponent` | **Profiles:** `Specific`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -14170,24 +14570,28 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `BallastMaxLevelState` | DataState |  | cluster:769 |
     | `BallastMinLevelState` | DataState |  | cluster:769 |
-    | `BallastStatusLampState` | DiscreteState |  | cluster:769 |
-    | `BallastStatusState` | DiscreteState |  | cluster:769 |
+    | `BallastStatusLampState` | DiscreteState | active, inactive | cluster:769 |
+    | `BallastStatusState` | DiscreteState | active, inactive | cluster:769 |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "Ballast (ACTUATOR) — 12 commands, 16 states"
 
-    **Type IDs:** `2269319856385` | **Profiles:** `Specific`
+    **Type IDs:** `2269319856385` | **Controllable:** `zigbee:SchneiderBallastComponent` | **Profiles:** `Specific`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -14211,25 +14615,29 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `BallastMaxLevelState` | DataState |  | cluster:769 |
     | `BallastMinLevelState` | DataState |  | cluster:769 |
-    | `BallastStatusLampState` | DiscreteState |  | cluster:769 |
-    | `BallastStatusState` | DiscreteState |  | cluster:769 |
+    | `BallastStatusLampState` | DiscreteState | active, inactive | cluster:769 |
+    | `BallastStatusState` | DiscreteState | active, inactive | cluster:769 |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `SchneiderBallastControlModeState` | DataState |  | cluster:769 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "ConfigurationComponent/SchneiderSwitchConfiguration (ACTUATOR) — 12 commands, 16 states"
 
-    **Type IDs:** `2269319857152` | **Profiles:** `Specific`
+    **Type IDs:** `2269319857152` | **Controllable:** `zigbee:SchneiderSwitchConfigurationComponent` | **Profiles:** `Specific`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -14254,24 +14662,28 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `BatteryLevelState` | ContinuousState |  | cluster:1 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LowBatteryThresholdState` | ContinuousState |  | cluster:1 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `StartUpCurrentLevelState` | DataState |  | cluster:8 |
     | `SwitchActionsState` | DataState |  | cluster:65303 |
     | `SwitchIndicationState` | DataState |  | cluster:65303 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "ContactSensor (SENSOR) — 6 commands, 13 states"
 
-    **Type IDs:** `2199023518210`, `2269320053250` | **Profiles:** `DoorContactSensor`, `ContactDetector`
+    **Type IDs:** `2199023518210`, `2269320053250` | **Controllable:** `zigbee:DoorSensorComponent` | **Profiles:** `DoorContactSensor`, `ContactDetector`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -14290,21 +14702,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `BatteryLevelState` | ContinuousState |  | cluster:1 |
     | `ContactState` | DiscreteState | open, closed | cluster:1280 |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LowBatteryThresholdState` | ContinuousState |  | cluster:1 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "Curtain/PositionableCurtain (ACTUATOR) — 15 commands, 23 states"
 
-    **Type IDs:** `2199023387140` | **Profiles:** `StatefulCloseableCurtain`, `StatefulCloseable`, `Closeable`, `OpenClose`
+    **Type IDs:** `2199023387140` | **Controllable:** `zigbee:CurtainComponent` | **Profiles:** `StatefulCloseableCurtain`, `StatefulCloseable`, `Closeable`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -14332,31 +14748,35 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ClosureState` | ContinuousState | [0..100] | cluster:258 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OperationalStatusState` | DataState |  | cluster:258 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `ControlLiftState` | DiscreteState |  | cluster:258 |
-    | `ControlTiltState` | DiscreteState |  | cluster:258 |
-    | `DirectionState` | DiscreteState |  | cluster:258 |
-    | `EncoderLiftState` | DiscreteState |  | cluster:258 |
-    | `EncoderTiltState` | DiscreteState |  | cluster:258 |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `ControlLiftState` | DiscreteState | lift control is open loop, lift control is closed loop | cluster:258 |
+    | `ControlTiltState` | DiscreteState | tilt control is closed loop, tilt control is open loop | cluster:258 |
+    | `DirectionState` | DiscreteState | counterClockwise, clockwise | cluster:258 |
+    | `EncoderLiftState` | DiscreteState | encoder controlled, timer controlled | cluster:258 |
+    | `EncoderTiltState` | DiscreteState | encoder controlled, timer controlled | cluster:258 |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `MotorLEDFeedbackState` | DiscreteState |  | cluster:258 |
-    | `MotorRunModeState` | DiscreteState |  | cluster:258 |
-    | `MotorRunningModeState` | DiscreteState |  | cluster:258 |
-    | `NetworkOnlineState` | DiscreteState |  | cluster:258 |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
-    | `ReversalLiftState` | DiscreteState |  | cluster:258 |
+    | `MotorLEDFeedbackState` | DiscreteState | LEDs will display feedback, LEDs are off | cluster:258 |
+    | `MotorRunModeState` | DiscreteState | run in calibration mode, run in normal mode | cluster:258 |
+    | `MotorRunningModeState` | DiscreteState | motor is running in maintenance mode, motor is running normally | cluster:258 |
+    | `NetworkOnlineState` | DiscreteState | online, not online | cluster:258 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
+    | `ReversalLiftState` | DiscreteState | reversal lift commands, not reversal lift commands | cluster:258 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 6 commands, 12 states"
 
-    **Type IDs:** `2199023276289`, `2199023276290`, `2278664720658`, `2269319811346` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `2199023276289`, `2199023276290`, `2278664720658`, `2269319811346` | **Controllable:** `zigbee:ElectricalEnergyConsumptionSensorComponent` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -14373,22 +14793,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `ElectricEnergyConsumptionState` | ContinuousState |  | cluster:1794 |
     | `ElectricPowerConsumptionState` | ContinuousState |  | cluster:1794 |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 6 commands, 21 states"
 
-    **Type IDs:** `2199023585538`, `2271501158658` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `2199023585538`, `2271501158658` | **Controllable:** `zigbee:LinkyRadioTransmitterHistoricSensorComponent` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -14405,7 +14829,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `ElectricEnergyConsumptionState` | ContinuousState |  | cluster:1794 |
     | `ElectricPowerConsumptionState` | ContinuousState |  | cluster:1794 |
     | `ElectricalContractIntensityState` | ContinuousState |  | cluster:2817 |
@@ -14414,7 +14838,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ElectricEnergyConsumptionTier1State` | ContinuousState |  | cluster:1794 |
     | `ElectricEnergyConsumptionTier2State` | ContinuousState |  | cluster:1794 |
     | `ElectricEnergyConsumptionTier3State` | ContinuousState |  | cluster:1794 |
@@ -14423,13 +14847,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ElectricEnergyConsumptionTier6State` | ContinuousState |  | cluster:1794 |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `LinkyModeState` | DiscreteState | historical, standard | cluster:1794 |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 6 commands, 32 states"
 
-    **Type IDs:** `2271500849922`, `2276869559042` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `2271500849922`, `2276869559042` | **Controllable:** `zigbee:LinkyRadioTransmitterSensorComponent` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -14446,7 +14874,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `ElectricEnergyConsumptionState` | ContinuousState |  | cluster:1794 |
     | `ElectricEnergyGenerationState` | ContinuousState |  | cluster:1794 |
     | `ElectricPowerConsumptionState` | ContinuousState |  | cluster:1794 |
@@ -14459,7 +14887,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MaxElectricPowerGenerationState` | ContinuousState |  | cluster:1794 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ActiveTierLabelState` | DataState |  | cluster:1794 |
     | `ActiveTierState` | ContinuousState | [0..48] | cluster:1794 |
     | `ElectricEnergyConsumptionTier10State` | ContinuousState |  | cluster:1794 |
@@ -14475,13 +14903,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ElectricInstantaneousIntensityState` | ContinuousState |  | cluster:2820 |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `LinkyModeState` | DiscreteState | historical, standard | cluster:1794 |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 6 commands, 11 states"
 
-    **Type IDs:** `2268296448513`, `2268296383745` | **Profiles:** `ElectricPowerMeter`
+    **Type IDs:** `2268296448513`, `2268296383745` | **Controllable:** `zigbee:ElectricalPowerConsumptionSensorComponent` | **Profiles:** `ElectricPowerMeter`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -14498,21 +14930,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `ElectricPowerConsumptionState` | ContinuousState |  | cluster:2820 |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "ExteriorScreen/PositionableScreen (ACTUATOR) — 15 commands, 23 states"
 
-    **Type IDs:** `2199023387138`, `2199023387139` | **Profiles:** `StatefulCloseableScreen`, `StatefulCloseable`, `Closeable`, `OpenClose`
+    **Type IDs:** `2199023387138`, `2199023387139` | **Controllable:** `zigbee:VerticalExteriorAwningComponent` | **Profiles:** `StatefulCloseableScreen`, `StatefulCloseable`, `Closeable`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -14540,31 +14976,35 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ClosureState` | ContinuousState | [0..100] | cluster:258 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OperationalStatusState` | DataState |  | cluster:258 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `ControlLiftState` | DiscreteState |  | cluster:258 |
-    | `ControlTiltState` | DiscreteState |  | cluster:258 |
-    | `DirectionState` | DiscreteState |  | cluster:258 |
-    | `EncoderLiftState` | DiscreteState |  | cluster:258 |
-    | `EncoderTiltState` | DiscreteState |  | cluster:258 |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `ControlLiftState` | DiscreteState | lift control is open loop, lift control is closed loop | cluster:258 |
+    | `ControlTiltState` | DiscreteState | tilt control is closed loop, tilt control is open loop | cluster:258 |
+    | `DirectionState` | DiscreteState | counterClockwise, clockwise | cluster:258 |
+    | `EncoderLiftState` | DiscreteState | encoder controlled, timer controlled | cluster:258 |
+    | `EncoderTiltState` | DiscreteState | encoder controlled, timer controlled | cluster:258 |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `MotorLEDFeedbackState` | DiscreteState |  | cluster:258 |
-    | `MotorRunModeState` | DiscreteState |  | cluster:258 |
-    | `MotorRunningModeState` | DiscreteState |  | cluster:258 |
-    | `NetworkOnlineState` | DiscreteState |  | cluster:258 |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
-    | `ReversalLiftState` | DiscreteState |  | cluster:258 |
+    | `MotorLEDFeedbackState` | DiscreteState | LEDs will display feedback, LEDs are off | cluster:258 |
+    | `MotorRunModeState` | DiscreteState | run in calibration mode, run in normal mode | cluster:258 |
+    | `MotorRunningModeState` | DiscreteState | motor is running in maintenance mode, motor is running normally | cluster:258 |
+    | `NetworkOnlineState` | DiscreteState | online, not online | cluster:258 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
+    | `ReversalLiftState` | DiscreteState | reversal lift commands, not reversal lift commands | cluster:258 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "GasSensor/COSensor (SENSOR) — 6 commands, 13 states"
 
-    **Type IDs:** `2199023518213` | **Profiles:** `CODetection`
+    **Type IDs:** `2199023518213` | **Controllable:** `zigbee:CarbonMonoxideSensorComponent` | **Profiles:** `CODetection`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -14583,21 +15023,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `BatteryLevelState` | ContinuousState |  | cluster:1 |
     | `CODetectionState` | DiscreteState | detected, notDetected | cluster:1280 |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LowBatteryThresholdState` | ContinuousState |  | cluster:1 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "HeatingSystem/ThermostatSetPoint (ACTUATOR) — 13 commands, 19 states"
 
-    **Type IDs:** `2199023452416` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`
+    **Type IDs:** `2199023452416` | **Controllable:** `zigbee:ThermostatHeatingComponent` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -14623,27 +15067,31 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AvailableModesState` | DataState |  | cluster:513 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RoomTemperatureState` | ContinuousState |  | cluster:513 |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureCurrentLowerBoundState` | ContinuousState |  | cluster:513 |
     | `TargetTemperatureCurrentUpperBoundState` | ContinuousState |  | cluster:513 |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] | cluster:513 |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] | cluster:513 |
-    | `ControlSequenceOfThermostatOperationState` | DiscreteState |  | cluster:513 |
+    | `ControlSequenceOfThermostatOperationState` | DiscreteState | coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating, coolingHeatingWithReheat | cluster:513 |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
-    | `ThermostatModeState` | DiscreteState |  | cluster:513 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
+    | `ThermostatModeState` | DiscreteState | off, auto, cool, heat, emergencyHeating, precooling, fanOnly, dry, sleep | cluster:513 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "HeatingSystem/ThermostatSetPoint (ACTUATOR) — 14 commands, 20 states"
 
-    **Type IDs:** `2199023452417` | **Profiles:** `StatefulCoolingThermostatWithSensor`, `StatefulCoolingThermostat`, `CoolingThermostat`
+    **Type IDs:** `2199023452417` | **Controllable:** `zigbee:ThermostatCoolingComponent` | **Profiles:** `StatefulCoolingThermostatWithSensor`, `StatefulCoolingThermostat`, `CoolingThermostat`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -14671,27 +15119,31 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AvailableModesState` | DataState |  | cluster:513 |
     | `CommandLockLevelsState` | DataState |  |  |
     | `CoolingTargetTemperatureState` | ContinuousState | [12.0..30.0] | cluster:513 |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RoomTemperatureState` | ContinuousState |  | cluster:513 |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureCurrentLowerBoundState` | ContinuousState |  | cluster:513 |
     | `TargetTemperatureCurrentUpperBoundState` | ContinuousState |  | cluster:513 |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] | cluster:513 |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] | cluster:513 |
-    | `ControlSequenceOfThermostatOperationState` | DiscreteState |  | cluster:513 |
+    | `ControlSequenceOfThermostatOperationState` | DiscreteState | coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating, coolingHeatingWithReheat | cluster:513 |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
-    | `ThermostatModeState` | DiscreteState |  | cluster:513 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
+    | `ThermostatModeState` | DiscreteState | off, auto, cool, heat, emergencyHeating, precooling, fanOnly, dry, sleep | cluster:513 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "HeatingSystem/ThermostatSetPoint (ACTUATOR) — 14 commands, 22 states"
 
-    **Type IDs:** `2199023452418` | **Profiles:** `StatefulDualThermostatWithSensor`, `StatefulDualThermostat`, `DualThermostat`
+    **Type IDs:** `2199023452418` | **Controllable:** `zigbee:ThermostatHeatingAndCoolingComponent` | **Profiles:** `StatefulDualThermostatWithSensor`, `StatefulDualThermostat`, `DualThermostat`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -14721,7 +15173,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `CoolingTargetTemperatureCurrentLowerBoundState` | ContinuousState |  | cluster:513 |
     | `CoolingTargetTemperatureCurrentUpperBoundState` | ContinuousState |  | cluster:513 |
     | `CoolingTargetTemperatureState` | ContinuousState | [12.0..30.0] | cluster:513 |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `HeatingTargetTemperatureCurrentLowerBoundState` | ContinuousState |  | cluster:513 |
     | `HeatingTargetTemperatureCurrentUpperBoundState` | ContinuousState |  | cluster:513 |
@@ -14730,18 +15182,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RoomTemperatureState` | ContinuousState |  | cluster:513 |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] | cluster:513 |
-    | `ControlSequenceOfThermostatOperationState` | DiscreteState |  | cluster:513 |
+    | `ControlSequenceOfThermostatOperationState` | DiscreteState | coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating, coolingHeatingWithReheat | cluster:513 |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
-    | `ThermostatModeState` | DiscreteState |  | cluster:513 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
+    | `ThermostatModeState` | DiscreteState | off, auto, cool, heat, emergencyHeating, precooling, fanOnly, dry, sleep | cluster:513 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "HeatingSystem/ThermostatSetPoint (ACTUATOR) — 19 commands, 29 states"
 
-    **Type IDs:** `2277859590432` | **Profiles:** `StatefulDualThermostatWithSensor`, `StatefulDualThermostat`, `DualThermostat`
+    **Type IDs:** `2277859590432` | **Controllable:** `zigbee:AtlanticCesaV2HeatingAndCoolingZoneComponent` | **Profiles:** `StatefulDualThermostatWithSensor`, `StatefulDualThermostat`, `DualThermostat`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -14776,34 +15232,38 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `CoolingTargetTemperatureCurrentLowerBoundState` | ContinuousState |  | cluster:513 |
     | `CoolingTargetTemperatureCurrentUpperBoundState` | ContinuousState |  | cluster:513 |
     | `CoolingTargetTemperatureState` | ContinuousState | [12.0..30.0] | cluster:513 |
-    | `DerogationOnOffState` | DiscreteState |  | cluster:513 |
+    | `DerogationOnOffState` | DiscreteState | off, on | cluster:513 |
     | `DerogationTimeState` | DataState |  | cluster:513 |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `HeatingTargetTemperatureCurrentLowerBoundState` | ContinuousState |  | cluster:513 |
     | `HeatingTargetTemperatureCurrentUpperBoundState` | ContinuousState |  | cluster:513 |
     | `HeatingTargetTemperatureState` | ContinuousState | [12.0..30.0] | cluster:513 |
     | `HolidayModeConfiguredState` | DataState |  | cluster:513 |
-    | `HolidaysModeState` | DiscreteState |  | cluster:513 |
-    | `InternalSchedulingOnOffState` | DiscreteState |  | cluster:513 |
+    | `HolidaysModeState` | DiscreteState | off, on | cluster:513 |
+    | `InternalSchedulingOnOffState` | DiscreteState | on, off | cluster:513 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RemainingDerogationTimeState` | DataState |  | cluster:513 |
     | `RoomTemperatureState` | ContinuousState |  | cluster:513 |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] | cluster:513 |
     | `AutoBindingState` | DataState |  | cluster:513 |
-    | `ControlSequenceOfThermostatOperationState` | DiscreteState |  | cluster:513 |
+    | `ControlSequenceOfThermostatOperationState` | DiscreteState | coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating, coolingHeatingWithReheat | cluster:513 |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
-    | `ThermostatModeState` | DiscreteState |  | cluster:513 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
+    | `ThermostatModeState` | DiscreteState | off, auto, cool, heat, emergencyHeating, precooling, fanOnly, dry, sleep | cluster:513 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "HeatingSystem/ThermostatDualModeAndFan (ACTUATOR) — 18 commands, 25 states"
 
-    **Type IDs:** `2277859590418` | **Profiles:** `StatefulDualThermostatWithSensor`, `StatefulDualThermostat`, `DualThermostat`
+    **Type IDs:** `2277859590418` | **Controllable:** `zigbee:ThermostatAndFanComponent` | **Profiles:** `StatefulDualThermostatWithSensor`, `StatefulDualThermostat`, `DualThermostat`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -14837,7 +15297,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `CoolingTargetTemperatureCurrentLowerBoundState` | ContinuousState |  | cluster:513 |
     | `CoolingTargetTemperatureCurrentUpperBoundState` | ContinuousState |  | cluster:513 |
     | `CoolingTargetTemperatureState` | ContinuousState | [12.0..30.0] | cluster:513 |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `HeatingTargetTemperatureCurrentLowerBoundState` | ContinuousState |  | cluster:513 |
     | `HeatingTargetTemperatureCurrentUpperBoundState` | ContinuousState |  | cluster:513 |
@@ -14845,22 +15305,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] | cluster:513 |
     | `ACLouverPositionState` | DiscreteState | fully closed, fully open, quarter open, half open, three quarters open | cluster:513 |
-    | `ControlSequenceOfThermostatOperationState` | DiscreteState |  | cluster:513 |
-    | `EconomyEnergyStarModeEnabledState` | DiscreteState |  | cluster:513 |
+    | `ControlSequenceOfThermostatOperationState` | DiscreteState | coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating, coolingHeatingWithReheat | cluster:513 |
+    | `EconomyEnergyStarModeEnabledState` | DiscreteState | enable, disable | cluster:513 |
     | `FanModeSequenceState` | DiscreteState | low/medium/high, low/high, low/medium/high/auto, low/high/auto, on/auto | cluster:514 |
     | `FanSpeedModeState` | DiscreteState | off, low, medium, high, on | cluster:514 |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
-    | `ThermostatModeState` | DiscreteState |  | cluster:513 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
+    | `ThermostatModeState` | DiscreteState | off, auto, cool, heat, emergencyHeating, precooling, fanOnly, dry, sleep | cluster:513 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "HeatingSystem/ElectricalHeater (ACTUATOR) — 15 commands, 13 states"
 
-    **Type IDs:** `2278664720658`, `2269319811346` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `2278664720658`, `2269319811346` | **Controllable:** `zigbee:WirePilotComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -14887,22 +15351,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ModeState` | DataState |  | cluster:64512 |
     | `OnOffState` | DiscreteState | on, off | cluster:64512 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "HeatingSystem/ElectricalHeater (ACTUATOR) — 15 commands, 13 states"
 
-    **Type IDs:** `2270846517760` | **Profiles:** `SwitchableHeating`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `2270846517760` | **Controllable:** `zigbee:CleodeZPilotComponent` | **Profiles:** `SwitchableHeating`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -14929,22 +15397,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `CleodeHeatingModeState` | DiscreteState |  | cluster:64513 |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `CleodeHeatingModeState` | DiscreteState | comfort, comfort-1, comfort-2, eco, frostprotection, offloading | cluster:64513 |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "HumiditySensor/RelativeHumiditySensor (SENSOR) — 6 commands, 16 states"
 
-    **Type IDs:** `2199023452673`, `2269319987712` | **Profiles:** `RelativeHumidity`
+    **Type IDs:** `2199023452673`, `2269319987712` | **Controllable:** `zigbee:RelativeHumidityComponent` | **Profiles:** `RelativeHumidity`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -14962,7 +15434,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `BatteryLevelState` | ContinuousState |  | cluster:1 |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LowBatteryThresholdState` | ContinuousState |  | cluster:1 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
@@ -14971,16 +15443,21 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RelativeHumidityState` | ContinuousState | [0.0..100.0] | cluster:1029 |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ToleranceState` | DataState |  | cluster:1029 |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "Light/StatefulOnOffLight (ACTUATOR) — 14 commands, 12 states"
 
-    **Type IDs:** `2199023321088`, `2199023321089`, `2268296445952` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `2199023321088`, `2199023321089`, `2268296445952` | **Controllable:** `zigbee:OnOffLightComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+    - `core:useControllableForGroup` = `zigbee:GroupOnOffLightComponent`
 
     **Commands**
 
@@ -15006,21 +15483,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "Light/DimmerLight (ACTUATOR) — 16 commands, 13 states"
 
-    **Type IDs:** `2199023321344`, `2199023321345` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321344`, `2199023321345` | **Controllable:** `zigbee:LightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+    - `core:useControllableForGroup` = `zigbee:GroupLightComponent`
 
     **Commands**
 
@@ -15048,22 +15530,27 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "Light/DimmerHueSaturationLight (ACTUATOR) — 21 commands, 16 states"
 
-    **Type IDs:** `2199023321600`, `2199023321601`, `2199023321603` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321600`, `2199023321601`, `2199023321603` | **Controllable:** `zigbee:HueLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+    - `core:useControllableForGroup` = `zigbee:GroupHueLightComponent`
 
     **Commands**
 
@@ -15096,25 +15583,30 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ColorHueState` | ContinuousState |  | cluster:768 |
-    | `ColorModeState` | DiscreteState |  | cluster:768 |
+    | `ColorModeState` | DiscreteState | cieXYZ, hueAndStaturation, temperature, rgb | cluster:768 |
     | `ColorSaturationState` | ContinuousState |  | cluster:768 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "Light/DimmerHueSaturationLight (ACTUATOR) — 22 commands, 19 states"
 
-    **Type IDs:** `2199023321607` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321607` | **Controllable:** `zigbee:ColorLoopLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+    - `core:useControllableForGroup` = `zigbee:GroupColorLoopLightComponent`
 
     **Commands**
 
@@ -15148,28 +15640,33 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ColorHueState` | ContinuousState |  | cluster:768 |
-    | `ColorLoopActiveState` | DiscreteState |  | cluster:768 |
-    | `ColorLoopDirectionState` | DiscreteState |  | cluster:768 |
+    | `ColorLoopActiveState` | DiscreteState | activatedStartFromColorLoopStartEnhancedHue, activatedStartFromEnhancedCurrentHue, deactivated | cluster:768 |
+    | `ColorLoopDirectionState` | DiscreteState | decremented, incremented | cluster:768 |
     | `ColorLoopTimeState` | ContinuousState |  | cluster:768 |
-    | `ColorModeState` | DiscreteState |  | cluster:768 |
+    | `ColorModeState` | DiscreteState | cieXYZ, hueAndStaturation, temperature, rgb | cluster:768 |
     | `ColorSaturationState` | ContinuousState |  | cluster:768 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "Light/DimmerCIEColorSpaceXYLight (ACTUATOR) — 19 commands, 16 states"
 
-    **Type IDs:** `2199023321608` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321608` | **Controllable:** `zigbee:CIEColorSpaceXYLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+    - `core:useControllableForGroup` = `zigbee:GroupCIEColorSpaceXYLightComponent`
 
     **Commands**
 
@@ -15201,24 +15698,29 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `CieColorSpaceXState` | ContinuousState |  | cluster:768 |
     | `CieColorSpaceYState` | ContinuousState |  | cluster:768 |
-    | `ColorModeState` | DiscreteState |  | cluster:768 |
+    | `ColorModeState` | DiscreteState | cieXYZ, hueAndStaturation, temperature, rgb | cluster:768 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "Light/DimmerHueSaturationLight (ACTUATOR) — 23 commands, 18 states"
 
-    **Type IDs:** `2199023321609`, `2199023321611` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321609`, `2199023321611` | **Controllable:** `zigbee:HueCIEXYLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+    - `core:useControllableForGroup` = `zigbee:GroupHueCIEXYLightComponent`
 
     **Commands**
 
@@ -15255,25 +15757,30 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `CieColorSpaceXState` | ContinuousState |  | cluster:768 |
     | `CieColorSpaceYState` | ContinuousState |  | cluster:768 |
     | `ColorHueState` | ContinuousState |  | cluster:768 |
-    | `ColorModeState` | DiscreteState |  | cluster:768 |
+    | `ColorModeState` | DiscreteState | cieXYZ, hueAndStaturation, temperature, rgb | cluster:768 |
     | `ColorSaturationState` | ContinuousState |  | cluster:768 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "Light/DimmerHueSaturationLight (ACTUATOR) — 24 commands, 21 states"
 
-    **Type IDs:** `2199023321615` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321615` | **Controllable:** `zigbee:ColorLoopCIEXYLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+    - `core:useControllableForGroup` = `zigbee:GroupColorLoopCIEXYLightComponent`
 
     **Commands**
 
@@ -15311,28 +15818,33 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `CieColorSpaceXState` | ContinuousState |  | cluster:768 |
     | `CieColorSpaceYState` | ContinuousState |  | cluster:768 |
     | `ColorHueState` | ContinuousState |  | cluster:768 |
-    | `ColorLoopActiveState` | DiscreteState |  | cluster:768 |
-    | `ColorLoopDirectionState` | DiscreteState |  | cluster:768 |
+    | `ColorLoopActiveState` | DiscreteState | activatedStartFromColorLoopStartEnhancedHue, activatedStartFromEnhancedCurrentHue, deactivated | cluster:768 |
+    | `ColorLoopDirectionState` | DiscreteState | decremented, incremented | cluster:768 |
     | `ColorLoopTimeState` | ContinuousState |  | cluster:768 |
-    | `ColorModeState` | DiscreteState |  | cluster:768 |
+    | `ColorModeState` | DiscreteState | cieXYZ, hueAndStaturation, temperature, rgb | cluster:768 |
     | `ColorSaturationState` | ContinuousState |  | cluster:768 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "Light/DimmerColorTemperatureLight (ACTUATOR) — 19 commands, 15 states"
 
-    **Type IDs:** `2199023321616`, `2199023324160`, `2199023324176` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321616`, `2199023324160`, `2199023324176` | **Controllable:** `zigbee:ColorTemperatureLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+    - `core:useControllableForGroup` = `zigbee:GroupColorTemperatureLightComponent`
 
     **Commands**
 
@@ -15362,25 +15874,30 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `ColorModeState` | DiscreteState |  | cluster:768 |
+    | `ColorModeState` | DiscreteState | cieXYZ, hueAndStaturation, temperature, rgb | cluster:768 |
     | `ColorTemperatureState` | ContinuousState |  | cluster:768 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "Light/DimmerHueSaturationLight (ACTUATOR) — 23 commands, 17 states"
 
-    **Type IDs:** `2199023321617`, `2199023321619` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321617`, `2199023321619` | **Controllable:** `zigbee:HueColorTemperatureLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+    - `core:useControllableForGroup` = `zigbee:GroupHueColorTemperatureLightComponent`
 
     **Commands**
 
@@ -15415,26 +15932,31 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ColorHueState` | ContinuousState |  | cluster:768 |
-    | `ColorModeState` | DiscreteState |  | cluster:768 |
+    | `ColorModeState` | DiscreteState | cieXYZ, hueAndStaturation, temperature, rgb | cluster:768 |
     | `ColorSaturationState` | ContinuousState |  | cluster:768 |
     | `ColorTemperatureState` | ContinuousState |  | cluster:768 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "Light/DimmerHueSaturationLight (ACTUATOR) — 24 commands, 20 states"
 
-    **Type IDs:** `2199023321623` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321623` | **Controllable:** `zigbee:ColorLoopColorTemperatureLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+    - `core:useControllableForGroup` = `zigbee:GroupColorLoopColorTemperatureLightComponent`
 
     **Commands**
 
@@ -15470,29 +15992,34 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ColorHueState` | ContinuousState |  | cluster:768 |
-    | `ColorLoopActiveState` | DiscreteState |  | cluster:768 |
-    | `ColorLoopDirectionState` | DiscreteState |  | cluster:768 |
+    | `ColorLoopActiveState` | DiscreteState | activatedStartFromColorLoopStartEnhancedHue, activatedStartFromEnhancedCurrentHue, deactivated | cluster:768 |
+    | `ColorLoopDirectionState` | DiscreteState | decremented, incremented | cluster:768 |
     | `ColorLoopTimeState` | ContinuousState |  | cluster:768 |
-    | `ColorModeState` | DiscreteState |  | cluster:768 |
+    | `ColorModeState` | DiscreteState | cieXYZ, hueAndStaturation, temperature, rgb | cluster:768 |
     | `ColorSaturationState` | ContinuousState |  | cluster:768 |
     | `ColorTemperatureState` | ContinuousState |  | cluster:768 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "Light/DimmerColorTemperatureLight (ACTUATOR) — 21 commands, 17 states"
 
-    **Type IDs:** `2199023321624` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321624` | **Controllable:** `zigbee:ColorTemperatureCIEXYLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+    - `core:useControllableForGroup` = `zigbee:GroupColorTemperatureCIEXYLightComponent`
 
     **Commands**
 
@@ -15526,25 +16053,30 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `CieColorSpaceXState` | ContinuousState |  | cluster:768 |
     | `CieColorSpaceYState` | ContinuousState |  | cluster:768 |
-    | `ColorModeState` | DiscreteState |  | cluster:768 |
+    | `ColorModeState` | DiscreteState | cieXYZ, hueAndStaturation, temperature, rgb | cluster:768 |
     | `ColorTemperatureState` | ContinuousState |  | cluster:768 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "Light/DimmerHueSaturationLight (ACTUATOR) — 25 commands, 19 states"
 
-    **Type IDs:** `2199023321625`, `2199023321627`, `2199023324416` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321625`, `2199023321627`, `2199023324416` | **Controllable:** `zigbee:HueXYTemperatureLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+    - `core:useControllableForGroup` = `zigbee:GroupHueXYTemperatureLightComponent`
 
     **Commands**
 
@@ -15583,26 +16115,31 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `CieColorSpaceXState` | ContinuousState |  | cluster:768 |
     | `CieColorSpaceYState` | ContinuousState |  | cluster:768 |
     | `ColorHueState` | ContinuousState |  | cluster:768 |
-    | `ColorModeState` | DiscreteState |  | cluster:768 |
+    | `ColorModeState` | DiscreteState | cieXYZ, hueAndStaturation, temperature, rgb | cluster:768 |
     | `ColorSaturationState` | ContinuousState |  | cluster:768 |
     | `ColorTemperatureState` | ContinuousState |  | cluster:768 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "Light/DimmerHueSaturationLight (ACTUATOR) — 26 commands, 22 states"
 
-    **Type IDs:** `2199023321631`, `2199023324447` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321631`, `2199023324447` | **Controllable:** `zigbee:ColorLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+    - `core:useControllableForGroup` = `zigbee:GroupColorLightComponent`
 
     **Commands**
 
@@ -15642,29 +16179,34 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `CieColorSpaceXState` | ContinuousState |  | cluster:768 |
     | `CieColorSpaceYState` | ContinuousState |  | cluster:768 |
     | `ColorHueState` | ContinuousState |  | cluster:768 |
-    | `ColorLoopActiveState` | DiscreteState |  | cluster:768 |
-    | `ColorLoopDirectionState` | DiscreteState |  | cluster:768 |
+    | `ColorLoopActiveState` | DiscreteState | activatedStartFromColorLoopStartEnhancedHue, activatedStartFromEnhancedCurrentHue, deactivated | cluster:768 |
+    | `ColorLoopDirectionState` | DiscreteState | decremented, incremented | cluster:768 |
     | `ColorLoopTimeState` | ContinuousState |  | cluster:768 |
-    | `ColorModeState` | DiscreteState |  | cluster:768 |
+    | `ColorModeState` | DiscreteState | cieXYZ, hueAndStaturation, temperature, rgb | cluster:768 |
     | `ColorSaturationState` | ContinuousState |  | cluster:768 |
     | `ColorTemperatureState` | ContinuousState |  | cluster:768 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "Light/StatefulOnOffLight (ACTUATOR) — 19 commands, 17 states"
 
-    **Type IDs:** `2269319856128` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `2269319856128` | **Controllable:** `zigbee:SchneiderOnOffLightComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+    - `core:useControllableForGroup` = `zigbee:GroupOnOffLightComponent`
 
     **Commands**
 
@@ -15695,26 +16237,31 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DefaultOnOffState` | DiscreteState |  | cluster:6 |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DefaultOnOffState` | DiscreteState | off, on, previous, togglePrevious, unknown | cluster:6 |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OffWaitTimeState` | ContinuousState |  | cluster:6 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `OnTimeReloadOptionsState` | DiscreteState |  | cluster:6 |
+    | `OnTimeReloadOptionsState` | DiscreteState | enable, disable | cluster:6 |
     | `OnTimeReloadState` | DataState |  | cluster:6 |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `PreWarningTimeState` | DataState |  | cluster:6 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "Light/DimmerLight (ACTUATOR) — 23 commands, 20 states"
 
-    **Type IDs:** `2269319856384`, `2269319856385` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2269319856384`, `2269319856385` | **Controllable:** `zigbee:SchneiderLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+    - `core:useControllableForGroup` = `zigbee:GroupLightComponent`
 
     **Commands**
 
@@ -15749,8 +16296,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DefaultOnOffState` | DiscreteState |  | cluster:6 |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DefaultOnOffState` | DiscreteState | off, on, previous, togglePrevious, unknown | cluster:6 |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
     | `LightOnIntensityState` | ContinuousState |  | cluster:8 |
@@ -15759,19 +16306,23 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `OnTimeReloadOptionsState` | DiscreteState |  | cluster:6 |
+    | `OnTimeReloadOptionsState` | DiscreteState | enable, disable | cluster:6 |
     | `OnTimeReloadState` | DataState |  | cluster:6 |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `PreWarningTimeState` | DataState |  | cluster:6 |
     | `StartUpCurrentLevelState` | DataState |  | cluster:8 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "LightSensor/LuminanceSensor (SENSOR) — 6 commands, 15 states"
 
-    **Type IDs:** `2199023322624`, `2269320053263` | **Profiles:** `Luminance`
+    **Type IDs:** `2199023322624`, `2269320053263` | **Controllable:** `zigbee:LightSensorComponent` | **Profiles:** `Luminance`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -15788,7 +16339,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LuminanceState` | ContinuousState |  | cluster:1024 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
@@ -15797,16 +16348,20 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SensorTypeState` | DataState |  | cluster:1024 |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ToleranceState` | DataState |  | cluster:1024 |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "OccupancySensor/MotionSensor (SENSOR) — 6 commands, 13 states"
 
-    **Type IDs:** `2199023518209`, `2269320053249`, `2269320053263` | **Profiles:** `OccupancyDetector`
+    **Type IDs:** `2199023518209`, `2269320053249`, `2269320053263` | **Controllable:** `zigbee:MotionSensorComponent` | **Profiles:** `OccupancyDetector`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -15824,22 +16379,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `BatteryLevelState` | ContinuousState |  | cluster:1 |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LowBatteryThresholdState` | ContinuousState |  | cluster:1 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OccupancyState` | DiscreteState | personInside, noPersonInside | cluster:1280 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "OccupancySensor (SENSOR) — 6 commands, 11 states"
 
-    **Type IDs:** `2199023322880` | **Profiles:** `OccupancyDetector`
+    **Type IDs:** `2199023322880` | **Controllable:** `zigbee:OccupancySensorComponent` | **Profiles:** `OccupancyDetector`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -15856,21 +16415,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OccupancyState` | DiscreteState | personInside, noPersonInside | cluster:1030 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 14 commands, 12 states"
 
-    **Type IDs:** `2199023256064`, `2199023257856`, `2199023276288`, `2199023276289`, `2199023276290`, `2199023323648`, `2268296446720`, `2268296448513` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `2199023256064`, `2199023257856`, `2199023276288`, `2199023276289`, `2199023276290`, `2199023323648`, `2268296446720`, `2268296448513` | **Controllable:** `zigbee:OnOffComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+    - `core:useControllableForGroup` = `zigbee:GroupOnOffComponent`
 
     **Commands**
 
@@ -15896,25 +16460,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "ProtocolGateway/ZigbeeStack (PROTOCOL_GATEWAY) — 0 commands, 0 states"
 
-    **Type IDs:** `0`, `2` | **Profiles:** `Specific`
+    **Type IDs:** `0`, `2` | **Controllable:** `zigbee:TransceiverV3_0Component` | **Profiles:** `Specific`
 
 ??? note "ProtocolGateway/ZigbeeStack (PROTOCOL_GATEWAY) — 6 commands, 5 states"
 
-    **Type IDs:** `1099511648256` | **Profiles:** `Specific`
+    **Type IDs:** `1099511648256` | **Controllable:** `zigbee:StackComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -15931,7 +16495,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
@@ -15939,7 +16503,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ProtocolGateway/ZigbeeStack (PROTOCOL_GATEWAY) — 9 commands, 5 states"
 
-    **Type IDs:** `1099511648257` | **Profiles:** `Specific`
+    **Type IDs:** `1099511648257` | **Controllable:** `zigbee:StackV3Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -15959,7 +16523,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
@@ -15967,7 +16531,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RemoteController/EmptyRemoteController (REMOTE_CONTROLLER) — 2 commands, 12 states"
 
-    **Type IDs:** `2199023321856`, `2199023322112`, `2199023322368`, `2199023387392`, `2199023779840`, `2199023783936`, `2199023788032`, `2199023792128`, `2268296446976`, `2268296512256` | **Profiles:** `Specific`
+    **Type IDs:** `2199023321856`, `2199023322112`, `2199023322368`, `2199023387392`, `2199023779840`, `2199023783936`, `2199023788032`, `2199023792128`, `2268296446976`, `2268296512256` | **Controllable:** `zigbee:ZigbeeRemoteComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -15981,21 +16545,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `BatteryLevelState` | ContinuousState |  | cluster:1 |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LowBatteryThresholdState` | ContinuousState |  | cluster:1 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "RollerShutter/PositionableRollerShutter (ACTUATOR) — 14 commands, 12 states"
 
-    **Type IDs:** `2199023386624`, `2199023387142` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `OpenClose`
+    **Type IDs:** `2199023386624`, `2199023387142` | **Controllable:** `zigbee:RollerShutterComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -16022,20 +16590,24 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ClosureState` | ContinuousState | [0..100] | cluster:8 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "Screen/PositionableScreen (ACTUATOR) — 15 commands, 23 states"
 
-    **Type IDs:** `2199023387136`, `2199023387137`, `2199023387143`, `2199023387145` | **Profiles:** `StatefulCloseableScreen`, `StatefulCloseable`, `Closeable`, `OpenClose`
+    **Type IDs:** `2199023387136`, `2199023387137`, `2199023387143`, `2199023387145` | **Controllable:** `zigbee:RollerShadeComponent` | **Profiles:** `StatefulCloseableScreen`, `StatefulCloseable`, `Closeable`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -16063,31 +16635,35 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ClosureState` | ContinuousState | [0..100] | cluster:258 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OperationalStatusState` | DataState |  | cluster:258 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
-    | `ControlLiftState` | DiscreteState |  | cluster:258 |
-    | `ControlTiltState` | DiscreteState |  | cluster:258 |
-    | `DirectionState` | DiscreteState |  | cluster:258 |
-    | `EncoderLiftState` | DiscreteState |  | cluster:258 |
-    | `EncoderTiltState` | DiscreteState |  | cluster:258 |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `ControlLiftState` | DiscreteState | lift control is open loop, lift control is closed loop | cluster:258 |
+    | `ControlTiltState` | DiscreteState | tilt control is closed loop, tilt control is open loop | cluster:258 |
+    | `DirectionState` | DiscreteState | counterClockwise, clockwise | cluster:258 |
+    | `EncoderLiftState` | DiscreteState | encoder controlled, timer controlled | cluster:258 |
+    | `EncoderTiltState` | DiscreteState | encoder controlled, timer controlled | cluster:258 |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `MotorLEDFeedbackState` | DiscreteState |  | cluster:258 |
-    | `MotorRunModeState` | DiscreteState |  | cluster:258 |
-    | `MotorRunningModeState` | DiscreteState |  | cluster:258 |
-    | `NetworkOnlineState` | DiscreteState |  | cluster:258 |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
-    | `ReversalLiftState` | DiscreteState |  | cluster:258 |
+    | `MotorLEDFeedbackState` | DiscreteState | LEDs will display feedback, LEDs are off | cluster:258 |
+    | `MotorRunModeState` | DiscreteState | run in calibration mode, run in normal mode | cluster:258 |
+    | `MotorRunningModeState` | DiscreteState | motor is running in maintenance mode, motor is running normally | cluster:258 |
+    | `NetworkOnlineState` | DiscreteState | online, not online | cluster:258 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
+    | `ReversalLiftState` | DiscreteState | reversal lift commands, not reversal lift commands | cluster:258 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "SmokeSensor (SENSOR) — 6 commands, 13 states"
 
-    **Type IDs:** `2199023518211` | **Profiles:** `SmokeDetector`
+    **Type IDs:** `2199023518211` | **Controllable:** `zigbee:SmokeSensorComponent` | **Profiles:** `SmokeDetector`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -16105,22 +16681,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `BatteryLevelState` | ContinuousState |  | cluster:1 |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LowBatteryThresholdState` | ContinuousState |  | cluster:1 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SmokeState` | DiscreteState | detected, notDetected | cluster:1280 |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "TemperatureSensor (SENSOR) — 6 commands, 13 states"
 
-    **Type IDs:** `2277859590432` | **Profiles:** `Temperature`
+    **Type IDs:** `2277859590432` | **Controllable:** `zigbee:SimpleTemperatureSensorComponent` | **Profiles:** `Temperature`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -16137,23 +16717,27 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `MaxMeasuredValueState` | DataState |  | cluster:513 |
     | `MinMeasuredValueState` | DataState |  | cluster:513 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] | cluster:513 |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "TemperatureSensor (SENSOR) — 6 commands, 16 states"
 
-    **Type IDs:** `2199023452672`, `2199023452673`, `2269319987712` | **Profiles:** `Temperature`
+    **Type IDs:** `2199023452672`, `2199023452673`, `2269319987712` | **Controllable:** `zigbee:TemperatureSensorComponent` | **Profiles:** `Temperature`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -16171,7 +16755,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `BatteryLevelState` | ContinuousState |  | cluster:1 |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LowBatteryThresholdState` | ContinuousState |  | cluster:1 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
@@ -16179,17 +16763,21 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MinMeasuredValueState` | DataState |  | cluster:1026 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] | cluster:1026 |
     | `ToleranceState` | DataState |  | cluster:1026 |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "VenetianBlind/PositionableVenetianBlind (ACTUATOR) — 17 commands, 24 states"
 
-    **Type IDs:** `2199023387144` | **Profiles:** `StatefulOrientableAndCloseableShutter`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
+    **Type IDs:** `2199023387144` | **Controllable:** `zigbee:InteriorBlindComponent` | **Profiles:** `StatefulOrientableAndCloseableShutter`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -16219,32 +16807,36 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ClosureState` | ContinuousState | [0..100] | cluster:258 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OperationalStatusState` | DataState |  | cluster:258 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SlateOrientationState` | ContinuousState | [0..100] | cluster:258 |
-    | `StatusState` | DiscreteState |  |  |
-    | `ControlLiftState` | DiscreteState |  | cluster:258 |
-    | `ControlTiltState` | DiscreteState |  | cluster:258 |
-    | `DirectionState` | DiscreteState |  | cluster:258 |
-    | `EncoderLiftState` | DiscreteState |  | cluster:258 |
-    | `EncoderTiltState` | DiscreteState |  | cluster:258 |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `ControlLiftState` | DiscreteState | lift control is open loop, lift control is closed loop | cluster:258 |
+    | `ControlTiltState` | DiscreteState | tilt control is closed loop, tilt control is open loop | cluster:258 |
+    | `DirectionState` | DiscreteState | counterClockwise, clockwise | cluster:258 |
+    | `EncoderLiftState` | DiscreteState | encoder controlled, timer controlled | cluster:258 |
+    | `EncoderTiltState` | DiscreteState | encoder controlled, timer controlled | cluster:258 |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `MotorLEDFeedbackState` | DiscreteState |  | cluster:258 |
-    | `MotorRunModeState` | DiscreteState |  | cluster:258 |
-    | `MotorRunningModeState` | DiscreteState |  | cluster:258 |
-    | `NetworkOnlineState` | DiscreteState |  | cluster:258 |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
-    | `ReversalLiftState` | DiscreteState |  | cluster:258 |
+    | `MotorLEDFeedbackState` | DiscreteState | LEDs will display feedback, LEDs are off | cluster:258 |
+    | `MotorRunModeState` | DiscreteState | run in calibration mode, run in normal mode | cluster:258 |
+    | `MotorRunningModeState` | DiscreteState | motor is running in maintenance mode, motor is running normally | cluster:258 |
+    | `NetworkOnlineState` | DiscreteState | online, not online | cluster:258 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
+    | `ReversalLiftState` | DiscreteState | reversal lift commands, not reversal lift commands | cluster:258 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 ??? note "WaterSensor/WaterDetectionSensor (SENSOR) — 6 commands, 13 states"
 
-    **Type IDs:** `2199023518212`, `2269320053252` | **Profiles:** `WaterDetector`
+    **Type IDs:** `2199023518212`, `2269320053252` | **Controllable:** `zigbee:WaterLeakageSensorComponent` | **Profiles:** `WaterDetector`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
 
     **Commands**
 
@@ -16262,18 +16854,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `BatteryLevelState` | ContinuousState |  | cluster:1 |
-    | `DiscreteRSSILevelState` | DiscreteState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LowBatteryThresholdState` | ContinuousState |  | cluster:1 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `WaterDetectionState` | DiscreteState | detected, notDetected | cluster:1280 |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
-    | `ZigbeeUpdateState` | DiscreteState |  |  |
+    | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
 
 ## ZWAVE
@@ -16282,7 +16874,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConfigurationComponent/ZWaveConfiguration (ACTUATOR) — 3 commands, 2 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:ConfigurationV1ClassComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -16301,7 +16893,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConfigurationComponent/ZWaveConfiguration (ACTUATOR) — 2 commands, 2 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:WakeUpClassV1Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -16319,7 +16911,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConfigurationComponent/ZWaveConfiguration (ACTUATOR) — 3 commands, 6 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:WakeUpClassV2Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -16342,7 +16934,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConfigurationComponent/ZWaveNodonConfiguration (ACTUATOR) — 22 commands, 10 states"
 
-    **Type IDs:** `1103823372289`, `1103823372290`, `1103823372291` | **Profiles:** `Specific`
+    **Type IDs:** `1103823372289`, `1103823372290`, `1103823372291` | **Controllable:** `zwave:NodonRemoteControllerConfigurationZWaveComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -16381,14 +16973,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Button2ConfigurationState` | DataState |  |  |
     | `Button3ConfigurationState` | DataState |  |  |
     | `Button4ConfigurationState` | DataState |  |  |
-    | `DeviceDefectState` | DiscreteState |  |  |
+    | `DeviceDefectState` | DiscreteState | failed |  |
     | `LedManagementConfigurationState` | DataState |  |  |
     | `NeighboursAddressesState` | DataState |  |  |
-    | `ZWaveSceneTypeConfigurationState` | DiscreteState |  |  |
+    | `ZWaveSceneTypeConfigurationState` | DiscreteState | associations, scenes |  |
 
 ??? note "ConsumptionSensor/BatterySensor (SENSOR) — 1 commands, 2 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `BatteryStatus`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:BatteryClassV1Component` | **Profiles:** `BatteryStatus`
 
     **Commands**
 
@@ -16405,7 +16997,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConsumptionSensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 1 commands, 7 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `ElectricEnergyConsumption`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:MeterClassV1Component` | **Profiles:** `ElectricEnergyConsumption`
 
     **Commands**
 
@@ -16422,12 +17014,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MeteringFlowRateInCubicFeetState` | ContinuousState |  |  |
     | `MeteringFlowRateInCubicMeterState` | ContinuousState |  |  |
     | `MeteringFlowRateInUsGallonState` | ContinuousState |  |  |
-    | `MeteringScaleState` | DiscreteState |  |  |
-    | `MeteringTypeState` | DiscreteState |  |  |
+    | `MeteringScaleState` | DiscreteState | A, M.S.T, UsGallons, V, W, cubicFeet, cubicMeters, kVAh, kWh, powerFactor, pulseCount |  |
+    | `MeteringTypeState` | DiscreteState | Electric meter, Gas meter, Water meter |  |
 
 ??? note "ConsumptionSensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 3 commands, 15 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:MeterClassV2Component` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
 
     **Commands**
 
@@ -16449,8 +17041,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MeteringFlowRateInCubicMeterState` | ContinuousState |  |  |
     | `MeteringFlowRateInUsGallonState` | ContinuousState |  |  |
     | `MeteringPulseCountState` | ContinuousState |  |  |
-    | `MeteringScaleState` | DiscreteState |  |  |
-    | `MeteringTypeState` | DiscreteState |  |  |
+    | `MeteringScaleState` | DiscreteState | A, M.S.T, UsGallons, V, W, cubicFeet, cubicMeters, kVAh, kWh, powerFactor, pulseCount |  |
+    | `MeteringTypeState` | DiscreteState | Electric meter, Gas meter, Water meter |  |
     | `ZWaveMeteringDeltaTimeState` | DataState |  |  |
     | `ZWaveMeteringPreviousConsumptionState` | ContinuousState |  |  |
     | `ZWaveSupportedMeteringResetState` | DataState |  |  |
@@ -16459,7 +17051,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConsumptionSensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 3 commands, 18 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:MeterClassV3Component` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
 
     **Commands**
 
@@ -16484,8 +17076,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MeteringFlowRateInUsGallonState` | ContinuousState |  |  |
     | `MeteringPowerFactorState` | ContinuousState |  |  |
     | `MeteringPulseCountState` | ContinuousState |  |  |
-    | `MeteringScaleState` | DiscreteState |  |  |
-    | `MeteringTypeState` | DiscreteState |  |  |
+    | `MeteringScaleState` | DiscreteState | A, M.S.T, UsGallons, V, W, cubicFeet, cubicMeters, kVAh, kWh, powerFactor, pulseCount |  |
+    | `MeteringTypeState` | DiscreteState | Electric meter, Gas meter, Water meter |  |
     | `ZWaveMeteringDeltaTimeState` | DataState |  |  |
     | `ZWaveMeteringPreviousConsumptionState` | ContinuousState |  |  |
     | `ZWaveSupportedMeteringResetState` | DataState |  |  |
@@ -16494,7 +17086,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ContactSensor (SENSOR) — 1 commands, 1 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `DoorOpeningStatus`, `OpeningStatus`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:DoorLockClassOpenCloseSensorComponent` | **Profiles:** `DoorOpeningStatus`, `OpeningStatus`
 
     **Commands**
 
@@ -16510,7 +17102,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "DoorLock (ACTUATOR) — 14 commands, 1 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `StatefulDoorLock`, `StatefulLock`, `LockStatus`, `Lock`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:DoorLockClassV1Component` | **Profiles:** `StatefulDoorLock`, `StatefulLock`, `LockStatus`, `Lock`
 
     **Commands**
 
@@ -16539,7 +17131,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/DimmerOnOff (ACTUATOR) — 6 commands, 2 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `StatefulLevelControl`, `LevelControl`, `StatefulSwitchable`, `Switchable`, `Generic`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:BasicClassComponent` | **Profiles:** `StatefulLevelControl`, `LevelControl`, `StatefulSwitchable`, `Switchable`, `Generic`
 
     **Commands**
 
@@ -16561,7 +17153,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/StatefulAlarmController (ACTUATOR) — 4 commands, 9 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:NotificationClassV2V8Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -16588,7 +17180,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GenericSensor/UniversalSensor (SENSOR) — 1 commands, 7 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:MultilevelSensorClassV1Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -16610,7 +17202,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GenericSensor/UniversalSensor (SENSOR) — 1 commands, 16 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:MultilevelSensorClassV2Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -16641,7 +17233,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GenericSensor/UniversalSensor (SENSOR) — 1 commands, 23 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:MultilevelSensorClassV3Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -16679,7 +17271,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GenericSensor/UniversalSensor (SENSOR) — 1 commands, 24 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:MultilevelSensorClassV4Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -16718,7 +17310,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ThermostatSetPoint (ACTUATOR) — 3 commands, 2 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:ThermostatModeClassV1Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -16732,12 +17324,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `ThermostatModeState` | DiscreteState |  |  |
-    | `ThermostatModeSupportedState` | DiscreteState |  |  |
+    | `ThermostatModeState` | DiscreteState | auto, autochangeover, auxiliary, away, cool, dry, energycool, energyheat, fan, fullpower, furnace, heat, manufacturerspecific, moist, off, resume |  |
+    | `ThermostatModeSupportedState` | DiscreteState | auto, autochangeover, auxiliary, away, cool, dry, energycool, energyheat, fan, fullpower, furnace, heat, manufacturerspecific, moist, off, resume |  |
 
 ??? note "HeatingSystem/ThermostatSetPoint (ACTUATOR) — 3 commands, 7 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:ThermostatSetPointClassV1Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -16761,7 +17353,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ThermostatSetPoint (ACTUATOR) — 3 commands, 10 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:ThermostatSetPointClassV2Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -16788,7 +17380,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "NetworkComponent/Node (ACTUATOR) — 1 commands, 2 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:DynamicNodeComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -16800,12 +17392,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DeviceDefectState` | DiscreteState |  |  |
+    | `DeviceDefectState` | DiscreteState | failed |  |
     | `NeighboursAddressesState` | DataState |  |  |
 
 ??? note "NetworkComponent/Node (ACTUATOR) — 4 commands, 5 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:PowerLevelClassV1Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -16828,7 +17420,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "NetworkComponent/Node (ACTUATOR) — 2 commands, 2 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:IndicatorClassV1Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -16842,11 +17434,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ZWaveIndicatorLevelState` | ContinuousState |  |  |
-    | `ZWaveIndicatorStatusState` | DiscreteState |  |  |
+    | `ZWaveIndicatorStatusState` | DiscreteState | off, on |  |
 
 ??? note "NetworkComponent/Node (ACTUATOR) — 4 commands, 5 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:MultiChannelAssociationClassV2Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -16869,7 +17461,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "NetworkComponent/Node (ACTUATOR) — 4 commands, 4 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:AssociationClassV2Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -16891,18 +17483,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "NetworkComponent/Node (ACTUATOR) — 0 commands, 2 states"
 
-    **Type IDs:** `8606711808` | **Profiles:** `Specific`
+    **Type IDs:** `8606711808` | **Controllable:** `zwave:NodeComponent` | **Profiles:** `Specific`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DeviceDefectState` | DiscreteState |  |  |
+    | `DeviceDefectState` | DiscreteState | failed |  |
     | `NeighboursAddressesState` | DataState |  |  |
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 4 commands, 1 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:BinarySwitchClassV1Component` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -16921,7 +17513,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/DimmerOnOff (ACTUATOR) — 8 commands, 2 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `StatefulSwitchableLight`, `StatefulLevelControl`, `LevelControl`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:MultilevelSwitchClassV1Component` | **Profiles:** `StatefulSwitchableLight`, `StatefulLevelControl`, `LevelControl`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -16945,7 +17537,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ProtocolGateway/ZWaveTransceiver (PROTOCOL_GATEWAY) — 13 commands, 1 states"
 
-    **Type IDs:** `8606711808` | **Profiles:** `Specific`
+    **Type IDs:** `8606711808` | **Controllable:** `zwave:TransceiverZWaveComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -16973,7 +17565,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RemoteController/SceneController (REMOTE_CONTROLLER) — 1 commands, 3 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Profiles:** `RockerSwitch`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Controllable:** `zwave:CentralSceneClassV1Component` | **Profiles:** `RockerSwitch`
 
     **Commands**
 
@@ -16991,13 +17583,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RemoteController/RockerSwitchx2Controller (REMOTE_CONTROLLER) — 0 commands, 4 states"
 
-    **Type IDs:** `1103823372289`, `1103823372290`, `1103823372291` | **Profiles:** `RockerSwitch`
+    **Type IDs:** `1103823372289`, `1103823372290`, `1103823372291` | **Controllable:** `zwave:RockerSwitchx2ZWaveComponent` | **Profiles:** `RockerSwitch`
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DeviceDefectState` | DiscreteState |  |  |
+    | `DeviceDefectState` | DiscreteState | failed |  |
     | `NeighboursAddressesState` | DataState |  |  |
     | `RockerSwitchPushWayState` | DiscreteState | heldDown, pressed, pressedX2, pressedX3, pressedX4 |  |
-    | `RockerSwitchx2State` | DiscreteState |  |  |
+    | `RockerSwitchx2State` | DiscreteState | A0, A1, B0, B1, released |  |
