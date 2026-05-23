@@ -18,8 +18,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setFanSpeedLevel` | `int` (0–100) | Set the device fan speed level (%)
- |
+| `setFanSpeedLevel` | `int` (0–100) | Set the device fan speed level (%) |
 
 ## AirFanMode
 
@@ -27,8 +26,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setFanSpeedMode` | `string` — `low`, `high` | Set the device fan speed mode
- |
+| `setFanSpeedMode` | `string` — `low`, `high` | Set the device fan speed mode |
 
 ## AirOutputLevelSensor
 
@@ -52,10 +50,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `arm` |  | Arm the system
- |
-| `disarm` |  | Disarm the system
- |
+| `arm` |  | Arm the system |
+| `disarm` |  | Disarm the system |
 
 ## AmbientNoiseSensor
 
@@ -71,8 +67,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
 
 ## BasicOpenClose
 
@@ -80,10 +75,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device
- |
-| `open` |  | Fully open the device
- |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
 
 ## BasicUpDown
 
@@ -91,10 +84,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `down` |  | Move the device completely down
- |
-| `up` |  | Move the device completely up
- |
+| `down` |  | Move the device completely down |
+| `up` |  | Move the device completely up |
 
 ## BatteryStatus
 
@@ -142,10 +133,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## CloseableBlind
 
@@ -155,10 +144,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## CloseableCurtain
 
@@ -168,10 +155,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## CloseableScreen
 
@@ -181,10 +166,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## CloseableShutter
 
@@ -194,10 +177,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## CloseableWindow
 
@@ -207,10 +188,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## ContactAndVibrationDetector
 
@@ -235,8 +214,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point)
- |
+| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point) |
 
 ## Cyclic
 
@@ -244,8 +222,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `cycle` |  | Do a cycle of supported motion kinematics or modes
- |
+| `cycle` |  | Do a cycle of supported motion kinematics or modes |
 
 ## CyclicGarageOpener
 
@@ -255,8 +232,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `cycle` |  | Do a cycle of supported motion kinematics or modes
- |
+| `cycle` |  | Do a cycle of supported motion kinematics or modes |
 
 ## CyclicGateOpener
 
@@ -266,8 +242,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `cycle` |  | Do a cycle of supported motion kinematics or modes
- |
+| `cycle` |  | Do a cycle of supported motion kinematics or modes |
 
 ## DHWTemperature
 
@@ -283,8 +258,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setTargetDHWTemperature` | `float` (38.0–60.0) | Set the new water temperature to reach for a Domestic Hot Water system
- |
+| `setTargetDHWTemperature` | `float` (38.0–60.0) | Set the new water temperature to reach for a Domestic Hot Water system |
 
 ## DHWThermostatTargetReader
 
@@ -300,10 +274,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `deploy` |  | Fully deploy the device
- |
-| `undeploy` |  | Fully undeploy the device
- |
+| `deploy` |  | Fully deploy the device |
+| `undeploy` |  | Fully undeploy the device |
 
 ## DeployUndeployAwning
 
@@ -313,10 +285,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `deploy` |  | Fully deploy the device
- |
-| `undeploy` |  | Fully undeploy the device
- |
+| `deploy` |  | Fully deploy the device |
+| `undeploy` |  | Fully undeploy the device |
 
 ## Deployable
 
@@ -324,8 +294,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed)
- |
+| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
 
 ## DeployableAwning
 
@@ -335,8 +304,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed)
- |
+| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
 
 ## DeployableVerticalAwning
 
@@ -346,8 +314,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed)
- |
+| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
 
 ## Dimmable
 
@@ -355,8 +322,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setIntensity` | `int` (0–100) | Light intensity level (100%=maximum intensity, 0%=off)
- |
+| `setIntensity` | `int` (0–100) | Light intensity level (100%=maximum intensity, 0%=off) |
 
 ## DoorContactSensor
 
@@ -384,10 +350,8 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point)
- |
-| `setHeatingTargetTemperature` | `float` (7.0–35.0) | Set the heating target temperature (manual set point)
- |
+| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point) |
+| `setHeatingTargetTemperature` | `float` (7.0–35.0) | Set the heating target temperature (manual set point) |
 
 ## ElectricCurrentMeter
 
@@ -456,8 +420,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setHeatingLevel` | `string` — `comfort`, `eco` | Sets the device heating level mode
- |
+| `setHeatingLevel` | `string` — `comfort`, `eco` | Sets the device heating level mode |
 
 ## IntrusionDetector
 
@@ -481,9 +444,7 @@ UI profiles describe device capabilities through the commands they accept and th
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setLevel` | `int` (0–100) | Generic device working level (0-100%)
-Functional meaning depends on device
- |
+| `setLevel` | `int` (0–100) | Generic device working level (0-100%) Functional meaning depends on device |
 
 ## LightDimmer
 
@@ -493,8 +454,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setIntensity` | `int` (0–100) | Light intensity level (100%=maximum intensity, 0%=off)
- |
+| `setIntensity` | `int` (0–100) | Light intensity level (100%=maximum intensity, 0%=off) |
 
 ## Lock
 
@@ -502,10 +462,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `lock` |  | Lock the device
- |
-| `unlock` |  | Unlock the device
- |
+| `lock` |  | Lock the device |
+| `unlock` |  | Unlock the device |
 
 ## LockStatus
 
@@ -560,12 +518,9 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `pause` |  | Pause current action
- |
-| `play` |  | Play media
- |
-| `setVolume` | `int` (0–100) | Set the device output volume
- |
+| `pause` |  | Pause current action |
+| `play` |  | Play media |
+| `setVolume` | `int` (0–100) | Set the device output volume |
 
 ## OccupancyDetector
 
@@ -597,12 +552,9 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device
- |
-| `open` |  | Fully open the device
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OpenCloseBlind
 
@@ -612,12 +564,9 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device
- |
-| `open` |  | Fully open the device
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OpenCloseCameraShutter
 
@@ -627,10 +576,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device
- |
-| `open` |  | Fully open the device
- |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
 
 ## OpenCloseCurtain
 
@@ -640,12 +587,9 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device
- |
-| `open` |  | Fully open the device
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OpenCloseGarageOpener
 
@@ -655,12 +599,9 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device
- |
-| `open` |  | Fully open the device
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OpenCloseGateOpener
 
@@ -670,12 +611,9 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device
- |
-| `open` |  | Fully open the device
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OpenCloseScreen
 
@@ -685,12 +623,9 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device
- |
-| `open` |  | Fully open the device
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OpenCloseShutter
 
@@ -700,12 +635,9 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device
- |
-| `open` |  | Fully open the device
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OpenCloseShutterSwitch
 
@@ -715,10 +647,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device
- |
-| `open` |  | Fully open the device
- |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
 
 ## OpenCloseSlidingGateOpener
 
@@ -728,12 +658,9 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device
- |
-| `open` |  | Fully open the device
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OpenCloseSwingingShutter
 
@@ -743,12 +670,9 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device
- |
-| `open` |  | Fully open the device
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OpenCloseWindow
 
@@ -758,12 +682,9 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device
- |
-| `open` |  | Fully open the device
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OpeningStatus
 
@@ -779,8 +700,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setOperatingMode` | `any` | Set an operating mode
- |
+| `setOperatingMode` | `any` | Set an operating mode |
 
 ## OrientableAndCloseable
 
@@ -788,8 +708,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosureAndOrientation` | `int` (0–100), `int` (0–100) | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device
- |
+| `setClosureAndOrientation` | `int` (0–100), `int` (0–100) | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device |
 
 ## OrientableOrCloseable
 
@@ -805,12 +724,9 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## OrientableSlats
 
@@ -818,8 +734,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats
- |
+| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats |
 
 ## PictureCamera
 
@@ -827,8 +742,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `takePicture` |  | Take a still picture
- |
+| `takePicture` |  | Take a still picture |
 
 ## PowerCutDetector
 
@@ -876,10 +790,7 @@ Functional meaning depends on device
 
 | State | Type | Description |
 |-------|------|-------------|
-| `core:LaunchStatusState` | `string` — `launched`, `standby` | Indicates if the scene is launched or standby.
-"launched" value indicates that the launch conditions have been met (ex button pressed on a remote controller).
-"standby" value matches with an intermediate status, typically between two launch actions (ex button released on a remote controller).
-"launched" value should be used during a very short time and not persist across different launch events, whereas "standby" is a more stable value. |
+| `core:LaunchStatusState` | `string` — `launched`, `standby` | Indicates if the scene is launched or standby. "launched" value indicates that the launch conditions have been met (ex button pressed on a remote controller). "standby" value matches with an intermediate status, typically between two launch actions (ex button released on a remote controller). "launched" value should be used during a very short time and not persist across different launch events, whereas "standby" is a more stable value. |
 
 ## Siren
 
@@ -887,10 +798,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `ring` |  | Ask the device to start ringing
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `ring` |  | Ask the device to start ringing |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## SlidingPergola
 
@@ -900,8 +809,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed)
- |
+| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
 
 ## SmokeDetector
 
@@ -921,10 +829,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `start` |  | Start the default actuator behavior (movement, sound or timer)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `start` |  | Start the default actuator behavior (movement, sound or timer) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## StatefulAirFan
 
@@ -932,8 +838,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setFanSpeedLevel` | `int` (0–100) | Set the device fan speed level (%)
- |
+| `setFanSpeedLevel` | `int` (0–100) | Set the device fan speed level (%) |
 
 ### States
 
@@ -947,10 +852,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `arm` |  | Arm the system
- |
-| `disarm` |  | Disarm the system
- |
+| `arm` |  | Arm the system |
+| `disarm` |  | Disarm the system |
 
 ### States
 
@@ -964,8 +867,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
 
 ### States
 
@@ -979,10 +881,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device
- |
-| `open` |  | Fully open the device
- |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
 
 ### States
 
@@ -998,8 +898,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats
- |
+| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats |
 
 ### States
 
@@ -1015,10 +914,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `lock` |  | Lock the device
- |
-| `unlock` |  | Unlock the device
- |
+| `lock` |  | Lock the device |
+| `unlock` |  | Unlock the device |
 
 ### States
 
@@ -1033,10 +930,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1052,8 +947,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
 
 ### States
 
@@ -1069,10 +963,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1088,10 +980,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1107,10 +997,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1126,10 +1014,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1145,10 +1031,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1164,10 +1048,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1183,10 +1065,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1202,10 +1082,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1221,10 +1099,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1240,8 +1116,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
 
 ### States
 
@@ -1257,10 +1132,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1274,8 +1147,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point)
- |
+| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point) |
 
 ### States
 
@@ -1289,8 +1161,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point)
- |
+| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point) |
 
 ### States
 
@@ -1305,8 +1176,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setTargetDHWTemperature` | `float` (38.0–60.0) | Set the new water temperature to reach for a Domestic Hot Water system
- |
+| `setTargetDHWTemperature` | `float` (38.0–60.0) | Set the new water temperature to reach for a Domestic Hot Water system |
 
 ### States
 
@@ -1320,10 +1190,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `deploy` |  | Fully deploy the device
- |
-| `undeploy` |  | Fully undeploy the device
- |
+| `deploy` |  | Fully deploy the device |
+| `undeploy` |  | Fully undeploy the device |
 
 ### States
 
@@ -1339,10 +1207,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `deploy` |  | Fully deploy the device
- |
-| `undeploy` |  | Fully undeploy the device
- |
+| `deploy` |  | Fully deploy the device |
+| `undeploy` |  | Fully undeploy the device |
 
 ### States
 
@@ -1356,8 +1222,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed)
- |
+| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
 
 ### States
 
@@ -1373,8 +1238,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed)
- |
+| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
 
 ### States
 
@@ -1390,8 +1254,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed)
- |
+| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
 
 ### States
 
@@ -1405,8 +1268,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setIntensity` | `int` (0–100) | Light intensity level (100%=maximum intensity, 0%=off)
- |
+| `setIntensity` | `int` (0–100) | Light intensity level (100%=maximum intensity, 0%=off) |
 
 ### States
 
@@ -1422,10 +1284,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `lock` |  | Lock the device
- |
-| `unlock` |  | Unlock the device
- |
+| `lock` |  | Lock the device |
+| `unlock` |  | Unlock the device |
 
 ### States
 
@@ -1441,10 +1301,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `lock` |  | Lock the device
- |
-| `unlock` |  | Unlock the device
- |
+| `lock` |  | Lock the device |
+| `unlock` |  | Unlock the device |
 
 ### States
 
@@ -1459,10 +1317,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point)
- |
-| `setHeatingTargetTemperature` | `float` (7.0–35.0) | Set the heating target temperature (manual set point)
- |
+| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point) |
+| `setHeatingTargetTemperature` | `float` (7.0–35.0) | Set the heating target temperature (manual set point) |
 
 ### States
 
@@ -1477,10 +1333,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point)
- |
-| `setHeatingTargetTemperature` | `float` (7.0–35.0) | Set the heating target temperature (manual set point)
- |
+| `setCoolingTargetTemperature` | `float` (7.0–35.0) | Set the cooling target temperature (manual set point) |
+| `setHeatingTargetTemperature` | `float` (7.0–35.0) | Set the heating target temperature (manual set point) |
 
 ### States
 
@@ -1496,8 +1350,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setHeatingLevel` | `string` — `comfort`, `eco` | Sets the device heating level mode
- |
+| `setHeatingLevel` | `string` — `comfort`, `eco` | Sets the device heating level mode |
 
 ### States
 
@@ -1511,9 +1364,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setLevel` | `int` (0–100) | Generic device working level (0-100%)
-Functional meaning depends on device
- |
+| `setLevel` | `int` (0–100) | Generic device working level (0-100%) Functional meaning depends on device |
 
 ### States
 
@@ -1529,9 +1380,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setLevel` | `int` (0–100) | Generic device working level (0-100%)
-Functional meaning depends on device
- |
+| `setLevel` | `int` (0–100) | Generic device working level (0-100%) Functional meaning depends on device |
 
 ### States
 
@@ -1547,8 +1396,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setIntensity` | `int` (0–100) | Light intensity level (100%=maximum intensity, 0%=off)
- |
+| `setIntensity` | `int` (0–100) | Light intensity level (100%=maximum intensity, 0%=off) |
 
 ### States
 
@@ -1562,10 +1410,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `lock` |  | Lock the device
- |
-| `unlock` |  | Unlock the device
- |
+| `lock` |  | Lock the device |
+| `unlock` |  | Unlock the device |
 
 ### States
 
@@ -1579,10 +1425,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `lock` |  | Lock the device
- |
-| `unlock` |  | Unlock the device
- |
+| `lock` |  | Lock the device |
+| `unlock` |  | Unlock the device |
 
 ### States
 
@@ -1597,12 +1441,9 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device
- |
-| `open` |  | Fully open the device
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1618,12 +1459,9 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device
- |
-| `open` |  | Fully open the device
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1639,12 +1477,9 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device
- |
-| `open` |  | Fully open the device
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1660,12 +1495,9 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device
- |
-| `open` |  | Fully open the device
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1681,10 +1513,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `close` |  | Fully close the device
- |
-| `open` |  | Fully open the device
- |
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
 
 ### States
 
@@ -1698,8 +1528,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setOperatingMode` | `any` | Set an operating mode
- |
+| `setOperatingMode` | `any` | Set an operating mode |
 
 ### States
 
@@ -1713,8 +1542,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosureAndOrientation` | `int` (0–100), `int` (0–100) | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device
- |
+| `setClosureAndOrientation` | `int` (0–100), `int` (0–100) | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device |
 
 ### States
 
@@ -1731,8 +1559,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosureAndOrientation` | `int` (0–100), `int` (0–100) | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device
- |
+| `setClosureAndOrientation` | `int` (0–100), `int` (0–100) | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device |
 
 ### States
 
@@ -1762,12 +1589,9 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1784,12 +1608,9 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1806,12 +1627,9 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open)
- |
-| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `setClosure` | `int` (0–100) | Closure level (100%=fully close, 0%=open) |
+| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1826,8 +1644,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats
- |
+| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats |
 
 ### States
 
@@ -1858,10 +1675,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `ring` |  | Ask the device to start ringing
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `ring` |  | Ask the device to start ringing |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1877,8 +1692,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed)
- |
+| `setDeployment` | `int` (0–100) | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
 
 ### States
 
@@ -1892,10 +1706,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `start` |  | Start the default actuator behavior (movement, sound or timer)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `start` |  | Start the default actuator behavior (movement, sound or timer) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1911,10 +1723,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `start` |  | Start the default actuator behavior (movement, sound or timer)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `start` |  | Start the default actuator behavior (movement, sound or timer) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1930,10 +1740,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `start` |  | Start the default actuator behavior (movement, sound or timer)
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `start` |  | Start the default actuator behavior (movement, sound or timer) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ### States
 
@@ -1947,10 +1755,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `off` |  | Turn off the device
- |
-| `on` |  | Turn on the device
- |
+| `off` |  | Turn off the device |
+| `on` |  | Turn on the device |
 
 ### States
 
@@ -1966,10 +1772,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `off` |  | Turn off the device
- |
-| `on` |  | Turn on the device
- |
+| `off` |  | Turn off the device |
+| `on` |  | Turn on the device |
 
 ### States
 
@@ -1985,10 +1789,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `off` |  | Turn off the device
- |
-| `on` |  | Turn on the device
- |
+| `off` |  | Turn off the device |
+| `on` |  | Turn on the device |
 
 ### States
 
@@ -2004,10 +1806,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `off` |  | Turn off the device
- |
-| `on` |  | Turn on the device
- |
+| `off` |  | Turn off the device |
+| `on` |  | Turn on the device |
 
 ### States
 
@@ -2023,10 +1823,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `off` |  | Turn off the device
- |
-| `on` |  | Turn on the device
- |
+| `off` |  | Turn off the device |
+| `on` |  | Turn on the device |
 
 ### States
 
@@ -2040,8 +1838,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setTargetTemperature` | `float` (12.0–30.0) | Set the new air temperature to reach
- |
+| `setTargetTemperature` | `float` (12.0–30.0) | Set the new air temperature to reach |
 
 ### States
 
@@ -2055,8 +1852,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setTargetTemperature` | `float` (12.0–30.0) | Set the new air temperature to reach
- |
+| `setTargetTemperature` | `float` (12.0–30.0) | Set the new air temperature to reach |
 
 ### States
 
@@ -2073,8 +1869,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosureAndOrientation` | `int` (0–100), `int` (0–100) | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device
- |
+| `setClosureAndOrientation` | `int` (0–100), `int` (0–100) | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device |
 
 ### States
 
@@ -2091,8 +1886,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats
- |
+| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats |
 
 ### States
 
@@ -2108,10 +1902,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `lock` |  | Lock the device
- |
-| `unlock` |  | Unlock the device
- |
+| `lock` |  | Lock the device |
+| `unlock` |  | Unlock the device |
 
 ### States
 
@@ -2126,14 +1918,10 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `pause` |  | Pause current action
- |
-| `play` |  | Play media
- |
-| `setVolume` | `int` (0–100) | Set the device output volume
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
+| `pause` |  | Pause current action |
+| `play` |  | Play media |
+| `setVolume` | `int` (0–100) | Set the device output volume |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
 ## Switch
 
@@ -2159,10 +1947,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `off` |  | Turn off the device
- |
-| `on` |  | Turn on the device
- |
+| `off` |  | Turn off the device |
+| `on` |  | Turn on the device |
 
 ## SwitchableHeating
 
@@ -2172,10 +1958,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `off` |  | Turn off the device
- |
-| `on` |  | Turn on the device
- |
+| `off` |  | Turn off the device |
+| `on` |  | Turn on the device |
 
 ## SwitchableHeatingStatus
 
@@ -2195,10 +1979,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `off` |  | Turn off the device
- |
-| `on` |  | Turn on the device
- |
+| `off` |  | Turn off the device |
+| `on` |  | Turn on the device |
 
 ## SwitchablePlug
 
@@ -2208,10 +1990,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `off` |  | Turn off the device
- |
-| `on` |  | Turn on the device
- |
+| `off` |  | Turn off the device |
+| `on` |  | Turn on the device |
 
 ## SwitchableVentilation
 
@@ -2221,10 +2001,8 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `off` |  | Turn off the device
- |
-| `on` |  | Turn on the device
- |
+| `off` |  | Turn off the device |
+| `on` |  | Turn on the device |
 
 ## Temperature
 
@@ -2248,8 +2026,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setTargetTemperature` | `float` (12.0–30.0) | Set the new air temperature to reach
- |
+| `setTargetTemperature` | `float` (12.0–30.0) | Set the new air temperature to reach |
 
 ## ThermostatOffsetReader
 
@@ -2301,12 +2078,9 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `down` |  | Move the device completely down
- |
-| `stop` |  | Stop the current actuator behavior (movement, sound or timer)
- |
-| `up` |  | Move the device completely up
- |
+| `down` |  | Move the device completely down |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+| `up` |  | Move the device completely up |
 
 ## UpdatableComponent
 
@@ -2314,8 +2088,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while.
- |
+| `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
 
 ## VOCConcentration
 
@@ -2333,8 +2106,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setClosureAndOrientation` | `int` (0–100), `int` (0–100) | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device
- |
+| `setClosureAndOrientation` | `int` (0–100), `int` (0–100) | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device |
 
 ## VenetianSlats
 
@@ -2344,8 +2116,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats
- |
+| `setOrientation` | `int` (0–100) | Set the relative orientation (0-100%) of the device slats |
 
 ## VibrationDetector
 
@@ -2361,8 +2132,7 @@ Functional meaning depends on device
 
 | Command | Parameters | Description |
 |---------|-----------|-------------|
-| `setVolume` | `int` (0–100) | Set the device output volume
- |
+| `setVolume` | `int` (0–100) | Set the device output volume |
 
 ## WaterConsumption
 

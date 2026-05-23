@@ -506,7 +506,7 @@ def generate_ui_profiles_docs(
                         else:
                             param_parts.append("—")
                     params = ", ".join(param_parts)
-                desc = cmd.description or ""
+                desc = (cmd.description or "").replace("\n", " ").replace("|", "\\|")
                 lines.append(f"| `{cmd.name}` | {params} | {desc} |")
             lines.append("")
 
@@ -519,12 +519,12 @@ def generate_ui_profiles_docs(
                 type_info = ""
                 if state.prototype and state.prototype.value_prototypes:
                     type_info = format_type(state.prototype.value_prototypes[0])
-                desc = state.description or ""
+                desc = (state.description or "").replace("\n", " ").replace("|", "\\|")
                 lines.append(f"| `{state.name}` | {type_info} | {desc} |")
             lines.append("")
 
     output_path = Path(__file__).parent.parent / "docs" / "ui-profiles.md"
-    output_path.write_text("\n".join(lines))
+    output_path.write_text("\n".join(lines), encoding="utf-8", newline="\n")
     print(f"✓ Generated {output_path}")
 
 
