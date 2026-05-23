@@ -84,6 +84,8 @@ def to_enum_name(value: str) -> str:
     """Convert camelCase to SCREAMING_SNAKE_CASE for enum names."""
     name = value.replace("ZWave", "ZWAVE_")
     name = name.replace("OTherm", "OTHERM_")
+    name = name.replace("IPv4", "IPV4_")
+    name = name.replace("IPv6", "IPV6_")
     name = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1_\2", name)
     name = re.sub(r"([a-z\d])([A-Z])", r"\1_\2", name)
     name = name.replace("APCDHW", "APC_DHW")
