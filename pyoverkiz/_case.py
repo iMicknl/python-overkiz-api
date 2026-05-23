@@ -36,3 +36,23 @@ def camelize_key(key: str) -> str:
     """Convert a single snake_case key to camelCase."""
     parts = key.split("_")
     return parts[0] + "".join(word.capitalize() for word in parts[1:])
+
+
+# Fields where the API uses non-standard casing that camelize_key cannot produce.
+_API_KEY_OVERRIDES: dict[str, str] = {
+    "device_url": "deviceURL",
+    "place_oid": "placeOID",
+    "setup_oid": "setupOID",
+}
+
+
+@functools.lru_cache(maxsize=1024)
+def snake_to_api_key(snake: str) -> str:
+    """Convert a snake_case field name to the camelCase key the API sends.
+
+    Handles non-standard API casing (e.g. deviceURL, placeOID) that
+    camelize_key cannot produce from standard snake_case conversion.
+    """
+    if snake in _API_KEY_OVERRIDES:
+        return _API_KEY_OVERRIDES[snake]
+    return camelize_key(snake)

@@ -11,7 +11,7 @@ import attr
 import cattrs
 from cattrs.gen import make_dict_structure_fn, override
 
-from pyoverkiz._case import camelize_key
+from pyoverkiz._case import snake_to_api_key
 from pyoverkiz.models import (
     CommandDefinition,
     CommandDefinitions,
@@ -20,20 +20,6 @@ from pyoverkiz.models import (
     StateDefinitions,
     States,
 )
-
-# Fields where the API uses non-standard casing that camelize_key cannot produce.
-_API_KEY_OVERRIDES: dict[str, str] = {
-    "device_url": "deviceURL",
-    "place_oid": "placeOID",
-    "setup_oid": "setupOID",
-}
-
-
-def _snake_to_api_key(snake: str) -> str:
-    """Convert a snake_case field name to the camelCase key the API sends."""
-    if snake in _API_KEY_OVERRIDES:
-        return _API_KEY_OVERRIDES[snake]
-    return camelize_key(snake)
 
 
 def _is_primitive_union(t: Any) -> bool:
@@ -64,7 +50,7 @@ def _compute_rename_overrides(cls: type) -> dict[str, Any]:
             continue
         if f.alias is not None and f.alias != snake:
             continue
-        api_key = _snake_to_api_key(snake)
+        api_key = snake_to_api_key(snake)
         if api_key != snake:
             overrides[snake] = override(rename=api_key)
     return overrides
