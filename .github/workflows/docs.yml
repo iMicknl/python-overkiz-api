@@ -3,7 +3,8 @@ name: docs
 on:
   release:
     types:
-      - created
+      - published
+  workflow_dispatch:
   pull_request:
     paths:
       - docs/**
