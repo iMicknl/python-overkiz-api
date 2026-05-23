@@ -9,7 +9,7 @@ Usage:
     OVERKIZ_USERNAME=... OVERKIZ_PASSWORD=... uv run utils/generate_device_catalog.py --server somfy_europe
 """
 
-# ruff: noqa: T201, PLR2004
+# ruff: noqa: T201
 
 from __future__ import annotations
 
@@ -152,9 +152,13 @@ def generate_docs_page(
     catalog_data: dict,
     controllable_definitions: dict[str, dict],
 ) -> None:
-    """Generate a browsable markdown docs page for device types."""
-    protocols = catalog_data.get("protocols", {})
+    """Generate a browsable markdown docs page for device types.
 
+    Uses controllable definitions as the primary view (grouped by protocol prefix),
+    since those have the controllable name which is the unique identifier developers
+    work with. The catalog data from /reference/devices/search is used for the JSON
+    output and enum enrichment but not directly for the docs page.
+    """
     lines = [
         "---",
         "hide:",
@@ -164,51 +168,53 @@ def generate_docs_page(
         "# Device Types",
         "",
         "This page lists all known device types (controllables) from the Overkiz API, "
-        "grouped by protocol. Each entry shows the commands it accepts and the states it exposes.",
+        "grouped by protocol. Each entry shows the commands it accepts and the states "
+        "it exposes.",
         "",
         "!!! note",
-        "    This page is auto-generated from the Overkiz API. Run `uv run utils/generate_device_catalog.py` to regenerate.",
+        "    This page is auto-generated from the Overkiz API. "
+        "Run `uv run utils/generate_device_catalog.py` to regenerate.",
         "",
     ]
 
-    # Summary stats
-    total_types = sum(len(dts) for dts in protocols.values())
+    # Group controllable definitions by protocol prefix
+    grouped: dict[str, dict[str, dict]] = {}
+    for name, defn in controllable_definitions.items():
+        prefix = name.split(":")[0] if ":" in name else "other"
+        grouped.setdefault(prefix, {})[name] = defn
+
     lines.append(
-        f"**{len(protocols)} protocols**, **{total_types} device types**, "
-        f"**{len(controllable_definitions)} controllable definitions** documented below."
+        f"**{len(grouped)} protocols**, "
+        f"**{len(controllable_definitions)} controllables** documented below."
     )
     lines.append("")
 
-    # Table of contents by protocol
+    # Table of contents by protocol prefix
     lines.append("## Protocols")
     lines.append("")
-    for proto_name in sorted(protocols.keys()):
-        device_types = protocols[proto_name]
-        lines.append(
-            f"- [{proto_name}](#{proto_name.lower()}) ({len(device_types)} types)"
-        )
+    for prefix in sorted(grouped.keys()):
+        count = len(grouped[prefix])
+        lines.append(f"- [{prefix}](#{prefix}) ({count} types)")
     lines.append("")
 
     # Per-protocol sections
-    for proto_name in sorted(protocols.keys()):
-        device_types = protocols[proto_name]
-        lines.append(f"## {proto_name}")
+    for prefix in sorted(grouped.keys()):
+        definitions = grouped[prefix]
+        lines.append(f"## {prefix}")
         lines.append("")
-        lines.append(f"{len(device_types)} device types.")
+        lines.append(f"{len(definitions)} device types.")
         lines.append("")
 
-        for dt in sorted(device_types, key=lambda d: d.get("uiClass", "") or ""):
-            ui_class = dt.get("uiClass") or "Unknown"
-            ui_widget = dt.get("uiWidget") or ""
-            ctrl_type = dt.get("controllableType") or ""
-            type_id = dt.get("typeId")
-            commands = dt.get("commands", [])
-            states = dt.get("states", [])
+        for name in sorted(definitions.keys()):
+            defn = definitions[name]
+            commands = defn.get("commands", [])
+            states = defn.get("states", [])
+            ui_class = defn.get("uiClass", "")
+            widget = defn.get("widgetName", "")
+            ctrl_type = defn.get("type", "")
 
-            # Build summary for the details heading
-            summary = ui_class
-            if ui_widget and ui_widget != ui_class:
-                summary += f" ({ui_widget})"
+            # Build summary: controllable name is the primary identifier
+            summary = name
             summary += f" — {len(commands)} commands, {len(states)} states"
 
             lines.append(f'??? note "{summary}"')
@@ -216,15 +222,15 @@ def generate_docs_page(
 
             # Metadata
             meta_parts = []
+            if ui_class:
+                meta_parts.append(f"**UI Class:** `{ui_class}`")
+            if widget:
+                meta_parts.append(f"**Widget:** `{widget}`")
             if ctrl_type:
                 meta_parts.append(f"**Type:** {ctrl_type}")
-            if type_id is not None:
-                meta_parts.append(f"**ID:** {type_id}")
-            if dt.get("localPairing"):
-                meta_parts.append("**Local pairing:** Yes")
-            if dt.get("uiProfiles"):
+            if defn.get("uiProfiles"):
                 meta_parts.append(
-                    f"**Profiles:** {', '.join(f'`{p}`' for p in dt['uiProfiles'])}"
+                    f"**Profiles:** {', '.join(f'`{p}`' for p in defn['uiProfiles'])}"
                 )
             if meta_parts:
                 lines.append(f"    {' | '.join(meta_parts)}")
@@ -234,153 +240,30 @@ def generate_docs_page(
             if commands:
                 lines.append("    **Commands**")
                 lines.append("")
-                lines.append("    | Command | Parameters | Description |")
-                lines.append("    |---------|-----------|-------------|")
+                lines.append("    | Command | Parameters |")
+                lines.append("    |---------|-----------|")
                 for cmd in commands:
-                    cmd_name = cmd["commandName"]
-                    desc = (
-                        (cmd.get("description") or "")
-                        .replace("|", "\\|")
-                        .replace("\n", " ")
-                    )
-                    params = ""
-                    if "parameters" in cmd:
-                        param_parts = []
-                        for p in cmd["parameters"]:
-                            flags = []
-                            if p.get("optional"):
-                                flags.append("optional")
-                            if p.get("sensitive"):
-                                flags.append("sensitive")
-                            for vp in p.get("valuePrototypes", []):
-                                vp_str = f"`{vp['type'].lower()}`"
-                                if "minValue" in vp and "maxValue" in vp:
-                                    vp_str += f" ({vp['minValue']}\N{EN DASH}{vp['maxValue']})"
-                                elif "minValue" in vp:
-                                    vp_str += f" (\N{GREATER-THAN OR EQUAL TO} {vp['minValue']})"
-                                elif "maxValue" in vp:
-                                    vp_str += (
-                                        f" (\N{LESS-THAN OR EQUAL TO} {vp['maxValue']})"
-                                    )
-                                if "enumValues" in vp:
-                                    vals = ", ".join(
-                                        f"`{v}`" for v in vp["enumValues"][:5]
-                                    )
-                                    if len(vp["enumValues"]) > 5:
-                                        vals += ", \N{HORIZONTAL ELLIPSIS}"
-                                    vp_str += f" — {vals}"
-                                if flags:
-                                    vp_str += f" *({', '.join(flags)})*"
-                                param_parts.append(vp_str)
-                        params = ", ".join(param_parts)
-                    lines.append(f"    | `{cmd_name}` | {params} | {desc} |")
+                    cmd_name = cmd.get("commandName", "?")
+                    nparams = cmd.get("nparams", 0)
+                    params = f"{nparams} params" if nparams > 0 else ""
+                    lines.append(f"    | `{cmd_name}` | {params} |")
                 lines.append("")
 
-            # States table
-            if states:
-                lines.append("    **States**")
-                lines.append("")
-                lines.append("    | State | Type | Range / Values |")
-                lines.append("    |-------|------|----------------|")
-                for state in states:
-                    state_name = state["name"]
-                    state_type = state.get("type", "")
-                    range_info = ""
-
-                    for vp in state.get("valuePrototypes", []):
-                        vp_type = vp.get("type", "").lower()
-                        if not state_type:
-                            state_type = vp_type
-                        if "minValue" in vp and "maxValue" in vp:
-                            range_info = f"{vp['minValue']}\N{EN DASH}{vp['maxValue']}"
-                        elif "minValue" in vp:
-                            range_info = (
-                                f"\N{GREATER-THAN OR EQUAL TO} {vp['minValue']}"
-                            )
-                        elif "maxValue" in vp:
-                            range_info = f"\N{LESS-THAN OR EQUAL TO} {vp['maxValue']}"
-                        if "enumValues" in vp:
-                            vals = ", ".join(f"`{v}`" for v in vp["enumValues"][:8])
-                            if len(vp["enumValues"]) > 8:
-                                vals += ", \N{HORIZONTAL ELLIPSIS}"
-                            range_info = vals
-
-                    lines.append(
-                        f"    | `{state_name}` | {state_type} | {range_info} |"
-                    )
-                lines.append("")
-
-            # Attributes
-            attributes = dt.get("attributes", [])
-            if attributes:
-                lines.append("    **Attributes**")
-                lines.append("")
-                lines.append("    | Attribute | Default |")
-                lines.append("    |-----------|---------|")
-                for attr in attributes:
-                    default = attr.get("defaultValue", "")
-                    lines.append(f"    | `{attr['name']}` | {default} |")
-                lines.append("")
-
-        lines.append("")
-
-    # Controllable definitions section
-    if controllable_definitions:
-        lines.append("## Controllable Definitions")
-        lines.append("")
-        lines.append(
-            "These are the specific controllable names (device types) fetched from "
-            "`/reference/controllable/{name}`. Each maps to a combination of commands, "
-            "states, UI class and widget."
-        )
-        lines.append("")
-
-        for name in sorted(controllable_definitions.keys()):
-            defn = controllable_definitions[name]
-            commands = defn.get("commands", [])
-            states = defn.get("states", [])
-
-            summary = name
-            cmd_count = len(commands)
-            state_count = len(states)
-            summary += f" — {cmd_count} commands, {state_count} states"
-
-            lines.append(f'??? note "{summary}"')
-            lines.append("")
-
-            ui_class = defn.get("uiClass", "")
-            widget = defn.get("widgetName", "")
-            ctrl_type = defn.get("type", "")
-            meta = []
-            if ui_class:
-                meta.append(f"**UI Class:** `{ui_class}`")
-            if widget:
-                meta.append(f"**Widget:** `{widget}`")
-            if ctrl_type:
-                meta.append(f"**Type:** {ctrl_type}")
-            if defn.get("uiProfiles"):
-                meta.append(
-                    f"**Profiles:** {', '.join(f'`{p}`' for p in defn['uiProfiles'])}"
-                )
-            if meta:
-                lines.append(f"    {' | '.join(meta)}")
-                lines.append("")
-
-            if commands:
-                cmd_names = [c["commandName"] for c in commands]
-                lines.append(
-                    f"    **Commands:** {', '.join(f'`{c}`' for c in cmd_names)}"
-                )
-                lines.append("")
-
+            # States
             if states:
                 state_names = [
                     s.get("qualifiedName", s.get("name", "?")) for s in states
                 ]
-                lines.append(
-                    f"    **States:** {', '.join(f'`{s}`' for s in state_names)}"
-                )
+                state_types = [s.get("type", "") for s in states]
+                lines.append("    **States**")
                 lines.append("")
+                lines.append("    | State | Type |")
+                lines.append("    |-------|------|")
+                for s_name, s_type in zip(state_names, state_types, strict=True):
+                    lines.append(f"    | `{s_name}` | {s_type} |")
+                lines.append("")
+
+        lines.append("")
 
     output_path = DOCS_DIR / "device-types.md"
     output_path.write_text("\n".join(lines), encoding="utf-8", newline="\n")
