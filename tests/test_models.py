@@ -9,7 +9,15 @@ import cattrs.errors
 import pytest
 
 from pyoverkiz.converter import converter, structure_response
-from pyoverkiz.enums import DataType, EventName, ExecutionState, FailureType, Protocol
+from pyoverkiz.enums import (
+    DataType,
+    EventName,
+    ExecutionState,
+    FailureType,
+    Protocol,
+    UIClassifier,
+    UIProfile,
+)
 from pyoverkiz.models import (
     Action,
     ActionGroup,
@@ -62,6 +70,10 @@ RAW_DEVICES = {
         "uiProfiles": [
             "StatefulCloseableShutter",
             "Closeable",
+        ],
+        "uiClassifiers": [
+            "heatingSystem",
+            "emitter",
         ],
         "uiClass": "RollerShutter",
         "qualifiedName": "io:RollerShutterGenericIOComponent",
@@ -604,6 +616,33 @@ class TestDefinition:
         """has_state_definition() returns False for definitions with no states."""
         definition = Definition(commands=CommandDefinitions(), states=[])
         assert not definition.has_state_definition(["core:ClosureState"])
+
+    def test_ui_profiles_parsed_as_enum(self):
+        """ui_profiles should be structured as list[UIProfile]."""
+        device = _make_device()
+        assert UIProfile.CLOSEABLE in device.definition.ui_profiles
+        assert UIProfile.STATEFUL_CLOSEABLE_SHUTTER in device.definition.ui_profiles
+        assert UIProfile.DIMMABLE not in device.definition.ui_profiles
+
+    def test_ui_classifiers_parsed_as_enum(self):
+        """ui_classifiers should be structured as list[UIClassifier]."""
+        device = _make_device()
+        assert UIClassifier.HEATING_SYSTEM in device.definition.ui_classifiers
+        assert UIClassifier.EMITTER in device.definition.ui_classifiers
+        assert UIClassifier.SENSOR not in device.definition.ui_classifiers
+
+    def test_ui_profiles_default_to_empty_list(self):
+        """Omitted or null ui_profiles/ui_classifiers default to empty lists."""
+        d1 = structure_response({"commands": [], "states": []}, Definition)
+        assert d1.ui_profiles == []
+        assert d1.ui_classifiers == []
+
+        d2 = structure_response(
+            {"commands": [], "states": [], "uiProfiles": None, "uiClassifiers": None},
+            Definition,
+        )
+        assert d2.ui_profiles == []
+        assert d2.ui_classifiers == []
 
 
 class TestStateDefinition:
