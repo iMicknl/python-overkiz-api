@@ -68,17 +68,18 @@ if device.states.has_any([OverkizState.CORE_SLATS_ORIENTATION, OverkizState.CORE
 devices = await client.get_devices()
 device = devices[0]
 
-# Get the state definition for a single state
-state_def = device.definition.get_state_definition(OverkizState.CORE_OPEN_CLOSED)
-if state_def:
-    print(f"Type: {state_def.type}")
-    print(f"Valid values: {state_def.values}")
+if device.definition:
+    # Get the state definition for a single state
+    state_def = device.definition.get_state_definition(OverkizState.CORE_OPEN_CLOSED)
+    if state_def:
+        print(f"Type: {state_def.type}")
+        print(f"Valid values: {state_def.values}")
 
-# Get the first matching state definition from a list
-state_def = device.definition.first_state_definition([OverkizState.CORE_OPEN_CLOSED, OverkizState.CORE_SLATS_OPEN_CLOSED])
-if state_def:
-    print(f"Type: {state_def.type}")
-    print(f"Valid values: {state_def.values}")
+    # Get the first matching state definition from a list
+    state_def = device.definition.first_state_definition([OverkizState.CORE_OPEN_CLOSED, OverkizState.CORE_SLATS_OPEN_CLOSED])
+    if state_def:
+        print(f"Type: {state_def.type}")
+        print(f"Valid values: {state_def.values}")
 ```
 
 #### Check supported commands

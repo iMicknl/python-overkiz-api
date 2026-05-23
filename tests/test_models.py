@@ -10,6 +10,7 @@ import pytest
 
 from pyoverkiz.converter import converter, structure_response
 from pyoverkiz.enums import DataType, EventName, ExecutionState, FailureType, Protocol
+from pyoverkiz.enums.command import OverkizCommand
 from pyoverkiz.models import (
     Action,
     ActionGroup,
@@ -529,6 +530,12 @@ class TestCommandDefinitions:
         cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
         assert not cmds.has_any(["nonexistent", "also_nonexistent"])
 
+    def test_contains_supports_overkiz_command_enum(self):
+        """__contains__ supports OverkizCommand enum values."""
+        cmds = self._make_cmds([{"command_name": "open", "nparams": 0}])
+        assert OverkizCommand.OPEN in cmds
+        assert OverkizCommand.CLOSE not in cmds
+
     def test_getitem_raises_keyerror_on_missing(self):
         """Subscript access raises KeyError for missing commands."""
         cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
@@ -586,8 +593,8 @@ class TestDefinition:
         definition = Definition(commands=CommandDefinitions(), states=[])
         assert definition.get_state_definition("nonexistent") is None
 
-    def test_first_state_definition_returns_first_match(self):
-        """first_state_definition() returns the first matching StateDefinition."""
+    def test_first_state_definition_respects_caller_priority(self):
+        """first_state_definition() returns based on names order, not definition order."""
         definition = Definition(
             commands=CommandDefinitions(),
             states=[
@@ -603,7 +610,7 @@ class TestDefinition:
             ["core:TargetClosureState", "core:ClosureState"]
         )
         assert state_def is not None
-        assert state_def.qualified_name == "core:ClosureState"
+        assert state_def.qualified_name == "core:TargetClosureState"
 
     def test_has_state_definition_returns_true(self):
         """has_state_definition() returns True when a state definition matches."""

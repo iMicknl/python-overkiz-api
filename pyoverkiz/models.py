@@ -344,10 +344,10 @@ class Definition:
 
     def first_state_definition(self, names: list[str]) -> StateDefinition | None:
         """Return the first StateDefinition whose qualified_name matches, or None."""
-        names_set = set(names)
-        for state_def in self.states:
-            if state_def.qualified_name in names_set:
-                return state_def
+        index = {sd.qualified_name: sd for sd in self.states}
+        for name in names:
+            if name in index:
+                return index[name]
         return None
 
     def has_state_definition(self, name: str) -> bool:
