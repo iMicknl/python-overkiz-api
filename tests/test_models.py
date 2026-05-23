@@ -16,7 +16,6 @@ from pyoverkiz.models import (
     ActionGroup,
     Command,
     CommandDefinitions,
-    Definition,
     Device,
     Event,
     EventState,
@@ -24,6 +23,7 @@ from pyoverkiz.models import (
     Setup,
     State,
     StateDefinition,
+    StateDefinitions,
     States,
 )
 from pyoverkiz.obfuscate import obfuscate_id
@@ -297,18 +297,18 @@ class TestDevice:
         assert device.states.has_any(["nonexistent", "core:ClosureState"])
         assert not device.states.has_any(["nonexistent"])
 
-    def test_definition_get_state_definition(self):
-        """device.definition.get_state_definition() returns StateDefinition for a single state."""
+    def test_definition_states_get(self):
+        """device.definition.states.get() returns StateDefinition for a single state."""
         device = _make_device()
-        state_def = device.definition.get_state_definition("core:ClosureState")
+        state_def = device.definition.states.get("core:ClosureState")
         assert state_def is not None
         assert state_def.qualified_name == "core:ClosureState"
-        assert device.definition.get_state_definition("nonexistent") is None
+        assert device.definition.states.get("nonexistent") is None
 
-    def test_definition_first_state_definition(self):
-        """device.definition.first_state_definition() returns first matching StateDefinition from list."""
+    def test_definition_states_first(self):
+        """device.definition.states.first() returns first matching StateDefinition from list."""
         device = _make_device()
-        state_def = device.definition.first_state_definition(
+        state_def = device.definition.states.first(
             ["nonexistent", "core:ClosureState"]
         )
         assert state_def is not None
@@ -564,113 +564,84 @@ class TestCommandDefinitions:
         assert "nonexistent" not in cmds
 
 
-class TestDefinition:
-    """Tests for Definition model and its helper methods."""
+class TestStateDefinitions:
+    """Tests for the StateDefinitions container."""
 
-    def test_get_state_definition_returns_match(self):
-        """get_state_definition() returns the StateDefinition by qualified name."""
-        definition = Definition(
-            commands=CommandDefinitions(),
-            states=[
+    def _make_state_defs(self) -> StateDefinitions:
+        return StateDefinitions(
+            [
                 StateDefinition(
                     qualified_name="core:ClosureState", type="ContinuousState"
                 ),
                 StateDefinition(
                     qualified_name="core:TargetClosureState", type="ContinuousState"
                 ),
-            ],
+            ]
         )
-        state_def = definition.get_state_definition("core:ClosureState")
+
+    def test_get_returns_match(self):
+        """get() returns the StateDefinition by qualified name."""
+        state_defs = self._make_state_defs()
+        state_def = state_defs.get("core:ClosureState")
         assert state_def is not None
         assert state_def.qualified_name == "core:ClosureState"
 
-        state_def2 = definition.get_state_definition("core:TargetClosureState")
-        assert state_def2 is not None
-        assert state_def2.qualified_name == "core:TargetClosureState"
+    def test_get_returns_none_when_missing(self):
+        """get() returns None when no state definition matches."""
+        state_defs = StateDefinitions()
+        assert state_defs.get("nonexistent") is None
 
-    def test_get_state_definition_returns_none_when_no_match(self):
-        """get_state_definition() returns None when no state definition matches."""
-        definition = Definition(commands=CommandDefinitions(), states=[])
-        assert definition.get_state_definition("nonexistent") is None
+    def test_getitem_returns_match(self):
+        """[] returns the StateDefinition by qualified name."""
+        state_defs = self._make_state_defs()
+        assert state_defs["core:ClosureState"].qualified_name == "core:ClosureState"
 
-    def test_first_state_definition_respects_caller_priority(self):
-        """first_state_definition() returns based on names order, not definition order."""
-        definition = Definition(
-            commands=CommandDefinitions(),
-            states=[
-                StateDefinition(
-                    qualified_name="core:ClosureState", type="ContinuousState"
-                ),
-                StateDefinition(
-                    qualified_name="core:TargetClosureState", type="ContinuousState"
-                ),
-            ],
-        )
-        state_def = definition.first_state_definition(
+    def test_getitem_raises_keyerror(self):
+        """[] raises KeyError for missing state definitions."""
+        state_defs = self._make_state_defs()
+        with pytest.raises(KeyError, match="nonexistent"):
+            state_defs["nonexistent"]
+
+    def test_contains(self):
+        """'in' operator works for state definitions."""
+        state_defs = self._make_state_defs()
+        assert "core:ClosureState" in state_defs
+        assert "nonexistent" not in state_defs
+
+    def test_first_respects_caller_priority(self):
+        """first() returns based on names order, not definition order."""
+        state_defs = self._make_state_defs()
+        state_def = state_defs.first(
             ["core:TargetClosureState", "core:ClosureState"]
         )
         assert state_def is not None
         assert state_def.qualified_name == "core:TargetClosureState"
 
-    def test_has_state_definition_returns_true(self):
-        """has_state_definition() returns True when a state definition matches."""
-        definition = Definition(
-            commands=CommandDefinitions(),
-            states=[
-                StateDefinition(
-                    qualified_name="core:ClosureState", type="ContinuousState"
-                ),
-            ],
-        )
-        assert definition.has_state_definition("core:ClosureState")
+    def test_first_returns_none_when_no_match(self):
+        """first() returns None when no state definition matches."""
+        state_defs = self._make_state_defs()
+        assert state_defs.first(["nonexistent"]) is None
 
-    def test_has_state_definition_returns_false(self):
-        """has_state_definition() returns False when no state definition matches."""
-        definition = Definition(
-            commands=CommandDefinitions(),
-            states=[
-                StateDefinition(
-                    qualified_name="core:ClosureState", type="ContinuousState"
-                ),
-            ],
-        )
-        assert not definition.has_state_definition("nonexistent")
+    def test_has_any_returns_true(self):
+        """has_any() returns True when any state definition matches."""
+        state_defs = self._make_state_defs()
+        assert state_defs.has_any(["nonexistent", "core:TargetClosureState"])
 
-    def test_has_any_state_definition_returns_true(self):
-        """has_any_state_definition() returns True when any state definition matches."""
-        definition = Definition(
-            commands=CommandDefinitions(),
-            states=[
-                StateDefinition(
-                    qualified_name="core:ClosureState", type="ContinuousState"
-                ),
-                StateDefinition(
-                    qualified_name="core:TargetClosureState", type="ContinuousState"
-                ),
-            ],
-        )
-        assert definition.has_any_state_definition(
-            ["nonexistent", "core:TargetClosureState"]
-        )
+    def test_has_any_returns_false(self):
+        """has_any() returns False when no state definition matches."""
+        state_defs = self._make_state_defs()
+        assert not state_defs.has_any(["nonexistent", "also_nonexistent"])
 
-    def test_has_any_state_definition_returns_false(self):
-        """has_any_state_definition() returns False when no state definition matches."""
-        definition = Definition(
-            commands=CommandDefinitions(),
-            states=[
-                StateDefinition(
-                    qualified_name="core:ClosureState", type="ContinuousState"
-                ),
-            ],
-        )
-        assert not definition.has_any_state_definition(
-            ["nonexistent", "also_nonexistent"]
-        )
+    def test_iteration(self):
+        """Iteration yields qualified names."""
+        state_defs = self._make_state_defs()
+        assert list(state_defs) == ["core:ClosureState", "core:TargetClosureState"]
 
-    def test_has_state_definition_empty_states(self):
-        """has_state_definition() returns False for definitions with no states."""
-        definition = Definition(commands=CommandDefinitions(), states=[])
-        assert not definition.has_state_definition("core:ClosureState")
+    def test_len(self):
+        """len() returns number of state definitions."""
+        state_defs = self._make_state_defs()
+        assert len(state_defs) == 2
+        assert len(StateDefinitions()) == 0
 
 
 class TestStateDefinition:

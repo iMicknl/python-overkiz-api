@@ -70,13 +70,13 @@ device = devices[0]
 
 if device.definition:
     # Get the state definition for a single state
-    state_def = device.definition.get_state_definition(OverkizState.CORE_OPEN_CLOSED)
+    state_def = device.definition.states.get(OverkizState.CORE_OPEN_CLOSED)
     if state_def:
         print(f"Type: {state_def.type}")
         print(f"Valid values: {state_def.values}")
 
     # Get the first matching state definition from a list
-    state_def = device.definition.first_state_definition([OverkizState.CORE_OPEN_CLOSED, OverkizState.CORE_SLATS_OPEN_CLOSED])
+    state_def = device.definition.states.first([OverkizState.CORE_OPEN_CLOSED, OverkizState.CORE_SLATS_OPEN_CLOSED])
     if state_def:
         print(f"Type: {state_def.type}")
         print(f"Valid values: {state_def.values}")

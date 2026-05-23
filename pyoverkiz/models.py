@@ -279,6 +279,53 @@ class StateDefinition:
                 )
 
 
+@define(init=False)
+class StateDefinitions(Mapping[str, StateDefinition]):
+    """Container for state definitions implementing Mapping[str, StateDefinition]."""
+
+    _definitions: list[StateDefinition]
+    _index: dict[str, StateDefinition]
+
+    def __init__(self, definitions: list[StateDefinition] | None = None) -> None:
+        """Build the inner list and index from StateDefinition objects."""
+        self._definitions = list(definitions) if definitions else []
+        self._index = {
+            sd.qualified_name: sd
+            for sd in self._definitions
+            if sd.qualified_name is not None
+        }
+
+    def __iter__(self) -> Iterator[str]:
+        """Iterate over qualified names."""
+        return iter(self._index)
+
+    def __contains__(self, name: object) -> bool:
+        """Return True if a state definition with `name` exists."""
+        return isinstance(name, str) and name in self._index
+
+    def __getitem__(self, name: str) -> StateDefinition:
+        """Return the state definition or raise KeyError if missing."""
+        try:
+            return self._index[name]
+        except KeyError as err:
+            raise KeyError(f"StateDefinition {name!r} not found") from err
+
+    def __len__(self) -> int:
+        """Return number of state definitions."""
+        return len(self._definitions)
+
+    def first(self, names: list[str]) -> StateDefinition | None:
+        """Return the first StateDefinition whose qualified_name matches, or None."""
+        for name in names:
+            if name in self._index:
+                return self._index[name]
+        return None
+
+    def has_any(self, names: list[str]) -> bool:
+        """Return True if any of the given state definitions exist."""
+        return self.first(names) is not None
+
+
 @define(kw_only=True)
 class DataProperty:
     """Data property with qualified name and value."""
@@ -325,7 +372,7 @@ class Definition:
     """Definition of device capabilities: command definitions, state definitions and UI hints."""
 
     commands: CommandDefinitions = field(factory=CommandDefinitions)
-    states: list[StateDefinition] = field(factory=list)
+    states: StateDefinitions = field(factory=StateDefinitions)
     data_properties: list[DataProperty] = field(factory=list)
     widget_name: str | None = None
     ui_class: str | None = None
@@ -334,29 +381,6 @@ class Definition:
     ui_classifiers: list[str] | None = None
     type: str | None = None
     attributes: list[dict[str, Any]] | None = None
-
-    def get_state_definition(self, name: str) -> StateDefinition | None:
-        """Return the StateDefinition with the given qualified name, or None."""
-        for state_def in self.states:
-            if state_def.qualified_name == name:
-                return state_def
-        return None
-
-    def first_state_definition(self, names: list[str]) -> StateDefinition | None:
-        """Return the first StateDefinition whose qualified_name matches, or None."""
-        index = {sd.qualified_name: sd for sd in self.states}
-        for name in names:
-            if name in index:
-                return index[name]
-        return None
-
-    def has_state_definition(self, name: str) -> bool:
-        """Return True if the given state definition exists."""
-        return self.get_state_definition(name) is not None
-
-    def has_any_state_definition(self, names: list[str]) -> bool:
-        """Return True if any of the given state definitions exist."""
-        return self.first_state_definition(names) is not None
 
 
 # <protocol>://<gatewayId>/<deviceAddress>[#<subsystemId>]

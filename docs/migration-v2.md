@@ -217,18 +217,22 @@ firmware = device.attributes.get_value("core:FirmwareRevision")
 
 ### Definition helpers
 
-`device.definition` is `Definition | None` — always check before accessing:
+`device.definition` is `Definition | None` — always check before accessing. State definitions are available via the `StateDefinitions` container at `device.definition.states`:
 
 ```python
 if device.definition:
-    state_def = device.definition.get_state_definition("core:ClosureState")
-    first_def = device.definition.first_state_definition(["core:ClosureState", "core:TargetClosureState"])
+    state_def = device.definition.states.get("core:ClosureState")
+    first_def = device.definition.states.first(["core:ClosureState", "core:TargetClosureState"])
+    if "core:ClosureState" in device.definition.states:
+        ...
 ```
 
-| Method | Purpose |
-|--------|---------|
-| `device.definition.get_state_definition(name)` | Single state definition lookup |
-| `device.definition.first_state_definition(names)` | First matching from list |
+| Container | Method | Purpose |
+|-----------|--------|---------|
+| `device.definition.states` | `.get(name)` | Single state definition lookup |
+| | `.first(names)` | First matching from list |
+| | `.has_any(names)` | Check if any exist |
+| | `name in ...` | Membership test |
 
 ## Collection lookups (States, CommandDefinitions)
 
