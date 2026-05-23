@@ -1,0 +1,54 @@
+name: generate-enums
+
+on:
+  schedule:
+    - cron: "0 6 * * 1" # Every Monday at 06:00 UTC
+  workflow_dispatch:
+
+jobs:
+  generate:
+    name: Generate enums from Overkiz API
+    runs-on: ubuntu-latest
+    environment: overkiz-api
+    permissions:
+      contents: write
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.13"
+
+      - name: Install the project
+        run: uv sync --all-extras --dev
+
+      - name: Generate enums
+        env:
+          OVERKIZ_USERNAME: ${{ secrets.OVERKIZ_USERNAME }}
+          OVERKIZ_PASSWORD: ${{ secrets.OVERKIZ_PASSWORD }}
+        run: uv run python utils/generate_enums.py
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: "Update generated enums from Overkiz API"
+          title: "Update generated enums from Overkiz API"
+          body: |
+            Automated weekly regeneration of enum files from the Overkiz API.
+
+            Updated files:
+            - `pyoverkiz/enums/protocol.py`
+            - `pyoverkiz/enums/ui.py`
+            - `pyoverkiz/enums/ui_profile.py`
+            - `pyoverkiz/enums/command.py`
+          branch: automated/generate-enums
+          base: main
+          delete-branch: true
