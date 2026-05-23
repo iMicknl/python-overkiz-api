@@ -55,4 +55,6 @@ nav:
       - API Reference: api-reference.md
       - UI Profiles: ui-profiles.md
       - Device Types: device-types.md
-  - Contribute: contribute.md
+  - Development:
+      - Utilities: development-utils.md
+      - Contributing: contribute.md

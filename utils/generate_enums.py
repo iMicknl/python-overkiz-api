@@ -1,34 +1,36 @@
-"""Generate enum files from the Overkiz API reference data."""
+"""Generate enum files from per-server reference data.
+
+Reads all server data from docs/device-catalog/servers/*.json (produced by
+fetch_server_data.py) and generates enum source files and docs.
+
+No API calls are made — this works entirely offline.
+
+Usage:
+    uv run utils/generate_enums.py
+"""
 
 # ruff: noqa: T201
 
 from __future__ import annotations
 
-import argparse
 import ast
-import asyncio
 import json
-import os
 import re
 import subprocess
 from pathlib import Path
 
-from pyoverkiz.auth.credentials import UsernamePasswordCredentials
-from pyoverkiz.client import OverkizClient
-from pyoverkiz.enums import Server
-from pyoverkiz.exceptions import OverkizError
-from pyoverkiz.models import UIProfileDefinition, ValuePrototype
+SERVERS_DIR = Path(__file__).parent.parent / "docs" / "device-catalog" / "servers"
+ENUMS_DIR = Path(__file__).parent.parent / "pyoverkiz" / "enums"
+DOCS_DIR = Path(__file__).parent.parent / "docs"
+FIXTURES_DIR = Path(__file__).parent.parent / "tests" / "fixtures" / "setup"
 
 # Hardcoded protocols that may not be available on all servers
-# Each tuple contains: name, prefix, id, label
 ADDITIONAL_PROTOCOLS: list[tuple[str, str, int | None, str | None]] = [
     ("HLRR_WIFI", "hlrrwifi", None, None),
-    ("MODBUSLINK", "modbuslink", 44, "ModbusLink"),  # via Atlantic Cozytouch
     ("RTN", "rtn", None, None),
 ]
 
 # Hardcoded widgets that may not be available on all servers
-# Enum names are derived automatically via to_enum_name()
 ADDITIONAL_WIDGETS = [
     "AlarmPanelController",
     "CyclicGarageDoor",
@@ -38,427 +40,377 @@ ADDITIONAL_WIDGETS = [
     "HLRRWifiBridge",
     "MediaRenderer",
     "Node",
-    "SwimmingPoolRollerShutter",  # via atlantic_cozytouch
+    "SwimmingPoolRollerShutter",
 ]
 
 
-async def generate_protocol_enum(server: Server) -> None:
-    """Generate the Protocol enum from the Overkiz API."""
-    username = os.environ["OVERKIZ_USERNAME"]
-    password = os.environ["OVERKIZ_PASSWORD"]
+def load_merged_reference_metadata() -> dict:
+    """Load and merge referenceMetadata from all server JSON files.
 
-    async with OverkizClient(
-        server=server,
-        credentials=UsernamePasswordCredentials(username, password),
-    ) as client:
-        await client.login()
+    Returns merged metadata with deduplicated lists and union of all values.
+    """
+    merged: dict = {
+        "protocolTypes": [],
+        "uiClasses": set(),
+        "uiWidgets": set(),
+        "uiClassifiers": set(),
+        "uiProfiles": {},
+    }
+    seen_prefixes: set[str] = set()
 
-        protocol_types = await client.get_reference_protocol_types()
+    for server_file in sorted(SERVERS_DIR.glob("*.json")):
+        data = json.loads(server_file.read_text(encoding="utf-8"))
+        ref = data.get("referenceMetadata", {})
 
-        # Build list of protocol entries (name, prefix, id, label)
-        protocols: list[tuple[str, str, int | None, str | None]] = [
-            (p.name, p.prefix, p.id, p.label) for p in protocol_types
-        ]
+        for proto in ref.get("protocolTypes", []):
+            if proto["prefix"] not in seen_prefixes:
+                merged["protocolTypes"].append(proto)
+                seen_prefixes.add(proto["prefix"])
 
-        # Add hardcoded protocols that may not be on all servers (avoid duplicates)
-        fetched_prefixes = {p.prefix for p in protocol_types}
-        for name, prefix, proto_id, proto_label in ADDITIONAL_PROTOCOLS:
-            if prefix not in fetched_prefixes:
-                protocols.append((name, prefix, proto_id, proto_label))
+        merged["uiClasses"].update(ref.get("uiClasses", []))
+        merged["uiWidgets"].update(ref.get("uiWidgets", []))
+        merged["uiClassifiers"].update(ref.get("uiClassifiers", []))
 
-        # Sort by name for consistent output
-        protocols.sort(key=lambda p: p[0])
+        for name, profile in ref.get("uiProfiles", {}).items():
+            if name not in merged["uiProfiles"] or (
+                profile is not None and merged["uiProfiles"][name] is None
+            ):
+                merged["uiProfiles"][name] = profile
 
-        # Generate the enum file content
-        lines = [
-            '"""Protocol enums describe device URL schemes used by Overkiz.',
-            "",
-            "THIS FILE IS AUTO-GENERATED. DO NOT EDIT MANUALLY.",
-            "Run `uv run utils/generate_enums.py` to regenerate.",
-            '"""',
-            "",
-            "from enum import StrEnum, unique",
-            "",
-            "from pyoverkiz.enums.base import UnknownEnumMixin",
-            "",
-            "",
-            "@unique",
-            "class Protocol(UnknownEnumMixin, StrEnum):",
-            '    """Protocol used by Overkiz.',
-            "",
-            "    Values have been retrieved from /reference/protocolTypes",
-            '    """',
-            "",
-            '    UNKNOWN = "unknown"',
-            "",
-        ]
-
-        # Add each protocol as an enum value with label comment
-        for name, prefix, protocol_id, label in protocols:
-            if protocol_id is not None:
-                lines.append(f'    {name} = "{prefix}"  # {protocol_id}: {label}')
-            else:
-                lines.append(f'    {name} = "{prefix}"')
-
-        lines.append("")  # End with newline
-
-        # Write to the protocol.py file
-        output_path = (
-            Path(__file__).parent.parent / "pyoverkiz" / "enums" / "protocol.py"
-        )
-        output_path.write_text("\n".join(lines))
-
-        fetched_count = len(protocol_types)
-        additional_count = len(
-            [p for p in ADDITIONAL_PROTOCOLS if p[1] not in fetched_prefixes]
-        )
-
-        print(f"✓ Generated {output_path}")
-        print(f"✓ Added {fetched_count} protocols from API")
-        print(f"✓ Added {additional_count} additional hardcoded protocols")
-        print(f"✓ Total: {len(protocols)} protocols")
+    return merged
 
 
-async def generate_ui_enums(server: Server) -> None:
-    """Generate the UIClass and UIWidget enums from the Overkiz API."""
-    username = os.environ["OVERKIZ_USERNAME"]
-    password = os.environ["OVERKIZ_PASSWORD"]
-
-    async with OverkizClient(
-        server=server,
-        credentials=UsernamePasswordCredentials(username, password),
-    ) as client:
-        await client.login()
-
-        ui_classes = await client.get_reference_ui_classes()
-        ui_widgets = await client.get_reference_ui_widgets()
-
-        # Convert camelCase to SCREAMING_SNAKE_CASE for enum names
-        def to_enum_name(value: str) -> str:
-            # Handle special cases first
-            name = value.replace("ZWave", "ZWAVE_")
-            name = name.replace("OTherm", "OTHERM_")
-
-            # Insert underscore before uppercase letters
-            name = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1_\2", name)
-            name = re.sub(r"([a-z\d])([A-Z])", r"\1_\2", name)
-
-            # Fix specific cases after general conversion
-            name = name.replace("APCDHW", "APC_DHW")
-
-            # Clean up any double underscores and trailing underscores
-            name = re.sub(r"__+", "_", name)
-            name = name.rstrip("_")
-
-            return name.upper()
-
-        # Generate the enum file content
-        lines = [
-            '"""UI enums for classes and widgets used to interpret device UI metadata.',
-            "",
-            "THIS FILE IS AUTO-GENERATED. DO NOT EDIT MANUALLY.",
-            "Run `uv run utils/generate_enums.py` to regenerate.",
-            '"""',
-            "",
-            "# ruff: noqa: S105",
-            '# Enum values contain "PASS" in API names (e.g. PassAPC), not passwords',
-            "",
-            "from enum import StrEnum, unique",
-            "",
-            "from pyoverkiz.enums.base import UnknownEnumMixin",
-            "",
-            "",
-            "@unique",
-            "class UIClass(UnknownEnumMixin, StrEnum):",
-            '    """Enumeration of UI classes used to describe device categories and behaviors."""',
-            "",
-            '    UNKNOWN = "Unknown"',
-            "",
-        ]
-
-        # Add UI classes
-        sorted_classes = sorted(ui_classes)
-        for ui_class in sorted_classes:
-            enum_name = to_enum_name(ui_class)
-            lines.append(f'    {enum_name} = "{ui_class}"')
-
-        lines.append("")
-        lines.append("")
-        lines.append("@unique")
-        lines.append("class UIWidget(UnknownEnumMixin, StrEnum):")
-        lines.append(
-            '    """Enumeration of UI widgets used by Overkiz for device presentation."""'
-        )
-        lines.append("")
-        lines.append('    UNKNOWN = "Unknown"')
-        lines.append("")
-
-        # Add UI widgets
-        sorted_widgets = sorted(ui_widgets)
-
-        # Add hardcoded widgets that may not be on all servers (avoid duplicates)
-        fetched_widget_values = set(ui_widgets)
-        for widget_value in ADDITIONAL_WIDGETS:
-            if widget_value not in fetched_widget_values:
-                sorted_widgets.append(widget_value)
-
-        sorted_widgets = sorted(sorted_widgets)
-
-        for ui_widget in sorted_widgets:
-            enum_name = to_enum_name(ui_widget)
-            lines.append(f'    {enum_name} = "{ui_widget}"')
-
-        lines.append("")  # End with newline
-
-        # Fetch and add UI classifiers
-        ui_classifiers = await client.get_reference_ui_classifiers()
-
-        lines.append("")
-        lines.append("@unique")
-        lines.append("class UIClassifier(UnknownEnumMixin, StrEnum):")
-        lines.append(
-            '    """Enumeration of UI classifiers used to categorize device types."""'
-        )
-        lines.append("")
-        lines.append('    UNKNOWN = "unknown"')
-        lines.append("")
-
-        # Add UI classifiers
-        sorted_classifiers = sorted(ui_classifiers)
-        for ui_classifier in sorted_classifiers:
-            enum_name = to_enum_name(ui_classifier)
-            lines.append(f'    {enum_name} = "{ui_classifier}"')
-
-        lines.append("")  # End with newline
-
-        # Write to the ui.py file
-        output_path = Path(__file__).parent.parent / "pyoverkiz" / "enums" / "ui.py"
-        output_path.write_text("\n".join(lines))
-
-        additional_widget_count = len(
-            [
-                widget
-                for widget in ADDITIONAL_WIDGETS
-                if widget not in fetched_widget_values
-            ]
-        )
-
-        print(f"✓ Generated {output_path}")
-        print(f"✓ Added {len(ui_classes)} UI classes")
-        print(f"✓ Added {len(ui_widgets)} UI widgets from API")
-        print(f"✓ Added {additional_widget_count} additional hardcoded UI widgets")
-        print(f"✓ Total: {len(sorted_widgets)} UI widgets")
-        print(f"✓ Added {len(sorted_classifiers)} UI classifiers")
+def to_enum_name(value: str) -> str:
+    """Convert camelCase to SCREAMING_SNAKE_CASE for enum names."""
+    name = value.replace("ZWave", "ZWAVE_")
+    name = name.replace("OTherm", "OTHERM_")
+    name = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1_\2", name)
+    name = re.sub(r"([a-z\d])([A-Z])", r"\1_\2", name)
+    name = name.replace("APCDHW", "APC_DHW")
+    name = re.sub(r"__+", "_", name)
+    name = name.rstrip("_")
+    return name.upper()
 
 
-async def generate_ui_profiles(server: Server) -> None:
-    """Generate the UIProfile enum from the Overkiz API."""
-    username = os.environ["OVERKIZ_USERNAME"]
-    password = os.environ["OVERKIZ_PASSWORD"]
+def command_to_enum_name(command_name: str) -> str:
+    """Convert a command name (camelCase) to SCREAMING_SNAKE_CASE."""
+    name = command_name.replace(" ", "_")
+    name = re.sub(r"([a-z])(\d)", r"\1_\2", name)
+    name = re.sub(r"(\d)([A-Z])", r"\1_\2", name)
+    name = re.sub(r"([a-z])([A-Z])", r"\1_\2", name)
+    return name.upper()
 
-    async with OverkizClient(
-        server=server,
-        credentials=UsernamePasswordCredentials(username, password),
-    ) as client:
-        await client.login()
 
-        ui_profile_names = await client.get_reference_ui_profile_names()
+# ---------------------------------------------------------------------------
+# Protocol enum
+# ---------------------------------------------------------------------------
 
-        # Fetch details for all profiles
-        profiles_with_details: list[tuple[str, UIProfileDefinition | None]] = []
 
-        for profile_name in ui_profile_names:
-            print(f"Fetching {profile_name}...")
-            try:
-                details = await client.get_reference_ui_profile(profile_name)
-                profiles_with_details.append((profile_name, details))
-            except OverkizError:
-                print(f"  ! Could not fetch details for {profile_name}")
-                profiles_with_details.append((profile_name, None))
+def generate_protocol_enum(metadata: dict) -> None:
+    """Generate the Protocol enum from merged metadata."""
+    protocol_types = metadata["protocolTypes"]
 
-        # Convert camelCase to SCREAMING_SNAKE_CASE for enum names
-        def to_enum_name(value: str) -> str:
-            # Insert underscore before uppercase letters
-            name = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1_\2", value)
-            name = re.sub(r"([a-z\d])([A-Z])", r"\1_\2", name)
+    protocols: list[tuple[str, str, int | None, str | None]] = [
+        (p["name"], p["prefix"], p.get("id"), p.get("label")) for p in protocol_types
+    ]
 
-            # Clean up any double underscores
-            name = re.sub(r"__+", "_", name)
+    fetched_prefixes = {p["prefix"] for p in protocol_types}
+    for name, prefix, proto_id, proto_label in ADDITIONAL_PROTOCOLS:
+        if prefix not in fetched_prefixes:
+            protocols.append((name, prefix, proto_id, proto_label))
 
-            return name.upper()
+    protocols.sort(key=lambda p: p[0])
 
-        def format_value_prototype(vp: ValuePrototype) -> str:
-            """Format a value prototype into a readable string."""
-            type_str = vp.type.lower()
-            parts = [type_str]
+    lines = [
+        '"""Protocol enums describe device URL schemes used by Overkiz.',
+        "",
+        "THIS FILE IS AUTO-GENERATED. DO NOT EDIT MANUALLY.",
+        "Run `uv run utils/generate_enums.py` to regenerate.",
+        '"""',
+        "",
+        "from enum import StrEnum, unique",
+        "",
+        "from pyoverkiz.enums.base import UnknownEnumMixin",
+        "",
+        "",
+        "@unique",
+        "class Protocol(UnknownEnumMixin, StrEnum):",
+        '    """Protocol used by Overkiz.',
+        "",
+        "    Values have been retrieved from /reference/protocolTypes",
+        '    """',
+        "",
+        '    UNKNOWN = "unknown"',
+        "",
+    ]
 
-            if vp.min_value is not None and vp.max_value is not None:
-                parts.append(f"{vp.min_value}-{vp.max_value}")
-            elif vp.min_value is not None:
-                parts.append(f">= {vp.min_value}")
-            elif vp.max_value is not None:
-                parts.append(f"<= {vp.max_value}")
+    for name, prefix, protocol_id, label in protocols:
+        if protocol_id is not None:
+            lines.append(f'    {name} = "{prefix}"  # {protocol_id}: {label}')
+        else:
+            lines.append(f'    {name} = "{prefix}"')
 
-            if vp.enum_values:
-                enum_vals = ", ".join(f"'{v}'" for v in vp.enum_values)
-                parts.append(f"values: {enum_vals}")
+    lines.append("")
 
-            return " ".join(parts)
+    output_path = ENUMS_DIR / "protocol.py"
+    output_path.write_text("\n".join(lines))
+    print(f"✓ Generated {output_path} ({len(protocols)} protocols)")
 
-        def clean_description(desc: str) -> str:
-            """Clean description text to fit in a single-line comment."""
-            # Remove newlines and excessive whitespace
-            cleaned = " ".join(desc.split())
-            return cleaned.strip()
 
-        # Generate the enum file content
-        lines = [
-            '"""UI Profile enums describe device capabilities through commands and states.',
-            "",
-            "THIS FILE IS AUTO-GENERATED. DO NOT EDIT MANUALLY.",
-            "Run `uv run utils/generate_enums.py` to regenerate.",
-            '"""',
-            "",
-            "from enum import StrEnum, unique",
-            "",
-            "from pyoverkiz.enums.base import UnknownEnumMixin",
-            "",
-            "",
-            "@unique",
-            "class UIProfile(UnknownEnumMixin, StrEnum):",
-            '    """',
-            "    UI Profiles define device capabilities through commands and states.",
-            "",
-            "    Each profile describes what a device can do (commands) and what information",
-            "    it provides (states). Form factor indicates if the profile is tied to a",
-            "    specific physical device type.",
-            '    """',
-            "",
-            '    UNKNOWN = "Unknown"',
-            "",
-        ]
+# ---------------------------------------------------------------------------
+# UI enums (classes, widgets, classifiers)
+# ---------------------------------------------------------------------------
 
-        # Sort profiles by name for consistent output
-        profiles_with_details.sort(key=lambda p: p[0])
 
-        # Add each profile with detailed comments
-        for profile_name, details_obj in profiles_with_details:
-            enum_name = to_enum_name(profile_name)
+def generate_ui_enums(metadata: dict) -> None:
+    """Generate UIClass, UIWidget, and UIClassifier enums."""
+    ui_classes = sorted(metadata["uiClasses"])
+    ui_widgets = sorted(metadata["uiWidgets"])
+    ui_classifiers = sorted(metadata["uiClassifiers"])
 
-            if details_obj is None:
-                # No details available
-                lines.append(f"    # {profile_name} (details unavailable)")
-                lines.append(f'    {enum_name} = "{profile_name}"')
-                lines.append("")
-                continue
+    # Add hardcoded widgets not found across any server
+    fetched_widget_values = set(ui_widgets)
+    for widget_value in ADDITIONAL_WIDGETS:
+        if widget_value not in fetched_widget_values:
+            ui_widgets.append(widget_value)
+    ui_widgets = sorted(ui_widgets)
 
-            # Build multi-line comment
-            comment_lines = []
+    lines = [
+        '"""UI enums for classes and widgets used to interpret device UI metadata.',
+        "",
+        "THIS FILE IS AUTO-GENERATED. DO NOT EDIT MANUALLY.",
+        "Run `uv run utils/generate_enums.py` to regenerate.",
+        '"""',
+        "",
+        "# ruff: noqa: S105",
+        '# Enum values contain "PASS" in API names (e.g. PassAPC), not passwords',
+        "",
+        "from enum import StrEnum, unique",
+        "",
+        "from pyoverkiz.enums.base import UnknownEnumMixin",
+        "",
+        "",
+        "@unique",
+        "class UIClass(UnknownEnumMixin, StrEnum):",
+        '    """Enumeration of UI classes used to describe device categories and behaviors."""',
+        "",
+        '    UNKNOWN = "Unknown"',
+        "",
+    ]
 
-            # Add commands if present
-            if details_obj.commands:
-                comment_lines.append("Commands:")
-                for cmd in details_obj.commands:
-                    cmd_name = cmd.name
-                    desc = clean_description(cmd.description or "")
+    for ui_class in ui_classes:
+        enum_name = to_enum_name(ui_class)
+        lines.append(f'    {enum_name} = "{ui_class}"')
 
-                    # Get parameter info
-                    if cmd.prototype and cmd.prototype.parameters:
-                        param_strs = [
-                            format_value_prototype(param.value_prototypes[0])
-                            for param in cmd.prototype.parameters
-                            if param.value_prototypes
-                        ]
-                        param_info = (
-                            f"({', '.join(param_strs)})" if param_strs else "()"
-                        )
-                    else:
-                        param_info = "()"
+    lines.append("")
+    lines.append("")
+    lines.append("@unique")
+    lines.append("class UIWidget(UnknownEnumMixin, StrEnum):")
+    lines.append(
+        '    """Enumeration of UI widgets used by Overkiz for device presentation."""'
+    )
+    lines.append("")
+    lines.append('    UNKNOWN = "Unknown"')
+    lines.append("")
 
-                    if desc:
-                        comment_lines.append(f"  - {cmd_name}{param_info}: {desc}")
-                    else:
-                        comment_lines.append(f"  - {cmd_name}{param_info}")
+    for ui_widget in ui_widgets:
+        enum_name = to_enum_name(ui_widget)
+        lines.append(f'    {enum_name} = "{ui_widget}"')
 
-            # Add states if present
-            if details_obj.states:
-                if comment_lines:
-                    comment_lines.append("")
-                comment_lines.append("States:")
-                for state in details_obj.states:
-                    state_name = state.name
-                    desc = clean_description(state.description or "")
+    lines.append("")
+    lines.append("")
+    lines.append("@unique")
+    lines.append("class UIClassifier(UnknownEnumMixin, StrEnum):")
+    lines.append(
+        '    """Enumeration of UI classifiers used to categorize device types."""'
+    )
+    lines.append("")
+    lines.append('    UNKNOWN = "unknown"')
+    lines.append("")
 
-                    # Get value prototype info
-                    if state.prototype and state.prototype.value_prototypes:
-                        type_info = f" ({format_value_prototype(state.prototype.value_prototypes[0])})"
-                    else:
-                        type_info = ""
+    for ui_classifier in ui_classifiers:
+        enum_name = to_enum_name(ui_classifier)
+        lines.append(f'    {enum_name} = "{ui_classifier}"')
 
-                    if desc:
-                        comment_lines.append(f"  - {state_name}{type_info}: {desc}")
-                    else:
-                        comment_lines.append(f"  - {state_name}{type_info}")
+    lines.append("")
 
-            # Add form factor info
-            if details_obj.form_factor:
-                if comment_lines:
-                    comment_lines.append("")
-                comment_lines.append("Form factor specific: Yes")
+    output_path = ENUMS_DIR / "ui.py"
+    output_path.write_text("\n".join(lines))
 
-            # If we have any details, add the comment block
-            if comment_lines:
-                lines.append("    #")
-                lines.append(f"    # {profile_name}")
-                lines.append("    #")
-                for comment_line in comment_lines:
-                    if comment_line:
-                        lines.append(f"    # {comment_line}")
-                    else:
-                        lines.append("    #")
-            else:
-                # Simple single-line comment
-                lines.append(f"    # {profile_name}")
+    additional_widget_count = len(
+        [w for w in ADDITIONAL_WIDGETS if w not in fetched_widget_values]
+    )
+    print(
+        f"✓ Generated {output_path} "
+        f"({len(ui_classes)} classes, {len(ui_widgets)} widgets, "
+        f"{len(ui_classifiers)} classifiers, "
+        f"+{additional_widget_count} hardcoded widgets)"
+    )
 
+
+# ---------------------------------------------------------------------------
+# UI Profiles enum + docs
+# ---------------------------------------------------------------------------
+
+
+def _format_value_prototype_comment(vp: dict) -> str:
+    """Format a value prototype dict into a readable string for comments."""
+    type_str = vp.get("type", "").lower()
+    parts = [type_str]
+
+    min_val = vp.get("minValue")
+    max_val = vp.get("maxValue")
+    if min_val is not None and max_val is not None:
+        parts.append(f"{min_val}-{max_val}")
+    elif min_val is not None:
+        parts.append(f">= {min_val}")
+    elif max_val is not None:
+        parts.append(f"<= {max_val}")
+
+    if vp.get("enumValues"):
+        enum_vals = ", ".join(f"'{v}'" for v in vp["enumValues"])
+        parts.append(f"values: {enum_vals}")
+
+    return " ".join(parts)
+
+
+def _format_value_prototype_docs(vp: dict) -> str:
+    """Format a value prototype dict for markdown docs."""
+    type_str = f"`{vp.get('type', '').lower()}`"
+    min_val = vp.get("minValue")
+    max_val = vp.get("maxValue")
+    if min_val is not None and max_val is not None:
+        type_str += f" ({min_val}\N{EN DASH}{max_val})"
+    elif min_val is not None:
+        type_str += f" (≥ {min_val})"
+    elif max_val is not None:
+        type_str += f" (≤ {max_val})"
+    if vp.get("enumValues"):
+        type_str += " — " + ", ".join(f"`{v}`" for v in vp["enumValues"])
+    return type_str
+
+
+def generate_ui_profiles(metadata: dict) -> None:
+    """Generate the UIProfile enum and docs page from merged profiles."""
+    ui_profiles = metadata["uiProfiles"]
+    sorted_names = sorted(ui_profiles.keys())
+
+    def to_profile_enum_name(value: str) -> str:
+        name = re.sub(r"([A-Z]+)([A-Z][a-z])", r"\1_\2", value)
+        name = re.sub(r"([a-z\d])([A-Z])", r"\1_\2", name)
+        name = re.sub(r"__+", "_", name)
+        return name.upper()
+
+    # --- Enum file ---
+    lines = [
+        '"""UI Profile enums describe device capabilities through commands and states.',
+        "",
+        "THIS FILE IS AUTO-GENERATED. DO NOT EDIT MANUALLY.",
+        "Run `uv run utils/generate_enums.py` to regenerate.",
+        '"""',
+        "",
+        "from enum import StrEnum, unique",
+        "",
+        "from pyoverkiz.enums.base import UnknownEnumMixin",
+        "",
+        "",
+        "@unique",
+        "class UIProfile(UnknownEnumMixin, StrEnum):",
+        '    """',
+        "    UI Profiles define device capabilities through commands and states.",
+        "",
+        "    Each profile describes what a device can do (commands) and what information",
+        "    it provides (states). Form factor indicates if the profile is tied to a",
+        "    specific physical device type.",
+        '    """',
+        "",
+        '    UNKNOWN = "Unknown"',
+        "",
+    ]
+
+    for profile_name in sorted_names:
+        details = ui_profiles[profile_name]
+        enum_name = to_profile_enum_name(profile_name)
+
+        if details is None:
+            lines.append(f"    # {profile_name} (details unavailable)")
             lines.append(f'    {enum_name} = "{profile_name}"')
             lines.append("")
+            continue
 
-        # Write to the ui_profile.py file
-        output_path = (
-            Path(__file__).parent.parent / "pyoverkiz" / "enums" / "ui_profile.py"
-        )
-        output_path.write_text("\n".join(lines))
+        comment_lines = []
 
-        print(f"\n✓ Generated {output_path}")
-        print(f"✓ Added {len(profiles_with_details)} UI profiles")
-        print(
-            f"✓ Profiles with details: {sum(1 for _, d in profiles_with_details if d is not None)}"
-        )
-        print(
-            f"✓ Profiles without details: {sum(1 for _, d in profiles_with_details if d is None)}"
-        )
+        if details.get("commands"):
+            comment_lines.append("Commands:")
+            for cmd in details["commands"]:
+                cmd_name = cmd["name"]
+                desc = " ".join((cmd.get("description") or "").split()).strip()
+                if cmd.get("parameters"):
+                    param_strs = [
+                        _format_value_prototype_comment(param["valuePrototypes"][0])
+                        for param in cmd["parameters"]
+                        if param.get("valuePrototypes")
+                    ]
+                    param_info = f"({', '.join(param_strs)})" if param_strs else "()"
+                else:
+                    param_info = "()"
+                if desc:
+                    comment_lines.append(f"  - {cmd_name}{param_info}: {desc}")
+                else:
+                    comment_lines.append(f"  - {cmd_name}{param_info}")
 
-        generate_ui_profiles_docs(profiles_with_details)
+        if details.get("states"):
+            if comment_lines:
+                comment_lines.append("")
+            comment_lines.append("States:")
+            for state in details["states"]:
+                state_name = state["name"]
+                desc = " ".join((state.get("description") or "").split()).strip()
+                if state.get("valuePrototypes"):
+                    type_info = f" ({_format_value_prototype_comment(state['valuePrototypes'][0])})"
+                else:
+                    type_info = ""
+                if desc:
+                    comment_lines.append(f"  - {state_name}{type_info}: {desc}")
+                else:
+                    comment_lines.append(f"  - {state_name}{type_info}")
+
+        if details.get("formFactor"):
+            if comment_lines:
+                comment_lines.append("")
+            comment_lines.append("Form factor specific: Yes")
+
+        if comment_lines:
+            lines.append("    #")
+            lines.append(f"    # {profile_name}")
+            lines.append("    #")
+            for comment_line in comment_lines:
+                if comment_line:
+                    lines.append(f"    # {comment_line}")
+                else:
+                    lines.append("    #")
+        else:
+            lines.append(f"    # {profile_name}")
+
+        lines.append(f'    {enum_name} = "{profile_name}"')
+        lines.append("")
+
+    output_path = ENUMS_DIR / "ui_profile.py"
+    output_path.write_text("\n".join(lines))
+
+    found = sum(1 for v in ui_profiles.values() if v is not None)
+    print(
+        f"✓ Generated {output_path} ({found}/{len(ui_profiles)} profiles with details)"
+    )
+
+    # --- Docs page ---
+    _generate_ui_profiles_docs(sorted_names, ui_profiles)
 
 
-def generate_ui_profiles_docs(
-    profiles_with_details: list[tuple[str, UIProfileDefinition | None]],
+def _generate_ui_profiles_docs(
+    sorted_names: list[str], ui_profiles: dict[str, dict | None]
 ) -> None:
-    """Generate a documentation page for UI profiles."""
-
-    def format_type(vp: ValuePrototype) -> str:
-        """Format a value prototype into a readable type string."""
-        type_str = f"`{vp.type.lower()}`"
-        if vp.min_value is not None and vp.max_value is not None:
-            type_str += f" ({vp.min_value}\N{EN DASH}{vp.max_value})"
-        elif vp.min_value is not None:
-            type_str += f" (≥ {vp.min_value})"
-        elif vp.max_value is not None:
-            type_str += f" (≤ {vp.max_value})"
-        if vp.enum_values:
-            type_str += " — " + ", ".join(f"`{v}`" for v in vp.enum_values)
-        return type_str
-
+    """Generate the ui-profiles.md documentation page."""
     lines = [
         "---",
         "hide:",
@@ -467,16 +419,19 @@ def generate_ui_profiles_docs(
         "",
         "# UI Profiles",
         "",
-        "UI profiles describe device capabilities through the commands they accept and the states they expose. Each device has one or more profiles that define what it can do.",
+        "UI profiles describe device capabilities through the commands they accept "
+        "and the states they expose. Each device has one or more profiles that define "
+        "what it can do.",
         "",
         "!!! note",
-        "    This page is auto-generated from the Overkiz API. Run `uv run utils/generate_enums.py` to regenerate.",
+        "    This page is auto-generated. Run `uv run utils/generate_enums.py` to regenerate.",
         "",
-        f"**{len(profiles_with_details)} profiles** documented below.",
+        f"**{len(sorted_names)} profiles** documented below.",
         "",
     ]
 
-    for profile_name, details in profiles_with_details:
+    for profile_name in sorted_names:
+        details = ui_profiles[profile_name]
         lines.append(f"## {profile_name}")
         lines.append("")
 
@@ -485,55 +440,70 @@ def generate_ui_profiles_docs(
             lines.append("")
             continue
 
-        if details.form_factor:
+        if details.get("formFactor"):
             lines.append(
                 "*Form factor specific* — tied to a specific physical device type."
             )
             lines.append("")
 
-        if details.commands:
+        if details.get("commands"):
             lines.append("### Commands")
             lines.append("")
             lines.append("| Command | Parameters | Description |")
             lines.append("|---------|-----------|-------------|")
-            for cmd in details.commands:
+            for cmd in details["commands"]:
                 params = ""
-                if cmd.prototype and cmd.prototype.parameters:
+                if cmd.get("parameters"):
                     param_parts = []
-                    for param in cmd.prototype.parameters:
-                        if param.value_prototypes:
-                            param_parts.append(format_type(param.value_prototypes[0]))
+                    for param in cmd["parameters"]:
+                        if param.get("valuePrototypes"):
+                            param_parts.append(
+                                _format_value_prototype_docs(
+                                    param["valuePrototypes"][0]
+                                )
+                            )
                         else:
                             param_parts.append("—")
                     params = ", ".join(param_parts)
-                desc = (cmd.description or "").replace("\n", " ").replace("|", "\\|")
-                lines.append(f"| `{cmd.name}` | {params} | {desc} |")
+                desc = (
+                    (cmd.get("description") or "")
+                    .replace("\n", " ")
+                    .replace("|", "\\|")
+                )
+                lines.append(f"| `{cmd['name']}` | {params} | {desc} |")
             lines.append("")
 
-        if details.states:
+        if details.get("states"):
             lines.append("### States")
             lines.append("")
             lines.append("| State | Type | Description |")
             lines.append("|-------|------|-------------|")
-            for state in details.states:
+            for state in details["states"]:
                 type_info = ""
-                if state.prototype and state.prototype.value_prototypes:
-                    type_info = format_type(state.prototype.value_prototypes[0])
-                desc = (state.description or "").replace("\n", " ").replace("|", "\\|")
-                lines.append(f"| `{state.name}` | {type_info} | {desc} |")
+                if state.get("valuePrototypes"):
+                    type_info = _format_value_prototype_docs(
+                        state["valuePrototypes"][0]
+                    )
+                desc = (
+                    (state.get("description") or "")
+                    .replace("\n", " ")
+                    .replace("|", "\\|")
+                )
+                lines.append(f"| `{state['name']}` | {type_info} | {desc} |")
             lines.append("")
 
-    output_path = Path(__file__).parent.parent / "docs" / "ui-profiles.md"
+    output_path = DOCS_DIR / "ui-profiles.md"
     output_path.write_text("\n".join(lines), encoding="utf-8", newline="\n")
     print(f"✓ Generated {output_path}")
 
 
-def extract_commands_from_fixtures(fixtures_dir: Path) -> set[str]:
-    """Extract all commands from fixture files in the given directory.
+# ---------------------------------------------------------------------------
+# Command + CommandParam enums
+# ---------------------------------------------------------------------------
 
-    Reads all JSON fixture files and collects unique command names from device
-    definitions. Commands are returned as camelCase values.
-    """
+
+def extract_commands_from_fixtures(fixtures_dir: Path) -> set[str]:
+    """Extract all commands from fixture files."""
     commands: set[str] = set()
 
     for fixture_file in fixtures_dir.glob("*.json"):
@@ -541,31 +511,19 @@ def extract_commands_from_fixtures(fixtures_dir: Path) -> set[str]:
             data = json.loads(fixture_file.read_text())
             if "devices" not in data:
                 continue
-
             for device in data["devices"]:
-                if "definition" not in device:
-                    continue
-
-                definition = device["definition"]
-                if "commands" not in definition:
-                    continue
-
-                for command in definition["commands"]:
+                definition = device.get("definition", {})
+                for command in definition.get("commands", []):
                     if "commandName" in command:
                         commands.add(command["commandName"])
         except (json.JSONDecodeError, KeyError, TypeError):
-            # Skip files that can't be parsed or have unexpected structure
             continue
 
     return commands
 
 
 def extract_state_values_from_fixtures(fixtures_dir: Path) -> set[str]:
-    """Extract all state values from fixture files in the given directory.
-
-    Reads all JSON fixture files and collects unique state values from device
-    definitions. Values are extracted from DiscreteState types.
-    """
+    """Extract discrete state enum values from fixture files."""
     values: set[str] = set()
 
     for fixture_file in fixtures_dir.glob("*.json"):
@@ -573,44 +531,61 @@ def extract_state_values_from_fixtures(fixtures_dir: Path) -> set[str]:
             data = json.loads(fixture_file.read_text())
             if "devices" not in data:
                 continue
-
             for device in data["devices"]:
-                if "definition" not in device:
-                    continue
-
-                definition = device["definition"]
-                if "states" not in definition:
-                    continue
-
-                for state in definition["states"]:
-                    # Extract values from DiscreteState
+                definition = device.get("definition", {})
+                for state in definition.get("states", []):
                     if state.get("type") == "DiscreteState" and "values" in state:
                         for value in state["values"]:
                             if isinstance(value, str):
                                 values.add(value)
         except (json.JSONDecodeError, KeyError, TypeError):
-            # Skip files that can't be parsed or have unexpected structure
             continue
 
     return values
 
 
-def command_to_enum_name(command_name: str) -> str:
-    """Convert a command name (camelCase) to an ENUM_NAME (SCREAMING_SNAKE_CASE).
+def extract_commands_from_servers(servers_dir: Path) -> set[str]:
+    """Extract all command names from per-server JSON files."""
+    commands: set[str] = set()
 
-    Example: "setTargetTemperature" -> "SET_TARGET_TEMPERATURE"
-    Spaces are converted to underscores: "long peak" -> "LONG_PEAK"
-    Digits are treated as word boundaries: "setMemorized1Position" -> "SET_MEMORIZED_1_POSITION"
-    """
-    # First, replace spaces with underscores
-    name = command_name.replace(" ", "_")
-    # Insert underscore between letter and digit
-    name = re.sub(r"([a-z])(\d)", r"\1_\2", name)
-    # Insert underscore between digit and letter
-    name = re.sub(r"(\d)([A-Z])", r"\1_\2", name)
-    # Insert underscore before uppercase letters
-    name = re.sub(r"([a-z])([A-Z])", r"\1_\2", name)
-    return name.upper()
+    if not servers_dir.exists():
+        return commands
+
+    for server_file in servers_dir.glob("*.json"):
+        try:
+            data = json.loads(server_file.read_text())
+            for device_types in data.get("protocols", {}).values():
+                for dt in device_types:
+                    for cmd in dt.get("commands", []):
+                        if "commandName" in cmd:
+                            commands.add(cmd["commandName"])
+        except (json.JSONDecodeError, KeyError, TypeError):
+            pass
+
+    return commands
+
+
+def extract_state_values_from_servers(servers_dir: Path) -> set[str]:
+    """Extract discrete state enum values from per-server JSON files."""
+    values: set[str] = set()
+
+    if not servers_dir.exists():
+        return values
+
+    for server_file in servers_dir.glob("*.json"):
+        try:
+            data = json.loads(server_file.read_text())
+            for device_types in data.get("protocols", {}).values():
+                for dt in device_types:
+                    for state in dt.get("states", []):
+                        for vp in state.get("valuePrototypes", []):
+                            for ev in vp.get("enumValues", []):
+                                if isinstance(ev, str):
+                                    values.add(ev)
+        except (json.JSONDecodeError, KeyError, TypeError):
+            pass
+
+    return values
 
 
 def extract_enum_members(content: str, class_name: str) -> dict[str, str]:
@@ -643,101 +618,24 @@ def extract_enum_members(content: str, class_name: str) -> dict[str, str]:
     raise ValueError(f"Could not find enum class {class_name}")
 
 
-def find_class_start(content: str, class_name: str) -> int:
-    """Return the start index of a generated enum class declaration."""
-    class_start = content.find(f"@unique\nclass {class_name}")
-    if class_start == -1:
-        raise ValueError(f"Could not find class {class_name}")
-    return class_start
+def generate_command_enums() -> None:
+    """Generate OverkizCommand and OverkizCommandParam enums."""
+    fixture_commands = extract_commands_from_fixtures(FIXTURES_DIR)
+    fixture_state_values = extract_state_values_from_fixtures(FIXTURES_DIR)
+    catalog_commands = extract_commands_from_servers(SERVERS_DIR)
+    catalog_state_values = extract_state_values_from_servers(SERVERS_DIR)
 
-
-def extract_commands_from_catalog(catalog_path: Path) -> set[str]:
-    """Extract all command names from a device catalog JSON file.
-
-    The catalog is produced by utils/generate_device_catalog.py and contains
-    device type definitions grouped by protocol.
-    """
-    commands: set[str] = set()
-
-    if not catalog_path.exists():
-        return commands
-
-    try:
-        data = json.loads(catalog_path.read_text())
-        protocols = data.get("protocols", {})
-        for device_types in protocols.values():
-            for dt in device_types:
-                for cmd in dt.get("commands", []):
-                    if "commandName" in cmd:
-                        commands.add(cmd["commandName"])
-    except (json.JSONDecodeError, KeyError, TypeError):
-        pass
-
-    return commands
-
-
-def extract_state_values_from_catalog(catalog_path: Path) -> set[str]:
-    """Extract discrete state enum values from a device catalog JSON file.
-
-    Extracts string values from states that have enumValues in their
-    valuePrototypes.
-    """
-    values: set[str] = set()
-
-    if not catalog_path.exists():
-        return values
-
-    try:
-        data = json.loads(catalog_path.read_text())
-        protocols = data.get("protocols", {})
-        for device_types in protocols.values():
-            for dt in device_types:
-                for state in dt.get("states", []):
-                    for vp in state.get("valuePrototypes", []):
-                        for ev in vp.get("enumValues", []):
-                            if isinstance(ev, str):
-                                values.add(ev)
-    except (json.JSONDecodeError, KeyError, TypeError):
-        pass
-
-    return values
-
-
-async def generate_command_enums() -> None:
-    """Generate the OverkizCommand enum and update OverkizCommandParam.
-
-    Sources: existing enum file, test fixtures, and the device catalog
-    (if available at docs/device-catalog/device_catalog.json).
-    """
-    fixtures_dir = Path(__file__).parent.parent / "tests" / "fixtures" / "setup"
-    catalog_path = (
-        Path(__file__).parent.parent / "docs" / "device-catalog" / "device_catalog.json"
-    )
-
-    # Extract commands and state values from fixtures
-    fixture_commands = extract_commands_from_fixtures(fixtures_dir)
-    fixture_state_values = extract_state_values_from_fixtures(fixtures_dir)
-
-    # Extract from device catalog (if available)
-    catalog_commands = extract_commands_from_catalog(catalog_path)
-    catalog_state_values = extract_state_values_from_catalog(catalog_path)
-
-    # Read existing commands from the command.py file
-    command_file = Path(__file__).parent.parent / "pyoverkiz" / "enums" / "command.py"
+    command_file = ENUMS_DIR / "command.py"
     content = command_file.read_text()
-
-    find_class_start(content, "ExecutionMode")
 
     existing_commands = extract_enum_members(content, "OverkizCommand")
     existing_params = extract_enum_members(content, "OverkizCommandParam")
 
-    # Merge: keep existing commands and add new ones from fixtures + catalog
+    # Merge all command values
     all_command_values = (
         set(existing_commands.keys()) | fixture_commands | catalog_commands
     )
 
-    # Convert to list of tuples for commands: (enum_name, command_value)
-    # Track enum names to detect duplicates
     command_enum_names: set[str] = set()
     command_tuples: list[tuple[str, str]] = []
     for cmd_value in sorted(all_command_values):
@@ -745,22 +643,17 @@ async def generate_command_enums() -> None:
             enum_name = existing_commands[cmd_value]
         else:
             enum_name = command_to_enum_name(cmd_value)
-
-        # Skip if this enum_name already exists (avoid duplicates)
         if enum_name not in command_enum_names:
             command_tuples.append((enum_name, cmd_value))
             command_enum_names.add(enum_name)
 
-    # Sort alphabetically by enum name
     command_tuples.sort(key=lambda x: x[0])
 
-    # Merge: keep existing params and add new ones from fixtures + catalog
+    # Merge all param values
     all_param_values = (
         set(existing_params.keys()) | fixture_state_values | catalog_state_values
     )
 
-    # Convert to list of tuples for params: (enum_name, param_value)
-    # Track enum names to detect duplicates
     param_enum_names: set[str] = set()
     param_tuples: list[tuple[str, str]] = []
     for param_value in sorted(all_param_values):
@@ -768,16 +661,13 @@ async def generate_command_enums() -> None:
             enum_name = existing_params[param_value]
         else:
             enum_name = command_to_enum_name(param_value)
-
-        # Skip if this enum_name already exists (avoid duplicates)
         if enum_name not in param_enum_names:
             param_tuples.append((enum_name, param_value))
             param_enum_names.add(enum_name)
 
-    # Sort alphabetically by enum name
     param_tuples.sort(key=lambda x: x[0])
 
-    # Generate the enum file content
+    # Generate file
     lines = [
         '"""Command-related enums and parameters used by device commands."""',
         "",
@@ -793,7 +683,6 @@ async def generate_command_enums() -> None:
         "",
     ]
 
-    # Add each command
     for enum_name, cmd_value in command_tuples:
         if " " in cmd_value:
             lines.append(f'    {enum_name} = "{cmd_value}"  # value with space')
@@ -807,7 +696,6 @@ async def generate_command_enums() -> None:
     lines.append('    """Parameter used by Overkiz commands and/or states."""')
     lines.append("")
 
-    # Add each param
     for enum_name, param_value in param_tuples:
         if " " in param_value:
             lines.append(f'    {enum_name} = "{param_value}"  # value with space')
@@ -817,39 +705,35 @@ async def generate_command_enums() -> None:
     lines.append("")
     lines.append("")
 
-    # Append ExecutionMode class
+    # Preserve ExecutionMode class from existing file
     execution_mode_start = content.find("@unique\nclass ExecutionMode")
     if execution_mode_start != -1:
         lines.append(content[execution_mode_start:].rstrip())
     lines.append("")
 
-    # Write to the command.py file
     command_file.write_text("\n".join(lines))
 
-    print(f"✓ Generated {command_file}")
-    print(f"✓ Existing commands in enum: {len(existing_commands)}")
-    print(f"✓ Commands from fixtures: {len(fixture_commands)}")
-    print(f"✓ Commands from device catalog: {len(catalog_commands)}")
-    new_commands_count = len(all_command_values - set(existing_commands.keys()))
-    print(f"✓ New commands added: {new_commands_count}")
-    print(f"✓ Total: {len(all_command_values)} commands")
-    print()
-    print(f"✓ Existing parameters in enum: {len(existing_params)}")
-    print(f"✓ Parameters from fixtures: {len(fixture_state_values)}")
-    print(f"✓ Parameters from device catalog: {len(catalog_state_values)}")
-    new_params_count = len(all_param_values - set(existing_params.keys()))
-    print(f"✓ New parameters added: {new_params_count}")
-    print(f"✓ Total: {len(all_param_values)} parameters")
+    new_commands = len(all_command_values - set(existing_commands.keys()))
+    new_params = len(all_param_values - set(existing_params.keys()))
+    print(
+        f"✓ Generated {command_file} "
+        f"({len(command_tuples)} commands [+{new_commands} new], "
+        f"{len(param_tuples)} params [+{new_params} new])"
+    )
+
+
+# ---------------------------------------------------------------------------
+# Main
+# ---------------------------------------------------------------------------
 
 
 def format_generated_files() -> None:
     """Run ruff fixes and formatting on all generated enum files."""
-    enums_dir = Path(__file__).parent.parent / "pyoverkiz" / "enums"
     generated_files = [
-        str(enums_dir / "protocol.py"),
-        str(enums_dir / "ui.py"),
-        str(enums_dir / "ui_profile.py"),
-        str(enums_dir / "command.py"),
+        str(ENUMS_DIR / "protocol.py"),
+        str(ENUMS_DIR / "ui.py"),
+        str(ENUMS_DIR / "ui_profile.py"),
+        str(ENUMS_DIR / "command.py"),
     ]
     subprocess.run(  # noqa: S603
         ["uv", "run", "ruff", "check", "--fix", *generated_files],  # noqa: S607
@@ -862,36 +746,27 @@ def format_generated_files() -> None:
     print("✓ Formatted generated files with ruff")
 
 
-async def generate_all(server: Server) -> None:
-    """Generate all enums from the Overkiz API."""
-    print(f"Using server: {server.name} ({server.value})")
+def generate_all() -> None:
+    """Generate all enums from stored server data."""
+    if not SERVERS_DIR.exists() or not list(SERVERS_DIR.glob("*.json")):
+        print("No server data found in docs/device-catalog/servers/")
+        print("Run `uv run utils/fetch_server_data.py` first.")
+        raise SystemExit(1)
+
+    servers = [f.stem for f in sorted(SERVERS_DIR.glob("*.json"))]
+    print(f"Reading data from: {', '.join(servers)}")
     print()
-    await generate_protocol_enum(server)
+
+    metadata = load_merged_reference_metadata()
+
+    generate_protocol_enum(metadata)
+    generate_ui_enums(metadata)
+    generate_ui_profiles(metadata)
     print()
-    await generate_ui_enums(server)
-    print()
-    await generate_ui_profiles(server)
-    print()
-    await generate_command_enums()
+    generate_command_enums()
     print()
     format_generated_files()
 
 
-def parse_args() -> argparse.Namespace:
-    """Parse command-line arguments."""
-    server_choices = [s.value for s in Server]
-    parser = argparse.ArgumentParser(
-        description="Generate enum files from the Overkiz API."
-    )
-    parser.add_argument(
-        "--server",
-        choices=server_choices,
-        default=Server.SOMFY_EUROPE.value,
-        help=f"Server to connect to (default: {Server.SOMFY_EUROPE.value})",
-    )
-    return parser.parse_args()
-
-
 if __name__ == "__main__":
-    args = parse_args()
-    asyncio.run(generate_all(Server(args.server)))
+    generate_all()
