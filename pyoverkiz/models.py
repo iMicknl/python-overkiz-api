@@ -442,7 +442,7 @@ class Device:
     label: str = field(repr=obfuscate_string)
     device_url: str = field(repr=obfuscate_id)
     controllable_name: str
-    definition: Definition | None = None
+    definition: Definition
     states: States = field(factory=States)
     type: ProductType
     ui_class: UIClass = field(default=None)  # type: ignore[assignment]
@@ -461,12 +461,11 @@ class Device:
         """Resolve computed fields from device URL and definition fallbacks."""
         self.identifier = DeviceIdentifier.from_device_url(self.device_url)
 
-        if self.definition:
-            if self.ui_class is None and self.definition.ui_class:
-                self.ui_class = UIClass(self.definition.ui_class)
+        if self.ui_class is None and self.definition.ui_class:
+            self.ui_class = UIClass(self.definition.ui_class)
 
-            if self.widget is None and self.definition.widget_name:
-                self.widget = UIWidget(self.definition.widget_name)
+        if self.widget is None and self.definition.widget_name:
+            self.widget = UIWidget(self.definition.widget_name)
 
         if self.ui_class is None or self.widget is None:
             raise OverkizError(
@@ -475,26 +474,20 @@ class Device:
 
     def supports_command(self, command: str | OverkizCommand) -> bool:
         """Check if device supports a command."""
-        return self.definition is not None and str(command) in self.definition.commands
+        return str(command) in self.definition.commands
 
     def supports_any_command(self, commands: list[str | OverkizCommand]) -> bool:
         """Check if device supports any of the commands."""
-        return self.definition is not None and self.definition.commands.has_any(
-            commands
-        )
+        return self.definition.commands.has_any(commands)
 
     def first_command(self, commands: list[str | OverkizCommand]) -> str | None:
         """Return first supported command name from list, or None."""
-        if self.definition is None:
-            return None
         return self.definition.commands.first(commands)
 
     def get_command_definition(
         self, command: str | OverkizCommand
     ) -> CommandDefinition | None:
         """Return the CommandDefinition for a command, or None if unavailable."""
-        if self.definition is None:
-            return None
         return self.definition.commands.get(str(command))
 
 

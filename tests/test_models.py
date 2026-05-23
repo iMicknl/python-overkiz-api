@@ -1128,8 +1128,8 @@ def test_get_command_definition_not_found():
     assert device.get_command_definition("open") is None
 
 
-def test_get_command_definition_no_definition():
-    """Device.get_command_definition() returns None when device has no definition."""
+def test_get_command_definition_empty_definition():
+    """Device.get_command_definition() returns None when command is not in definition."""
     from pyoverkiz.enums import ProductType
     from pyoverkiz.models import States
 
@@ -1140,9 +1140,7 @@ def test_get_command_definition_no_definition():
         label="Test",
         device_url="io://1234-5678-9012/1",
         controllable_name="test",
-        definition=None,
+        definition=Definition(widget_name="SomeWidget", ui_class="RollerShutter"),
         type=ProductType.ACTUATOR,
-        widget="SomeWidget",
-        ui_class="RollerShutter",
     )
     assert device.get_command_definition("open") is None
