@@ -46,7 +46,7 @@ class StateDefinitionType(UnknownEnumMixin, StrEnum):
     DISCRETE = "DiscreteState"
     DATA = "DataState"
 
-    UNKNOWN = "unknown"
+    UNKNOWN = "Unknown"
 
 
 @unique
