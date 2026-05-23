@@ -24,7 +24,7 @@ from backoff.types import Details
 from pyoverkiz.action_queue import ActionQueue, ActionQueueSettings
 from pyoverkiz.auth import AuthStrategy, Credentials, build_auth_strategy
 from pyoverkiz.const import SUPPORTED_SERVERS, USER_AGENT
-from pyoverkiz.converter import converter, structure_response
+from pyoverkiz.converter import structure_response
 from pyoverkiz.enums import APIType, ExecutionMode, Protocol, Server
 from pyoverkiz.exceptions import (
     ExecutionQueueFullError,
@@ -758,8 +758,7 @@ class OverkizClient:
         - label: Human-readable protocol label
         """
         response = await self._get("reference/protocolTypes")
-        # No decamelize — ProtocolType fields are all single-word lowercase already.
-        return converter.structure(response, list[ProtocolType])
+        return structure_response(response, list[ProtocolType])
 
     @retry_on_auth_error
     async def get_reference_timezones(self) -> list[dict[str, Any]]:

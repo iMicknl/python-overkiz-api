@@ -520,59 +520,59 @@ class TestCommandDefinitions:
         """first() returns the first command name that exists."""
         cmds = self._make_cmds(
             [
-                {"command_name": "close", "nparams": 0},
-                {"command_name": "open", "nparams": 0},
-                {"command_name": "setPosition", "nparams": 1},
+                {"commandName": "close", "nparams": 0},
+                {"commandName": "open", "nparams": 0},
+                {"commandName": "setPosition", "nparams": 1},
             ]
         )
         assert cmds.first(["nonexistent", "open", "close"]) == "open"
 
     def test_first_returns_none_when_no_match(self):
         """first() returns None when no command matches."""
-        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        cmds = self._make_cmds([{"commandName": "close", "nparams": 0}])
         assert cmds.first(["nonexistent", "also_nonexistent"]) is None
 
     def test_has_any_true(self):
         """has_any() returns True when at least one command exists."""
-        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        cmds = self._make_cmds([{"commandName": "close", "nparams": 0}])
         assert cmds.has_any(["nonexistent", "close"])
 
     def test_has_any_false(self):
         """has_any() returns False when no command matches."""
-        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        cmds = self._make_cmds([{"commandName": "close", "nparams": 0}])
         assert not cmds.has_any(["nonexistent", "also_nonexistent"])
 
     def test_contains_supports_overkiz_command_enum(self):
         """__contains__ supports OverkizCommand enum values."""
-        cmds = self._make_cmds([{"command_name": "open", "nparams": 0}])
+        cmds = self._make_cmds([{"commandName": "open", "nparams": 0}])
         assert OverkizCommand.OPEN in cmds
         assert OverkizCommand.CLOSE not in cmds
 
     def test_getitem_raises_keyerror_on_missing(self):
         """Subscript access raises KeyError for missing commands."""
-        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        cmds = self._make_cmds([{"commandName": "close", "nparams": 0}])
         with pytest.raises(KeyError, match="nonexistent"):
             cmds["nonexistent"]
 
     def test_getitem_returns_command_on_hit(self):
         """Subscript access returns the CommandDefinition for a known command."""
-        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        cmds = self._make_cmds([{"commandName": "close", "nparams": 0}])
         cmd = cmds["close"]
         assert cmd.command_name == "close"
 
     def test_get_returns_none_on_missing(self):
         """get() returns None for missing commands."""
-        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        cmds = self._make_cmds([{"commandName": "close", "nparams": 0}])
         assert cmds.get("nonexistent") is None
 
     def test_contains_existing(self):
         """'in' operator returns True for existing command names."""
-        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        cmds = self._make_cmds([{"commandName": "close", "nparams": 0}])
         assert "close" in cmds
 
     def test_contains_missing(self):
         """'in' operator returns False for missing command names."""
-        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        cmds = self._make_cmds([{"commandName": "close", "nparams": 0}])
         assert "nonexistent" not in cmds
 
 
@@ -688,7 +688,7 @@ class TestStateDefinition:
     def test_continuous_type(self):
         """ContinuousState should be parsed as StateDefinitionType.CONTINUOUS."""
         sd = converter.structure(
-            {"qualified_name": "core:ClosureState", "type": "ContinuousState"},
+            {"qualifiedName": "core:ClosureState", "type": "ContinuousState"},
             StateDefinition,
         )
         assert sd.type == StateDefinitionType.CONTINUOUS
@@ -697,7 +697,7 @@ class TestStateDefinition:
         """DiscreteState should be parsed as StateDefinitionType.DISCRETE."""
         sd = converter.structure(
             {
-                "qualified_name": "core:OnOffState",
+                "qualifiedName": "core:OnOffState",
                 "type": "DiscreteState",
                 "values": ["on", "off"],
             },
@@ -709,7 +709,7 @@ class TestStateDefinition:
     def test_data_type(self):
         """DataState should be parsed as StateDefinitionType.DATA."""
         sd = converter.structure(
-            {"qualified_name": "core:SomeDataState", "type": "DataState"},
+            {"qualifiedName": "core:SomeDataState", "type": "DataState"},
             StateDefinition,
         )
         assert sd.type == StateDefinitionType.DATA
@@ -717,7 +717,7 @@ class TestStateDefinition:
     def test_none_type(self):
         """Missing type should result in None."""
         sd = converter.structure(
-            {"qualified_name": "core:SomeState"},
+            {"qualifiedName": "core:SomeState"},
             StateDefinition,
         )
         assert sd.type is None
@@ -725,7 +725,7 @@ class TestStateDefinition:
     def test_unknown_type(self):
         """Unknown type strings should fallback to UNKNOWN."""
         sd = converter.structure(
-            {"qualified_name": "core:SomeState", "type": "FutureState"},
+            {"qualifiedName": "core:SomeState", "type": "FutureState"},
             StateDefinition,
         )
         assert sd.type == StateDefinitionType.UNKNOWN
