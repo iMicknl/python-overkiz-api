@@ -18,7 +18,7 @@ class UIProfile(UnknownEnumMixin, StrEnum):
     specific physical device type.
     """
 
-    UNKNOWN = "Unknown"
+    UNKNOWN = "unknown"
 
     #
     # AirFan
