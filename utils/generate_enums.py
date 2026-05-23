@@ -521,7 +521,9 @@ def extract_states_from_fixtures(fixtures_dir: Path) -> set[str]:
             for device in data["devices"]:
                 definition = device.get("definition", {})
                 for state in definition.get("states", []):
-                    if "name" in state:
+                    if "qualifiedName" in state:
+                        states.add(state["qualifiedName"])
+                    elif "name" in state:
                         states.add(state["name"])
         except (json.JSONDecodeError, KeyError, TypeError):
             continue
