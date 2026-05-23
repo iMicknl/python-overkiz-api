@@ -8,7 +8,7 @@ hide:
 UI profiles describe device capabilities through the commands they accept and the states they expose. Each device has one or more profiles that define what it can do.
 
 !!! note
-    This page is auto-generated. Run `uv run utils/generate_enums.py` to regenerate.
+    This page is auto-generated. See [Development Utilities](development-utils.md) for details.
 
 **190 profiles** documented below.
 
