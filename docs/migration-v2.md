@@ -178,14 +178,61 @@ Device URL components are now grouped under `device.identifier`:
 
 The identifier also provides `device.identifier.base_device_url`.
 
-### New helper methods
+### State and attribute access
 
-The `Device` class now provides convenience methods — see the [device control guide](device-control.md) for details:
+v2 provides a consistent API on `device.states` and `device.attributes` (both are `States` containers):
 
-- `device.get_state_value()`, `device.select_first_state_value()`, `device.has_state_value()`
-- `device.supports_command()`, `device.supports_any_command()`, `device.select_first_command()`
-- `device.get_attribute_value()`, `device.select_first_attribute_value()`
-- `device.get_state_definition()`, `device.select_first_state_definition()`
+| Method | Returns | Purpose |
+|--------|---------|---------|
+| `.get(name)` | `State \| None` | Single-key lookup |
+| `.get_value(name)` | `StateType` | Single-key value (None if missing) |
+| `.first(names)` | `State \| None` | First non-None match from fallback list |
+| `.first_value(names)` | `StateType` | First non-None value from fallback list |
+| `.has(name)` | `bool` | Check single state exists with value |
+| `.has_any(names)` | `bool` | Check any state exists with value |
+
+```python
+# Get a single state value
+temp = device.states.get_value("core:TemperatureState")
+
+# Fallback chain — try multiple state names, return first hit
+temp = device.states.first_value(["core:TemperatureState", "core:TemperatureInCelsiusState"])
+
+# Existence check
+if device.states.has("core:ClosureState"):
+    ...
+
+# Same API works for attributes
+firmware = device.attributes.get_value("core:FirmwareRevision")
+```
+
+### Command helpers
+
+| Method | Purpose |
+|--------|---------|
+| `device.supports_command(cmd)` | Check single command support |
+| `device.supports_any_command(cmds)` | Check any command supported |
+| `device.first_command(cmds)` | First supported command from list |
+| `device.get_command_definition(cmd)` | Get `CommandDefinition` metadata |
+
+### Definition helpers
+
+`device.definition` is `Definition | None` — always check before accessing. State definitions are available via the `StateDefinitions` container at `device.definition.states`:
+
+```python
+if device.definition:
+    state_def = device.definition.states.get("core:ClosureState")
+    first_def = device.definition.states.first(["core:ClosureState", "core:TargetClosureState"])
+    if "core:ClosureState" in device.definition.states:
+        ...
+```
+
+| Container | Method | Purpose |
+|-----------|--------|---------|
+| `device.definition.states` | `.get(name)` | Single state definition lookup |
+| | `.first(names)` | First matching from list |
+| | `.has_any(names)` | Check if any exist |
+| | `name in ...` | Membership test |
 
 ## Collection lookups (States, CommandDefinitions)
 
