@@ -253,7 +253,7 @@ def generate_docs_page(
     lines.append("")
     for proto_name in sorted(deduped.keys()):
         count = len(deduped[proto_name])
-        anchor = proto_name.lower().replace("_", "-")
+        anchor = proto_name.lower().replace(" ", "-")
         lines.append(f"- [{proto_name}](#{anchor}) ({count} types)")
     lines.append("")
 
@@ -365,7 +365,12 @@ def generate_docs_page(
 
                     notes_parts = []
                     if cmd.get("description"):
-                        desc = cmd["description"].replace("\n", " ").strip()
+                        desc = (
+                            cmd["description"]
+                            .replace("\n", " ")
+                            .replace("|", "\\|")
+                            .strip()
+                        )
                         notes_parts.append(desc)
                     if cmd.get("protocolSpecifics"):
                         specs = cmd["protocolSpecifics"]
