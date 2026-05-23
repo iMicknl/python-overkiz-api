@@ -667,17 +667,10 @@ class TestStateDefinitions:
         assert UIClassifier.SENSOR not in device.definition.ui_classifiers
 
     def test_ui_profiles_default_to_empty_list(self):
-        """Omitted or null ui_profiles/ui_classifiers default to empty lists."""
+        """Omitted ui_profiles/ui_classifiers default to empty lists."""
         d1 = structure_response({"commands": [], "states": []}, Definition)
         assert d1.ui_profiles == []
         assert d1.ui_classifiers == []
-
-        d2 = structure_response(
-            {"commands": [], "states": [], "uiProfiles": None, "uiClassifiers": None},
-            Definition,
-        )
-        assert d2.ui_profiles == []
-        assert d2.ui_classifiers == []
 
 
 class TestStateDefinition:

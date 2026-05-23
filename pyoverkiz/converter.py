@@ -10,7 +10,6 @@ import attr
 import cattrs
 
 from pyoverkiz._case import decamelize
-from pyoverkiz.enums import UIClassifier, UIProfile
 from pyoverkiz.models import (
     CommandDefinition,
     CommandDefinitions,
@@ -70,24 +69,6 @@ def _make_converter() -> cattrs.Converter:
     c.register_structure_hook(States, _structure_states)
     c.register_structure_hook(CommandDefinitions, _structure_command_definitions)
     c.register_structure_hook(StateDefinitions, _structure_state_definitions)
-
-    # Nullable enum lists: API may send null instead of an empty list
-    nullable_enum_lists = {UIProfile, UIClassifier}
-
-    def _is_nullable_enum_list(t: Any) -> bool:
-        origin = get_origin(t)
-        if origin is not list:
-            return False
-        args = get_args(t)
-        return bool(args) and args[0] in nullable_enum_lists
-
-    def _structure_nullable_enum_list(v: Any, t: type) -> list:
-        enum_cls = get_args(t)[0]
-        return [enum_cls(item) for item in v] if v else []
-
-    c.register_structure_hook_func(
-        _is_nullable_enum_list, _structure_nullable_enum_list
-    )
 
     return c
 
