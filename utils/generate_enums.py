@@ -651,13 +651,76 @@ def find_class_start(content: str, class_name: str) -> int:
     return class_start
 
 
+def extract_commands_from_catalog(catalog_path: Path) -> set[str]:
+    """Extract all command names from a device catalog JSON file.
+
+    The catalog is produced by utils/generate_device_catalog.py and contains
+    device type definitions grouped by protocol.
+    """
+    commands: set[str] = set()
+
+    if not catalog_path.exists():
+        return commands
+
+    try:
+        data = json.loads(catalog_path.read_text())
+        protocols = data.get("protocols", {})
+        for device_types in protocols.values():
+            for dt in device_types:
+                for cmd in dt.get("commands", []):
+                    if "commandName" in cmd:
+                        commands.add(cmd["commandName"])
+    except (json.JSONDecodeError, KeyError, TypeError):
+        pass
+
+    return commands
+
+
+def extract_state_values_from_catalog(catalog_path: Path) -> set[str]:
+    """Extract discrete state enum values from a device catalog JSON file.
+
+    Extracts string values from states that have enumValues in their
+    valuePrototypes.
+    """
+    values: set[str] = set()
+
+    if not catalog_path.exists():
+        return values
+
+    try:
+        data = json.loads(catalog_path.read_text())
+        protocols = data.get("protocols", {})
+        for device_types in protocols.values():
+            for dt in device_types:
+                for state in dt.get("states", []):
+                    for vp in state.get("valuePrototypes", []):
+                        for ev in vp.get("enumValues", []):
+                            if isinstance(ev, str):
+                                values.add(ev)
+    except (json.JSONDecodeError, KeyError, TypeError):
+        pass
+
+    return values
+
+
 async def generate_command_enums() -> None:
-    """Generate the OverkizCommand enum and update OverkizCommandParam from fixture files."""
+    """Generate the OverkizCommand enum and update OverkizCommandParam.
+
+    Sources: existing enum file, test fixtures, and the device catalog
+    (if available at docs/device-catalog/device_catalog.json).
+    """
     fixtures_dir = Path(__file__).parent.parent / "tests" / "fixtures" / "setup"
+    catalog_path = (
+        Path(__file__).parent.parent / "docs" / "device-catalog" / "device_catalog.json"
+    )
 
     # Extract commands and state values from fixtures
     fixture_commands = extract_commands_from_fixtures(fixtures_dir)
     fixture_state_values = extract_state_values_from_fixtures(fixtures_dir)
+
+    # Extract from device catalog (if available)
+    catalog_commands = extract_commands_from_catalog(catalog_path)
+    catalog_state_values = extract_state_values_from_catalog(catalog_path)
 
     # Read existing commands from the command.py file
     command_file = Path(__file__).parent.parent / "pyoverkiz" / "enums" / "command.py"
@@ -668,8 +731,10 @@ async def generate_command_enums() -> None:
     existing_commands = extract_enum_members(content, "OverkizCommand")
     existing_params = extract_enum_members(content, "OverkizCommandParam")
 
-    # Merge: keep existing commands and add new ones from fixtures
-    all_command_values = set(existing_commands.keys()) | fixture_commands
+    # Merge: keep existing commands and add new ones from fixtures + catalog
+    all_command_values = (
+        set(existing_commands.keys()) | fixture_commands | catalog_commands
+    )
 
     # Convert to list of tuples for commands: (enum_name, command_value)
     # Track enum names to detect duplicates
@@ -689,8 +754,10 @@ async def generate_command_enums() -> None:
     # Sort alphabetically by enum name
     command_tuples.sort(key=lambda x: x[0])
 
-    # Merge: keep existing params and add new ones from fixture state values
-    all_param_values = set(existing_params.keys()) | fixture_state_values
+    # Merge: keep existing params and add new ones from fixtures + catalog
+    all_param_values = (
+        set(existing_params.keys()) | fixture_state_values | catalog_state_values
+    )
 
     # Convert to list of tuples for params: (enum_name, param_value)
     # Track enum names to detect duplicates
@@ -760,16 +827,18 @@ async def generate_command_enums() -> None:
     command_file.write_text("\n".join(lines))
 
     print(f"✓ Generated {command_file}")
-    print(f"✓ Added {len(existing_commands)} existing commands")
-    print(f"✓ Found {len(fixture_commands)} total commands in fixtures")
-    new_commands_count = len(fixture_commands - set(existing_commands.keys()))
-    print(f"✓ Added {new_commands_count} new commands from fixtures")
+    print(f"✓ Existing commands in enum: {len(existing_commands)}")
+    print(f"✓ Commands from fixtures: {len(fixture_commands)}")
+    print(f"✓ Commands from device catalog: {len(catalog_commands)}")
+    new_commands_count = len(all_command_values - set(existing_commands.keys()))
+    print(f"✓ New commands added: {new_commands_count}")
     print(f"✓ Total: {len(all_command_values)} commands")
     print()
-    print(f"✓ Added {len(existing_params)} existing parameters")
-    print(f"✓ Found {len(fixture_state_values)} total state values in fixtures")
-    new_params_count = len(fixture_state_values - set(existing_params.keys()))
-    print(f"✓ Added {new_params_count} new parameters from fixtures")
+    print(f"✓ Existing parameters in enum: {len(existing_params)}")
+    print(f"✓ Parameters from fixtures: {len(fixture_state_values)}")
+    print(f"✓ Parameters from device catalog: {len(catalog_state_values)}")
+    new_params_count = len(all_param_values - set(existing_params.keys()))
+    print(f"✓ New parameters added: {new_params_count}")
     print(f"✓ Total: {len(all_param_values)} parameters")
 
 
