@@ -51,10 +51,14 @@ def _rename_hook_factory(cls: type, converter: cattrs.Converter) -> Any:
 
 
 def _make_converter() -> cattrs.Converter:
+    # Converter (not GenConverter) so unknown API keys are silently dropped for forward-compat.
     c = cattrs.Converter()
 
+    # JSON-native unions like StateType (str | int | float | … | None) are already the
+    # correct Python type after JSON parsing — tell cattrs to pass them through as-is.
     c.register_structure_hook_func(_is_primitive_union, lambda v, _: v)
 
+    # Enums: call the constructor so UnknownEnumMixin._missing_ can handle unknown values
     c.register_structure_hook_func(
         lambda t: isinstance(t, type) and issubclass(t, Enum),
         lambda v, t: v if isinstance(v, t) else t(v),
