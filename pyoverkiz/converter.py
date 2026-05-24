@@ -8,8 +8,9 @@ from typing import Any, Union, get_args, get_origin
 
 import attr
 import cattrs
+from cattrs.gen import make_dict_structure_fn, override
 
-from pyoverkiz._case import decamelize
+from pyoverkiz._case import camelize_key
 from pyoverkiz.models import (
     CommandDefinition,
     CommandDefinitions,
@@ -32,8 +33,21 @@ def _is_primitive_union(t: Any) -> bool:
     non_none = [arg for arg in get_args(t) if arg is not type(None)]
     if any(isinstance(arg, type) and attr.has(arg) for arg in non_none):
         return False
-    # Exclude pure Optional[Enum] unions — those need the Enum structure hook.
     return not all(isinstance(arg, type) and issubclass(arg, Enum) for arg in non_none)
+
+
+def _rename_hook_factory(cls: type, converter: cattrs.Converter) -> Any:
+    """Generate a structuring hook that maps camelCase API keys to snake_case fields."""
+    overrides = {}
+    for f in attr.fields(cls):
+        if not f.init or f.name.startswith("_"):
+            continue
+        if f.alias and f.alias != f.name:
+            continue
+        api_key = camelize_key(f.name)
+        if api_key != f.name:
+            overrides[f.name] = override(rename=api_key)
+    return make_dict_structure_fn(cls, converter, **overrides)  # type: ignore[arg-type]
 
 
 def _make_converter() -> cattrs.Converter:
@@ -50,7 +64,7 @@ def _make_converter() -> cattrs.Converter:
         lambda v, t: v if isinstance(v, t) else t(v),
     )
 
-    # Custom container types that take a list in __init__
+    # Custom container types that wrap a list in __init__
     def _structure_states(val: Any, _: type) -> States:
         if val is None:
             return States()
@@ -70,12 +84,15 @@ def _make_converter() -> cattrs.Converter:
     c.register_structure_hook(CommandDefinitions, _structure_command_definitions)
     c.register_structure_hook(StateDefinitions, _structure_state_definitions)
 
+    # For all other attrs classes: lazily generate a hook that renames camelCase
+    # API keys to snake_case on first use. This avoids manual dependency ordering.
+    skip = {States, CommandDefinitions, StateDefinitions}
+    c.register_structure_hook_factory(
+        lambda t: isinstance(t, type) and attr.has(t) and t not in skip,
+        _rename_hook_factory,
+    )
+
     return c
 
 
 converter = _make_converter()
-
-
-def structure_response[T](data: Any, cls: type[T]) -> T:
-    """Decamelize an API response and structure it into the target type."""
-    return converter.structure(decamelize(data), cls)

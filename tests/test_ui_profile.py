@@ -96,8 +96,8 @@ def test_ui_profile_definition_from_api():
                         {
                             "optional": False,
                             "sensitive": False,
-                            "value_prototypes": [
-                                {"type": "INT", "min_value": 0, "max_value": 100}
+                            "valuePrototypes": [
+                                {"type": "INT", "minValue": 0, "maxValue": 100}
                             ],
                         }
                     ]
@@ -109,14 +109,12 @@ def test_ui_profile_definition_from_api():
             {
                 "name": "core:FanSpeedState",
                 "prototype": {
-                    "value_prototypes": [
-                        {"type": "INT", "min_value": 0, "max_value": 100}
-                    ]
+                    "valuePrototypes": [{"type": "INT", "minValue": 0, "maxValue": 100}]
                 },
                 "description": "Current fan speed",
             }
         ],
-        "form_factor": False,
+        "formFactor": False,
     }
     profile = converter.structure(raw, UIProfileDefinition)
 

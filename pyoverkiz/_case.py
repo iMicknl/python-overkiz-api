@@ -3,18 +3,8 @@
 from __future__ import annotations
 
 import functools
-import re
 from collections.abc import Callable
 from typing import Any
-
-_CAMEL_RE = re.compile(r"([A-Z]+)([A-Z][a-z])|([a-z\d])([A-Z])")
-
-
-@functools.lru_cache(maxsize=1024)
-def _decamelize_key(key: str) -> str:
-    """Convert a single camelCase key to snake_case."""
-    result = _CAMEL_RE.sub(r"\1\3_\2\4", key)
-    return result.lower()
 
 
 def recursive_key_map(data: Any, key_fn: Callable[[str], str]) -> Any:
@@ -26,13 +16,20 @@ def recursive_key_map(data: Any, key_fn: Callable[[str], str]) -> Any:
     return data
 
 
-def decamelize(data: Any) -> Any:
-    """Recursively convert dict keys from camelCase to snake_case."""
-    return recursive_key_map(data, _decamelize_key)
+_CAMELIZE_OVERRIDES: dict[str, str] = {
+    "device_url": "deviceURL",
+    "place_oid": "placeOID",
+    "setup_oid": "setupOID",
+}
 
 
 @functools.lru_cache(maxsize=1024)
 def camelize_key(key: str) -> str:
-    """Convert a single snake_case key to camelCase."""
+    """Convert a single snake_case key to camelCase.
+
+    Handles non-standard API casing (e.g. deviceURL, placeOID) via overrides.
+    """
+    if key in _CAMELIZE_OVERRIDES:
+        return _CAMELIZE_OVERRIDES[key]
     parts = key.split("_")
     return parts[0] + "".join(word.capitalize() for word in parts[1:])

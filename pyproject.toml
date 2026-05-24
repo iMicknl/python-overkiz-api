@@ -16,7 +16,7 @@ packages = [
 dependencies = [
     "aiohttp<4.0.0,>=3.10.3",
     "backoff<3.0,>=1.10.0",
-    "attrs>=21.2",
+    "attrs>=22.2",
     "cattrs>=23.2",
 ]
 

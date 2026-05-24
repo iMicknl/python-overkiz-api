@@ -8,7 +8,7 @@ from pathlib import Path
 import cattrs.errors
 import pytest
 
-from pyoverkiz.converter import converter, structure_response
+from pyoverkiz.converter import converter
 from pyoverkiz.enums import (
     DataType,
     EventName,
@@ -102,7 +102,7 @@ FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures" / "setup"
 
 def _make_device(raw: dict | None = None) -> Device:
     """Create a Device from raw camelCase dict via the converter."""
-    return structure_response(raw or RAW_DEVICES, Device)
+    return converter.structure(raw or RAW_DEVICES, Device)
 
 
 class TestSetup:
@@ -113,7 +113,7 @@ class TestSetup:
         raw_setup = json.loads(
             (FIXTURES_DIR / "setup_tahoma_1.json").read_text(encoding="utf-8")
         )
-        setup = structure_response(raw_setup, Setup)
+        setup = converter.structure(raw_setup, Setup)
         raw_id = "SETUP-1234-1234-8044"
         redacted_id = obfuscate_id(raw_id)
 
@@ -126,7 +126,7 @@ class TestSetup:
         raw_setup = json.loads(
             (FIXTURES_DIR / "setup_local.json").read_text(encoding="utf-8")
         )
-        setup = structure_response(raw_setup, Setup)
+        setup = converter.structure(raw_setup, Setup)
 
         assert setup.id is None
 
@@ -520,59 +520,59 @@ class TestCommandDefinitions:
         """first() returns the first command name that exists."""
         cmds = self._make_cmds(
             [
-                {"command_name": "close", "nparams": 0},
-                {"command_name": "open", "nparams": 0},
-                {"command_name": "setPosition", "nparams": 1},
+                {"commandName": "close", "nparams": 0},
+                {"commandName": "open", "nparams": 0},
+                {"commandName": "setPosition", "nparams": 1},
             ]
         )
         assert cmds.first(["nonexistent", "open", "close"]) == "open"
 
     def test_first_returns_none_when_no_match(self):
         """first() returns None when no command matches."""
-        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        cmds = self._make_cmds([{"commandName": "close", "nparams": 0}])
         assert cmds.first(["nonexistent", "also_nonexistent"]) is None
 
     def test_has_any_true(self):
         """has_any() returns True when at least one command exists."""
-        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        cmds = self._make_cmds([{"commandName": "close", "nparams": 0}])
         assert cmds.has_any(["nonexistent", "close"])
 
     def test_has_any_false(self):
         """has_any() returns False when no command matches."""
-        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        cmds = self._make_cmds([{"commandName": "close", "nparams": 0}])
         assert not cmds.has_any(["nonexistent", "also_nonexistent"])
 
     def test_contains_supports_overkiz_command_enum(self):
         """__contains__ supports OverkizCommand enum values."""
-        cmds = self._make_cmds([{"command_name": "open", "nparams": 0}])
+        cmds = self._make_cmds([{"commandName": "open", "nparams": 0}])
         assert OverkizCommand.OPEN in cmds
         assert OverkizCommand.CLOSE not in cmds
 
     def test_getitem_raises_keyerror_on_missing(self):
         """Subscript access raises KeyError for missing commands."""
-        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        cmds = self._make_cmds([{"commandName": "close", "nparams": 0}])
         with pytest.raises(KeyError, match="nonexistent"):
             cmds["nonexistent"]
 
     def test_getitem_returns_command_on_hit(self):
         """Subscript access returns the CommandDefinition for a known command."""
-        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        cmds = self._make_cmds([{"commandName": "close", "nparams": 0}])
         cmd = cmds["close"]
         assert cmd.command_name == "close"
 
     def test_get_returns_none_on_missing(self):
         """get() returns None for missing commands."""
-        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        cmds = self._make_cmds([{"commandName": "close", "nparams": 0}])
         assert cmds.get("nonexistent") is None
 
     def test_contains_existing(self):
         """'in' operator returns True for existing command names."""
-        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        cmds = self._make_cmds([{"commandName": "close", "nparams": 0}])
         assert "close" in cmds
 
     def test_contains_missing(self):
         """'in' operator returns False for missing command names."""
-        cmds = self._make_cmds([{"command_name": "close", "nparams": 0}])
+        cmds = self._make_cmds([{"commandName": "close", "nparams": 0}])
         assert "nonexistent" not in cmds
 
 
@@ -669,7 +669,7 @@ class TestStateDefinitions:
 
     def test_ui_profiles_default_to_empty_list(self):
         """Omitted ui_profiles/ui_classifiers default to empty lists."""
-        d1 = structure_response({"commands": [], "states": []}, Definition)
+        d1 = converter.structure({"commands": [], "states": []}, Definition)
         assert d1.ui_profiles == []
         assert d1.ui_classifiers == []
 
@@ -688,7 +688,7 @@ class TestStateDefinition:
     def test_continuous_type(self):
         """ContinuousState should be parsed as StateDefinitionType.CONTINUOUS."""
         sd = converter.structure(
-            {"qualified_name": "core:ClosureState", "type": "ContinuousState"},
+            {"qualifiedName": "core:ClosureState", "type": "ContinuousState"},
             StateDefinition,
         )
         assert sd.type == StateDefinitionType.CONTINUOUS
@@ -697,7 +697,7 @@ class TestStateDefinition:
         """DiscreteState should be parsed as StateDefinitionType.DISCRETE."""
         sd = converter.structure(
             {
-                "qualified_name": "core:OnOffState",
+                "qualifiedName": "core:OnOffState",
                 "type": "DiscreteState",
                 "values": ["on", "off"],
             },
@@ -709,7 +709,7 @@ class TestStateDefinition:
     def test_data_type(self):
         """DataState should be parsed as StateDefinitionType.DATA."""
         sd = converter.structure(
-            {"qualified_name": "core:SomeDataState", "type": "DataState"},
+            {"qualifiedName": "core:SomeDataState", "type": "DataState"},
             StateDefinition,
         )
         assert sd.type == StateDefinitionType.DATA
@@ -717,7 +717,7 @@ class TestStateDefinition:
     def test_none_type(self):
         """Missing type should result in None."""
         sd = converter.structure(
-            {"qualified_name": "core:SomeState"},
+            {"qualifiedName": "core:SomeState"},
             StateDefinition,
         )
         assert sd.type is None
@@ -725,7 +725,7 @@ class TestStateDefinition:
     def test_unknown_type(self):
         """Unknown type strings should fallback to UNKNOWN."""
         sd = converter.structure(
-            {"qualified_name": "core:SomeState", "type": "FutureState"},
+            {"qualifiedName": "core:SomeState", "type": "FutureState"},
             StateDefinition,
         )
         assert sd.type == StateDefinitionType.UNKNOWN
@@ -950,7 +950,7 @@ class TestEvent:
 
     def test_execution_state_changed_event(self):
         """Optional[Enum] fields (old_state, new_state) are structured into enums."""
-        event = structure_response(
+        event = converter.structure(
             {
                 "timestamp": 1631130760744,
                 "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
@@ -973,7 +973,7 @@ class TestEvent:
 
     def test_failure_type_code_structured_as_enum(self):
         """FailureType | None field is structured into an enum instance."""
-        event = structure_response(
+        event = converter.structure(
             {
                 "name": "ExecutionStateChangedEvent",
                 "timestamp": 123,
@@ -987,7 +987,7 @@ class TestEvent:
 
     def test_optional_enum_fields_none_when_absent(self):
         """Optional enum fields default to None when not present in the payload."""
-        event = structure_response(
+        event = converter.structure(
             {
                 "name": "GatewaySynchronizationEndedEvent",
                 "timestamp": 1631130645998,
@@ -1002,7 +1002,7 @@ class TestEvent:
 
     def test_device_state_changed_event_with_states(self):
         """DeviceStateChangedEvent payload structures device_states as EventState."""
-        event = structure_response(
+        event = converter.structure(
             {
                 "timestamp": 1631130646544,
                 "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
@@ -1026,7 +1026,7 @@ class TestEvent:
     def test_event_fixture_structures_all_events(self):
         """All events in the cloud fixture file structure without errors."""
         raw_events = json.loads((Path("tests/fixtures/event/events.json")).read_text())
-        events = [structure_response(e, Event) for e in raw_events]
+        events = [converter.structure(e, Event) for e in raw_events]
 
         assert len(events) == len(raw_events)
         state_changed = [
