@@ -40,6 +40,7 @@ def _rts_device(
 ) -> Device:
     """Create a minimal RTS Device for testing."""
     if commands is None:
+        # Realistic nparams values based on actual Overkiz API fixtures
         commands = [
             CommandDefinition(command_name="close", nparams=1),
             CommandDefinition(command_name="open", nparams=1),
@@ -47,13 +48,12 @@ def _rts_device(
             CommandDefinition(command_name="down", nparams=1),
             CommandDefinition(command_name="stop", nparams=1),
             CommandDefinition(command_name="my", nparams=1),
+            CommandDefinition(command_name="rest", nparams=1),
             CommandDefinition(command_name="identify", nparams=0),
-            CommandDefinition(command_name="off", nparams=0),
-            CommandDefinition(command_name="on", nparams=0),
-            CommandDefinition(command_name="onWithTimer", nparams=1),
             CommandDefinition(command_name="test", nparams=0),
-            CommandDefinition(command_name="tiltPositive", nparams=0),
-            CommandDefinition(command_name="tiltNegative", nparams=0),
+            CommandDefinition(command_name="tiltPositive", nparams=2),
+            CommandDefinition(command_name="tiltNegative", nparams=2),
+            CommandDefinition(command_name="moveOf", nparams=2),
         ]
     return Device(
         attributes=States(),
@@ -205,17 +205,13 @@ class TestBasicInjection:
 # ---------------------------------------------------------------------------
 
 
-class TestBlockedCommands:
-    """Commands that previously lived in COMMANDS_WITHOUT_DELAY.
-
-    These commands have nparams=0 in their definition, so the new nparams-based
-    approach correctly skips them without needing a hardcoded blocklist.
-    """
+class TestCommandsNotInjected:
+    """Commands that must NOT receive duration injection."""
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
         "command_name",
-        ["identify", "off", "on", "test", "tiltPositive", "tiltNegative"],
+        ["identify", "test"],
     )
     async def test_zero_nparams_commands_not_injected(self, client_rts_0, command_name):
         """Commands with nparams=0 do not get any duration appended."""
@@ -238,13 +234,19 @@ class TestBlockedCommands:
             )
 
     @pytest.mark.asyncio
-    async def test_on_with_timer_already_has_param_not_injected(self, client_rts_0):
-        """OnWithTimer has nparams=1 but user passes the timer value — no room for duration."""
+    @pytest.mark.parametrize(
+        "command_name",
+        ["tiltPositive", "tiltNegative", "moveOf"],
+    )
+    async def test_multi_nparams_commands_not_injected(
+        self, client_rts_0, command_name
+    ):
+        """Commands with nparams=2 (tilt, moveOf) have domain-specific params, not duration."""
         client_rts_0.devices = [_rts_device()]
 
         action = Action(
             device_url="rts://1234-5678-9012/1",
-            commands=[Command(name="onWithTimer", parameters=[60])],
+            commands=[Command(name=command_name)],
         )
 
         with patch.object(
@@ -254,16 +256,28 @@ class TestBlockedCommands:
             await client_rts_0.execute_action_group([action])
 
             called_actions = mock_exec.call_args[0][0]
-            assert called_actions[0].commands[0].parameters == [60]
+            assert called_actions[0].commands[0].parameters is None, (
+                f"Command '{command_name}' (nparams=2) should NOT get duration"
+            )
 
     @pytest.mark.asyncio
-    async def test_on_with_timer_no_param_gets_duration(self, client_rts_0):
-        """OnWithTimer with nparams=1 and no parameters yet gets duration injected."""
+    @pytest.mark.parametrize(
+        ("command_name", "params"),
+        [
+            ("tiltPositive", [1]),
+            ("tiltNegative", [15]),
+            ("moveOf", [50]),
+        ],
+    )
+    async def test_multi_nparams_commands_with_partial_params_not_injected(
+        self, client_rts_0, command_name, params
+    ):
+        """Commands with nparams=2 and 1 param filled still don't get injection."""
         client_rts_0.devices = [_rts_device()]
 
         action = Action(
             device_url="rts://1234-5678-9012/1",
-            commands=[Command(name="onWithTimer")],
+            commands=[Command(name=command_name, parameters=params)],
         )
 
         with patch.object(
@@ -273,7 +287,38 @@ class TestBlockedCommands:
             await client_rts_0.execute_action_group([action])
 
             called_actions = mock_exec.call_args[0][0]
-            assert called_actions[0].commands[0].parameters == [0]
+            assert called_actions[0].commands[0].parameters == params, (
+                f"Command '{command_name}' (nparams=2) should NOT get duration injected"
+            )
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize(
+        ("command_name", "params"),
+        [
+            ("tiltPositive", [1, 0]),
+            ("tiltNegative", [15, 1]),
+            ("moveOf", [50, 100]),
+        ],
+    )
+    async def test_multi_nparams_commands_fully_filled_not_injected(
+        self, client_rts_0, command_name, params
+    ):
+        """Commands with nparams=2 and all params filled pass through unchanged."""
+        client_rts_0.devices = [_rts_device()]
+
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[Command(name=command_name, parameters=params)],
+        )
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters == params
 
 
 # ---------------------------------------------------------------------------
@@ -372,11 +417,11 @@ class TestSettingDisabled:
 
 
 class TestParameterCapacity:
-    """Tests verifying injection only when there's room (current_count < nparams)."""
+    """Tests verifying injection only for nparams=1 commands with 0 params."""
 
     @pytest.mark.asyncio
-    async def test_command_already_at_max_params_not_modified(self, client_rts_0):
-        """Command that already has nparams parameters is not modified."""
+    async def test_nparams_1_already_has_param_not_modified(self, client_rts_0):
+        """Command with nparams=1 that already has its parameter is not modified."""
         client_rts_0.devices = [_rts_device()]
 
         action = Action(
@@ -394,51 +439,7 @@ class TestParameterCapacity:
             assert called_actions[0].commands[0].parameters == [50]
 
     @pytest.mark.asyncio
-    async def test_command_with_multi_nparams(self, client_rts_0):
-        """Command with nparams=3 and 2 params already gets duration as 3rd param."""
-        device = _rts_device(
-            commands=[CommandDefinition(command_name="setClosure", nparams=3)]
-        )
-        client_rts_0.devices = [device]
-
-        action = Action(
-            device_url="rts://1234-5678-9012/1",
-            commands=[Command(name="setClosure", parameters=[50, 100])],
-        )
-
-        with patch.object(
-            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
-        ) as mock_exec:
-            mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
-
-            called_actions = mock_exec.call_args[0][0]
-            assert called_actions[0].commands[0].parameters == [50, 100, 0]
-
-    @pytest.mark.asyncio
-    async def test_command_at_nparams_capacity_not_modified(self, client_rts_0):
-        """Command with nparams=2 and already 2 params is not modified."""
-        device = _rts_device(
-            commands=[CommandDefinition(command_name="setClosure", nparams=2)]
-        )
-        client_rts_0.devices = [device]
-
-        action = Action(
-            device_url="rts://1234-5678-9012/1",
-            commands=[Command(name="setClosure", parameters=[50, 100])],
-        )
-
-        with patch.object(
-            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
-        ) as mock_exec:
-            mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
-
-            called_actions = mock_exec.call_args[0][0]
-            assert called_actions[0].commands[0].parameters == [50, 100]
-
-    @pytest.mark.asyncio
-    async def test_command_over_nparams_not_modified(self, client_rts_0):
+    async def test_nparams_1_with_extra_params_not_modified(self, client_rts_0):
         """Command that somehow has MORE params than nparams is not modified (defensive)."""
         device = _rts_device(
             commands=[CommandDefinition(command_name="close", nparams=1)]
@@ -477,6 +478,31 @@ class TestParameterCapacity:
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters == [0]
+
+    @pytest.mark.asyncio
+    async def test_nparams_2_never_gets_injection(self, client_rts_0):
+        """Commands with nparams >= 2 never get injection regardless of param count."""
+        device = _rts_device(
+            commands=[CommandDefinition(command_name="setClosure", nparams=3)]
+        )
+        client_rts_0.devices = [device]
+
+        for params in [None, [], [50], [50, 100]]:
+            action = Action(
+                device_url="rts://1234-5678-9012/1",
+                commands=[Command(name="setClosure", parameters=params)],
+            )
+
+            with patch.object(
+                client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+            ) as mock_exec:
+                mock_exec.return_value = "exec-123"
+                await client_rts_0.execute_action_group([action])
+
+                called_actions = mock_exec.call_args[0][0]
+                assert called_actions[0].commands[0].parameters == params, (
+                    f"nparams=3 with params={params} should NOT be modified"
+                )
 
 
 # ---------------------------------------------------------------------------
@@ -781,14 +807,11 @@ class TestImmutability:
 
     @pytest.mark.asyncio
     async def test_original_parameters_list_not_mutated(self, client_rts_0):
-        """If command had existing params, original list is not modified."""
-        device = _rts_device(
-            commands=[CommandDefinition(command_name="setClosure", nparams=3)]
-        )
-        client_rts_0.devices = [device]
+        """If command had existing empty params list, original list is not modified."""
+        client_rts_0.devices = [_rts_device()]
 
-        original_params = [50, 100]
-        cmd = Command(name="setClosure", parameters=original_params)
+        original_params: list[int] = []
+        cmd = Command(name="close", parameters=original_params)
         action = Action(
             device_url="rts://1234-5678-9012/1",
             commands=[cmd],
@@ -801,11 +824,11 @@ class TestImmutability:
             await client_rts_0.execute_action_group([action])
 
             called_actions = mock_exec.call_args[0][0]
-            assert called_actions[0].commands[0].parameters == [50, 100, 0]
+            assert called_actions[0].commands[0].parameters == [0]
 
-        # Original list must still be [50, 100]
-        assert original_params == [50, 100]
-        assert cmd.parameters == [50, 100]
+        # Original list must still be empty
+        assert original_params == []
+        assert cmd.parameters == []
 
 
 # ---------------------------------------------------------------------------
@@ -814,53 +837,27 @@ class TestImmutability:
 
 
 class TestEquivalenceWithOldApproach:
-    """Verify nparams approach matches the old COMMANDS_WITHOUT_DELAY blocklist."""
+    """Verify the nparams=1 rule produces correct results for real RTS devices.
 
-    OLD_BLOCKLIST: frozenset[str] = frozenset(
-        {"identify", "off", "on", "onWithTimer", "test", "tiltPositive", "tiltNegative"}
-    )
-    MOVEMENT_COMMANDS: frozenset[str] = frozenset(
-        {"close", "open", "up", "down", "stop", "my"}
-    )
+    Based on actual Overkiz API fixture data (cloud_somfy_connexoon_rts_asia.json):
+    - Movement commands (close, open, up, down, stop, my, rest): nparams=1 -> GET duration
+    - Utility commands (identify, test): nparams=0 -> no injection
+    - Tilt/move commands (tiltPositive, tiltNegative, moveOf): nparams=2 -> no injection
+    - Some venetian blind devices have open/close/stop at nparams=0 -> no injection
 
-    @pytest.mark.asyncio
-    async def test_old_blocklist_commands_skipped(self, client_rts_0):
-        """Every command from the old COMMANDS_WITHOUT_DELAY list is NOT injected."""
-        client_rts_0.devices = [_rts_device()]
-
-        for cmd_name in self.OLD_BLOCKLIST:
-            action = Action(
-                device_url="rts://1234-5678-9012/1",
-                commands=[Command(name=cmd_name)],
-            )
-
-            with patch.object(
-                client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
-            ) as mock_exec:
-                mock_exec.return_value = "exec-123"
-                await client_rts_0.execute_action_group([action])
-
-                called_actions = mock_exec.call_args[0][0]
-                params = called_actions[0].commands[0].parameters
-                # onWithTimer has nparams=1, so it DOES get injection when sent without params.
-                # This is a deliberate behavioral difference from the old approach: the old
-                # approach blindly blocked it, but the new approach correctly handles it based
-                # on capacity. This is tested separately below.
-                if cmd_name == "onWithTimer":
-                    assert params == [0], (
-                        "onWithTimer (nparams=1, no params) gets injection in new approach"
-                    )
-                else:
-                    assert params is None, (
-                        f"'{cmd_name}' (nparams=0) must NOT get duration"
-                    )
+    The old COMMANDS_WITHOUT_DELAY blocklist (identify, off, on, onWithTimer,
+    test, tiltPositive, tiltNegative) is no longer needed because:
+    - identify, test: nparams=0 — naturally excluded
+    - tiltPositive, tiltNegative: nparams=2 — excluded by nparams==1 rule
+    - off, on, onWithTimer: don't exist on real RTS devices in the fixtures
+    """
 
     @pytest.mark.asyncio
     async def test_movement_commands_injected(self, client_rts_0):
-        """All typical movement commands (not in old blocklist) DO get injection."""
+        """All movement commands with nparams=1 get duration injected."""
         client_rts_0.devices = [_rts_device()]
 
-        for cmd_name in self.MOVEMENT_COMMANDS:
+        for cmd_name in ("close", "open", "up", "down", "stop", "my", "rest"):
             action = Action(
                 device_url="rts://1234-5678-9012/1",
                 commands=[Command(name=cmd_name)],
@@ -874,8 +871,72 @@ class TestEquivalenceWithOldApproach:
 
                 called_actions = mock_exec.call_args[0][0]
                 assert called_actions[0].commands[0].parameters == [0], (
-                    f"'{cmd_name}' must get duration=0"
+                    f"'{cmd_name}' (nparams=1) must get duration=0"
                 )
+
+    @pytest.mark.asyncio
+    async def test_tilt_commands_not_injected(self, client_rts_0):
+        """tiltPositive/tiltNegative have nparams=2 (position, speed) — not duration."""
+        client_rts_0.devices = [_rts_device()]
+
+        for cmd_name in ("tiltPositive", "tiltNegative", "moveOf"):
+            action = Action(
+                device_url="rts://1234-5678-9012/1",
+                commands=[Command(name=cmd_name)],
+            )
+
+            with patch.object(
+                client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+            ) as mock_exec:
+                mock_exec.return_value = "exec-123"
+                await client_rts_0.execute_action_group([action])
+
+                called_actions = mock_exec.call_args[0][0]
+                assert called_actions[0].commands[0].parameters is None, (
+                    f"'{cmd_name}' (nparams=2) must NOT get duration"
+                )
+
+    @pytest.mark.asyncio
+    async def test_venetian_blind_zero_nparams_device(self, client_rts_0):
+        """Some RTS venetian blinds have open/close/stop at nparams=0 — no injection."""
+        device = _rts_device(
+            commands=[
+                CommandDefinition(command_name="open", nparams=0),
+                CommandDefinition(command_name="close", nparams=0),
+                CommandDefinition(command_name="stop", nparams=0),
+                CommandDefinition(command_name="my", nparams=1),
+                CommandDefinition(command_name="tiltPositive", nparams=2),
+                CommandDefinition(command_name="tiltNegative", nparams=2),
+                CommandDefinition(command_name="identify", nparams=0),
+            ]
+        )
+        client_rts_0.devices = [device]
+
+        for cmd_name, expect_injection in [
+            ("open", False),
+            ("close", False),
+            ("stop", False),
+            ("my", True),
+            ("tiltPositive", False),
+            ("identify", False),
+        ]:
+            action = Action(
+                device_url="rts://1234-5678-9012/1",
+                commands=[Command(name=cmd_name)],
+            )
+
+            with patch.object(
+                client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+            ) as mock_exec:
+                mock_exec.return_value = "exec-123"
+                await client_rts_0.execute_action_group([action])
+
+                called_actions = mock_exec.call_args[0][0]
+                params = called_actions[0].commands[0].parameters
+                if expect_injection:
+                    assert params == [0], f"'{cmd_name}' should get duration"
+                else:
+                    assert params is None, f"'{cmd_name}' should NOT get duration"
 
 
 # ---------------------------------------------------------------------------

@@ -519,6 +519,10 @@ class OverkizClient:
         blocks consecutive commands. This injects the configured duration
         (typically 0) into commands that accept it, based on the device
         command definition (nparams).
+
+        Only commands with nparams=1 that have no parameters yet are eligible.
+        Commands with nparams >= 2 (e.g. tiltPositive, moveOf) have
+        domain-specific parameters that are not execution duration.
         """
         duration = self.settings.rts_command_duration
         if duration is None:
@@ -539,11 +543,11 @@ class OverkizClient:
                 cmd_def = device.get_command_definition(str(cmd.name))
                 current_count = len(cmd.parameters) if cmd.parameters else 0
 
-                if cmd_def and current_count < cmd_def.nparams:
+                if cmd_def and cmd_def.nparams == 1 and current_count == 0:
                     updated_commands.append(
                         Command(
                             name=cmd.name,
-                            parameters=[*(cmd.parameters or []), duration],
+                            parameters=[duration],
                             type=cmd.type,
                         )
                     )
