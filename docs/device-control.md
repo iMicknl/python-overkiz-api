@@ -294,7 +294,9 @@ trigger_id = await client.schedule_persisted_action_group(
 
 ## RTS command duration
 
-RTS devices have a default execution duration of 30 seconds, which blocks consecutive commands until the duration expires. To avoid this, you can configure `rts_command_duration` in `OverkizClientSettings`. The client will automatically inject the configured duration into RTS commands that support it, based on the command definition (`nparams`).
+For RTS commands, the **last parameter is always the execution duration** (defaults to 15–30 seconds depending on the command). This blocks consecutive commands until the duration expires.
+
+You can configure `default_rts_command_duration` in `OverkizClientSettings` to override this default. The client injects this value as the duration parameter only when the user has not already provided it explicitly.
 
 ```python
 from pyoverkiz.auth.credentials import UsernamePasswordCredentials
@@ -305,11 +307,19 @@ from pyoverkiz.enums import Server
 client = OverkizClient(
     server=Server.SOMFY_EUROPE,
     credentials=UsernamePasswordCredentials("user@example.com", "password"),
-    settings=OverkizClientSettings(rts_command_duration=0),
+    settings=OverkizClientSettings(default_rts_command_duration=0),
 )
 ```
 
-With `rts_command_duration=0`, the execution duration is set to 0 seconds for supported commands, allowing consecutive commands to be sent without delay. Commands that don't accept a duration parameter (like `identify` or `test`) are left unchanged.
+With `default_rts_command_duration=0`, consecutive commands can be sent without delay. If a user passes the duration explicitly (e.g., `Command(name="close", parameters=[5])`), their value takes precedence.
+
+| Command | nparams | Last param | Injection behavior |
+|---------|---------|------------|--------------------|
+| `close`, `open`, `up`, `down`, `stop`, `my`, `rest` | 1 | duration (default 30s) | Injected when called with no args |
+| `tiltPositive`, `tiltNegative`, `moveOf` | 2 | duration (default 15s) | Injected when called with position arg only |
+| `identify`, `test` | 0 | — | Never injected (no parameters) |
+
+The injection rule: duration is injected only when all domain-specific parameters have been provided but the duration slot is still empty (`current_count == nparams - 1`). If the user already provides the duration themselves, the configured default is not applied.
 
 ## Limitations and rate limits
 

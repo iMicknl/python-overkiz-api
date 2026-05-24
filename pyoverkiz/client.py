@@ -171,7 +171,7 @@ class OverkizClientSettings:
     """
 
     action_queue: ActionQueueSettings | None = None
-    rts_command_duration: int | None = None
+    default_rts_command_duration: int | None = None
 
 
 class OverkizClient:
@@ -513,14 +513,19 @@ class OverkizClient:
         return cast(str, response["protocolVersion"])
 
     def _apply_rts_duration(self, actions: list[Action]) -> list[Action]:
-        """Set the execution duration for RTS commands that support it.
+        """Apply the default execution duration for RTS commands.
 
-        The default execution duration for RTS devices is 30 seconds, which
-        blocks consecutive commands. This injects the configured duration
-        (typically 0) into commands that accept it, based on the device
-        command definition (nparams).
+        For RTS commands, the last parameter is always the execution duration
+        (default 15s for tilt commands, 30s for movement commands). This
+        injects ``default_rts_command_duration`` as the last parameter only
+        when the user has not already provided it — i.e., when the command
+        has all domain-specific parameters filled but the duration slot is
+        still empty (current_count == nparams - 1).
+
+        If the user explicitly passes the duration parameter themselves, it
+        is left unchanged.
         """
-        duration = self.settings.rts_command_duration
+        duration = self.settings.default_rts_command_duration
         if duration is None:
             return actions
 
@@ -539,7 +544,11 @@ class OverkizClient:
                 cmd_def = device.get_command_definition(str(cmd.name))
                 current_count = len(cmd.parameters) if cmd.parameters else 0
 
-                if cmd_def and current_count < cmd_def.nparams:
+                if (
+                    cmd_def
+                    and cmd_def.nparams > 0
+                    and current_count == cmd_def.nparams - 1
+                ):
                     updated_commands.append(
                         Command(
                             name=cmd.name,
