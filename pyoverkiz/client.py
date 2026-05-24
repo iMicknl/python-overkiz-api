@@ -520,9 +520,10 @@ class OverkizClient:
         (typically 0) into commands that accept it, based on the device
         command definition (nparams).
 
-        Only commands with nparams=1 that have no parameters yet are eligible.
-        Commands with nparams >= 2 (e.g. tiltPositive, moveOf) have
-        domain-specific parameters that are not execution duration.
+        For RTS commands, the last parameter is always the execution duration.
+        Injection occurs only when the command is missing exactly that last
+        parameter (current_count == nparams - 1), ensuring we never fill
+        domain-specific parameter slots with a duration value.
         """
         duration = self.settings.rts_command_duration
         if duration is None:
@@ -543,11 +544,15 @@ class OverkizClient:
                 cmd_def = device.get_command_definition(str(cmd.name))
                 current_count = len(cmd.parameters) if cmd.parameters else 0
 
-                if cmd_def and cmd_def.nparams == 1 and current_count == 0:
+                if (
+                    cmd_def
+                    and cmd_def.nparams > 0
+                    and current_count == cmd_def.nparams - 1
+                ):
                     updated_commands.append(
                         Command(
                             name=cmd.name,
-                            parameters=[duration],
+                            parameters=[*(cmd.parameters or []), duration],
                             type=cmd.type,
                         )
                     )
