@@ -96,8 +96,3 @@ def _make_converter() -> cattrs.Converter:
 
 
 converter = _make_converter()
-
-
-def structure_response[T](data: Any, cls: type[T]) -> T:
-    """Structure an API response (with camelCase keys) into the target type."""
-    return converter.structure(data, cls)

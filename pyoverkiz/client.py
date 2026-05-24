@@ -24,7 +24,7 @@ from backoff.types import Details
 from pyoverkiz.action_queue import ActionQueue, ActionQueueSettings
 from pyoverkiz.auth import AuthStrategy, Credentials, build_auth_strategy
 from pyoverkiz.const import SUPPORTED_SERVERS, USER_AGENT
-from pyoverkiz.converter import structure_response
+from pyoverkiz.converter import converter
 from pyoverkiz.enums import APIType, ExecutionMode, Protocol, Server
 from pyoverkiz.exceptions import (
     ExecutionQueueFullError,
@@ -333,7 +333,7 @@ class OverkizClient:
 
         response = await self._get("setup")
 
-        setup = structure_response(response, Setup)
+        setup = converter.structure(response, Setup)
 
         # Cache response
         self.setup = setup
@@ -381,7 +381,7 @@ class OverkizClient:
             return self.devices
 
         response = await self._get("setup/devices")
-        devices = structure_response(response, list[Device])
+        devices = converter.structure(response, list[Device])
 
         # Cache response
         self.devices = devices
@@ -400,7 +400,7 @@ class OverkizClient:
             return self.gateways
 
         response = await self._get("setup/gateways")
-        gateways = structure_response(response, list[Gateway])
+        gateways = converter.structure(response, list[Gateway])
 
         # Cache response
         self.gateways = gateways
@@ -413,7 +413,7 @@ class OverkizClient:
     async def get_execution_history(self) -> list[HistoryExecution]:
         """List past executions and their outcomes."""
         response = await self._get("history/executions")
-        return structure_response(response, list[HistoryExecution])
+        return converter.structure(response, list[HistoryExecution])
 
     @retry_on_auth_error
     async def get_device_definition(self, device_url: str) -> Definition | None:
@@ -426,7 +426,7 @@ class OverkizClient:
         if raw is None:
             return None
 
-        return structure_response(raw, Definition)
+        return converter.structure(raw, Definition)
 
     @retry_on_auth_error
     async def get_state(self, device_url: str) -> list[State]:
@@ -434,7 +434,7 @@ class OverkizClient:
         response = await self._get(
             f"setup/devices/{urllib.parse.quote_plus(device_url)}/states"
         )
-        return structure_response(response, list[State])
+        return converter.structure(response, list[State])
 
     @retry_on_auth_error
     async def refresh_states(self) -> None:
@@ -477,7 +477,7 @@ class OverkizClient:
         operation (polling).
         """
         response = await self._post(f"events/{self.event_listener_id}/fetch")
-        return structure_response(response, list[Event])
+        return converter.structure(response, list[Event])
 
     async def unregister_event_listener(self) -> None:
         """Unregister an event listener.
@@ -497,13 +497,13 @@ class OverkizClient:
         if not response or not isinstance(response, dict):
             return None
 
-        return structure_response(response, Execution)
+        return converter.structure(response, Execution)
 
     @retry_on_auth_error
     async def get_current_executions(self) -> list[Execution]:
         """Get all currently running executions."""
         response = await self._get("exec/current")
-        return structure_response(response, list[Execution])
+        return converter.structure(response, list[Execution])
 
     @retry_on_auth_error
     async def get_api_version(self) -> str:
@@ -641,7 +641,7 @@ class OverkizClient:
     async def get_action_groups(self) -> list[PersistedActionGroup]:
         """List action groups persisted on the server."""
         response = await self._get("actionGroups")
-        return structure_response(response, list[PersistedActionGroup])
+        return converter.structure(response, list[PersistedActionGroup])
 
     @retry_on_auth_error
     async def get_places(self) -> Place:
@@ -656,7 +656,7 @@ class OverkizClient:
         - `sub_places`: List of nested places within this location
         """
         response = await self._get("setup/places")
-        return structure_response(response, Place)
+        return converter.structure(response, Place)
 
     @retry_on_auth_error
     async def execute_persisted_action_group(self, oid: str) -> str:
@@ -678,7 +678,7 @@ class OverkizClient:
         Access scope : Full enduser API access (enduser/*).
         """
         response = await self._get("setup/options")
-        return structure_response(response, list[Option])
+        return converter.structure(response, list[Option])
 
     @retry_on_auth_error
     async def get_setup_option(self, option: str) -> Option | None:
@@ -689,7 +689,7 @@ class OverkizClient:
         response = await self._get(f"setup/options/{option}")
 
         if response:
-            return structure_response(response, Option)
+            return converter.structure(response, Option)
 
         return None
 
@@ -707,7 +707,7 @@ class OverkizClient:
         response = await self._get(f"setup/options/{option}/{parameter}")
 
         if response:
-            return structure_response(response, OptionParameter)
+            return converter.structure(response, OptionParameter)
 
         return None
 
@@ -745,7 +745,7 @@ class OverkizClient:
             }
         """
         response = await self._post("reference/devices/search", payload)
-        return structure_response(response, DeviceSearchResult)
+        return converter.structure(response, DeviceSearchResult)
 
     @retry_on_auth_error
     async def get_reference_protocol_types(self) -> list[ProtocolType]:
@@ -758,7 +758,7 @@ class OverkizClient:
         - label: Human-readable protocol label
         """
         response = await self._get("reference/protocolTypes")
-        return structure_response(response, list[ProtocolType])
+        return converter.structure(response, list[ProtocolType])
 
     @retry_on_auth_error
     async def get_reference_timezones(self) -> list[dict[str, Any]]:
@@ -788,7 +788,7 @@ class OverkizClient:
         response = await self._get(
             f"reference/ui/profile/{urllib.parse.quote_plus(profile_name)}"
         )
-        return structure_response(response, UIProfileDefinition)
+        return converter.structure(response, UIProfileDefinition)
 
     @retry_on_auth_error
     async def get_reference_ui_profile_names(self) -> list[str]:
@@ -804,7 +804,7 @@ class OverkizClient:
     async def get_devices_not_up_to_date(self) -> list[Device]:
         """Get all devices whose firmware is not up to date."""
         response = await self._get("setup/devices/notUpToDate")
-        return structure_response(response, list[Device])
+        return converter.structure(response, list[Device])
 
     @retry_on_auth_error
     async def get_device_firmware_status(
@@ -820,7 +820,7 @@ class OverkizClient:
             )
         except UnsupportedOperationError:
             return None
-        return structure_response(response, FirmwareStatus)
+        return converter.structure(response, FirmwareStatus)
 
     @retry_on_auth_error
     async def get_device_firmware_update_capability(self, device_url: str) -> bool:
@@ -867,7 +867,7 @@ class OverkizClient:
         )
         if response is None:
             return None
-        return structure_response(response, Definition)
+        return converter.structure(response, Definition)
 
     @retry_on_auth_error
     async def get_device_alternative_controllables(self, device_url: str) -> list[str]:
@@ -884,7 +884,7 @@ class OverkizClient:
         response = await self._get(
             f"setup/devices/{urllib.parse.quote_plus(device_url)}/manufacturerReferences"
         )
-        return structure_response(response, list[DeviceManufacturerReference])
+        return converter.structure(response, list[DeviceManufacturerReference])
 
     async def _get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API."""
