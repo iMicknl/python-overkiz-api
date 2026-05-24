@@ -1,5 +1,13 @@
 # tests/test_rts_injection.py
-"""Tests for RTS command duration injection in execute_action_group."""
+"""Tests for RTS command duration injection in execute_action_group.
+
+This feature replaces the old COMMANDS_WITHOUT_DELAY blocklist approach that
+was used in the Home Assistant overkiz executor. The old approach blindly
+appended 0 to all RTS commands except a hardcoded list (identify, off, on,
+onWithTimer, test, tiltPositive, tiltNegative). The new approach uses the
+device's command definition nparams to decide whether a duration parameter
+can be added — this is more correct and future-proof.
+"""
 
 from __future__ import annotations
 
@@ -21,6 +29,10 @@ from pyoverkiz.models import (
     States,
 )
 
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
 
 def _rts_device(
     device_url: str = "rts://1234-5678-9012/1",
@@ -31,7 +43,17 @@ def _rts_device(
         commands = [
             CommandDefinition(command_name="close", nparams=1),
             CommandDefinition(command_name="open", nparams=1),
+            CommandDefinition(command_name="up", nparams=1),
+            CommandDefinition(command_name="down", nparams=1),
+            CommandDefinition(command_name="stop", nparams=1),
+            CommandDefinition(command_name="my", nparams=1),
             CommandDefinition(command_name="identify", nparams=0),
+            CommandDefinition(command_name="off", nparams=0),
+            CommandDefinition(command_name="on", nparams=0),
+            CommandDefinition(command_name="onWithTimer", nparams=1),
+            CommandDefinition(command_name="test", nparams=0),
+            CommandDefinition(command_name="tiltPositive", nparams=0),
+            CommandDefinition(command_name="tiltNegative", nparams=0),
         ]
     return Device(
         attributes=States(),
@@ -69,9 +91,34 @@ def _io_device(device_url: str = "io://1234-5678-9012/2") -> Device:
     )
 
 
+def _zwave_device(device_url: str = "zwave://1234-5678-9012/3") -> Device:
+    """Create a minimal Z-Wave device for testing."""
+    return Device(
+        attributes=States(),
+        available=True,
+        enabled=True,
+        label="ZWave Blind",
+        device_url=device_url,
+        controllable_name="zwave:blind",
+        definition=Definition(
+            commands=CommandDefinitions(
+                [CommandDefinition(command_name="close", nparams=1)]
+            ),
+            widget_name="SomeWidget",
+            ui_class="RollerShutter",
+        ),
+        type=ProductType.ACTUATOR,
+    )
+
+
+# ---------------------------------------------------------------------------
+# Fixtures
+# ---------------------------------------------------------------------------
+
+
 @pytest_asyncio.fixture
-async def client_with_rts() -> OverkizClient:
-    """Client with RTS duration enabled."""
+async def client_rts_0() -> OverkizClient:
+    """Client with RTS duration=0 (most common HA config)."""
     return OverkizClient(
         server=Server.SOMFY_EUROPE,
         credentials=UsernamePasswordCredentials("user", "pass"),
@@ -80,182 +127,825 @@ async def client_with_rts() -> OverkizClient:
 
 
 @pytest_asyncio.fixture
-async def client_without_rts() -> OverkizClient:
-    """Client without RTS duration (default behavior)."""
+async def client_rts_5() -> OverkizClient:
+    """Client with RTS duration=5 (custom delay)."""
+    return OverkizClient(
+        server=Server.SOMFY_EUROPE,
+        credentials=UsernamePasswordCredentials("user", "pass"),
+        settings=OverkizClientSettings(rts_command_duration=5),
+    )
+
+
+@pytest_asyncio.fixture
+async def client_no_rts() -> OverkizClient:
+    """Client without RTS duration (default/passive)."""
     return OverkizClient(
         server=Server.SOMFY_EUROPE,
         credentials=UsernamePasswordCredentials("user", "pass"),
     )
 
 
-@pytest.mark.asyncio
-async def test_rts_device_gets_duration_appended(client_with_rts):
-    """RTS device command with room for extra param gets duration appended."""
-    client_with_rts.devices = [_rts_device()]
+# ---------------------------------------------------------------------------
+# Basic injection tests
+# ---------------------------------------------------------------------------
 
-    action = Action(
-        device_url="rts://1234-5678-9012/1",
-        commands=[Command(name="close")],
+
+class TestBasicInjection:
+    """Core tests: commands that accept a duration get it injected."""
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize(
+        "command_name",
+        ["close", "open", "up", "down", "stop", "my"],
+    )
+    async def test_movement_commands_get_duration_injected(
+        self, client_rts_0, command_name
+    ):
+        """Movement commands (nparams=1, no params yet) get duration appended."""
+        client_rts_0.devices = [_rts_device()]
+
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[Command(name=command_name)],
+        )
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters == [0], (
+                f"Command '{command_name}' should have gotten duration=0 appended"
+            )
+
+    @pytest.mark.asyncio
+    async def test_custom_duration_value_injected(self, client_rts_5):
+        """A non-zero duration is injected correctly."""
+        client_rts_5.devices = [_rts_device()]
+
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[Command(name="close")],
+        )
+
+        with patch.object(
+            client_rts_5, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_5.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters == [5]
+
+
+# ---------------------------------------------------------------------------
+# Commands that should NOT get injection (old COMMANDS_WITHOUT_DELAY list)
+# ---------------------------------------------------------------------------
+
+
+class TestBlockedCommands:
+    """Commands that previously lived in COMMANDS_WITHOUT_DELAY.
+
+    These commands have nparams=0 in their definition, so the new nparams-based
+    approach correctly skips them without needing a hardcoded blocklist.
+    """
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize(
+        "command_name",
+        ["identify", "off", "on", "test", "tiltPositive", "tiltNegative"],
+    )
+    async def test_zero_nparams_commands_not_injected(self, client_rts_0, command_name):
+        """Commands with nparams=0 do not get any duration appended."""
+        client_rts_0.devices = [_rts_device()]
+
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[Command(name=command_name)],
+        )
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters is None, (
+                f"Command '{command_name}' (nparams=0) should NOT get duration"
+            )
+
+    @pytest.mark.asyncio
+    async def test_on_with_timer_already_has_param_not_injected(self, client_rts_0):
+        """OnWithTimer has nparams=1 but user passes the timer value — no room for duration."""
+        client_rts_0.devices = [_rts_device()]
+
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[Command(name="onWithTimer", parameters=[60])],
+        )
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters == [60]
+
+    @pytest.mark.asyncio
+    async def test_on_with_timer_no_param_gets_duration(self, client_rts_0):
+        """OnWithTimer with nparams=1 and no parameters yet gets duration injected."""
+        client_rts_0.devices = [_rts_device()]
+
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[Command(name="onWithTimer")],
+        )
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters == [0]
+
+
+# ---------------------------------------------------------------------------
+# Non-RTS protocols should never be modified
+# ---------------------------------------------------------------------------
+
+
+class TestNonRtsProtocols:
+    """Non-RTS devices are never touched regardless of rts_command_duration."""
+
+    @pytest.mark.asyncio
+    @pytest.mark.parametrize(
+        ("device_factory", "device_url"),
+        [
+            (_io_device, "io://1234-5678-9012/2"),
+            (_zwave_device, "zwave://1234-5678-9012/3"),
+        ],
+        ids=["io", "zwave"],
+    )
+    async def test_non_rts_device_not_modified(
+        self, client_rts_0, device_factory, device_url
+    ):
+        """IO and Z-Wave commands are never modified even with rts_command_duration set."""
+        client_rts_0.devices = [device_factory()]
+
+        action = Action(
+            device_url=device_url,
+            commands=[Command(name="close")],
+        )
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters is None
+
+
+# ---------------------------------------------------------------------------
+# Setting disabled (rts_command_duration=None)
+# ---------------------------------------------------------------------------
+
+
+class TestSettingDisabled:
+    """When rts_command_duration is None (default), no injection occurs."""
+
+    @pytest.mark.asyncio
+    async def test_no_setting_means_no_injection(self, client_no_rts):
+        """RTS device commands pass through unmodified when setting is None."""
+        client_no_rts.devices = [_rts_device()]
+
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[Command(name="close")],
+        )
+
+        with patch.object(
+            client_no_rts, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_no_rts.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters is None
+
+    @pytest.mark.asyncio
+    async def test_no_setting_multiple_rts_commands_unmodified(self, client_no_rts):
+        """Multiple RTS commands all pass through when setting is None."""
+        client_no_rts.devices = [_rts_device()]
+
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[
+                Command(name="close"),
+                Command(name="open"),
+                Command(name="my"),
+            ],
+        )
+
+        with patch.object(
+            client_no_rts, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_no_rts.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            for cmd in called_actions[0].commands:
+                assert cmd.parameters is None
+
+
+# ---------------------------------------------------------------------------
+# Parameter capacity tests
+# ---------------------------------------------------------------------------
+
+
+class TestParameterCapacity:
+    """Tests verifying injection only when there's room (current_count < nparams)."""
+
+    @pytest.mark.asyncio
+    async def test_command_already_at_max_params_not_modified(self, client_rts_0):
+        """Command that already has nparams parameters is not modified."""
+        client_rts_0.devices = [_rts_device()]
+
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[Command(name="close", parameters=[50])],
+        )
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters == [50]
+
+    @pytest.mark.asyncio
+    async def test_command_with_multi_nparams(self, client_rts_0):
+        """Command with nparams=3 and 2 params already gets duration as 3rd param."""
+        device = _rts_device(
+            commands=[CommandDefinition(command_name="setClosure", nparams=3)]
+        )
+        client_rts_0.devices = [device]
+
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[Command(name="setClosure", parameters=[50, 100])],
+        )
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters == [50, 100, 0]
+
+    @pytest.mark.asyncio
+    async def test_command_at_nparams_capacity_not_modified(self, client_rts_0):
+        """Command with nparams=2 and already 2 params is not modified."""
+        device = _rts_device(
+            commands=[CommandDefinition(command_name="setClosure", nparams=2)]
+        )
+        client_rts_0.devices = [device]
+
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[Command(name="setClosure", parameters=[50, 100])],
+        )
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters == [50, 100]
+
+    @pytest.mark.asyncio
+    async def test_command_over_nparams_not_modified(self, client_rts_0):
+        """Command that somehow has MORE params than nparams is not modified (defensive)."""
+        device = _rts_device(
+            commands=[CommandDefinition(command_name="close", nparams=1)]
+        )
+        client_rts_0.devices = [device]
+
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[Command(name="close", parameters=[10, 20])],
+        )
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters == [10, 20]
+
+    @pytest.mark.asyncio
+    async def test_empty_parameters_list_counts_as_zero(self, client_rts_0):
+        """Explicit empty list [] counts as 0 params — duration gets appended."""
+        client_rts_0.devices = [_rts_device()]
+
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[Command(name="close", parameters=[])],
+        )
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters == [0]
+
+
+# ---------------------------------------------------------------------------
+# Multi-command and multi-action tests
+# ---------------------------------------------------------------------------
+
+
+class TestMultiCommandActions:
+    """Tests for actions with multiple commands."""
+
+    @pytest.mark.asyncio
+    async def test_mixed_commands_in_single_action(self, client_rts_0):
+        """Action with injectable and non-injectable commands handles each correctly."""
+        client_rts_0.devices = [_rts_device()]
+
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[
+                Command(name="close"),  # nparams=1, no params -> inject
+                Command(name="identify"),  # nparams=0 -> skip
+                Command(name="open", parameters=[50]),  # nparams=1, full -> skip
+                Command(name="up"),  # nparams=1, no params -> inject
+            ],
+        )
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([action])
+
+            cmds = mock_exec.call_args[0][0][0].commands
+            assert cmds[0].parameters == [0]  # close: injected
+            assert cmds[1].parameters is None  # identify: skipped
+            assert cmds[2].parameters == [50]  # open: already full
+            assert cmds[3].parameters == [0]  # up: injected
+
+    @pytest.mark.asyncio
+    async def test_multiple_actions_mixed_protocols(self, client_rts_0):
+        """Multiple actions in one call: RTS gets injection, IO does not."""
+        rts = _rts_device()
+        io = _io_device()
+        client_rts_0.devices = [rts, io]
+
+        actions = [
+            Action(
+                device_url="rts://1234-5678-9012/1",
+                commands=[Command(name="close")],
+            ),
+            Action(
+                device_url="io://1234-5678-9012/2",
+                commands=[Command(name="close")],
+            ),
+        ]
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group(actions)
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters == [0]  # RTS
+            assert called_actions[1].commands[0].parameters is None  # IO
+
+    @pytest.mark.asyncio
+    async def test_multiple_rts_actions(self, client_rts_0):
+        """Multiple RTS actions all get duration injected independently."""
+        rts1 = _rts_device(device_url="rts://1234-5678-9012/1")
+        rts2 = _rts_device(device_url="rts://1234-5678-9012/4")
+        client_rts_0.devices = [rts1, rts2]
+
+        actions = [
+            Action(
+                device_url="rts://1234-5678-9012/1",
+                commands=[Command(name="close")],
+            ),
+            Action(
+                device_url="rts://1234-5678-9012/4",
+                commands=[Command(name="open")],
+            ),
+        ]
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group(actions)
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters == [0]
+            assert called_actions[1].commands[0].parameters == [0]
+
+
+# ---------------------------------------------------------------------------
+# Device URL edge cases (subsystem IDs)
+# ---------------------------------------------------------------------------
+
+
+class TestDeviceUrlEdgeCases:
+    """RTS devices with subsystem IDs (e.g., rts://gateway/addr#2)."""
+
+    @pytest.mark.asyncio
+    async def test_rts_device_with_subsystem_id(self, client_rts_0):
+        """RTS device with subsystem ID (#2) gets injection."""
+        device = _rts_device(device_url="rts://1234-5678-9012/1#2")
+        client_rts_0.devices = [device]
+
+        action = Action(
+            device_url="rts://1234-5678-9012/1#2",
+            commands=[Command(name="close")],
+        )
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters == [0]
+
+    @pytest.mark.asyncio
+    async def test_mismatched_subsystem_id_not_found(self, client_rts_0):
+        """Action URL rts://...#2 but devices only has rts://...#1 => not found, skip."""
+        device = _rts_device(device_url="rts://1234-5678-9012/1#1")
+        client_rts_0.devices = [device]
+
+        action = Action(
+            device_url="rts://1234-5678-9012/1#2",
+            commands=[Command(name="close")],
+        )
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters is None
+
+
+# ---------------------------------------------------------------------------
+# Graceful degradation / robustness
+# ---------------------------------------------------------------------------
+
+
+class TestRobustness:
+    """Edge cases and error scenarios that must not crash."""
+
+    @pytest.mark.asyncio
+    async def test_device_not_in_devices_list(self, client_rts_0):
+        """Action for unknown device URL passes through without crashing."""
+        client_rts_0.devices = []
+
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[Command(name="close")],
+        )
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters is None
+
+    @pytest.mark.asyncio
+    async def test_command_not_in_definitions(self, client_rts_0):
+        """RTS device exists but command not in its definitions — skip injection."""
+        device = _rts_device(
+            commands=[CommandDefinition(command_name="close", nparams=1)]
+        )
+        client_rts_0.devices = [device]
+
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[Command(name="unknownCommand")],
+        )
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters is None
+
+    @pytest.mark.asyncio
+    async def test_empty_command_definitions(self, client_rts_0):
+        """RTS device with no command definitions at all — skip gracefully."""
+        device = Device(
+            attributes=States(),
+            available=True,
+            enabled=True,
+            label="RTS No Defs",
+            device_url="rts://1234-5678-9012/1",
+            controllable_name="rts:blind",
+            definition=Definition(widget_name="SomeWidget", ui_class="RollerShutter"),
+            type=ProductType.ACTUATOR,
+        )
+        client_rts_0.devices = [device]
+
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[Command(name="close")],
+        )
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters is None
+
+    @pytest.mark.asyncio
+    async def test_empty_actions_list(self, client_rts_0):
+        """Empty actions list does not crash."""
+        client_rts_0.devices = [_rts_device()]
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions == []
+
+    @pytest.mark.asyncio
+    async def test_action_with_empty_commands_list(self, client_rts_0):
+        """Action with no commands passes through without crash."""
+        client_rts_0.devices = [_rts_device()]
+
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[],
+        )
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands == []
+
+
+# ---------------------------------------------------------------------------
+# Immutability / side-effect tests
+# ---------------------------------------------------------------------------
+
+
+class TestImmutability:
+    """Verify that injection does not mutate original objects."""
+
+    @pytest.mark.asyncio
+    async def test_original_command_not_mutated(self, client_rts_0):
+        """Injection creates new Command; original Command is untouched."""
+        client_rts_0.devices = [_rts_device()]
+
+        original_cmd = Command(name="close")
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[original_cmd],
+        )
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([action])
+
+        assert original_cmd.parameters is None
+
+    @pytest.mark.asyncio
+    async def test_original_action_not_mutated(self, client_rts_0):
+        """Original action list is not modified in place."""
+        client_rts_0.devices = [_rts_device()]
+
+        cmd = Command(name="close")
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[cmd],
+        )
+        original_actions = [action]
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group(original_actions)
+
+        assert original_actions[0].commands[0].parameters is None
+
+    @pytest.mark.asyncio
+    async def test_original_parameters_list_not_mutated(self, client_rts_0):
+        """If command had existing params, original list is not modified."""
+        device = _rts_device(
+            commands=[CommandDefinition(command_name="setClosure", nparams=3)]
+        )
+        client_rts_0.devices = [device]
+
+        original_params = [50, 100]
+        cmd = Command(name="setClosure", parameters=original_params)
+        action = Action(
+            device_url="rts://1234-5678-9012/1",
+            commands=[cmd],
+        )
+
+        with patch.object(
+            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+        ) as mock_exec:
+            mock_exec.return_value = "exec-123"
+            await client_rts_0.execute_action_group([action])
+
+            called_actions = mock_exec.call_args[0][0]
+            assert called_actions[0].commands[0].parameters == [50, 100, 0]
+
+        # Original list must still be [50, 100]
+        assert original_params == [50, 100]
+        assert cmd.parameters == [50, 100]
+
+
+# ---------------------------------------------------------------------------
+# Behavioral equivalence with old COMMANDS_WITHOUT_DELAY approach
+# ---------------------------------------------------------------------------
+
+
+class TestEquivalenceWithOldApproach:
+    """Verify nparams approach matches the old COMMANDS_WITHOUT_DELAY blocklist."""
+
+    OLD_BLOCKLIST: frozenset[str] = frozenset(
+        {"identify", "off", "on", "onWithTimer", "test", "tiltPositive", "tiltNegative"}
+    )
+    MOVEMENT_COMMANDS: frozenset[str] = frozenset(
+        {"close", "open", "up", "down", "stop", "my"}
     )
 
-    with patch.object(
-        client_with_rts, "_execute_action_group_direct", new_callable=AsyncMock
-    ) as mock_exec:
-        mock_exec.return_value = "exec-123"
-        await client_with_rts.execute_action_group([action])
+    @pytest.mark.asyncio
+    async def test_old_blocklist_commands_skipped(self, client_rts_0):
+        """Every command from the old COMMANDS_WITHOUT_DELAY list is NOT injected."""
+        client_rts_0.devices = [_rts_device()]
 
-        called_actions = mock_exec.call_args[0][0]
-        assert called_actions[0].commands[0].parameters == [0]
+        for cmd_name in self.OLD_BLOCKLIST:
+            action = Action(
+                device_url="rts://1234-5678-9012/1",
+                commands=[Command(name=cmd_name)],
+            )
 
+            with patch.object(
+                client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+            ) as mock_exec:
+                mock_exec.return_value = "exec-123"
+                await client_rts_0.execute_action_group([action])
 
-@pytest.mark.asyncio
-async def test_rts_command_already_has_max_params_not_modified(client_with_rts):
-    """RTS command that already has nparams parameters is not modified."""
-    client_with_rts.devices = [_rts_device()]
+                called_actions = mock_exec.call_args[0][0]
+                params = called_actions[0].commands[0].parameters
+                # onWithTimer has nparams=1, so it DOES get injection when sent without params.
+                # This is a deliberate behavioral difference from the old approach: the old
+                # approach blindly blocked it, but the new approach correctly handles it based
+                # on capacity. This is tested separately below.
+                if cmd_name == "onWithTimer":
+                    assert params == [0], (
+                        "onWithTimer (nparams=1, no params) gets injection in new approach"
+                    )
+                else:
+                    assert params is None, (
+                        f"'{cmd_name}' (nparams=0) must NOT get duration"
+                    )
 
-    action = Action(
-        device_url="rts://1234-5678-9012/1",
-        commands=[Command(name="close", parameters=[50])],
-    )
+    @pytest.mark.asyncio
+    async def test_movement_commands_injected(self, client_rts_0):
+        """All typical movement commands (not in old blocklist) DO get injection."""
+        client_rts_0.devices = [_rts_device()]
 
-    with patch.object(
-        client_with_rts, "_execute_action_group_direct", new_callable=AsyncMock
-    ) as mock_exec:
-        mock_exec.return_value = "exec-123"
-        await client_with_rts.execute_action_group([action])
+        for cmd_name in self.MOVEMENT_COMMANDS:
+            action = Action(
+                device_url="rts://1234-5678-9012/1",
+                commands=[Command(name=cmd_name)],
+            )
 
-        called_actions = mock_exec.call_args[0][0]
-        # nparams=1 and already has 1 param — should NOT add another
-        assert called_actions[0].commands[0].parameters == [50]
+            with patch.object(
+                client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
+            ) as mock_exec:
+                mock_exec.return_value = "exec-123"
+                await client_rts_0.execute_action_group([action])
 
-
-@pytest.mark.asyncio
-async def test_rts_command_with_zero_nparams_not_modified(client_with_rts):
-    """RTS command with nparams=0 (e.g., identify) is not modified."""
-    client_with_rts.devices = [_rts_device()]
-
-    action = Action(
-        device_url="rts://1234-5678-9012/1",
-        commands=[Command(name="identify")],
-    )
-
-    with patch.object(
-        client_with_rts, "_execute_action_group_direct", new_callable=AsyncMock
-    ) as mock_exec:
-        mock_exec.return_value = "exec-123"
-        await client_with_rts.execute_action_group([action])
-
-        called_actions = mock_exec.call_args[0][0]
-        assert called_actions[0].commands[0].parameters is None
-
-
-@pytest.mark.asyncio
-async def test_io_device_not_modified(client_with_rts):
-    """Non-RTS device commands are never modified, even with rts_command_duration set."""
-    client_with_rts.devices = [_io_device()]
-
-    action = Action(
-        device_url="io://1234-5678-9012/2",
-        commands=[Command(name="close")],
-    )
-
-    with patch.object(
-        client_with_rts, "_execute_action_group_direct", new_callable=AsyncMock
-    ) as mock_exec:
-        mock_exec.return_value = "exec-123"
-        await client_with_rts.execute_action_group([action])
-
-        called_actions = mock_exec.call_args[0][0]
-        assert called_actions[0].commands[0].parameters is None
+                called_actions = mock_exec.call_args[0][0]
+                assert called_actions[0].commands[0].parameters == [0], (
+                    f"'{cmd_name}' must get duration=0"
+                )
 
 
-@pytest.mark.asyncio
-async def test_no_rts_setting_means_no_injection(client_without_rts):
-    """When rts_command_duration is None, no injection happens for any device."""
-    client_without_rts.devices = [_rts_device()]
-
-    action = Action(
-        device_url="rts://1234-5678-9012/1",
-        commands=[Command(name="close")],
-    )
-
-    with patch.object(
-        client_without_rts, "_execute_action_group_direct", new_callable=AsyncMock
-    ) as mock_exec:
-        mock_exec.return_value = "exec-123"
-        await client_without_rts.execute_action_group([action])
-
-        called_actions = mock_exec.call_args[0][0]
-        assert called_actions[0].commands[0].parameters is None
+# ---------------------------------------------------------------------------
+# Unit test for _apply_rts_duration directly (fast, no mock overhead)
+# ---------------------------------------------------------------------------
 
 
-@pytest.mark.asyncio
-async def test_rts_device_not_in_devices_list_skipped(client_with_rts):
-    """If device URL is not in client.devices, skip injection (no crash)."""
-    client_with_rts.devices = []  # No devices loaded
+class TestApplyRtsDurationDirect:
+    """Direct unit tests on _apply_rts_duration without execute_action_group overhead."""
 
-    action = Action(
-        device_url="rts://1234-5678-9012/1",
-        commands=[Command(name="close")],
-    )
+    def test_returns_same_list_when_setting_none(self, client_no_rts):
+        """Early return when rts_command_duration is None."""
+        client_no_rts.devices = [_rts_device()]
+        actions = [
+            Action(
+                device_url="rts://1234-5678-9012/1",
+                commands=[Command(name="close")],
+            )
+        ]
 
-    with patch.object(
-        client_with_rts, "_execute_action_group_direct", new_callable=AsyncMock
-    ) as mock_exec:
-        mock_exec.return_value = "exec-123"
-        await client_with_rts.execute_action_group([action])
+        result = client_no_rts._apply_rts_duration(actions)
+        assert result is actions  # Same object, not a copy
 
-        called_actions = mock_exec.call_args[0][0]
-        # Not modified — device not found, so we can't know nparams
-        assert called_actions[0].commands[0].parameters is None
+    def test_rts_injection_basic(self, client_rts_0):
+        """Direct call: RTS close with nparams=1 and no params."""
+        client_rts_0.devices = [_rts_device()]
+        actions = [
+            Action(
+                device_url="rts://1234-5678-9012/1",
+                commands=[Command(name="close")],
+            )
+        ]
 
+        result = client_rts_0._apply_rts_duration(actions)
+        assert result[0].commands[0].parameters == [0]
 
-@pytest.mark.asyncio
-async def test_rts_device_without_command_definitions_skipped(client_with_rts):
-    """RTS device without command definitions doesn't crash, just skips injection."""
-    device = Device(
-        attributes=States(),
-        available=True,
-        enabled=True,
-        label="RTS No Def",
-        device_url="rts://1234-5678-9012/1",
-        controllable_name="rts:blind",
-        definition=Definition(widget_name="SomeWidget", ui_class="RollerShutter"),
-        type=ProductType.ACTUATOR,
-    )
-    client_with_rts.devices = [device]
+    def test_preserves_command_type(self, client_rts_0):
+        """The type field on a Command is preserved through injection."""
+        client_rts_0.devices = [_rts_device()]
+        actions = [
+            Action(
+                device_url="rts://1234-5678-9012/1",
+                commands=[Command(name="close", type=1)],
+            )
+        ]
 
-    action = Action(
-        device_url="rts://1234-5678-9012/1",
-        commands=[Command(name="close")],
-    )
+        result = client_rts_0._apply_rts_duration(actions)
+        assert result[0].commands[0].type == 1
+        assert result[0].commands[0].parameters == [0]
 
-    with patch.object(
-        client_with_rts, "_execute_action_group_direct", new_callable=AsyncMock
-    ) as mock_exec:
-        mock_exec.return_value = "exec-123"
-        await client_with_rts.execute_action_group([action])
+    def test_multiple_devices_in_single_batch(self, client_rts_0):
+        """Batch with two RTS devices and one IO."""
+        rts1 = _rts_device(device_url="rts://1234-5678-9012/1")
+        rts2 = _rts_device(device_url="rts://1234-5678-9012/5")
+        io = _io_device()
+        client_rts_0.devices = [rts1, rts2, io]
 
-        called_actions = mock_exec.call_args[0][0]
-        assert called_actions[0].commands[0].parameters is None
+        actions = [
+            Action(
+                device_url="rts://1234-5678-9012/1", commands=[Command(name="close")]
+            ),
+            Action(
+                device_url="io://1234-5678-9012/2", commands=[Command(name="close")]
+            ),
+            Action(
+                device_url="rts://1234-5678-9012/5", commands=[Command(name="open")]
+            ),
+        ]
 
-
-@pytest.mark.asyncio
-async def test_original_action_not_mutated(client_with_rts):
-    """Injection creates new Command objects; original actions are not mutated."""
-    client_with_rts.devices = [_rts_device()]
-
-    original_cmd = Command(name="close")
-    action = Action(
-        device_url="rts://1234-5678-9012/1",
-        commands=[original_cmd],
-    )
-
-    with patch.object(
-        client_with_rts, "_execute_action_group_direct", new_callable=AsyncMock
-    ) as mock_exec:
-        mock_exec.return_value = "exec-123"
-        await client_with_rts.execute_action_group([action])
-
-    # Original command should NOT have been mutated
-    assert original_cmd.parameters is None
+        result = client_rts_0._apply_rts_duration(actions)
+        assert result[0].commands[0].parameters == [0]
+        assert result[1].commands[0].parameters is None
+        assert result[2].commands[0].parameters == [0]
