@@ -309,7 +309,17 @@ client = OverkizClient(
 )
 ```
 
-With `rts_command_duration=0`, the execution duration is set to 0 seconds for supported commands, allowing consecutive commands to be sent without delay. Commands that don't accept a duration parameter (like `identify` or `test`) are left unchanged.
+With `rts_command_duration=0`, the execution duration is set to 0 seconds for supported commands, allowing consecutive commands to be sent without delay.
+
+For RTS commands, the **last parameter is always the execution duration**. The client injects the configured duration only when all other parameters have been provided (i.e., `current_count == nparams - 1`). This means:
+
+| Command | nparams | Behavior |
+|---------|---------|----------|
+| `close`, `open`, `up`, `down`, `stop`, `my`, `rest` | 1 | Duration injected when called with no args |
+| `tiltPositive`, `tiltNegative`, `moveOf` | 2 | Duration injected when called with position arg only |
+| `identify`, `test` | 0 | Never injected (no parameters accepted) |
+
+Commands that already have all parameters filled, or where required domain parameters (like position) have not been provided yet, are left unchanged.
 
 ## Limitations and rate limits
 
