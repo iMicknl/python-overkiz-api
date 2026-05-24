@@ -122,7 +122,7 @@ async def client_rts_0() -> OverkizClient:
     return OverkizClient(
         server=Server.SOMFY_EUROPE,
         credentials=UsernamePasswordCredentials("user", "pass"),
-        settings=OverkizClientSettings(rts_command_duration=0),
+        settings=OverkizClientSettings(default_rts_command_duration=0),
     )
 
 
@@ -132,7 +132,7 @@ async def client_rts_5() -> OverkizClient:
     return OverkizClient(
         server=Server.SOMFY_EUROPE,
         credentials=UsernamePasswordCredentials("user", "pass"),
-        settings=OverkizClientSettings(rts_command_duration=5),
+        settings=OverkizClientSettings(default_rts_command_duration=5),
     )
 
 
@@ -361,7 +361,7 @@ class TestMultiParamInjection:
 
 
 class TestNonRtsProtocols:
-    """Non-RTS devices are never touched regardless of rts_command_duration."""
+    """Non-RTS devices are never touched regardless of default_rts_command_duration."""
 
     @pytest.mark.asyncio
     @pytest.mark.parametrize(
@@ -375,7 +375,7 @@ class TestNonRtsProtocols:
     async def test_non_rts_device_not_modified(
         self, client_rts_0, device_factory, device_url
     ):
-        """IO and Z-Wave commands are never modified even with rts_command_duration set."""
+        """IO and Z-Wave commands are never modified even with default_rts_command_duration set."""
         client_rts_0.devices = [device_factory()]
 
         action = Action(
@@ -394,12 +394,12 @@ class TestNonRtsProtocols:
 
 
 # ---------------------------------------------------------------------------
-# Setting disabled (rts_command_duration=None)
+# Setting disabled (default_rts_command_duration=None)
 # ---------------------------------------------------------------------------
 
 
 class TestSettingDisabled:
-    """When rts_command_duration is None (default), no injection occurs."""
+    """When default_rts_command_duration is None (default), no injection occurs."""
 
     @pytest.mark.asyncio
     async def test_no_setting_means_no_injection(self, client_no_rts):
@@ -1036,7 +1036,7 @@ class TestApplyRtsDurationDirect:
     """Direct unit tests on _apply_rts_duration without execute_action_group overhead."""
 
     def test_returns_same_list_when_setting_none(self, client_no_rts):
-        """Early return when rts_command_duration is None."""
+        """Early return when default_rts_command_duration is None."""
         client_no_rts.devices = [_rts_device()]
         actions = [
             Action(

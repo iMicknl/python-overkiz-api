@@ -1235,7 +1235,7 @@ class TestOverkizClientSettings:
     def test_client_with_settings_none(self, client: OverkizClient) -> None:
         """Client without settings has no action queue and no RTS duration."""
         assert client._action_queue is None
-        assert client.settings.rts_command_duration is None
+        assert client.settings.default_rts_command_duration is None
 
     @pytest.mark.asyncio
     async def test_client_with_rts_duration(self) -> None:
@@ -1243,9 +1243,9 @@ class TestOverkizClientSettings:
         client = OverkizClient(
             server=Server.SOMFY_EUROPE,
             credentials=UsernamePasswordCredentials("user", "pass"),
-            settings=OverkizClientSettings(rts_command_duration=0),
+            settings=OverkizClientSettings(default_rts_command_duration=0),
         )
-        assert client.settings.rts_command_duration == 0
+        assert client.settings.default_rts_command_duration == 0
 
     @pytest.mark.asyncio
     async def test_client_with_action_queue_via_settings(self) -> None:

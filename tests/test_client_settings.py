@@ -8,13 +8,13 @@ def test_defaults():
     """Default settings have no queue and no RTS duration."""
     settings = OverkizClientSettings()
     assert settings.action_queue is None
-    assert settings.rts_command_duration is None
+    assert settings.default_rts_command_duration is None
 
 
 def test_with_rts_duration():
     """RTS command duration can be set."""
-    settings = OverkizClientSettings(rts_command_duration=0)
-    assert settings.rts_command_duration == 0
+    settings = OverkizClientSettings(default_rts_command_duration=0)
+    assert settings.default_rts_command_duration == 0
 
 
 def test_with_action_queue_settings():
