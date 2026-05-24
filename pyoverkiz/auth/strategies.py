@@ -12,7 +12,7 @@ from http import HTTPStatus
 from typing import TYPE_CHECKING, Any, cast
 
 if TYPE_CHECKING:
-    from botocore.client import BaseClient  # ty: ignore[unresolved-import]
+    from botocore.client import BaseClient
 
 from aiohttp import ClientSession, FormData
 
@@ -247,10 +247,10 @@ class NexityAuthStrategy(SessionLoginStrategy):
     async def login(self) -> None:
         """Perform login using Nexity username and password."""
         try:
-            import boto3  # ty: ignore[unresolved-import]
-            from botocore.config import Config  # ty: ignore[unresolved-import]
-            from botocore.exceptions import ClientError  # ty: ignore[unresolved-import]
-            from warrant_lite import WarrantLite  # ty: ignore[unresolved-import]
+            import boto3
+            from botocore.config import Config
+            from botocore.exceptions import ClientError
+            from warrant_lite import WarrantLite
         except ImportError as err:
             raise ImportError(
                 "Nexity authentication requires the 'nexity' extra. "
