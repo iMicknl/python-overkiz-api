@@ -42,7 +42,7 @@ def _rename_hook_factory(cls: type, converter: cattrs.Converter) -> Any:
     for f in attr.fields(cls):
         if not f.init or f.name.startswith("_"):
             continue
-        if f.alias is not None and f.alias != f.name:
+        if f.alias and f.alias != f.name:
             continue
         api_key = camelize_key(f.name)
         if api_key != f.name:
