@@ -47,7 +47,7 @@ def _rename_hook_factory(cls: type, converter: cattrs.Converter) -> Any:
         api_key = camelize_key(f.name)
         if api_key != f.name:
             overrides[f.name] = override(rename=api_key)
-    return make_dict_structure_fn(cls, converter, **overrides)  # type: ignore[arg-type]
+    return make_dict_structure_fn(cls, converter, **overrides)  # type: ignore[arg-type]  # ty: ignore[invalid-argument-type]
 
 
 def _make_converter() -> cattrs.Converter:
