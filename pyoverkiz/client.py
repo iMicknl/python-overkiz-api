@@ -964,6 +964,33 @@ class OverkizClient:
         """Delete a local API token by its UUID."""
         await self._delete(f"config/{gateway_id}/local/tokens/{uuid}")
 
+    @retry_on_auth_error
+    async def open_local_pairing(self, gateway_id: str) -> Any:
+        """Put the gateway into local pairing mode (~180 seconds).
+
+        During this window, new tokens can be registered directly on the
+        gateway without requiring developer mode. Used by Atlantic/Cozytouch
+        gateways (SmartKiz).
+        """
+        return await self._post(f"config/{gateway_id}/local/openPairing")
+
+    # -----------------------------------------------------------------------
+    # Developer mode (cloud API)
+    # -----------------------------------------------------------------------
+
+    @retry_on_auth_error
+    async def activate_developer_mode(self, gateway_id: str) -> None:
+        """Activate developer mode for a gateway.
+
+        Required for Somfy gateways before local API tokens can be used.
+        """
+        await self._post(f"setup/gateways/{gateway_id}/developerMode")
+
+    @retry_on_auth_error
+    async def get_developer_mode(self, gateway_id: str) -> Any:
+        """Get the developer mode status for a gateway."""
+        return await self._get(f"setup/gateways/{gateway_id}/developerMode")
+
     async def _get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API."""
         await self._refresh_token_if_expired()
