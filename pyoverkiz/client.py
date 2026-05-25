@@ -54,6 +54,7 @@ from pyoverkiz.models import (
     FirmwareStatus,
     Gateway,
     HistoryExecution,
+    LocalToken,
     Option,
     OptionParameter,
     PersistedActionGroup,
@@ -918,6 +919,50 @@ class OverkizClient:
                 f"{self.server_config.name} does not support gateway selection."
             )
         self._auth.select_gateway(gateway_id)
+
+    # -----------------------------------------------------------------------
+    # Local token management (cloud API)
+    # -----------------------------------------------------------------------
+
+    @retry_on_auth_error
+    async def generate_local_token(self, gateway_id: str) -> str:
+        """Generate a new local API token for a gateway.
+
+        The token must be activated before it can be used.
+        """
+        response = await self._get(f"config/{gateway_id}/local/tokens/generate")
+        return cast(str, response["token"])
+
+    @retry_on_auth_error
+    async def activate_local_token(
+        self,
+        gateway_id: str,
+        token: str,
+        label: str,
+        scope: str = "devmode",
+    ) -> str:
+        """Activate a local API token with the given label and scope.
+
+        Returns the activation request ID.
+        """
+        response = await self._post(
+            f"config/{gateway_id}/local/tokens",
+            payload={"label": label, "token": token, "scope": scope},
+        )
+        return cast(str, response["requestId"])
+
+    @retry_on_auth_error
+    async def get_local_tokens(
+        self, gateway_id: str, scope: str = "devmode"
+    ) -> list[LocalToken]:
+        """Get all active local API tokens for a gateway with a given scope."""
+        response = await self._get(f"config/{gateway_id}/local/tokens/{scope}")
+        return converter.structure(response, list[LocalToken])
+
+    @retry_on_auth_error
+    async def delete_local_token(self, gateway_id: str, uuid: str) -> None:
+        """Delete a local API token by its UUID."""
+        await self._delete(f"config/{gateway_id}/local/tokens/{uuid}")
 
     async def _get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API."""

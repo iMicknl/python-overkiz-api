@@ -140,6 +140,7 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101", "SLF001", "PLR2004"]  # Allow assert, private member access, and magic values in tests
 "utils/**" = ["INP001", "BLE001", "PLR0912", "PLR0915"]  # Utils are scripts, not packages; complex generators acceptable
+"scripts/**" = ["INP001", "T201", "D103"]  # Scripts are not packages; print and missing docstrings acceptable
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"  # Accepts: "google", "numpy", or "pep257".

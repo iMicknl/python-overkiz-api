@@ -664,6 +664,18 @@ class Connectivity:
 
 
 @define(kw_only=True)
+class LocalToken:
+    """A local API token for direct gateway access."""
+
+    label: str
+    gateway_id: str = field(repr=obfuscate_id)
+    uuid: str = field(repr=obfuscate_id)
+    scope: str
+    gateway_creation_time: int | None = None
+    expiration_time: int | None = None
+
+
+@define(kw_only=True)
 class Gateway:
     """Representation of a gateway, including connectivity and partner info."""
 
