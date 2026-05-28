@@ -43,7 +43,7 @@ jobs:
         run: uv run python utils/generate_device_catalog.py
 
       - name: Create pull request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: "Update generated enums and docs from Overkiz API"
           title: "Update generated enums and docs from Overkiz API"
