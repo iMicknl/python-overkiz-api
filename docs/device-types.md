@@ -9,6 +9,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 !!! note
     This page is auto-generated from the Overkiz API. Run `uv run utils/generate_device_catalog.py` to regenerate.
+    Sources: atlantic_cozytouch, somfy_europe
 
 **26 protocols**, **477 unique device types** documented below.
 
@@ -19712,3 +19713,4 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `NeighboursAddressesState` | DataState |  |  |
     | `RockerSwitchPushWayState` | DiscreteState | heldDown, pressed, pressedX2, pressedX3, pressedX4 |  |
     | `RockerSwitchx2State` | DiscreteState | A0, A1, B0, B1, released |  |
+
