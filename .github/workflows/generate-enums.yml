@@ -32,6 +32,7 @@ jobs:
 
       - name: Fetch server data (Somfy Europe)
         env:
+          PYTHONUNBUFFERED: "1"
           OVERKIZ_USERNAME: ${{ secrets.OVERKIZ_USERNAME }}
           OVERKIZ_PASSWORD: ${{ secrets.OVERKIZ_PASSWORD }}
         run: uv run python utils/fetch_server_data.py --server somfy_europe
