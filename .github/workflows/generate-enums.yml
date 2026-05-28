@@ -16,6 +16,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v6
+        with:
+          # PAT with workflows scope so the push can touch .github/workflows/*
+          # and so the opened PR triggers CI (GITHUB_TOKEN cannot do either).
+          token: ${{ secrets.GENERATE_ENUMS_TOKEN }}
 
       - name: Install uv
         uses: astral-sh/setup-uv@v7
@@ -45,6 +49,7 @@ jobs:
       - name: Create pull request
         uses: peter-evans/create-pull-request@v8
         with:
+          token: ${{ secrets.GENERATE_ENUMS_TOKEN }}
           commit-message: "Update generated enums and docs from Overkiz API"
           title: "Update generated enums and docs from Overkiz API"
           body: |
