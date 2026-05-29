@@ -119,8 +119,6 @@ def generate_docs_page(
 ) -> None:
     """Generate a browsable markdown docs page for device types."""
     protocols: dict[str, list[dict]] = catalog_data.get("protocols", {})
-    servers = catalog_data.get("servers", [])
-    server_label = ", ".join(servers) if servers else "unknown"
 
     lines = [
         "---",
@@ -137,7 +135,6 @@ def generate_docs_page(
         "!!! note",
         "    This page is auto-generated from the Overkiz API. "
         "Run `uv run utils/generate_device_catalog.py` to regenerate.",
-        f"    Sources: {server_label}",
         "",
     ]
 
@@ -295,7 +292,7 @@ def _render_commands_table(lines: list[str], commands: list[dict]) -> None:
         if cmd.get("protocolSpecifics"):
             specs = cmd["protocolSpecifics"]
             for spec in specs[:2]:
-                cluster = spec.get("cluster_id", "")
+                cluster = spec.get("clusterId", "")
                 if cluster != "":
                     notes_parts.append(f"cluster:{cluster}")
         notes = "; ".join(notes_parts)
@@ -340,7 +337,7 @@ def _render_states_table(
         if state.get("protocolSpecifics"):
             specs = state["protocolSpecifics"]
             for spec in specs[:2]:
-                cluster = spec.get("cluster_id", "")
+                cluster = spec.get("clusterId", "")
                 if cluster != "":
                     notes_parts.append(f"cluster:{cluster}")
         notes = "; ".join(notes_parts)

@@ -36,6 +36,7 @@ jobs:
 
       - name: Fetch server data (Somfy Europe)
         env:
+          PYTHONUNBUFFERED: "1"
           OVERKIZ_USERNAME: ${{ secrets.OVERKIZ_USERNAME }}
           OVERKIZ_PASSWORD: ${{ secrets.OVERKIZ_PASSWORD }}
         run: uv run python utils/fetch_server_data.py --server somfy_europe
@@ -45,6 +46,22 @@ jobs:
 
       - name: Generate device catalog docs
         run: uv run python utils/generate_device_catalog.py
+
+      - name: Format generated files
+        # Auto-fix formatting (ruff, trailing whitespace, end-of-file) on the
+        # generated outputs so the opened PR passes the lint workflow. Type
+        # checks and the branch guard are skipped — this is a formatting pass,
+        # not a gate. prek exits non-zero when it modifies files, which is the
+        # expected outcome here, so the result is committed by the next step.
+        env:
+          SKIP: no-commit-to-branch,mypy,ty
+        run: |
+          uv run prek run --files \
+            docs/data/*.json \
+            pyoverkiz/enums/*.py \
+            docs/ui-profiles.md \
+            docs/device-types.md \
+          || true
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v8

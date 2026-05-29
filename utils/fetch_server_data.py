@@ -394,7 +394,7 @@ async def fetch_server_data(server: Server) -> None:
 
     server_path = SERVERS_DIR / f"{server.value}.json"
     server_path.write_text(
-        json.dumps(server_data, indent=2, ensure_ascii=False), encoding="utf-8"
+        json.dumps(server_data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
     )
     size_mb = server_path.stat().st_size / 1024 / 1024
     print(f"\n✓ Written {server_path} ({size_mb:.1f} MB)")
