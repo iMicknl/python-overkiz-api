@@ -147,3 +147,6 @@ dmypy.json
 
 # File-based project format
 *.iws
+
+# Throwaway manual exploration script for the Rexel OAuth2 + proxy flow
+rexel_flow_test.py
