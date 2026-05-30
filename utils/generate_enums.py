@@ -37,10 +37,6 @@ ADDITIONAL_WIDGETS = [
     "CyclicSlidingGateOpener",
     "CyclicSwingingGateOpener",
     "DiscreteGateWithPedestrianPosition",
-    "HLRRWifiBridge",
-    "MediaRenderer",
-    "Node",
-    "SwimmingPoolRollerShutter",
 ]
 
 
