@@ -77,7 +77,38 @@ def load_merged_reference_metadata() -> dict:
             ):
                 merged["uiProfiles"][name] = profile
 
+    _merge_ui_data_from_fixtures(merged)
+
     return merged
+
+
+def _merge_ui_data_from_fixtures(merged: dict) -> None:
+    """Merge UI classes, widgets, classifiers and profiles from setup fixtures.
+
+    Server reference metadata is the primary source, but the setup fixtures in
+    tests/fixtures/setup/ occasionally reference UI values (especially profiles)
+    that the reference endpoints of the servers we have access to do not expose.
+    Profiles found only in fixtures are added without details (None), matching
+    how unfetchable profiles are represented.
+    """
+    for fixture_file in FIXTURES_DIR.glob("*.json"):
+        try:
+            data = json.loads(fixture_file.read_text())
+        except (json.JSONDecodeError, KeyError, TypeError):
+            continue
+        for device in data.get("devices", []):
+            definition = device.get("definition", {})
+            for ui_class in (device.get("uiClass"), definition.get("uiClass")):
+                if ui_class:
+                    merged["uiClasses"].add(ui_class)
+            for widget in (device.get("widget"), definition.get("widgetName")):
+                if widget:
+                    merged["uiWidgets"].add(widget)
+            for source in (device, definition):
+                for classifier in source.get("uiClassifiers", []) or []:
+                    merged["uiClassifiers"].add(classifier)
+            for profile_name in definition.get("uiProfiles", []) or []:
+                merged["uiProfiles"].setdefault(profile_name, None)
 
 
 def to_enum_name(value: str) -> str:

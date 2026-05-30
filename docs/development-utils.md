@@ -65,15 +65,17 @@ uv run utils/generate_enums.py
 | File | Source |
 |------|--------|
 | `pyoverkiz/enums/protocol.py` | `referenceMetadata.protocolTypes` |
-| `pyoverkiz/enums/ui.py` | `referenceMetadata.uiClasses`, `uiWidgets`, `uiClassifiers` |
-| `pyoverkiz/enums/ui_profile.py` | `referenceMetadata.uiProfiles` |
+| `pyoverkiz/enums/ui.py` | `referenceMetadata.uiClasses`/`uiWidgets`/`uiClassifiers` + `tests/fixtures/setup/*.json` |
+| `pyoverkiz/enums/ui_profile.py` | `referenceMetadata.uiProfiles` + `tests/fixtures/setup/*.json` |
 | `pyoverkiz/enums/state.py` | `protocols.*.states`, `controllableDefinitions.*.states`/`attributes` + `tests/fixtures/setup/*.json` |
 | `pyoverkiz/enums/command.py` | `protocols.*.commands`/`states`, `controllableDefinitions.*.states` + `tests/fixtures/setup/*.json` |
-| `docs/ui-profiles.md` | `referenceMetadata.uiProfiles` |
+| `docs/ui-profiles.md` | `referenceMetadata.uiProfiles` + `tests/fixtures/setup/*.json` |
 
 `state.py` holds `OverkizState` + `OverkizAttribute`; `command.py` holds `OverkizCommand` + `OverkizCommandParam` (parameter values are harvested from discrete state values and command parameter enums). The `ExecutionMode` enum in `command.py` is hand-written and preserved across regeneration.
 
-Data from all available server files is merged (union of all values). Hardcoded entries for protocols and widgets not found on any server are appended (see `ADDITIONAL_PROTOCOLS` and `ADDITIONAL_WIDGETS` in the script). Discrete values that cannot form a valid Python identifier (e.g. the purely numeric `"1"`, `"2"`) are skipped and reported in the run output.
+Data from all available server files is merged (union of all values). The setup fixtures in `tests/fixtures/setup/` are merged in as an additional source: they capture real devices whose UI classes, widgets, classifiers and profiles (and states, commands, attributes) are not always exposed by the reference endpoints of the servers we have access to. Profiles found only in fixtures are added without details. `protocol.py` is the exception — Protocol members need the full `id`/`prefix`/`name`/`label` metadata, which fixtures don't carry, so they come only from `referenceMetadata.protocolTypes` plus the hardcoded `ADDITIONAL_PROTOCOLS`.
+
+Hardcoded entries for protocols and widgets not found on any server are appended (see `ADDITIONAL_PROTOCOLS` and `ADDITIONAL_WIDGETS` in the script). Discrete values that cannot form a valid Python identifier (e.g. the purely numeric `"1"`, `"2"`) are skipped and reported in the run output.
 
 ## generate_device_catalog.py
 
