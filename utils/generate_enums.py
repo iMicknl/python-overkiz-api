@@ -779,7 +779,13 @@ def extract_commands_from_servers(servers_dir: Path) -> set[str]:
 
 
 def extract_state_values_from_servers(servers_dir: Path) -> set[str]:
-    """Extract discrete state enum values from per-server JSON files."""
+    """Extract discrete state and command parameter enum values from per-server JSON.
+
+    Pulls values from three places:
+      - ``protocols.*.states[].valuePrototypes[].enumValues``
+      - ``protocols.*.commands[].parameters[].valuePrototypes[].enumValues``
+      - ``controllableDefinitions.*.states[].values`` (DiscreteState values)
+    """
     values: set[str] = set()
 
     if not servers_dir.exists():
@@ -795,6 +801,18 @@ def extract_state_values_from_servers(servers_dir: Path) -> set[str]:
                             for ev in vp.get("enumValues", []):
                                 if isinstance(ev, str):
                                     values.add(ev)
+                    for command in dt.get("commands", []):
+                        for param in command.get("parameters", []):
+                            for vp in param.get("valuePrototypes", []):
+                                for ev in vp.get("enumValues", []):
+                                    if isinstance(ev, str):
+                                        values.add(ev)
+            for cd in data.get("controllableDefinitions", {}).values():
+                for state in cd.get("states", []):
+                    if state.get("type") == "DiscreteState":
+                        for value in state.get("values", []):
+                            if isinstance(value, str):
+                                values.add(value)
         except (json.JSONDecodeError, KeyError, TypeError):
             pass
 
@@ -869,11 +887,17 @@ def generate_command_enums() -> None:
 
     param_enum_names: set[str] = set()
     param_tuples: list[tuple[str, str]] = []
+    skipped_params: list[str] = []
     for param_value in sorted(all_param_values):
         if param_value in existing_params:
             enum_name = existing_params[param_value]
         else:
             enum_name = command_to_enum_name(param_value)
+        # Some discrete values are purely numeric (e.g. "1", "2") and cannot
+        # become valid Python identifiers — skip them rather than emit broken code.
+        if not enum_name.isidentifier():
+            skipped_params.append(param_value)
+            continue
         if enum_name not in param_enum_names:
             param_tuples.append((enum_name, param_value))
             param_enum_names.add(enum_name)
@@ -884,8 +908,9 @@ def generate_command_enums() -> None:
     lines = [
         '"""Command-related enums and parameters used by device commands."""',
         "",
-        "# ruff: noqa: S105",
-        '# Enum values contain "PASS" in API names (e.g. PassAPC), not passwords',
+        "# ruff: noqa: S105, RUF001",
+        '# Enum values contain "PASS" in API names (e.g. PassAPC), not passwords,',
+        "# and some are verbatim API values with ambiguous (e.g. Cyrillic) characters.",
         "",
         "from enum import StrEnum, unique",
         "",
@@ -927,12 +952,18 @@ def generate_command_enums() -> None:
     command_file.write_text("\n".join(lines))
 
     new_commands = len(all_command_values - set(existing_commands.keys()))
-    new_params = len(all_param_values - set(existing_params.keys()))
+    emitted_param_values = {value for _, value in param_tuples}
+    new_params = len(emitted_param_values - set(existing_params.keys()))
     print(
         f"✓ Generated {command_file} "
         f"({len(command_tuples)} commands [+{new_commands} new], "
         f"{len(param_tuples)} params [+{new_params} new])"
     )
+    if skipped_params:
+        print(
+            f"  Skipped {len(skipped_params)} param value(s) without a valid "
+            f"identifier: {', '.join(repr(v) for v in sorted(skipped_params))}"
+        )
 
 
 # ---------------------------------------------------------------------------

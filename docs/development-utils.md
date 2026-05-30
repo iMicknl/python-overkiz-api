@@ -67,10 +67,13 @@ uv run utils/generate_enums.py
 | `pyoverkiz/enums/protocol.py` | `referenceMetadata.protocolTypes` |
 | `pyoverkiz/enums/ui.py` | `referenceMetadata.uiClasses`, `uiWidgets`, `uiClassifiers` |
 | `pyoverkiz/enums/ui_profile.py` | `referenceMetadata.uiProfiles` |
-| `pyoverkiz/enums/command.py` | `protocols.*.commands` + `tests/fixtures/setup/*.json` |
+| `pyoverkiz/enums/state.py` | `protocols.*.states`, `controllableDefinitions.*.states`/`attributes` + `tests/fixtures/setup/*.json` |
+| `pyoverkiz/enums/command.py` | `protocols.*.commands`/`states`, `controllableDefinitions.*.states` + `tests/fixtures/setup/*.json` |
 | `docs/ui-profiles.md` | `referenceMetadata.uiProfiles` |
 
-Data from all available server files is merged (union of all values). Hardcoded entries for protocols and widgets not found on any server are appended.
+`state.py` holds `OverkizState` + `OverkizAttribute`; `command.py` holds `OverkizCommand` + `OverkizCommandParam` (parameter values are harvested from discrete state values and command parameter enums). The `ExecutionMode` enum in `command.py` is hand-written and preserved across regeneration.
+
+Data from all available server files is merged (union of all values). Hardcoded entries for protocols and widgets not found on any server are appended (see `ADDITIONAL_PROTOCOLS` and `ADDITIONAL_WIDGETS` in the script). Discrete values that cannot form a valid Python identifier (e.g. the purely numeric `"1"`, `"2"`) are skipped and reported in the run output.
 
 ## generate_device_catalog.py
 
