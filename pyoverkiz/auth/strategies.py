@@ -61,11 +61,9 @@ MIN_JWT_SEGMENTS = 2
 async def _raise_for_server_error(response: ClientResponse) -> None:
     """Map a 5xx token-endpoint response to a typed Overkiz exception.
 
-    Token endpoints return their own JSON error format on 4xx (handled by each
-    strategy), but on 5xx they often serve an HTML error page. Decoding that
-    with ``response.json()`` raises a raw aiohttp ``ContentTypeError`` that
-    leaks to consumers and is not retried. Route 5xx through ``check_response``,
-    which raises ``ServiceUnavailableError`` (or ``MaintenanceError``).
+    Token endpoints handle their own 4xx JSON error format, but on 5xx may
+    serve an HTML error page. Route 5xx through ``check_response`` so it raises
+    ``ServiceUnavailableError`` (or ``MaintenanceError``).
     """
     if response.status >= HTTPStatus.INTERNAL_SERVER_ERROR:
         await check_response(response)
