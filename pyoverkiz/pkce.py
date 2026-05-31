@@ -6,6 +6,11 @@ import base64
 import hashlib
 import secrets
 
+# Bounds for the number of random bytes used to build a PKCE code verifier.
+# 32 bytes -> ~43 chars (RFC 7636 minimum); 96 bytes -> ~128 chars (maximum).
+MIN_CODE_VERIFIER_BYTES = 32
+MAX_CODE_VERIFIER_BYTES = 96
+
 
 def generate_code_verifier(length: int = 64) -> str:
     """Generate a cryptographically random code verifier for PKCE.
@@ -20,8 +25,11 @@ def generate_code_verifier(length: int = 64) -> str:
     Returns:
         Base64 URL-safe encoded string without padding
     """
-    if length < 32 or length > 96:
-        raise ValueError("Length must be between 32 and 96 bytes")
+    if length < MIN_CODE_VERIFIER_BYTES or length > MAX_CODE_VERIFIER_BYTES:
+        raise ValueError(
+            f"Length must be between {MIN_CODE_VERIFIER_BYTES} and "
+            f"{MAX_CODE_VERIFIER_BYTES} bytes"
+        )
 
     code_verifier = base64.urlsafe_b64encode(secrets.token_bytes(length)).decode(
         "utf-8"
