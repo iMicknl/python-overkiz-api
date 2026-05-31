@@ -10,7 +10,7 @@ UI profiles describe device capabilities through the commands they accept and th
 !!! note
     This page is auto-generated. Run `uv run utils/generate_enums.py` to regenerate.
 
-**190 profiles** documented below.
+**192 profiles** documented below.
 
 ## AirFan
 
@@ -831,6 +831,10 @@ UI profiles describe device capabilities through the commands they accept and th
 |---------|-----------|-------------|
 | `start` |  | Start the default actuator behavior (movement, sound or timer) |
 | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+
+## Startable
+
+*Details unavailable.*
 
 ## StatefulAirFan
 
@@ -1766,6 +1770,10 @@ UI profiles describe device capabilities through the commands they accept and th
 | State | Type | Description |
 |-------|------|-------------|
 | `core:StartedStoppedState` | `string` — `started`, `stopped` | Indicate if the sequence if started or stopped |
+
+## StatefulStartable
+
+*Details unavailable.*
 
 ## StatefulSwitchable
 
