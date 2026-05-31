@@ -10,12 +10,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 !!! note
     This page is auto-generated from the Overkiz API. Run `uv run utils/generate_device_catalog.py` to regenerate.
 
-**27 protocols**, **479 unique device types** documented below.
+**35 protocols**, **570 unique device types** documented below.
 
 ## Protocols
 
+- [ARISTON](#ariston) (5 types)
 - [AUGUST](#august) (1 types)
+- [AURORA](#aurora) (1 types)
 - [CAMERA](#camera) (1 types)
+- [DEDIETRICHSTC](#dedietrichstc) (4 types)
 - [ELIOT](#eliot) (11 types)
 - [ENOCEAN](#enocean) (35 types)
 - [HLRR_WIFI](#hlrr_wifi) (2 types)
@@ -24,12 +27,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 - [INTERNAL](#internal) (15 types)
 - [IO](#io) (84 types)
 - [JSW](#jsw) (1 types)
+- [KNX](#knx) (50 types)
 - [MODBUS](#modbus) (12 types)
 - [MODBUSLINK](#modbuslink) (8 types)
 - [MYFOX](#myfox) (9 types)
+- [NEST](#nest) (4 types)
 - [NETATMO](#netatmo) (36 types)
-- [OGCP](#ogcp) (46 types)
-- [OGP](#ogp) (46 types)
+- [OGCP](#ogcp) (47 types)
+- [OGP](#ogp) (47 types)
 - [OPENDOORS](#opendoors) (1 types)
 - [OVP](#ovp) (25 types)
 - [PROFALUX_868](#profalux_868) (5 types)
@@ -38,9 +43,123 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 - [RTDS](#rtds) (11 types)
 - [RTS](#rts) (25 types)
 - [SOMFY_THERMOSTAT](#somfy_thermostat) (3 types)
+- [UPNP_CONTROL](#upnp_control) (2 types)
+- [URMET](#urmet) (2 types)
 - [WISER](#wiser) (4 types)
+- [YOKIS](#yokis) (21 types)
 - [ZIGBEE](#zigbee) (50 types)
 - [ZWAVE](#zwave) (30 types)
+
+## ARISTON
+
+5 device types.
+
+??? note "HeatingSystem/AristonBoiler (ACTUATOR) — 2 commands, 3 states"
+
+    **Type IDs:** `257`, `259` | **Servers:** `rexel` | **Controllable:** `ariston:BoilerMainControllerAristonComponent` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `setHolidaysOnOffWithTimer` | STRING: off, on; INT [1..365] (optional) | Set holidays mode on/off with expiration delay - p1: The holidays mode - p2: The derogation expiration delay (in days), is required if the holiday mode is enabled |
+    | `setOperatingMode` | STRING: summer, winter, off | Set an operating mode |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `HolidaysModeEndDateTimeState` | DataState |  |  |
+    | `HolidaysModeState` | DiscreteState | off, on |  |
+    | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
+
+??? note "HeatingSystem/AristonHeatPump (ACTUATOR) — 2 commands, 4 states"
+
+    **Type IDs:** `258` | **Servers:** `rexel` | **Controllable:** `ariston:HeatPumpMainControllerAristonComponent` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `setHolidaysOnOffWithTimer` | STRING: off, on; INT [1..365] (optional) | Set holidays mode on/off with expiration delay - p1: The holidays mode - p2: The derogation expiration delay (in days), is required if the holiday mode is enabled |
+    | `setOperatingMode` | STRING: summer, winter, heat, cool, off | Set an operating mode |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `CoolingModeActivableState` | DiscreteState | false, true |  |
+    | `HolidaysModeEndDateTimeState` | DataState |  |  |
+    | `HolidaysModeState` | DiscreteState | off, on |  |
+    | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
+
+??? note "HeatingSystem/AristonHeatingZone (ACTUATOR) — 3 commands, 17 states"
+
+    **Type IDs:** `1024` | **Servers:** `rexel` | **Controllable:** `ariston:HeatingZoneControllerAristonComponent` | **Profiles:** `StatefulThermostat`, `Thermostat`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `setDerogatedTargetTemperature` | STRING: off, on; FLOAT [10.0..30.0] (optional) | Set the derogated temperature setpoint  - p1 : enable or disable the derogation  - p2 : derogated target temperature value |
+    | `setHeatingMode` | STRING: stop, manu, auto | Set the device heating mode |
+    | `setTargetTemperature` | FLOAT [10.0..30.0] | Set the new air temperature to reach |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ZoneHeatingModeState` | DiscreteState | auto, manu, stop |  |
+    | `ComfortTargetTemperatureState` | ContinuousState |  |  |
+    | `ComfortTargetTemperatureUnitState` | ContinuousState |  |  |
+    | `ComfortTemperatureStepState` | ContinuousState |  |  |
+    | `DerogatedTargetTemperatureState` | ContinuousState |  |  |
+    | `DerogationEndDateTimeState` | DataState |  |  |
+    | `DerogationOnOffState` | DiscreteState | off, on |  |
+    | `MaximumComfortTemperatureState` | ContinuousState |  |  |
+    | `MaximumReducedTemperatureState` | ContinuousState |  |  |
+    | `MinimumComfortTemperatureState` | ContinuousState |  |  |
+    | `MinimumReducedTemperatureState` | ContinuousState |  |  |
+    | `ReducedTemperatureState` | ContinuousState |  |  |
+    | `ReducedTemperatureStepState` | ContinuousState |  |  |
+    | `ReducedTemperatureUnitState` | ContinuousState |  |  |
+    | `TargetRoomTemperatureState` | ContinuousState |  |  |
+    | `TargetRoomTemperatureUnitState` | ContinuousState |  |  |
+    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
+
+??? note "TemperatureSensor (SENSOR) — 0 commands, 2 states"
+
+    **Type IDs:** `512`, `1024` | **Servers:** `rexel` | **Controllable:** `ariston:OutdoorTemperatureAristonSensor` | **Profiles:** `Temperature`
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
+    | `TemperatureUnitState` | ContinuousState |  |  |
+
+??? note "WaterHeatingSystem/DomesticHotWaterProduction (ACTUATOR) — 1 commands, 7 states"
+
+    **Type IDs:** `768` | **Servers:** `rexel` | **Controllable:** `ariston:DomesticHotWaterProductionAristonComponent` | **Profiles:** `DHWThermostat`, `DHWTemperature`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `setTargetDHWTemperature` | FLOAT [36.0..60.0] | Set the new water temperature to reach for a Domestic Hot Water system |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `DHWTemperatureState` | ContinuousState | [-100.0..100.0] |  |
+    | `DHWTemperatureStepState` | ContinuousState |  |  |
+    | `DHWTemperatureUnitState` | ContinuousState |  |  |
+    | `MaximumDHWTemperatureState` | ContinuousState |  |  |
+    | `MinimumDHWTemperatureState` | ContinuousState |  |  |
+    | `WaterInletTemperatureState` | ContinuousState |  |  |
+    | `WaterInletTemperatureUnitState` | ContinuousState |  |  |
+
 
 ## AUGUST
 
@@ -71,6 +190,51 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `WebhookIdState` | DataState |  |  |
 
 
+## AURORA
+
+1 device types.
+
+??? note "Light/DimmerLight (ACTUATOR) — 14 commands, 8 states"
+
+    **Type IDs:** `0` | **Servers:** `rexel` | **Controllable:** `aurora:AuroraDimmerActuator` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `1000`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `goToMemorized1Position` |  | Set the device to a user pre-defined position |
+    | `goToMemorized2Position` |  | Set the device to a user pre-defined position |
+    | `goToMemorized3Position` |  | Set the device to a user pre-defined position |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `off` |  | Turn off the device |
+    | `on` |  | Turn on the device |
+    | `setIntensity` | INT [0..100]; STRING: memorized1, memorized2, memorized3 | Light intensity level (100%=maximum intensity, 0%=off) |
+    | `setIntensityWithTimer` | STRING: memorized1, memorized2, memorized3; INT [0..100]; INT [5..14400]; STRING: memorized1, memorized2, memorized3 (optional); INT [0..100] (optional) | Set the light intensity to p1% then after p2 seconds, set it to p3%. (If p3 is not specified the light is turned off after the delay) |
+    | `setMemorized1Position` | INT [0..100] | Set favorite position |
+    | `setMemorized1PositionName` | STRING | Change the favorite position internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setMemorized2Position` | INT [0..100] | Set favorite position |
+    | `setMemorized2PositionName` | STRING | Change the favorite position internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setMemorized3Position` | INT [0..100] | Set favorite position |
+    | `setMemorized3PositionName` | STRING | Change the favorite position internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `IPAddressState` | DataState |  |  |
+    | `LightIntensityState` | ContinuousState | [0..100] |  |
+    | `Memorized1PositionNameState` | DataState |  |  |
+    | `Memorized1PositionState` | ContinuousState |  |  |
+    | `Memorized2PositionNameState` | DataState |  |  |
+    | `Memorized2PositionState` | ContinuousState |  |  |
+    | `Memorized3PositionNameState` | DataState |  |  |
+    | `Memorized3PositionState` | ContinuousState |  |  |
+
+
 ## CAMERA
 
 1 device types.
@@ -87,13 +251,199 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `takePictureSequence` | INT [1..20] (optional); INT [2..10] (optional) |  |
 
 
+## DEDIETRICHSTC
+
+4 device types.
+
+??? note "HeatingSystem/ThermostatSetPoint (ACTUATOR) — 30 commands, 25 states"
+
+    **Type IDs:** `2` | **Servers:** `rexel` | **Controllable:** `dedietrichstc:ThermostatComponent` | **Profiles:** `StatefulDualThermostat`, `DualThermostat`, `StatefulThermostat`, `Thermostat`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `refreshActiveTimeProgram` |  | Refresh curent active time program. |
+    | `refreshActivitiesNames` |  | Refresh activity names. |
+    | `refreshCoolingTargetTemperature` |  | Refresh cooling target temperature. |
+    | `refreshDerogationTime` |  | Refresh derogation time |
+    | `refreshFireplaceMode` |  | Refresh if fireplace mode is activate/deactivate on heating system. |
+    | `refreshMaxPreHeatTime` |  | Refresh pre-heat time parameter of the heating zone. |
+    | `refreshMode` |  | Refresh the mode |
+    | `refreshTargetTemperature` |  | Refresh the temperature value |
+    | `setActiveTimeProgram` | INT [1..6] | Defines curent active time program |
+    | `setActivitiesNames` | OBJECT | Set activity names. |
+    | `setCoolingTargetTemperature` | FLOAT [7.0..35.0] | Set the cooling target temperature (manual set point) |
+    | `setFireplaceMode` | STRING: true, false | Activate/Deactivate on heating system fireplace mode. |
+    | `setHeatingTargetTemperature` | FLOAT [7.0..35.0] | Set the heating target temperature (manual set point) |
+    | `setMaxPreHeatTime` | INT | Set the max pre-heat time (in minutes). |
+    | `setOnFrostProtectionMode` |  | Set on system frost protection mode. |
+    | `setTargetTemperature` | FLOAT [0.0..60.0] | Set the new air temperature to reach |
+    | `refreshControlStrategy` |  | Refresh control strategy parameter of the heating zone. |
+    | `refreshFrostProtectionAndHolidayTargetTemperature` |  | Refresh target temperature for frost protection and holiday mode. |
+    | `refreshHeatingCoolingSpeed` |  | Refresh heating cooling speed parameter of the heating zone. |
+    | `refreshHeatingCurve` |  | Refresh heating curve parameter of the heating zone. |
+    | `refreshHolidayDate` |  | Refresh date for holiday mode. |
+    | `refreshTimeProgramActivities` |  | Refresh time program activities parameter of the heating zone. |
+    | `setControlStrategy` | STRING: room-temperature-control, auto, outside-temperature-control, outside-temperature-control-with-room-temperature-compensation | Set the control strategy. |
+    | `setCoolDownSpeed` | STRING: slowest, extra-slow, slow, normal, fast | Set the cool down speed. p1 is the cool down speed. |
+    | `setDerogatedTargetTemperature` | FLOAT [0.0..60.0]; INT (optional) | Set the derogated temperature of the room and when this new temperature has to end. p1 is the target temperature for derogated period. p2 is the duration of derogated period in minutes (optional). When temporaryOverrideEnd is not    provided the next switch time of the active time program will be set as end time. |
+    | `setFrostProtectionAndHolidayTargetTemperature` | FLOAT [0.0..60.0] | Set target temperature for frost protection and holiday mode. |
+    | `setHeatUpSpeed` | STRING: slowest, extra-slow, slow, normal, fast | Set the heat up speed. p1 is the heat up speed. |
+    | `setHeatingCurve` | OBJECT | Set the heating curve parameter. |
+    | `setHoliday` | STRING; STRING | Set heating system on holiday mode. p1 is the date of the holiday begining. p2 is the date of the holiday ending. Each parameter is a full-date and time hh:mm as defined in ISO8601, without seconds, sec-frac and timezone example : "2020-03-05T22:00" |
+    | `setTimeProgramActivities` | OBJECT | Set time program activities parameter of the heating zone. |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ActiveCoolingTimeProgramState` | DataState |  |  |
+    | `ActiveHeatingTimeProgramState` | DataState |  |  |
+    | `ActiveTimeProgramState` | DataState |  |  |
+    | `ActivitiesNamesState` | DataState |  |  |
+    | `CoolingTargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
+    | `DerogationEndDateTimeState` | DataState |  |  |
+    | `FireplaceModeActiveState` | DiscreteState | false, true |  |
+    | `HeatingTargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
+    | `HolidayModeEndDateTimeState` | DataState |  |  |
+    | `HolidayModeStartDateTimeState` | DataState |  |  |
+    | `MaxPreHeatTimeState` | DataState |  |  |
+    | `ModeState` | DataState |  |  |
+    | `NameState` | DataState |  |  |
+    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
+    | `ControlStrategyState` | DataState |  |  |
+    | `CoolDownSpeedState` | DataState |  |  |
+    | `FrostProtectionAndHolidaysTargetTemperatureState` | ContinuousState |  |  |
+    | `HeatUpSpeedState` | DataState |  |  |
+    | `HeatingCurveState` | DataState |  |  |
+    | `NextModeState` | DataState |  |  |
+    | `NextSwitchDayOffsetState` | DataState |  |  |
+    | `NextSwitchTimeState` | DataState |  |  |
+    | `NextSwitchroomTemperatureSetpointValueState` | DataState |  |  |
+    | `TimeProgramActivitiesState` | DataState |  |  |
+    | `ZoneActivityState` | DataState |  |  |
+
+??? note "ProtocolGateway/DeDietrichSTCStack (PROTOCOL_GATEWAY) — 24 commands, 23 states"
+
+    **Type IDs:** `1` | **Servers:** `rexel` | **Controllable:** `dedietrichstc:DeDietrichSTCStackComponent` | **Profiles:** `Specific`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `deletePairedDevice` | STRING | Delete a paired devices. |
+    | `discover` |  | Start a new discovery procedure. |
+    | `getPairedDevices` |  | Retrieve paired devices. |
+    | `refreshApplianceTime` |  | Refresh appliance time of the system. |
+    | `refreshDeviceInformation` |  | Refresh device Information. |
+    | `refreshDeviceLocation` |  | Refresh device location. |
+    | `refreshError` |  | Refresh the current error. |
+    | `refreshHeatingTemperatureThreshold` |  | Refresh heating temperature threshold. |
+    | `refreshInstallerInformation` |  | Refresh installer information. |
+    | `refreshOperatingMode` |  | Refresh an operating mode. |
+    | `refreshWebhookId` |  | Refresh webhook identifier. |
+    | `registerWebhook` |  | Register a subscription to webhook. |
+    | `removeWebhook` |  | Removes the subscription registration for the current “pairing” derived from the pairing token. |
+    | `setDeviceLocation` | FLOAT; FLOAT; INT | Set device location. p1 represent the latitude. p2 represent the longitude. p3 represent the resolution. |
+    | `setHeatingTemperatureThreshold` | FLOAT [10.0..30.0] | Set heating temperature threshold. |
+    | `setInstallerInformation` | OBJECT | Set installer information. |
+    | `updateWebhook` |  | update the subscription to webhook. |
+    | `refreshGatewayConnectionStatus` |  | Refresh De Dietrich Smart TC connection status. |
+    | `refreshFlowTemperature` |  | Refresh flow temperature. |
+    | `refreshWaterFillingStatus` |  | Refresh De Dietrich Water filling status. |
+    | `refreshWaterPressure` |  | Refresh water pressure. |
+    | `sendWaterFillingCommand` | STRING: start, stop | Send a command for water filling. |
+    | `setOperatingMode` | STRING: off, heating-auto, forced-cooling, heating-cooling-auto | Set De Dietrich Operating mode. |
+    | `setWaterFillingMode` | STRING: off, manual, auto | Set De Dietrich Water filling mode. |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `DateTimeState` | DataState |  |  |
+    | `DeviceSerialNumberState` | DataState |  |  |
+    | `ErrorCodeState` | DataState |  |  |
+    | `ErrorState` | DataState |  |  |
+    | `FlowTemperatureState` | ContinuousState |  |  |
+    | `HeatingTemperatureThresholdState` | ContinuousState |  |  |
+    | `InstallerInformationState` | DataState |  |  |
+    | `LocationLatitudeState` | DataState |  |  |
+    | `LocationLongitudeState` | DataState |  |  |
+    | `NameState` | DataState |  |  |
+    | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
+    | `PairedDevicesState` | DataState |  |  |
+    | `ProductHardwareVersionState` | DataState |  |  |
+    | `ProductSoftwareVersionState` | DataState |  |  |
+    | `UTCTimeOffsetState` | DataState |  |  |
+    | `WaterPressureState` | ContinuousState |  |  |
+    | `WebhookIdState` | DataState |  |  |
+    | `ConnectionStatusState` | DataState |  |  |
+    | `OperatingOptionsState` | DataState |  |  |
+    | `WaterFillingModeState` | DataState |  |  |
+    | `WaterFillingStatusState` | DataState |  |  |
+    | `WebhookErrorCodeState` | DataState |  |  |
+    | `WebhookErrorStatusState` | DataState |  |  |
+
+??? note "TemperatureSensor (SENSOR) — 1 commands, 1 states"
+
+    **Type IDs:** `2` | **Servers:** `rexel` | **Controllable:** `dedietrichstc:TemperatureSensor` | **Profiles:** `Temperature`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `refreshTemperature` |  | Refresh the last measured temperature |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
+
+??? note "WaterHeatingSystem/DomesticHotWaterProduction (ACTUATOR) — 12 commands, 9 states"
+
+    **Type IDs:** `3` | **Servers:** `rexel` | **Controllable:** `dedietrichstc:DomesticHotWaterComponent` | **Profiles:** `Specific`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `refreshDerogationTime` |  | Refresh derogation time |
+    | `refreshDeviceInformation` |  | Refresh device Information. |
+    | `refreshMode` |  | Refresh the mode |
+    | `setOnComfortMode` |  | Set on system comfort mode. |
+    | `setOnFrostProtectionMode` |  | Set on system frost protection mode. |
+    | `refreshDHWActiveTimeProgram` |  | Refresh domestic hot water current active time program. |
+    | `refreshDHWParameters` |  | Refresh parameters of the domestic hot water. |
+    | `refreshHolidayDate` |  | Refresh date for holiday mode. |
+    | `setBoostMode` | INT (optional) | Set system on boost mode. p1 is the duration of derogated period in minutes (optional). When temporaryOverrideEnd is not provided the next switch time of the active time program will be set as end time. |
+    | `setDHWParameters` | OBJECT | Set parameters of the domestic hot water. |
+    | `setHoliday` | STRING; STRING | Set heating system on holiday mode. p1 is the date of the holiday begining. p2 is the date of the holiday ending. Each parameter is a full-date and time hh:mm as defined in ISO8601, without seconds, sec-frac and timezone example : "2020-03-05T22:00" |
+    | `setDHWActiveTimeProgram` | INT [1..6] | Set the domestic hot water current active time program. |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ActiveTimeProgramState` | DataState |  |  |
+    | `DerogationEndDateTimeState` | DataState |  |  |
+    | `HolidayModeEndDateTimeState` | DataState |  |  |
+    | `HolidayModeStartDateTimeState` | DataState |  |  |
+    | `ModeState` | DataState |  |  |
+    | `NameState` | DataState |  |  |
+    | `DHWParametersState` | DataState |  |  |
+    | `DHWTypeState` | DataState |  |  |
+    | `NextModeState` | DataState |  |  |
+
+
 ## ELIOT
 
 11 device types.
 
 ??? note "CircuitBreaker (ACTUATOR) — 5 commands, 2 states"
 
-    **Type IDs:** `515` | **Servers:** `somfy_europe` | **Controllable:** `eliot:CircuitBreakerComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `515` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `eliot:CircuitBreakerComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -114,7 +464,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "CircuitBreaker (ACTUATOR) — 6 commands, 3 states"
 
-    **Type IDs:** `517` | **Servers:** `somfy_europe` | **Controllable:** `eliot:CircuitBreakerPeakAndOffPeakHoursComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulOperatingModeHeating`, `OperatingModeHeating`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `517` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `eliot:CircuitBreakerPeakAndOffPeakHoursComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulOperatingModeHeating`, `OperatingModeHeating`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -137,7 +487,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `257`, `258`, `513`, `514`, `515`, `516`, `517`, `518`, `519` | **Servers:** `somfy_europe` | **Controllable:** `eliot:EliotElectricEnergyConsumptionSensor` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `257`, `258`, `513`, `514`, `515`, `516`, `517`, `518`, `519` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `eliot:EliotElectricEnergyConsumptionSensor` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
 
     **States**
 
@@ -148,7 +498,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/StatefulOnOffLight (ACTUATOR) — 6 commands, 2 states"
 
-    **Type IDs:** `257` | **Servers:** `somfy_europe` | **Controllable:** `eliot:OnOffLightEliotComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `257` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `eliot:OnOffLightEliotComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -170,7 +520,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerLight (ACTUATOR) — 17 commands, 9 states"
 
-    **Type IDs:** `258` | **Servers:** `somfy_europe` | **Controllable:** `eliot:DimmerLightEliotComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `258` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `eliot:DimmerLightEliotComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -210,7 +560,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 6 commands, 2 states"
 
-    **Type IDs:** `513`, `516` | **Servers:** `somfy_europe` | **Controllable:** `eliot:OnOffSwitchEliotComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `513`, `516` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `eliot:OnOffSwitchEliotComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -232,7 +582,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 7 commands, 3 states"
 
-    **Type IDs:** `519` | **Servers:** `somfy_europe` | **Controllable:** `eliot:ElectricVehicleChargerPeakAndOffPeakHoursComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulOperatingModeHeating`, `OperatingModeHeating`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `519` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `eliot:ElectricVehicleChargerPeakAndOffPeakHoursComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulOperatingModeHeating`, `OperatingModeHeating`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -256,7 +606,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RemoteController/RemoteControllerOneWay (REMOTE_CONTROLLER) — 1 commands, 3 states"
 
-    **Type IDs:** `1025` | **Servers:** `somfy_europe` | **Controllable:** `eliot:RemoteEliotComponent` | **Profiles:** `RockerSwitch`
+    **Type IDs:** `1025` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `eliot:RemoteEliotComponent` | **Profiles:** `RockerSwitch`
 
     **Commands**
 
@@ -274,7 +624,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/UpDownRollerShutter (ACTUATOR) — 6 commands, 3 states"
 
-    **Type IDs:** `769` | **Servers:** `somfy_europe` | **Controllable:** `eliot:RollerShutterEliotComponent` | **Profiles:** `StatefulOpenCloseShutter`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `769` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `eliot:RollerShutterEliotComponent` | **Profiles:** `StatefulOpenCloseShutter`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -297,7 +647,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterHeatingSystem/DomesticHotWaterProduction (ACTUATOR) — 5 commands, 2 states"
 
-    **Type IDs:** `514` | **Servers:** `somfy_europe` | **Controllable:** `eliot:DomesticHotWaterComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `514` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `eliot:DomesticHotWaterComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -318,7 +668,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterHeatingSystem/DomesticHotWaterProduction (ACTUATOR) — 6 commands, 3 states"
 
-    **Type IDs:** `518` | **Servers:** `somfy_europe` | **Controllable:** `eliot:DomesticHotWaterPeakAndOffPeakHoursComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulOperatingModeHeating`, `OperatingModeHeating`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `518` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `eliot:DomesticHotWaterPeakAndOffPeakHoursComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulOperatingModeHeating`, `OperatingModeHeating`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -346,7 +696,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 5 commands, 6 states"
 
-    **Type IDs:** `230901871017984`, `230901871018021`, `230901871083631`, `230901938126848`, `230901938192495`, `230901971681350` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanSwitchOnOffConsumptionSensorType8` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `230901871017984`, `230901871018021`, `230901871083631`, `230901938126848`, `230901938192495`, `230901971681350` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanSwitchOnOffConsumptionSensorType8` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
 
     **Commands**
 
@@ -371,7 +721,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/EnOceanGeneric (ACTUATOR) — 3 commands, 1 states"
 
-    **Type IDs:** `270492762112000` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanGenericActuator` | **Profiles:** `Switchable`, `Generic`
+    **Type IDs:** `270492762112000` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanGenericActuator` | **Profiles:** `Switchable`, `Generic`
 
     **Commands**
 
@@ -389,7 +739,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 10 commands, 13 states"
 
-    **Type IDs:** `181556874313728` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanHVACBatteryPoweredComponent` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `181556874313728` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanHVACBatteryPoweredComponent` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Commands**
 
@@ -426,7 +776,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 11 commands, 13 states"
 
-    **Type IDs:** `181556874313784` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanCaleffiValveComponent` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `181556874313784` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanCaleffiValveComponent` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Commands**
 
@@ -464,7 +814,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 9 commands, 12 states"
 
-    **Type IDs:** `181556874313801`, `181556874444800`, `181556874444873` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanMicroPeltValveComponent` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `181556874313801`, `181556874444800`, `181556874444873` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanMicroPeltValveComponent` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Commands**
 
@@ -499,7 +849,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 18 commands, 18 states"
 
-    **Type IDs:** `181556874379337` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanMicroPeltValveV2WithRemoteCommissioningComponent` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `181556874379337` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanMicroPeltValveV2WithRemoteCommissioningComponent` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Commands**
 
@@ -519,10 +869,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `addGatewayLink` |  | add the gateway to list of the linked devices. @Deprecated : use linkGateway |
     | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `removeGatewayLink` |  | remove the gateway from the list of the link devices.@Deprecated : use unlinkGateway |
-    | `repeatTargetValvePosition` |  | Repeat the last target position to the valve (this action will keep the valve alive) |
     | `setKey` | INT [1..4294967295] | set the key of the product. |
     | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
     | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
+    | `repeatTargetValvePosition` |  | Repeat the last target position to the valve (this action will keep the valve alive) |
 
     **States**
 
@@ -549,39 +899,39 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 27 commands, 18 states"
 
-    **Type IDs:** `181556874379362` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanPMDMValveWithRemoteCommissioning` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `181556874379362` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanPMDMValveWithRemoteCommissioning` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Commands**
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `activateSummerMode` |  | activate the summer mode, less energy consumption |
-    | `addLinkedDevices` | OBJECT | The command addLinkedDevices will add a link between your "target" device and another "source" devices (one or more) that will control your "target" device. |
     | `close` |  | Fully close the device |
     | `closeValve` |  | Fully close the valve |
     | `deactivateSummerMode` |  | Deactivate the summer mode, more energy consumption |
     | `open` |  | Fully open the device |
     | `openValve` |  | Fully open the valve |
+    | `addLinkedDevices` | OBJECT | The command addLinkedDevices will add a link between your "target" device and another "source" devices (one or more) that will control your "target" device. |
     | `removeLinkedDevice` | STRING | The command removeLinkedDevice will remove the device linked before with the command setLinkedDevices or addLinkedDevices.This command can remove only 1 device. p1 : the deviceURL you want to delete. |
-    | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
     | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
+    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
+    | `updateLinkedDevices` | ARRAY | The command updateLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). Only the different links will be updated.  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same. |
+    | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
     | `setTargetTemperature` | FLOAT [0.0..100.0] | Set the new air temperature to reach |
     | `setTargetTemperatureValue` | FLOAT [0.0..100.0] | Set the new temperature to reach |
     | `setValvePosition` | INT [0..100] | Valve position (100%=fully closed, 0%=opened) |
-    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
-    | `updateLinkedDevices` | ARRAY | The command updateLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). Only the different links will be updated.  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same. |
     | `addDevicesLink` | OBJECT | Add a link between your device and the devices (one or more) that will control it. @Deprecated : use addLinkedDevices |
     | `addGatewayLink` |  | add the gateway to list of the linked devices. @Deprecated : use linkGateway |
     | `clearAllLinkedDevices` |  | Clear all devices linked before. @Deprecated: use unlinkAllDevices |
     | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `removeDeviceLink` | INT | remove a device to the list of the devices linked by the remote commissioning. Address of the device to remove is the parameter. @Deprecated : use removeLinkedDevice |
     | `removeGatewayLink` |  | remove the gateway from the list of the link devices.@Deprecated : use unlinkGateway |
-    | `repeatTargetValvePosition` |  | Repeat the last target position to the valve (this action will keep the valve alive) |
     | `setKey` | INT [1..4294967295] | set the key of the product. |
     | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
     | `setLinks` | OBJECT | Set a link between your device and the devices (one or more) that will control it. All existing links already set in the target will be erase. @Deprecated: use setLinkedDevices |
     | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `updateLinks` | OBJECT | Link given devices to current device using remote commissioning and comparing to existing configuration as follow :  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same.  @Deprecated : use updateLinkedDevices |
+    | `repeatTargetValvePosition` |  | Repeat the last target position to the valve (this action will keep the valve alive) |
 
     **States**
 
@@ -608,7 +958,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 17 commands, 17 states"
 
-    **Type IDs:** `181556874379370`, `181556958265450` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanMicroPeltValveWithRemoteCommissioningComponent` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `181556874379370`, `181556958265450` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanMicroPeltValveWithRemoteCommissioningComponent` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Commands**
 
@@ -627,10 +977,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `addGatewayLink` |  | add the gateway to list of the linked devices. @Deprecated : use linkGateway |
     | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `removeGatewayLink` |  | remove the gateway from the list of the link devices.@Deprecated : use unlinkGateway |
-    | `repeatTargetValvePosition` |  | Repeat the last target position to the valve (this action will keep the valve alive) |
     | `setKey` | INT [1..4294967295] | set the key of the product. |
     | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
     | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
+    | `repeatTargetValvePosition` |  | Repeat the last target position to the valve (this action will keep the valve alive) |
 
     **States**
 
@@ -656,7 +1006,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 11 commands, 13 states"
 
-    **Type IDs:** `181556958199808`, `181556958199914` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanHarvestingPoweredMicroPeltValveComponent` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `181556958199808`, `181556958199914` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanHarvestingPoweredMicroPeltValveComponent` | **Profiles:** `StatefulCloseableValve`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulThermostat`, `Thermostat`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Commands**
 
@@ -694,7 +1044,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/OnOffHeatingSystem (ACTUATOR) — 7 commands, 5 states"
 
-    **Type IDs:** `230901753643008`, `230901871018021` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanOnOffHeatingSystemComponent` | **Profiles:** `StatefulSwitchableHeating`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `230901753643008`, `230901871018021` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanOnOffHeatingSystemComponent` | **Profiles:** `StatefulSwitchableHeating`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -720,7 +1070,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/OnOffHeatingSystem (ACTUATOR) — 13 commands, 10 states"
 
-    **Type IDs:** `230901753643119` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanOnOffHeatingSystemComponentWithReCom` | **Profiles:** `StatefulSwitchableHeating`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `230901753643119` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanOnOffHeatingSystemComponentWithReCom` | **Profiles:** `StatefulSwitchableHeating`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -732,10 +1082,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
     | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
-    | `setOnOff` | STRING: off, on | Turn the device on or off |
     | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
-    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
     | `refreshStatus` |  | Refresh the status of the device |
+    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `setKey` | INT [1..4294967295] | set the key of the product. |
     | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
     | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
@@ -757,7 +1107,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ElectricalHeater (ACTUATOR) — 6 commands, 6 states"
 
-    **Type IDs:** `230901938126848` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanPilotWireComponent` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
+    **Type IDs:** `230901938126848` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanPilotWireComponent` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
 
     **Commands**
 
@@ -783,7 +1133,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ElectricalHeater (ACTUATOR) — 12 commands, 11 states"
 
-    **Type IDs:** `230901938192495` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanPilotWireComponentWithReCom` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
+    **Type IDs:** `230901938192495` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanPilotWireComponentWithReCom` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
 
     **Commands**
 
@@ -793,11 +1143,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `deactivateLocalControl` |  | Disable the local control |
     | `off` |  | Turn off the device |
     | `refreshHeatingLevel` |  | Refresh the heating level mode |
-    | `setHeatingLevel` | STRING: off, comfort, eco, frostprotection, comfort-1 | Sets the device heating level mode |
     | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
     | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
-    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
+    | `setHeatingLevel` | STRING: off, comfort, eco, frostprotection, comfort-1 | Sets the device heating level mode |
     | `refreshStatus` |  | Refresh the status of the device |
+    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `setKey` | INT [1..4294967295] | set the key of the product. |
     | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
     | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
@@ -820,7 +1170,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HumiditySensor/RelativeHumiditySensor (SENSOR) — 0 commands, 4 states"
 
-    **Type IDs:** `462911591940096`, `462911591940140`, `462911591940166`, `462911608717312`, `462911608717325` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanHumiditySensor` | **Profiles:** `RelativeHumidity`
+    **Type IDs:** `462911591940096`, `462911591940140`, `462911591940166`, `462911608717312`, `462911608717325` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanHumiditySensor` | **Profiles:** `RelativeHumidity`
 
     **States**
 
@@ -833,7 +1183,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/OnOffLight (ACTUATOR) — 3 commands, 1 states"
 
-    **Type IDs:** `270492762243072` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanOnOffLight` | **Profiles:** `SwitchableLight`, `Switchable`
+    **Type IDs:** `270492762243072` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanOnOffLight` | **Profiles:** `SwitchableLight`, `Switchable`
 
     **Commands**
 
@@ -851,7 +1201,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "NetworkComponent/Repeater (INFRASTRUCTURE_COMPONENT) — 4 commands, 4 states"
 
-    **Type IDs:** `230901753643119`, `230901871083631`, `230901938192495`, `230901988524143`, `230902038855791`, `230918916735087` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanNativeRepeaterComponent` | **Profiles:** `Specific`
+    **Type IDs:** `230901753643119`, `230901871083631`, `230901938192495`, `230901988524143`, `230902038855791`, `230918916735087` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanNativeRepeaterComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -873,7 +1223,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "NetworkComponent/Repeater (INFRASTRUCTURE_COMPONENT) — 3 commands, 4 states"
 
-    **Type IDs:** `230901988458566`, `230901988524102`, `230902038790214`, `230902038855750`, `230918916669510` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanRepeaterComponent` | **Profiles:** `Specific`
+    **Type IDs:** `230901988458566`, `230901988524102`, `230902038790214`, `230902038855750`, `230918916669510` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanRepeaterComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -894,7 +1244,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 5 commands, 4 states"
 
-    **Type IDs:** `230901753577472` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanSwitchOnOffType1` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `230901753577472` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanSwitchOnOffType1` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -917,7 +1267,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 15 commands, 10 states"
 
-    **Type IDs:** `230901871017984` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanSwitchOnOffType8` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `230901871017984` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanSwitchOnOffType8` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -956,7 +1306,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 21 commands, 15 states"
 
-    **Type IDs:** `230901871083631` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanSwitchOnOffType8WithReCom` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `230901871083631` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanSwitchOnOffType8WithReCom` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -971,15 +1321,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
+    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
     | `setContextSavingOnPowerCut` | STRING: off, on | Activate (on) or deactivate (off) last device state saving on power cut |
     | `setDefaultOnOffState` | STRING: on, off | set the Default Output State |
-    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
     | `setOnOff` | STRING: off, on | Turn the device on or off |
-    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
     | `activateNightMode` |  | Activate the Night Mode (example : switch off the local LED) |
     | `deactivateNightMode` |  | Deactivate the night mode  (example : switch on the local LED) |
-    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `refreshStatus` |  | Refresh the status of the device |
+    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `setKey` | INT [1..4294967295] | set the key of the product. |
     | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
     | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
@@ -1006,7 +1356,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 16 commands, 10 states"
 
-    **Type IDs:** `230901971681350` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanSwitchOnOffTypeE` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `230901971681350` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanSwitchOnOffTypeE` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -1046,7 +1396,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 17 commands, 11 states"
 
-    **Type IDs:** `230901988458496`, `230901988458566`, `230901988458607`, `230902038790144`, `230902038790214`, `230902038790255`, `230902038790259`, `230902038855795` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanSwitchOnOffTypeF` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `230901988458496`, `230901988458566`, `230901988458607`, `230902038790144`, `230902038790214`, `230902038790255`, `230902038790259`, `230902038855795` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanSwitchOnOffTypeF` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -1088,7 +1438,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 33 commands, 16 states"
 
-    **Type IDs:** `230901988524102`, `230902038855750` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanSwitchOnOffTypeFWithRemoteCommissioning` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `230901988524102`, `230902038855750` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanSwitchOnOffTypeFWithRemoteCommissioning` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -1096,37 +1446,37 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `activateContextSavingOnPowerCut` |  | Activate last device state saving on power cut |
     | `activateLocalControl` |  | Enable the local control |
-    | `addLinkedDevices` | OBJECT | The command addLinkedDevices will add a link between your "target" device and another "source" devices (one or more) that will control your "target" device. |
     | `deactivateContextSavingOnPowerCut` |  | Deactivate last device state saving on power cut |
     | `deactivateLocalControl` |  | Disable the local control |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `addLinkedDevices` | OBJECT | The command addLinkedDevices will add a link between your "target" device and another "source" devices (one or more) that will control your "target" device. |
     | `removeLinkedDevice` | STRING | The command removeLinkedDevice will remove the device linked before with the command setLinkedDevices or addLinkedDevices.This command can remove only 1 device. p1 : the deviceURL you want to delete. |
-    | `setContextSavingOnPowerCut` | STRING: off, on | Activate (on) or deactivate (off) last device state saving on power cut |
-    | `setDefaultOnOffState` | STRING: on, off | set the Default Output State |
     | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
-    | `setOnOff` | STRING: off, on | Turn the device on or off |
     | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
     | `updateLinkedDevices` | ARRAY | The command updateLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). Only the different links will be updated.  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same. |
+    | `setContextSavingOnPowerCut` | STRING: off, on | Activate (on) or deactivate (off) last device state saving on power cut |
+    | `setDefaultOnOffState` | STRING: on, off | set the Default Output State |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
     | `activateNightMode` |  | Activate the Night Mode (example : switch off the local LED) |
+    | `deactivateNightMode` |  | Deactivate the night mode  (example : switch on the local LED) |
+    | `refreshExternalInterfaceSettings` |  | Refresh external interface settings |
+    | `refreshStatus` |  | Refresh the status of the device |
     | `addDevicesLink` | OBJECT | Add a link between your device and the devices (one or more) that will control it. @Deprecated : use addLinkedDevices |
     | `addGatewayLink` |  | add the gateway to list of the linked devices. @Deprecated : use linkGateway |
     | `clearAllLinkedDevices` |  | Clear all devices linked before. @Deprecated: use unlinkAllDevices |
-    | `deactivateNightMode` |  | Deactivate the night mode  (example : switch on the local LED) |
     | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
-    | `refreshExternalInterfaceSettings` |  | Refresh external interface settings |
-    | `refreshStatus` |  | Refresh the status of the device |
     | `removeDeviceLink` | INT | remove a device to the list of the devices linked by the remote commissioning. Address of the device to remove is the parameter. @Deprecated : use removeLinkedDevice |
     | `removeGatewayLink` |  | remove the gateway from the list of the link devices.@Deprecated : use unlinkGateway |
-    | `setAutoOffTimer` | FLOAT [0.0..6553.4] | time in second - Timer To automatically set OFF output channel when it is set ON. Value 0 mean timer desactivated |
-    | `setDelayOffTimer` | FLOAT [0.0..6553.4] | time in second - Delay timer before setting output channel to OFF value received by radio command. Value 0 mean timer desactivated |
-    | `setExternalInterfaceMode` | STRING: autoDetection, externalPushButton, externalSwitch, notApplicable | set external interface type : mono-stable or bistable switch |
     | `setKey` | INT [1..4294967295] | set the key of the product. |
     | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
     | `setLinks` | OBJECT | Set a link between your device and the devices (one or more) that will control it. All existing links already set in the target will be erase. @Deprecated: use setLinkedDevices |
     | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `updateLinks` | OBJECT | Link given devices to current device using remote commissioning and comparing to existing configuration as follow :  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same.  @Deprecated : use updateLinkedDevices |
+    | `setAutoOffTimer` | FLOAT [0.0..6553.4] | time in second - Timer To automatically set OFF output channel when it is set ON. Value 0 mean timer desactivated |
+    | `setDelayOffTimer` | FLOAT [0.0..6553.4] | time in second - Delay timer before setting output channel to OFF value received by radio command. Value 0 mean timer desactivated |
+    | `setExternalInterfaceMode` | STRING: autoDetection, externalPushButton, externalSwitch, notApplicable | set external interface type : mono-stable or bistable switch |
 
     **States**
 
@@ -1151,7 +1501,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 23 commands, 16 states"
 
-    **Type IDs:** `230901988524143`, `230902038855791` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanSwitchOnOffTypeFWithReCom` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `230901988524143`, `230902038855791` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanSwitchOnOffTypeFWithReCom` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -1164,22 +1514,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
+    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
     | `setContextSavingOnPowerCut` | STRING: off, on | Activate (on) or deactivate (off) last device state saving on power cut |
     | `setDefaultOnOffState` | STRING: on, off | set the Default Output State |
-    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
     | `setOnOff` | STRING: off, on | Turn the device on or off |
-    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
     | `activateNightMode` |  | Activate the Night Mode (example : switch off the local LED) |
     | `deactivateNightMode` |  | Deactivate the night mode  (example : switch on the local LED) |
-    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `refreshExternalInterfaceSettings` |  | Refresh external interface settings |
     | `refreshStatus` |  | Refresh the status of the device |
-    | `setAutoOffTimer` | FLOAT [0.0..6553.4] | time in second - Timer To automatically set OFF output channel when it is set ON. Value 0 mean timer desactivated |
-    | `setDelayOffTimer` | FLOAT [0.0..6553.4] | time in second - Delay timer before setting output channel to OFF value received by radio command. Value 0 mean timer desactivated |
-    | `setExternalInterfaceMode` | STRING: autoDetection, externalPushButton, externalSwitch, notApplicable | set external interface type : mono-stable or bistable switch |
+    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `setKey` | INT [1..4294967295] | set the key of the product. |
     | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
     | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
+    | `setAutoOffTimer` | FLOAT [0.0..6553.4] | time in second - Timer To automatically set OFF output channel when it is set ON. Value 0 mean timer desactivated |
+    | `setDelayOffTimer` | FLOAT [0.0..6553.4] | time in second - Delay timer before setting output channel to OFF value received by radio command. Value 0 mean timer desactivated |
+    | `setExternalInterfaceMode` | STRING: autoDetection, externalPushButton, externalSwitch, notApplicable | set external interface type : mono-stable or bistable switch |
 
     **States**
 
@@ -1204,7 +1554,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatelessOnOff (ACTUATOR) — 4 commands, 1 states"
 
-    **Type IDs:** `270492762177536` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanSwitchOnOff` | **Profiles:** `SwitchablePlug`, `Switchable`
+    **Type IDs:** `270492762177536` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanSwitchOnOff` | **Profiles:** `SwitchablePlug`, `Switchable`
 
     **Commands**
 
@@ -1223,7 +1573,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/UpDownRollerShutter (ACTUATOR) — 8 commands, 5 states"
 
-    **Type IDs:** `181692132229133` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanStatefulRollerShutter` | **Profiles:** `OpenCloseShutter`, `OpenClose`
+    **Type IDs:** `181692132229133` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanStatefulRollerShutter` | **Profiles:** `OpenCloseShutter`, `OpenClose`
 
     **Commands**
 
@@ -1250,43 +1600,43 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/PositionableRollerShutter (ACTUATOR) — 31 commands, 14 states"
 
-    **Type IDs:** `230918916669510` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnoceanRollerShutterWithRemoteCommissioning` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `230918916669510` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnoceanRollerShutterWithRemoteCommissioning` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `addLinkedDevices` | OBJECT | The command addLinkedDevices will add a link between your "target" device and another "source" devices (one or more) that will control your "target" device. |
     | `close` |  | Fully close the device |
     | `down` |  | Move the device completely down |
     | `getClosure` |  | Get closure level (100%=fully close, 0%=open) |
     | `open` |  | Fully open the device |
+    | `addLinkedDevices` | OBJECT | The command addLinkedDevices will add a link between your "target" device and another "source" devices (one or more) that will control your "target" device. |
     | `removeLinkedDevice` | STRING | The command removeLinkedDevice will remove the device linked before with the command setLinkedDevices or addLinkedDevices.This command can remove only 1 device. p1 : the deviceURL you want to delete. |
-    | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
     | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
-    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
-    | `up` |  | Move the device completely up |
     | `updateLinkedDevices` | ARRAY | The command updateLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). Only the different links will be updated.  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same. |
-    | `addDevicesLink` | OBJECT | Add a link between your device and the devices (one or more) that will control it. @Deprecated : use addLinkedDevices |
-    | `addGatewayLink` |  | add the gateway to list of the linked devices. @Deprecated : use linkGateway |
-    | `clearAllLinkedDevices` |  | Clear all devices linked before. @Deprecated: use unlinkAllDevices |
+    | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+    | `up` |  | Move the device completely up |
     | `getCalibrationStatus` |  | Get calibration status. |
     | `getCalibrationTimeDown` |  | Get calibration time down. |
     | `getCalibrationTimeUp` |  | Get calibration time up. |
-    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `refreshSwitchType` |  | refresh switch type. |
+    | `addDevicesLink` | OBJECT | Add a link between your device and the devices (one or more) that will control it. @Deprecated : use addLinkedDevices |
+    | `addGatewayLink` |  | add the gateway to list of the linked devices. @Deprecated : use linkGateway |
+    | `clearAllLinkedDevices` |  | Clear all devices linked before. @Deprecated: use unlinkAllDevices |
+    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `removeDeviceLink` | INT | remove a device to the list of the devices linked by the remote commissioning. Address of the device to remove is the parameter. @Deprecated : use removeLinkedDevice |
     | `removeGatewayLink` |  | remove the gateway from the list of the link devices.@Deprecated : use unlinkGateway |
     | `setKey` | INT [1..4294967295] | set the key of the product. |
     | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
     | `setLinks` | OBJECT | Set a link between your device and the devices (one or more) that will control it. All existing links already set in the target will be erase. @Deprecated: use setLinkedDevices |
+    | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
+    | `updateLinks` | OBJECT | Link given devices to current device using remote commissioning and comparing to existing configuration as follow :  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same.  @Deprecated : use updateLinkedDevices |
     | `setSwitchType` | STRING: biStableTypeOne, biStableTypeTwo, biStableTypeThree, monoStableTypeFour | Set switch type. |
     | `setTimeCalibration` | FLOAT [5.0..300.0] | Set time calibration in seconds. |
     | `startCalibration` | STRING: classic, complex | Start classic or complex calibration. |
     | `stopCalibration` |  | Stop calibration. |
-    | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
-    | `updateLinks` | OBJECT | Link given devices to current device using remote commissioning and comparing to existing configuration as follow :  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same.  @Deprecated : use updateLinkedDevices |
 
     **States**
 
@@ -1309,7 +1659,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/PositionableRollerShutter (ACTUATOR) — 7 commands, 5 states"
 
-    **Type IDs:** `230918916669551` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanAvidsenRollerShutterComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `230918916669551` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanAvidsenRollerShutterComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -1335,7 +1685,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/PositionableRollerShutter (ACTUATOR) — 14 commands, 10 states"
 
-    **Type IDs:** `230918916735087` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanAvidsenRollerShutterComponentWithReCom` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `230918916735087` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanAvidsenRollerShutterComponentWithReCom` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -1345,16 +1695,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `down` |  | Move the device completely down |
     | `getClosure` |  | Get closure level (100%=fully close, 0%=open) |
     | `open` |  | Fully open the device |
-    | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
     | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
-    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
+    | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `up` |  | Move the device completely up |
     | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `setKey` | INT [1..4294967295] | set the key of the product. |
     | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
-    | `startClassicCalibration` |  | Start classic calibration. |
     | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
+    | `startClassicCalibration` |  | Start classic calibration. |
 
     **States**
 
@@ -1373,7 +1723,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/UpDownRollerShutter (ACTUATOR) — 4 commands, 1 states"
 
-    **Type IDs:** `270492762308608` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanRollerShutter` | **Profiles:** `OpenCloseShutterSwitch`, `BasicOpenClose`, `BasicUpDown`
+    **Type IDs:** `270492762308608` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanRollerShutter` | **Profiles:** `OpenCloseShutterSwitch`, `BasicOpenClose`, `BasicUpDown`
 
     **Commands**
 
@@ -1392,7 +1742,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "TemperatureSensor (SENSOR) — 0 commands, 5 states"
 
-    **Type IDs:** `181556874313728`, `181556874313784`, `181556874313801`, `181556874379337`, `181556874379362`, `181556874379370`, `181556874444800`, `181556874444873`, `181556958199808`, `181556958199914`, `181556958265450` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanHVACTemperatureSensor` | **Profiles:** `Temperature`
+    **Type IDs:** `181556874313728`, `181556874313784`, `181556874313801`, `181556874379337`, `181556874379362`, `181556874379370`, `181556874444800`, `181556874444873`, `181556958199808`, `181556958199914`, `181556958265450` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanHVACTemperatureSensor` | **Profiles:** `Temperature`
 
     **States**
 
@@ -1406,7 +1756,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "TemperatureSensor (SENSOR) — 0 commands, 4 states"
 
-    **Type IDs:** `462903002005504`, `462903069114368`, `462903069114438`, `462903303995392`, `462903303995436`, `462911591940096`, `462911591940140`, `462911591940166`, `462911608717312`, `462911608717325` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanTemperatureSensorType01` | **Profiles:** `Temperature`
+    **Type IDs:** `462903002005504`, `462903069114368`, `462903069114438`, `462903303995392`, `462903303995436`, `462911591940096`, `462911591940140`, `462911591940166`, `462911608717312`, `462911608717325` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanTemperatureSensorType01` | **Profiles:** `Temperature`
 
     **States**
 
@@ -1419,7 +1769,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VenetianBlind/PositionableVenetianBlind (ACTUATOR) — 6 commands, 6 states"
 
-    **Type IDs:** `230918950223872` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanVenetianBlindController` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
+    **Type IDs:** `230918950223872` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanVenetianBlindController` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
 
     **Commands**
 
@@ -1445,23 +1795,23 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VenetianBlind/PositionableVenetianBlind (ACTUATOR) — 22 commands, 11 states"
 
-    **Type IDs:** `230918950289408` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanVenetianBlindControllerWithRemoteCommissioning` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
+    **Type IDs:** `230918950289408` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanVenetianBlindControllerWithRemoteCommissioning` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
 
     **Commands**
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `addLinkedDevices` | OBJECT | The command addLinkedDevices will add a link between your "target" device and another "source" devices (one or more) that will control your "target" device. |
     | `close` |  | Fully close the device |
     | `down` |  | Move the device completely down |
     | `open` |  | Fully open the device |
+    | `addLinkedDevices` | OBJECT | The command addLinkedDevices will add a link between your "target" device and another "source" devices (one or more) that will control your "target" device. |
     | `removeLinkedDevice` | STRING | The command removeLinkedDevice will remove the device linked before with the command setLinkedDevices or addLinkedDevices.This command can remove only 1 device. p1 : the deviceURL you want to delete. |
-    | `setClosureAndOrientation` | INT [0..100]; INT [0..100] | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device |
     | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
-    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
-    | `up` |  | Move the device completely up |
     | `updateLinkedDevices` | ARRAY | The command updateLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). Only the different links will be updated.  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same. |
+    | `setClosureAndOrientation` | INT [0..100]; INT [0..100] | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+    | `up` |  | Move the device completely up |
     | `addDevicesLink` | OBJECT | Add a link between your device and the devices (one or more) that will control it. @Deprecated : use addLinkedDevices |
     | `addGatewayLink` |  | add the gateway to list of the linked devices. @Deprecated : use linkGateway |
     | `clearAllLinkedDevices` |  | Clear all devices linked before. @Deprecated: use unlinkAllDevices |
@@ -1492,7 +1842,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VentilationSystem/DimplexVentilationInletOutlet (ACTUATOR) — 4 commands, 1 states"
 
-    **Type IDs:** `181557142749184` | **Servers:** `somfy_europe` | **Controllable:** `enocean:EnOceanDimplexVentilationComponent` | **Profiles:** `Specific`
+    **Type IDs:** `181557142749184` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `enocean:EnOceanDimplexVentilationComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -1583,7 +1933,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerHueSatOrCTLight (ACTUATOR) — 16 commands, 10 states"
 
-    **Type IDs:** `72137043618037761`, `72137043618037762`, `72137043618037763`, `72141446093733889`, `72141446093733890`, `72141446093733891`, `72141446093733895`, `72141446093733898`, `72141446093733900`, `72141446093733902`, `72141484463226900`, `72141484630999041`, `72141514813210626`, `72415224354832384` | **Servers:** `somfy_europe` | **Controllable:** `hue:ColorLightModuleHUEComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `72137043618037761`, `72137043618037762`, `72137043618037763`, `72141446093733889`, `72141446093733890`, `72141446093733891`, `72141446093733895`, `72141446093733898`, `72141446093733900`, `72141446093733902`, `72141484463226900`, `72141484630999041`, `72141514813210626`, `72415224354832384` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `hue:ColorLightModuleHUEComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -1598,8 +1948,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
     | `refreshState` |  | Refresh the device states |
-    | `setCTB` | INT [2000..6536]; INT [0..100] | Set the perceived white temperature for this lamp (°K) and its brightness (%) |
     | `setCieColorSpaceXY` | FLOAT [0.0..1.0]; FLOAT [0.0..1.0] | Set the CIE color space coordinates (X,Y) of the lamp |
+    | `setCTB` | INT [2000..6536]; INT [0..100] | Set the perceived white temperature for this lamp (°K) and its brightness (%) |
     | `setColorTemperature` | INT [2000..6536] | Set the perceived white temperature for this lamp (°K) |
     | `setHSB` | INT [0..360]; INT [0..100]; INT [0..100] | Set the color hue (°), color saturation (%) and brightness (%) of the lamp |
     | `setHueAndSaturation` | INT [0..360]; INT [0..100] | Set the color hue (°) and color saturation(%) of the lamp |
@@ -1627,7 +1977,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerColorTemperatureLight (ACTUATOR) — 11 commands, 6 states"
 
-    **Type IDs:** `72137090862678022`, `72141484630999050`, `72141484630999051`, `72141484630999052`, `72141519158509569`, `72141519158509572`, `72141519158509578`, `72141519158509579`, `72141519158509580`, `72141519158509581`, `72141519158509582`, `72141519158509583`, `72413098346020864` | **Servers:** `somfy_europe` | **Controllable:** `hue:PhoenixHUEComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `72137090862678022`, `72141484630999050`, `72141484630999051`, `72141484630999052`, `72141519158509569`, `72141519158509572`, `72141519158509578`, `72141519158509579`, `72141519158509580`, `72141519158509581`, `72141519158509582`, `72141519158509583`, `72413098346020864` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `hue:PhoenixHUEComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -1662,7 +2012,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerLight (ACTUATOR) — 9 commands, 4 states"
 
-    **Type IDs:** `72141156921638912`, `72141531691089921`, `72141531691089922`, `72141531691089924`, `72141531691089926`, `72141531691089927`, `72141531691089930`, `72141531691089934`, `72141531858862081`, `72339362347483136` | **Servers:** `somfy_europe` | **Controllable:** `hue:HueLuxHUEComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `72141156921638912`, `72141531691089921`, `72141531691089922`, `72141531691089924`, `72141531691089926`, `72141531691089927`, `72141531691089930`, `72141531691089934`, `72141531858862081`, `72339362347483136` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `hue:HueLuxHUEComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -1693,7 +2043,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerHueSaturationLight (ACTUATOR) — 14 commands, 9 states"
 
-    **Type IDs:** `72141484463226881`, `72141484463226885`, `72141484463226886`, `72141484463226887`, `72141484463226890`, `72141484463226891`, `72141484463226892`, `72141484463226893`, `72141484463226894`, `72141514813210625`, `72339358052515840` | **Servers:** `somfy_europe` | **Controllable:** `hue:BloomHUEComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `72141484463226881`, `72141484463226885`, `72141484463226886`, `72141484463226887`, `72141484463226890`, `72141484463226891`, `72141484463226892`, `72141484463226893`, `72141484463226894`, `72141514813210625`, `72339358052515840` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `hue:BloomHUEComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -1734,7 +2084,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ProtocolGateway/HueBridge (PROTOCOL_GATEWAY) — 0 commands, 1 states"
 
-    **Type IDs:** `16777216`, `16777217`, `16777218` | **Servers:** `somfy_europe` | **Controllable:** `hue:BridgeHUEV2Component` | **Profiles:** `Specific`
+    **Type IDs:** `16777216`, `16777217`, `16777218` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `hue:BridgeHUEV2Component` | **Profiles:** `Specific`
 
     **States**
 
@@ -1749,7 +2099,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Alarm/TSKAlarmController (ACTUATOR) — 16 commands, 5 states"
 
-    **Type IDs:** `1` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `internal:TSKAlarmComponent` | **Profiles:** `Alarm`, `Switchable`
+    **Type IDs:** `1` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `internal:TSKAlarmComponent` | **Profiles:** `Alarm`, `Switchable`
 
     **Commands**
 
@@ -1784,7 +2134,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Dock (ACTUATOR) — 25 commands, 14 states"
 
-    **Type IDs:** `3` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `internal:TSKDockComponent` | **Profiles:** `Specific`
+    **Type IDs:** `3` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `internal:TSKDockComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -1837,7 +2187,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pod (ACTUATOR) — 2 commands, 1 states"
 
-    **Type IDs:** `2` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `internal:PodComponent` | **Profiles:** `Specific`
+    **Type IDs:** `2` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `internal:PodComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -1854,7 +2204,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pod (ACTUATOR) — 11 commands, 7 states"
 
-    **Type IDs:** `4` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `internal:PodMiniComponent` | **Profiles:** `UpdatableComponent`
+    **Type IDs:** `4` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `internal:PodMiniComponent` | **Profiles:** `UpdatableComponent`
 
     **Commands**
 
@@ -1886,7 +2236,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pod (ACTUATOR) — 12 commands, 8 states"
 
-    **Type IDs:** `5` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `internal:PodV2Component` | **Profiles:** `UpdatableComponent`
+    **Type IDs:** `5` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `internal:PodV2Component` | **Profiles:** `UpdatableComponent`
 
     **Commands**
 
@@ -1920,11 +2270,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pod (ACTUATOR) — 0 commands, 0 states"
 
-    **Type IDs:** `6` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `internal:UPodComponent` | **Profiles:** `Specific`
+    **Type IDs:** `6` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `internal:UPodComponent` | **Profiles:** `Specific`
 
 ??? note "Pod (ACTUATOR) — 0 commands, 2 states"
 
-    **Type IDs:** `7` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `internal:UPodNetWorkComponent` | **Profiles:** `Specific`
+    **Type IDs:** `7` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `internal:UPodNetWorkComponent` | **Profiles:** `Specific`
 
     **States**
 
@@ -1935,7 +2285,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pod (ACTUATOR) — 11 commands, 9 states"
 
-    **Type IDs:** `10` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `internal:PodV3Component` | **Profiles:** `UpdatableComponent`
+    **Type IDs:** `10` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `internal:PodV3Component` | **Profiles:** `UpdatableComponent`
 
     **Commands**
 
@@ -1969,7 +2319,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pod (ACTUATOR) — 11 commands, 6 states"
 
-    **Type IDs:** `11` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `internal:PodV3RDComponent` | **Profiles:** `UpdatableComponent`
+    **Type IDs:** `11` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `internal:PodV3RDComponent` | **Profiles:** `UpdatableComponent`
 
     **Commands**
 
@@ -2000,7 +2350,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pod/MultiGateway (ACTUATOR) — 2 commands, 4 states"
 
-    **Type IDs:** `12` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `internal:MultiGatewayComponent` | **Profiles:** `Specific`
+    **Type IDs:** `12` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `internal:MultiGatewayComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -2155,7 +2505,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Wifi (ACTUATOR) — 3 commands, 3 states"
 
-    **Type IDs:** `9` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `internal:WifiComponent` | **Profiles:** `Specific`
+    **Type IDs:** `9` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `internal:WifiComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -2180,7 +2530,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "AdjustableSlatsRollerShutter/PositionableOrOrientableRollerShutter (ACTUATOR) — 33 commands, 16 states"
 
-    **Type IDs:** `131328`, `131330` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:AdjustableSlatsRollerShutterIOComponent` | **Profiles:** `StatefulRockingShutter`, `StatefulOrientableOrCloseable`, `OrientableOrCloseable`, `StatefulCloseable`, `Closeable`, `OpenClose`
+    **Type IDs:** `131328`, `131330` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:AdjustableSlatsRollerShutterIOComponent` | **Profiles:** `StatefulRockingShutter`, `StatefulOrientableOrCloseable`, `OrientableOrCloseable`, `StatefulCloseable`, `Closeable`, `OpenClose`
 
     **Data Properties**
 
@@ -2311,7 +2661,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Alarm/StatefulAlarmController (ACTUATOR) — 21 commands, 9 states"
 
-    **Type IDs:** `1507328` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:AlarmIOComponent` | **Profiles:** `Alarm`
+    **Type IDs:** `1507328` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:AlarmIOComponent` | **Profiles:** `Alarm`
 
     **Data Properties**
 
@@ -2359,7 +2709,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Awning/DynamicAwning (ACTUATOR) — 30 commands, 17 states"
 
-    **Type IDs:** `18691697868802` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:DynamicAwningIOComponent` | **Profiles:** `StatefulDeployUndeployAwning`, `StatefulDeployUndeploy`, `DeployUndeploy`, `StatefulDeployable`, `Deployable`
+    **Type IDs:** `18691697868802` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:DynamicAwningIOComponent` | **Profiles:** `StatefulDeployUndeployAwning`, `StatefulDeployUndeploy`, `DeployUndeploy`, `StatefulDeployable`, `Deployable`
 
     **Data Properties**
 
@@ -2424,7 +2774,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Awning/PositionableHorizontalAwning (ACTUATOR) — 36 commands, 17 states"
 
-    **Type IDs:** `1048576` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:HorizontalAwningIOComponent` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `1048576` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:HorizontalAwningIOComponent` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -2625,7 +2975,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "CarButtonSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `590336` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:CarButtonIODeviceSensor` | **Profiles:** `PushButtonSensor`
+    **Type IDs:** `590336` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:CarButtonIODeviceSensor` | **Profiles:** `PushButtonSensor`
 
     **States**
 
@@ -2636,7 +2986,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConsumptionSensor/CumulativeFossilEnergyConsumptionSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `1442316` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:TotalFossilEnergyConsumptionSensor` | **Profiles:** `FossilEnergyConsumption`
+    **Type IDs:** `1442316` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:TotalFossilEnergyConsumptionSensor` | **Profiles:** `FossilEnergyConsumption`
 
     **States**
 
@@ -2647,7 +2997,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "DoorLock (ACTUATOR) — 30 commands, 13 states"
 
-    **Type IDs:** `589824`, `589826` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:DoorLockIOComponent` | **Profiles:** `StatefulDoorLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `589824`, `589826` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:DoorLockIOComponent` | **Profiles:** `StatefulDoorLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Data Properties**
 
@@ -2708,7 +3058,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "DoorLock/WindowLock (ACTUATOR) — 22 commands, 11 states"
 
-    **Type IDs:** `590080`, `590090` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:WindowLockIOComponent` | **Profiles:** `StatefulWindowLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `590080`, `590090` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:WindowLockIOComponent` | **Profiles:** `StatefulWindowLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Data Properties**
 
@@ -2759,7 +3109,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "DoorLock/CarLock (ACTUATOR) — 22 commands, 10 states"
 
-    **Type IDs:** `590336` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:CarLockIOComponent` | **Profiles:** `StatefulCarLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `590336` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:CarLockIOComponent` | **Profiles:** `StatefulCarLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -2867,7 +3217,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 0 commands, 12 states"
 
-    **Type IDs:** `1442060` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:TotalElectricalEnergyConsumptionSensor` | **Profiles:** `ElectricEnergyConsumption`
+    **Type IDs:** `1442060` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:TotalElectricalEnergyConsumptionSensor` | **Profiles:** `ElectricEnergyConsumption`
 
     **States**
 
@@ -2888,7 +3238,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorHeatingSystem/DimmerExteriorHeating (ACTUATOR) — 28 commands, 13 states"
 
-    **Type IDs:** `1376258` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:ExteriorHeatingIOComponent` | **Profiles:** `StatefulLevelControlHeating`, `StatefulLevelControl`, `LevelControl`, `Switchable`
+    **Type IDs:** `1376258` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:ExteriorHeatingIOComponent` | **Profiles:** `StatefulLevelControlHeating`, `StatefulLevelControl`, `LevelControl`, `Switchable`
 
     **Data Properties**
 
@@ -2947,7 +3297,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorHeatingSystem/DiscreteExteriorHeating (ACTUATOR) — 24 commands, 12 states"
 
-    **Type IDs:** `1391106` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:DiscreteExteriorHeatingIOComponent` | **Profiles:** `StatefulSwitchableHeating`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `1391106` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:DiscreteExteriorHeatingIOComponent` | **Profiles:** `StatefulSwitchableHeating`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -3108,7 +3458,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorScreen/PositionableScreen (ACTUATOR) — 36 commands, 18 states"
 
-    **Type IDs:** `196608`, `196610` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:VerticalExteriorAwningIOComponent` | **Profiles:** `StatefulDeployableVerticalAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulCloseable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `196608`, `196610` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:VerticalExteriorAwningIOComponent` | **Profiles:** `StatefulDeployableVerticalAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulCloseable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -3180,7 +3530,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorScreen/PositionableScreen (ACTUATOR) — 33 commands, 17 states"
 
-    **Type IDs:** `196609` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:VerticalExteriorAwningVeluxIOComponent` | **Profiles:** `StatefulDeployableVerticalAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulCloseable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `196609` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:VerticalExteriorAwningVeluxIOComponent` | **Profiles:** `StatefulDeployableVerticalAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulCloseable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -3382,7 +3732,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorVenetianBlind/PositionableExteriorVenetianBlind (ACTUATOR) — 38 commands, 19 states"
 
-    **Type IDs:** `1114112` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:ExteriorVenetianBlindIOComponent` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
+    **Type IDs:** `1114112` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:ExteriorVenetianBlindIOComponent` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
 
     **Data Properties**
 
@@ -3529,7 +3879,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GarageDoor/PositionableGarageDoor (ACTUATOR) — 28 commands, 13 states"
 
-    **Type IDs:** `327680`, `327682` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:GarageOpenerIOComponent` | **Profiles:** `StatefulCloseableGarageOpener`, `StatefulCloseable`, `Closeable`, `OpenClose`
+    **Type IDs:** `327680`, `327682` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:GarageOpenerIOComponent` | **Profiles:** `StatefulCloseableGarageOpener`, `StatefulCloseable`, `Closeable`, `OpenClose`
 
     **Data Properties**
 
@@ -3588,7 +3938,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GarageDoor/DiscretePositionableGarageDoor (ACTUATOR) — 27 commands, 12 states"
 
-    **Type IDs:** `342528`, `342530` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:DiscreteGarageOpenerIOComponent` | **Profiles:** `OpenCloseGarageOpener`, `OpenClose`
+    **Type IDs:** `342528`, `342530` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:DiscreteGarageOpenerIOComponent` | **Profiles:** `OpenCloseGarageOpener`, `OpenClose`
 
     **Data Properties**
 
@@ -3645,7 +3995,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GarageDoor/PositionableGarageDoor (ACTUATOR) — 26 commands, 13 states"
 
-    **Type IDs:** `524288`, `524290` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:RollingDoorOpenerIOComponent` | **Profiles:** `StatefulCloseableSlidingDoor`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `524288`, `524290` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:RollingDoorOpenerIOComponent` | **Profiles:** `StatefulCloseableSlidingDoor`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -3866,7 +4216,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Gate/PositionableGateWithPedestrianPosition (ACTUATOR) — 30 commands, 14 states"
 
-    **Type IDs:** `458752`, `458754` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:GateOpenerIOComponent` | **Profiles:** `StatefulCloseableGateOpener`, `StatefulCloseable`, `Closeable`, `OpenClose`
+    **Type IDs:** `458752`, `458754` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:GateOpenerIOComponent` | **Profiles:** `StatefulCloseableGateOpener`, `StatefulCloseable`, `Closeable`, `OpenClose`
 
     **Data Properties**
 
@@ -3928,7 +4278,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Gate/SlidingDiscreteGateWithPedestrianPosition (ACTUATOR) — 27 commands, 13 states"
 
-    **Type IDs:** `473600`, `473602` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:SlidingDiscreteGateOpenerIOComponent` | **Profiles:** `OpenCloseSlidingGateOpener`, `OpenClose`
+    **Type IDs:** `473600`, `473602` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:SlidingDiscreteGateOpenerIOComponent` | **Profiles:** `OpenCloseSlidingGateOpener`, `OpenClose`
 
     **Data Properties**
 
@@ -4100,7 +4450,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/IOGeneric (ACTUATOR) — 16 commands, 9 states"
 
-    **Type IDs:** `0`, `1179648`, `1245184`, `1376256`, `1572864`, `1573120` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:UnknownIOComponent` | **Profiles:** `StatefulLevelControl`, `LevelControl`, `Generic`
+    **Type IDs:** `0`, `1179648`, `1245184`, `1376256`, `1572864`, `1573120` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:UnknownIOComponent` | **Profiles:** `StatefulLevelControl`, `LevelControl`, `Generic`
 
     **Data Properties**
 
@@ -4143,7 +4493,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatPumpSystem/HeatPump (ACTUATOR) — 27 commands, 18 states"
 
-    **Type IDs:** `1441792` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:HeatPumpIOComponent` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`
+    **Type IDs:** `1441792` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:HeatPumpIOComponent` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`
 
     **Data Properties**
 
@@ -4206,7 +4556,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/KizOThermBridge (ACTUATOR) — 17 commands, 15 states"
 
-    **Type IDs:** `267` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:KizOThermIOComponent` | **Profiles:** `DHWThermostatTargetReader`
+    **Type IDs:** `267` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:KizOThermIOComponent` | **Profiles:** `DHWThermostatTargetReader`
 
     **Data Properties**
 
@@ -4256,7 +4606,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/HeatingTemperatureInterface (ACTUATOR) — 31 commands, 18 states"
 
-    **Type IDs:** `917504` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:HeatingTemperatureInterfaceIOComponent` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`
+    **Type IDs:** `917504` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:HeatingTemperatureInterfaceIOComponent` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`
 
     **Data Properties**
 
@@ -4323,7 +4673,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/AtlanticPassAPCHeatPump (ACTUATOR) — 41 commands, 39 states"
 
-    **Type IDs:** `1442060` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCHeatPumpMainComponent` | **Profiles:** `Specific`
+    **Type IDs:** `1442060` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCHeatPumpMainComponent` | **Profiles:** `Specific`
 
     **Data Properties**
 
@@ -4421,7 +4771,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/AtlanticPassAPCHeatingAndCoolingZone (ACTUATOR) — 28 commands, 22 states"
 
-    **Type IDs:** `1442060` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCHeatingAndCoolingZoneComponent` | **Profiles:** `ThermostatTargetReader`
+    **Type IDs:** `1442060` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCHeatingAndCoolingZoneComponent` | **Profiles:** `ThermostatTargetReader`
 
     **Commands**
 
@@ -4485,7 +4835,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/AtlanticPassAPCBoiler (ACTUATOR) — 38 commands, 38 states"
 
-    **Type IDs:** `1442316` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCBoilerMainComponent` | **Profiles:** `Specific`
+    **Type IDs:** `1442316` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCBoilerMainComponent` | **Profiles:** `Specific`
 
     **Data Properties**
 
@@ -4579,7 +4929,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/AtlanticPassAPCHeatingZone (ACTUATOR) — 19 commands, 15 states"
 
-    **Type IDs:** `1442316` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCHeatingZoneComponent` | **Profiles:** `ThermostatTargetReader`
+    **Type IDs:** `1442316` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCHeatingZoneComponent` | **Profiles:** `ThermostatTargetReader`
 
     **Commands**
 
@@ -4627,7 +4977,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/AtlanticPassAPCZoneControl (ACTUATOR) — 37 commands, 30 states"
 
-    **Type IDs:** `1835020` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCZoneControlMainComponent` | **Profiles:** `Specific`
+    **Type IDs:** `1835020` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCZoneControlMainComponent` | **Profiles:** `Specific`
 
     **Data Properties**
 
@@ -4712,7 +5062,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/AtlanticPassAPCHeatingAndCoolingZone (ACTUATOR) — 35 commands, 26 states"
 
-    **Type IDs:** `1835020` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCZoneControlZoneComponent` | **Profiles:** `StatefulCoolingThermostat`, `CoolingThermostat`, `StatefulDualThermostat`, `DualThermostat`, `ThermostatTargetReader`
+    **Type IDs:** `1835020` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCZoneControlZoneComponent` | **Profiles:** `StatefulCoolingThermostat`, `CoolingThermostat`, `StatefulDualThermostat`, `DualThermostat`, `ThermostatTargetReader`
 
     **Commands**
 
@@ -4787,7 +5137,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerLight (ACTUATOR) — 33 commands, 15 states"
 
-    **Type IDs:** `393216`, `393218` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:DimmableLightIOComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `393216`, `393218` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:DimmableLightIOComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -4853,7 +5203,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerRGBColouredLight (ACTUATOR) — 35 commands, 18 states"
 
-    **Type IDs:** `393472`, `393474` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:DimmableRGBLightIOComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `393472`, `393474` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:DimmableRGBLightIOComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -4924,7 +5274,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerColorTemperatureLight (ACTUATOR) — 34 commands, 16 states"
 
-    **Type IDs:** `393730` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:DimmableColorTemperatureLightIOComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `393730` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:DimmableColorTemperatureLightIOComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -4992,7 +5342,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/StatefulOnOffLight (ACTUATOR) — 26 commands, 12 states"
 
-    **Type IDs:** `408064`, `408066`, `2199023663618` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:OnOffLightIOComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `408064`, `408066`, `2199023663618` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:OnOffLightIOComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -5048,7 +5398,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/TimedOnOffLight (ACTUATOR) — 29 commands, 15 states"
 
-    **Type IDs:** `983554` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:LightMicroModuleSomfyIOComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `983554` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:LightMicroModuleSomfyIOComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -5110,7 +5460,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerLight (ACTUATOR) — 35 commands, 14 states"
 
-    **Type IDs:** `2199023648770` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:DimmableLightMicroModuleSomfyIOComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `2199023648770` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:DimmableLightMicroModuleSomfyIOComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -5549,7 +5899,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 20 commands, 9 states"
 
-    **Type IDs:** `983040` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:OnOffIOComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `983040` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:OnOffIOComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -5596,7 +5946,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/TimedOnOff (ACTUATOR) — 20 commands, 9 states"
 
-    **Type IDs:** `983552` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:SwitchMicroModuleIOComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `983552` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:SwitchMicroModuleIOComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -5643,7 +5993,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pergola/PergolaHorizontalAwning (ACTUATOR) — 36 commands, 17 states"
 
-    **Type IDs:** `1048832`, `1048834` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:PergolaRailGuidedAwningIOComponent` | **Profiles:** `StatefulSlidingPergola`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `1048832`, `1048834` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:PergolaRailGuidedAwningIOComponent` | **Profiles:** `StatefulSlidingPergola`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -5782,7 +6132,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/PositionableRollerShutter (ACTUATOR) — 34 commands, 17 states"
 
-    **Type IDs:** `131072`, `131074` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:RollerShutterGenericIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `131072`, `131074` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:RollerShutterGenericIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -5851,7 +6201,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/PositionableTiltedRollerShutter (ACTUATOR) — 29 commands, 13 states"
 
-    **Type IDs:** `131073` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:RollerShutterVeluxIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `131073` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:RollerShutterVeluxIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -5911,7 +6261,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/PositionableProjectionRollerShutter (ACTUATOR) — 29 commands, 13 states"
 
-    **Type IDs:** `131584` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:ProjectionRollerShutterIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `131584` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:ProjectionRollerShutterIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -5971,7 +6321,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/PositionableDualRollerShutter (ACTUATOR) — 43 commands, 16 states"
 
-    **Type IDs:** `851968` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:DualRollerShutterIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `851968` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:DualRollerShutterIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -6114,7 +6464,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Screen/PositionableScreen (ACTUATOR) — 33 commands, 17 states"
 
-    **Type IDs:** `655360`, `655362` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:VerticalInteriorBlindGenericIOComponent` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `655360`, `655362` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:VerticalInteriorBlindGenericIOComponent` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -6182,7 +6532,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Screen/PositionableTiltedScreen (ACTUATOR) — 26 commands, 12 states"
 
-    **Type IDs:** `655361` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:VerticalInteriorBlindVeluxIOComponent` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `655361` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:VerticalInteriorBlindVeluxIOComponent` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -6303,7 +6653,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "SwimmingPool (ACTUATOR) — 19 commands, 9 states"
 
-    **Type IDs:** `393471` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:SwimmingPoolIOComponent` | **Profiles:** `SwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `393471` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:SwimmingPoolIOComponent` | **Profiles:** `SwitchableLight`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -6349,7 +6699,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "SwingingShutter (ACTUATOR) — 30 commands, 15 states"
 
-    **Type IDs:** `1572866` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:SwingingShutterSomfyIOComponent` | **Profiles:** `StatefulCloseableSwingingShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `1572866` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:SwingingShutterSomfyIOComponent` | **Profiles:** `StatefulCloseableSwingingShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -6412,7 +6762,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "SwingingShutter (ACTUATOR) — 27 commands, 13 states"
 
-    **Type IDs:** `1587714` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:DiscreteSwingingShutterSomfyIOComponent` | **Profiles:** `StatefulOpenCloseSwingingShutter`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `1587714` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:DiscreteSwingingShutterSomfyIOComponent` | **Profiles:** `StatefulOpenCloseSwingingShutter`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -6585,7 +6935,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "TemperatureSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `267`, `1442060`, `1442316`, `1835020` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:KizOThermRoomTemperatureSensor` | **Profiles:** `Temperature`
+    **Type IDs:** `267`, `1442060`, `1442316`, `1835020` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:KizOThermRoomTemperatureSensor` | **Profiles:** `Temperature`
 
     **States**
 
@@ -6596,7 +6946,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VenetianBlind/PositionableVenetianBlind (ACTUATOR) — 28 commands, 15 states"
 
-    **Type IDs:** `65536` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:VenetianBlindIOComponent` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
+    **Type IDs:** `65536` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:VenetianBlindIOComponent` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
 
     **Data Properties**
 
@@ -6657,7 +7007,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VentilationSystem/VentilationInlet (ACTUATOR) — 18 commands, 11 states"
 
-    **Type IDs:** `1310720`, `1310976` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:VentilationPointIOComponent` | **Profiles:** `SwitchableVentilation`, `Switchable`
+    **Type IDs:** `1310720`, `1310976` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:VentilationPointIOComponent` | **Profiles:** `SwitchableVentilation`, `Switchable`
 
     **Data Properties**
 
@@ -6704,7 +7054,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VentilationSystem/VentilationTransfer (ACTUATOR) — 18 commands, 11 states"
 
-    **Type IDs:** `1311232` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:VentilationPointAirTransferIOComponent` | **Profiles:** `SwitchableVentilation`, `Switchable`
+    **Type IDs:** `1311232` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:VentilationPointAirTransferIOComponent` | **Profiles:** `SwitchableVentilation`, `Switchable`
 
     **Data Properties**
 
@@ -6751,7 +7101,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VentilationSystem/VentilationOutlet (ACTUATOR) — 18 commands, 12 states"
 
-    **Type IDs:** `1311488` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:VentilationPointAirOutletIOComponent` | **Profiles:** `SwitchableVentilation`, `AirOutputLevelSensor`, `Switchable`
+    **Type IDs:** `1311488` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:VentilationPointAirOutletIOComponent` | **Profiles:** `SwitchableVentilation`, `AirOutputLevelSensor`, `Switchable`
 
     **Data Properties**
 
@@ -6799,7 +7149,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterHeatingSystem/AtlanticPassAPCDHW (ACTUATOR) — 17 commands, 11 states"
 
-    **Type IDs:** `1442060`, `1442316` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCDHWComponent` | **Profiles:** `DHWThermostatTargetReader`
+    **Type IDs:** `1442060`, `1442316` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCDHWComponent` | **Profiles:** `DHWThermostatTargetReader`
 
     **Commands**
 
@@ -6841,7 +7191,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Window/PositionableWindow (ACTUATOR) — 19 commands, 10 states"
 
-    **Type IDs:** `262144` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:WindowOpenerGenericIOComponent` | **Profiles:** `StatefulCloseableWindow`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `262144` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:WindowOpenerGenericIOComponent` | **Profiles:** `StatefulCloseableWindow`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -6888,7 +7238,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Window/PositionableTiltedWindow (ACTUATOR) — 23 commands, 12 states"
 
-    **Type IDs:** `262145`, `262401` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:WindowOpenerVeluxIOComponent` | **Profiles:** `StatefulCloseableWindow`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `262145`, `262401` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:WindowOpenerVeluxIOComponent` | **Profiles:** `StatefulCloseableWindow`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -6941,7 +7291,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Window/PositionableSlidingWindow (ACTUATOR) — 25 commands, 11 states"
 
-    **Type IDs:** `1769472` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:PositionableSlidingWindowComponent` | **Profiles:** `StatefulCloseableSlidingWindow`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `1769472` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:PositionableSlidingWindowComponent` | **Profiles:** `StatefulCloseableSlidingWindow`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -6995,7 +7345,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Window/PositionableAndLockableSlidingWindow (ACTUATOR) — 37 commands, 20 states"
 
-    **Type IDs:** `1769730`, `2199025025282` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:PositionableAndLockableSlidingWindowComponent` | **Profiles:** `StatefulCloseableSlidingWindow`, `StatefulCloseable`, `Closeable`, `StatefulLock`, `LockStatus`, `Lock`, `OpenClose`
+    **Type IDs:** `1769730`, `2199025025282` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:PositionableAndLockableSlidingWindowComponent` | **Profiles:** `StatefulCloseableSlidingWindow`, `StatefulCloseable`, `Closeable`, `StatefulLock`, `LockStatus`, `Lock`, `OpenClose`
 
     **Data Properties**
 
@@ -7147,7 +7497,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Camera/JSWCamera (ACTUATOR) — 12 commands, 2 states"
 
-    **Type IDs:** `0` | **Servers:** `somfy_europe` | **Controllable:** `jsw:CameraController` | **Profiles:** `Specific`
+    **Type IDs:** `0` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `jsw:CameraController` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -7155,16 +7505,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `downloadRecordedFile` | INT | Allow to get an URL to download a recorded file p1: event time of a recorded file, obtained from listRecordedFiles command (The URL is returned asynchronously in a DownloadRecordedFileEvent) |
     | `listRecordedFiles` | INT; INT (optional) | List recorded files in a given time period p1: start_Time -> unix time format (UTC) p2: end_Time -> unix time format (UTC) - optional field (defaults to now) (The list is returned asynchronously in a ListRecordedFilesEvent) |
+    | `setPassword` | STRING (sensitive); STRING (sensitive) | Change the current password p1:old password p2:new password |
     | `connect` |  | Open a new session on the camera and return a session token (The token is returned asynchronously in a JSWConnectTokenObtainedEvent) |
     | `deleteRecordedFile` | INT | Delete an recorded file p1: event time of a recorded file, obtained from returning value of listRecordedFiles command |
     | `disconnect` | STRING | Close a camera session p1: token obtained by "connect" command (The session token is invalidated after using this command) |
     | `getSessionStatus` | STRING | Refresh the camera status state p1:token obtained by "connect" command |
     | `playJSWRecordedFile` | INT; STRING | Play a recorded file p1: event time of a recorded file, obtained from listRecordedFiles command p2: token obtained by "connect" command |
-    | `setPassword` | STRING (sensitive); STRING (sensitive) | Change the current password p1:old password p2:new password |
     | `startJSWLiveVideo` | STRING | Start a live video and get an URL for live streaming p1: token obtained by "connect" command |
     | `startJSWRecording` |  | Start recording a video. Uses a temporary session for 1 minute. |
-    | `stopJSWLiveVideo` | STRING | Stop live video streaming p1: token obtained by "connect" command, same token that was used for startJSWLiveVideoCommand |
     | `stopJSWPlayRecordedFile` | STRING | Stop playing a recorded file p1: token obtained by "connect" command, same token that was used for playJSWRecordedFileCommand |
+    | `stopJSWLiveVideo` | STRING | Stop live video streaming p1: token obtained by "connect" command, same token that was used for startJSWLiveVideoCommand |
 
     **States**
 
@@ -7174,13 +7524,939 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `TotalMemoryState` | ContinuousState |  |  |
 
 
+## KNX
+
+50 device types.
+
+??? note "AirSensor/CO2Sensor (SENSOR) — 1 commands, 1 states"
+
+    **Type IDs:** `562949953427201` | **Servers:** `rexel` | **Controllable:** `knx:CO2SensorKNXComponent` | **Profiles:** `CO2Concentration`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `ping` |  | Check if device is available |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `CO2ConcentrationState` | ContinuousState |  |  |
+
+??? note "Alarm/AlarmZoneController (ACTUATOR) — 6 commands, 2 states"
+
+    **Type IDs:** `562949953423619` | **Servers:** `rexel` | **Controllable:** `knx:AlarmZoneKNXComponent` | **Profiles:** `StatefulAlarm`, `Alarm`, `StatefulSwitchable`, `Switchable`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `arm` |  | Arm the system |
+    | `disarm` |  | Disarm the system |
+    | `off` |  | Turn off the device |
+    | `on` |  | Turn on the device |
+    | `ping` |  | Check if device is available |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ArmedState` | DataState |  |  |
+    | `OnOffState` | DiscreteState | on, off |  |
+
+??? note "Alarm/AlarmZoneStatusSensor (SENSOR) — 1 commands, 2 states"
+
+    **Type IDs:** `562949953426435` | **Servers:** `rexel` | **Controllable:** `knx:AlarmZoneStatusSensorKNXComponent` | **Profiles:** `AlarmStatus`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `ping` |  | Check if device is available |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ActiveModeState` | DiscreteState | active, inactive |  |
+    | `ArmedState` | DataState |  |  |
+
+??? note "Awning/DiscreteAwning (ACTUATOR) — 6 commands, 0 states"
+
+    **Type IDs:** `562949953423874` | **Servers:** `rexel` | **Controllable:** `knx:DiscreteAwningKNXComponent` | **Profiles:** `DeployUndeployAwning`, `DeployUndeploy`, `OpenClose`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `close` |  | Fully close the device |
+    | `deploy` |  | Fully deploy the device |
+    | `open` |  | Fully open the device |
+    | `ping` |  | Check if device is available |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+    | `undeploy` |  | Fully undeploy the device |
+
+??? note "Awning/PositionableHorizontalAwning (ACTUATOR) — 8 commands, 2 states"
+
+    **Type IDs:** `562949953424130` | **Servers:** `rexel` | **Controllable:** `knx:PositionableAwningKNXComponent` | **Profiles:** `DeployableAwning`, `Deployable`, `DeployUndeploy`, `StatefulCloseable`, `StatefulOpenClose`, `OpenClose`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `close` |  | Fully close the device |
+    | `deploy` |  | Fully deploy the device |
+    | `open` |  | Fully open the device |
+    | `ping` |  | Check if device is available |
+    | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+    | `undeploy` |  | Fully undeploy the device |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ClosureState` | ContinuousState | [0..100] |  |
+    | `OpenClosedState` | DiscreteState | open, closed |  |
+
+??? note "CircuitBreaker (ACTUATOR) — 4 commands, 1 states"
+
+    **Type IDs:** `562949953430273` | **Servers:** `rexel` | **Controllable:** `knx:CircuitBreakerKNXComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `off` |  | Turn off the device |
+    | `on` |  | Turn on the device |
+    | `ping` |  | Check if device is available |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `OnOffState` | DiscreteState | on, off |  |
+
+??? note "Door/OpenCloseDoorOpener (ACTUATOR) — 4 commands, 0 states"
+
+    **Type IDs:** `562949953423877` | **Servers:** `rexel` | **Controllable:** `knx:DiscreteDoorOpenerKNXComponent` | **Profiles:** `OpenCloseSlidingDoor`, `OpenClose`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `close` |  | Fully close the device |
+    | `open` |  | Fully open the device |
+    | `ping` |  | Check if device is available |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+
+??? note "Door/PositionableDoorOpener (ACTUATOR) — 6 commands, 2 states"
+
+    **Type IDs:** `562949953424133` | **Servers:** `rexel` | **Controllable:** `knx:PositionableDoorOpenerKNXComponent` | **Profiles:** `StatefulCloseableSlidingDoor`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `close` |  | Fully close the device |
+    | `open` |  | Fully open the device |
+    | `ping` |  | Check if device is available |
+    | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ClosureState` | ContinuousState | [0..100] |  |
+    | `OpenClosedState` | DiscreteState | open, closed |  |
+
+??? note "Door/CyclicDoorOpener (ACTUATOR) — 2 commands, 0 states"
+
+    **Type IDs:** `562949953428228` | **Servers:** `rexel` | **Controllable:** `knx:CyclicDoorOpenerKNXComponent` | **Profiles:** `CyclicSlidingDoor`, `Cyclic`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `cycle` |  | Do a cycle of supported motion kinematics or modes |
+    | `ping` |  | Check if device is available |
+
+??? note "ElectricitySensor/MultiMeterElectricSensor (SENSOR) — 3 commands, 29 states"
+
+    **Type IDs:** `562949953427969`, `562949953427971` | **Servers:** `rexel` | **Controllable:** `knx:ElectricityCounterInWAmpVoltKNXComponent` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `ping` |  | Check if device is available |
+    | `requestSendingCounterStatus` |  |  |
+    | `resetPartialCounter` |  |  |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ConsumptionAllTariffState` | ContinuousState |  |  |
+    | `ConsumptionTariff0State` | ContinuousState |  |  |
+    | `ConsumptionTariff10State` | ContinuousState |  |  |
+    | `ConsumptionTariff1State` | ContinuousState |  |  |
+    | `ConsumptionTariff2State` | ContinuousState |  |  |
+    | `ConsumptionTariff3State` | ContinuousState |  |  |
+    | `ConsumptionTariff4State` | ContinuousState |  |  |
+    | `ConsumptionTariff5State` | ContinuousState |  |  |
+    | `ConsumptionTariff6State` | ContinuousState |  |  |
+    | `ConsumptionTariff7State` | ContinuousState |  |  |
+    | `ConsumptionTariff8State` | ContinuousState |  |  |
+    | `ConsumptionTariff9State` | ContinuousState |  |  |
+    | `ElectricCurrentState` | ContinuousState |  |  |
+    | `ElectricEnergyConsumptionState` | ContinuousState |  |  |
+    | `ElectricPowerConsumptionState` | ContinuousState |  |  |
+    | `ElectricVoltageState` | ContinuousState |  |  |
+    | `PartialConsumptionAllTariffState` | ContinuousState |  |  |
+    | `PartialConsumptionTariff0State` | ContinuousState |  |  |
+    | `PartialConsumptionTariff10State` | ContinuousState |  |  |
+    | `PartialConsumptionTariff1State` | ContinuousState |  |  |
+    | `PartialConsumptionTariff2State` | ContinuousState |  |  |
+    | `PartialConsumptionTariff3State` | ContinuousState |  |  |
+    | `PartialConsumptionTariff4State` | ContinuousState |  |  |
+    | `PartialConsumptionTariff5State` | ContinuousState |  |  |
+    | `PartialConsumptionTariff6State` | ContinuousState |  |  |
+    | `PartialConsumptionTariff7State` | ContinuousState |  |  |
+    | `PartialConsumptionTariff8State` | ContinuousState |  |  |
+    | `PartialConsumptionTariff9State` | ContinuousState |  |  |
+    | `PartialElectricEnergyConsumptionState` | ContinuousState |  |  |
+
+??? note "ElectricitySensor/ElectricityTariffData (SENSOR) — 1 commands, 3 states"
+
+    **Type IDs:** `562949953427969`, `562949953427970`, `562949953427971`, `562949953427972` | **Servers:** `rexel` | **Controllable:** `knx:ElectricityTariffDataKNXComponent` | **Profiles:** `Specific`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `ping` |  | Check if device is available |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `CurrentTariffNumberState` | DataState |  |  |
+    | `NextTariffDelayState` | DataState |  |  |
+    | `NextTariffNumberState` | DataState |  |  |
+
+??? note "ElectricitySensor/MultiMeterElectricSensor (SENSOR) — 3 commands, 5 states"
+
+    **Type IDs:** `562949953427970` | **Servers:** `rexel` | **Controllable:** `knx:ElectricityCounterInKWMilliAmpMilliVoltKNXComponent` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `ping` |  | Check if device is available |
+    | `requestSendingCounterStatus` |  |  |
+    | `resetPartialCounter` |  |  |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ElectricCurrentState` | ContinuousState |  |  |
+    | `ElectricEnergyConsumptionState` | ContinuousState |  |  |
+    | `ElectricPowerConsumptionState` | ContinuousState |  |  |
+    | `ElectricVoltageState` | ContinuousState |  |  |
+    | `PartialElectricEnergyConsumptionState` | ContinuousState |  |  |
+
+??? note "GarageDoor/DiscretePositionableGarageDoor (ACTUATOR) — 4 commands, 0 states"
+
+    **Type IDs:** `562949953423875` | **Servers:** `rexel` | **Controllable:** `knx:DiscreteGarageOpenerKNXComponent` | **Profiles:** `OpenCloseGarageOpener`, `OpenClose`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `close` |  | Fully close the device |
+    | `open` |  | Fully open the device |
+    | `ping` |  | Check if device is available |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+
+??? note "GarageDoor/PositionableGarageDoor (ACTUATOR) — 6 commands, 2 states"
+
+    **Type IDs:** `562949953424131` | **Servers:** `rexel` | **Controllable:** `knx:PositionableGarageOpenerKNXComponent` | **Profiles:** `StatefulCloseableGarageOpener`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `close` |  | Fully close the device |
+    | `open` |  | Fully open the device |
+    | `ping` |  | Check if device is available |
+    | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ClosureState` | ContinuousState | [0..100] |  |
+    | `OpenClosedState` | DiscreteState | open, closed |  |
+
+??? note "GarageDoor/CyclicGarageDoor (ACTUATOR) — 2 commands, 0 states"
+
+    **Type IDs:** `562949953428226` | **Servers:** `rexel` | **Controllable:** `knx:CyclicGarageOpenerKNXComponent` | **Profiles:** `CyclicGarageOpener`, `Cyclic`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `cycle` |  | Do a cycle of supported motion kinematics or modes |
+    | `ping` |  | Check if device is available |
+
+??? note "Gate/DiscretePositionableGate (ACTUATOR) — 4 commands, 0 states"
+
+    **Type IDs:** `562949953423876` | **Servers:** `rexel` | **Controllable:** `knx:DiscreteGateOpenerKNXComponent` | **Profiles:** `OpenCloseGateOpener`, `OpenClose`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `close` |  | Fully close the device |
+    | `open` |  | Fully open the device |
+    | `ping` |  | Check if device is available |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+
+??? note "Gate/PositionableGate (ACTUATOR) — 6 commands, 2 states"
+
+    **Type IDs:** `562949953424132` | **Servers:** `rexel` | **Controllable:** `knx:PositionableGateOpenerKNXComponent` | **Profiles:** `StatefulCloseableGateOpener`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `close` |  | Fully close the device |
+    | `open` |  | Fully open the device |
+    | `ping` |  | Check if device is available |
+    | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ClosureState` | ContinuousState | [0..100] |  |
+    | `OpenClosedState` | DiscreteState | open, closed |  |
+
+??? note "Gate/CyclicGate (ACTUATOR) — 2 commands, 0 states"
+
+    **Type IDs:** `562949953428227` | **Servers:** `rexel` | **Controllable:** `knx:CyclicGateOpenerKNXComponent` | **Profiles:** `CyclicGateOpener`, `Cyclic`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `cycle` |  | Do a cycle of supported motion kinematics or modes |
+    | `ping` |  | Check if device is available |
+
+??? note "Generic/StatefulOnOff (ACTUATOR) — 4 commands, 1 states"
+
+    **Type IDs:** `562949953423617` | **Servers:** `rexel` | **Controllable:** `knx:Generic1BitKNXComponent` | **Profiles:** `StatefulSwitchable`, `Switchable`, `Generic`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `off` |  | Turn off the device |
+    | `on` |  | Turn on the device |
+    | `ping` |  | Check if device is available |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `OnOffState` | DiscreteState | on, off |  |
+
+??? note "Generic/PushButton (ACTUATOR) — 2 commands, 0 states"
+
+    **Type IDs:** `562949953428225` | **Servers:** `rexel` | **Controllable:** `knx:GenericPushButtonKNXComponent` | **Profiles:** `Cyclic`, `Generic`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `cycle` |  | Do a cycle of supported motion kinematics or modes |
+    | `ping` |  | Check if device is available |
+
+??? note "GenericSensor/OnOffSensor (SENSOR) — 1 commands, 1 states"
+
+    **Type IDs:** `562949953426433`, `562949953426434` | **Servers:** `rexel` | **Controllable:** `knx:Generic1BitSensorKNXComponent` | **Profiles:** `Specific`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `ping` |  | Check if device is available |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `BooleanState` | DiscreteState | false, true |  |
+
+??? note "HeatingSystem/WallHeatingTemperatureInterface (ACTUATOR) — 4 commands, 3 states"
+
+    **Type IDs:** `562949953425409`, `562949953425410` | **Servers:** `rexel` | **Controllable:** `knx:WallHeatingTemperatureInterfaceKNXComponent` | **Profiles:** `StatefulThermostat`, `Thermostat`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `ping` |  | Check if device is available |
+    | `setTargetTemperature` | FLOAT [0.0..100.0]; STRING: eco, secured, comfort, halted, antifrost | Set the new air temperature to reach |
+    | `setHVACMode` | STRING: auto, comfort, standby, economy, buildingProtection | Set a HVAC mode |
+    | `setHeatingOrCoolingMode` | ANY |  |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
+    | `HVACModeState` | DiscreteState | auto, buildingProtection, comfort, economy, standby |  |
+    | `HeatingOrCoolingModeState` | DiscreteState | cooling, heating |  |
+
+??? note "HeatingSystem/HeatingTemperatureInterfaceSyncoRoom (ACTUATOR) — 5 commands, 4 states"
+
+    **Type IDs:** `562949953430017` | **Servers:** `rexel` | **Controllable:** `knx:RoomTemperatureSetpointsKNXComponent` | **Profiles:** `Specific`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `ping` |  | Check if device is available |
+    | `setComfortTargetTemperature` | FLOAT [0.0..100.0] | Define the temperature for the comfort mode |
+    | `setEcoTargetTemperature` | FLOAT [0.0..100.0] | Define the temperature for the eco mode |
+    | `setPrecomfortTargetTemperature` | FLOAT [0.0..100.0] | Define the temperature for the  precomfort mode |
+    | `setHVACMode` | STRING: auto, comfort, standby, economy, buildingProtection | Set a HVAC mode |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ComfortTargetTemperatureState` | ContinuousState |  |  |
+    | `EcoTargetTemperatureState` | ContinuousState |  |  |
+    | `PrecomfortTargetTemperatureState` | ContinuousState |  |  |
+    | `HVACModeState` | DiscreteState | auto, buildingProtection, comfort, economy, standby |  |
+
+??? note "HeatingSystem/HVACController (ACTUATOR) — 2 commands, 1 states"
+
+    **Type IDs:** `562949953430018` | **Servers:** `rexel` | **Controllable:** `knx:HVACInterfaceKNXComponent` | **Profiles:** `Specific`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `ping` |  | Check if device is available |
+    | `setHVACMode` | STRING: auto, comfort, standby, economy, buildingProtection | Set a HVAC mode |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `HVACModeState` | DiscreteState | auto, buildingProtection, comfort, economy, standby |  |
+
+??? note "HumiditySensor/RelativeHumiditySensor (SENSOR) — 1 commands, 1 states"
+
+    **Type IDs:** `562949953427457` | **Servers:** `rexel` | **Controllable:** `knx:HumiditySensorKNXComponent` | **Profiles:** `RelativeHumidity`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `ping` |  | Check if device is available |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `RelativeHumidityState` | ContinuousState | [0.0..100.0] |  |
+
+??? note "Light/StatefulOnOffLight (ACTUATOR) — 4 commands, 1 states"
+
+    **Type IDs:** `562949953421569`, `562949953422081` | **Servers:** `rexel` | **Controllable:** `knx:OnOffLightKNXComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `off` |  | Turn off the device |
+    | `on` |  | Turn on the device |
+    | `ping` |  | Check if device is available |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `OnOffState` | DiscreteState | on, off |  |
+
+??? note "Light/DimmerLight (ACTUATOR) — 5 commands, 2 states"
+
+    **Type IDs:** `562949953422337` | **Servers:** `rexel` | **Controllable:** `knx:DimmableLightKNXComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `off` |  | Turn off the device |
+    | `on` |  | Turn on the device |
+    | `ping` |  | Check if device is available |
+    | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off) |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `LightIntensityState` | ContinuousState | [0..100] |  |
+    | `OnOffState` | DiscreteState | on, off |  |
+
+??? note "Light/DimmerColouredLight (ACTUATOR) — 6 commands, 2 states"
+
+    **Type IDs:** `562949953422593` | **Servers:** `rexel` | **Controllable:** `knx:DimmableColouredLightKNXComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `off` |  | Turn off the device |
+    | `on` |  | Turn on the device |
+    | `ping` |  | Check if device is available |
+    | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off) |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+    | `setRGB` | INT [0..255]; INT [0..255]; INT [0..255] | Set the Red,Green,Blue components of the lamp color |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `LightIntensityState` | ContinuousState | [0..100] |  |
+    | `OnOffState` | DiscreteState | on, off |  |
+
+??? note "Light/DimmerRGBColouredLight (ACTUATOR) — 8 commands, 5 states"
+
+    **Type IDs:** `562949953422849` | **Servers:** `rexel` | **Controllable:** `knx:DimmableRGBColouredLightKNXComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `off` |  | Turn off the device |
+    | `on` |  | Turn on the device |
+    | `ping` |  | Check if device is available |
+    | `setBlueColorIntensity` | ANY |  |
+    | `setGreenColorIntensity` | ANY |  |
+    | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off) |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+    | `setRedColorIntensity` | ANY |  |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `BlueColorIntensityState` | ContinuousState |  |  |
+    | `GreenColorIntensityState` | ContinuousState |  |  |
+    | `LightIntensityState` | ContinuousState | [0..100] |  |
+    | `OnOffState` | DiscreteState | on, off |  |
+    | `RedColorIntensityState` | ContinuousState |  |  |
+
+??? note "Light/DimmerRGBWColouredLight (ACTUATOR) — 9 commands, 6 states"
+
+    **Type IDs:** `562949953422850` | **Servers:** `rexel` | **Controllable:** `knx:DimmableRGBWColouredLightKNXComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `off` |  | Turn off the device |
+    | `on` |  | Turn on the device |
+    | `ping` |  | Check if device is available |
+    | `setBlueColorIntensity` | ANY |  |
+    | `setGreenColorIntensity` | ANY |  |
+    | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off) |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+    | `setRedColorIntensity` | ANY |  |
+    | `setWhiteColorIntensity` | ANY |  |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `BlueColorIntensityState` | ContinuousState |  |  |
+    | `GreenColorIntensityState` | ContinuousState |  |  |
+    | `LightIntensityState` | ContinuousState | [0..100] |  |
+    | `OnOffState` | DiscreteState | on, off |  |
+    | `RedColorIntensityState` | ContinuousState |  |  |
+    | `WhiteColorIntensityState` | ContinuousState |  |  |
+
+??? note "LightSensor/LuminanceSensor (SENSOR) — 1 commands, 1 states"
+
+    **Type IDs:** `562949953421825`, `562949953427713` | **Servers:** `rexel` | **Controllable:** `knx:LightSensorKNXComponent` | **Profiles:** `Luminance`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `ping` |  | Check if device is available |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `LuminanceState` | ContinuousState |  |  |
+
+??? note "OnOff/StatefulOnOff (ACTUATOR) — 4 commands, 1 states"
+
+    **Type IDs:** `562949953423105` | **Servers:** `rexel` | **Controllable:** `knx:OnOffKNXComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `off` |  | Turn off the device |
+    | `on` |  | Turn on the device |
+    | `ping` |  | Check if device is available |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `OnOffState` | DiscreteState | on, off |  |
+
+??? note "RainSensor/RainAlarmSensor (SENSOR) — 1 commands, 2 states"
+
+    **Type IDs:** `562949953427713`, `562949953428481` | **Servers:** `rexel` | **Controllable:** `knx:RainSensorKNXComponent` | **Profiles:** `RainDetector`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `ping` |  | Check if device is available |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `RainAlarmState` | DiscreteState | alarm, noAlarm |  |
+    | `RainState` | DiscreteState | detected, notDetected |  |
+
+??? note "RemoteController/OnOffRemotecontroller (REMOTE_CONTROLLER) — 1 commands, 1 states"
+
+    **Type IDs:** `562949953428737` | **Servers:** `rexel` | **Controllable:** `knx:OnOffKNXRemoteController` | **Profiles:** `OnOffButton`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `ping` |  | Check if device is available |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `OnOffButtonState` | DiscreteState | on, off |  |
+
+??? note "RemoteController/ScenarioTrigger (REMOTE_CONTROLLER) — 1 commands, 2 states"
+
+    **Type IDs:** `562949953429761` | **Servers:** `rexel` | **Controllable:** `knx:ScenarioTrigger` | **Profiles:** `PushButtonSensor`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `ping` |  | Check if device is available |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `BooleanState` | DiscreteState | false, true |  |
+    | `ButtonState` | DiscreteState | pressed, released, shortPressed |  |
+
+??? note "RollerShutter/UpDownRollerShutter (ACTUATOR) — 6 commands, 0 states"
+
+    **Type IDs:** `562949953423873` | **Servers:** `rexel` | **Controllable:** `knx:BasicRollerShutterKNXComponent` | **Profiles:** `OpenCloseShutter`, `OpenClose`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `close` |  | Fully close the device |
+    | `down` |  | Move the device completely down |
+    | `open` |  | Fully open the device |
+    | `ping` |  | Check if device is available |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+    | `up` |  | Move the device completely up |
+
+??? note "RollerShutter/PositionableRollerShutter (ACTUATOR) — 8 commands, 2 states"
+
+    **Type IDs:** `562949953424129` | **Servers:** `rexel` | **Controllable:** `knx:RollerShutterGenericKNXComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `close` |  | Fully close the device |
+    | `down` |  | Move the device completely down |
+    | `open` |  | Fully open the device |
+    | `ping` |  | Check if device is available |
+    | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+    | `up` |  | Move the device completely up |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ClosureState` | ContinuousState | [0..100] |  |
+    | `OpenClosedState` | DiscreteState | open, closed |  |
+
+??? note "Scene (ACTUATOR) — 2 commands, 0 states"
+
+    **Type IDs:** `281474976710657` | **Servers:** `rexel` | **Controllable:** `knx:SceneKNXComponent` | **Profiles:** `SceneController`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `activate` |  | Activate a scene or pre-defined scenario |
+    | `learn` |  |  |
+
+??? note "SwingingShutter/CyclicSwingingShutter (ACTUATOR) — 2 commands, 0 states"
+
+    **Type IDs:** `562949953428229` | **Servers:** `rexel` | **Controllable:** `knx:CyclicSwingingShutterKNXComponent` | **Profiles:** `SwingingCyclicShutter`, `Cyclic`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `cycle` |  | Do a cycle of supported motion kinematics or modes |
+    | `ping` |  | Check if device is available |
+
+??? note "Switch/StatefulOnOffSwitch (ACTUATOR) — 4 commands, 0 states"
+
+    **Type IDs:** `562949953423361` | **Servers:** `rexel` | **Controllable:** `knx:OnOffSwitchKNXComponent` | **Profiles:** `SwitchablePlug`, `Switchable`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `off` |  | Turn off the device |
+    | `on` |  | Turn on the device |
+    | `ping` |  | Check if device is available |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+
+??? note "TemperatureSensor (SENSOR) — 1 commands, 1 states"
+
+    **Type IDs:** `562949953425409`, `562949953425410`, `562949953426945`, `562949953427713`, `562949953430017`, `562949953430019` | **Servers:** `rexel` | **Controllable:** `knx:TemperatureSensorKNXComponent` | **Profiles:** `Temperature`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `ping` |  | Check if device is available |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
+
+??? note "Timer/StartStopTimer (ACTUATOR) — 3 commands, 1 states"
+
+    **Type IDs:** `562949953429249` | **Servers:** `rexel` | **Controllable:** `knx:StartStopTimerKNXComponent` | **Profiles:** `StatefulStartStopTimer`, `StatefulStartStop`, `StartStop`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `ping` |  | Check if device is available |
+    | `start` |  | Start the default actuator behavior (movement, sound or timer) |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `StartedStoppedState` | DiscreteState | started, stopped |  |
+
+??? note "Timer/StartTimer (ACTUATOR) — 2 commands, 1 states"
+
+    **Type IDs:** `562949953429505` | **Servers:** `rexel` | **Controllable:** `knx:StartTimerKNXComponent` | **Profiles:** `StatefulStartableTimer`, `StatefulStartable`, `Startable`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `ping` |  | Check if device is available |
+    | `start` |  | Start the default actuator behavior (movement, sound or timer) |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `StartedStoppedState` | DiscreteState | started, stopped |  |
+
+??? note "VenetianBlind/PositionableVenetianBlind (ACTUATOR) — 8 commands, 3 states"
+
+    **Type IDs:** `562949953424385` | **Servers:** `rexel` | **Controllable:** `knx:GenericVenetianBlindKNXComponent` | **Profiles:** `StatefulOrientableShutter`, `StatefulOrientablePlusCloseable`, `OrientablePlusCloseable`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `close` |  | Fully close the device |
+    | `down` |  | Move the device completely down |
+    | `open` |  | Fully open the device |
+    | `ping` |  | Check if device is available |
+    | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setOrientation` | INT [0..100] | Set the relative orientation (0-100%) of the device slats |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+    | `up` |  | Move the device completely up |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ClosureState` | ContinuousState | [0..100] |  |
+    | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `SlateOrientationState` | ContinuousState | [0..100] |  |
+
+??? note "VenetianBlind/PositionableVenetianBlind (ACTUATOR) — 6 commands, 3 states"
+
+    **Type IDs:** `562949953424386` | **Servers:** `rexel` | **Controllable:** `knx:PergolaKNXComponent` | **Profiles:** `StatefulOrientablePlusCloseablePergola`, `StatefulOrientablePlusCloseable`, `OrientablePlusCloseable`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `close` |  | Fully close the device |
+    | `open` |  | Fully open the device |
+    | `ping` |  | Check if device is available |
+    | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setOrientation` | INT [0..100] | Set the relative orientation (0-100%) of the device slats |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ClosureState` | ContinuousState | [0..100] |  |
+    | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `SlateOrientationState` | ContinuousState | [0..100] |  |
+
+??? note "VentilationSystem/OnOffVentilationSpeed (ACTUATOR) — 4 commands, 1 states"
+
+    **Type IDs:** `562949953428993` | **Servers:** `rexel` | **Controllable:** `knx:OnOffVentilationSpeedKNXComponent` | **Profiles:** `StatefulSwitchableVentilation`, `StatefulSwitchable`, `Switchable`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `off` |  | Turn off the device |
+    | `on` |  | Turn on the device |
+    | `ping` |  | Check if device is available |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `OnOffState` | DiscreteState | on, off |  |
+
+??? note "WaterHeatingSystem/DomesticHotWaterTank (ACTUATOR) — 4 commands, 1 states"
+
+    **Type IDs:** `562949953423618` | **Servers:** `rexel` | **Controllable:** `knx:DomesticHotWaterTankKNXComponent` | **Profiles:** `StatefulSwitchableHeating`, `StatefulSwitchable`, `Switchable`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `off` |  | Turn off the device |
+    | `on` |  | Turn on the device |
+    | `ping` |  | Check if device is available |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `OnOffState` | DiscreteState | on, off |  |
+
+??? note "WaterHeatingSystem/DomesticHotWaterSyncoLiving (ACTUATOR) — 4 commands, 2 states"
+
+    **Type IDs:** `562949953430019` | **Servers:** `rexel` | **Controllable:** `knx:DomesticHotWaterControlKNXComponent` | **Profiles:** `StatefulThermostat`, `Thermostat`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `ping` |  | Check if device is available |
+    | `setTargetTemperature` | FLOAT [0.0..100.0]; STRING: eco, secured, comfort, halted, antifrost | Set the new air temperature to reach |
+    | `setDHWMMode` | STRING: auto, frostprotection, legionellaprotection, normal, reduced | Set a DHWM mode |
+    | `setForceHeating` |  | Set the force heating mode |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
+    | `DHWMModeState` | DiscreteState | auto, frostprotection, legionellaprotection, normal, reduced |  |
+
+??? note "WindSensor/WindSpeedSensor (SENSOR) — 1 commands, 1 states"
+
+    **Type IDs:** `562949953426689`, `562949953427713` | **Servers:** `rexel` | **Controllable:** `knx:WindSensorKNXComponent` | **Profiles:** `WindSpeed`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `ping` |  | Check if device is available |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `WindSpeedState` | ContinuousState |  |  |
+
+??? note "Window/CyclicTiltedWindow (ACTUATOR) — 2 commands, 0 states"
+
+    **Type IDs:** `562949953428230` | **Servers:** `rexel` | **Controllable:** `knx:CyclicTiltedWindowKNXComponent` | **Profiles:** `CyclicWindow`, `Cyclic`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `cycle` |  | Do a cycle of supported motion kinematics or modes |
+    | `ping` |  | Check if device is available |
+
+
 ## MODBUS
 
 12 device types.
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `14` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:YutakiV2SpaceCoolingElectricalEnergyConsumptionComponent` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `14` | **Servers:** `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `modbus:YutakiV2SpaceCoolingElectricalEnergyConsumptionComponent` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
 
     **States**
 
@@ -7191,7 +8467,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/HitachiThermostat (SENSOR) — 0 commands, 1 states"
 
-    **Type IDs:** `12`, `14` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:YutakiRoomThermostatZone1Component` | **Profiles:** `Specific`
+    **Type IDs:** `12`, `14` | **Servers:** `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `modbus:YutakiRoomThermostatZone1Component` | **Profiles:** `Specific`
 
     **States**
 
@@ -7201,7 +8477,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiAirToWaterMainComponent (ACTUATOR) — 41 commands, 67 states"
 
-    **Type IDs:** `12`, `14` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:YutakiMainComponent` | **Profiles:** `Specific`
+    **Type IDs:** `12`, `14` | **Servers:** `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `modbus:YutakiMainComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -7323,7 +8599,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiAirToWaterHeatingZone (ACTUATOR) — 24 commands, 17 states"
 
-    **Type IDs:** `12` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:YutakiZone1Component` | **Profiles:** `Specific`
+    **Type IDs:** `12` | **Servers:** `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `modbus:YutakiZone1Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -7378,7 +8654,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiAirToWaterHeatingZone (ACTUATOR) — 24 commands, 17 states"
 
-    **Type IDs:** `12` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:YutakiZone2Component` | **Profiles:** `Specific`
+    **Type IDs:** `12` | **Servers:** `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `modbus:YutakiZone2Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -7433,7 +8709,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiDHW (ACTUATOR) — 16 commands, 13 states"
 
-    **Type IDs:** `12` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:YutakiDHWTComponent` | **Profiles:** `DHWTemperature`
+    **Type IDs:** `12` | **Servers:** `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `modbus:YutakiDHWTComponent` | **Profiles:** `DHWTemperature`
 
     **Commands**
 
@@ -7476,7 +8752,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiSwimmingPool (ACTUATOR) — 7 commands, 6 states"
 
-    **Type IDs:** `12`, `14` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:YutakiSwimmingPoolComponent` | **Profiles:** `Specific`
+    **Type IDs:** `12`, `14` | **Servers:** `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `modbus:YutakiSwimmingPoolComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -7503,7 +8779,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiAirToWaterHeatingZone (ACTUATOR) — 26 commands, 19 states"
 
-    **Type IDs:** `14` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:YutakiV2Zone1Component` | **Profiles:** `Specific`
+    **Type IDs:** `14` | **Servers:** `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `modbus:YutakiV2Zone1Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -7562,7 +8838,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiAirToWaterHeatingZone (ACTUATOR) — 26 commands, 19 states"
 
-    **Type IDs:** `14` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:YutakiV2Zone2Component` | **Profiles:** `Specific`
+    **Type IDs:** `14` | **Servers:** `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `modbus:YutakiV2Zone2Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -7621,7 +8897,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiDHW (ACTUATOR) — 18 commands, 15 states"
 
-    **Type IDs:** `14` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:YutakiV2DHWTComponent` | **Profiles:** `DHWTemperature`
+    **Type IDs:** `14` | **Servers:** `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `modbus:YutakiV2DHWTComponent` | **Profiles:** `DHWTemperature`
 
     **Commands**
 
@@ -7668,7 +8944,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "unknown (ACTUATOR) — 54 commands, 40 states"
 
-    **Type IDs:** `11` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:DeDietrichGatewayComponent` | **Profiles:** `Specific`
+    **Type IDs:** `11` | **Servers:** `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `modbus:DeDietrichGatewayComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -7776,7 +9052,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "unknown (ACTUATOR) — 177 commands, 119 states"
 
-    **Type IDs:** `13` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:FlaktWoodsRS485Component` | **Profiles:** `Specific`
+    **Type IDs:** `13` | **Servers:** `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `modbus:FlaktWoodsRS485Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -8399,7 +9675,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Alarm/MyFoxAlarmController (ACTUATOR) — 5 commands, 4 states"
 
-    **Type IDs:** `1`, `2`, `38` | **Servers:** `somfy_europe` | **Controllable:** `myfox:AlarmController` | **Profiles:** `Alarm`
+    **Type IDs:** `1`, `2`, `38` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `myfox:AlarmController` | **Profiles:** `Alarm`
 
     **Commands**
 
@@ -8422,7 +9698,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Alarm/MyFoxAlarmController (ACTUATOR) — 6 commands, 5 states"
 
-    **Type IDs:** `103` | **Servers:** `somfy_europe` | **Controllable:** `myfox:SomfyProtectAlarmController` | **Profiles:** `Alarm`, `IntrusionDetector`
+    **Type IDs:** `103` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `myfox:SomfyProtectAlarmController` | **Profiles:** `Alarm`, `IntrusionDetector`
 
     **Commands**
 
@@ -8447,7 +9723,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Camera/MyFoxCamera (ACTUATOR) — 3 commands, 1 states"
 
-    **Type IDs:** `26` | **Servers:** `somfy_europe` | **Controllable:** `myfox:CameraController` | **Profiles:** `PictureCamera`
+    **Type IDs:** `26` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `myfox:CameraController` | **Profiles:** `PictureCamera`
 
     **Commands**
 
@@ -8465,11 +9741,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Camera/MyFoxSecurityCamera (ACTUATOR) — 0 commands, 0 states"
 
-    **Type IDs:** `63` | **Servers:** `somfy_europe` | **Controllable:** `myfox:SecurityCameraController` | **Profiles:** `Specific`
+    **Type IDs:** `63` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `myfox:SecurityCameraController` | **Profiles:** `Specific`
 
 ??? note "Camera/MyFoxSecurityCamera (ACTUATOR) — 6 commands, 4 states"
 
-    **Type IDs:** `100`, `101`, `104`, `105`, `111` | **Servers:** `somfy_europe` | **Controllable:** `myfox:SomfyProtectSecurityCameraController` | **Profiles:** `OpenCloseCameraShutter`, `BasicOpenClose`
+    **Type IDs:** `100`, `101`, `104`, `105`, `111` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `myfox:SomfyProtectSecurityCameraController` | **Profiles:** `OpenCloseCameraShutter`, `BasicOpenClose`
 
     **Commands**
 
@@ -8493,7 +9769,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Camera/MyFoxSecurityCamera (ACTUATOR) — 6 commands, 5 states"
 
-    **Type IDs:** `102` | **Servers:** `somfy_europe` | **Controllable:** `myfox:SomfyOnePlusCameraController` | **Profiles:** `OpenCloseCameraShutter`, `BasicOpenClose`
+    **Type IDs:** `102` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `myfox:SomfyOnePlusCameraController` | **Profiles:** `OpenCloseCameraShutter`, `BasicOpenClose`
 
     **Commands**
 
@@ -8518,7 +9794,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ContactSensor (SENSOR) — 1 commands, 3 states"
 
-    **Type IDs:** `112` | **Servers:** `somfy_europe` | **Controllable:** `myfox:SomfyProtectDoor` | **Profiles:** `DoorContactSensor`, `ContactDetector`
+    **Type IDs:** `112` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `myfox:SomfyProtectDoor` | **Profiles:** `DoorContactSensor`, `ContactDetector`
 
     **Commands**
 
@@ -8536,7 +9812,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "DoorLock (ACTUATOR) — 3 commands, 4 states"
 
-    **Type IDs:** `112` | **Servers:** `somfy_europe` | **Controllable:** `myfox:SomfyProtectDoorLock` | **Profiles:** `StatefulDoorLock`, `StatefulLock`, `LockStatus`, `Lock`
+    **Type IDs:** `112` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `myfox:SomfyProtectDoorLock` | **Profiles:** `StatefulDoorLock`, `StatefulLock`, `LockStatus`, `Lock`
 
     **Commands**
 
@@ -8557,7 +9833,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/StatefulOnOffLight (ACTUATOR) — 5 commands, 2 states"
 
-    **Type IDs:** `105`, `111` | **Servers:** `somfy_europe` | **Controllable:** `myfox:LightController` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `105`, `111` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `myfox:LightController` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -8577,13 +9853,133 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `StatusState` | DiscreteState | available, unavailable |  |
 
 
+## NEST
+
+4 device types.
+
+??? note "ConfigurationComponent/NestStructureConfiguration (ACTUATOR) — 4 commands, 1 states"
+
+    **Type IDs:** `2` | **Servers:** `rexel` | **Controllable:** `nest:NestConfigurationStructureController` | **Profiles:** `OccupancyDetector`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `noPersonInside` |  | Set that end-user is not around the device |
+    | `personInside` |  | Set that end-user is around the device |
+    | `refreshOccupancy` |  | Refresh occupancy state |
+    | `setOccupancy` | STRING: noPersonInside, personInside | Set if end-user is around the device or not |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `OccupancyState` | DiscreteState | personInside, noPersonInside |  |
+
+??? note "HeatingSystem/NestHeatingTemperatureInterface (ACTUATOR) — 17 commands, 32 states"
+
+    **Type IDs:** `1` | **Servers:** `rexel` | **Controllable:** `nest:NestThermostatController` | **Profiles:** `OperatingModeHeating`, `ThermostatTargetReader`, `LockStatus`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `refreshLockedUnlocked` |  | Refresh locked/unlocked state |
+    | `refreshMaximumTargetTemperature` |  | Refresh the maximum target temperature value |
+    | `refreshMinimumTargetTemperature` |  | Refresh the minimum target temperature value. |
+    | `refreshOperatingMode` |  | Refresh an operating mode. |
+    | `refreshTargetTemperature` |  | Refresh the temperature value |
+    | `setOperatingMode` | STRING: heat, cool, eco, off, heat-cool | Set an operating mode |
+    | `setTargetTemperature` | FLOAT [9.0..32.0] | Target temperature, in half degrees (0.5°C) |
+    | `refreshFanTimerActive` |  | Refresh fan timer active |
+    | `refreshFanTimerDuration` |  | Refresh fan timer duration |
+    | `refreshLabel` |  | Refresh label |
+    | `refreshTemperatureUnit` |  | Refresh temperature unit |
+    | `setFanTimerActive` | STRING: true, false | Indicates if the fan timer is engaged |
+    | `setFanTimerDuration` | INT: 15, 30, 45, 60, 120 | Specifies the length of time (in minutes) that the fan is set to run |
+    | `setLabel` | STRING | Thermostat custom label |
+    | `setMaximumTargetTemperature` | FLOAT [9.0..32.0] | Maximum target temperature, in half degrees (0.5°C) |
+    | `setMinimumTargetTemperature` | FLOAT [9.0..32.0] | Minimum target temperature, in half degrees (0.5°C) |
+    | `setTemperatureUnit` | STRING: fahrenheit, celsius | Set the unit temperature. |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ActiveFanState` | DiscreteState | false, true |  |
+    | `ConnectivityState` | DiscreteState | offline, online |  |
+    | `CoolActiveState` | DiscreteState | false, true |  |
+    | `EnergySavingTemperatureState` | DiscreteState | false, true |  |
+    | `HeatActiveState` | DiscreteState | false, true |  |
+    | `IdentifierState` | DataState |  |  |
+    | `LabelState` | DataState |  |  |
+    | `LastDeviceConnectionState` | DataState |  |  |
+    | `LocaleState` | DataState |  |  |
+    | `LockedUnlockedState` | DiscreteState | locked, unlocked |  |
+    | `MaximumEcoHeatingTargetTemperatureState` | ContinuousState |  |  |
+    | `MaximumTargetTemperatureState` | ContinuousState |  |  |
+    | `MinimumEcoHeatingTargetTemperatureState` | ContinuousState |  |  |
+    | `MinimumTargetTemperatureState` | ContinuousState |  |  |
+    | `NameState` | DataState |  |  |
+    | `PreviousOperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection, manual, max, normal, off, on, program |  |
+    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
+    | `TemperatureUnitState` | ContinuousState |  |  |
+    | `VersionState` | ContinuousState |  |  |
+    | `NestEffectiveOperatingModeState` | ContinuousState |  |  |
+    | `NestEmergencyHeatActiveState` | DiscreteState | false, true |  |
+    | `NestFanTimerActiveState` | DiscreteState | false, true |  |
+    | `NestFanTimerDurationState` | ContinuousState |  |  |
+    | `NestFanTimerTimeoutState` | ContinuousState |  |  |
+    | `NestLongNameState` | ContinuousState |  |  |
+    | `NestMaximumLockedTemperatureState` | ContinuousState |  |  |
+    | `NestMinimumLockedTemperatureState` | ContinuousState |  |  |
+    | `NestOperatingModeState` | ContinuousState |  |  |
+    | `NestSunlightCorrectionActiveState` | DiscreteState | false, true |  |
+    | `NestSunlightCorrectionEnabledState` | DiscreteState | false, true |  |
+    | `NestTimeToTemperatureState` | ContinuousState |  |  |
+    | `NestTimeToTemperatureTrainingState` | ContinuousState |  |  |
+
+??? note "HumiditySensor/RelativeHumiditySensor (SENSOR) — 1 commands, 1 states"
+
+    **Type IDs:** `1` | **Servers:** `rexel` | **Controllable:** `nest:NestThermostatHumiditySensor` | **Profiles:** `RelativeHumidity`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `refreshRelativeHumidity` |  | Refresh the last measured relative humidity |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `RelativeHumidityState` | ContinuousState | [0.0..100.0] |  |
+
+??? note "TemperatureSensor (SENSOR) — 1 commands, 2 states"
+
+    **Type IDs:** `1` | **Servers:** `rexel` | **Controllable:** `nest:NestThermostatTemperatureSensor` | **Profiles:** `Temperature`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `refreshAmbientTemperature` |  | Refresh Ambient Temperature |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `AmbientTemperatureState` | ContinuousState |  |  |
+    | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
+
+
 ## NETATMO
 
 36 device types.
 
 ??? note "AirSensor/AirQualitySensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `4448` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:AirQualityComponent` | **Profiles:** `Specific`
+    **Type IDs:** `4448` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:AirQualityComponent` | **Profiles:** `Specific`
 
     **States**
 
@@ -8594,7 +9990,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Camera (ACTUATOR) — 0 commands, 7 states"
 
-    **Type IDs:** `257`, `513` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:WelcomeCameraController` | **Profiles:** `CardReader`
+    **Type IDs:** `257`, `513` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:WelcomeCameraController` | **Profiles:** `CardReader`
 
     **States**
 
@@ -8610,7 +10006,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Camera (ACTUATOR) — 0 commands, 8 states"
 
-    **Type IDs:** `258`, `514` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:PresenceCameraController` | **Profiles:** `CardReader`
+    **Type IDs:** `258`, `514` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:PresenceCameraController` | **Profiles:** `CardReader`
 
     **States**
 
@@ -8627,7 +10023,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "CarbonDioxideSensor/CO2Sensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `4448`, `8192`, `8196` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:CO2Component` | **Profiles:** `CO2Concentration`
+    **Type IDs:** `4448`, `8192`, `8196` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:CO2Component` | **Profiles:** `CO2Concentration`
 
     **States**
 
@@ -8638,7 +10034,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "CircuitBreaker (ACTUATOR) — 6 commands, 8 states"
 
-    **Type IDs:** `4361`, `4393` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:CircuitBreakerComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `4361`, `4393` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:CircuitBreakerComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -8666,7 +10062,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "CircuitBreaker/CircuitBreakerPeakAndOffPeak (ACTUATOR) — 4 commands, 8 states"
 
-    **Type IDs:** `4377`, `4409` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:CircuitBreakerPeakAndOffPeakHoursComponent` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`
+    **Type IDs:** `4377`, `4409` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:CircuitBreakerPeakAndOffPeakHoursComponent` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`
 
     **Commands**
 
@@ -8692,7 +10088,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConfigurationComponent/NetatmoHome (ACTUATOR) — 10 commands, 8 states"
 
-    **Type IDs:** `1` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:HomeController` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`
+    **Type IDs:** `1` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:HomeController` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`
 
     **Commands**
 
@@ -8724,7 +10120,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConfigurationComponent/NetatmoHomeCoachConfiguration (SENSOR) — 1 commands, 8 states"
 
-    **Type IDs:** `4448`, `8192` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:HomeCoachConfigurationComponent` | **Profiles:** `Specific`
+    **Type IDs:** `4448`, `8192` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:HomeCoachConfigurationComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -8747,7 +10143,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConfigurationComponent/NetatmoConfigurationComponent (SENSOR) — 0 commands, 9 states"
 
-    **Type IDs:** `8193`, `8194`, `8195`, `8196` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:ConfigurationComponent` | **Profiles:** `Specific`
+    **Type IDs:** `8193`, `8194`, `8195`, `8196` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:ConfigurationComponent` | **Profiles:** `Specific`
 
     **States**
 
@@ -8765,7 +10161,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 1 commands, 1 states"
 
-    **Type IDs:** `4098`, `4099` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:NetatmoThermostatElectricalConsumptionSensor` | **Profiles:** `Specific`
+    **Type IDs:** `4098`, `4099` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:NetatmoThermostatElectricalConsumptionSensor` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -8781,7 +10177,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 0 commands, 3 states"
 
-    **Type IDs:** `4358`, `4359`, `4360`, `4361`, `4366`, `4376`, `4392`, `4408`, `4424`, `4377`, `4393`, `4409`, `4425`, `4441` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:ElectricEnergyConsumptionSensor` | **Profiles:** `ElectricPowerMeter`
+    **Type IDs:** `4358`, `4359`, `4360`, `4361`, `4366`, `4376`, `4392`, `4408`, `4424`, `4377`, `4393`, `4409`, `4425`, `4441` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:ElectricEnergyConsumptionSensor` | **Profiles:** `ElectricPowerMeter`
 
     **States**
 
@@ -8793,7 +10189,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/NetatmoHeatingTemperatureInterface (ACTUATOR) — 6 commands, 14 states"
 
-    **Type IDs:** `259`, `515` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:NetatmoThermostatController` | **Profiles:** `ThermostatTargetReader`
+    **Type IDs:** `259`, `515` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:NetatmoThermostatController` | **Profiles:** `ThermostatTargetReader`
 
     **Commands**
 
@@ -8801,9 +10197,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `refreshState` |  | Refresh the device states |
     | `cancelNetatmoDerogatedTargetTemperature` |  | Cancel the derogated temperature of the room |
-    | `refreshAllThermostatStates` |  | Refresh all states of the thermostat. @deprecated : use refreshState instead. |
     | `setNetatmoDerogatedTargetRoomTemperature` | FLOAT [5.0..30.0]; INT (optional) | p1: target temperature in Celsius p2: endTime in seconds. Must be greater than currentTime |
     | `setNetatmoDerogatedTimeTargetRoomTemperature` | FLOAT [5.0..30.0]; INT (optional) | Set the derogated temperature in half degrees (0.5°C) of the room and when this new temperature has to end. p1 : The temperature in half degrees (0.5°C) p2 : The duration of the derogation in minute |
+    | `refreshAllThermostatStates` |  | Refresh all states of the thermostat. @deprecated : use refreshState instead. |
     | `setNetatmoOperatingMode` | STRING: program, away, frostprotection, off, max; INT (optional) | p1: operating mode p2: endTime in seconds. Must be greater than currentTime |
 
     **States**
@@ -8827,7 +10223,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/NetatmoHeatingTemperatureInterface (ACTUATOR) — 6 commands, 13 states"
 
-    **Type IDs:** `4097`, `4100` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:NetatmoRoomController` | **Profiles:** `StatefulCoolingThermostat`, `CoolingThermostat`, `StatefulOperatingModeHeating`, `OperatingModeHeating`, `StatefulThermostat`, `Thermostat`
+    **Type IDs:** `4097`, `4100` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:NetatmoRoomController` | **Profiles:** `StatefulCoolingThermostat`, `CoolingThermostat`, `StatefulOperatingModeHeating`, `OperatingModeHeating`, `StatefulThermostat`, `Thermostat`
 
     **Commands**
 
@@ -8860,7 +10256,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/NetatmoHeatingTemperatureInterface (ACTUATOR) — 3 commands, 8 states"
 
-    **Type IDs:** `4098` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:MullerFPNRoomController` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`, `StatefulThermostat`, `Thermostat`
+    **Type IDs:** `4098` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:MullerFPNRoomController` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`, `StatefulThermostat`, `Thermostat`
 
     **Commands**
 
@@ -8885,7 +10281,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/NetatmoHeatingTemperatureInterface (ACTUATOR) — 3 commands, 6 states"
 
-    **Type IDs:** `4099` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:MullerFP4RoomController` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`
+    **Type IDs:** `4099` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:MullerFP4RoomController` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`
 
     **Commands**
 
@@ -8908,7 +10304,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/NetatmoHeatingTemperatureInterface (ACTUATOR) — 1 commands, 10 states"
 
-    **Type IDs:** `4353` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:ThermostatComponent` | **Profiles:** `BatteryStatus`
+    **Type IDs:** `4353` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:ThermostatComponent` | **Profiles:** `BatteryStatus`
 
     **Commands**
 
@@ -8933,7 +10329,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 1 commands, 8 states"
 
-    **Type IDs:** `4357` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:ValveComponent` | **Profiles:** `BatteryStatus`
+    **Type IDs:** `4357` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:ValveComponent` | **Profiles:** `BatteryStatus`
 
     **Commands**
 
@@ -8956,7 +10352,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/NetatmoHeatingTemperatureInterface (ACTUATOR) — 1 commands, 7 states"
 
-    **Type IDs:** `4367` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:ThermostatHeatingCoolingComponent` | **Profiles:** `Specific`
+    **Type IDs:** `4367` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:ThermostatHeatingCoolingComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -8978,7 +10374,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/NetatmoHeatingTemperatureInterface (ACTUATOR) — 1 commands, 7 states"
 
-    **Type IDs:** `4368` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:ModulatingThermostatComponent` | **Profiles:** `Specific`
+    **Type IDs:** `4368` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:ModulatingThermostatComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -9000,7 +10396,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/OnOffHeatingSystem (ACTUATOR) — 6 commands, 8 states"
 
-    **Type IDs:** `4376` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:OnOffHeatingSystemComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `4376` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:OnOffHeatingSystemComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -9028,7 +10424,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/OnOffHeatingSystemPilotWire (ACTUATOR) — 1 commands, 8 states"
 
-    **Type IDs:** `4424` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:OnOffHeatingSystemComponentWithPilotWire` | **Profiles:** `Specific`
+    **Type IDs:** `4424` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:OnOffHeatingSystemComponentWithPilotWire` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -9051,7 +10447,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HumiditySensor/RelativeHumiditySensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `4097`, `4100`, `4448`, `8192`, `8193`, `8196` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:NetatmoHumidityMeasurement` | **Profiles:** `RelativeHumidity`
+    **Type IDs:** `4097`, `4100`, `4448`, `8192`, `8193`, `8196` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:NetatmoHumidityMeasurement` | **Profiles:** `RelativeHumidity`
 
     **States**
 
@@ -9062,7 +10458,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/StatefulOnOffLight (ACTUATOR) — 6 commands, 8 states"
 
-    **Type IDs:** `4358` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:OnOffLightComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `4358` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:OnOffLightComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -9090,7 +10486,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerLight (ACTUATOR) — 17 commands, 15 states"
 
-    **Type IDs:** `4359` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:DimmerLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `4359` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:DimmerLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -9136,7 +10532,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "NoiseSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `4448`, `8192` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:NoiseComponent` | **Profiles:** `Specific`
+    **Type IDs:** `4448`, `8192` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:NoiseComponent` | **Profiles:** `Specific`
 
     **States**
 
@@ -9147,7 +10543,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 6 commands, 8 states"
 
-    **Type IDs:** `4360`, `4392` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:OnOffSwitchComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `4360`, `4392` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:OnOffSwitchComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -9175,7 +10571,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ProtocolGateway/NetatmoGateway (PROTOCOL_GATEWAY) — 1 commands, 8 states"
 
-    **Type IDs:** `4364` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:BridgeComponent` | **Profiles:** `Specific`
+    **Type IDs:** `4364` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:BridgeComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -9198,7 +10594,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ProtocolGateway/NetatmoGateway (PROTOCOL_GATEWAY) — 1 commands, 9 states"
 
-    **Type IDs:** `4365` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:ThermostatRelayComponent` | **Profiles:** `Specific`
+    **Type IDs:** `4365` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:ThermostatRelayComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -9222,7 +10618,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RainSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `8195` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:RainComponent` | **Profiles:** `RainDetector`
+    **Type IDs:** `8195` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:RainComponent` | **Profiles:** `RainDetector`
 
     **States**
 
@@ -9233,7 +10629,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RemoteController/RemoteControllerOneWay (REMOTE_CONTROLLER) — 1 commands, 8 states"
 
-    **Type IDs:** `4363` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:RemoteControllerComponent` | **Profiles:** `BatteryStatus`
+    **Type IDs:** `4363` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:RemoteControllerComponent` | **Profiles:** `BatteryStatus`
 
     **Commands**
 
@@ -9256,7 +10652,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/UpDownRollerShutter (ACTUATOR) — 8 commands, 10 states"
 
-    **Type IDs:** `4362` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:RollerShutterComponent` | **Profiles:** `UpDown`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `4362` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:RollerShutterComponent` | **Profiles:** `UpDown`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -9288,7 +10684,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "TemperatureSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `259`, `515`, `4097`, `4098`, `4100`, `4448`, `8192`, `8193`, `8196` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:NetatmoThermostatTemperatureSensor` | **Profiles:** `Temperature`
+    **Type IDs:** `259`, `515`, `4097`, `4098`, `4100`, `4448`, `8192`, `8193`, `8196` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:NetatmoThermostatTemperatureSensor` | **Profiles:** `Temperature`
 
     **States**
 
@@ -9299,7 +10695,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VentilationSystem/OnOffVentilationSpeed (ACTUATOR) — 2 commands, 8 states"
 
-    **Type IDs:** `4366` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:NetatmoControlledMechanicalVentilationController` | **Profiles:** `OnOffStatus`, `AirFanMode`
+    **Type IDs:** `4366` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:NetatmoControlledMechanicalVentilationController` | **Profiles:** `OnOffStatus`, `AirFanMode`
 
     **Commands**
 
@@ -9323,7 +10719,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterHeatingSystem/DomesticHotWaterProduction (ACTUATOR) — 6 commands, 8 states"
 
-    **Type IDs:** `4408`, `4425` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:OnOffDomesticHotWaterComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `4408`, `4425` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:OnOffDomesticHotWaterComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -9351,7 +10747,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterHeatingSystem/DomesticHotWaterProductionPeakAndOffPeak (ACTUATOR) — 4 commands, 8 states"
 
-    **Type IDs:** `4441` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:DomesticHotWaterPeakAndOffPeakHoursComponent` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`
+    **Type IDs:** `4441` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:DomesticHotWaterPeakAndOffPeakHoursComponent` | **Profiles:** `StatefulOperatingModeHeating`, `OperatingModeHeating`
 
     **Commands**
 
@@ -9377,7 +10773,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WindSensor/WindSpeedAndDirectionSensor (SENSOR) — 0 commands, 3 states"
 
-    **Type IDs:** `8194` | **Servers:** `somfy_europe` | **Controllable:** `netatmo:WindComponent` | **Profiles:** `WindSpeedAndDirection`, `WindDirection`, `WindSpeed`
+    **Type IDs:** `8194` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `netatmo:WindComponent` | **Profiles:** `WindSpeedAndDirection`, `WindDirection`, `WindSpeed`
 
     **States**
 
@@ -9390,11 +10786,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ## OGCP
 
-46 device types.
+47 device types.
 
 ??? note "AirSensor/DynamicAirSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `304` | **Servers:** `somfy_europe` | **Controllable:** `ogp:AirSensor` | **Profiles:** `CO2Concentration`
+    **Type IDs:** `304` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:AirSensor` | **Profiles:** `CO2Concentration`
 
     **Commands**
 
@@ -9441,7 +10837,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Alarm/DynamicAlarm (ACTUATOR) — 13 commands, 33 states"
 
-    **Type IDs:** `282` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Alarm` | **Profiles:** `SmokeDetector`, `IntrusionDetector`, `StatefulAlarm`, `Alarm`
+    **Type IDs:** `282` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Alarm` | **Profiles:** `SmokeDetector`, `IntrusionDetector`, `StatefulAlarm`, `Alarm`
 
     **Commands**
 
@@ -9501,7 +10897,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Awning/DynamicAwning (ACTUATOR) — 17 commands, 30 states"
 
-    **Type IDs:** `277` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Awning` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `StatefulDeployUndeploy`, `DeployUndeploy`
+    **Type IDs:** `277` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Awning` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `StatefulDeployUndeploy`, `DeployUndeploy`
 
     **Commands**
 
@@ -9562,7 +10958,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "CarbonDioxideSensor/DynamicCarbonDioxideSensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `291` | **Servers:** `somfy_europe` | **Controllable:** `ogp:CarbonDioxideSensor` | **Profiles:** `CO2Concentration`
+    **Type IDs:** `291` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:CarbonDioxideSensor` | **Profiles:** `CO2Concentration`
 
     **Commands**
 
@@ -9608,7 +11004,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "CircuitBreaker/DynamicCircuitBreaker (ACTUATOR) — 13 commands, 25 states"
 
-    **Type IDs:** `286` | **Servers:** `somfy_europe` | **Controllable:** `ogp:CircuitBreaker` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`, `Cyclic`
+    **Type IDs:** `286` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:CircuitBreaker` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`, `Cyclic`
 
     **Commands**
 
@@ -9660,7 +11056,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ContactSensor/DynamicOpeningSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `272` | **Servers:** `somfy_europe` | **Controllable:** `ogp:OpeningSensor` | **Profiles:** `WindowOpeningStatus`, `OpeningStatus`
+    **Type IDs:** `272` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:OpeningSensor` | **Profiles:** `WindowOpeningStatus`, `OpeningStatus`
 
     **Commands**
 
@@ -9707,7 +11103,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Curtain/DynamicCurtain (ACTUATOR) — 14 commands, 28 states"
 
-    **Type IDs:** `271` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Curtain` | **Profiles:** `StatefulCloseableCurtain`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `271` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Curtain` | **Profiles:** `StatefulCloseableCurtain`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -9763,7 +11159,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ElectricitySensor/DynamicElectricityConsumptionSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `293` | **Servers:** `somfy_europe` | **Controllable:** `ogp:ElectricityConsumptionSensor` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `293` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:ElectricityConsumptionSensor` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
 
     **Commands**
 
@@ -9810,7 +11206,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GarageDoor/DynamicGarageDoor (ACTUATOR) — 15 commands, 28 states"
 
-    **Type IDs:** `266` | **Servers:** `somfy_europe` | **Controllable:** `ogp:GarageDoor` | **Profiles:** `StatefulCloseableGarageOpener`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
+    **Type IDs:** `266` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:GarageDoor` | **Profiles:** `StatefulCloseableGarageOpener`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
 
     **Commands**
 
@@ -9867,7 +11263,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GasSensor/DynamicGasMeasurementSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `296` | **Servers:** `somfy_europe` | **Controllable:** `ogp:GasMeasurementSensor` | **Profiles:** `GasConsumption`
+    **Type IDs:** `296` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:GasMeasurementSensor` | **Profiles:** `GasConsumption`
 
     **Commands**
 
@@ -9914,7 +11310,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Gate/DynamicGate (ACTUATOR) — 15 commands, 28 states"
 
-    **Type IDs:** `265` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Gate` | **Profiles:** `StatefulCloseableGateOpener`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
+    **Type IDs:** `265` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Gate` | **Profiles:** `StatefulCloseableGateOpener`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
 
     **Commands**
 
@@ -9971,7 +11367,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/Untyped (ACTUATOR) — 3 commands, 4 states"
 
-    **Type IDs:** `16` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Untyped` | **Profiles:** `Specific`
+    **Type IDs:** `16` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Untyped` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -9992,7 +11388,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/DynamicThermostat (ACTUATOR) — 18 commands, 40 states"
 
-    **Type IDs:** `259` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Thermostat` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
+    **Type IDs:** `259` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Thermostat` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
 
     **Commands**
 
@@ -10064,7 +11460,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/DynamicHvacCentralUnit (ACTUATOR) — 20 commands, 41 states"
 
-    **Type IDs:** `269` | **Servers:** `somfy_europe` | **Controllable:** `ogp:HvacCentralUnit` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
+    **Type IDs:** `269` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:HvacCentralUnit` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
 
     **Commands**
 
@@ -10139,7 +11535,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/DynamicHeater (ACTUATOR) — 17 commands, 41 states"
 
-    **Type IDs:** `278` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Heater` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`
+    **Type IDs:** `278` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Heater` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`
 
     **Commands**
 
@@ -10211,7 +11607,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/DynamicHvacZone (ACTUATOR) — 18 commands, 43 states"
 
-    **Type IDs:** `289` | **Servers:** `somfy_europe` | **Controllable:** `ogp:HvacZone` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
+    **Type IDs:** `289` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:HvacZone` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
 
     **Commands**
 
@@ -10286,7 +11682,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HumiditySensor/DynamicHumiditySensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `276` | **Servers:** `somfy_europe` | **Controllable:** `ogp:HumiditySensor` | **Profiles:** `RelativeHumidity`
+    **Type IDs:** `276` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:HumiditySensor` | **Profiles:** `RelativeHumidity`
 
     **Commands**
 
@@ -10332,7 +11728,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "IntrusionSensor/DynamicIntrusionSensor (SENSOR) — 8 commands, 27 states"
 
-    **Type IDs:** `281` | **Servers:** `somfy_europe` | **Controllable:** `ogp:IntrusionSensor` | **Profiles:** `IntrusionDetector`
+    **Type IDs:** `281` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:IntrusionSensor` | **Profiles:** `IntrusionDetector`
 
     **Commands**
 
@@ -10381,7 +11777,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DynamicLight (ACTUATOR) — 20 commands, 32 states"
 
-    **Type IDs:** `257` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Light` | **Profiles:** `StatefulLightDimmer`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`, `Cyclic`
+    **Type IDs:** `257` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Light` | **Profiles:** `StatefulLightDimmer`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`, `Cyclic`
 
     **Commands**
 
@@ -10447,7 +11843,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "LightSensor/DynamicLightSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `273` | **Servers:** `somfy_europe` | **Controllable:** `ogp:LightSensor` | **Profiles:** `Luminance`
+    **Type IDs:** `273` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:LightSensor` | **Profiles:** `Luminance`
 
     **Commands**
 
@@ -10494,7 +11890,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "MusicPlayer/DynamicAudioPlayer (ACTUATOR) — 29 commands, 39 states"
 
-    **Type IDs:** `288` | **Servers:** `somfy_europe` | **Controllable:** `ogp:AudioPlayer` | **Profiles:** `StoppableMusicPlayer`, `MusicPlayer`, `StatefulStartStop`, `StartStop`, `VolumeControl`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `288` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:AudioPlayer` | **Profiles:** `StoppableMusicPlayer`, `MusicPlayer`, `StatefulStartStop`, `StartStop`, `VolumeControl`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -10576,7 +11972,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "NoiseSensor/DynamicAmbientNoiseSensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `305` | **Servers:** `somfy_europe` | **Controllable:** `ogp:AmbientNoiseSensor` | **Profiles:** `AmbientNoiseSensor`
+    **Type IDs:** `305` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:AmbientNoiseSensor` | **Profiles:** `AmbientNoiseSensor`
 
     **Commands**
 
@@ -10622,7 +12018,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OccupancySensor/DynamicOccupancySensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `280` | **Servers:** `somfy_europe` | **Controllable:** `ogp:OccupancySensor` | **Profiles:** `OccupancyDetector`
+    **Type IDs:** `280` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:OccupancySensor` | **Profiles:** `OccupancyDetector`
 
     **Commands**
 
@@ -10668,7 +12064,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/DynamicOutlet (ACTUATOR) — 16 commands, 29 states"
 
-    **Type IDs:** `261` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Outlet` | **Profiles:** `StatefulSwitchablePlug`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`, `Cyclic`
+    **Type IDs:** `261` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Outlet` | **Profiles:** `StatefulSwitchablePlug`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`, `Cyclic`
 
     **Commands**
 
@@ -10727,7 +12123,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Oven/DynamicOven (ACTUATOR) — 27 commands, 69 states"
 
-    **Type IDs:** `284` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Oven` | **Profiles:** `StatefulStartStopOven`, `StatefulStartStop`, `StartStop`, `StatefulThermostatWithSensor`, `StatefulLockWithOpeningStatus`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulDimmable`, `Dimmable`
+    **Type IDs:** `284` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Oven` | **Profiles:** `StatefulStartStopOven`, `StatefulStartStop`, `StartStop`, `StatefulThermostatWithSensor`, `StatefulLockWithOpeningStatus`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulDimmable`, `Dimmable`
 
     **Commands**
 
@@ -10837,7 +12233,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pergola/DynamicPergola (ACTUATOR) — 18 commands, 31 states"
 
-    **Type IDs:** `287` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Pergola` | **Profiles:** `StatefulOrientablePlusCloseablePergola`, `StatefulOrientablePlusCloseable`, `OrientablePlusCloseable`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `287` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Pergola` | **Profiles:** `StatefulOrientablePlusCloseablePergola`, `StatefulOrientablePlusCloseable`, `OrientablePlusCloseable`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -10900,7 +12296,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ProtocolGateway/DynamicBridge (ACTUATOR) — 15 commands, 26 states"
 
-    **Type IDs:** `1` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Bridge` | **Profiles:** `Specific`
+    **Type IDs:** `1` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Bridge` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -10912,7 +12308,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `getCandidates` |  | Discover all candidates available for association. |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `joinSetup` |  | Join an existing setup |
-    | `pair` | STRING; STRING (optional); STRING (optional) | Execute the pairing procedure p1: type (mandatory) p2: subType (mandatory if definition is set) p3: definition |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `reset` |  | Bring back into initial condition. |
     | `sendPrivate` | OBJECT | send a private command |
@@ -10921,6 +12316,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `shareSetup` |  | Share the current setup with another controller |
     | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
+    | `pair` | STRING; STRING (optional); STRING (optional) | Execute the pairing procedure p1: type (mandatory) p2: subType (mandatory if definition is set) p3: definition |
 
     **States**
 
@@ -10955,7 +12351,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ProtocolGateway/DynamicGateway (ACTUATOR) — 10 commands, 35 states"
 
-    **Type IDs:** `2` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Gateway` | **Profiles:** `Specific`
+    **Type IDs:** `2` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Gateway` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -11014,7 +12410,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RainSensor/DynamicRainSensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `275` | **Servers:** `somfy_europe` | **Controllable:** `ogp:RainSensor` | **Profiles:** `RainDetector`
+    **Type IDs:** `275` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:RainSensor` | **Profiles:** `RainDetector`
 
     **Commands**
 
@@ -11060,7 +12456,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Scene/DynamicScene (ACTUATOR) — 9 commands, 25 states"
 
-    **Type IDs:** `294` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Scene` | **Profiles:** `Specific`
+    **Type IDs:** `294` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Scene` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -11102,6 +12498,52 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private8State` | DataState |  |  |
     | `Private9State` | DataState |  |  |
     | `ReachedAliasesState` | DataState |  |  |
+    | `RemovableState` | DataState |  |  |
+    | `SignalQualityState` | ContinuousState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+
+??? note "SceneLauncherController/DynamicSceneLauncherController (REMOTE_CONTROLLER) — 7 commands, 25 states"
+
+    **Type IDs:** `292` | **Servers:** `rexel` | **Controllable:** `ogp:SceneLauncherController` | **Profiles:** `ScenarioTrigger`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `executeManufacturerProcedure` | STRING; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
+    | `sendPrivate` | OBJECT | send a private command |
+    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
+    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ActivePartitionState` | DataState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
+    | `BatteryLevelState` | ContinuousState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
+    | `ErrorState` | DataState |  |  |
+    | `ErrorsState` | DataState |  |  |
+    | `FirmwareHashState` | DataState |  |  |
+    | `FirmwareRevisionState` | DataState |  |  |
+    | `LaunchStatusState` | DiscreteState | launched, standby |  |
+    | `NameState` | DataState |  |  |
+    | `NewFirmwareAvailableState` | DataState |  |  |
+    | `Private10State` | DataState |  |  |
+    | `Private1State` | DataState |  |  |
+    | `Private2State` | DataState |  |  |
+    | `Private3State` | DataState |  |  |
+    | `Private4State` | DataState |  |  |
+    | `Private5State` | DataState |  |  |
+    | `Private6State` | DataState |  |  |
+    | `Private7State` | DataState |  |  |
+    | `Private8State` | DataState |  |  |
+    | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
@@ -11157,7 +12599,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Screen/DynamicScreen (ACTUATOR) — 14 commands, 28 states"
 
-    **Type IDs:** `263` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Blind` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `263` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Blind` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -11213,7 +12655,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Shutter/DynamicShutter (ACTUATOR) — 17 commands, 35 states"
 
-    **Type IDs:** `262` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Shutter` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
+    **Type IDs:** `262` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Shutter` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
 
     **Commands**
 
@@ -11279,7 +12721,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Switch/DynamicSwitch (ACTUATOR) — 8 commands, 27 states"
 
-    **Type IDs:** `297` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Switch` | **Profiles:** `SwitchEvent`, `Switch`
+    **Type IDs:** `297` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Switch` | **Profiles:** `SwitchEvent`, `Switch`
 
     **Commands**
 
@@ -11328,7 +12770,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "TemperatureSensor/DynamicTemperatureSensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `270` | **Servers:** `somfy_europe` | **Controllable:** `ogp:TemperatureSensor` | **Profiles:** `Temperature`
+    **Type IDs:** `270` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:TemperatureSensor` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -11374,7 +12816,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ThirdPartyGateway/DynamicThirdPartyGateway (ACTUATOR) — 10 commands, 26 states"
 
-    **Type IDs:** `283` | **Servers:** `somfy_europe` | **Controllable:** `ogp:ThirdPartyGateway` | **Profiles:** `Specific`
+    **Type IDs:** `283` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:ThirdPartyGateway` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -11424,7 +12866,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VenetianBlind/DynamicVenetianBlind (ACTUATOR) — 20 commands, 31 states"
 
-    **Type IDs:** `264` | **Servers:** `somfy_europe` | **Controllable:** `ogp:VenetianBlind` | **Profiles:** `StatefulOrientableShutter`, `StatefulOrientablePlusCloseable`, `OrientablePlusCloseable`, `StatefulOpenClose`, `OpenClose`, `StatefulCloseable`, `Closeable`
+    **Type IDs:** `264` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:VenetianBlind` | **Profiles:** `StatefulOrientableShutter`, `StatefulOrientablePlusCloseable`, `OrientablePlusCloseable`, `StatefulOpenClose`, `OpenClose`, `StatefulCloseable`, `Closeable`
 
     **Commands**
 
@@ -11489,7 +12931,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VentilationSystem/DynamicVentilation (ACTUATOR) — 17 commands, 32 states"
 
-    **Type IDs:** `260` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Ventilation` | **Profiles:** `StatefulSwitchableVentilation`, `Temperature`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
+    **Type IDs:** `260` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Ventilation` | **Profiles:** `StatefulSwitchableVentilation`, `Temperature`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
 
     **Commands**
 
@@ -11552,7 +12994,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VentilationSystem/DynamicAirVent (ACTUATOR) — 18 commands, 33 states"
 
-    **Type IDs:** `268` | **Servers:** `somfy_europe` | **Controllable:** `ogp:AirVent` | **Profiles:** `StatefulCloseableAirVent`, `StatefulOrientableSlats`, `OrientableSlats`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `268` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:AirVent` | **Profiles:** `StatefulCloseableAirVent`, `StatefulOrientableSlats`, `OrientableSlats`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Commands**
 
@@ -11617,7 +13059,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WashingMachine/DynamicWashingMachine (ACTUATOR) — 23 commands, 56 states"
 
-    **Type IDs:** `285` | **Servers:** `somfy_europe` | **Controllable:** `ogp:WashingMachine` | **Profiles:** `StatefulStartStopWashingMachine`, `StatefulStartStop`, `StartStop`, `StatefulLockWithOpeningStatus`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulLock`, `LockStatus`, `Lock`
+    **Type IDs:** `285` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:WashingMachine` | **Profiles:** `StatefulStartStopWashingMachine`, `StatefulStartStop`, `StartStop`, `StatefulLockWithOpeningStatus`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulLock`, `LockStatus`, `Lock`
 
     **Commands**
 
@@ -11710,7 +13152,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterHeatingSystem/DynamicDomesticHotWaterProduction (ACTUATOR) — 16 commands, 41 states"
 
-    **Type IDs:** `290` | **Servers:** `somfy_europe` | **Controllable:** `ogp:DomesticHotWater` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `290` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:DomesticHotWater` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -11781,7 +13223,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterSensor/DynamicWaterMeasurementSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `295` | **Servers:** `somfy_europe` | **Controllable:** `ogp:WaterMeasurementSensor` | **Profiles:** `WaterConsumption`
+    **Type IDs:** `295` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:WaterMeasurementSensor` | **Profiles:** `WaterConsumption`
 
     **Commands**
 
@@ -11828,7 +13270,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WeatherSensor/DynamicWeatherStation (SENSOR) — 7 commands, 34 states"
 
-    **Type IDs:** `279` | **Servers:** `somfy_europe` | **Controllable:** `ogp:WeatherStation` | **Profiles:** `WindSpeedAndDirection`, `WindSpeed`, `WindDirection`, `Temperature`, `RelativeHumidity`, `RainDetector`, `Luminance`
+    **Type IDs:** `279` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:WeatherStation` | **Profiles:** `WindSpeedAndDirection`, `WindSpeed`, `WindDirection`, `Temperature`, `RelativeHumidity`, `RainDetector`, `Luminance`
 
     **Commands**
 
@@ -11883,7 +13325,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WindSensor/DynamicWindSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `274` | **Servers:** `somfy_europe` | **Controllable:** `ogp:WindSensor` | **Profiles:** `WindSpeedAndDirection`, `WindSpeed`, `WindDirection`
+    **Type IDs:** `274` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:WindSensor` | **Profiles:** `WindSpeedAndDirection`, `WindSpeed`, `WindDirection`
 
     **Commands**
 
@@ -11930,7 +13372,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Window/DynamicWindow (ACTUATOR) — 18 commands, 31 states"
 
-    **Type IDs:** `267` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Window` | **Profiles:** `StatefulWindowLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulOpenClose`, `OpenClose`, `StatefulCloseable`, `Closeable`, `StatefulLock`, `LockStatus`, `Lock`, `Cyclic`
+    **Type IDs:** `267` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Window` | **Profiles:** `StatefulWindowLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulOpenClose`, `OpenClose`, `StatefulCloseable`, `Closeable`, `StatefulLock`, `LockStatus`, `Lock`, `Cyclic`
 
     **Commands**
 
@@ -11993,16 +13435,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "unknown/Invalid (ACTUATOR) — 0 commands, 0 states"
 
-    **Type IDs:** `0` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Invalid` | **Profiles:** `Specific`
+    **Type IDs:** `0` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Invalid` | **Profiles:** `Specific`
 
 
 ## OGP
 
-46 device types.
+47 device types.
 
 ??? note "AirSensor/DynamicAirSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `304` | **Servers:** `somfy_europe` | **Controllable:** `ogp:AirSensor` | **Profiles:** `CO2Concentration`
+    **Type IDs:** `304` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:AirSensor` | **Profiles:** `CO2Concentration`
 
     **Commands**
 
@@ -12049,7 +13491,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Alarm/DynamicAlarm (ACTUATOR) — 13 commands, 33 states"
 
-    **Type IDs:** `282` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Alarm` | **Profiles:** `SmokeDetector`, `IntrusionDetector`, `StatefulAlarm`, `Alarm`
+    **Type IDs:** `282` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Alarm` | **Profiles:** `SmokeDetector`, `IntrusionDetector`, `StatefulAlarm`, `Alarm`
 
     **Commands**
 
@@ -12109,7 +13551,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Awning/DynamicAwning (ACTUATOR) — 17 commands, 30 states"
 
-    **Type IDs:** `277` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Awning` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `StatefulDeployUndeploy`, `DeployUndeploy`
+    **Type IDs:** `277` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Awning` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `StatefulDeployUndeploy`, `DeployUndeploy`
 
     **Commands**
 
@@ -12170,7 +13612,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "CarbonDioxideSensor/DynamicCarbonDioxideSensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `291` | **Servers:** `somfy_europe` | **Controllable:** `ogp:CarbonDioxideSensor` | **Profiles:** `CO2Concentration`
+    **Type IDs:** `291` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:CarbonDioxideSensor` | **Profiles:** `CO2Concentration`
 
     **Commands**
 
@@ -12216,7 +13658,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "CircuitBreaker/DynamicCircuitBreaker (ACTUATOR) — 13 commands, 25 states"
 
-    **Type IDs:** `286` | **Servers:** `somfy_europe` | **Controllable:** `ogp:CircuitBreaker` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`, `Cyclic`
+    **Type IDs:** `286` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:CircuitBreaker` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`, `Cyclic`
 
     **Commands**
 
@@ -12268,7 +13710,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ContactSensor/DynamicOpeningSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `272` | **Servers:** `somfy_europe` | **Controllable:** `ogp:OpeningSensor` | **Profiles:** `WindowOpeningStatus`, `OpeningStatus`
+    **Type IDs:** `272` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:OpeningSensor` | **Profiles:** `WindowOpeningStatus`, `OpeningStatus`
 
     **Commands**
 
@@ -12315,7 +13757,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Curtain/DynamicCurtain (ACTUATOR) — 14 commands, 28 states"
 
-    **Type IDs:** `271` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Curtain` | **Profiles:** `StatefulCloseableCurtain`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `271` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Curtain` | **Profiles:** `StatefulCloseableCurtain`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -12371,7 +13813,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ElectricitySensor/DynamicElectricityConsumptionSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `293` | **Servers:** `somfy_europe` | **Controllable:** `ogp:ElectricityConsumptionSensor` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `293` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:ElectricityConsumptionSensor` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
 
     **Commands**
 
@@ -12418,7 +13860,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GarageDoor/DynamicGarageDoor (ACTUATOR) — 15 commands, 28 states"
 
-    **Type IDs:** `266` | **Servers:** `somfy_europe` | **Controllable:** `ogp:GarageDoor` | **Profiles:** `StatefulCloseableGarageOpener`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
+    **Type IDs:** `266` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:GarageDoor` | **Profiles:** `StatefulCloseableGarageOpener`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
 
     **Commands**
 
@@ -12475,7 +13917,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GasSensor/DynamicGasMeasurementSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `296` | **Servers:** `somfy_europe` | **Controllable:** `ogp:GasMeasurementSensor` | **Profiles:** `GasConsumption`
+    **Type IDs:** `296` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:GasMeasurementSensor` | **Profiles:** `GasConsumption`
 
     **Commands**
 
@@ -12522,7 +13964,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Gate/DynamicGate (ACTUATOR) — 15 commands, 28 states"
 
-    **Type IDs:** `265` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Gate` | **Profiles:** `StatefulCloseableGateOpener`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
+    **Type IDs:** `265` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Gate` | **Profiles:** `StatefulCloseableGateOpener`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
 
     **Commands**
 
@@ -12579,7 +14021,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/Untyped (ACTUATOR) — 3 commands, 4 states"
 
-    **Type IDs:** `16` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Untyped` | **Profiles:** `Specific`
+    **Type IDs:** `16` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Untyped` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -12600,7 +14042,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/DynamicThermostat (ACTUATOR) — 18 commands, 40 states"
 
-    **Type IDs:** `259` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Thermostat` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
+    **Type IDs:** `259` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Thermostat` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
 
     **Commands**
 
@@ -12672,7 +14114,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/DynamicHvacCentralUnit (ACTUATOR) — 20 commands, 41 states"
 
-    **Type IDs:** `269` | **Servers:** `somfy_europe` | **Controllable:** `ogp:HvacCentralUnit` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
+    **Type IDs:** `269` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:HvacCentralUnit` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
 
     **Commands**
 
@@ -12747,7 +14189,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/DynamicHeater (ACTUATOR) — 17 commands, 41 states"
 
-    **Type IDs:** `278` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Heater` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`
+    **Type IDs:** `278` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Heater` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `RelativeHumidity`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`
 
     **Commands**
 
@@ -12819,7 +14261,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/DynamicHvacZone (ACTUATOR) — 18 commands, 43 states"
 
-    **Type IDs:** `289` | **Servers:** `somfy_europe` | **Controllable:** `ogp:HvacZone` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
+    **Type IDs:** `289` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:HvacZone` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
 
     **Commands**
 
@@ -12894,7 +14336,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HumiditySensor/DynamicHumiditySensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `276` | **Servers:** `somfy_europe` | **Controllable:** `ogp:HumiditySensor` | **Profiles:** `RelativeHumidity`
+    **Type IDs:** `276` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:HumiditySensor` | **Profiles:** `RelativeHumidity`
 
     **Commands**
 
@@ -12940,7 +14382,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "IntrusionSensor/DynamicIntrusionSensor (SENSOR) — 8 commands, 27 states"
 
-    **Type IDs:** `281` | **Servers:** `somfy_europe` | **Controllable:** `ogp:IntrusionSensor` | **Profiles:** `IntrusionDetector`
+    **Type IDs:** `281` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:IntrusionSensor` | **Profiles:** `IntrusionDetector`
 
     **Commands**
 
@@ -12989,7 +14431,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DynamicLight (ACTUATOR) — 20 commands, 32 states"
 
-    **Type IDs:** `257` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Light` | **Profiles:** `StatefulLightDimmer`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`, `Cyclic`
+    **Type IDs:** `257` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Light` | **Profiles:** `StatefulLightDimmer`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`, `Cyclic`
 
     **Commands**
 
@@ -13055,7 +14497,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "LightSensor/DynamicLightSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `273` | **Servers:** `somfy_europe` | **Controllable:** `ogp:LightSensor` | **Profiles:** `Luminance`
+    **Type IDs:** `273` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:LightSensor` | **Profiles:** `Luminance`
 
     **Commands**
 
@@ -13102,7 +14544,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "MusicPlayer/DynamicAudioPlayer (ACTUATOR) — 29 commands, 39 states"
 
-    **Type IDs:** `288` | **Servers:** `somfy_europe` | **Controllable:** `ogp:AudioPlayer` | **Profiles:** `StoppableMusicPlayer`, `MusicPlayer`, `StatefulStartStop`, `StartStop`, `VolumeControl`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `288` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:AudioPlayer` | **Profiles:** `StoppableMusicPlayer`, `MusicPlayer`, `StatefulStartStop`, `StartStop`, `VolumeControl`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -13184,7 +14626,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "NoiseSensor/DynamicAmbientNoiseSensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `305` | **Servers:** `somfy_europe` | **Controllable:** `ogp:AmbientNoiseSensor` | **Profiles:** `AmbientNoiseSensor`
+    **Type IDs:** `305` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:AmbientNoiseSensor` | **Profiles:** `AmbientNoiseSensor`
 
     **Commands**
 
@@ -13230,7 +14672,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OccupancySensor/DynamicOccupancySensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `280` | **Servers:** `somfy_europe` | **Controllable:** `ogp:OccupancySensor` | **Profiles:** `OccupancyDetector`
+    **Type IDs:** `280` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:OccupancySensor` | **Profiles:** `OccupancyDetector`
 
     **Commands**
 
@@ -13276,7 +14718,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/DynamicOutlet (ACTUATOR) — 16 commands, 29 states"
 
-    **Type IDs:** `261` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Outlet` | **Profiles:** `StatefulSwitchablePlug`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`, `Cyclic`
+    **Type IDs:** `261` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Outlet` | **Profiles:** `StatefulSwitchablePlug`, `ElectricPowerMeter`, `StatefulSwitchable`, `Switchable`, `StatefulDimmable`, `Dimmable`, `Cyclic`
 
     **Commands**
 
@@ -13335,7 +14777,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Oven/DynamicOven (ACTUATOR) — 27 commands, 69 states"
 
-    **Type IDs:** `284` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Oven` | **Profiles:** `StatefulStartStopOven`, `StatefulStartStop`, `StartStop`, `StatefulThermostatWithSensor`, `StatefulLockWithOpeningStatus`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulDimmable`, `Dimmable`
+    **Type IDs:** `284` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Oven` | **Profiles:** `StatefulStartStopOven`, `StatefulStartStop`, `StartStop`, `StatefulThermostatWithSensor`, `StatefulLockWithOpeningStatus`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulDimmable`, `Dimmable`
 
     **Commands**
 
@@ -13445,7 +14887,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pergola/DynamicPergola (ACTUATOR) — 18 commands, 31 states"
 
-    **Type IDs:** `287` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Pergola` | **Profiles:** `StatefulOrientablePlusCloseablePergola`, `StatefulOrientablePlusCloseable`, `OrientablePlusCloseable`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `287` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Pergola` | **Profiles:** `StatefulOrientablePlusCloseablePergola`, `StatefulOrientablePlusCloseable`, `OrientablePlusCloseable`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -13508,7 +14950,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ProtocolGateway/DynamicBridge (ACTUATOR) — 15 commands, 26 states"
 
-    **Type IDs:** `1` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Bridge` | **Profiles:** `Specific`
+    **Type IDs:** `1` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Bridge` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -13520,7 +14962,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `getCandidates` |  | Discover all candidates available for association. |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `joinSetup` |  | Join an existing setup |
-    | `pair` | STRING; STRING (optional); STRING (optional) | Execute the pairing procedure p1: type (mandatory) p2: subType (mandatory if definition is set) p3: definition |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `reset` |  | Bring back into initial condition. |
     | `sendPrivate` | OBJECT | send a private command |
@@ -13529,6 +14970,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `shareSetup` |  | Share the current setup with another controller |
     | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
+    | `pair` | STRING; STRING (optional); STRING (optional) | Execute the pairing procedure p1: type (mandatory) p2: subType (mandatory if definition is set) p3: definition |
 
     **States**
 
@@ -13563,7 +15005,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ProtocolGateway/DynamicGateway (ACTUATOR) — 10 commands, 35 states"
 
-    **Type IDs:** `2` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Gateway` | **Profiles:** `Specific`
+    **Type IDs:** `2` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Gateway` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -13622,7 +15064,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RainSensor/DynamicRainSensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `275` | **Servers:** `somfy_europe` | **Controllable:** `ogp:RainSensor` | **Profiles:** `RainDetector`
+    **Type IDs:** `275` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:RainSensor` | **Profiles:** `RainDetector`
 
     **Commands**
 
@@ -13668,7 +15110,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Scene/DynamicScene (ACTUATOR) — 9 commands, 25 states"
 
-    **Type IDs:** `294` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Scene` | **Profiles:** `Specific`
+    **Type IDs:** `294` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Scene` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -13710,6 +15152,52 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Private8State` | DataState |  |  |
     | `Private9State` | DataState |  |  |
     | `ReachedAliasesState` | DataState |  |  |
+    | `RemovableState` | DataState |  |  |
+    | `SignalQualityState` | ContinuousState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+
+??? note "SceneLauncherController/DynamicSceneLauncherController (REMOTE_CONTROLLER) — 7 commands, 25 states"
+
+    **Type IDs:** `292` | **Servers:** `rexel` | **Controllable:** `ogp:SceneLauncherController` | **Profiles:** `ScenarioTrigger`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `executeManufacturerProcedure` | STRING; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
+    | `sendPrivate` | OBJECT | send a private command |
+    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
+    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ActivePartitionState` | DataState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
+    | `BatteryLevelState` | ContinuousState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
+    | `ErrorState` | DataState |  |  |
+    | `ErrorsState` | DataState |  |  |
+    | `FirmwareHashState` | DataState |  |  |
+    | `FirmwareRevisionState` | DataState |  |  |
+    | `LaunchStatusState` | DiscreteState | launched, standby |  |
+    | `NameState` | DataState |  |  |
+    | `NewFirmwareAvailableState` | DataState |  |  |
+    | `Private10State` | DataState |  |  |
+    | `Private1State` | DataState |  |  |
+    | `Private2State` | DataState |  |  |
+    | `Private3State` | DataState |  |  |
+    | `Private4State` | DataState |  |  |
+    | `Private5State` | DataState |  |  |
+    | `Private6State` | DataState |  |  |
+    | `Private7State` | DataState |  |  |
+    | `Private8State` | DataState |  |  |
+    | `Private9State` | DataState |  |  |
     | `RemovableState` | DataState |  |  |
     | `SignalQualityState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
@@ -13765,7 +15253,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Screen/DynamicScreen (ACTUATOR) — 14 commands, 28 states"
 
-    **Type IDs:** `263` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Blind` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `263` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Blind` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Commands**
 
@@ -13821,7 +15309,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Shutter/DynamicShutter (ACTUATOR) — 17 commands, 35 states"
 
-    **Type IDs:** `262` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Shutter` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
+    **Type IDs:** `262` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Shutter` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `Cyclic`
 
     **Commands**
 
@@ -13887,7 +15375,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Switch/DynamicSwitch (ACTUATOR) — 8 commands, 27 states"
 
-    **Type IDs:** `297` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Switch` | **Profiles:** `SwitchEvent`, `Switch`
+    **Type IDs:** `297` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Switch` | **Profiles:** `SwitchEvent`, `Switch`
 
     **Commands**
 
@@ -13936,7 +15424,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "TemperatureSensor/DynamicTemperatureSensor (SENSOR) — 7 commands, 25 states"
 
-    **Type IDs:** `270` | **Servers:** `somfy_europe` | **Controllable:** `ogp:TemperatureSensor` | **Profiles:** `Temperature`
+    **Type IDs:** `270` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:TemperatureSensor` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -13982,7 +15470,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ThirdPartyGateway/DynamicThirdPartyGateway (ACTUATOR) — 10 commands, 26 states"
 
-    **Type IDs:** `283` | **Servers:** `somfy_europe` | **Controllable:** `ogp:ThirdPartyGateway` | **Profiles:** `Specific`
+    **Type IDs:** `283` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:ThirdPartyGateway` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -14032,7 +15520,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VenetianBlind/DynamicVenetianBlind (ACTUATOR) — 20 commands, 31 states"
 
-    **Type IDs:** `264` | **Servers:** `somfy_europe` | **Controllable:** `ogp:VenetianBlind` | **Profiles:** `StatefulOrientableShutter`, `StatefulOrientablePlusCloseable`, `OrientablePlusCloseable`, `StatefulOpenClose`, `OpenClose`, `StatefulCloseable`, `Closeable`
+    **Type IDs:** `264` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:VenetianBlind` | **Profiles:** `StatefulOrientableShutter`, `StatefulOrientablePlusCloseable`, `OrientablePlusCloseable`, `StatefulOpenClose`, `OpenClose`, `StatefulCloseable`, `Closeable`
 
     **Commands**
 
@@ -14097,7 +15585,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VentilationSystem/DynamicVentilation (ACTUATOR) — 17 commands, 32 states"
 
-    **Type IDs:** `260` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Ventilation` | **Profiles:** `StatefulSwitchableVentilation`, `Temperature`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
+    **Type IDs:** `260` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Ventilation` | **Profiles:** `StatefulSwitchableVentilation`, `Temperature`, `StatefulSwitchable`, `Switchable`, `StatefulAirFan`, `AirFan`
 
     **Commands**
 
@@ -14160,7 +15648,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VentilationSystem/DynamicAirVent (ACTUATOR) — 18 commands, 33 states"
 
-    **Type IDs:** `268` | **Servers:** `somfy_europe` | **Controllable:** `ogp:AirVent` | **Profiles:** `StatefulCloseableAirVent`, `StatefulOrientableSlats`, `OrientableSlats`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `268` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:AirVent` | **Profiles:** `StatefulCloseableAirVent`, `StatefulOrientableSlats`, `OrientableSlats`, `StatefulBasicCloseable`, `BasicCloseable`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Commands**
 
@@ -14225,7 +15713,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WashingMachine/DynamicWashingMachine (ACTUATOR) — 23 commands, 56 states"
 
-    **Type IDs:** `285` | **Servers:** `somfy_europe` | **Controllable:** `ogp:WashingMachine` | **Profiles:** `StatefulStartStopWashingMachine`, `StatefulStartStop`, `StartStop`, `StatefulLockWithOpeningStatus`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulLock`, `LockStatus`, `Lock`
+    **Type IDs:** `285` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:WashingMachine` | **Profiles:** `StatefulStartStopWashingMachine`, `StatefulStartStop`, `StartStop`, `StatefulLockWithOpeningStatus`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`, `StatefulLock`, `LockStatus`, `Lock`
 
     **Commands**
 
@@ -14318,7 +15806,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterHeatingSystem/DynamicDomesticHotWaterProduction (ACTUATOR) — 16 commands, 41 states"
 
-    **Type IDs:** `290` | **Servers:** `somfy_europe` | **Controllable:** `ogp:DomesticHotWater` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `290` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:DomesticHotWater` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -14389,7 +15877,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterSensor/DynamicWaterMeasurementSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `295` | **Servers:** `somfy_europe` | **Controllable:** `ogp:WaterMeasurementSensor` | **Profiles:** `WaterConsumption`
+    **Type IDs:** `295` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:WaterMeasurementSensor` | **Profiles:** `WaterConsumption`
 
     **Commands**
 
@@ -14436,7 +15924,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WeatherSensor/DynamicWeatherStation (SENSOR) — 7 commands, 34 states"
 
-    **Type IDs:** `279` | **Servers:** `somfy_europe` | **Controllable:** `ogp:WeatherStation` | **Profiles:** `WindSpeedAndDirection`, `WindSpeed`, `WindDirection`, `Temperature`, `RelativeHumidity`, `RainDetector`, `Luminance`
+    **Type IDs:** `279` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:WeatherStation` | **Profiles:** `WindSpeedAndDirection`, `WindSpeed`, `WindDirection`, `Temperature`, `RelativeHumidity`, `RainDetector`, `Luminance`
 
     **Commands**
 
@@ -14491,7 +15979,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WindSensor/DynamicWindSensor (SENSOR) — 7 commands, 26 states"
 
-    **Type IDs:** `274` | **Servers:** `somfy_europe` | **Controllable:** `ogp:WindSensor` | **Profiles:** `WindSpeedAndDirection`, `WindSpeed`, `WindDirection`
+    **Type IDs:** `274` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:WindSensor` | **Profiles:** `WindSpeedAndDirection`, `WindSpeed`, `WindDirection`
 
     **Commands**
 
@@ -14538,7 +16026,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Window/DynamicWindow (ACTUATOR) — 18 commands, 31 states"
 
-    **Type IDs:** `267` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Window` | **Profiles:** `StatefulWindowLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulOpenClose`, `OpenClose`, `StatefulCloseable`, `Closeable`, `StatefulLock`, `LockStatus`, `Lock`, `Cyclic`
+    **Type IDs:** `267` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Window` | **Profiles:** `StatefulWindowLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulOpenClose`, `OpenClose`, `StatefulCloseable`, `Closeable`, `StatefulLock`, `LockStatus`, `Lock`, `Cyclic`
 
     **Commands**
 
@@ -14601,7 +16089,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "unknown/Invalid (ACTUATOR) — 0 commands, 0 states"
 
-    **Type IDs:** `0` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Invalid` | **Profiles:** `Specific`
+    **Type IDs:** `0` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Invalid` | **Profiles:** `Specific`
 
 
 ## OPENDOORS
@@ -14610,7 +16098,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "DoorLock (ACTUATOR) — 3 commands, 5 states"
 
-    **Type IDs:** `16777472` | **Servers:** `somfy_europe` | **Controllable:** `opendoors:OpenDoorsSmartLockComponent` | **Profiles:** `StatefulDoorLock`, `StatefulLock`, `LockStatus`, `Lock`
+    **Type IDs:** `16777472` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `opendoors:OpenDoorsSmartLockComponent` | **Profiles:** `StatefulDoorLock`, `StatefulLock`, `LockStatus`, `Lock`
 
     **Commands**
 
@@ -14637,7 +16125,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:CoolingCumulatedElectricalEnergyConsumptionSensor` | **Profiles:** `ElectricEnergyConsumption`
+    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:CoolingCumulatedElectricalEnergyConsumptionSensor` | **Profiles:** `ElectricEnergyConsumption`
 
     **States**
 
@@ -14648,7 +16136,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/OVPGeneric (ACTUATOR) — 4 commands, 3 states"
 
-    **Type IDs:** `0` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:UnknownOVPComponent` | **Profiles:** `StatefulLevelControl`, `LevelControl`, `Generic`
+    **Type IDs:** `0` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:UnknownOVPComponent` | **Profiles:** `StatefulLevelControl`, `LevelControl`, `Generic`
 
     **Data Properties**
 
@@ -14673,7 +16161,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/unknown (ACTUATOR) — 3 commands, 2 states"
 
-    **Type IDs:** `16843019`, `1099528470795` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:ModbusMainController` | **Profiles:** `Specific`
+    **Type IDs:** `16843019`, `1099528470795` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:ModbusMainController` | **Profiles:** `Specific`
 
     **Data Properties**
 
@@ -14696,7 +16184,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/SomfyHeatingTemperatureInterface (ACTUATOR) — 19 commands, 12 states"
 
-    **Type IDs:** `917506` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:SomfyHeatingTemperatureInterfaceOVPComponent` | **Profiles:** `OperatingModeHeating`, `ThermostatTargetReader`, `OnOffStatus`
+    **Type IDs:** `917506` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:SomfyHeatingTemperatureInterfaceOVPComponent` | **Profiles:** `OperatingModeHeating`, `ThermostatTargetReader`, `OnOffStatus`
 
     **Data Properties**
 
@@ -14745,7 +16233,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ImhotepHeatingTemperatureInterface (ACTUATOR) — 19 commands, 12 states"
 
-    **Type IDs:** `917515` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:ImhotepHeatingTemperatureInterfaceOVPComponent` | **Profiles:** `ThermostatTargetReader`
+    **Type IDs:** `917515` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:ImhotepHeatingTemperatureInterfaceOVPComponent` | **Profiles:** `ThermostatTargetReader`
 
     **Data Properties**
 
@@ -14794,7 +16282,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/StatefulOnOff (ACTUATOR) — 7 commands, 5 states"
 
-    **Type IDs:** `917515` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:ImhotepHeatingTemperatureRelayOVPComponent` | **Profiles:** `SwitchableHeatingStatus`, `OnOffStatus`
+    **Type IDs:** `917515` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:ImhotepHeatingTemperatureRelayOVPComponent` | **Profiles:** `SwitchableHeatingStatus`, `OnOffStatus`
 
     **Data Properties**
 
@@ -14824,7 +16312,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/unknown (ACTUATOR) — 7 commands, 7 states"
 
-    **Type IDs:** `3407872` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:ElectricalHeaterGenericOVPComponent` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
+    **Type IDs:** `3407872` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:ElectricalHeaterGenericOVPComponent` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
 
     **Data Properties**
 
@@ -14856,7 +16344,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/DeDietrichBoiler (ACTUATOR) — 3 commands, 4 states"
 
-    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:BoilerControllerOVPComponent` | **Profiles:** `Specific`
+    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:BoilerControllerOVPComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -14877,7 +16365,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/DeDietrichHeatingCircuit (ACTUATOR) — 14 commands, 9 states"
 
-    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:HeatingCircuitOnCircuitAOVPComponent` | **Profiles:** `Temperature`
+    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:HeatingCircuitOnCircuitAOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -14914,7 +16402,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/CothermThermostat (ACTUATOR) — 113 commands, 89 states"
 
-    **Type IDs:** `17043211` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:CothermThermostatOVPComponent` | **Profiles:** `Specific`
+    **Type IDs:** `17043211` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:CothermThermostatOVPComponent` | **Profiles:** `Specific`
 
     **Data Properties**
 
@@ -15134,7 +16622,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/KizOThermV2Bridge (ACTUATOR) — 6 commands, 23 states"
 
-    **Type IDs:** `1099511628043`, `2199023255819` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:KizOThermV2OVPComponent` | **Profiles:** `ThermostatTargetReader`, `DHWThermostatTargetReader`, `DHWTemperature`
+    **Type IDs:** `1099511628043`, `2199023255819` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:KizOThermV2OVPComponent` | **Profiles:** `ThermostatTargetReader`, `DHWThermostatTargetReader`, `DHWTemperature`
 
     **Data Properties**
 
@@ -15181,7 +16669,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/SomfyPilotWireElectricalHeater (ACTUATOR) — 9 commands, 10 states"
 
-    **Type IDs:** `1099515035650` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:SomfyPilotWireElectricalHeaterOVPComponent` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
+    **Type IDs:** `1099515035650` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:SomfyPilotWireElectricalHeaterOVPComponent` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
 
     **Data Properties**
 
@@ -15218,7 +16706,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/SomfyPilotWireHeatingInterface (ACTUATOR) — 11 commands, 7 states"
 
-    **Type IDs:** `1103806726146` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:SomfyPilotWireHeatingInterfaceOVPComponent` | **Profiles:** `SwitchableHeatingStatus`, `OnOffStatus`
+    **Type IDs:** `1103806726146` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:SomfyPilotWireHeatingInterfaceOVPComponent` | **Profiles:** `SwitchableHeatingStatus`, `OnOffStatus`
 
     **Data Properties**
 
@@ -15254,7 +16742,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiAirToAirHeatPump (ACTUATOR) — 7 commands, 17 states"
 
-    **Type IDs:** `1099513069579` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:HLinkMainController` | **Profiles:** `ThermostatTargetReader`
+    **Type IDs:** `1099513069579` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:HLinkMainController` | **Profiles:** `ThermostatTargetReader`
 
     **Data Properties**
 
@@ -15296,7 +16784,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 6 commands, 3 states"
 
-    **Type IDs:** `983040`, `1099512610827` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:OnOffOVPComponent` | **Profiles:** `StatefulSwitchable`, `Switchable`, `Generic`
+    **Type IDs:** `983040`, `1099512610827` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:OnOffOVPComponent` | **Profiles:** `StatefulSwitchable`, `Switchable`, `Generic`
 
     **Data Properties**
 
@@ -15323,7 +16811,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ProtocolGateway/DeDietrichModbusGateway (PROTOCOL_GATEWAY) — 3 commands, 2 states"
 
-    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:DeDietrichModbusGatewayOVPComponent` | **Profiles:** `Specific`
+    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:DeDietrichModbusGatewayOVPComponent` | **Profiles:** `Specific`
 
     **Data Properties**
 
@@ -15346,7 +16834,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "SwimmingPool/DeDietrichSwimmingPool (ACTUATOR) — 12 commands, 8 states"
 
-    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:SwimmingPoolOnCircuitBOVPComponent` | **Profiles:** `Temperature`
+    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:SwimmingPoolOnCircuitBOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -15380,7 +16868,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "TemperatureSensor (SENSOR) — 2 commands, 3 states"
 
-    **Type IDs:** `917506`, `917515`, `1099511628043`, `2199023255819` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:HeatingTemperatureInterfaceTemperatureSensor` | **Profiles:** `Temperature`
+    **Type IDs:** `917506`, `917515`, `1099511628043`, `2199023255819` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:HeatingTemperatureInterfaceTemperatureSensor` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -15399,7 +16887,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "TemperatureSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `16842763`, `1099511628043`, `2199023255819` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:OutsideTemperatureSensorOVPComponent` | **Profiles:** `Temperature`
+    **Type IDs:** `16842763`, `1099511628043`, `2199023255819` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:OutsideTemperatureSensorOVPComponent` | **Profiles:** `Temperature`
 
     **States**
 
@@ -15410,7 +16898,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "TemperatureSensor (SENSOR) — 2 commands, 4 states"
 
-    **Type IDs:** `4295098368` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:InsideTemperatureSensorOVPComponent` | **Profiles:** `Temperature`
+    **Type IDs:** `4295098368` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:InsideTemperatureSensorOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -15430,7 +16918,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "TemperatureSensor (SENSOR) — 3 commands, 5 states"
 
-    **Type IDs:** `1103806726146` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:SomfyPilotWireTemperatureSensorOVPComponent` | **Profiles:** `Temperature`
+    **Type IDs:** `1103806726146` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:SomfyPilotWireTemperatureSensorOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -15452,7 +16940,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterHeatingSystem/DeDietrichDHW (ACTUATOR) — 10 commands, 7 states"
 
-    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:DHW1OnDHWCircuitOVPComponent` | **Profiles:** `Temperature`
+    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:DHW1OnDHWCircuitOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -15483,7 +16971,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterHeatingSystem/DeDietrichDHW (ACTUATOR) — 6 commands, 5 states"
 
-    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:DHW2OnCircuitAOVPComponent` | **Profiles:** `Temperature`
+    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:DHW2OnCircuitAOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -15508,7 +16996,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterHeatingSystem/DeDietrichDHW (ACTUATOR) — 4 commands, 4 states"
 
-    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:DHW2OnAuxiliaryCircuitOVPComponent` | **Profiles:** `Temperature`
+    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:DHW2OnAuxiliaryCircuitOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -15530,7 +17018,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "unknown (ACTUATOR) — 1 commands, 1 states"
 
-    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:SolarCircuitOVPComponent` | **Profiles:** `Specific`
+    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `ovp:SolarCircuitOVPComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -15770,7 +17258,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Alarm/StatelessAlarmController (ACTUATOR) — 6 commands, 0 states"
 
-    **Type IDs:** `1` | **Servers:** `somfy_europe` | **Controllable:** `rtd:AlarmRTDComponent` | **Profiles:** `Alarm`
+    **Type IDs:** `1` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rtd:AlarmRTDComponent` | **Profiles:** `Alarm`
 
     **Data Properties**
 
@@ -15789,7 +17277,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Alarm/IntrusionDetector (ACTUATOR) — 2 commands, 0 states"
 
-    **Type IDs:** `2`, `3`, `4` | **Servers:** `somfy_europe` | **Controllable:** `rtd:MotionOrContactSensorRTDComponent` | **Profiles:** `Specific`
+    **Type IDs:** `2`, `3`, `4` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rtd:MotionOrContactSensorRTDComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -15800,11 +17288,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/unknown (ACTUATOR) — 0 commands, 0 states"
 
-    **Type IDs:** `0` | **Servers:** `somfy_europe` | **Controllable:** `rtd:UnknownRTDComponent` | **Profiles:** `Specific`
+    **Type IDs:** `0` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rtd:UnknownRTDComponent` | **Profiles:** `Specific`
 
 ??? note "Siren/RTDIndoorSiren (ACTUATOR) — 9 commands, 0 states"
 
-    **Type IDs:** `5` | **Servers:** `somfy_europe` | **Controllable:** `rtd:IndoorSirenRTDComponent` | **Profiles:** `Siren`, `VolumeControl`, `Switchable`
+    **Type IDs:** `5` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rtd:IndoorSirenRTDComponent` | **Profiles:** `Siren`, `VolumeControl`, `Switchable`
 
     **Commands**
 
@@ -15822,7 +17310,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Siren/RTDOutdoorSiren (ACTUATOR) — 9 commands, 0 states"
 
-    **Type IDs:** `6` | **Servers:** `somfy_europe` | **Controllable:** `rtd:OutdoorSirenRTDComponent` | **Profiles:** `Siren`, `VolumeControl`, `Switchable`
+    **Type IDs:** `6` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rtd:OutdoorSirenRTDComponent` | **Profiles:** `Siren`, `VolumeControl`, `Switchable`
 
     **Commands**
 
@@ -15845,7 +17333,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "AirSensor/COSensor (SENSOR) — 0 commands, 3 states"
 
-    **Type IDs:** `129` | **Servers:** `somfy_europe` | **Controllable:** `rtds:RTDSCOSensor` | **Profiles:** `CODetection`
+    **Type IDs:** `129` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rtds:RTDSCOSensor` | **Profiles:** `CODetection`
 
     **States**
 
@@ -15857,7 +17345,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "AirSensor/AirFlowSensor (SENSOR) — 0 commands, 3 states"
 
-    **Type IDs:** `130` | **Servers:** `somfy_europe` | **Controllable:** `rtds:RTDSGasSensor` | **Profiles:** `GasDetector`
+    **Type IDs:** `130` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rtds:RTDSGasSensor` | **Profiles:** `GasDetector`
 
     **States**
 
@@ -15869,7 +17357,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ContactSensor (SENSOR) — 0 commands, 3 states"
 
-    **Type IDs:** `2` | **Servers:** `somfy_europe` | **Controllable:** `rtds:RTDSContactSensor` | **Profiles:** `DoorContactSensor`, `ContactDetector`
+    **Type IDs:** `2` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rtds:RTDSContactSensor` | **Profiles:** `DoorContactSensor`, `ContactDetector`
 
     **States**
 
@@ -15881,7 +17369,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/unknown (SENSOR) — 0 commands, 3 states"
 
-    **Type IDs:** `133` | **Servers:** `somfy_europe` | **Controllable:** `rtds:RTDSPowerFailure` | **Profiles:** `PowerCutDetector`
+    **Type IDs:** `133` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rtds:RTDSPowerFailure` | **Profiles:** `PowerCutDetector`
 
     **States**
 
@@ -15893,11 +17381,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/unknown (SENSOR) — 0 commands, 0 states"
 
-    **Type IDs:** `254` | **Servers:** `somfy_europe` | **Controllable:** `rtds:UnknownRTDSComponent` | **Profiles:** `Specific`
+    **Type IDs:** `254` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rtds:UnknownRTDSComponent` | **Profiles:** `Specific`
 
 ??? note "OccupancySensor/MotionSensor (SENSOR) — 0 commands, 3 states"
 
-    **Type IDs:** `1` | **Servers:** `somfy_europe` | **Controllable:** `rtds:RTDSMotionSensor` | **Profiles:** `OccupancyDetector`
+    **Type IDs:** `1` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rtds:RTDSMotionSensor` | **Profiles:** `OccupancyDetector`
 
     **States**
 
@@ -15909,7 +17397,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RemoteController/AlarmRemoteController (REMOTE_CONTROLLER) — 0 commands, 7 states"
 
-    **Type IDs:** `0` | **Servers:** `somfy_europe` | **Controllable:** `rtds:RTDSRemoteControllerComponent` | **Profiles:** `Specific`
+    **Type IDs:** `0` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rtds:RTDSRemoteControllerComponent` | **Profiles:** `Specific`
 
     **States**
 
@@ -15925,7 +17413,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Siren/SirenStatus (SENSOR) — 0 commands, 4 states"
 
-    **Type IDs:** `4` | **Servers:** `somfy_europe` | **Controllable:** `rtds:SirenStatusRTDSComponent` | **Profiles:** `Specific`
+    **Type IDs:** `4` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rtds:SirenStatusRTDSComponent` | **Profiles:** `Specific`
 
     **States**
 
@@ -15938,7 +17426,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "SmokeSensor (SENSOR) — 0 commands, 3 states"
 
-    **Type IDs:** `128` | **Servers:** `somfy_europe` | **Controllable:** `rtds:RTDSSmokeSensor` | **Profiles:** `SmokeDetector`
+    **Type IDs:** `128` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rtds:RTDSSmokeSensor` | **Profiles:** `SmokeDetector`
 
     **States**
 
@@ -15950,7 +17438,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "TemperatureSensor (SENSOR) — 0 commands, 3 states"
 
-    **Type IDs:** `132` | **Servers:** `somfy_europe` | **Controllable:** `rtds:RTDSTemperatureSensor` | **Profiles:** `Specific`
+    **Type IDs:** `132` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rtds:RTDSTemperatureSensor` | **Profiles:** `Specific`
 
     **States**
 
@@ -15962,7 +17450,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterSensor/WaterDetectionSensor (SENSOR) — 0 commands, 3 states"
 
-    **Type IDs:** `131` | **Servers:** `somfy_europe` | **Controllable:** `rtds:RTDSWaterSensor` | **Profiles:** `WaterDetector`
+    **Type IDs:** `131` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rtds:RTDSWaterSensor` | **Profiles:** `WaterDetector`
 
     **States**
 
@@ -15979,7 +17467,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Awning/UpDownHorizontalAwning (ACTUATOR) — 12 commands, 0 states"
 
-    **Type IDs:** `4`, `25`, `65540` | **Servers:** `somfy_europe` | **Controllable:** `rts:HorizontalAwningRTSComponent` | **Profiles:** `DeployUndeployAwning`, `DeployUndeploy`, `OpenClose`
+    **Type IDs:** `4`, `25`, `65540` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:HorizontalAwningRTSComponent` | **Profiles:** `DeployUndeployAwning`, `DeployUndeploy`, `OpenClose`
 
     **Data Properties**
 
@@ -16004,7 +17492,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Curtain/UpDownCurtain (ACTUATOR) — 10 commands, 0 states"
 
-    **Type IDs:** `10`, `65561`, `65562`, `11`, `65546`, `65547` | **Servers:** `somfy_europe` | **Controllable:** `rts:CurtainRTSComponent` | **Profiles:** `OpenCloseCurtain`, `OpenClose`
+    **Type IDs:** `10`, `65561`, `65562`, `11`, `65546`, `65547` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:CurtainRTSComponent` | **Profiles:** `OpenCloseCurtain`, `OpenClose`
 
     **Data Properties**
 
@@ -16027,7 +17515,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorHeatingSystem/StatelessExteriorHeating (ACTUATOR) — 11 commands, 0 states"
 
-    **Type IDs:** `16`, `65552` | **Servers:** `somfy_europe` | **Controllable:** `rts:ExteriorHeatingRTSComponent` | **Profiles:** `SwitchableHeating`, `Switchable`, `UpDown`
+    **Type IDs:** `16`, `65552` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:ExteriorHeatingRTSComponent` | **Profiles:** `SwitchableHeating`, `Switchable`, `UpDown`
 
     **Data Properties**
 
@@ -16051,7 +17539,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorScreen/UpDownExteriorScreen (ACTUATOR) — 10 commands, 0 states"
 
-    **Type IDs:** `3`, `65539` | **Servers:** `somfy_europe` | **Controllable:** `rts:ExteriorBlindRTSComponent` | **Profiles:** `OpenCloseBlind`, `OpenClose`
+    **Type IDs:** `3`, `65539` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:ExteriorBlindRTSComponent` | **Profiles:** `OpenCloseBlind`, `OpenClose`
 
     **Data Properties**
 
@@ -16074,7 +17562,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorVenetianBlind/UpDownExteriorVenetianBlind (ACTUATOR) — 13 commands, 0 states"
 
-    **Type IDs:** `2`, `65538` | **Servers:** `somfy_europe` | **Controllable:** `rts:ExteriorVenetianBlindRTSComponent` | **Profiles:** `OpenCloseBlind`, `OpenClose`
+    **Type IDs:** `2`, `65538` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:ExteriorVenetianBlindRTSComponent` | **Profiles:** `OpenCloseBlind`, `OpenClose`
 
     **Data Properties**
 
@@ -16100,7 +17588,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GarageDoor/UpDownGarageDoor (ACTUATOR) — 9 commands, 0 states"
 
-    **Type IDs:** `5`, `17`, `65541`, `65553` | **Servers:** `somfy_europe` | **Controllable:** `rts:GarageDoorRTSComponent` | **Profiles:** `OpenCloseGarageOpener`, `OpenClose`
+    **Type IDs:** `5`, `17`, `65541`, `65553` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:GarageDoorRTSComponent` | **Profiles:** `OpenCloseGarageOpener`, `OpenClose`
 
     **Data Properties**
 
@@ -16122,7 +17610,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GarageDoor/OpenCloseSlidingGarageDoorWithPedestrianPosition (ACTUATOR) — 10 commands, 0 states"
 
-    **Type IDs:** `18`, `19`, `65554`, `65555` | **Servers:** `somfy_europe` | **Controllable:** `rts:SlidingGarageDoorWithPedestrianPositionRTSComponent` | **Profiles:** `OpenCloseGarageOpener`, `OpenClose`
+    **Type IDs:** `18`, `19`, `65554`, `65555` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:SlidingGarageDoorWithPedestrianPositionRTSComponent` | **Profiles:** `OpenCloseGarageOpener`, `OpenClose`
 
     **Data Properties**
 
@@ -16145,7 +17633,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GarageDoor/UpDownGarageDoor4T (ACTUATOR) — 3 commands, 0 states"
 
-    **Type IDs:** `405`, `417` | **Servers:** `somfy_europe` | **Controllable:** `rts:GarageDoor4TRTSComponent` | **Profiles:** `CyclicGarageOpener`, `Cyclic`
+    **Type IDs:** `405`, `417` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:GarageDoor4TRTSComponent` | **Profiles:** `CyclicGarageOpener`, `Cyclic`
 
     **Data Properties**
 
@@ -16161,7 +17649,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Gate/OpenCloseGate (ACTUATOR) — 9 commands, 0 states"
 
-    **Type IDs:** `6`, `21`, `65542`, `65557` | **Servers:** `somfy_europe` | **Controllable:** `rts:GateOpenerRTSComponent` | **Profiles:** `OpenCloseGateOpener`, `OpenClose`
+    **Type IDs:** `6`, `21`, `65542`, `65557` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:GateOpenerRTSComponent` | **Profiles:** `OpenCloseGateOpener`, `OpenClose`
 
     **Data Properties**
 
@@ -16183,7 +17671,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Gate/OpenCloseGateWithPedestrianPosition (ACTUATOR) — 10 commands, 0 states"
 
-    **Type IDs:** `20`, `22`, `65556`, `65558` | **Servers:** `somfy_europe` | **Controllable:** `rts:GateOpenerWithPedestrianPositionRTSComponent` | **Profiles:** `OpenCloseGateOpener`, `OpenClose`
+    **Type IDs:** `20`, `22`, `65556`, `65558` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:GateOpenerWithPedestrianPositionRTSComponent` | **Profiles:** `OpenCloseGateOpener`, `OpenClose`
 
     **Data Properties**
 
@@ -16206,7 +17694,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Gate/OpenCloseGate4T (ACTUATOR) — 3 commands, 0 states"
 
-    **Type IDs:** `406`, `421` | **Servers:** `somfy_europe` | **Controllable:** `rts:GateOpenerRTS4TComponent` | **Profiles:** `CyclicGateOpener`, `Cyclic`
+    **Type IDs:** `406`, `421` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:GateOpenerRTS4TComponent` | **Profiles:** `CyclicGateOpener`, `Cyclic`
 
     **Data Properties**
 
@@ -16222,7 +17710,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/RTSGeneric (ACTUATOR) — 7 commands, 0 states"
 
-    **Type IDs:** `0`, `65536` | **Servers:** `somfy_europe` | **Controllable:** `rts:GenericRTSComponent` | **Profiles:** `UpDown`
+    **Type IDs:** `0`, `65536` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:GenericRTSComponent` | **Profiles:** `UpDown`
 
     **Data Properties**
 
@@ -16242,7 +17730,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/RTSGeneric4T (ACTUATOR) — 3 commands, 0 states"
 
-    **Type IDs:** `400` | **Servers:** `somfy_europe` | **Controllable:** `rts:Generic4TRTSComponent` | **Profiles:** `Cyclic`, `Generic`
+    **Type IDs:** `400` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:Generic4TRTSComponent` | **Profiles:** `Cyclic`, `Generic`
 
     **Data Properties**
 
@@ -16258,7 +17746,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/RTSGeneric (ACTUATOR) — 1 commands, 0 states"
 
-    **Type IDs:** `16711680` | **Servers:** `somfy_europe` | **Controllable:** `rts:UnknowRTSComponent` | **Profiles:** `Specific`
+    **Type IDs:** `16711680` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:UnknowRTSComponent` | **Profiles:** `Specific`
 
     **Data Properties**
 
@@ -16272,7 +17760,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/RTSThermostat (ACTUATOR) — 11 commands, 0 states"
 
-    **Type IDs:** `9`, `65545` | **Servers:** `somfy_europe` | **Controllable:** `rts:ThermostatRTSComponent` | **Profiles:** `UpDown`
+    **Type IDs:** `9`, `65545` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:ThermostatRTSComponent` | **Profiles:** `UpDown`
 
     **Data Properties**
 
@@ -16296,7 +17784,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/OnOffLight (ACTUATOR) — 12 commands, 0 states"
 
-    **Type IDs:** `7`, `65543` | **Servers:** `somfy_europe` | **Controllable:** `rts:LightRTSComponent` | **Profiles:** `SwitchableLight`, `Switchable`, `UpDown`
+    **Type IDs:** `7`, `65543` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:LightRTSComponent` | **Profiles:** `SwitchableLight`, `Switchable`, `UpDown`
 
     **Data Properties**
 
@@ -16321,7 +17809,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerOnOffLight (ACTUATOR) — 13 commands, 0 states"
 
-    **Type IDs:** `23` | **Servers:** `somfy_europe` | **Controllable:** `rts:DimmableLightRTSComponent` | **Profiles:** `SwitchableLight`, `Switchable`, `UpDown`
+    **Type IDs:** `23` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:DimmableLightRTSComponent` | **Profiles:** `SwitchableLight`, `Switchable`, `UpDown`
 
     **Data Properties**
 
@@ -16347,7 +17835,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatelessOnOff (ACTUATOR) — 10 commands, 0 states"
 
-    **Type IDs:** `13`, `65549` | **Servers:** `somfy_europe` | **Controllable:** `rts:OnOffRTSComponent` | **Profiles:** `SwitchablePlug`, `Switchable`, `UpDown`
+    **Type IDs:** `13`, `65549` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:OnOffRTSComponent` | **Profiles:** `SwitchablePlug`, `Switchable`, `UpDown`
 
     **Data Properties**
 
@@ -16370,7 +17858,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pergola/UpDownBioclimaticPergola (ACTUATOR) — 13 commands, 0 states"
 
-    **Type IDs:** `426` | **Servers:** `somfy_europe` | **Controllable:** `rts:BioclimaticPergolaRTSComponent` | **Profiles:** `OpenCloseWindow`, `OpenClose`
+    **Type IDs:** `426` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:BioclimaticPergolaRTSComponent` | **Profiles:** `OpenCloseWindow`, `OpenClose`
 
     **Data Properties**
 
@@ -16396,7 +17884,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/UpDownRollerShutter (ACTUATOR) — 10 commands, 0 states"
 
-    **Type IDs:** `1`, `65537` | **Servers:** `somfy_europe` | **Controllable:** `rts:RollerShutterRTSComponent` | **Profiles:** `OpenCloseShutter`, `OpenClose`
+    **Type IDs:** `1`, `65537` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:RollerShutterRTSComponent` | **Profiles:** `OpenCloseShutter`, `OpenClose`
 
     **Data Properties**
 
@@ -16419,7 +17907,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Screen/UpDownScreen (ACTUATOR) — 10 commands, 0 states"
 
-    **Type IDs:** `15`, `65559`, `427`, `428`, `65551` | **Servers:** `somfy_europe` | **Controllable:** `rts:BlindRTSComponent` | **Profiles:** `OpenCloseBlind`, `OpenClose`
+    **Type IDs:** `15`, `65559`, `427`, `428`, `65551` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:BlindRTSComponent` | **Profiles:** `OpenCloseBlind`, `OpenClose`
 
     **Data Properties**
 
@@ -16442,7 +17930,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Screen/UpDownZebraScreen (ACTUATOR) — 13 commands, 0 states"
 
-    **Type IDs:** `423` | **Servers:** `somfy_europe` | **Controllable:** `rts:ZebraBlindRTSComponent` | **Profiles:** `OpenCloseBlind`, `OpenClose`
+    **Type IDs:** `423` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:ZebraBlindRTSComponent` | **Profiles:** `OpenCloseBlind`, `OpenClose`
 
     **Data Properties**
 
@@ -16468,7 +17956,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "SwingingShutter/UpDownSwingingShutter (ACTUATOR) — 10 commands, 0 states"
 
-    **Type IDs:** `12`, `65548` | **Servers:** `somfy_europe` | **Controllable:** `rts:SwingingShutterRTSComponent` | **Profiles:** `OpenCloseSwingingShutter`, `OpenClose`
+    **Type IDs:** `12`, `65548` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:SwingingShutterRTSComponent` | **Profiles:** `OpenCloseSwingingShutter`, `OpenClose`
 
     **Data Properties**
 
@@ -16491,7 +17979,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VenetianBlind/UpDownVenetianBlind (ACTUATOR) — 13 commands, 0 states"
 
-    **Type IDs:** `14`, `424`, `425`, `65550` | **Servers:** `somfy_europe` | **Controllable:** `rts:VenetianBlindRTSComponent` | **Profiles:** `OpenCloseBlind`, `OpenClose`
+    **Type IDs:** `14`, `424`, `425`, `65550` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:VenetianBlindRTSComponent` | **Profiles:** `OpenCloseBlind`, `OpenClose`
 
     **Data Properties**
 
@@ -16517,7 +18005,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Window/UpDownWindow (ACTUATOR) — 10 commands, 0 states"
 
-    **Type IDs:** `24` | **Servers:** `somfy_europe` | **Controllable:** `rts:WindowsOpenerRTSComponent` | **Profiles:** `OpenCloseWindow`, `OpenClose`
+    **Type IDs:** `24` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `rts:WindowsOpenerRTSComponent` | **Profiles:** `OpenCloseWindow`, `OpenClose`
 
     **Data Properties**
 
@@ -16545,7 +18033,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/SomfyThermostat (ACTUATOR) — 8 commands, 19 states"
 
-    **Type IDs:** `65537`, `65538`, `65539`, `131073`, `131074`, `131075`, `131076` | **Servers:** `somfy_europe` | **Controllable:** `somfythermostat:SomfyThermostatThermostatComponent` | **Profiles:** `ThermostatTargetReader`
+    **Type IDs:** `65537`, `65538`, `65539`, `131073`, `131074`, `131075`, `131076` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `somfythermostat:SomfyThermostatThermostatComponent` | **Profiles:** `ThermostatTargetReader`
 
     **Commands**
 
@@ -16586,7 +18074,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HumiditySensor/RelativeHumiditySensor (SENSOR) — 1 commands, 3 states"
 
-    **Type IDs:** `65537`, `65538`, `65539`, `131073`, `131074`, `131075`, `131076` | **Servers:** `somfy_europe` | **Controllable:** `somfythermostat:SomfyThermostatHumiditySensor` | **Profiles:** `RelativeHumidity`
+    **Type IDs:** `65537`, `65538`, `65539`, `131073`, `131074`, `131075`, `131076` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `somfythermostat:SomfyThermostatHumiditySensor` | **Profiles:** `RelativeHumidity`
 
     **Commands**
 
@@ -16604,7 +18092,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "TemperatureSensor (SENSOR) — 1 commands, 3 states"
 
-    **Type IDs:** `65537`, `65538`, `65539`, `131073`, `131074`, `131075`, `131076` | **Servers:** `somfy_europe` | **Controllable:** `somfythermostat:SomfyThermostatTemperatureSensor` | **Profiles:** `Temperature`
+    **Type IDs:** `65537`, `65538`, `65539`, `131073`, `131074`, `131075`, `131076` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `somfythermostat:SomfyThermostatTemperatureSensor` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -16619,6 +18107,124 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AvailabilityState` | DiscreteState | available, unavailable |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
+
+
+## UPNP_CONTROL
+
+2 device types.
+
+??? note "MusicPlayer/MediaRenderer (ACTUATOR) — 17 commands, 1 states"
+
+    **Type IDs:** `0` | **Servers:** `rexel` | **Controllable:** `upnpcontrol:UPnPControlMediaRendererComponent` | **Profiles:** `StoppableMusicPlayer`, `MusicPlayer`, `VolumeControl`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `getMute` |  | Get the mute Status |
+    | `getVolume` |  | Get the device output volume |
+    | `mute` |  | Mute the device |
+    | `next` |  | Play next track |
+    | `pause` |  | Pause current action |
+    | `play` |  | Play media |
+    | `previous` |  | Play previous track |
+    | `rewind` |  | Rewind media |
+    | `setVolume` | INT [0..100] | Set the device output volume |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+    | `unmute` |  | Unmute the device |
+    | `getAllPlayingInfo` |  | Get all information about the playing track and media |
+    | `getCurrentTransportActions` |  | get current action available on the playing media |
+    | `getMediaInfo` |  | Get playing media information |
+    | `getPositionInfo` |  | Get information about the playing track |
+    | `getTransportInfo` |  | get information about the player state |
+    | `playURI` | STRING; STRING | Play a media from a given URI p1 : URI to play p2 : Associated metadatas |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `PlayState` | DiscreteState | forward, pause, playing, rewind, stop |  |
+
+??? note "MusicPlayer/MediaRenderer (ACTUATOR) — 24 commands, 1 states"
+
+    **Type IDs:** `65536`, `65537`, `65539`, `65541`, `65545`, `65546`, `65547`, `65548`, `65549`, `65550` | **Servers:** `rexel` | **Controllable:** `upnpcontrol:GenericSonosPlayerComponent` | **Profiles:** `StoppableMusicPlayer`, `MusicPlayer`, `VolumeControl`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `getMute` |  | Get the mute Status |
+    | `getVolume` |  | Get the device output volume |
+    | `mute` |  | Mute the device |
+    | `next` |  | Play next track |
+    | `pause` |  | Pause current action |
+    | `play` |  | Play media |
+    | `previous` |  | Play previous track |
+    | `rewind` |  | Rewind media |
+    | `setVolume` | INT [0..100] | Set the device output volume |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+    | `unmute` |  | Unmute the device |
+    | `getAllPlayingInfo` |  | Get all information about the playing track and media |
+    | `getCurrentTransportActions` |  | get current action available on the playing media |
+    | `getGroupMute` |  | Get the mute status for the group |
+    | `getGroupVolume` |  | Get the volume for the group |
+    | `getMediaInfo` |  | Get playing media information |
+    | `getPositionInfo` |  | Get information about the playing track |
+    | `getSonosFavorites` |  | Get the sonos favorit |
+    | `getSonosPlaylist` |  | Get the sonos playlist |
+    | `getTransportInfo` |  | get information about the player state |
+    | `muteGroup` |  | Mute the Group |
+    | `playURI` | STRING; STRING | Play a media from a given URI p1 : URI to play p2 : Associated metadatas |
+    | `setGroupVolume` | INT | Set the volume of the group p1: volume to set |
+    | `unmuteGroup` |  | Unmute the Group |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `PlayState` | DiscreteState | forward, pause, playing, rewind, stop |  |
+
+
+## URMET
+
+2 device types.
+
+??? note "CallForwardingComponent/UrmetCallForwarding (PROTOCOL_GATEWAY) — 0 commands, 1 states"
+
+    **Type IDs:** `1` | **Servers:** `rexel` | **Controllable:** `urmet:CallForwardingUrmetComponent` | **Profiles:** `Specific`
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `UrmetSettingsState` | DataState |  |  |
+
+??? note "StackComponent/UrmetStack (PROTOCOL_GATEWAY) — 11 commands, 2 states"
+
+    **Type IDs:** `256` | **Servers:** `rexel` | **Controllable:** `urmet:StackComponent` | **Profiles:** `Specific`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `callMe` | STRING | Request a call on the peripheral p1 is the udid of requester (externalInfo) |
+    | `deleteTarget` | STRING; STRING | Delete a registered target p1 is the udid of requester (externalInfo) p2 is the deviceId of the target to delete |
+    | `doNotDisturb` | STRING; INT: 0, 1 | Set DoNotDisturb mode on the peripheral p1 is the deviceId for which the do not disturb state is changed p2 activate the do not disturb mode (0 for false, 1 for true) |
+    | `getVideo` | STRING; STRING: mjpeg | Send url to get video transmission p1 is the udid of requester (externalInfo) p2 is the video format |
+    | `modifyTarget` | STRING; STRING; STRING (optional); STRING (optional); INT: 0, 1 (optional); INT: 1, 2 (optional); STRING (optional) | Modify a registered target p1 is the udid of requester (externalInfo) p2 is the deviceId of the target to modify p3 is the new phone number, matching this pattern : +XXXXXXXXXXX (leave blank to keep last value) p4 is the new name of the target (leave blank to keep last value) p5 is whether the target should be only notifiable (0 for false, 1 for true) (leave blank to keep last value) p6 is the new position of the target in the list of all peripherals (leave blank to keep last value) p7 is the new externalInfo of the target (leave blank to keep last value) |
+    | `openDoor` | STRING | Open the door of the building p1 is the udid of requester (externalInfo) |
+    | `openGate` | STRING | Open the secondary door of the building p1 is the udid of requester (externalInfo) |
+    | `registerLandlinePhone` | STRING; STRING; STRING; INT: 1, 2 | Register a new target p1 is the udid of requester (externalInfo) p2 is the name of the peripheral p3 is the phone number, matching this pattern : +XXXXXXXXXXX p4 position of the peripheral in the list of all peripherals |
+    | `registerSmartPhone` | STRING; STRING; STRING | Register current smartphone as new peripheral p1 is the name of the peripheral p2 is the udid of the peripheral (externalInfo) p3 is the phone number, matching this pattern : +XXXXXXXXXXX |
+    | `registerTablet` | STRING; STRING | Register current pad as new peripheral p1 is the name of the peripheral p2 is the udid of the peripheral (externalInfo) |
+    | `skipCall` | STRING | Reject the incoming call p1 is the udid of requester (externalInfo) |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ConfigState` | DataState |  |  |
+    | `LastEventState` | DataState |  |  |
 
 
 ## WISER
@@ -16666,13 +18272,707 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `getHistory` | INT; INT; STRING | Get history from sensor beetween two specific date p1 : from date (timestamp in millisecond) p2 : to date (timestamp in millisecond) p3 : groupBy value (hour, day, month) |
 
 
+## YOKIS
+
+21 device types.
+
+??? note "Awning/PositionableHorizontalAwning (ACTUATOR) — 28 commands, 13 states"
+
+    **Type IDs:** `66048`, `66049`, `66050` | **Servers:** `rexel` | **Controllable:** `yokis:CanvasBlindYokisComponent` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulCloseable`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `activateSoftwareWiringInversion` |  | Activate software device wiring inversion |
+    | `activateTorqueLimitation` |  | Activate device torque limitation |
+    | `close` |  | Fully close the device |
+    | `deactivateSoftwareWiringInversion` |  | Deactivate software device wiring inversion |
+    | `deactivateTorqueLimitation` |  | Deactivate device torque limitation |
+    | `deploy` |  | Fully deploy the device |
+    | `down` |  | Move the device completely down |
+    | `goToMemorized1Position` |  | Set the device to a user pre-defined position |
+    | `goToMemorized2Position` |  | Set the device to a user pre-defined position |
+    | `goToMemorized3Position` |  | Set the device to a user pre-defined position |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `open` |  | Fully open the device |
+    | `refreshState` |  | Refresh the device states |
+    | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
+    | `setMemorized1Position` | INT [0..100] | Set favorite position |
+    | `setMemorized1PositionName` | STRING | Change the favorite position internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setMemorized2Position` | INT [0..100] | Set favorite position |
+    | `setMemorized2PositionName` | STRING | Change the favorite position internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setMemorized3Position` | INT [0..100] | Set favorite position |
+    | `setMemorized3PositionName` | STRING | Change the favorite position internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setPosition` | STRING: my, memorized1, memorized2, memorized3, secured; INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%) |
+    | `setSoftwareWiringInversion` | STRING: off, on | Activate (on) or deactivate (off) software device wiring inversion |
+    | `setTorqueLimitation` | STRING: off, on | Activate (on) or deactivate (off) device torque limitation |
+    | `setTorqueMode` | STRING: high, low | Select the device torque mode |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+    | `undeploy` |  | Fully undeploy the device |
+    | `up` |  | Move the device completely up |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ClosureState` | ContinuousState | [0..100] |  |
+    | `DeploymentState` | ContinuousState | [0..100] |  |
+    | `Memorized1PositionNameState` | DataState |  |  |
+    | `Memorized1PositionState` | ContinuousState |  |  |
+    | `Memorized2PositionNameState` | DataState |  |  |
+    | `Memorized2PositionState` | ContinuousState |  |  |
+    | `Memorized3PositionNameState` | DataState |  |  |
+    | `Memorized3PositionState` | ContinuousState |  |  |
+    | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `SoftwareWiringInversionState` | DiscreteState | off, on |  |
+    | `TorqueLimitationState` | DiscreteState | off, on |  |
+    | `TorqueModeState` | DiscreteState | high, low |  |
+    | `UpdateStatusState` | DiscreteState | error, inProgress, initialized, moduleUnreachableError, networkError, queued, timeout, usbUnreachableError |  |
+
+??? note "CircuitBreaker (ACTUATOR) — 11 commands, 5 states"
+
+    **Type IDs:** `65793`, `65794`, `65795`, `65796` | **Servers:** `rexel` | **Controllable:** `yokis:CircuitBreakerYokisComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `activateContextSavingOnPowerCut` |  | Activate last device state saving on power cut |
+    | `deactivateContextSavingOnPowerCut` |  | Deactivate last device state saving on power cut |
+    | `deactivateTimer` |  | Deactivate device internal timer |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `off` |  | Turn off the device |
+    | `on` |  | Turn on the device |
+    | `refreshState` |  | Refresh the device states |
+    | `setContextSavingOnPowerCut` | STRING: off, on | Activate (on) or deactivate (off) last device state saving on power cut |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+    | `setTimerUnit` | STRING: sec, min | Set unit of device internal timer (sec=seconds, min=minutes) |
+    | `setYokisTimer` | INT: 0, 2, 4, 8, 15 | Set Yokis device internal temporization value |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ContextSavingOnPowerCutState` | DiscreteState | off, on |  |
+    | `OnOffState` | DiscreteState | on, off |  |
+    | `TimerState` | ContinuousState |  |  |
+    | `TimerUnitState` | DiscreteState | min, sec |  |
+    | `UpdateStatusState` | DiscreteState | error, inProgress, initialized, moduleUnreachableError, networkError, queued, timeout, usbUnreachableError |  |
+
+??? note "ContactSensor (SENSOR) — 0 commands, 1 states"
+
+    **Type IDs:** `131073` | **Servers:** `rexel` | **Controllable:** `yokis:YokisContactSensor` | **Profiles:** `DoorContactSensor`, `ContactDetector`
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ContactState` | DiscreteState | open, closed |  |
+
+??? note "DoorEntry/EightButtonsDoorEntryController (REMOTE_CONTROLLER) — 0 commands, 2 states"
+
+    **Type IDs:** `132096` | **Servers:** `rexel` | **Controllable:** `yokis:DoorEntryControllerYokisComponent` | **Profiles:** `Button`
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `LastButtonPressedState` | DataState |  |  |
+    | `LastButtonReleasedState` | DataState |  |  |
+
+??? note "GarageDoor/CyclicGarageDoor (ACTUATOR) — 7 commands, 3 states"
+
+    **Type IDs:** `65792`, `65793`, `65794`, `65795` | **Servers:** `rexel` | **Controllable:** `yokis:ImpulsiveGarageDoorYokisComponent` | **Profiles:** `CyclicGarageOpener`, `Cyclic`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `cycle` |  | Do a cycle of supported motion kinematics or modes |
+    | `deactivateTimer` |  | Deactivate device internal timer |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `refreshState` |  | Refresh the device states |
+    | `setTimerUnit` | STRING: sec, min | Set unit of device internal timer (sec=seconds, min=minutes) |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+    | `setYokisTimer` | INT: 0, 2, 4, 8, 15 | Set Yokis device internal temporization value |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `TimerState` | ContinuousState |  |  |
+    | `TimerUnitState` | DiscreteState | min, sec |  |
+    | `UpdateStatusState` | DiscreteState | error, inProgress, initialized, moduleUnreachableError, networkError, queued, timeout, usbUnreachableError |  |
+
+??? note "GarageDoor/OpenCloseGarageDoor (ACTUATOR) — 11 commands, 6 states"
+
+    **Type IDs:** `66304` | **Servers:** `rexel` | **Controllable:** `yokis:GarageDoorOpenerYokisComponent` | **Profiles:** `StatefulOpenCloseGarageOpener`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `activateAutomaticClosingOnPowerOn` |  | Activate automatic closing on power on |
+    | `close` |  | Fully close the device |
+    | `deactivateAutomaticClosingOnPowerOn` |  | Deactivate automatic closing on power on |
+    | `deactivateTimer` |  | Deactivate device internal timer |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `open` |  | Fully open the device |
+    | `refreshState` |  | Refresh the device states |
+    | `setAutomaticClosingOnPowerOn` | STRING: false, true | Activate (true) or deactivate (false) automatic closing on power on |
+    | `setTimerUnit` | STRING: sec, min | Set unit of device internal timer (sec=seconds, min=minutes) |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+    | `setYokisTimer` | INT: 0, 2, 4, 8, 15 | Set Yokis device internal temporization value |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `AutomaticClosingOnPowerOnState` | DiscreteState | false, true |  |
+    | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `TimerState` | ContinuousState |  |  |
+    | `TimerUnitState` | DiscreteState | min, sec |  |
+    | `UpdateStatusState` | DiscreteState | error, inProgress, initialized, moduleUnreachableError, networkError, queued, timeout, usbUnreachableError |  |
+    | `AutomationOperatingModeState` | DiscreteState | faac, universal, yokis |  |
+
+??? note "Gate/CyclicGate (ACTUATOR) — 7 commands, 3 states"
+
+    **Type IDs:** `65792`, `65793`, `65794`, `65795` | **Servers:** `rexel` | **Controllable:** `yokis:ImpulsiveGateOpenerYokisComponent` | **Profiles:** `CyclicGateOpener`, `Cyclic`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `cycle` |  | Do a cycle of supported motion kinematics or modes |
+    | `deactivateTimer` |  | Deactivate device internal timer |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `refreshState` |  | Refresh the device states |
+    | `setTimerUnit` | STRING: sec, min | Set unit of device internal timer (sec=seconds, min=minutes) |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+    | `setYokisTimer` | INT: 0, 2, 4, 8, 15 | Set Yokis device internal temporization value |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `TimerState` | ContinuousState |  |  |
+    | `TimerUnitState` | DiscreteState | min, sec |  |
+    | `UpdateStatusState` | DiscreteState | error, inProgress, initialized, moduleUnreachableError, networkError, queued, timeout, usbUnreachableError |  |
+
+??? note "Gate/OpenCloseGate (ACTUATOR) — 24 commands, 12 states"
+
+    **Type IDs:** `66048`, `66049` | **Servers:** `rexel` | **Controllable:** `yokis:GateOpenerYokisComponent` | **Profiles:** `StatefulOpenCloseGateOpener`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `activateOppositeMotionOnOverload` |  | Activate automatic device opposite motion if an overload is detected |
+    | `activateSoftwareWiringInversion` |  | Activate software device wiring inversion |
+    | `activateTorqueLimitation` |  | Activate device torque limitation |
+    | `close` |  | Fully close the device |
+    | `deactivateOppositeMotionOnOverload` |  | Deactivate automatic device opposite motion if an overload is detected |
+    | `deactivateSoftwareWiringInversion` |  | Deactivate software device wiring inversion |
+    | `deactivateTorqueLimitation` |  | Deactivate device torque limitation |
+    | `goToMemorized1Position` |  | Set the device to a user pre-defined position |
+    | `goToMemorized2Position` |  | Set the device to a user pre-defined position |
+    | `goToMemorized3Position` |  | Set the device to a user pre-defined position |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `open` |  | Fully open the device |
+    | `refreshState` |  | Refresh the device states |
+    | `setMemorized1Position` | INT [0..100] | Set favorite position |
+    | `setMemorized1PositionName` | STRING | Change the favorite position internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setMemorized2Position` | INT [0..100] | Set favorite position |
+    | `setMemorized2PositionName` | STRING | Change the favorite position internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setMemorized3Position` | INT [0..100] | Set favorite position |
+    | `setMemorized3PositionName` | STRING | Change the favorite position internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setOppositeMotionOnOverload` | STRING: off, on | Activate (on) or deactivate (off) automatic device opposite motion if an overload is detected |
+    | `setSoftwareWiringInversion` | STRING: off, on | Activate (on) or deactivate (off) software device wiring inversion |
+    | `setTorqueLimitation` | STRING: off, on | Activate (on) or deactivate (off) device torque limitation |
+    | `setTorqueMode` | STRING: high, low | Select the device torque mode |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `Memorized1PositionNameState` | DataState |  |  |
+    | `Memorized1PositionState` | ContinuousState |  |  |
+    | `Memorized2PositionNameState` | DataState |  |  |
+    | `Memorized2PositionState` | ContinuousState |  |  |
+    | `Memorized3PositionNameState` | DataState |  |  |
+    | `Memorized3PositionState` | ContinuousState |  |  |
+    | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `OppositeMotionOnOverloadState` | DiscreteState | off, on |  |
+    | `SoftwareWiringInversionState` | DiscreteState | off, on |  |
+    | `TorqueLimitationState` | DiscreteState | off, on |  |
+    | `TorqueModeState` | DiscreteState | high, low |  |
+    | `UpdateStatusState` | DiscreteState | error, inProgress, initialized, moduleUnreachableError, networkError, queued, timeout, usbUnreachableError |  |
+
+??? note "Gate/OpenCloseSwingingGate (ACTUATOR) — 11 commands, 6 states"
+
+    **Type IDs:** `66304` | **Servers:** `rexel` | **Controllable:** `yokis:SwingingGateOpenerYokisComponent` | **Profiles:** `StatefulOpenCloseGateOpener`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `activateAutomaticClosingOnPowerOn` |  | Activate automatic closing on power on |
+    | `close` |  | Fully close the device |
+    | `deactivateAutomaticClosingOnPowerOn` |  | Deactivate automatic closing on power on |
+    | `deactivateTimer` |  | Deactivate device internal timer |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `open` |  | Fully open the device |
+    | `refreshState` |  | Refresh the device states |
+    | `setAutomaticClosingOnPowerOn` | STRING: false, true | Activate (true) or deactivate (false) automatic closing on power on |
+    | `setTimerUnit` | STRING: sec, min | Set unit of device internal timer (sec=seconds, min=minutes) |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+    | `setYokisTimer` | INT: 0, 2, 4, 8, 15 | Set Yokis device internal temporization value |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `AutomaticClosingOnPowerOnState` | DiscreteState | false, true |  |
+    | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `TimerState` | ContinuousState |  |  |
+    | `TimerUnitState` | DiscreteState | min, sec |  |
+    | `UpdateStatusState` | DiscreteState | error, inProgress, initialized, moduleUnreachableError, networkError, queued, timeout, usbUnreachableError |  |
+    | `AutomationOperatingModeState` | DiscreteState | faac, universal, yokis |  |
+
+??? note "HeatingSystem/ElectricalHeater (ACTUATOR) — 6 commands, 7 states"
+
+    **Type IDs:** `66560` | **Servers:** `rexel` | **Controllable:** `yokis:YokisPilotWireComponent` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `refreshState` |  | Refresh the device states |
+    | `setHeatingLevel` | STRING: comfort, comfort-1, comfort-2, eco, frostprotection | Sets the device heating level mode |
+    | `setLedOnOff` | STRING: on, off | Set the led mode |
+    | `setNumberOfOrders` | INT: 4, 6 | Set the number of orders (4 orders or 6 orders) |
+    | `setScrollOnOff` | STRING: on, off | Set the scroll mode |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ErrorState` | DataState |  |  |
+    | `LEDOnOffState` | DiscreteState | on, off |  |
+    | `NumberOfOrderState` | DiscreteState | 4, 6 |  |
+    | `ScrollOnOffState` | DiscreteState | on, off |  |
+    | `TargetHeatingLevelState` | DiscreteState | comfort, eco |  |
+    | `UpdateStatusState` | DiscreteState | error, inProgress, initialized, moduleUnreachableError, networkError, queued, timeout, usbUnreachableError |  |
+    | `ConfigState` | DataState |  |  |
+
+??? note "Light/DimmerLight (ACTUATOR) — 28 commands, 18 states"
+
+    **Type IDs:** `65536`, `65537`, `65538` | **Servers:** `rexel` | **Controllable:** `yokis:DimmableLightYokisComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `activateContextSavingOnPowerCut` |  | Activate last device state saving on power cut |
+    | `activateExtinctionNotification` |  | Activate device notification before powering off |
+    | `deactivateContextSavingOnPowerCut` |  | Deactivate last device state saving on power cut |
+    | `deactivateExtinctionNotification` |  | Deactivate device notification before powering off |
+    | `deactivateTimer` |  | Deactivate device internal timer |
+    | `goToMemorized1Position` |  | Set the device to a user pre-defined position |
+    | `goToMemorized2Position` |  | Set the device to a user pre-defined position |
+    | `goToMemorized3Position` |  | Set the device to a user pre-defined position |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `off` |  | Turn off the device |
+    | `on` |  | Turn on the device |
+    | `refreshState` |  | Refresh the device states |
+    | `setContextSavingOnPowerCut` | STRING: off, on | Activate (on) or deactivate (off) last device state saving on power cut |
+    | `setExtinctionNotification` | STRING: off, on | Activate (on) or deactivate (off) device notification before powering off |
+    | `setIntensity` | INT [0..100]; STRING: memorized1, memorized2, memorized3 | Light intensity level (100%=maximum intensity, 0%=off) |
+    | `setMemorized1Position` | INT [0..100] | Set favorite position |
+    | `setMemorized1PositionName` | STRING | Change the favorite position internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setMemorized2Position` | INT [0..100] | Set favorite position |
+    | `setMemorized2PositionName` | STRING | Change the favorite position internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setMemorized3Position` | INT [0..100] | Set favorite position |
+    | `setMemorized3PositionName` | STRING | Change the favorite position internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setMinimumLightIntensity` | INT [0..100] | Set device minimum light intensity (100%=maximum intensity, 0%=off) |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+    | `setSwitchMode` | STRING: onOff, dimmer | Set switch policy from one state to another state : On/Off (OnOff) or dimming (dimmer) |
+    | `setTimerUnit` | STRING: sec, min | Set unit of device internal timer (sec=seconds, min=minutes) |
+    | `setTransitionMode` | STRING: smooth, sharp | Set switch policy from one state to another state : On/Off (OnOff) or dimming (dimmer) |
+    | `setYokisTimer` | INT: 0, 2, 4, 8, 15 | Set Yokis device internal temporization value |
+    | `setYokisTransitionRamp` | INT: 0, 1, 2, 3, 4; STRING: sec, min | Set Yokis device internal variation ramp duration (value and unit). Supported combinations : (0,1,3,6,9,12,15,30,45) sec / [0-12] min |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ContextSavingOnPowerCutState` | DiscreteState | off, on |  |
+    | `ExtinctionNotificationState` | DiscreteState | off, on |  |
+    | `LightIntensityState` | ContinuousState | [0..100] |  |
+    | `Memorized1PositionNameState` | DataState |  |  |
+    | `Memorized1PositionState` | ContinuousState |  |  |
+    | `Memorized2PositionNameState` | DataState |  |  |
+    | `Memorized2PositionState` | ContinuousState |  |  |
+    | `Memorized3PositionNameState` | DataState |  |  |
+    | `Memorized3PositionState` | ContinuousState |  |  |
+    | `MinimumLightIntensityState` | ContinuousState |  |  |
+    | `OnOffState` | DiscreteState | on, off |  |
+    | `SwitchModeState` | DiscreteState | dimmer, onOff |  |
+    | `TimerState` | ContinuousState |  |  |
+    | `TimerUnitState` | DiscreteState | min, sec |  |
+    | `TransitionModeState` | DiscreteState | sharp, smooth |  |
+    | `UpdateStatusState` | DiscreteState | error, inProgress, initialized, moduleUnreachableError, networkError, queued, timeout, usbUnreachableError |  |
+    | `YokisTransitionRampDurationState` | ContinuousState |  |  |
+    | `YokisTransitionRampDurationUnitState` | DiscreteState | min, sec |  |
+
+??? note "Light/StatefulOnOffLight (ACTUATOR) — 15 commands, 7 states"
+
+    **Type IDs:** `65792`, `65793`, `65794`, `65795`, `65796` | **Servers:** `rexel` | **Controllable:** `yokis:OnOffLightYokisComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `activateContextSavingOnPowerCut` |  | Activate last device state saving on power cut |
+    | `activateExtinctionNotification` |  | Activate device notification before powering off |
+    | `deactivateContextSavingOnPowerCut` |  | Deactivate last device state saving on power cut |
+    | `deactivateExtinctionNotification` |  | Deactivate device notification before powering off |
+    | `deactivateTimer` |  | Deactivate device internal timer |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `off` |  | Turn off the device |
+    | `on` |  | Turn on the device |
+    | `refreshState` |  | Refresh the device states |
+    | `setButtonMode` | STRING: onOff, push | Set device button behavior |
+    | `setContextSavingOnPowerCut` | STRING: off, on | Activate (on) or deactivate (off) last device state saving on power cut |
+    | `setExtinctionNotification` | STRING: off, on | Activate (on) or deactivate (off) device notification before powering off |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+    | `setTimerUnit` | STRING: sec, min | Set unit of device internal timer (sec=seconds, min=minutes) |
+    | `setYokisTimer` | INT: 0, 2, 4, 8, 15 | Set Yokis device internal temporization value |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ButtonModeState` | DiscreteState | onOff, push |  |
+    | `ContextSavingOnPowerCutState` | DiscreteState | off, on |  |
+    | `ExtinctionNotificationState` | DiscreteState | off, on |  |
+    | `OnOffState` | DiscreteState | on, off |  |
+    | `TimerState` | ContinuousState |  |  |
+    | `TimerUnitState` | DiscreteState | min, sec |  |
+    | `UpdateStatusState` | DiscreteState | error, inProgress, initialized, moduleUnreachableError, networkError, queued, timeout, usbUnreachableError |  |
+
+??? note "NetworkComponent/Repeater (INFRASTRUCTURE_COMPONENT) — 1 commands, 0 states"
+
+    **Type IDs:** `65536`, `65537`, `65538`, `65792`, `65793`, `65794`, `65795`, `65796`, `66048`, `66049`, `66050` | **Servers:** `rexel` | **Controllable:** `yokis:RepeaterYokisComponent` | **Profiles:** `Specific`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+
+??? note "OnOff/StatefulOnOff (ACTUATOR) — 15 commands, 7 states"
+
+    **Type IDs:** `65792`, `65793`, `65794`, `65795`, `65796` | **Servers:** `rexel` | **Controllable:** `yokis:PlugYokisComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `activateContextSavingOnPowerCut` |  | Activate last device state saving on power cut |
+    | `activateExtinctionNotification` |  | Activate device notification before powering off |
+    | `deactivateContextSavingOnPowerCut` |  | Deactivate last device state saving on power cut |
+    | `deactivateExtinctionNotification` |  | Deactivate device notification before powering off |
+    | `deactivateTimer` |  | Deactivate device internal timer |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `off` |  | Turn off the device |
+    | `on` |  | Turn on the device |
+    | `refreshState` |  | Refresh the device states |
+    | `setButtonMode` | STRING: onOff, push | Set device button behavior |
+    | `setContextSavingOnPowerCut` | STRING: off, on | Activate (on) or deactivate (off) last device state saving on power cut |
+    | `setExtinctionNotification` | STRING: off, on | Activate (on) or deactivate (off) device notification before powering off |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+    | `setTimerUnit` | STRING: sec, min | Set unit of device internal timer (sec=seconds, min=minutes) |
+    | `setYokisTimer` | INT: 0, 2, 4, 8, 15 | Set Yokis device internal temporization value |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ButtonModeState` | DiscreteState | onOff, push |  |
+    | `ContextSavingOnPowerCutState` | DiscreteState | off, on |  |
+    | `ExtinctionNotificationState` | DiscreteState | off, on |  |
+    | `OnOffState` | DiscreteState | on, off |  |
+    | `TimerState` | ContinuousState |  |  |
+    | `TimerUnitState` | DiscreteState | min, sec |  |
+    | `UpdateStatusState` | DiscreteState | error, inProgress, initialized, moduleUnreachableError, networkError, queued, timeout, usbUnreachableError |  |
+
+??? note "OnOff/TimedOnOff (ACTUATOR) — 9 commands, 5 states"
+
+    **Type IDs:** `65792`, `65793`, `65794`, `65795`, `65796` | **Servers:** `rexel` | **Controllable:** `yokis:TimedPlugYokisComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `deactivateTimer` |  | Deactivate device internal timer |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `off` |  | Turn off the device |
+    | `on` |  | Turn on the device |
+    | `refreshState` |  | Refresh the device states |
+    | `setButtonMode` | STRING: onOff, push | Set device button behavior |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+    | `setTimerUnit` | STRING: sec, min | Set unit of device internal timer (sec=seconds, min=minutes) |
+    | `setYokisTimer` | INT: 0, 2, 4, 8, 15 | Set Yokis device internal temporization value |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ButtonModeState` | DiscreteState | onOff, push |  |
+    | `OnOffState` | DiscreteState | on, off |  |
+    | `TimerState` | ContinuousState |  |  |
+    | `TimerUnitState` | DiscreteState | min, sec |  |
+    | `UpdateStatusState` | DiscreteState | error, inProgress, initialized, moduleUnreachableError, networkError, queued, timeout, usbUnreachableError |  |
+
+??? note "ProtocolGateway/YokisTransceiver (PROTOCOL_GATEWAY) — 1 commands, 1 states"
+
+    **Type IDs:** `1` | **Servers:** `rexel` | **Controllable:** `yokis:TransceiverYokisComponent` | **Profiles:** `Specific`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `setOperatingVersion` | STRING: 4, 5 | Set Yokis operating version |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `UpdateStatusState` | DiscreteState | error, inProgress, initialized, moduleUnreachableError, networkError, queued, timeout, usbUnreachableError |  |
+
+??? note "RemoteController/TwoButtonsController (REMOTE_CONTROLLER) — 0 commands, 2 states"
+
+    **Type IDs:** `131072`, `131073`, `131088`, `131089`, `131328`, `131329`, `131345`, `131360`, `131361`, `131584`, `131585`, `131600`, `131601`, `131616`, `131617`, `131840`, `131841`, `131857`, `132352`, `132368`, `132384`, `132400` | **Servers:** `rexel` | **Controllable:** `yokis:TwoButtonsControllerYokisComponent` | **Profiles:** `Button`
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `LastButtonPressedState` | DataState |  |  |
+    | `LastButtonReleasedState` | DataState |  |  |
+
+??? note "RollerShutter/PositionableRollerShutter (ACTUATOR) — 28 commands, 13 states"
+
+    **Type IDs:** `66048`, `66049`, `66050` | **Servers:** `rexel` | **Controllable:** `yokis:RollerShutterYokisComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `activateOppositeMotionOnOverload` |  | Activate automatic device opposite motion if an overload is detected |
+    | `activateSoftwareWiringInversion` |  | Activate software device wiring inversion |
+    | `activateTorqueLimitation` |  | Activate device torque limitation |
+    | `close` |  | Fully close the device |
+    | `deactivateOppositeMotionOnOverload` |  | Deactivate automatic device opposite motion if an overload is detected |
+    | `deactivateSoftwareWiringInversion` |  | Deactivate software device wiring inversion |
+    | `deactivateTorqueLimitation` |  | Deactivate device torque limitation |
+    | `down` |  | Move the device completely down |
+    | `goToMemorized1Position` |  | Set the device to a user pre-defined position |
+    | `goToMemorized2Position` |  | Set the device to a user pre-defined position |
+    | `goToMemorized3Position` |  | Set the device to a user pre-defined position |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `open` |  | Fully open the device |
+    | `refreshState` |  | Refresh the device states |
+    | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setMemorized1Position` | INT [0..100] | Set favorite position |
+    | `setMemorized1PositionName` | STRING | Change the favorite position internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setMemorized2Position` | INT [0..100] | Set favorite position |
+    | `setMemorized2PositionName` | STRING | Change the favorite position internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setMemorized3Position` | INT [0..100] | Set favorite position |
+    | `setMemorized3PositionName` | STRING | Change the favorite position internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setOppositeMotionOnOverload` | STRING: off, on | Activate (on) or deactivate (off) automatic device opposite motion if an overload is detected |
+    | `setPosition` | STRING: my, memorized1, memorized2, memorized3, secured; INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%) |
+    | `setSoftwareWiringInversion` | STRING: off, on | Activate (on) or deactivate (off) software device wiring inversion |
+    | `setTorqueLimitation` | STRING: off, on | Activate (on) or deactivate (off) device torque limitation |
+    | `setTorqueMode` | STRING: high, low | Select the device torque mode |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+    | `up` |  | Move the device completely up |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ClosureState` | ContinuousState | [0..100] |  |
+    | `Memorized1PositionNameState` | DataState |  |  |
+    | `Memorized1PositionState` | ContinuousState |  |  |
+    | `Memorized2PositionNameState` | DataState |  |  |
+    | `Memorized2PositionState` | ContinuousState |  |  |
+    | `Memorized3PositionNameState` | DataState |  |  |
+    | `Memorized3PositionState` | ContinuousState |  |  |
+    | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `OppositeMotionOnOverloadState` | DiscreteState | off, on |  |
+    | `SoftwareWiringInversionState` | DiscreteState | off, on |  |
+    | `TorqueLimitationState` | DiscreteState | off, on |  |
+    | `TorqueModeState` | DiscreteState | high, low |  |
+    | `UpdateStatusState` | DiscreteState | error, inProgress, initialized, moduleUnreachableError, networkError, queued, timeout, usbUnreachableError |  |
+
+??? note "Valve/SolenoidValve (ACTUATOR) — 9 commands, 5 states"
+
+    **Type IDs:** `65792`, `65793`, `65794`, `65795` | **Servers:** `rexel` | **Controllable:** `yokis:SolenoidValveYokisComponent` | **Profiles:** `StatefulOpenCloseValve`, `StatefulBasicOpenClose`, `BasicOpenClose`, `StatefulOpenClose`, `OpenClose`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `close` |  | Fully close the device |
+    | `deactivateTimer` |  | Deactivate device internal timer |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `open` |  | Fully open the device |
+    | `refreshState` |  | Refresh the device states |
+    | `setButtonMode` | STRING: onOff, push | Set device button behavior |
+    | `setTimerUnit` | STRING: sec, min | Set unit of device internal timer (sec=seconds, min=minutes) |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+    | `setYokisTimer` | INT: 0, 2, 4, 8, 15 | Set Yokis device internal temporization value |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ButtonModeState` | DiscreteState | onOff, push |  |
+    | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `TimerState` | ContinuousState |  |  |
+    | `TimerUnitState` | DiscreteState | min, sec |  |
+    | `UpdateStatusState` | DiscreteState | error, inProgress, initialized, moduleUnreachableError, networkError, queued, timeout, usbUnreachableError |  |
+
+??? note "VentilationSystem/OnOffVentilationSpeed (ACTUATOR) — 3 commands, 5 states"
+
+    **Type IDs:** `66048`, `66049` | **Servers:** `rexel` | **Controllable:** `yokis:VentilationYokisComponent` | **Profiles:** `StatefulAirFanMode`, `AirFanMode`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `refreshState` |  | Refresh the device states |
+    | `setFanSpeedMode` | STRING: low, high | Set the device fan speed mode |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `FanSpeedModeState` | DiscreteState | low, high |  |
+    | `Memorized1PositionState` | ContinuousState |  |  |
+    | `Memorized2PositionState` | ContinuousState |  |  |
+    | `Memorized3PositionState` | ContinuousState |  |  |
+    | `UpdateStatusState` | DiscreteState | error, inProgress, initialized, moduleUnreachableError, networkError, queued, timeout, usbUnreachableError |  |
+
+??? note "VentilationSystem/VentilationExtractor (ACTUATOR) — 6 commands, 6 states"
+
+    **Type IDs:** `66048`, `66049` | **Servers:** `rexel` | **Controllable:** `yokis:ExtractorYokisComponent` | **Profiles:** `StatefulAirFanMode`, `AirFanMode`, `StatefulSwitchable`, `Switchable`
+
+    **Data Properties**
+
+    - `core:identifyInterval` = `500`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `off` |  | Turn off the device |
+    | `on` |  | Turn on the device |
+    | `refreshState` |  | Refresh the device states |
+    | `setFanSpeedMode` | STRING: low, high | Set the device fan speed mode |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `FanSpeedModeState` | DiscreteState | low, high |  |
+    | `Memorized1PositionState` | ContinuousState |  |  |
+    | `Memorized2PositionState` | ContinuousState |  |  |
+    | `Memorized3PositionState` | ContinuousState |  |  |
+    | `OnOffState` | DiscreteState | on, off |  |
+    | `UpdateStatusState` | DiscreteState | error, inProgress, initialized, moduleUnreachableError, networkError, queued, timeout, usbUnreachableError |  |
+
+
 ## ZIGBEE
 
 50 device types.
 
 ??? note "Awning/PositionableHorizontalAwning (ACTUATOR) — 13 commands, 12 states"
 
-    **Type IDs:** `2199023387141` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:AwningComponent` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`
+    **Type IDs:** `2199023387141` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:AwningComponent` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`
 
     **Data Properties**
 
@@ -16715,7 +19015,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Ballast (ACTUATOR) — 11 commands, 15 states"
 
-    **Type IDs:** `2199023321345` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:BallastComponent` | **Profiles:** `Specific`
+    **Type IDs:** `2199023321345` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:BallastComponent` | **Profiles:** `Specific`
 
     **Data Properties**
 
@@ -16759,7 +19059,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Ballast (ACTUATOR) — 12 commands, 16 states"
 
-    **Type IDs:** `2269319856385` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:SchneiderBallastComponent` | **Profiles:** `Specific`
+    **Type IDs:** `2269319856385` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:SchneiderBallastComponent` | **Profiles:** `Specific`
 
     **Data Properties**
 
@@ -16805,7 +19105,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConfigurationComponent/SchneiderSwitchConfiguration (ACTUATOR) — 12 commands, 16 states"
 
-    **Type IDs:** `2269319857152` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:SchneiderSwitchConfigurationComponent` | **Profiles:** `Specific`
+    **Type IDs:** `2269319857152` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:SchneiderSwitchConfigurationComponent` | **Profiles:** `Specific`
 
     **Data Properties**
 
@@ -16851,7 +19151,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ContactSensor (SENSOR) — 6 commands, 13 states"
 
-    **Type IDs:** `2199023518210`, `2269320053250` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:DoorSensorComponent` | **Profiles:** `DoorContactSensor`, `ContactDetector`
+    **Type IDs:** `2199023518210`, `2269320053250` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:DoorSensorComponent` | **Profiles:** `DoorContactSensor`, `ContactDetector`
 
     **Data Properties**
 
@@ -16888,7 +19188,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Curtain/PositionableCurtain (ACTUATOR) — 15 commands, 23 states"
 
-    **Type IDs:** `2199023387140` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:CurtainComponent` | **Profiles:** `StatefulCloseableCurtain`, `StatefulCloseable`, `Closeable`, `OpenClose`
+    **Type IDs:** `2199023387140` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:CurtainComponent` | **Profiles:** `StatefulCloseableCurtain`, `StatefulCloseable`, `Closeable`, `OpenClose`
 
     **Data Properties**
 
@@ -16944,7 +19244,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 6 commands, 12 states"
 
-    **Type IDs:** `2199023276289`, `2199023276290`, `2278664720658`, `2269319811346` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:ElectricalEnergyConsumptionSensorComponent` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `2199023276289`, `2199023276290`, `2278664720658`, `2269319811346` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:ElectricalEnergyConsumptionSensorComponent` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
 
     **Data Properties**
 
@@ -16980,7 +19280,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 6 commands, 21 states"
 
-    **Type IDs:** `2199023585538`, `2271501158658` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:LinkyRadioTransmitterHistoricSensorComponent` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `2199023585538`, `2271501158658` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:LinkyRadioTransmitterHistoricSensorComponent` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
 
     **Data Properties**
 
@@ -17025,7 +19325,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 6 commands, 32 states"
 
-    **Type IDs:** `2271500849922`, `2276869559042` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:LinkyRadioTransmitterSensorComponent` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `2271500849922`, `2276869559042` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:LinkyRadioTransmitterSensorComponent` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
 
     **Data Properties**
 
@@ -17081,7 +19381,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 6 commands, 11 states"
 
-    **Type IDs:** `2268296448513`, `2268296383745` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:ElectricalPowerConsumptionSensorComponent` | **Profiles:** `ElectricPowerMeter`
+    **Type IDs:** `2268296448513`, `2268296383745` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:ElectricalPowerConsumptionSensorComponent` | **Profiles:** `ElectricPowerMeter`
 
     **Data Properties**
 
@@ -17116,7 +19416,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorScreen/PositionableScreen (ACTUATOR) — 15 commands, 23 states"
 
-    **Type IDs:** `2199023387138`, `2199023387139` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:VerticalExteriorAwningComponent` | **Profiles:** `StatefulCloseableScreen`, `StatefulCloseable`, `Closeable`, `OpenClose`
+    **Type IDs:** `2199023387138`, `2199023387139` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:VerticalExteriorAwningComponent` | **Profiles:** `StatefulCloseableScreen`, `StatefulCloseable`, `Closeable`, `OpenClose`
 
     **Data Properties**
 
@@ -17172,7 +19472,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GasSensor/COSensor (SENSOR) — 6 commands, 13 states"
 
-    **Type IDs:** `2199023518213` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:CarbonMonoxideSensorComponent` | **Profiles:** `CODetection`
+    **Type IDs:** `2199023518213` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:CarbonMonoxideSensorComponent` | **Profiles:** `CODetection`
 
     **Data Properties**
 
@@ -17209,7 +19509,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ThermostatSetPoint (ACTUATOR) — 13 commands, 19 states"
 
-    **Type IDs:** `2199023452416` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:ThermostatHeatingComponent` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`
+    **Type IDs:** `2199023452416` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:ThermostatHeatingComponent` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`
 
     **Data Properties**
 
@@ -17259,7 +19559,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ThermostatSetPoint (ACTUATOR) — 14 commands, 20 states"
 
-    **Type IDs:** `2199023452417` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:ThermostatCoolingComponent` | **Profiles:** `StatefulCoolingThermostatWithSensor`, `StatefulCoolingThermostat`, `CoolingThermostat`
+    **Type IDs:** `2199023452417` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:ThermostatCoolingComponent` | **Profiles:** `StatefulCoolingThermostatWithSensor`, `StatefulCoolingThermostat`, `CoolingThermostat`
 
     **Data Properties**
 
@@ -17311,7 +19611,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ThermostatSetPoint (ACTUATOR) — 14 commands, 22 states"
 
-    **Type IDs:** `2199023452418` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:ThermostatHeatingAndCoolingComponent` | **Profiles:** `StatefulDualThermostatWithSensor`, `StatefulDualThermostat`, `DualThermostat`
+    **Type IDs:** `2199023452418` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:ThermostatHeatingAndCoolingComponent` | **Profiles:** `StatefulDualThermostatWithSensor`, `StatefulDualThermostat`, `DualThermostat`
 
     **Data Properties**
 
@@ -17365,7 +19665,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ThermostatSetPoint (ACTUATOR) — 19 commands, 29 states"
 
-    **Type IDs:** `2277859590432` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:AtlanticCesaV2HeatingAndCoolingZoneComponent` | **Profiles:** `StatefulDualThermostatWithSensor`, `StatefulDualThermostat`, `DualThermostat`
+    **Type IDs:** `2277859590432` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:AtlanticCesaV2HeatingAndCoolingZoneComponent` | **Profiles:** `StatefulDualThermostatWithSensor`, `StatefulDualThermostat`, `DualThermostat`
 
     **Data Properties**
 
@@ -17431,7 +19731,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ThermostatDualModeAndFan (ACTUATOR) — 18 commands, 25 states"
 
-    **Type IDs:** `2277859590418` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:ThermostatAndFanComponent` | **Profiles:** `StatefulDualThermostatWithSensor`, `StatefulDualThermostat`, `DualThermostat`
+    **Type IDs:** `2277859590418` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:ThermostatAndFanComponent` | **Profiles:** `StatefulDualThermostatWithSensor`, `StatefulDualThermostat`, `DualThermostat`
 
     **Data Properties**
 
@@ -17492,7 +19792,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ElectricalHeater (ACTUATOR) — 15 commands, 13 states"
 
-    **Type IDs:** `2278664720658`, `2269319811346` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:WirePilotComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `2278664720658`, `2269319811346` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:WirePilotComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -17538,7 +19838,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ElectricalHeater (ACTUATOR) — 15 commands, 13 states"
 
-    **Type IDs:** `2270846517760` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:CleodeZPilotComponent` | **Profiles:** `SwitchableHeating`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `2270846517760` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:CleodeZPilotComponent` | **Profiles:** `SwitchableHeating`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -17584,7 +19884,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HumiditySensor/RelativeHumiditySensor (SENSOR) — 6 commands, 16 states"
 
-    **Type IDs:** `2199023452673`, `2269319987712` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:RelativeHumidityComponent` | **Profiles:** `RelativeHumidity`
+    **Type IDs:** `2199023452673`, `2269319987712` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:RelativeHumidityComponent` | **Profiles:** `RelativeHumidity`
 
     **Data Properties**
 
@@ -17624,7 +19924,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/StatefulOnOffLight (ACTUATOR) — 14 commands, 12 states"
 
-    **Type IDs:** `2199023321088`, `2199023321089`, `2268296445952` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:OnOffLightComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `2199023321088`, `2199023321089`, `2268296445952` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:OnOffLightComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -17669,7 +19969,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerLight (ACTUATOR) — 16 commands, 13 states"
 
-    **Type IDs:** `2199023321344`, `2199023321345` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:LightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321344`, `2199023321345` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:LightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
 
     **Data Properties**
 
@@ -17717,7 +20017,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerHueSaturationLight (ACTUATOR) — 21 commands, 16 states"
 
-    **Type IDs:** `2199023321600`, `2199023321601`, `2199023321603` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:HueLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321600`, `2199023321601`, `2199023321603` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:HueLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
 
     **Data Properties**
 
@@ -17773,7 +20073,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerHueSaturationLight (ACTUATOR) — 22 commands, 19 states"
 
-    **Type IDs:** `2199023321607` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:ColorLoopLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321607` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:ColorLoopLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
 
     **Data Properties**
 
@@ -17833,7 +20133,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerCIEColorSpaceXYLight (ACTUATOR) — 19 commands, 16 states"
 
-    **Type IDs:** `2199023321608` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:CIEColorSpaceXYLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321608` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:CIEColorSpaceXYLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
 
     **Data Properties**
 
@@ -17887,7 +20187,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerHueSaturationLight (ACTUATOR) — 23 commands, 18 states"
 
-    **Type IDs:** `2199023321609`, `2199023321611` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:HueCIEXYLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321609`, `2199023321611` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:HueCIEXYLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
 
     **Data Properties**
 
@@ -17947,7 +20247,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerHueSaturationLight (ACTUATOR) — 24 commands, 21 states"
 
-    **Type IDs:** `2199023321615` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:ColorLoopCIEXYLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321615` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:ColorLoopCIEXYLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
 
     **Data Properties**
 
@@ -18011,7 +20311,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerColorTemperatureLight (ACTUATOR) — 19 commands, 15 states"
 
-    **Type IDs:** `2199023321616`, `2199023324160`, `2199023324176` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:ColorTemperatureLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321616`, `2199023324160`, `2199023324176` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:ColorTemperatureLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
 
     **Data Properties**
 
@@ -18064,7 +20364,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerHueSaturationLight (ACTUATOR) — 23 commands, 17 states"
 
-    **Type IDs:** `2199023321617`, `2199023321619` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:HueColorTemperatureLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321617`, `2199023321619` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:HueColorTemperatureLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
 
     **Data Properties**
 
@@ -18123,7 +20423,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerHueSaturationLight (ACTUATOR) — 24 commands, 20 states"
 
-    **Type IDs:** `2199023321623` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:ColorLoopColorTemperatureLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321623` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:ColorLoopColorTemperatureLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
 
     **Data Properties**
 
@@ -18186,7 +20486,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerColorTemperatureLight (ACTUATOR) — 21 commands, 17 states"
 
-    **Type IDs:** `2199023321624` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:ColorTemperatureCIEXYLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321624` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:ColorTemperatureCIEXYLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
 
     **Data Properties**
 
@@ -18243,7 +20543,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerHueSaturationLight (ACTUATOR) — 25 commands, 19 states"
 
-    **Type IDs:** `2199023321625`, `2199023321627`, `2199023324416` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:HueXYTemperatureLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321625`, `2199023321627`, `2199023324416` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:HueXYTemperatureLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
 
     **Data Properties**
 
@@ -18306,7 +20606,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerHueSaturationLight (ACTUATOR) — 26 commands, 22 states"
 
-    **Type IDs:** `2199023321631`, `2199023324447` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:ColorLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2199023321631`, `2199023324447` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:ColorLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
 
     **Data Properties**
 
@@ -18373,7 +20673,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/StatefulOnOffLight (ACTUATOR) — 19 commands, 17 states"
 
-    **Type IDs:** `2269319856128` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:SchneiderOnOffLightComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `2269319856128` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:SchneiderOnOffLightComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -18428,7 +20728,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerLight (ACTUATOR) — 23 commands, 20 states"
 
-    **Type IDs:** `2269319856384`, `2269319856385` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:SchneiderLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
+    **Type IDs:** `2269319856384`, `2269319856385` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:SchneiderLightComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `StatefulSwitchable`, `Dimmable`, `Switchable`
 
     **Data Properties**
 
@@ -18490,7 +20790,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "LightSensor/LuminanceSensor (SENSOR) — 6 commands, 15 states"
 
-    **Type IDs:** `2199023322624`, `2269320053263` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:LightSensorComponent` | **Profiles:** `Luminance`
+    **Type IDs:** `2199023322624`, `2269320053263` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:LightSensorComponent` | **Profiles:** `Luminance`
 
     **Data Properties**
 
@@ -18529,7 +20829,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OccupancySensor/MotionSensor (SENSOR) — 6 commands, 13 states"
 
-    **Type IDs:** `2199023518209`, `2269320053249`, `2269320053263` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:MotionSensorComponent` | **Profiles:** `OccupancyDetector`
+    **Type IDs:** `2199023518209`, `2269320053249`, `2269320053263` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:MotionSensorComponent` | **Profiles:** `OccupancyDetector`
 
     **Data Properties**
 
@@ -18566,7 +20866,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OccupancySensor (SENSOR) — 6 commands, 11 states"
 
-    **Type IDs:** `2199023322880` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:OccupancySensorComponent` | **Profiles:** `OccupancyDetector`
+    **Type IDs:** `2199023322880` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:OccupancySensorComponent` | **Profiles:** `OccupancyDetector`
 
     **Data Properties**
 
@@ -18601,7 +20901,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 14 commands, 12 states"
 
-    **Type IDs:** `2199023256064`, `2199023257856`, `2199023276288`, `2199023276289`, `2199023276290`, `2199023323648`, `2268296446720`, `2268296448513` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:OnOffComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `2199023256064`, `2199023257856`, `2199023276288`, `2199023276289`, `2199023276290`, `2199023323648`, `2268296446720`, `2268296448513` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:OnOffComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -18646,11 +20946,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ProtocolGateway/ZigbeeStack (PROTOCOL_GATEWAY) — 0 commands, 0 states"
 
-    **Type IDs:** `0`, `2` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:TransceiverV3_0Component` | **Profiles:** `Specific`
+    **Type IDs:** `0`, `2` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:TransceiverV3_0Component` | **Profiles:** `Specific`
 
 ??? note "ProtocolGateway/ZigbeeStack (PROTOCOL_GATEWAY) — 6 commands, 5 states"
 
-    **Type IDs:** `1099511648256` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:StackComponent` | **Profiles:** `Specific`
+    **Type IDs:** `1099511648256` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:StackComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -18675,7 +20975,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ProtocolGateway/ZigbeeStack (PROTOCOL_GATEWAY) — 9 commands, 5 states"
 
-    **Type IDs:** `1099511648257` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:StackV3Component` | **Profiles:** `Specific`
+    **Type IDs:** `1099511648257` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:StackV3Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -18703,7 +21003,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RemoteController/EmptyRemoteController (REMOTE_CONTROLLER) — 2 commands, 12 states"
 
-    **Type IDs:** `2199023321856`, `2199023322112`, `2199023322368`, `2199023387392`, `2199023779840`, `2199023783936`, `2199023788032`, `2199023792128`, `2268296446976`, `2268296512256` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:ZigbeeRemoteComponent` | **Profiles:** `Specific`
+    **Type IDs:** `2199023321856`, `2199023322112`, `2199023322368`, `2199023387392`, `2199023779840`, `2199023783936`, `2199023788032`, `2199023792128`, `2268296446976`, `2268296512256` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:ZigbeeRemoteComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -18731,7 +21031,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/PositionableRollerShutter (ACTUATOR) — 14 commands, 12 states"
 
-    **Type IDs:** `2199023386624`, `2199023387142` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:RollerShutterComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `OpenClose`
+    **Type IDs:** `2199023386624`, `2199023387142` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:RollerShutterComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `OpenClose`
 
     **Data Properties**
 
@@ -18775,7 +21075,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Screen/PositionableScreen (ACTUATOR) — 15 commands, 23 states"
 
-    **Type IDs:** `2199023387136`, `2199023387137`, `2199023387143`, `2199023387145` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:RollerShadeComponent` | **Profiles:** `StatefulCloseableScreen`, `StatefulCloseable`, `Closeable`, `OpenClose`
+    **Type IDs:** `2199023387136`, `2199023387137`, `2199023387143`, `2199023387145` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:RollerShadeComponent` | **Profiles:** `StatefulCloseableScreen`, `StatefulCloseable`, `Closeable`, `OpenClose`
 
     **Data Properties**
 
@@ -18831,7 +21131,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "SmokeSensor (SENSOR) — 6 commands, 13 states"
 
-    **Type IDs:** `2199023518211` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:SmokeSensorComponent` | **Profiles:** `SmokeDetector`
+    **Type IDs:** `2199023518211` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:SmokeSensorComponent` | **Profiles:** `SmokeDetector`
 
     **Data Properties**
 
@@ -18868,7 +21168,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "TemperatureSensor (SENSOR) — 6 commands, 13 states"
 
-    **Type IDs:** `2277859590432` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:SimpleTemperatureSensorComponent` | **Profiles:** `Temperature`
+    **Type IDs:** `2277859590432` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:SimpleTemperatureSensorComponent` | **Profiles:** `Temperature`
 
     **Data Properties**
 
@@ -18905,7 +21205,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "TemperatureSensor (SENSOR) — 6 commands, 16 states"
 
-    **Type IDs:** `2199023452672`, `2199023452673`, `2269319987712` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:TemperatureSensorComponent` | **Profiles:** `Temperature`
+    **Type IDs:** `2199023452672`, `2199023452673`, `2269319987712` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:TemperatureSensorComponent` | **Profiles:** `Temperature`
 
     **Data Properties**
 
@@ -18945,7 +21245,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VenetianBlind/PositionableVenetianBlind (ACTUATOR) — 17 commands, 24 states"
 
-    **Type IDs:** `2199023387144` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:InteriorBlindComponent` | **Profiles:** `StatefulOrientableAndCloseableShutter`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
+    **Type IDs:** `2199023387144` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:InteriorBlindComponent` | **Profiles:** `StatefulOrientableAndCloseableShutter`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
 
     **Data Properties**
 
@@ -19004,7 +21304,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterSensor/WaterDetectionSensor (SENSOR) — 6 commands, 13 states"
 
-    **Type IDs:** `2199023518212`, `2269320053252` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `zigbee:WaterLeakageSensorComponent` | **Profiles:** `WaterDetector`
+    **Type IDs:** `2199023518212`, `2269320053252` | **Servers:** `atlantic_cozytouch`, `rexel`, `somfy_europe` | **Controllable:** `zigbee:WaterLeakageSensorComponent` | **Profiles:** `WaterDetector`
 
     **Data Properties**
 
@@ -19046,7 +21346,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConfigurationComponent/ZWaveConfiguration (ACTUATOR) — 3 commands, 2 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:ConfigurationV1ClassComponent` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:ConfigurationV1ClassComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -19065,7 +21365,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConfigurationComponent/ZWaveConfiguration (ACTUATOR) — 2 commands, 2 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:WakeUpClassV1Component` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:WakeUpClassV1Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -19083,7 +21383,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConfigurationComponent/ZWaveConfiguration (ACTUATOR) — 3 commands, 6 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:WakeUpClassV2Component` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:WakeUpClassV2Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -19106,7 +21406,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConfigurationComponent/ZWaveNodonConfiguration (ACTUATOR) — 22 commands, 10 states"
 
-    **Type IDs:** `1103823372289`, `1103823372290`, `1103823372291` | **Servers:** `somfy_europe` | **Controllable:** `zwave:NodonRemoteControllerConfigurationZWaveComponent` | **Profiles:** `Specific`
+    **Type IDs:** `1103823372289`, `1103823372290`, `1103823372291` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:NodonRemoteControllerConfigurationZWaveComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -19152,7 +21452,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConsumptionSensor/BatterySensor (SENSOR) — 1 commands, 2 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:BatteryClassV1Component` | **Profiles:** `BatteryStatus`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:BatteryClassV1Component` | **Profiles:** `BatteryStatus`
 
     **Commands**
 
@@ -19169,7 +21469,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConsumptionSensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 1 commands, 7 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:MeterClassV1Component` | **Profiles:** `ElectricEnergyConsumption`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:MeterClassV1Component` | **Profiles:** `ElectricEnergyConsumption`
 
     **Commands**
 
@@ -19191,7 +21491,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConsumptionSensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 3 commands, 15 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:MeterClassV2Component` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:MeterClassV2Component` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
 
     **Commands**
 
@@ -19223,7 +21523,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConsumptionSensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 3 commands, 18 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:MeterClassV3Component` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:MeterClassV3Component` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
 
     **Commands**
 
@@ -19258,7 +21558,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ContactSensor (SENSOR) — 1 commands, 1 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:DoorLockClassOpenCloseSensorComponent` | **Profiles:** `DoorOpeningStatus`, `OpeningStatus`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:DoorLockClassOpenCloseSensorComponent` | **Profiles:** `DoorOpeningStatus`, `OpeningStatus`
 
     **Commands**
 
@@ -19274,7 +21574,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "DoorLock (ACTUATOR) — 14 commands, 1 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:DoorLockClassV1Component` | **Profiles:** `StatefulDoorLock`, `StatefulLock`, `LockStatus`, `Lock`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:DoorLockClassV1Component` | **Profiles:** `StatefulDoorLock`, `StatefulLock`, `LockStatus`, `Lock`
 
     **Commands**
 
@@ -19303,7 +21603,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/DimmerOnOff (ACTUATOR) — 6 commands, 2 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:BasicClassComponent` | **Profiles:** `StatefulLevelControl`, `LevelControl`, `StatefulSwitchable`, `Switchable`, `Generic`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:BasicClassComponent` | **Profiles:** `StatefulLevelControl`, `LevelControl`, `StatefulSwitchable`, `Switchable`, `Generic`
 
     **Commands**
 
@@ -19325,15 +21625,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/StatefulAlarmController (ACTUATOR) — 4 commands, 9 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:NotificationClassV2V8Component` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:NotificationClassV2V8Component` | **Profiles:** `Specific`
 
     **Commands**
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `refreshNotification` | INT [0..255]; STRING; STRING (optional) | This command is used to request if the unsolicited transmission of a specific Notification Type is enabled. p1: The use of this field depends on the V1 Alarm field advertised in the Alarm Type Supported Report Command. p2: This field is used to specify a Notification Type p3: This field is used to optionally specify a Notification Event/State within the Notification Type |
     | `refreshNotificationSupportedEvent` | STRING | This command is used to request the supported Notifications for a specified Notification Type. p1: This field is used to specify a Notification Type |
     | `refreshNotificationSupportedType` |  | This command is used to request supported Notification Types |
+    | `refreshNotification` | INT [0..255]; STRING; STRING (optional) | This command is used to request if the unsolicited transmission of a specific Notification Type is enabled. p1: The use of this field depends on the V1 Alarm field advertised in the Alarm Type Supported Report Command. p2: This field is used to specify a Notification Type p3: This field is used to optionally specify a Notification Event/State within the Notification Type |
     | `setNotificationStatus` | STRING; STRING: enabled, disabled | This command is used to enable or disable the unsolicited transmission of a specific Notification Type. p1: This field is used to specify a Notification Type p2: This field is used to set the Status of a Notification Type. |
 
     **States**
@@ -19352,7 +21652,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GenericSensor/UniversalSensor (SENSOR) — 1 commands, 7 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:MultilevelSensorClassV1Component` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:MultilevelSensorClassV1Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -19374,7 +21674,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GenericSensor/UniversalSensor (SENSOR) — 1 commands, 16 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:MultilevelSensorClassV2Component` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:MultilevelSensorClassV2Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -19405,7 +21705,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GenericSensor/UniversalSensor (SENSOR) — 1 commands, 23 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:MultilevelSensorClassV3Component` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:MultilevelSensorClassV3Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -19443,7 +21743,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GenericSensor/UniversalSensor (SENSOR) — 1 commands, 24 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:MultilevelSensorClassV4Component` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:MultilevelSensorClassV4Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -19482,7 +21782,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ThermostatSetPoint (ACTUATOR) — 3 commands, 2 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:ThermostatModeClassV1Component` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:ThermostatModeClassV1Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -19501,7 +21801,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ThermostatSetPoint (ACTUATOR) — 3 commands, 7 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:ThermostatSetPointClassV1Component` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:ThermostatSetPointClassV1Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -19525,7 +21825,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ThermostatSetPoint (ACTUATOR) — 3 commands, 10 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:ThermostatSetPointClassV2Component` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:ThermostatSetPointClassV2Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -19552,7 +21852,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "NetworkComponent/Node (ACTUATOR) — 1 commands, 2 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:DynamicNodeComponent` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:DynamicNodeComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -19569,7 +21869,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "NetworkComponent/Node (ACTUATOR) — 4 commands, 5 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:PowerLevelClassV1Component` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:PowerLevelClassV1Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -19592,7 +21892,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "NetworkComponent/Node (ACTUATOR) — 2 commands, 2 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:IndicatorClassV1Component` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:IndicatorClassV1Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -19610,7 +21910,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "NetworkComponent/Node (ACTUATOR) — 4 commands, 5 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:MultiChannelAssociationClassV2Component` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:MultiChannelAssociationClassV2Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -19633,7 +21933,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "NetworkComponent/Node (ACTUATOR) — 4 commands, 4 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:AssociationClassV2Component` | **Profiles:** `Specific`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:AssociationClassV2Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -19655,7 +21955,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "NetworkComponent/Node (ACTUATOR) — 0 commands, 2 states"
 
-    **Type IDs:** `8606711808` | **Servers:** `somfy_europe` | **Controllable:** `zwave:NodeComponent` | **Profiles:** `Specific`
+    **Type IDs:** `8606711808` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:NodeComponent` | **Profiles:** `Specific`
 
     **States**
 
@@ -19666,7 +21966,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 4 commands, 1 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:BinarySwitchClassV1Component` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:BinarySwitchClassV1Component` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -19685,7 +21985,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/DimmerOnOff (ACTUATOR) — 8 commands, 2 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:MultilevelSwitchClassV1Component` | **Profiles:** `StatefulSwitchableLight`, `StatefulLevelControl`, `LevelControl`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:MultilevelSwitchClassV1Component` | **Profiles:** `StatefulSwitchableLight`, `StatefulLevelControl`, `LevelControl`, `StatefulSwitchable`, `Switchable`
 
     **Commands**
 
@@ -19709,25 +22009,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ProtocolGateway/ZWaveTransceiver (PROTOCOL_GATEWAY) — 13 commands, 1 states"
 
-    **Type IDs:** `8606711808` | **Servers:** `somfy_europe` | **Controllable:** `zwave:TransceiverZWaveComponent` | **Profiles:** `Specific`
+    **Type IDs:** `8606711808` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:TransceiverZWaveComponent` | **Profiles:** `Specific`
 
     **Commands**
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `isFailedDevice` | INT [0..255] | Test if the device is still reachable into the network. p1 : nodeId |
-    | `removeFailedNode` | INT [0..255] | Remove a failed node. p1 : nodeId |
-    | `replaceFailedDevice` | INT [0..255] | Replace a failed node. p1 : nodeId |
     | `startExclusion` | INT [1..3600] | Start zwave exclusion with a given timeout. |
     | `startExclusionWithMode` | INT [1..3600]; STRING: low, normal, wide | Start zwave exclusion with a given timeout and mode. p1 : timeout p2 : mode     "low" value if the device is less than 3 meters of the gateway     "normal" value if the device is under the network cover of the gateway     "wide" value if the device is further away than the network coverage of the gateway |
+    | `stopExclusion` |  | Stop zwave exclusion. |
     | `startInclusion` | INT [1..3600] | Start zwave inclusion with a given timeout. |
     | `startInclusionWithModeAndSecurityLevel` | INT [1..3600]; STRING: low, normal, wide; STRING: none, CRC16, S0, S2 | !!! Warning !!! You should use another security level than S2 only if you have no other choice, Be caution with this command.  Start zwave inclusion with a given timeout, mode and security level. If you set none for example for a device which can use S2 all frame will be readble without security key. p1 : timeout p2 : mode     "low" value if the device is less than 3 meters of the gateway.     "normal" value if the device is under the network cover of the gateway.     "wide" value if the device is further away than the network coverage of the gateway. p3 : highest security level to use. |
     | `startInclusionWithMode` | INT [1..3600]; STRING: low, normal, wide | Start zwave inclusion with a given timeout and mode. p1 : timeout p2 : mode     "low" value if the device is less than 3 meters of the gateway.     "normal" value if the device is under the network cover of the gateway.     "wide" value if the device is further away than the network coverage of the gateway. |
+    | `stopInclusion` |  | Stop zwave inclusion. |
     | `startLearn` | INT [1..3600] | Start zwave learn with a given timeout. |
     | `startLearnWithMode` | INT [1..3600]; STRING: classic, inclusion, exclusion | Start zwave learn with a given timeout and mode. p1 : timeout p2 : mode     "classic" gateway can be included or excluded from another network.     "inclusion" gateway can only be included from another network.     "exclusion" gateway can only be excluded from another network. |
-    | `stopExclusion` |  | Stop zwave exclusion. |
-    | `stopInclusion` |  | Stop zwave inclusion. |
     | `stopLearn` |  | Stop zwave learn. |
+    | `isFailedDevice` | INT [0..255] | Test if the device is still reachable into the network. p1 : nodeId |
+    | `removeFailedNode` | INT [0..255] | Remove a failed node. p1 : nodeId |
+    | `replaceFailedDevice` | INT [0..255] | Replace a failed node. p1 : nodeId |
 
     **States**
 
@@ -19737,7 +22037,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RemoteController/SceneController (REMOTE_CONTROLLER) — 1 commands, 3 states"
 
-    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `somfy_europe` | **Controllable:** `zwave:CentralSceneClassV1Component` | **Profiles:** `RockerSwitch`
+    **Type IDs:** `65535`, `1103823437823`, `1103840215039`, `1103856992255` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:CentralSceneClassV1Component` | **Profiles:** `RockerSwitch`
 
     **Commands**
 
@@ -19755,7 +22055,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RemoteController/RockerSwitchx2Controller (REMOTE_CONTROLLER) — 0 commands, 4 states"
 
-    **Type IDs:** `1103823372289`, `1103823372290`, `1103823372291` | **Servers:** `somfy_europe` | **Controllable:** `zwave:RockerSwitchx2ZWaveComponent` | **Profiles:** `RockerSwitch`
+    **Type IDs:** `1103823372289`, `1103823372290`, `1103823372291` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `zwave:RockerSwitchx2ZWaveComponent` | **Profiles:** `RockerSwitch`
 
     **States**
 
@@ -19765,3 +22065,4 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `NeighboursAddressesState` | DataState |  |  |
     | `RockerSwitchPushWayState` | DiscreteState | heldDown, pressed, pressedX2, pressedX3, pressedX4 |  |
     | `RockerSwitchx2State` | DiscreteState | A0, A1, B0, B1, released |  |
+
