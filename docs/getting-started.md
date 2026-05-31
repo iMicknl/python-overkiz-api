@@ -202,3 +202,63 @@ Use a cloud server when you want to connect through the vendor’s public API. U
 
     asyncio.run(main())
     ```
+
+=== "Rexel (externally-managed token)"
+
+    Use this when an external system already owns the OAuth2 lifecycle — for
+    example the Home Assistant `application_credentials` platform, which
+    authorizes, exchanges, refreshes, and persists tokens for you. pyoverkiz
+    then only needs the *current* access token and the Rexel gateway selection.
+
+    Supply a token in one of two ways:
+
+    **Async callback (recommended for long-running apps).** pyoverkiz calls it
+    before each request, so the owner can refresh and persist transparently.
+
+    ```python
+    import asyncio
+    from pyoverkiz.auth.credentials import RexelTokenCredentials
+    from pyoverkiz.client import OverkizClient
+    from pyoverkiz.enums import Server
+
+
+    async def get_access_token() -> str:
+        # Return a currently-valid access token (refresh upstream as needed).
+        ...
+
+
+    async def main() -> None:
+        async with OverkizClient(
+            server=Server.REXEL,
+            credentials=RexelTokenCredentials(
+                access_token_callback=get_access_token,
+            ),
+        ) as client:
+            await client.login()  # discovers + auto-selects a sole gateway
+
+            gateways = await client.discover_gateways()
+            if len(gateways) > 1:
+                client.select_gateway(gateways[0].gateway_id)
+
+            setup = await client.get_setup()
+            print(f"{len(setup.devices)} device(s)")
+
+    asyncio.run(main())
+    ```
+
+    **Static token (simplest, for quick standalone or test use).** No refresh —
+    when the token expires you construct a new client.
+
+    ```python
+    credentials = RexelTokenCredentials(access_token="YOUR_ACCESS_TOKEN")
+    ```
+
+    **Reload without re-discovering.** Persist the chosen `gateway_id` and pass
+    it back on the next run; `login()` applies it directly and skips discovery:
+
+    ```python
+    credentials = RexelTokenCredentials(
+        access_token_callback=get_access_token,
+        gateway_id="STORED_GATEWAY_ID",
+    )
+    ```
