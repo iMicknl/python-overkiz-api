@@ -11,7 +11,11 @@ import pytest
 
 from pyoverkiz import exceptions
 from pyoverkiz.action_queue import ActionQueueSettings
-from pyoverkiz.auth import UsernamePasswordCredentials
+from pyoverkiz.auth import (
+    GatewayCandidate,
+    SupportsGatewaySelection,
+    UsernamePasswordCredentials,
+)
 from pyoverkiz.client import OverkizClient, OverkizClientSettings
 from pyoverkiz.const import USER_AGENT
 from pyoverkiz.enums import (
@@ -1231,8 +1235,6 @@ class TestOverkizClient:
         self, client: OverkizClient
     ) -> None:
         """discover_gateways delegates to a selection-capable strategy."""
-        from pyoverkiz.auth.base import GatewayCandidate, SupportsGatewaySelection
-
         fake_auth = MagicMock(spec=SupportsGatewaySelection)
         fake_auth.discover_gateways = AsyncMock(
             return_value=[GatewayCandidate(gateway_id="g1")]
@@ -1255,8 +1257,6 @@ class TestOverkizClient:
 
     def test_select_gateway_delegates_to_strategy(self, client: OverkizClient) -> None:
         """select_gateway forwards to a selection-capable strategy."""
-        from pyoverkiz.auth.base import SupportsGatewaySelection
-
         fake_auth = MagicMock(spec=SupportsGatewaySelection)
         client._auth = fake_auth
 
