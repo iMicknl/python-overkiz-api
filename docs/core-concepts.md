@@ -48,6 +48,8 @@ An optional `ExecutionMode` can be passed when executing an action group:
 - `GEOLOCATED` — Triggered by geolocation rules.
 - `INTERNAL` — Used for internal/system executions.
 
+Execution modes are only supported by the **Cloud API**. The local API (Somfy TaHoma Developer Mode) does not accept an execution mode and will reject the request. See [Somfy-TaHoma-Developer-Mode#227](https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode/issues/227).
+
 ## UI profiles and classifiers
 
 Each device definition includes **UI profiles** and **UI classifiers** that describe what the device can do at a higher level than raw commands.

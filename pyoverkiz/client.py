@@ -609,7 +609,9 @@ class OverkizClient:
             actions: One or more actions to execute. Each action targets a
                 single device and holds one or more commands.
             mode: Optional execution mode (``HIGH_PRIORITY``, ``GEOLOCATED``,
-                or ``INTERNAL``).
+                or ``INTERNAL``). Only supported by the Cloud API; the local
+                API rejects requests that specify an execution mode (see
+                Somfy-TaHoma-Developer-Mode issue #227).
             label: Human-readable label for the execution.
 
         Returns:
