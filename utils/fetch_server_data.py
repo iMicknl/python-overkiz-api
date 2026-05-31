@@ -9,6 +9,11 @@ JSON files to generate code and documentation offline.
 Usage:
     OVERKIZ_USERNAME=... OVERKIZ_PASSWORD=... uv run utils/fetch_server_data.py
     OVERKIZ_USERNAME=... OVERKIZ_PASSWORD=... uv run utils/fetch_server_data.py --server atlantic_cozytouch
+
+Rexel uses an externally-managed OAuth2 access token,
+retrieve this and pass it via REXEL_ACCESS_TOKEN:
+    REXEL_ACCESS_TOKEN=... uv run utils/fetch_server_data.py --server rexel
+    REXEL_ACCESS_TOKEN=... REXEL_GATEWAY_ID=... uv run utils/fetch_server_data.py --server rexel
 """
 
 # ruff: noqa: T201
@@ -21,7 +26,12 @@ import json
 import os
 from pathlib import Path
 
-from pyoverkiz.auth.credentials import UsernamePasswordCredentials
+from pyoverkiz.auth.base import SupportsGatewaySelection
+from pyoverkiz.auth.credentials import (
+    Credentials,
+    RexelTokenCredentials,
+    UsernamePasswordCredentials,
+)
 from pyoverkiz.client import OverkizClient
 from pyoverkiz.enums import Server
 from pyoverkiz.exceptions import OverkizError
@@ -234,16 +244,42 @@ def _serialize_ui_profile(profile: UIProfileDefinition) -> dict:
     return result
 
 
+def _build_credentials(server: Server) -> Credentials:
+    """Build credentials for the target server from the environment.
+
+    Most servers use username/password. Rexel has no password grant; it relies
+    on an externally-managed OAuth2 access token (mint one with the throwaway
+    Rexel helper) supplied via REXEL_ACCESS_TOKEN, optionally pinned to a
+    gateway with REXEL_GATEWAY_ID.
+    """
+    if server == Server.REXEL:
+        return RexelTokenCredentials(
+            access_token=os.environ["REXEL_ACCESS_TOKEN"],
+            gateway_id=os.environ.get("REXEL_GATEWAY_ID"),
+        )
+
+    return UsernamePasswordCredentials(
+        os.environ["OVERKIZ_USERNAME"], os.environ["OVERKIZ_PASSWORD"]
+    )
+
+
 async def fetch_server_data(server: Server) -> None:
     """Fetch all reference data from a server and save as JSON."""
-    username = os.environ["OVERKIZ_USERNAME"]
-    password = os.environ["OVERKIZ_PASSWORD"]
-
     async with OverkizClient(
         server=server,
-        credentials=UsernamePasswordCredentials(username, password),
+        credentials=_build_credentials(server),
     ) as client:
         await client.login()
+
+        # Rexel scopes every request to a gateway; auto-select the sole one or
+        # honour REXEL_GATEWAY_ID. login() already does this, but if the account
+        # has multiple gateways and none was pinned, pick the first.
+        auth = client._auth  # noqa: SLF001
+        if isinstance(auth, SupportsGatewaySelection) and auth.selected_gateway is None:
+            gateways = await client.discover_gateways()
+            if not gateways:
+                raise OverkizError("No Rexel gateways available for this account.")
+            client.select_gateway(gateways[0].gateway_id)
 
         # --- Reference metadata ---
         print("Fetching reference metadata...")
