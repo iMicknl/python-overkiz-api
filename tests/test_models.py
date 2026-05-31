@@ -1060,6 +1060,24 @@ class TestEvent:
         assert len(event.device_states) == 1
         assert isinstance(event.device_states[0], EventState)
 
+    def test_device_states_none_payload(self):
+        """An explicit ``deviceStates: null`` structures into an empty list."""
+        event = converter.structure(
+            {"name": "DeviceStateChangedEvent", "deviceStates": None},
+            Event,
+        )
+
+        assert event.device_states == []
+
+    def test_device_states_absent_payload(self):
+        """An omitted ``deviceStates`` key defaults to an empty list."""
+        event = converter.structure(
+            {"name": "DeviceStateChangedEvent"},
+            Event,
+        )
+
+        assert event.device_states == []
+
     def test_event_fixture_structures_all_events(self):
         """All events in the cloud fixture file structure without errors."""
         raw_events = json.loads((Path("tests/fixtures/event/events.json")).read_text())

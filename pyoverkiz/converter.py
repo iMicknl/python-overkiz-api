@@ -14,6 +14,7 @@ from pyoverkiz._case import camelize_key
 from pyoverkiz.models import (
     CommandDefinition,
     CommandDefinitions,
+    EventState,
     State,
     StateDefinition,
     StateDefinitions,
@@ -80,9 +81,20 @@ def _make_converter() -> cattrs.Converter:
             return StateDefinitions()
         return StateDefinitions([c.structure(sd, StateDefinition) for sd in val])
 
+    # Event.device_states is a plain list[EventState], but the API may send an
+    # explicit `deviceStates: null`. cattrs' generic list hook iterates the value
+    # directly, so it raises on None; tolerate it the way 1.x did (None -> []).
+    def _structure_event_states(val: Any, _: type) -> list[EventState]:
+        if val is None:
+            return []
+        return [c.structure(s, EventState) for s in val]
+
     c.register_structure_hook(States, _structure_states)
     c.register_structure_hook(CommandDefinitions, _structure_command_definitions)
     c.register_structure_hook(StateDefinitions, _structure_state_definitions)
+    c.register_structure_hook_func(
+        lambda t: t == list[EventState], _structure_event_states
+    )
 
     # For all other attrs classes: lazily generate a hook that renames camelCase
     # API keys to snake_case on first use. This avoids manual dependency ordering.
