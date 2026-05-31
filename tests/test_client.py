@@ -1229,6 +1229,48 @@ class TestUserAgent:
         assert client.session.headers["User-Agent"] == USER_AGENT
 
 
+@pytest.mark.asyncio
+async def test_get_uses_auth_strategy_endpoint(monkeypatch):
+    """_get builds the URL from the auth strategy endpoint, not server_config."""
+    from unittest.mock import AsyncMock, MagicMock
+
+    from pyoverkiz.client import OverkizClient
+    from pyoverkiz.const import SUPPORTED_SERVERS
+    from pyoverkiz.enums import Server
+
+    client = OverkizClient(
+        server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE],
+        credentials=UsernamePasswordCredentials("user", "pass"),
+    )
+
+    captured = {}
+
+    def fake_get(url, headers=None, ssl=None):
+        captured["url"] = url
+        resp = MagicMock()
+        resp.status = 200
+        resp.json = AsyncMock(return_value={})
+        resp.text = AsyncMock(return_value="{}")
+        ctx = MagicMock()
+        ctx.__aenter__ = AsyncMock(return_value=resp)
+        ctx.__aexit__ = AsyncMock(return_value=None)
+        return ctx
+
+    client.session.get = fake_get
+    client._refresh_token_if_expired = AsyncMock(return_value=None)
+    monkeypatch.setattr(
+        type(client._auth),
+        "endpoint",
+        property(lambda self: "https://swapped.test/api/"),
+    )
+    monkeypatch.setattr(type(client._auth), "auth_headers", lambda self, path=None: {})
+
+    await client._get("setup")
+
+    assert captured["url"] == "https://swapped.test/api/setup"
+    await client.close()
+
+
 class TestOverkizClientSettings:
     """Tests for the OverkizClientSettings integration with OverkizClient."""
 

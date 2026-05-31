@@ -900,7 +900,7 @@ class OverkizClient:
         await self._refresh_token_if_expired()
 
         async with self.session.get(
-            f"{self.server_config.endpoint}{path}",
+            f"{self._auth.endpoint}{path}",
             headers=self._auth.auth_headers(path),
             ssl=self._ssl,
         ) as response:
@@ -916,7 +916,7 @@ class OverkizClient:
         await self._refresh_token_if_expired()
 
         async with self.session.post(
-            f"{self.server_config.endpoint}{path}",
+            f"{self._auth.endpoint}{path}",
             data=data,
             json=payload,
             headers=self._auth.auth_headers(path),
@@ -929,7 +929,7 @@ class OverkizClient:
         await self._refresh_token_if_expired()
 
         async with self.session.put(
-            f"{self.server_config.endpoint}{path}",
+            f"{self._auth.endpoint}{path}",
             json=payload,
             headers=self._auth.auth_headers(path),
             ssl=self._ssl,
@@ -941,7 +941,7 @@ class OverkizClient:
         await self._refresh_token_if_expired()
 
         async with self.session.delete(
-            f"{self.server_config.endpoint}{path}",
+            f"{self._auth.endpoint}{path}",
             headers=self._auth.auth_headers(path),
             ssl=self._ssl,
         ) as response:
