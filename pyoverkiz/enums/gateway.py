@@ -13,7 +13,7 @@ class GatewayType(UnknownEnumMixin, IntEnum):
     VIRTUAL_KIZBOX = 0
     KIZBOX_V1 = 2
     TAHOMA = 15
-    ENERGEASY_CONNECT_V2 = 19  # Rexel Energeasy Connect (subType 0)
+    ENERGEASY_CONNECT_V2 = 19
     VERISURE_ALARM_SYSTEM = 20
     KIZBOX_MINI = 21
     HI_KUMO_ADAPTER = 22  # Hi Kumo Adapter SPX-WFG01 (constant added manually)
