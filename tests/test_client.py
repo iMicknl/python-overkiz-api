@@ -694,6 +694,24 @@ class TestOverkizClient:
         assert not resp.json.called
 
     @pytest.mark.asyncio
+    async def test_get_uses_auth_strategy_endpoint(self, client: OverkizClient) -> None:
+        """_get builds the URL from the auth strategy endpoint, not server_config."""
+        resp = MockResponse("{}")
+
+        with (
+            patch.object(
+                type(client._auth),
+                "endpoint",
+                property(lambda self: "https://swapped.test/api/"),
+            ),
+            patch.object(client, "_refresh_token_if_expired", new=AsyncMock()),
+            patch.object(aiohttp.ClientSession, "get", return_value=resp) as mock_get,
+        ):
+            await client._get("setup")
+
+        assert mock_get.call_args[0][0] == "https://swapped.test/api/setup"
+
+    @pytest.mark.asyncio
     async def test_post_returns_none_for_204_without_json_parse(
         self, client: OverkizClient
     ) -> None:
@@ -1227,48 +1245,6 @@ class TestUserAgent:
             credentials=UsernamePasswordCredentials("user", "pass"),
         )
         assert client.session.headers["User-Agent"] == USER_AGENT
-
-
-@pytest.mark.asyncio
-async def test_get_uses_auth_strategy_endpoint(monkeypatch):
-    """_get builds the URL from the auth strategy endpoint, not server_config."""
-    from unittest.mock import AsyncMock, MagicMock
-
-    from pyoverkiz.client import OverkizClient
-    from pyoverkiz.const import SUPPORTED_SERVERS
-    from pyoverkiz.enums import Server
-
-    client = OverkizClient(
-        server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE],
-        credentials=UsernamePasswordCredentials("user", "pass"),
-    )
-
-    captured = {}
-
-    def fake_get(url, headers=None, ssl=None):
-        captured["url"] = url
-        resp = MagicMock()
-        resp.status = 200
-        resp.json = AsyncMock(return_value={})
-        resp.text = AsyncMock(return_value="{}")
-        ctx = MagicMock()
-        ctx.__aenter__ = AsyncMock(return_value=resp)
-        ctx.__aexit__ = AsyncMock(return_value=None)
-        return ctx
-
-    client.session.get = fake_get
-    client._refresh_token_if_expired = AsyncMock(return_value=None)
-    monkeypatch.setattr(
-        type(client._auth),
-        "endpoint",
-        property(lambda self: "https://swapped.test/api/"),
-    )
-    monkeypatch.setattr(type(client._auth), "auth_headers", lambda self, path=None: {})
-
-    await client._get("setup")
-
-    assert captured["url"] == "https://swapped.test/api/setup"
-    await client.close()
 
 
 class TestOverkizClientSettings:
