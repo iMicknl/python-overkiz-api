@@ -689,3 +689,16 @@ def test_no_gateway_selected_error_is_overkiz_error():
     from pyoverkiz.exceptions import BaseOverkizError, NoGatewaySelectedError
 
     assert issubclass(NoGatewaySelectedError, BaseOverkizError)
+
+
+def test_rexel_enduser_api_strips_overkiz_suffix():
+    """REXEL_ENDUSER_API points one level up from the overkiz device base."""
+    from pyoverkiz.const import (
+        REXEL_BACKEND_API,
+        REXEL_ENDUSER_API,
+        REXEL_GATEWAY_HEADER,
+    )
+
+    assert REXEL_ENDUSER_API == REXEL_BACKEND_API.rsplit("/overkiz/", 1)[0]
+    assert not REXEL_ENDUSER_API.endswith("/")
+    assert REXEL_GATEWAY_HEADER == "gatewayId"
