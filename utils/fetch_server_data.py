@@ -248,9 +248,9 @@ def _build_credentials(server: Server) -> Credentials:
     """Build credentials for the target server from the environment.
 
     Most servers use username/password. Rexel has no password grant; it relies
-    on an externally-managed OAuth2 access token (mint one with the throwaway
-    Rexel helper) supplied via REXEL_ACCESS_TOKEN, optionally pinned to a
-    gateway with REXEL_GATEWAY_ID.
+    on an externally-managed OAuth2 access token (retrieve one using the
+    documented Rexel PKCE flow) supplied via REXEL_ACCESS_TOKEN. Set
+    REXEL_GATEWAY_ID to optionally pin the dump to a gateway.
     """
     if server == Server.REXEL:
         return RexelTokenCredentials(
