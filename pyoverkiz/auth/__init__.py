@@ -12,6 +12,7 @@ from pyoverkiz.auth.credentials import (
     Credentials,
     LocalTokenCredentials,
     RexelOAuthCodeCredentials,
+    RexelTokenCredentials,
     TokenCredentials,
     UsernamePasswordCredentials,
 )
@@ -24,6 +25,7 @@ __all__ = [
     "GatewayCandidate",
     "LocalTokenCredentials",
     "RexelOAuthCodeCredentials",
+    "RexelTokenCredentials",
     "SupportsGatewaySelection",
     "TokenCredentials",
     "UsernamePasswordCredentials",

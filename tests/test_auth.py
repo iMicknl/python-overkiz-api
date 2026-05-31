@@ -962,6 +962,13 @@ def test_auth_package_exports_gateway_selection_types():
     assert SupportsGatewaySelection is not None
 
 
+def test_auth_package_exports_rexel_token_credentials():
+    """RexelTokenCredentials is importable from pyoverkiz.auth."""
+    from pyoverkiz.auth import RexelTokenCredentials
+
+    assert RexelTokenCredentials is not None
+
+
 def _build_rexel_token_strategy(json_bodies, *, credentials):
     """Return a RexelTokenAuthStrategy whose session.get yields json_bodies."""
     from unittest.mock import AsyncMock, MagicMock
