@@ -41,10 +41,13 @@ jobs:
             VERSION=${{ steps.retrieve-version.outputs.version }}
             uvx --from=toml-cli toml set --toml-path=pyproject.toml project.version $VERSION
 
+            # Keep uv.lock in sync with the bumped version of the pyoverkiz package itself
+            uv lock
+
             git config --local user.email "action@github.com"
             git config --local user.name "GitHub Action"
 
-            git add pyproject.toml
+            git add pyproject.toml uv.lock
             git commit -m "Bump package version to ${{ steps.retrieve-version.outputs.version }}."
 
             git tag -f -a ${{ github.event.release.tag_name }} -m "Release ${{ steps.retrieve-version.outputs.version }}."
