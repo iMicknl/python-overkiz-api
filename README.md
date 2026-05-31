@@ -2,7 +2,17 @@
 
 A fully asynchronous and user-friendly API client for the OverKiz platform. This client enables interaction with smart devices connected to OverKiz, supporting multiple vendors such as Somfy TaHoma and Atlantic Cozytouch.
 
-This package is primarily used by Home Assistant Core to provide the Overkiz integration. If you wish to use this package in your own project, refer to the [full documentation](https://imicknl.github.io/python-overkiz-api/), the [examples below](#getting-started), or explore the [Home Assistant source code](https://github.com/home-assistant/core/tree/dev/homeassistant/components/overkiz) for additional usage examples.
+This package is primarily used by Home Assistant Core to provide the Overkiz integration. If you wish to use this package in your own project, refer to the [full documentation](https://imicknl.github.io/python-overkiz-api/), the [example below](#getting-started), or explore the [Home Assistant source code](https://github.com/home-assistant/core/tree/dev/homeassistant/components/overkiz) for additional usage examples.
+
+## Documentation
+
+Full documentation is available at **[imicknl.github.io/python-overkiz-api](https://imicknl.github.io/python-overkiz-api/)**:
+
+- [Getting started](https://imicknl.github.io/python-overkiz-api/getting-started/) — cloud and local API setup
+- [Core concepts](https://imicknl.github.io/python-overkiz-api/core-concepts/) — clients, servers, credentials, and models
+- [Device control](https://imicknl.github.io/python-overkiz-api/device-control/) and [event handling](https://imicknl.github.io/python-overkiz-api/event-handling/)
+- [Migrating from v1](https://imicknl.github.io/python-overkiz-api/migration-v2/)
+- [SDK reference](https://imicknl.github.io/python-overkiz-api/sdk-reference/)
 
 ## Supported hubs
 
@@ -30,103 +40,32 @@ pip install pyoverkiz
 
 ## Getting started
 
-
-### Cloud API
+Connect to the cloud API, authenticate, and list your devices:
 
 ```python
 import asyncio
 
 from pyoverkiz.auth.credentials import UsernamePasswordCredentials
 from pyoverkiz.client import OverkizClient
-from pyoverkiz.models import Action, Command
-from pyoverkiz.enums import Server, OverkizCommand
-
-USERNAME = ""
-PASSWORD = ""
+from pyoverkiz.enums import Server
 
 
 async def main() -> None:
     async with OverkizClient(
         server=Server.SOMFY_EUROPE,
-        credentials=UsernamePasswordCredentials(USERNAME, PASSWORD),
+        credentials=UsernamePasswordCredentials("username", "password"),
     ) as client:
         await client.login()
 
         devices = await client.get_devices()
-
         for device in devices:
             print(f"{device.label} ({device.device_url}) - {device.controllable_name}")
-            print(f"{device.widget} - {device.ui_class}")
-
-        await client.execute_action_group(
-            actions=[
-                Action(
-                    device_url="io://1234-5678-1234/12345678",
-                    commands=[
-                        Command(name=OverkizCommand.SET_CLOSURE, parameters=[100])
-                    ]
-                )
-            ],
-            label="Execution via Python",
-            # mode=ExecutionMode.HIGH_PRIORITY
-        )
-
-        while True:
-            events = await client.fetch_events()
-            print(events)
-
-            await asyncio.sleep(2)
 
 
 asyncio.run(main())
 ```
 
-### Local API
-
-```python
-import asyncio
-
-from pyoverkiz.auth.credentials import LocalTokenCredentials
-from pyoverkiz.client import OverkizClient
-from pyoverkiz.utils import create_local_server_config
-
-LOCAL_GATEWAY = "gateway-xxxx-xxxx-xxxx.local"  # or use the IP address of your gateway
-VERIFY_SSL = True  # set verify_ssl to False if you don't use the .local hostname
-
-
-async def main() -> None:
-    token = ""  # generate your token via the Somfy app and include it here
-
-    async with OverkizClient(
-        server=create_local_server_config(host=LOCAL_GATEWAY),
-        credentials=LocalTokenCredentials(token),
-        verify_ssl=VERIFY_SSL,
-    ) as client:
-        await client.login()
-
-        print("Local API connection successful!")
-
-        print(await client.get_api_version())
-
-        setup = await client.get_setup()
-        print(setup)
-
-        devices = await client.get_devices()
-        print(devices)
-
-        for device in devices:
-            print(f"{device.label} ({device.device_url}) - {device.controllable_name}")
-            print(f"{device.widget} - {device.ui_class}")
-
-        while True:
-            events = await client.fetch_events()
-            print(events)
-
-            await asyncio.sleep(2)
-
-
-asyncio.run(main())
-```
+For executing commands, listening to events, and connecting to the **local API**, see the [Getting started guide](https://imicknl.github.io/python-overkiz-api/getting-started/) in the documentation.
 
 ## Projects using pyOverkiz
 
