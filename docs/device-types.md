@@ -109,7 +109,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `ZoneHeatingModeState` | DiscreteState | auto, manu, stop |  |
     | `ComfortTargetTemperatureState` | ContinuousState |  |  |
     | `ComfortTargetTemperatureUnitState` | ContinuousState |  |  |
     | `ComfortTemperatureStepState` | ContinuousState |  |  |
@@ -126,6 +125,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `TargetRoomTemperatureState` | ContinuousState |  |  |
     | `TargetRoomTemperatureUnitState` | ContinuousState |  |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
+    | `ZoneHeatingModeState` | DiscreteState | auto, manu, stop |  |
 
 ??? note "TemperatureSensor (SENSOR) — 0 commands, 2 states"
 
@@ -265,33 +265,33 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `refreshActiveTimeProgram` |  | Refresh curent active time program. |
     | `refreshActivitiesNames` |  | Refresh activity names. |
+    | `refreshControlStrategy` |  | Refresh control strategy parameter of the heating zone. |
     | `refreshCoolingTargetTemperature` |  | Refresh cooling target temperature. |
     | `refreshDerogationTime` |  | Refresh derogation time |
     | `refreshFireplaceMode` |  | Refresh if fireplace mode is activate/deactivate on heating system. |
-    | `refreshMaxPreHeatTime` |  | Refresh pre-heat time parameter of the heating zone. |
-    | `refreshMode` |  | Refresh the mode |
-    | `refreshTargetTemperature` |  | Refresh the temperature value |
-    | `setActiveTimeProgram` | INT [1..6] | Defines curent active time program |
-    | `setActivitiesNames` | OBJECT | Set activity names. |
-    | `setCoolingTargetTemperature` | FLOAT [7.0..35.0] | Set the cooling target temperature (manual set point) |
-    | `setFireplaceMode` | STRING: true, false | Activate/Deactivate on heating system fireplace mode. |
-    | `setHeatingTargetTemperature` | FLOAT [7.0..35.0] | Set the heating target temperature (manual set point) |
-    | `setMaxPreHeatTime` | INT | Set the max pre-heat time (in minutes). |
-    | `setOnFrostProtectionMode` |  | Set on system frost protection mode. |
-    | `setTargetTemperature` | FLOAT [0.0..60.0] | Set the new air temperature to reach |
-    | `refreshControlStrategy` |  | Refresh control strategy parameter of the heating zone. |
     | `refreshFrostProtectionAndHolidayTargetTemperature` |  | Refresh target temperature for frost protection and holiday mode. |
     | `refreshHeatingCoolingSpeed` |  | Refresh heating cooling speed parameter of the heating zone. |
     | `refreshHeatingCurve` |  | Refresh heating curve parameter of the heating zone. |
     | `refreshHolidayDate` |  | Refresh date for holiday mode. |
+    | `refreshMaxPreHeatTime` |  | Refresh pre-heat time parameter of the heating zone. |
+    | `refreshMode` |  | Refresh the mode |
+    | `refreshTargetTemperature` |  | Refresh the temperature value |
     | `refreshTimeProgramActivities` |  | Refresh time program activities parameter of the heating zone. |
+    | `setActiveTimeProgram` | INT [1..6] | Defines curent active time program |
+    | `setActivitiesNames` | OBJECT | Set activity names. |
     | `setControlStrategy` | STRING: room-temperature-control, auto, outside-temperature-control, outside-temperature-control-with-room-temperature-compensation | Set the control strategy. |
     | `setCoolDownSpeed` | STRING: slowest, extra-slow, slow, normal, fast | Set the cool down speed. p1 is the cool down speed. |
+    | `setCoolingTargetTemperature` | FLOAT [7.0..35.0] | Set the cooling target temperature (manual set point) |
     | `setDerogatedTargetTemperature` | FLOAT [0.0..60.0]; INT (optional) | Set the derogated temperature of the room and when this new temperature has to end. p1 is the target temperature for derogated period. p2 is the duration of derogated period in minutes (optional). When temporaryOverrideEnd is not    provided the next switch time of the active time program will be set as end time. |
+    | `setFireplaceMode` | STRING: true, false | Activate/Deactivate on heating system fireplace mode. |
     | `setFrostProtectionAndHolidayTargetTemperature` | FLOAT [0.0..60.0] | Set target temperature for frost protection and holiday mode. |
     | `setHeatUpSpeed` | STRING: slowest, extra-slow, slow, normal, fast | Set the heat up speed. p1 is the heat up speed. |
     | `setHeatingCurve` | OBJECT | Set the heating curve parameter. |
+    | `setHeatingTargetTemperature` | FLOAT [7.0..35.0] | Set the heating target temperature (manual set point) |
     | `setHoliday` | STRING; STRING | Set heating system on holiday mode. p1 is the date of the holiday begining. p2 is the date of the holiday ending. Each parameter is a full-date and time hh:mm as defined in ISO8601, without seconds, sec-frac and timezone example : "2020-03-05T22:00" |
+    | `setMaxPreHeatTime` | INT | Set the max pre-heat time (in minutes). |
+    | `setOnFrostProtectionMode` |  | Set on system frost protection mode. |
+    | `setTargetTemperature` | FLOAT [0.0..60.0] | Set the new air temperature to reach |
     | `setTimeProgramActivities` | OBJECT | Set time program activities parameter of the heating zone. |
 
     **States**
@@ -302,25 +302,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ActiveHeatingTimeProgramState` | DataState |  |  |
     | `ActiveTimeProgramState` | DataState |  |  |
     | `ActivitiesNamesState` | DataState |  |  |
+    | `ControlStrategyState` | DataState |  |  |
+    | `CoolDownSpeedState` | DataState |  |  |
     | `CoolingTargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `DerogationEndDateTimeState` | DataState |  |  |
     | `FireplaceModeActiveState` | DiscreteState | false, true |  |
+    | `FrostProtectionAndHolidaysTargetTemperatureState` | ContinuousState |  |  |
+    | `HeatUpSpeedState` | DataState |  |  |
+    | `HeatingCurveState` | DataState |  |  |
     | `HeatingTargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `HolidayModeEndDateTimeState` | DataState |  |  |
     | `HolidayModeStartDateTimeState` | DataState |  |  |
     | `MaxPreHeatTimeState` | DataState |  |  |
     | `ModeState` | DataState |  |  |
     | `NameState` | DataState |  |  |
-    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
-    | `ControlStrategyState` | DataState |  |  |
-    | `CoolDownSpeedState` | DataState |  |  |
-    | `FrostProtectionAndHolidaysTargetTemperatureState` | ContinuousState |  |  |
-    | `HeatUpSpeedState` | DataState |  |  |
-    | `HeatingCurveState` | DataState |  |  |
     | `NextModeState` | DataState |  |  |
     | `NextSwitchDayOffsetState` | DataState |  |  |
     | `NextSwitchTimeState` | DataState |  |  |
     | `NextSwitchroomTemperatureSetpointValueState` | DataState |  |  |
+    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `TimeProgramActivitiesState` | DataState |  |  |
     | `ZoneActivityState` | DataState |  |  |
 
@@ -339,28 +339,29 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshDeviceInformation` |  | Refresh device Information. |
     | `refreshDeviceLocation` |  | Refresh device location. |
     | `refreshError` |  | Refresh the current error. |
+    | `refreshFlowTemperature` |  | Refresh flow temperature. |
+    | `refreshGatewayConnectionStatus` |  | Refresh De Dietrich Smart TC connection status. |
     | `refreshHeatingTemperatureThreshold` |  | Refresh heating temperature threshold. |
     | `refreshInstallerInformation` |  | Refresh installer information. |
     | `refreshOperatingMode` |  | Refresh an operating mode. |
+    | `refreshWaterFillingStatus` |  | Refresh De Dietrich Water filling status. |
+    | `refreshWaterPressure` |  | Refresh water pressure. |
     | `refreshWebhookId` |  | Refresh webhook identifier. |
     | `registerWebhook` |  | Register a subscription to webhook. |
     | `removeWebhook` |  | Removes the subscription registration for the current “pairing” derived from the pairing token. |
+    | `sendWaterFillingCommand` | STRING: start, stop | Send a command for water filling. |
     | `setDeviceLocation` | FLOAT; FLOAT; INT | Set device location. p1 represent the latitude. p2 represent the longitude. p3 represent the resolution. |
     | `setHeatingTemperatureThreshold` | FLOAT [10.0..30.0] | Set heating temperature threshold. |
     | `setInstallerInformation` | OBJECT | Set installer information. |
-    | `updateWebhook` |  | update the subscription to webhook. |
-    | `refreshGatewayConnectionStatus` |  | Refresh De Dietrich Smart TC connection status. |
-    | `refreshFlowTemperature` |  | Refresh flow temperature. |
-    | `refreshWaterFillingStatus` |  | Refresh De Dietrich Water filling status. |
-    | `refreshWaterPressure` |  | Refresh water pressure. |
-    | `sendWaterFillingCommand` | STRING: start, stop | Send a command for water filling. |
     | `setOperatingMode` | STRING: off, heating-auto, forced-cooling, heating-cooling-auto | Set De Dietrich Operating mode. |
     | `setWaterFillingMode` | STRING: off, manual, auto | Set De Dietrich Water filling mode. |
+    | `updateWebhook` |  | update the subscription to webhook. |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `ConnectionStatusState` | DataState |  |  |
     | `DateTimeState` | DataState |  |  |
     | `DeviceSerialNumberState` | DataState |  |  |
     | `ErrorCodeState` | DataState |  |  |
@@ -372,18 +373,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `LocationLongitudeState` | DataState |  |  |
     | `NameState` | DataState |  |  |
     | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
+    | `OperatingOptionsState` | DataState |  |  |
     | `PairedDevicesState` | DataState |  |  |
     | `ProductHardwareVersionState` | DataState |  |  |
     | `ProductSoftwareVersionState` | DataState |  |  |
     | `UTCTimeOffsetState` | DataState |  |  |
-    | `WaterPressureState` | ContinuousState |  |  |
-    | `WebhookIdState` | DataState |  |  |
-    | `ConnectionStatusState` | DataState |  |  |
-    | `OperatingOptionsState` | DataState |  |  |
     | `WaterFillingModeState` | DataState |  |  |
     | `WaterFillingStatusState` | DataState |  |  |
+    | `WaterPressureState` | ContinuousState |  |  |
     | `WebhookErrorCodeState` | DataState |  |  |
     | `WebhookErrorStatusState` | DataState |  |  |
+    | `WebhookIdState` | DataState |  |  |
 
 ??? note "TemperatureSensor (SENSOR) — 1 commands, 1 states"
 
@@ -409,31 +409,31 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `refreshDerogationTime` |  | Refresh derogation time |
-    | `refreshDeviceInformation` |  | Refresh device Information. |
-    | `refreshMode` |  | Refresh the mode |
-    | `setOnComfortMode` |  | Set on system comfort mode. |
-    | `setOnFrostProtectionMode` |  | Set on system frost protection mode. |
     | `refreshDHWActiveTimeProgram` |  | Refresh domestic hot water current active time program. |
     | `refreshDHWParameters` |  | Refresh parameters of the domestic hot water. |
+    | `refreshDerogationTime` |  | Refresh derogation time |
+    | `refreshDeviceInformation` |  | Refresh device Information. |
     | `refreshHolidayDate` |  | Refresh date for holiday mode. |
+    | `refreshMode` |  | Refresh the mode |
     | `setBoostMode` | INT (optional) | Set system on boost mode. p1 is the duration of derogated period in minutes (optional). When temporaryOverrideEnd is not provided the next switch time of the active time program will be set as end time. |
+    | `setDHWActiveTimeProgram` | INT [1..6] | Set the domestic hot water current active time program. |
     | `setDHWParameters` | OBJECT | Set parameters of the domestic hot water. |
     | `setHoliday` | STRING; STRING | Set heating system on holiday mode. p1 is the date of the holiday begining. p2 is the date of the holiday ending. Each parameter is a full-date and time hh:mm as defined in ISO8601, without seconds, sec-frac and timezone example : "2020-03-05T22:00" |
-    | `setDHWActiveTimeProgram` | INT [1..6] | Set the domestic hot water current active time program. |
+    | `setOnComfortMode` |  | Set on system comfort mode. |
+    | `setOnFrostProtectionMode` |  | Set on system frost protection mode. |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ActiveTimeProgramState` | DataState |  |  |
+    | `DHWParametersState` | DataState |  |  |
+    | `DHWTypeState` | DataState |  |  |
     | `DerogationEndDateTimeState` | DataState |  |  |
     | `HolidayModeEndDateTimeState` | DataState |  |  |
     | `HolidayModeStartDateTimeState` | DataState |  |  |
     | `ModeState` | DataState |  |  |
     | `NameState` | DataState |  |  |
-    | `DHWParametersState` | DataState |  |  |
-    | `DHWTypeState` | DataState |  |  |
     | `NextModeState` | DataState |  |  |
 
 
@@ -507,9 +507,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `refreshAllLightStates` |  | Refresh all states of the light. @deprecated : use refreshState instead. |
     | `refreshState` |  | Refresh the device states |
     | `setOnOff` | STRING: off, on | Turn the device on or off |
-    | `refreshAllLightStates` |  | Refresh all states of the light. @deprecated : use refreshState instead. |
 
     **States**
 
@@ -532,6 +532,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `refreshAllLightStates` |  | Refresh all states of the light. @deprecated : use refreshState instead. |
     | `refreshState` |  | Refresh the device states |
     | `setIntensity` | INT [0..100]; STRING: memorized1, memorized2, memorized3 | Light intensity level (100%=maximum intensity, 0%=off) |
     | `setIntensityWithTimer` | STRING: memorized1, memorized2, memorized3; INT [0..100]; INT [5..14400]; STRING: memorized1, memorized2, memorized3 (optional); INT [0..100] (optional) | Set the light intensity to p1% then after p2 seconds, set it to p3%. (If p3 is not specified the light is turned off after the delay) |
@@ -542,7 +543,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setMemorized3Position` | INT [0..100] | Set favorite position |
     | `setMemorized3PositionName` | STRING | Change the favorite position internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setOnOff` | STRING: off, on | Turn the device on or off |
-    | `refreshAllLightStates` |  | Refresh all states of the light. @deprecated : use refreshState instead. |
 
     **States**
 
@@ -569,9 +569,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `refreshAllSwitchStates` |  | Refresh all states of the plug on/off. @deprecated : use refreshState instead. |
     | `refreshState` |  | Refresh the device states |
     | `setOnOff` | STRING: off, on | Turn the device on or off |
-    | `refreshAllSwitchStates` |  | Refresh all states of the plug on/off. @deprecated : use refreshState instead. |
 
     **States**
 
@@ -591,10 +591,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `refreshAllSwitchStates` |  | Refresh all states of the plug on/off. @deprecated : use refreshState instead. |
     | `refreshState` |  | Refresh the device states |
     | `setOnOff` | STRING: off, on | Turn the device on or off |
     | `setOperatingMode` | STRING: off, auto, boost | Set an operating mode |
-    | `refreshAllSwitchStates` |  | Refresh all states of the plug on/off. @deprecated : use refreshState instead. |
 
     **States**
 
@@ -715,9 +715,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `ElectricEnergyConsumptionState` | ContinuousState |  |  |
     | `ElectricPowerConsumptionState` | ContinuousState |  |  |
+    | `EnOceanAutoReportState` | DiscreteState | energy, off, power |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `EnOceanAutoReportState` | DiscreteState | energy, off, power |  |
 
 ??? note "Generic/EnOceanGeneric (ACTUATOR) — 3 commands, 1 states"
 
@@ -763,6 +763,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
+    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `OpenClosedValveState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
@@ -771,8 +773,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `TargetValvePositionState` | ContinuousState |  |  |
     | `ValvePositionState` | ContinuousState | [0..100] |  |
-    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
-    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 11 commands, 13 states"
 
@@ -801,6 +801,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
+    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `OpenClosedValveState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
@@ -809,8 +811,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `TargetValvePositionState` | ContinuousState |  |  |
     | `ValvePositionState` | ContinuousState | [0..100] |  |
-    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
-    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 9 commands, 12 states"
 
@@ -826,9 +826,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `deactivateSummerMode` |  | Deactivate the summer mode, more energy consumption |
     | `open` |  | Fully open the device |
     | `openValve` |  | Fully open the valve |
+    | `repeatTargetValvePosition` |  | Repeat the last target position to the valve (this action will keep the valve alive) |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
     | `setValvePosition` | INT [0..100] | Valve position (100%=fully closed, 0%=opened) |
-    | `repeatTargetValvePosition` |  | Repeat the last target position to the valve (this action will keep the valve alive) |
 
     **States**
 
@@ -837,6 +837,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
+    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `OpenClosedValveState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
@@ -844,8 +846,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `SummerModeState` | DiscreteState | off, on |  |
     | `TargetValvePositionState` | ContinuousState |  |  |
     | `ValvePositionState` | ContinuousState | [0..100] |  |
-    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
-    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 18 commands, 18 states"
 
@@ -856,23 +856,23 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `activateSummerMode` |  | activate the summer mode, less energy consumption |
+    | `addGatewayLink` |  | add the gateway to list of the linked devices. @Deprecated : use linkGateway |
     | `close` |  | Fully close the device |
     | `closeValve` |  | Fully close the valve |
     | `deactivateSummerMode` |  | Deactivate the summer mode, more energy consumption |
+    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `open` |  | Fully open the device |
     | `openValve` |  | Fully open the valve |
+    | `removeGatewayLink` |  | remove the gateway from the list of the link devices.@Deprecated : use unlinkGateway |
+    | `repeatTargetValvePosition` |  | Repeat the last target position to the valve (this action will keep the valve alive) |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
     | `setExternalReferenceTemperature` | FLOAT [0.0..100.0] | Set the reference temperature (get from an external sensor) |
+    | `setKey` | INT [1..4294967295] | set the key of the product. |
+    | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
     | `setTargetTemperature` | FLOAT [0.0..100.0] | Set the new air temperature to reach |
     | `setTargetTemperatureValue` | FLOAT [0.0..100.0] | Set the new temperature to reach |
     | `setValvePosition` | INT [0..100] | Valve position (100%=fully closed, 0%=opened) |
-    | `addGatewayLink` |  | add the gateway to list of the linked devices. @Deprecated : use linkGateway |
-    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
-    | `removeGatewayLink` |  | remove the gateway from the list of the link devices.@Deprecated : use unlinkGateway |
-    | `setKey` | INT [1..4294967295] | set the key of the product. |
-    | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
     | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
-    | `repeatTargetValvePosition` |  | Repeat the last target position to the valve (this action will keep the valve alive) |
 
     **States**
 
@@ -881,21 +881,21 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
+    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
     | `ExternalReferenceTemperatureState` | ContinuousState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `OpenClosedValveState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
+    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
+    | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
+    | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `SummerModeState` | DiscreteState | off, on |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `TargetValvePositionState` | ContinuousState |  |  |
     | `ValvePositionState` | ContinuousState | [0..100] |  |
-    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
-    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
-    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
-    | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
-    | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 27 commands, 18 states"
 
@@ -906,32 +906,32 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `activateSummerMode` |  | activate the summer mode, less energy consumption |
+    | `addDevicesLink` | OBJECT | Add a link between your device and the devices (one or more) that will control it. @Deprecated : use addLinkedDevices |
+    | `addGatewayLink` |  | add the gateway to list of the linked devices. @Deprecated : use linkGateway |
+    | `addLinkedDevices` | OBJECT | The command addLinkedDevices will add a link between your "target" device and another "source" devices (one or more) that will control your "target" device. |
+    | `clearAllLinkedDevices` |  | Clear all devices linked before. @Deprecated: use unlinkAllDevices |
     | `close` |  | Fully close the device |
     | `closeValve` |  | Fully close the valve |
     | `deactivateSummerMode` |  | Deactivate the summer mode, more energy consumption |
+    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `open` |  | Fully open the device |
     | `openValve` |  | Fully open the valve |
-    | `addLinkedDevices` | OBJECT | The command addLinkedDevices will add a link between your "target" device and another "source" devices (one or more) that will control your "target" device. |
+    | `removeDeviceLink` | INT | remove a device to the list of the devices linked by the remote commissioning. Address of the device to remove is the parameter. @Deprecated : use removeLinkedDevice |
+    | `removeGatewayLink` |  | remove the gateway from the list of the link devices.@Deprecated : use unlinkGateway |
     | `removeLinkedDevice` | STRING | The command removeLinkedDevice will remove the device linked before with the command setLinkedDevices or addLinkedDevices.This command can remove only 1 device. p1 : the deviceURL you want to delete. |
-    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
-    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
-    | `updateLinkedDevices` | ARRAY | The command updateLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). Only the different links will be updated.  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same. |
+    | `repeatTargetValvePosition` |  | Repeat the last target position to the valve (this action will keep the valve alive) |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setKey` | INT [1..4294967295] | set the key of the product. |
+    | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
+    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
+    | `setLinks` | OBJECT | Set a link between your device and the devices (one or more) that will control it. All existing links already set in the target will be erase. @Deprecated: use setLinkedDevices |
     | `setTargetTemperature` | FLOAT [0.0..100.0] | Set the new air temperature to reach |
     | `setTargetTemperatureValue` | FLOAT [0.0..100.0] | Set the new temperature to reach |
     | `setValvePosition` | INT [0..100] | Valve position (100%=fully closed, 0%=opened) |
-    | `addDevicesLink` | OBJECT | Add a link between your device and the devices (one or more) that will control it. @Deprecated : use addLinkedDevices |
-    | `addGatewayLink` |  | add the gateway to list of the linked devices. @Deprecated : use linkGateway |
-    | `clearAllLinkedDevices` |  | Clear all devices linked before. @Deprecated: use unlinkAllDevices |
-    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
-    | `removeDeviceLink` | INT | remove a device to the list of the devices linked by the remote commissioning. Address of the device to remove is the parameter. @Deprecated : use removeLinkedDevice |
-    | `removeGatewayLink` |  | remove the gateway from the list of the link devices.@Deprecated : use unlinkGateway |
-    | `setKey` | INT [1..4294967295] | set the key of the product. |
-    | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
-    | `setLinks` | OBJECT | Set a link between your device and the devices (one or more) that will control it. All existing links already set in the target will be erase. @Deprecated: use setLinkedDevices |
+    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
     | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
+    | `updateLinkedDevices` | ARRAY | The command updateLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). Only the different links will be updated.  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same. |
     | `updateLinks` | OBJECT | Link given devices to current device using remote commissioning and comparing to existing configuration as follow :  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same.  @Deprecated : use updateLinkedDevices |
-    | `repeatTargetValvePosition` |  | Repeat the last target position to the valve (this action will keep the valve alive) |
 
     **States**
 
@@ -940,21 +940,21 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
+    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `OpenClosedValveState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
+    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningDevicesState` | DataState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
+    | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
+    | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `SummerModeState` | DiscreteState | off, on |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `TargetValvePositionState` | ContinuousState |  |  |
     | `ValvePositionState` | ContinuousState | [0..100] |  |
-    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
-    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
-    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
-    | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
-    | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 17 commands, 17 states"
 
@@ -965,22 +965,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `activateSummerMode` |  | activate the summer mode, less energy consumption |
+    | `addGatewayLink` |  | add the gateway to list of the linked devices. @Deprecated : use linkGateway |
     | `close` |  | Fully close the device |
     | `closeValve` |  | Fully close the valve |
     | `deactivateSummerMode` |  | Deactivate the summer mode, more energy consumption |
+    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `open` |  | Fully open the device |
     | `openValve` |  | Fully open the valve |
+    | `removeGatewayLink` |  | remove the gateway from the list of the link devices.@Deprecated : use unlinkGateway |
+    | `repeatTargetValvePosition` |  | Repeat the last target position to the valve (this action will keep the valve alive) |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setKey` | INT [1..4294967295] | set the key of the product. |
+    | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
     | `setTargetTemperature` | FLOAT [0.0..100.0] | Set the new air temperature to reach |
     | `setTargetTemperatureValue` | FLOAT [0.0..100.0] | Set the new temperature to reach |
     | `setValvePosition` | INT [0..100] | Valve position (100%=fully closed, 0%=opened) |
-    | `addGatewayLink` |  | add the gateway to list of the linked devices. @Deprecated : use linkGateway |
-    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
-    | `removeGatewayLink` |  | remove the gateway from the list of the link devices.@Deprecated : use unlinkGateway |
-    | `setKey` | INT [1..4294967295] | set the key of the product. |
-    | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
     | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
-    | `repeatTargetValvePosition` |  | Repeat the last target position to the valve (this action will keep the valve alive) |
 
     **States**
 
@@ -989,20 +989,20 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
+    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `OpenClosedValveState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
+    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
+    | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
+    | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `SummerModeState` | DiscreteState | off, on |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `TargetValvePositionState` | ContinuousState |  |  |
     | `ValvePositionState` | ContinuousState | [0..100] |  |
-    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
-    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
-    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
-    | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
-    | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 11 commands, 13 states"
 
@@ -1018,11 +1018,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `deactivateSummerMode` |  | Deactivate the summer mode, more energy consumption |
     | `open` |  | Fully open the device |
     | `openValve` |  | Fully open the valve |
+    | `repeatTargetValvePosition` |  | Repeat the last target position to the valve (this action will keep the valve alive) |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
     | `setTargetTemperature` | FLOAT [0.0..100.0] | Set the new air temperature to reach |
     | `setTargetTemperatureValue` | FLOAT [0.0..100.0] | Set the new temperature to reach |
     | `setValvePosition` | INT [0..100] | Valve position (100%=fully closed, 0%=opened) |
-    | `repeatTargetValvePosition` |  | Repeat the last target position to the valve (this action will keep the valve alive) |
 
     **States**
 
@@ -1031,6 +1031,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
+    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `OpenClosedValveState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
@@ -1039,8 +1041,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `TargetValvePositionState` | ContinuousState |  |  |
     | `ValvePositionState` | ContinuousState | [0..100] |  |
-    | `EnOceanHVACControlModeState` | DiscreteState | temperatureControl, valvePositionControl |  |
-    | `EnergyHarvesterState` | DiscreteState | active, inactive |  |
 
 ??? note "HeatingSystem/OnOffHeatingSystem (ACTUATOR) — 7 commands, 5 states"
 
@@ -1055,8 +1055,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
-    | `setOnOff` | STRING: off, on | Turn the device on or off |
     | `refreshStatus` |  | Refresh the status of the device |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
 
     **States**
 
@@ -1078,16 +1078,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `activateLocalControl` |  | Enable the local control |
     | `deactivateLocalControl` |  | Disable the local control |
+    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
-    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
-    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
-    | `setOnOff` | STRING: off, on | Turn the device on or off |
     | `refreshStatus` |  | Refresh the status of the device |
-    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `setKey` | INT [1..4294967295] | set the key of the product. |
     | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
+    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
     | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
 
     **States**
@@ -1098,12 +1098,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `LocalControlState` | DiscreteState | off, on |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `RSSILevelState` | ContinuousState |  |  |
+    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningDevicesState` | DataState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
     | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "HeatingSystem/ElectricalHeater (ACTUATOR) — 6 commands, 6 states"
 
@@ -1117,8 +1117,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `deactivateLocalControl` |  | Disable the local control |
     | `off` |  | Turn off the device |
     | `refreshHeatingLevel` |  | Refresh the heating level mode |
-    | `setHeatingLevel` | STRING: off, comfort, eco, frostprotection, comfort-1 | Sets the device heating level mode |
     | `refreshStatus` |  | Refresh the status of the device |
+    | `setHeatingLevel` | STRING: off, comfort, eco, frostprotection, comfort-1 | Sets the device heating level mode |
 
     **States**
 
@@ -1141,15 +1141,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `activateLocalControl` |  | Enable the local control |
     | `deactivateLocalControl` |  | Disable the local control |
+    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `off` |  | Turn off the device |
     | `refreshHeatingLevel` |  | Refresh the heating level mode |
-    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
-    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
-    | `setHeatingLevel` | STRING: off, comfort, eco, frostprotection, comfort-1 | Sets the device heating level mode |
     | `refreshStatus` |  | Refresh the status of the device |
-    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
+    | `setHeatingLevel` | STRING: off, comfort, eco, frostprotection, comfort-1 | Sets the device heating level mode |
     | `setKey` | INT [1..4294967295] | set the key of the product. |
     | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
+    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
+    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
     | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
 
     **States**
@@ -1159,13 +1159,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `LocalControlState` | DiscreteState | off, on |  |
     | `RSSILevelState` | ContinuousState |  |  |
+    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningDevicesState` | DataState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `TargetHeatingLevelState` | DiscreteState | comfort, comfort-1, comfort-2, eco, frostprotection |  |
-    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
     | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `TargetHeatingLevelState` | DiscreteState | comfort, comfort-1, comfort-2, eco, frostprotection |  |
     | `TargetHeatingLevelState` | DiscreteState | comfort, comfort-1, comfort-2, eco, frostprotection, off |  |
 
 ??? note "HumiditySensor/RelativeHumiditySensor (SENSOR) — 0 commands, 4 states"
@@ -1218,8 +1218,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `RepeaterLevelState` | DiscreteState | level1, level2, off |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "NetworkComponent/Repeater (INFRASTRUCTURE_COMPONENT) — 3 commands, 4 states"
 
@@ -1239,8 +1239,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `RepeaterLevelState` | DiscreteState | level1, level2, off |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 5 commands, 4 states"
 
@@ -1253,8 +1253,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
-    | `setOnOff` | STRING: off, on | Turn the device on or off |
     | `refreshStatus` |  | Refresh the status of the device |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
 
     **States**
 
@@ -1275,19 +1275,19 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `activateContextSavingOnPowerCut` |  | Activate last device state saving on power cut |
     | `activateLocalControl` |  | Enable the local control |
+    | `activateNightMode` |  | Activate the Night Mode (example : switch off the local LED) |
     | `activatePowerFailureDetection` |  | Activate the power failure detection |
     | `deactivateContextSavingOnPowerCut` |  | Deactivate last device state saving on power cut |
     | `deactivateLocalControl` |  | Disable the local control |
+    | `deactivateNightMode` |  | Deactivate the night mode  (example : switch on the local LED) |
     | `deactivatePowerFailureDetection` |  | Deactivate the power failure detection |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `refreshStatus` |  | Refresh the status of the device |
     | `setContextSavingOnPowerCut` | STRING: off, on | Activate (on) or deactivate (off) last device state saving on power cut |
     | `setDefaultOnOffState` | STRING: on, off | set the Default Output State |
     | `setOnOff` | STRING: off, on | Turn the device on or off |
-    | `activateNightMode` |  | Activate the Night Mode (example : switch off the local LED) |
-    | `deactivateNightMode` |  | Deactivate the night mode  (example : switch on the local LED) |
-    | `refreshStatus` |  | Refresh the status of the device |
 
     **States**
 
@@ -1297,12 +1297,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DefaultOnOffState` | DiscreteState | off, on, previous, togglePrevious, unknown |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `LocalControlState` | DiscreteState | off, on |  |
+    | `NightModeState` | DiscreteState | off, on |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `PowerFailureDetectionState` | DiscreteState | off, on |  |
     | `PowerFailureState` | DiscreteState | detected, notDetected |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `NightModeState` | DiscreteState | off, on |  |
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 21 commands, 15 states"
 
@@ -1314,24 +1314,24 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `activateContextSavingOnPowerCut` |  | Activate last device state saving on power cut |
     | `activateLocalControl` |  | Enable the local control |
+    | `activateNightMode` |  | Activate the Night Mode (example : switch off the local LED) |
     | `activatePowerFailureDetection` |  | Activate the power failure detection |
     | `deactivateContextSavingOnPowerCut` |  | Deactivate last device state saving on power cut |
     | `deactivateLocalControl` |  | Disable the local control |
+    | `deactivateNightMode` |  | Deactivate the night mode  (example : switch on the local LED) |
     | `deactivatePowerFailureDetection` |  | Deactivate the power failure detection |
+    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
-    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
-    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
+    | `refreshStatus` |  | Refresh the status of the device |
     | `setContextSavingOnPowerCut` | STRING: off, on | Activate (on) or deactivate (off) last device state saving on power cut |
     | `setDefaultOnOffState` | STRING: on, off | set the Default Output State |
-    | `setOnOff` | STRING: off, on | Turn the device on or off |
-    | `activateNightMode` |  | Activate the Night Mode (example : switch off the local LED) |
-    | `deactivateNightMode` |  | Deactivate the night mode  (example : switch on the local LED) |
-    | `refreshStatus` |  | Refresh the status of the device |
-    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `setKey` | INT [1..4294967295] | set the key of the product. |
     | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
+    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
     | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
 
     **States**
@@ -1342,17 +1342,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DefaultOnOffState` | DiscreteState | off, on, previous, togglePrevious, unknown |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `LocalControlState` | DiscreteState | off, on |  |
+    | `NightModeState` | DiscreteState | off, on |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `PowerFailureDetectionState` | DiscreteState | off, on |  |
     | `PowerFailureState` | DiscreteState | detected, notDetected |  |
     | `RSSILevelState` | ContinuousState |  |  |
+    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningDevicesState` | DataState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `NightModeState` | DiscreteState | off, on |  |
-    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
     | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 16 commands, 10 states"
 
@@ -1364,19 +1364,19 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `activateContextSavingOnPowerCut` |  | Activate last device state saving on power cut |
     | `activateLocalControl` |  | Enable the local control |
+    | `activateNightMode` |  | Activate the Night Mode (example : switch off the local LED) |
+    | `activateTaughtInDevices` |  | Enable taught-in devices (with different EEP) |
     | `deactivateContextSavingOnPowerCut` |  | Deactivate last device state saving on power cut |
     | `deactivateLocalControl` |  | Disable the local control |
+    | `deactivateNightMode` |  | Deactivate the night mode  (example : switch on the local LED) |
+    | `deactivateTaughtInDevices` |  | Disable taught-in devices (with different EEP) |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `refreshStatus` |  | Refresh the status of the device |
     | `setContextSavingOnPowerCut` | STRING: off, on | Activate (on) or deactivate (off) last device state saving on power cut |
     | `setDefaultOnOffState` | STRING: on, off | set the Default Output State |
     | `setOnOff` | STRING: off, on | Turn the device on or off |
-    | `activateNightMode` |  | Activate the Night Mode (example : switch off the local LED) |
-    | `activateTaughtInDevices` |  | Enable taught-in devices (with different EEP) |
-    | `deactivateNightMode` |  | Deactivate the night mode  (example : switch on the local LED) |
-    | `deactivateTaughtInDevices` |  | Disable taught-in devices (with different EEP) |
-    | `refreshStatus` |  | Refresh the status of the device |
     | `setTaughtInDevices` | STRING: enabled, disabled | Enable/Disable taught-in devices (with different EEP) |
 
     **States**
@@ -1387,11 +1387,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DefaultOnOffState` | DiscreteState | off, on, previous, togglePrevious, unknown |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `LocalControlState` | DiscreteState | off, on |  |
+    | `NightModeState` | DiscreteState | off, on |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `PowerFailureState` | DiscreteState | detected, notDetected |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `NightModeState` | DiscreteState | off, on |  |
     | `TaughInDevicesState` | DiscreteState | disabled, enabled |  |
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 17 commands, 11 states"
@@ -1404,36 +1404,36 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `activateContextSavingOnPowerCut` |  | Activate last device state saving on power cut |
     | `activateLocalControl` |  | Enable the local control |
+    | `activateNightMode` |  | Activate the Night Mode (example : switch off the local LED) |
     | `deactivateContextSavingOnPowerCut` |  | Deactivate last device state saving on power cut |
     | `deactivateLocalControl` |  | Disable the local control |
+    | `deactivateNightMode` |  | Deactivate the night mode  (example : switch on the local LED) |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
-    | `setContextSavingOnPowerCut` | STRING: off, on | Activate (on) or deactivate (off) last device state saving on power cut |
-    | `setDefaultOnOffState` | STRING: on, off | set the Default Output State |
-    | `setOnOff` | STRING: off, on | Turn the device on or off |
-    | `activateNightMode` |  | Activate the Night Mode (example : switch off the local LED) |
-    | `deactivateNightMode` |  | Deactivate the night mode  (example : switch on the local LED) |
     | `refreshExternalInterfaceSettings` |  | Refresh external interface settings |
     | `refreshStatus` |  | Refresh the status of the device |
     | `setAutoOffTimer` | FLOAT [0.0..6553.4] | time in second - Timer To automatically set OFF output channel when it is set ON. Value 0 mean timer desactivated |
+    | `setContextSavingOnPowerCut` | STRING: off, on | Activate (on) or deactivate (off) last device state saving on power cut |
+    | `setDefaultOnOffState` | STRING: on, off | set the Default Output State |
     | `setDelayOffTimer` | FLOAT [0.0..6553.4] | time in second - Delay timer before setting output channel to OFF value received by radio command. Value 0 mean timer desactivated |
     | `setExternalInterfaceMode` | STRING: autoDetection, externalPushButton, externalSwitch, notApplicable | set external interface type : mono-stable or bistable switch |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `AutoOffTimerState` | ContinuousState |  |  |
     | `ContextSavingOnPowerCutState` | DiscreteState | off, on |  |
     | `DefaultOnOffState` | DiscreteState | off, on, previous, togglePrevious, unknown |  |
+    | `DelayOffTimerState` | ContinuousState |  |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `LocalControlState` | DiscreteState | off, on |  |
+    | `NightModeState` | DiscreteState | off, on |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `AutoOffTimerState` | ContinuousState |  |  |
-    | `DelayOffTimerState` | ContinuousState |  |  |
-    | `NightModeState` | DiscreteState | off, on |  |
     | `SwitchExternalInterfaceState` | DiscreteState | autoDetection, externalPushButton, externalSwitch, notApplicable |  |
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 33 commands, 16 states"
@@ -1446,57 +1446,57 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `activateContextSavingOnPowerCut` |  | Activate last device state saving on power cut |
     | `activateLocalControl` |  | Enable the local control |
+    | `activateNightMode` |  | Activate the Night Mode (example : switch off the local LED) |
+    | `addDevicesLink` | OBJECT | Add a link between your device and the devices (one or more) that will control it. @Deprecated : use addLinkedDevices |
+    | `addGatewayLink` |  | add the gateway to list of the linked devices. @Deprecated : use linkGateway |
+    | `addLinkedDevices` | OBJECT | The command addLinkedDevices will add a link between your "target" device and another "source" devices (one or more) that will control your "target" device. |
+    | `clearAllLinkedDevices` |  | Clear all devices linked before. @Deprecated: use unlinkAllDevices |
     | `deactivateContextSavingOnPowerCut` |  | Deactivate last device state saving on power cut |
     | `deactivateLocalControl` |  | Disable the local control |
+    | `deactivateNightMode` |  | Deactivate the night mode  (example : switch on the local LED) |
+    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
-    | `addLinkedDevices` | OBJECT | The command addLinkedDevices will add a link between your "target" device and another "source" devices (one or more) that will control your "target" device. |
-    | `removeLinkedDevice` | STRING | The command removeLinkedDevice will remove the device linked before with the command setLinkedDevices or addLinkedDevices.This command can remove only 1 device. p1 : the deviceURL you want to delete. |
-    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
-    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
-    | `updateLinkedDevices` | ARRAY | The command updateLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). Only the different links will be updated.  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same. |
-    | `setContextSavingOnPowerCut` | STRING: off, on | Activate (on) or deactivate (off) last device state saving on power cut |
-    | `setDefaultOnOffState` | STRING: on, off | set the Default Output State |
-    | `setOnOff` | STRING: off, on | Turn the device on or off |
-    | `activateNightMode` |  | Activate the Night Mode (example : switch off the local LED) |
-    | `deactivateNightMode` |  | Deactivate the night mode  (example : switch on the local LED) |
     | `refreshExternalInterfaceSettings` |  | Refresh external interface settings |
     | `refreshStatus` |  | Refresh the status of the device |
-    | `addDevicesLink` | OBJECT | Add a link between your device and the devices (one or more) that will control it. @Deprecated : use addLinkedDevices |
-    | `addGatewayLink` |  | add the gateway to list of the linked devices. @Deprecated : use linkGateway |
-    | `clearAllLinkedDevices` |  | Clear all devices linked before. @Deprecated: use unlinkAllDevices |
-    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `removeDeviceLink` | INT | remove a device to the list of the devices linked by the remote commissioning. Address of the device to remove is the parameter. @Deprecated : use removeLinkedDevice |
     | `removeGatewayLink` |  | remove the gateway from the list of the link devices.@Deprecated : use unlinkGateway |
-    | `setKey` | INT [1..4294967295] | set the key of the product. |
-    | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
-    | `setLinks` | OBJECT | Set a link between your device and the devices (one or more) that will control it. All existing links already set in the target will be erase. @Deprecated: use setLinkedDevices |
-    | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
-    | `updateLinks` | OBJECT | Link given devices to current device using remote commissioning and comparing to existing configuration as follow :  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same.  @Deprecated : use updateLinkedDevices |
+    | `removeLinkedDevice` | STRING | The command removeLinkedDevice will remove the device linked before with the command setLinkedDevices or addLinkedDevices.This command can remove only 1 device. p1 : the deviceURL you want to delete. |
     | `setAutoOffTimer` | FLOAT [0.0..6553.4] | time in second - Timer To automatically set OFF output channel when it is set ON. Value 0 mean timer desactivated |
+    | `setContextSavingOnPowerCut` | STRING: off, on | Activate (on) or deactivate (off) last device state saving on power cut |
+    | `setDefaultOnOffState` | STRING: on, off | set the Default Output State |
     | `setDelayOffTimer` | FLOAT [0.0..6553.4] | time in second - Delay timer before setting output channel to OFF value received by radio command. Value 0 mean timer desactivated |
     | `setExternalInterfaceMode` | STRING: autoDetection, externalPushButton, externalSwitch, notApplicable | set external interface type : mono-stable or bistable switch |
+    | `setKey` | INT [1..4294967295] | set the key of the product. |
+    | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
+    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
+    | `setLinks` | OBJECT | Set a link between your device and the devices (one or more) that will control it. All existing links already set in the target will be erase. @Deprecated: use setLinkedDevices |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
+    | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
+    | `updateLinkedDevices` | ARRAY | The command updateLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). Only the different links will be updated.  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same. |
+    | `updateLinks` | OBJECT | Link given devices to current device using remote commissioning and comparing to existing configuration as follow :  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same.  @Deprecated : use updateLinkedDevices |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `AutoOffTimerState` | ContinuousState |  |  |
     | `ContextSavingOnPowerCutState` | DiscreteState | off, on |  |
     | `DefaultOnOffState` | DiscreteState | off, on, previous, togglePrevious, unknown |  |
+    | `DelayOffTimerState` | ContinuousState |  |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `LocalControlState` | DiscreteState | off, on |  |
+    | `NightModeState` | DiscreteState | off, on |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `RSSILevelState` | ContinuousState |  |  |
+    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningDevicesState` | DataState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `AutoOffTimerState` | ContinuousState |  |  |
-    | `DelayOffTimerState` | ContinuousState |  |  |
-    | `NightModeState` | DiscreteState | off, on |  |
-    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
     | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `SwitchExternalInterfaceState` | DiscreteState | autoDetection, externalPushButton, externalSwitch, notApplicable |  |
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 23 commands, 16 states"
@@ -1509,47 +1509,47 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `activateContextSavingOnPowerCut` |  | Activate last device state saving on power cut |
     | `activateLocalControl` |  | Enable the local control |
+    | `activateNightMode` |  | Activate the Night Mode (example : switch off the local LED) |
     | `deactivateContextSavingOnPowerCut` |  | Deactivate last device state saving on power cut |
     | `deactivateLocalControl` |  | Disable the local control |
+    | `deactivateNightMode` |  | Deactivate the night mode  (example : switch on the local LED) |
+    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
-    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
-    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
-    | `setContextSavingOnPowerCut` | STRING: off, on | Activate (on) or deactivate (off) last device state saving on power cut |
-    | `setDefaultOnOffState` | STRING: on, off | set the Default Output State |
-    | `setOnOff` | STRING: off, on | Turn the device on or off |
-    | `activateNightMode` |  | Activate the Night Mode (example : switch off the local LED) |
-    | `deactivateNightMode` |  | Deactivate the night mode  (example : switch on the local LED) |
     | `refreshExternalInterfaceSettings` |  | Refresh external interface settings |
     | `refreshStatus` |  | Refresh the status of the device |
-    | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
-    | `setKey` | INT [1..4294967295] | set the key of the product. |
-    | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
-    | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
     | `setAutoOffTimer` | FLOAT [0.0..6553.4] | time in second - Timer To automatically set OFF output channel when it is set ON. Value 0 mean timer desactivated |
+    | `setContextSavingOnPowerCut` | STRING: off, on | Activate (on) or deactivate (off) last device state saving on power cut |
+    | `setDefaultOnOffState` | STRING: on, off | set the Default Output State |
     | `setDelayOffTimer` | FLOAT [0.0..6553.4] | time in second - Delay timer before setting output channel to OFF value received by radio command. Value 0 mean timer desactivated |
     | `setExternalInterfaceMode` | STRING: autoDetection, externalPushButton, externalSwitch, notApplicable | set external interface type : mono-stable or bistable switch |
+    | `setKey` | INT [1..4294967295] | set the key of the product. |
+    | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
+    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
+    | `setOnOff` | STRING: off, on | Turn the device on or off |
+    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
+    | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `AutoOffTimerState` | ContinuousState |  |  |
     | `ContextSavingOnPowerCutState` | DiscreteState | off, on |  |
     | `DefaultOnOffState` | DiscreteState | off, on, previous, togglePrevious, unknown |  |
+    | `DelayOffTimerState` | ContinuousState |  |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `LocalControlState` | DiscreteState | off, on |  |
+    | `NightModeState` | DiscreteState | off, on |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `RSSILevelState` | ContinuousState |  |  |
+    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningDevicesState` | DataState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `AutoOffTimerState` | ContinuousState |  |  |
-    | `DelayOffTimerState` | ContinuousState |  |  |
-    | `NightModeState` | DiscreteState | off, on |  |
-    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
     | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `SwitchExternalInterfaceState` | DiscreteState | autoDetection, externalPushButton, externalSwitch, notApplicable |  |
 
 ??? note "OnOff/StatelessOnOff (ACTUATOR) — 4 commands, 1 states"
@@ -1583,10 +1583,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `down` |  | Move the device completely down |
     | `open` |  | Fully open the device |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+    | `teachIn` |  | command to teach the box in the actuator |
     | `timedClose` | FLOAT [0.0..255.0] | close the device for the given time |
     | `timedOpen` | FLOAT [0.0..255.0] | open the device for the given time |
     | `up` |  | Move the device completely up |
-    | `teachIn` |  | command to teach the box in the actuator |
 
     **States**
 
@@ -1606,55 +1606,55 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
+    | `addDevicesLink` | OBJECT | Add a link between your device and the devices (one or more) that will control it. @Deprecated : use addLinkedDevices |
+    | `addGatewayLink` |  | add the gateway to list of the linked devices. @Deprecated : use linkGateway |
+    | `addLinkedDevices` | OBJECT | The command addLinkedDevices will add a link between your "target" device and another "source" devices (one or more) that will control your "target" device. |
+    | `clearAllLinkedDevices` |  | Clear all devices linked before. @Deprecated: use unlinkAllDevices |
     | `close` |  | Fully close the device |
     | `down` |  | Move the device completely down |
-    | `getClosure` |  | Get closure level (100%=fully close, 0%=open) |
-    | `open` |  | Fully open the device |
-    | `addLinkedDevices` | OBJECT | The command addLinkedDevices will add a link between your "target" device and another "source" devices (one or more) that will control your "target" device. |
-    | `removeLinkedDevice` | STRING | The command removeLinkedDevice will remove the device linked before with the command setLinkedDevices or addLinkedDevices.This command can remove only 1 device. p1 : the deviceURL you want to delete. |
-    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
-    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
-    | `updateLinkedDevices` | ARRAY | The command updateLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). Only the different links will be updated.  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same. |
-    | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
-    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
-    | `up` |  | Move the device completely up |
     | `getCalibrationStatus` |  | Get calibration status. |
     | `getCalibrationTimeDown` |  | Get calibration time down. |
     | `getCalibrationTimeUp` |  | Get calibration time up. |
-    | `refreshSwitchType` |  | refresh switch type. |
-    | `addDevicesLink` | OBJECT | Add a link between your device and the devices (one or more) that will control it. @Deprecated : use addLinkedDevices |
-    | `addGatewayLink` |  | add the gateway to list of the linked devices. @Deprecated : use linkGateway |
-    | `clearAllLinkedDevices` |  | Clear all devices linked before. @Deprecated: use unlinkAllDevices |
+    | `getClosure` |  | Get closure level (100%=fully close, 0%=open) |
     | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
+    | `open` |  | Fully open the device |
+    | `refreshSwitchType` |  | refresh switch type. |
     | `removeDeviceLink` | INT | remove a device to the list of the devices linked by the remote commissioning. Address of the device to remove is the parameter. @Deprecated : use removeLinkedDevice |
     | `removeGatewayLink` |  | remove the gateway from the list of the link devices.@Deprecated : use unlinkGateway |
+    | `removeLinkedDevice` | STRING | The command removeLinkedDevice will remove the device linked before with the command setLinkedDevices or addLinkedDevices.This command can remove only 1 device. p1 : the deviceURL you want to delete. |
+    | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
     | `setKey` | INT [1..4294967295] | set the key of the product. |
     | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
+    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
     | `setLinks` | OBJECT | Set a link between your device and the devices (one or more) that will control it. All existing links already set in the target will be erase. @Deprecated: use setLinkedDevices |
-    | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
-    | `updateLinks` | OBJECT | Link given devices to current device using remote commissioning and comparing to existing configuration as follow :  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same.  @Deprecated : use updateLinkedDevices |
     | `setSwitchType` | STRING: biStableTypeOne, biStableTypeTwo, biStableTypeThree, monoStableTypeFour | Set switch type. |
     | `setTimeCalibration` | FLOAT [5.0..300.0] | Set time calibration in seconds. |
     | `startCalibration` | STRING: classic, complex | Start classic or complex calibration. |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopCalibration` |  | Stop calibration. |
+    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
+    | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
+    | `up` |  | Move the device completely up |
+    | `updateLinkedDevices` | ARRAY | The command updateLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). Only the different links will be updated.  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same. |
+    | `updateLinks` | OBJECT | Link given devices to current device using remote commissioning and comparing to existing configuration as follow :  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same.  @Deprecated : use updateLinkedDevices |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `CalibrationStatusState` | DiscreteState | calibrated, notCalibrated |  |
+    | `CalibrationTimeDownState` | ContinuousState |  |  |
+    | `CalibrationTimeUpState` | ContinuousState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
+    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningDevicesState` | DataState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `CalibrationStatusState` | DiscreteState | calibrated, notCalibrated |  |
-    | `CalibrationTimeDownState` | ContinuousState |  |  |
-    | `CalibrationTimeUpState` | ContinuousState |  |  |
-    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
     | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `SwitchTypeState` | DiscreteState | bistable, monostable |  |
 
 ??? note "RollerShutter/PositionableRollerShutter (ACTUATOR) — 7 commands, 5 states"
@@ -1694,17 +1694,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `close` |  | Fully close the device |
     | `down` |  | Move the device completely down |
     | `getClosure` |  | Get closure level (100%=fully close, 0%=open) |
-    | `open` |  | Fully open the device |
-    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
-    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
-    | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
-    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
-    | `up` |  | Move the device completely up |
     | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
+    | `open` |  | Fully open the device |
+    | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
     | `setKey` | INT [1..4294967295] | set the key of the product. |
     | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
-    | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
+    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
     | `startClassicCalibration` |  | Start classic calibration. |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
+    | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
+    | `up` |  | Move the device completely up |
 
     **States**
 
@@ -1714,12 +1714,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
+    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningDevicesState` | DataState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
     | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "RollerShutter/UpDownRollerShutter (ACTUATOR) — 4 commands, 1 states"
 
@@ -1801,27 +1801,27 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `close` |  | Fully close the device |
-    | `down` |  | Move the device completely down |
-    | `open` |  | Fully open the device |
-    | `addLinkedDevices` | OBJECT | The command addLinkedDevices will add a link between your "target" device and another "source" devices (one or more) that will control your "target" device. |
-    | `removeLinkedDevice` | STRING | The command removeLinkedDevice will remove the device linked before with the command setLinkedDevices or addLinkedDevices.This command can remove only 1 device. p1 : the deviceURL you want to delete. |
-    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
-    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
-    | `updateLinkedDevices` | ARRAY | The command updateLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). Only the different links will be updated.  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same. |
-    | `setClosureAndOrientation` | INT [0..100]; INT [0..100] | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device |
-    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
-    | `up` |  | Move the device completely up |
     | `addDevicesLink` | OBJECT | Add a link between your device and the devices (one or more) that will control it. @Deprecated : use addLinkedDevices |
     | `addGatewayLink` |  | add the gateway to list of the linked devices. @Deprecated : use linkGateway |
+    | `addLinkedDevices` | OBJECT | The command addLinkedDevices will add a link between your "target" device and another "source" devices (one or more) that will control your "target" device. |
     | `clearAllLinkedDevices` |  | Clear all devices linked before. @Deprecated: use unlinkAllDevices |
+    | `close` |  | Fully close the device |
+    | `down` |  | Move the device completely down |
     | `linkGateway` |  | The command linkGateway will allow the gateway to control the "target" device. If a gateway is linked, the product can be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
+    | `open` |  | Fully open the device |
     | `removeDeviceLink` | INT | remove a device to the list of the devices linked by the remote commissioning. Address of the device to remove is the parameter. @Deprecated : use removeLinkedDevice |
     | `removeGatewayLink` |  | remove the gateway from the list of the link devices.@Deprecated : use unlinkGateway |
+    | `removeLinkedDevice` | STRING | The command removeLinkedDevice will remove the device linked before with the command setLinkedDevices or addLinkedDevices.This command can remove only 1 device. p1 : the deviceURL you want to delete. |
+    | `setClosureAndOrientation` | INT [0..100]; INT [0..100] | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device |
     | `setKey` | INT [1..4294967295] | set the key of the product. |
     | `setKeyWithOldOne` | INT [1..4294967295]; INT [1..4294967295] | set the key of the product. p1 : new key, p2 : old key |
+    | `setLinkedDevices` | ARRAY | The command setLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). All existing links already set in the "target" will be erased. |
     | `setLinks` | OBJECT | Set a link between your device and the devices (one or more) that will control it. All existing links already set in the target will be erase. @Deprecated: use setLinkedDevices |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+    | `unlinkAllDevices` |  | The command unlinkAllDevices will clear all "source" devices linked before to this device. |
     | `unlinkGateway` |  | The command unlinkGateway will forbid the gateway to control the "target" device. If a gateway is not linked, the product can not be controlled by using Overkiz server's. By default, the gateway is not linked to the "target" device. |
+    | `up` |  | Move the device completely up |
+    | `updateLinkedDevices` | ARRAY | The command updateLinkedDevices will set a link between a "target" device, and one or more "source" devices that will control your "target" device. The links are described in a JSON (p1). Only the different links will be updated.  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same. |
     | `updateLinks` | OBJECT | Link given devices to current device using remote commissioning and comparing to existing configuration as follow :  Full configuration will be resent when ; - some devices are removed only - same devices but with different configurations - previous configuration has failed - no configuration has been sent yet Only differences will be sent when : - some devices are added only  An error with NO_ACTION code will be returned if configuration is exactly the same.  @Deprecated : use updateLinkedDevices |
 
     **States**
@@ -1832,13 +1832,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `RSSILevelState` | ContinuousState |  |  |
+    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningDevicesState` | DataState |  |  |
     | `RemoteCommissioningLastExecutionStatusState` | DataState |  |  |
-    | `SlateOrientationState` | ContinuousState | [0..100] |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `RemoteCommissioningDeviceKeyState` | DataState |  |  |
     | `RemoteCommissioningLinkedDevicesState` | DataState |  |  |
     | `RemoteCommissioningLinkedGatewayState` | DataState |  |  |
+    | `SlateOrientationState` | ContinuousState | [0..100] |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "VentilationSystem/DimplexVentilationInletOutlet (ACTUATOR) — 4 commands, 1 states"
 
@@ -1878,19 +1878,19 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `FilterConditionState` | DiscreteState | OK, alert |  |
-    | `ProductModelNameState` | DataState |  |  |
-    | `RSSILevelState` | ContinuousState |  |  |
-    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `DiagnosticCodeState` | DataState |  |  |
     | `FanSpeedState` | DiscreteState | auto, high, low, medium, silent |  |
+    | `FilterConditionState` | DiscreteState | OK, alert |  |
     | `LeaveHomeState` | DiscreteState | off, on |  |
     | `MainOperationState` | DiscreteState | off, on |  |
     | `ModeChangeState` | DiscreteState | auto, autoCooling, autoHeating, circulator, cooling, dehumidify, fan, heating |  |
     | `OutdoorTemperatureState` | ContinuousState |  |  |
+    | `ProductModelNameState` | DataState |  |  |
+    | `RSSILevelState` | ContinuousState |  |  |
     | `RemoconControlState` | DiscreteState | disable, enable |  |
     | `RoomTemperatureState` | ContinuousState |  |  |
     | `SwingState` | DiscreteState | both, horizontal, stop, vertical |  |
+    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `TemperatureChangeState` | ContinuousState |  |  |
 
 ??? note "ProtocolGateway/HLRRWifiBridge (PROTOCOL_GATEWAY) — 2 commands, 2 states"
@@ -1948,8 +1948,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
     | `refreshState` |  | Refresh the device states |
-    | `setCieColorSpaceXY` | FLOAT [0.0..1.0]; FLOAT [0.0..1.0] | Set the CIE color space coordinates (X,Y) of the lamp |
     | `setCTB` | INT [2000..6536]; INT [0..100] | Set the perceived white temperature for this lamp (°K) and its brightness (%) |
+    | `setCieColorSpaceXY` | FLOAT [0.0..1.0]; FLOAT [0.0..1.0] | Set the CIE color space coordinates (X,Y) of the lamp |
     | `setColorTemperature` | INT [2000..6536] | Set the perceived white temperature for this lamp (°K) |
     | `setHSB` | INT [0..360]; INT [0..100]; INT [0..100] | Set the color hue (°), color saturation (%) and brightness (%) of the lamp |
     | `setHueAndSaturation` | INT [0..360]; INT [0..100] | Set the color hue (°) and color saturation(%) of the lamp |
@@ -1969,11 +1969,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ColorHueState` | ContinuousState |  |  |
     | `ColorSaturationState` | ContinuousState |  |  |
     | `ColorTemperatureState` | ContinuousState |  |  |
+    | `HueColorModeState` | DiscreteState | ct, hs, xy |  |
     | `LightIntensityState` | ContinuousState | [0..100] |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `HueColorModeState` | DiscreteState | ct, hs, xy |  |
 
 ??? note "Light/DimmerColorTemperatureLight (ACTUATOR) — 11 commands, 6 states"
 
@@ -2004,11 +2004,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ColorTemperatureState` | ContinuousState |  |  |
+    | `HueColorModeState` | DiscreteState | ct, hs, xy |  |
     | `LightIntensityState` | ContinuousState | [0..100] |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `HueColorModeState` | DiscreteState | ct, hs, xy |  |
 
 ??? note "Light/DimmerLight (ACTUATOR) — 9 commands, 4 states"
 
@@ -2076,11 +2076,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `CieColorSpaceYState` | ContinuousState |  |  |
     | `ColorHueState` | ContinuousState |  |  |
     | `ColorSaturationState` | ContinuousState |  |  |
+    | `HueColorModeState` | DiscreteState | ct, hs, xy |  |
     | `LightIntensityState` | ContinuousState | [0..100] |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `HueColorModeState` | DiscreteState | ct, hs, xy |  |
 
 ??? note "ProtocolGateway/HueBridge (PROTOCOL_GATEWAY) — 0 commands, 1 states"
 
@@ -2107,29 +2107,29 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `alarmOff` |  | Turn off the alarm (All zones) |
     | `alarmOn` |  | Turn the alarm on |
+    | `alarmPartial1` |  | Set the alarm on partial 1 mode |
+    | `alarmPartial2` |  | Set the alarm on partial 2 mode |
     | `arm` |  | Arm the system |
     | `disarm` |  | Disarm the system |
     | `getName` |  | Refresh the device internal name |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
-    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `refreshAlarmDelay` |  | Refresh the waiting time for an alarm mode change |
     | `refreshCurrentAlarmMode` |  | Refresh current alarm mode |
     | `refreshIntrusionDetected` |  | Refresh intrusion detected state |
     | `setAlarmDelay` | INT [0..255] | Change waiting time (in s) before changing alarm mode |
-    | `alarmPartial1` |  | Set the alarm on partial 1 mode |
-    | `alarmPartial2` |  | Set the alarm on partial 2 mode |
     | `setIntrusionDetected` | STRING: detected, notDetected, pending, sos | Change the intrusion detected state |
+    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setTargetAlarmMode` | STRING: off, partial1, partial2, sos, total | Change the current alarm mode (after a configured delay) |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `NameState` | DataState |  |  |
     | `AlarmDelayState` | ContinuousState |  |  |
     | `CurrentAlarmModeState` | DiscreteState | off, partial1, partial2, total |  |
     | `IntrusionDetectedState` | DiscreteState | detected, notDetected, pending, sos |  |
+    | `NameState` | DataState |  |  |
     | `TargetAlarmModeState` | DiscreteState | off, partial1, partial2, sos, total |  |
 
 ??? note "Dock (ACTUATOR) — 25 commands, 14 states"
@@ -2140,13 +2140,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `getName` |  | Refresh the device internal name |
-    | `refreshBatteryLevel` |  | Refresh the battery level |
     | `blinkModemLed` | INT: 0, 100, 200, 300, 400; INT: 100, 200, 300, 400, 500 (optional) | Make modem led blink |
+    | `getName` |  | Refresh the device internal name |
     | `increasingFrequencyBip` | INT [0..255]; INT [0..255] | Ask alarm to start a bip sequence of increasing frequency p1 stands for initial interval between two bips p2 stands for alarm duration |
     | `longBip` | INT [0..255] | Ask alarm to start a long bip sequence p1 stands for number of bips |
     | `rebootModem` |  | Reboot modem |
     | `refreshAirplaneMode` |  | Refresh airplane mode state |
+    | `refreshBatteryLevel` |  | Refresh the battery level |
     | `refreshBatteryStatus` |  | Refresh battery status |
     | `refreshGPRSRegistration` |  | Refresh GPRS registration |
     | `refreshGSMRegistration` |  | Refresh GSM registration |
@@ -2170,16 +2170,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `BatteryLevelState` | ContinuousState |  |  |
-    | `NameState` | DataState |  |  |
-    | `RSSILevelState` | ContinuousState |  |  |
     | `AirplaneModeState` | ContinuousState |  |  |
+    | `BatteryLevelState` | ContinuousState |  |  |
     | `BatteryStatusState` | ContinuousState |  |  |
     | `GPRSRegistrationState` | DiscreteState | false, true |  |
     | `GSMRegistrationState` | DiscreteState | false, true |  |
     | `LastConnectivitySwitchState` | ContinuousState |  |  |
     | `LightingLedModemModeState` | ContinuousState |  |  |
+    | `NameState` | DataState |  |  |
     | `ProviderNameState` | ContinuousState |  |  |
+    | `RSSILevelState` | ContinuousState |  |  |
     | `SIMCardActivationState` | DiscreteState | false, true |  |
     | `SIMCardConnectivityState` | DiscreteState | offline, online, registered |  |
     | `SIMCardStatusState` | DiscreteState | KO, OK, inProgress |  |
@@ -2210,17 +2210,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `getName` |  | Refresh the device internal name |
-    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
-    | `setCountryCode` | STRING | Set the ISO 3166-1 Country Code |
     | `activateCalendar` |  | Activate Calendar Trigger |
     | `deactivateCalendar` |  | deactivate Calendar Trigger |
+    | `getName` |  | Refresh the device internal name |
     | `refreshPodMode` |  | Refresh pod mode |
     | `refreshUpdateStatus` |  | Refresh updateStatus |
     | `setCalendar` | STRING: yes, no | activate/deactivate Calendar Trigger |
+    | `setCountryCode` | STRING | Set the ISO 3166-1 Country Code |
     | `setLightingLedPodMode` | FLOAT [0.0..1.0] | Change lighting led pod mode intensity, 0=0% ; 1=100% |
     | `setPodLedOff` |  | Turn off the pod led |
     | `setPodLedOn` |  | Turn on the pod led |
+    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
 
     **States**
 
@@ -2228,11 +2228,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ConnectivityState` | DiscreteState | offline, online |  |
     | `CountryCodeState` | DataState |  |  |
+    | `LastActionConfigButtonState` | DiscreteState | doublePress, longPress, simplePress, triplePress, veryLongPress |  |
+    | `LightingLedPodModeState` | ContinuousState |  |  |
     | `LocalAccessProofState` | DataState |  |  |
     | `LocalIPv4AddressState` | DataState |  |  |
     | `NameState` | DataState |  |  |
-    | `LastActionConfigButtonState` | DiscreteState | doublePress, longPress, simplePress, triplePress, veryLongPress |  |
-    | `LightingLedPodModeState` | ContinuousState |  |  |
 
 ??? note "Pod (ACTUATOR) — 12 commands, 8 states"
 
@@ -2242,31 +2242,31 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `getName` |  | Refresh the device internal name |
-    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
-    | `setCountryCode` | STRING | Set the ISO 3166-1 Country Code |
     | `activateCalendar` |  | Activate Calendar Trigger |
     | `deactivateCalendar` |  | deactivate Calendar Trigger |
+    | `getName` |  | Refresh the device internal name |
     | `refreshBatteryStatus` |  | Refresh battery status |
     | `refreshPodMode` |  | Refresh pod mode |
     | `refreshUpdateStatus` |  | Refresh updateStatus |
     | `setCalendar` | STRING: yes, no | activate/deactivate Calendar Trigger |
+    | `setCountryCode` | STRING | Set the ISO 3166-1 Country Code |
     | `setLightingLedPodMode` | FLOAT [0.0..1.0] | Change lighting led pod mode intensity, 0=0% ; 1=100% |
     | `setPodLedOff` |  | Turn off the pod led |
     | `setPodLedOn` |  | Turn on the pod led |
+    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `BatteryStatusState` | ContinuousState |  |  |
     | `ConnectivityState` | DiscreteState | offline, online |  |
     | `CountryCodeState` | DataState |  |  |
     | `CyclicButtonState` | DiscreteState | pressed, stop |  |
+    | `LightingLedPodModeState` | ContinuousState |  |  |
     | `LocalAccessProofState` | DataState |  |  |
     | `LocalIPv4AddressState` | DataState |  |  |
     | `NameState` | DataState |  |  |
-    | `BatteryStatusState` | ContinuousState |  |  |
-    | `LightingLedPodModeState` | ContinuousState |  |  |
 
 ??? note "Pod (ACTUATOR) — 0 commands, 0 states"
 
@@ -2291,31 +2291,31 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `getName` |  | Refresh the device internal name |
-    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
-    | `setCountryCode` | STRING | Set the ISO 3166-1 Country Code |
     | `activateCalendar` |  | Activate Calendar Trigger |
     | `deactivateCalendar` |  | deactivate Calendar Trigger |
+    | `getName` |  | Refresh the device internal name |
     | `refreshPodMode` |  | Refresh pod mode |
     | `refreshUpdateStatus` |  | Refresh updateStatus |
     | `setCalendar` | STRING: yes, no | activate/deactivate Calendar Trigger |
+    | `setCountryCode` | STRING | Set the ISO 3166-1 Country Code |
     | `setLightingLedPodMode` | FLOAT [0.0..1.0] | Change lighting led pod mode intensity, 0=0% ; 1=100% |
     | `setPodLedOff` |  | Turn off the pod led |
     | `setPodLedOn` |  | Turn on the pod led |
+    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `ConnectivityState` | DiscreteState | offline, online |  |
-    | `CountryCodeState` | DataState |  |  |
-    | `LocalAccessProofState` | DataState |  |  |
-    | `LocalIPv4AddressState` | DataState |  |  |
-    | `NameState` | DataState |  |  |
     | `Button1State` | DiscreteState | pressed, stop |  |
     | `Button2State` | DiscreteState | pressed, stop |  |
     | `Button3State` | DiscreteState | pressed, stop |  |
+    | `ConnectivityState` | DiscreteState | offline, online |  |
+    | `CountryCodeState` | DataState |  |  |
     | `LightingLedPodModeState` | ContinuousState |  |  |
+    | `LocalAccessProofState` | DataState |  |  |
+    | `LocalIPv4AddressState` | DataState |  |  |
+    | `NameState` | DataState |  |  |
 
 ??? note "Pod (ACTUATOR) — 11 commands, 6 states"
 
@@ -2325,17 +2325,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `getName` |  | Refresh the device internal name |
-    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
-    | `setCountryCode` | STRING | Set the ISO 3166-1 Country Code |
     | `activateCalendar` |  | Activate Calendar Trigger |
     | `deactivateCalendar` |  | deactivate Calendar Trigger |
+    | `getName` |  | Refresh the device internal name |
     | `refreshPodMode` |  | Refresh pod mode |
     | `refreshUpdateStatus` |  | Refresh updateStatus |
     | `setCalendar` | STRING: yes, no | activate/deactivate Calendar Trigger |
+    | `setCountryCode` | STRING | Set the ISO 3166-1 Country Code |
     | `setLightingLedPodMode` | FLOAT [0.0..1.0] | Change lighting led pod mode intensity, 0=0% ; 1=100% |
     | `setPodLedOff` |  | Turn off the pod led |
     | `setPodLedOn` |  | Turn on the pod led |
+    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
 
     **States**
 
@@ -2343,10 +2343,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ConnectivityState` | DiscreteState | offline, online |  |
     | `CountryCodeState` | DataState |  |  |
+    | `LightingLedPodModeState` | ContinuousState |  |  |
     | `LocalAccessProofState` | DataState |  |  |
     | `LocalIPv4AddressState` | DataState |  |  |
     | `NameState` | DataState |  |  |
-    | `LightingLedPodModeState` | ContinuousState |  |  |
 
 ??? note "Pod/MultiGateway (ACTUATOR) — 2 commands, 4 states"
 
@@ -2376,17 +2376,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `getName` |  | Refresh the device internal name |
-    | `setCountryCode` | STRING | Set the ISO 3166-1 Country Code |
-    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
     | `activateCalendar` |  | Activate Calendar Trigger |
     | `deactivateCalendar` |  | deactivate Calendar Trigger |
+    | `getName` |  | Refresh the device internal name |
     | `refreshPodMode` |  | Refresh pod mode |
     | `refreshUpdateStatus` |  | Refresh updateStatus |
     | `setCalendar` | STRING: yes, no | activate/deactivate Calendar Trigger |
+    | `setCountryCode` | STRING | Set the ISO 3166-1 Country Code |
     | `setLightingLedPodMode` | FLOAT [0.0..1.0] | Change lighting led pod mode intensity, 0=0% ; 1=100% |
     | `setPodLedOff` |  | Turn off the pod led |
     | `setPodLedOn` |  | Turn on the pod led |
+    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
 
     **States**
 
@@ -2394,11 +2394,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ConnectivityState` | DiscreteState | offline, online |  |
     | `CountryCodeState` | DataState |  |  |
+    | `LastActionConfigButtonState` | DiscreteState | doublePress, longPress, simplePress, triplePress, veryLongPress |  |
+    | `LightingLedPodModeState` | ContinuousState |  |  |
     | `LocalAccessProofState` | DataState |  |  |
     | `LocalIPv4AddressState` | DataState |  |  |
     | `NameState` | DataState |  |  |
-    | `LastActionConfigButtonState` | DiscreteState | doublePress, longPress, simplePress, triplePress, veryLongPress |  |
-    | `LightingLedPodModeState` | ContinuousState |  |  |
     | `UpdateStepAndBootStatusState` | DataState |  |  |
 
 ??? note "Pod (ACTUATOR) — 12 commands, 9 states"
@@ -2409,31 +2409,31 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `getName` |  | Refresh the device internal name |
-    | `setCountryCode` | STRING | Set the ISO 3166-1 Country Code |
-    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
     | `activateCalendar` |  | Activate Calendar Trigger |
     | `deactivateCalendar` |  | deactivate Calendar Trigger |
+    | `getName` |  | Refresh the device internal name |
     | `refreshBatteryStatus` |  | Refresh battery status |
     | `refreshPodMode` |  | Refresh pod mode |
     | `refreshUpdateStatus` |  | Refresh updateStatus |
     | `setCalendar` | STRING: yes, no | activate/deactivate Calendar Trigger |
+    | `setCountryCode` | STRING | Set the ISO 3166-1 Country Code |
     | `setLightingLedPodMode` | FLOAT [0.0..1.0] | Change lighting led pod mode intensity, 0=0% ; 1=100% |
     | `setPodLedOff` |  | Turn off the pod led |
     | `setPodLedOn` |  | Turn on the pod led |
+    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `BatteryStatusState` | ContinuousState |  |  |
     | `ConnectivityState` | DiscreteState | offline, online |  |
     | `CountryCodeState` | DataState |  |  |
     | `CyclicButtonState` | DiscreteState | pressed, stop |  |
+    | `LightingLedPodModeState` | ContinuousState |  |  |
     | `LocalAccessProofState` | DataState |  |  |
     | `LocalIPv4AddressState` | DataState |  |  |
     | `NameState` | DataState |  |  |
-    | `BatteryStatusState` | ContinuousState |  |  |
-    | `LightingLedPodModeState` | ContinuousState |  |  |
     | `UpdateStepAndBootStatusState` | DataState |  |  |
 
 ??? note "Pod (ACTUATOR) — 11 commands, 10 states"
@@ -2444,31 +2444,31 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `getName` |  | Refresh the device internal name |
-    | `setCountryCode` | STRING | Set the ISO 3166-1 Country Code |
-    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
     | `activateCalendar` |  | Activate Calendar Trigger |
     | `deactivateCalendar` |  | deactivate Calendar Trigger |
+    | `getName` |  | Refresh the device internal name |
     | `refreshPodMode` |  | Refresh pod mode |
     | `refreshUpdateStatus` |  | Refresh updateStatus |
     | `setCalendar` | STRING: yes, no | activate/deactivate Calendar Trigger |
+    | `setCountryCode` | STRING | Set the ISO 3166-1 Country Code |
     | `setLightingLedPodMode` | FLOAT [0.0..1.0] | Change lighting led pod mode intensity, 0=0% ; 1=100% |
     | `setPodLedOff` |  | Turn off the pod led |
     | `setPodLedOn` |  | Turn on the pod led |
+    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `ConnectivityState` | DiscreteState | offline, online |  |
-    | `CountryCodeState` | DataState |  |  |
-    | `LocalAccessProofState` | DataState |  |  |
-    | `LocalIPv4AddressState` | DataState |  |  |
-    | `NameState` | DataState |  |  |
     | `Button1State` | DiscreteState | pressed, stop |  |
     | `Button2State` | DiscreteState | pressed, stop |  |
     | `Button3State` | DiscreteState | pressed, stop |  |
+    | `ConnectivityState` | DiscreteState | offline, online |  |
+    | `CountryCodeState` | DataState |  |  |
     | `LightingLedPodModeState` | ContinuousState |  |  |
+    | `LocalAccessProofState` | DataState |  |  |
+    | `LocalIPv4AddressState` | DataState |  |  |
+    | `NameState` | DataState |  |  |
     | `UpdateStepAndBootStatusState` | DataState |  |  |
 
 ??? note "Pod (ACTUATOR) — 11 commands, 7 states"
@@ -2479,17 +2479,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `getName` |  | Refresh the device internal name |
-    | `setCountryCode` | STRING | Set the ISO 3166-1 Country Code |
-    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
     | `activateCalendar` |  | Activate Calendar Trigger |
     | `deactivateCalendar` |  | deactivate Calendar Trigger |
+    | `getName` |  | Refresh the device internal name |
     | `refreshPodMode` |  | Refresh pod mode |
     | `refreshUpdateStatus` |  | Refresh updateStatus |
     | `setCalendar` | STRING: yes, no | activate/deactivate Calendar Trigger |
+    | `setCountryCode` | STRING | Set the ISO 3166-1 Country Code |
     | `setLightingLedPodMode` | FLOAT [0.0..1.0] | Change lighting led pod mode intensity, 0=0% ; 1=100% |
     | `setPodLedOff` |  | Turn off the pod led |
     | `setPodLedOn` |  | Turn on the pod led |
+    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
 
     **States**
 
@@ -2497,10 +2497,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ConnectivityState` | DiscreteState | offline, online |  |
     | `CountryCodeState` | DataState |  |  |
+    | `LightingLedPodModeState` | ContinuousState |  |  |
     | `LocalAccessProofState` | DataState |  |  |
     | `LocalIPv4AddressState` | DataState |  |  |
     | `NameState` | DataState |  |  |
-    | `LightingLedPodModeState` | ContinuousState |  |  |
     | `UpdateStepAndBootStatusState` | DataState |  |  |
 
 ??? note "Wifi (ACTUATOR) — 3 commands, 3 states"
@@ -2548,31 +2548,31 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
     | `setClosureOrOrientation` | INT [0..100]; STRING: rocker; INT [0..100] (optional) | Set device closure level (0-100%), or put the device in rocking position ('rocker') and set the relative slats orientation (0-100%) |
     | `setClosureOrRockerPosition` | INT [0..100]; STRING: rocker | Set the device to a relative position (0-100%) or into 'rocker' position |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
-    | `setRockerPosition` |  | Set the device into the special 'rocker' position |
     | `setOrientation` | INT [0..100] | Set the relative orientation (0-100%) of the device slats |
+    | `setRockerPosition` |  | Set the device into the special 'rocker' position |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -2587,13 +2587,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ManufacturerSettingsState` | DataState |  |  |
     | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SlateOrientationState` | ContinuousState | [0..100] |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "AdjustableSlatsRollerShutter/PositionableOrOrientableRollerShutter (ACTUATOR) — 32 commands, 14 states"
 
@@ -2615,30 +2615,30 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
     | `setClosureOrOrientation` | INT [0..100]; STRING: rocker; INT [0..100] (optional) | Set device closure level (0-100%), or put the device in rocking position ('rocker') and set the relative slats orientation (0-100%) |
     | `setClosureOrRockerPosition` | INT [0..100]; STRING: rocker | Set the device to a relative position (0-100%) or into 'rocker' position |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
-    | `setRockerPosition` |  | Set the device into the special 'rocker' position |
     | `setOrientation` | INT [0..100] | Set the relative orientation (0-100%) of the device slats |
+    | `setRockerPosition` |  | Set the device into the special 'rocker' position |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -2651,13 +2651,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SlateOrientationState` | ContinuousState | [0..100] |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Alarm/StatefulAlarmController (ACTUATOR) — 21 commands, 9 states"
 
@@ -2681,17 +2681,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `disarm` |  | Disarm the system |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `refreshState` |  | Refresh the device states |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -2701,11 +2701,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `CommandLockLevelsState` | DataState |  |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Awning/DynamicAwning (ACTUATOR) — 30 commands, 17 states"
 
@@ -2727,12 +2727,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `getName` |  | Refresh the device internal name |
     | `goToAlias` | STRING | Send alias command linked with the ID. |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
     | `rollOut` |  | Roll out the device (unfold - deploy - less compact position) |
     | `rollUp` |  | Roll up the device (fold - most compact position) |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
     | `saveAlias` | STRING | Allow to send an order for the product to save the current state of the alias. |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setRollingOut` | INT [0..100] | set the device rolling out percentage |
@@ -2740,15 +2745,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
     | `undeploy` |  | Fully undeploy the device |
-    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
 
     **States**
 
@@ -2763,14 +2763,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ManufacturerDiagnosticsState` | DataState |  |  |
     | `ManufacturerSettingsState` | DataState |  |  |
     | `NameState` | DataState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `ReachedAliasesState` | DataState |  |  |
     | `RolledUpState` | DataState |  |  |
     | `RollingOutState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Awning/PositionableHorizontalAwning (ACTUATOR) — 36 commands, 17 states"
 
@@ -2793,13 +2793,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
@@ -2809,17 +2814,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
     | `undeploy` |  | Fully undeploy the device |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -2835,13 +2835,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Awning/DynamicAwning (ACTUATOR) — 29 commands, 15 states"
 
@@ -2863,12 +2863,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `getName` |  | Refresh the device internal name |
     | `goToAlias` | STRING | Send alias command linked with the ID. |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
     | `rollOut` |  | Roll out the device (unfold - deploy - less compact position) |
     | `rollUp` |  | Roll up the device (fold - most compact position) |
     | `saveAlias` | STRING | Allow to send an order for the product to save the current state of the alias. |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setRollingOut` | INT [0..100] | set the device rolling out percentage |
@@ -2876,14 +2880,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
     | `undeploy` |  | Fully undeploy the device |
-    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
 
     **States**
 
@@ -2896,14 +2896,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DeploymentState` | ContinuousState | [0..100] |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `ReachedAliasesState` | DataState |  |  |
     | `RolledUpState` | DataState |  |  |
     | `RollingOutState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Awning/PositionableHorizontalAwning (ACTUATOR) — 35 commands, 15 states"
 
@@ -2926,13 +2926,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
@@ -2942,16 +2946,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
     | `undeploy` |  | Fully undeploy the device |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -2965,13 +2965,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "CarButtonSensor (SENSOR) — 0 commands, 2 states"
 
@@ -3015,28 +3015,28 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `getName` |  | Refresh the device internal name |
     | `getOpenClose` |  | Refresh the open/close state of the device |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `lock` |  | Lock the device |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshLockedUnlocked` |  | Refresh locked/unlocked state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setLockedUnlocked` | STRING: locked, unlocked | Set the device state to either 'locked' or 'unlocked' |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setOpenClosed` | STRING: open, closed | Set the device state to either 'open' or 'closed' |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
     | `unlock` |  | Unlock the device |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -3050,11 +3050,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ManufacturerSettingsState` | DataState |  |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "DoorLock/WindowLock (ACTUATOR) — 22 commands, 11 states"
 
@@ -3076,8 +3076,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `lock` |  | Lock the device |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setLockPosition` | ANY |  |
     | `setLockedUnlocked` | STRING: locked, unlocked | Set the device state to either 'locked' or 'unlocked' |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
@@ -3085,11 +3087,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
     | `unlock` |  | Unlock the device |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -3100,12 +3100,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `LockedUnlockedState` | DiscreteState | locked, unlocked |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `WindowLockedState` | DiscreteState | daylocked, homesecure, secured |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "DoorLock/CarLock (ACTUATOR) — 22 commands, 10 states"
 
@@ -3127,8 +3127,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `lock` |  | Lock the device |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setLockedUnlocked` | STRING: locked, unlocked | Set the device state to either 'locked' or 'unlocked' |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setOpenClosed` | STRING: open, closed | Set the device state to either 'open' or 'closed' |
@@ -3136,11 +3138,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
     | `unlock` |  | Unlock the device |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -3151,11 +3151,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `LockedUnlockedState` | DiscreteState | locked, unlocked |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "DoorLock (ACTUATOR) — 29 commands, 11 states"
 
@@ -3177,27 +3177,27 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `getName` |  | Refresh the device internal name |
     | `getOpenClose` |  | Refresh the open/close state of the device |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `lock` |  | Lock the device |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshLockedUnlocked` |  | Refresh locked/unlocked state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setLockedUnlocked` | STRING: locked, unlocked | Set the device state to either 'locked' or 'unlocked' |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setOpenClosed` | STRING: open, closed | Set the device state to either 'open' or 'closed' |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
     | `unlock` |  | Unlock the device |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -3209,11 +3209,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `LockedUnlockedState` | DiscreteState | locked, unlocked |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 0 commands, 12 states"
 
@@ -3255,27 +3255,27 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `getLevel` |  |  |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setLevel` | INT [0..100]; STRING: memorized1, my | Generic device working level (0-100%) Functional meaning depends on device |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -3289,11 +3289,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ManufacturerSettingsState` | DataState |  |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "ExteriorHeatingSystem/DiscreteExteriorHeating (ACTUATOR) — 24 commands, 12 states"
 
@@ -3313,24 +3313,24 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -3343,11 +3343,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ManufacturerSettingsState` | DataState |  |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "ExteriorHeatingSystem/DimmerExteriorHeating (ACTUATOR) — 27 commands, 11 states"
 
@@ -3368,26 +3368,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `getLevel` |  |  |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setLevel` | INT [0..100]; STRING: memorized1, my | Generic device working level (0-100%) Functional meaning depends on device |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -3399,11 +3399,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `LevelState` | ContinuousState | [0..100] |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "ExteriorHeatingSystem/DiscreteExteriorHeating (ACTUATOR) — 23 commands, 10 states"
 
@@ -3423,23 +3423,23 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -3450,11 +3450,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "ExteriorScreen/PositionableScreen (ACTUATOR) — 36 commands, 18 states"
 
@@ -3477,13 +3477,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
@@ -3493,17 +3498,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
     | `undeploy` |  | Fully undeploy the device |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -3520,13 +3520,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "ExteriorScreen/PositionableScreen (ACTUATOR) — 33 commands, 17 states"
 
@@ -3549,11 +3549,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setPosition` | STRING: secured; INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%) |
@@ -3562,17 +3567,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
     | `undeploy` |  | Fully undeploy the device |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -3588,13 +3588,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "ExteriorScreen/PositionableScreen (ACTUATOR) — 35 commands, 16 states"
 
@@ -3617,13 +3617,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
@@ -3633,16 +3637,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
     | `undeploy` |  | Fully undeploy the device |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -3657,13 +3657,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "ExteriorScreen/PositionableScreen (ACTUATOR) — 32 commands, 15 states"
 
@@ -3686,11 +3686,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setPosition` | STRING: secured; INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%) |
@@ -3699,16 +3703,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
     | `undeploy` |  | Fully undeploy the device |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -3722,13 +3722,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "ExteriorVenetianBlind/PositionableExteriorVenetianBlind (ACTUATOR) — 38 commands, 19 states"
 
@@ -3750,36 +3750,36 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
-    | `setClosureAndOrientation` | STRING: my, memorized1, secured; INT [0..100]; STRING: my, memorized1; INT [0..100] | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setClosureAndOrientation` | STRING: my, memorized1, secured; INT [0..100]; STRING: my, memorized1; INT [0..100] | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setMemorized1Orientation` | INT [0..100] | Set favorite orientation |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setOrientation` | STRING: my, memorized1; INT [0..100] | Set the relative orientation (0-100%) of the device slats |
     | `setPosition` | STRING: my, memorized1, secured; INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%) |
     | `setSecuredPosition` | INT [0..100] | Set the relative position value (0-100%) to be used for the 'secured' position alias |
-    | `setOrientation` | STRING: my, memorized1; INT [0..100] | Set the relative orientation (0-100%) of the device slats |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
     | `tiltDown` |  | Lower the slats to a horizontal position step by step (which will let in more light) |
     | `tiltUp` |  | Straighten the slats to a vertical position step by step (which will let in less light) |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -3796,14 +3796,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `SlateOrientationState` | ContinuousState | [0..100] |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "ExteriorVenetianBlind/PositionableExteriorVenetianBlind (ACTUATOR) — 37 commands, 17 states"
 
@@ -3825,35 +3825,35 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
-    | `setClosureAndOrientation` | STRING: my, memorized1, secured; INT [0..100]; STRING: my, memorized1; INT [0..100] | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setClosureAndOrientation` | STRING: my, memorized1, secured; INT [0..100]; STRING: my, memorized1; INT [0..100] | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setMemorized1Orientation` | INT [0..100] | Set favorite orientation |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setOrientation` | STRING: my, memorized1; INT [0..100] | Set the relative orientation (0-100%) of the device slats |
     | `setPosition` | STRING: my, memorized1, secured; INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%) |
     | `setSecuredPosition` | INT [0..100] | Set the relative position value (0-100%) to be used for the 'secured' position alias |
-    | `setOrientation` | STRING: my, memorized1; INT [0..100] | Set the relative orientation (0-100%) of the device slats |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
     | `tiltDown` |  | Lower the slats to a horizontal position step by step (which will let in more light) |
     | `tiltUp` |  | Straighten the slats to a vertical position step by step (which will let in less light) |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -3868,14 +3868,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `SlateOrientationState` | ContinuousState | [0..100] |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "GarageDoor/PositionableGarageDoor (ACTUATOR) — 28 commands, 13 states"
 
@@ -3897,26 +3897,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -3930,11 +3930,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ManufacturerSettingsState` | DataState |  |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedUnknownState` | DiscreteState | closed, open, unknown |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "GarageDoor/DiscretePositionableGarageDoor (ACTUATOR) — 27 commands, 12 states"
 
@@ -3956,25 +3956,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -3987,11 +3987,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ManufacturerSettingsState` | DataState |  |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedUnknownState` | DiscreteState | closed, open, unknown |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "GarageDoor/PositionableGarageDoor (ACTUATOR) — 26 commands, 13 states"
 
@@ -4012,25 +4012,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -4044,11 +4044,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ManufacturerSettingsState` | DataState |  |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "GarageDoor/PositionableGarageDoor (ACTUATOR) — 27 commands, 11 states"
 
@@ -4070,25 +4070,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -4100,11 +4100,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedUnknownState` | DiscreteState | closed, open, unknown |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "GarageDoor/DiscretePositionableGarageDoor (ACTUATOR) — 26 commands, 10 states"
 
@@ -4126,24 +4126,24 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -4154,11 +4154,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedUnknownState` | DiscreteState | closed, open, unknown |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "GarageDoor/PositionableGarageDoor (ACTUATOR) — 25 commands, 11 states"
 
@@ -4179,24 +4179,24 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -4208,11 +4208,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Gate/PositionableGateWithPedestrianPosition (ACTUATOR) — 30 commands, 14 states"
 
@@ -4233,29 +4233,29 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshPedestrianPosition` |  | Refresh the pedestrian position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
     | `setClosureOrPedestrianPosition` | INT [0..100]; STRING: pedestrian | Set the device closure level (0-100%) or set the device in 'pedestrian' mode |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setPedestrianPosition` |  | Set the device into the special 'pedestrian' position |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -4270,11 +4270,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `NameState` | DataState |  |  |
     | `OpenClosedPedestrianState` | DiscreteState | closed, open, pedestrian, unknown |  |
     | `PedestrianPositionState` | ContinuousState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Gate/SlidingDiscreteGateWithPedestrianPosition (ACTUATOR) — 27 commands, 13 states"
 
@@ -4295,26 +4295,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshPedestrianPosition` |  | Refresh the pedestrian position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setPedestrianPosition` |  | Set the device into the special 'pedestrian' position |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -4328,11 +4328,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `NameState` | DataState |  |  |
     | `OpenClosedPedestrianState` | DiscreteState | closed, open, pedestrian, unknown |  |
     | `PedestrianPositionState` | ContinuousState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Gate/PositionableGateWithPedestrianPosition (ACTUATOR) — 29 commands, 12 states"
 
@@ -4353,28 +4353,28 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshPedestrianPosition` |  | Refresh the pedestrian position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
     | `setClosureOrPedestrianPosition` | INT [0..100]; STRING: pedestrian | Set the device closure level (0-100%) or set the device in 'pedestrian' mode |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setPedestrianPosition` |  | Set the device into the special 'pedestrian' position |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -4387,11 +4387,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `NameState` | DataState |  |  |
     | `OpenClosedPedestrianState` | DiscreteState | closed, open, pedestrian, unknown |  |
     | `PedestrianPositionState` | ContinuousState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Gate/SlidingDiscreteGateWithPedestrianPosition (ACTUATOR) — 26 commands, 11 states"
 
@@ -4412,25 +4412,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshPedestrianPosition` |  | Refresh the pedestrian position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setPedestrianPosition` |  | Set the device into the special 'pedestrian' position |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -4442,11 +4442,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `NameState` | DataState |  |  |
     | `OpenClosedPedestrianState` | DiscreteState | closed, open, pedestrian, unknown |  |
     | `PedestrianPositionState` | ContinuousState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Generic/IOGeneric (ACTUATOR) — 16 commands, 9 states"
 
@@ -4465,17 +4465,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `delayedStopIdentify` | INT [1..254] | (IO-homecontrol specific) Ask the device to stop winking after a given number of seconds |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setLevel` | INT [0..100] | Generic device working level (0-100%) Functional meaning depends on device |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -4485,11 +4485,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `LevelState` | ContinuousState | [0..100] |  |
     | `NameState` | DataState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "HeatPumpSystem/HeatPump (ACTUATOR) — 27 commands, 18 states"
 
@@ -4508,6 +4508,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `delayedStopIdentify` | INT [1..254] | (IO-homecontrol specific) Ask the device to stop winking after a given number of seconds |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `refreshActiveModes` |  |  |
     | `refreshComfortTemperature` |  | Refresh the temperature of comfort mode |
     | `refreshEcoTemperature` |  | Refresh the temperature of eco mode |
@@ -4517,19 +4518,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshTemperature` |  | Refresh the last measured temperature |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `setActiveMode` | ANY |  |
     | `setComfortTemperature` | FLOAT [0.0..100.0] | Set target temperature of comfort mode |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setEcoTemperature` | ANY | Set target temperature of eco mode |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setSetBackTemperature` | ANY |  |
     | `setTargetTemperature` | FLOAT [0.0..100.0]; STRING: eco, secured, comfort, halted, antifrost | Set the new air temperature to reach |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `setActiveMode` | ANY |  |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -4540,7 +4540,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `EcoRoomTemperatureState` | ContinuousState |  |  |
     | `HaltedRoomTemperatureState` | ContinuousState |  |  |
+    | `HeatPumpActivesModesState` | DataState |  |  |
+    | `HeatPumpCapabilitiesState` | DataState |  |  |
     | `NameState` | DataState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecondaryTemperatureState` | ContinuousState |  |  |
@@ -4549,10 +4553,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `TargetRoomTemperatureState` | ContinuousState |  |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
-    | `HeatPumpActivesModesState` | DataState |  |  |
-    | `HeatPumpCapabilitiesState` | DataState |  |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "HeatingSystem/KizOThermBridge (ACTUATOR) — 17 commands, 15 states"
 
@@ -4571,18 +4571,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `delayedStopIdentify` | INT [1..254] | (IO-homecontrol specific) Ask the device to stop winking after a given number of seconds |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `refreshState` |  | Refresh the device states |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setOperatingModes` | ANY |  |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setOperatingModes` | ANY |  |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -4590,19 +4590,19 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `CommandLockLevelsState` | DataState |  |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `KizOThermCapabilitiesState` | DataState |  |  |
+    | `KizOThermOperatingModesState` | DataState |  |  |
     | `NameState` | DataState |  |  |
     | `OnOffFlameState` | DiscreteState | off, on |  |
     | `PrimaryTargetWaterTemperatureState` | ContinuousState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RefreshableObjectsState` | DataState |  |  |
     | `SecondaryTargetWaterTemperatureState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetDHWTemperatureState` | ContinuousState | [38.0..60.0] |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
-    | `KizOThermCapabilitiesState` | DataState |  |  |
-    | `KizOThermOperatingModesState` | DataState |  |  |
 
 ??? note "HeatingSystem/HeatingTemperatureInterface (ACTUATOR) — 31 commands, 18 states"
 
@@ -4621,6 +4621,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `delayedStopIdentify` | INT [1..254] | (IO-homecontrol specific) Ask the device to stop winking after a given number of seconds |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `refreshActiveMode` |  | Refresh the device active mode |
     | `refreshComfortTemperature` |  | Refresh the temperature of comfort mode |
     | `refreshEcoTemperature` |  | Refresh the temperature of eco mode |
@@ -4630,23 +4631,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshTemperature` |  | Refresh the last measured temperature |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `setActiveAndSetPointModes` | ANY; ANY |  |
+    | `setActiveMode` | ANY |  |
     | `setComfortTemperature` | FLOAT [0.0..100.0] | Set target temperature of comfort mode |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setEcoTemperature` | ANY | Set target temperature of eco mode |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setOperatingMode` | ANY |  |
     | `setSecuredPosition` | INT [0..100] | Set the relative position value (0-100%) to be used for the 'secured' position alias |
     | `setSecuredPositionTemperature` | ANY | Set target temperature of secured mode |
+    | `setSetPointMode` | ANY |  |
     | `setTargetTemperature` | FLOAT [0.0..100.0]; STRING: eco, secured, comfort, halted, antifrost | Set the new air temperature to reach |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `setActiveAndSetPointModes` | ANY; ANY |  |
-    | `setActiveMode` | ANY |  |
-    | `setOperatingMode` | ANY |  |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setSetPointMode` | ANY |  |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -4656,20 +4656,20 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `CommandLockLevelsState` | DataState |  |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `EcoRoomTemperatureState` | ContinuousState |  |  |
+    | `HeatingTemperatureInterfaceActiveModeState` | DiscreteState | auto, manu |  |
+    | `HeatingTemperatureInterfaceCapabilitiesState` | DataState |  |  |
+    | `HeatingTemperatureInterfaceEnergyDemandState` | DataState |  |  |
+    | `HeatingTemperatureInterfaceOperatingModeState` | DataState |  |  |
+    | `HeatingTemperatureInterfaceSetPointModeState` | DiscreteState | comfort, eco, secured |  |
     | `NameState` | DataState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionTemperatureState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
-    | `HeatingTemperatureInterfaceActiveModeState` | DiscreteState | auto, manu |  |
-    | `HeatingTemperatureInterfaceCapabilitiesState` | DataState |  |  |
-    | `HeatingTemperatureInterfaceEnergyDemandState` | DataState |  |  |
-    | `HeatingTemperatureInterfaceOperatingModeState` | DataState |  |  |
-    | `HeatingTemperatureInterfaceSetPointModeState` | DiscreteState | comfort, eco, secured |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "HeatingSystem/AtlanticPassAPCHeatPump (ACTUATOR) — 41 commands, 39 states"
 
@@ -4689,15 +4689,27 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `delayedStopIdentify` | INT [1..254] | (IO-homecontrol specific) Ask the device to stop winking after a given number of seconds |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `refreshAbsenceSchedulingAvailability` |  | Check if the absence (holiday) scheduling feature is available |
+    | `refreshDHWAvailability` |  | Refesh the ECS availability mode |
     | `refreshDeviceSerialNumber` |  | Refresh the device serial number |
     | `refreshElectricEnergyConsumption` |  | Refresh the electric energy consumption |
+    | `refreshEnergyConsumptionAvailability` |  | Refresh presence or not of the manage consumption function by energy type |
     | `refreshErrorCode` |  | Refresh the current error code |
     | `refreshHeatingDerogationAvailability` |  | Check if the heating derogation feature is available |
     | `refreshOperatingMode` |  | Refresh an operating mode. |
     | `refreshOutsideTemperature` |  | Refresh the outside temperature |
+    | `refreshOutsideTemperatureSensorAvailability` |  | Check if the system includes an outside temperature sensor |
+    | `refreshProductType` |  | Refresh product type |
+    | `refreshThermalSchedulingAvailability` |  | Check if the thermal (heating or cooling) scheduling feature is available |
     | `refreshTimeProgramById` | STRING | Refresh time programmation corresponding to given id (usually a number) |
     | `refreshZonesNumber` |  | Refresh the number of associated zones |
+    | `refreshZonesPassAPCCoolingProfile` |  | Refresh the cooling profile for each zones |
+    | `refreshZonesPassAPCHeatingProfile` |  | Refresh the heating profile for each zones |
     | `refreshZonesTargetTemperature` |  | Refresh the temperature value for each zones |
+    | `refreshZonesTemperature` |  | Refresh temperature of all zones |
+    | `refreshZonesTemperatureSensorAvailability` |  | Check if zones have an internal temperature sensor |
+    | `refreshZonesThermalConfiguration` |  | Refresh zones thermal configuration (heating, cooling, both) |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
     | `setAbsenceCoolingTargetTemperature` | FLOAT [18.0..40.0] | Set the cooling target temperature for absence mode. |
@@ -4705,25 +4717,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setAbsenceHeatingTargetTemperature` | FLOAT [4.0..16.0] | Set the heating target temperature for absence mode. |
     | `setAbsenceStartDateTime` | OBJECT | Set start date of absence period including hour, minute, day, month and year fields |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setPassAPCOperatingMode` | STRING: cooling, drying, heating, stop | Set operating mode to Pass APC |
     | `setTimeProgramById` | STRING; ARRAY | Set time programmation indicating target program id (usually a number) |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `refreshAbsenceSchedulingAvailability` |  | Check if the absence (holiday) scheduling feature is available |
-    | `refreshDHWAvailability` |  | Refesh the ECS availability mode |
-    | `refreshEnergyConsumptionAvailability` |  | Refresh presence or not of the manage consumption function by energy type |
-    | `refreshOutsideTemperatureSensorAvailability` |  | Check if the system includes an outside temperature sensor |
-    | `refreshProductType` |  | Refresh product type |
-    | `refreshThermalSchedulingAvailability` |  | Check if the thermal (heating or cooling) scheduling feature is available |
-    | `refreshZonesPassAPCCoolingProfile` |  | Refresh the cooling profile for each zones |
-    | `refreshZonesPassAPCHeatingProfile` |  | Refresh the heating profile for each zones |
-    | `refreshZonesTemperature` |  | Refresh temperature of all zones |
-    | `refreshZonesTemperatureSensorAvailability` |  | Check if zones have an internal temperature sensor |
-    | `refreshZonesThermalConfiguration` |  | Refresh zones thermal configuration (heating, cooling, both) |
-    | `setPassAPCOperatingMode` | STRING: cooling, drying, heating, stop | Set operating mode to Pass APC |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -4732,42 +4732,42 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AbsenceCoolingTargetTemperatureState` | ContinuousState |  |  |
     | `AbsenceEndDateTimeState` | DataState |  |  |
     | `AbsenceHeatingTargetTemperatureState` | ContinuousState |  |  |
+    | `AbsenceSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `AbsenceSchedulingModeState` | DiscreteState | dateScheduling, numberOfDaysScheduling |  |
     | `AbsenceStartDateTimeState` | DataState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
+    | `DHWAvailabilityState` | DiscreteState | available, unavailable |  |
     | `DeviceSerialNumberState` | DataState |  |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `ECSPowerConsumptionExtra1State` | ContinuousState |  |  |
     | `ECSPowerConsumptionExtra2State` | ContinuousState |  |  |
     | `ECSPowerConsumptionExtra3State` | ContinuousState |  |  |
     | `ECSPowerConsumptionState` | ContinuousState |  |  |
+    | `EnergyConsumptionAvailabilityState` | DiscreteState | available, unavailable |  |
     | `ErrorCodeState` | DataState |  |  |
     | `HeatingDerogationAvailabilityState` | DiscreteState | available, unavailable |  |
     | `HeatingPowerConsumptionExtra1State` | ContinuousState |  |  |
     | `HeatingPowerConsumptionExtra2State` | ContinuousState |  |  |
     | `HeatingPowerConsumptionExtra3State` | ContinuousState |  |  |
     | `HeatingPowerConsumptionState` | ContinuousState |  |  |
+    | `LastPassAPCOperatingModeState` | DiscreteState | cooling, drying, heating, stop |  |
     | `NameState` | DataState |  |  |
+    | `PassAPCOperatingModeState` | DiscreteState | cooling, drying, heating, stop |  |
+    | `PassAPCProductTypeState` | DiscreteState | accumulationDomesticHotWater, airConditioning, boiler, convector, doubleFlowControlledMechanicalVentilation, heatPump, heater, hybrid, singleFlowControlledMechanicalVentilation, thermodynamicDomesticHotWater, zoneController |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `ProductModelNameState` | DataState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
+    | `ThermalSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `ThermalSchedulingModeState` | DiscreteState | heatingAndCoolingCommonScheduling, heatingAndCoolingSeparatedScheduling |  |
     | `TimeProgram1State` | DataState |  |  |
     | `TimeProgram2State` | DataState |  |  |
     | `TimeProgram3State` | DataState |  |  |
     | `TimeProgram4State` | DataState |  |  |
     | `VersionState` | ContinuousState |  |  |
     | `ZonesNumberState` | DataState |  |  |
-    | `AbsenceSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
-    | `AbsenceSchedulingModeState` | DiscreteState | dateScheduling, numberOfDaysScheduling |  |
-    | `DHWAvailabilityState` | DiscreteState | available, unavailable |  |
-    | `EnergyConsumptionAvailabilityState` | DiscreteState | available, unavailable |  |
-    | `LastPassAPCOperatingModeState` | DiscreteState | cooling, drying, heating, stop |  |
-    | `PassAPCOperatingModeState` | DiscreteState | cooling, drying, heating, stop |  |
-    | `PassAPCProductTypeState` | DiscreteState | accumulationDomesticHotWater, airConditioning, boiler, convector, doubleFlowControlledMechanicalVentilation, heatPump, heater, hybrid, singleFlowControlledMechanicalVentilation, thermodynamicDomesticHotWater, zoneController |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
-    | `ThermalSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
-    | `ThermalSchedulingModeState` | DiscreteState | heatingAndCoolingCommonScheduling, heatingAndCoolingSeparatedScheduling |  |
 
 ??? note "HeatingSystem/AtlanticPassAPCHeatingAndCoolingZone (ACTUATOR) — 28 commands, 22 states"
 
@@ -4781,8 +4781,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `advancedRefresh` | STRING: normal, advanced, custom; ARRAY (optional) | Refresh extra states |
     | `refreshComfortCoolingTargetTemperature` |  | Refresh comfort cooling target temperature. |
     | `refreshComfortHeatingTargetTemperature` |  | Refresh comfort heating target temperature. |
+    | `refreshDerogationRemainingTime` |  | Refresh the derogation remaining duration |
     | `refreshEcoCoolingTargetTemperature` |  | Refresh eco cooling target temperature. |
     | `refreshEcoHeatingTargetTemperature` |  | Refresh eco heating target temperature. |
+    | `refreshPassAPCCoolingMode` |  | Ask the device to return coling mode |
+    | `refreshPassAPCCoolingProfile` |  | Ask the device to return cooling profile |
+    | `refreshPassAPCHeatingMode` |  | Ask the device to return heating mode |
+    | `refreshPassAPCHeatingProfile` |  | Ask the device to return heating profile |
     | `refreshTargetTemperature` |  | Refresh the temperature value |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
@@ -4798,11 +4803,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setEcoHeatingTargetTemperature` | FLOAT [7.0..30.0] | Define the heating setpoint temperature for eco mode |
     | `setHeatingOnOffState` | STRING: on, off | Switch on or switch off the cooling system |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
-    | `refreshDerogationRemainingTime` |  | Refresh the derogation remaining duration |
-    | `refreshPassAPCCoolingMode` |  | Ask the device to return coling mode |
-    | `refreshPassAPCCoolingProfile` |  | Ask the device to return cooling profile |
-    | `refreshPassAPCHeatingMode` |  | Ask the device to return heating mode |
-    | `refreshPassAPCHeatingProfile` |  | Ask the device to return heating profile |
     | `setPassAPCCoolingMode` | STRING: absence, auto, comfort, eco, externalScheduling | Set the cooling mode |
     | `setPassAPCHeatingMode` | STRING: absence, auto, comfort, eco, externalScheduling | Set the heating mode |
 
@@ -4815,23 +4815,23 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ComfortCoolingTargetTemperatureState` | ContinuousState |  |  |
     | `ComfortHeatingTargetTemperatureState` | ContinuousState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
+    | `CoolingInternalSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
     | `CoolingOnOffState` | DiscreteState | off, on |  |
     | `DerogatedTargetTemperatureState` | ContinuousState |  |  |
     | `DerogationOnOffState` | DiscreteState | off, on |  |
+    | `DerogationRemainingTimeState` | DataState |  |  |
     | `EcoCoolingTargetTemperatureState` | ContinuousState |  |  |
     | `EcoHeatingTargetTemperatureState` | ContinuousState |  |  |
+    | `HeatingInternalSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
     | `HeatingOnOffState` | DiscreteState | off, on |  |
     | `NameState` | DataState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
-    | `ThermalConfigurationState` | DiscreteState | cooling, heating, heatingAndCooling |  |
-    | `CoolingInternalSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
-    | `DerogationRemainingTimeState` | DataState |  |  |
-    | `HeatingInternalSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
     | `PassAPCCoolingModeState` | DiscreteState | absence, auto, comfort, eco, externalScheduling, internalScheduling, manu, stop |  |
     | `PassAPCCoolingProfileState` | DiscreteState | absence, comfort, derogation, eco, externalSetpoint, frostprotection, manu, stop |  |
     | `PassAPCHeatingModeState` | DiscreteState | absence, auto, comfort, eco, externalScheduling, internalScheduling, manu, stop |  |
     | `PassAPCHeatingProfileState` | DiscreteState | absence, comfort, derogation, eco, externalSetpoint, frostprotection, manu, stop |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
+    | `ThermalConfigurationState` | DiscreteState | cooling, heating, heatingAndCooling |  |
 
 ??? note "HeatingSystem/AtlanticPassAPCBoiler (ACTUATOR) — 38 commands, 38 states"
 
@@ -4851,38 +4851,38 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `delayedStopIdentify` | INT [1..254] | (IO-homecontrol specific) Ask the device to stop winking after a given number of seconds |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `refreshAbsenceSchedulingAvailability` |  | Check if the absence (holiday) scheduling feature is available |
+    | `refreshDHWAvailability` |  | Refesh the ECS availability mode |
     | `refreshDeviceSerialNumber` |  | Refresh the device serial number |
+    | `refreshEnergyConsumptionAvailability` |  | Refresh presence or not of the manage consumption function by energy type |
     | `refreshErrorCode` |  | Refresh the current error code |
     | `refreshHeatingDerogationAvailability` |  | Check if the heating derogation feature is available |
     | `refreshOperatingMode` |  | Refresh an operating mode. |
     | `refreshOutsideTemperature` |  | Refresh the outside temperature |
+    | `refreshOutsideTemperatureSensorAvailability` |  | Check if the system includes an outside temperature sensor |
+    | `refreshProductType` |  | Refresh product type |
+    | `refreshThermalSchedulingAvailability` |  | Check if the thermal (heating or cooling) scheduling feature is available |
     | `refreshTimeProgramById` | STRING | Refresh time programmation corresponding to given id (usually a number) |
     | `refreshZonesNumber` |  | Refresh the number of associated zones |
+    | `refreshZonesPassAPCHeatingProfile` |  | Refresh the heating profile for each zones |
     | `refreshZonesTargetTemperature` |  | Refresh the temperature value for each zones |
+    | `refreshZonesTemperature` |  | Refresh temperature of all zones |
+    | `refreshZonesTemperatureSensorAvailability` |  | Check if zones have an internal temperature sensor |
+    | `refreshZonesThermalConfiguration` |  | Refresh zones thermal configuration (heating, cooling, both) |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
     | `setAbsenceEndDateTime` | OBJECT | Set end date of absence period including hour, minute, day, month and year fields |
     | `setAbsenceHeatingTargetTemperature` | FLOAT [4.0..16.0] | Set the heating target temperature for absence mode. |
     | `setAbsenceStartDateTime` | OBJECT | Set start date of absence period including hour, minute, day, month and year fields |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setPassAPCOperatingMode` | STRING: cooling, drying, heating, stop | Set operating mode to Pass APC |
     | `setTimeProgramById` | STRING; ARRAY | Set time programmation indicating target program id (usually a number) |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `refreshAbsenceSchedulingAvailability` |  | Check if the absence (holiday) scheduling feature is available |
-    | `refreshDHWAvailability` |  | Refesh the ECS availability mode |
-    | `refreshEnergyConsumptionAvailability` |  | Refresh presence or not of the manage consumption function by energy type |
-    | `refreshOutsideTemperatureSensorAvailability` |  | Check if the system includes an outside temperature sensor |
-    | `refreshProductType` |  | Refresh product type |
-    | `refreshThermalSchedulingAvailability` |  | Check if the thermal (heating or cooling) scheduling feature is available |
-    | `refreshZonesPassAPCHeatingProfile` |  | Refresh the heating profile for each zones |
-    | `refreshZonesTemperature` |  | Refresh temperature of all zones |
-    | `refreshZonesTemperatureSensorAvailability` |  | Check if zones have an internal temperature sensor |
-    | `refreshZonesThermalConfiguration` |  | Refresh zones thermal configuration (heating, cooling, both) |
-    | `setPassAPCOperatingMode` | STRING: cooling, drying, heating, stop | Set operating mode to Pass APC |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -4890,42 +4890,42 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AbsenceEndDateTimeState` | DataState |  |  |
     | `AbsenceHeatingTargetTemperatureState` | ContinuousState |  |  |
+    | `AbsenceSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `AbsenceSchedulingModeState` | DiscreteState | dateScheduling, numberOfDaysScheduling |  |
     | `AbsenceStartDateTimeState` | DataState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
+    | `DHWAvailabilityState` | DiscreteState | available, unavailable |  |
     | `DeviceSerialNumberState` | DataState |  |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `ECSPowerConsumptionExtra1State` | ContinuousState |  |  |
     | `ECSPowerConsumptionExtra2State` | ContinuousState |  |  |
     | `ECSPowerConsumptionExtra3State` | ContinuousState |  |  |
     | `ECSPowerConsumptionState` | ContinuousState |  |  |
+    | `EnergyConsumptionAvailabilityState` | DiscreteState | available, unavailable |  |
     | `ErrorCodeState` | DataState |  |  |
     | `HeatingDerogationAvailabilityState` | DiscreteState | available, unavailable |  |
     | `HeatingPowerConsumptionExtra1State` | ContinuousState |  |  |
     | `HeatingPowerConsumptionExtra2State` | ContinuousState |  |  |
     | `HeatingPowerConsumptionExtra3State` | ContinuousState |  |  |
     | `HeatingPowerConsumptionState` | ContinuousState |  |  |
+    | `LastPassAPCOperatingModeState` | DiscreteState | cooling, drying, heating, stop |  |
     | `NameState` | DataState |  |  |
+    | `PassAPCOperatingModeState` | DiscreteState | cooling, drying, heating, stop |  |
+    | `PassAPCProductTypeState` | DiscreteState | accumulationDomesticHotWater, airConditioning, boiler, convector, doubleFlowControlledMechanicalVentilation, heatPump, heater, hybrid, singleFlowControlledMechanicalVentilation, thermodynamicDomesticHotWater, zoneController |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `ProductModelNameState` | DataState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
+    | `ThermalSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `ThermalSchedulingModeState` | DiscreteState | heatingAndCoolingCommonScheduling, heatingAndCoolingSeparatedScheduling |  |
     | `TimeProgram1State` | DataState |  |  |
     | `TimeProgram2State` | DataState |  |  |
     | `TimeProgram3State` | DataState |  |  |
     | `TimeProgram4State` | DataState |  |  |
     | `VersionState` | ContinuousState |  |  |
     | `ZonesNumberState` | DataState |  |  |
-    | `AbsenceSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
-    | `AbsenceSchedulingModeState` | DiscreteState | dateScheduling, numberOfDaysScheduling |  |
-    | `DHWAvailabilityState` | DiscreteState | available, unavailable |  |
-    | `EnergyConsumptionAvailabilityState` | DiscreteState | available, unavailable |  |
-    | `LastPassAPCOperatingModeState` | DiscreteState | cooling, drying, heating, stop |  |
-    | `PassAPCOperatingModeState` | DiscreteState | cooling, drying, heating, stop |  |
-    | `PassAPCProductTypeState` | DiscreteState | accumulationDomesticHotWater, airConditioning, boiler, convector, doubleFlowControlledMechanicalVentilation, heatPump, heater, hybrid, singleFlowControlledMechanicalVentilation, thermodynamicDomesticHotWater, zoneController |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
-    | `ThermalSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
-    | `ThermalSchedulingModeState` | DiscreteState | heatingAndCoolingCommonScheduling, heatingAndCoolingSeparatedScheduling |  |
 
 ??? note "HeatingSystem/AtlanticPassAPCHeatingZone (ACTUATOR) — 19 commands, 15 states"
 
@@ -4938,7 +4938,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration. |
     | `advancedRefresh` | STRING: normal, advanced, custom; ARRAY (optional) | Refresh extra states |
     | `refreshComfortHeatingTargetTemperature` |  | Refresh comfort heating target temperature. |
+    | `refreshDerogationRemainingTime` |  | Refresh the derogation remaining duration |
     | `refreshEcoHeatingTargetTemperature` |  | Refresh eco heating target temperature. |
+    | `refreshPassAPCHeatingMode` |  | Ask the device to return heating mode |
+    | `refreshPassAPCHeatingProfile` |  | Ask the device to return heating profile |
     | `refreshTargetTemperature` |  | Refresh the temperature value |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
@@ -4950,9 +4953,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setEcoHeatingTargetTemperature` | FLOAT [7.0..30.0] | Define the heating setpoint temperature for eco mode |
     | `setHeatingOnOffState` | STRING: on, off | Switch on or switch off the cooling system |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
-    | `refreshDerogationRemainingTime` |  | Refresh the derogation remaining duration |
-    | `refreshPassAPCHeatingMode` |  | Ask the device to return heating mode |
-    | `refreshPassAPCHeatingProfile` |  | Ask the device to return heating profile |
     | `setPassAPCHeatingMode` | STRING: absence, auto, comfort, eco, externalScheduling | Set the heating mode |
 
     **States**
@@ -4964,16 +4964,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `CommandLockLevelsState` | DataState |  |  |
     | `DerogatedTargetTemperatureState` | ContinuousState |  |  |
     | `DerogationOnOffState` | DiscreteState | off, on |  |
+    | `DerogationRemainingTimeState` | DataState |  |  |
     | `EcoHeatingTargetTemperatureState` | ContinuousState |  |  |
+    | `HeatingComfortModeAvailabilityState` | DiscreteState | available, unavailable |  |
     | `HeatingOnOffState` | DiscreteState | off, on |  |
     | `NameState` | DataState |  |  |
+    | `PassAPCHeatingModeState` | DiscreteState | absence, auto, comfort, eco, externalScheduling, internalScheduling, manu, stop |  |
+    | `PassAPCHeatingProfileState` | DiscreteState | absence, comfort, derogation, eco, externalSetpoint, frostprotection, manu, stop |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `ThermalConfigurationState` | DiscreteState | cooling, heating, heatingAndCooling |  |
-    | `DerogationRemainingTimeState` | DataState |  |  |
-    | `HeatingComfortModeAvailabilityState` | DiscreteState | available, unavailable |  |
-    | `PassAPCHeatingModeState` | DiscreteState | absence, auto, comfort, eco, externalScheduling, internalScheduling, manu, stop |  |
-    | `PassAPCHeatingProfileState` | DiscreteState | absence, comfort, derogation, eco, externalSetpoint, frostprotection, manu, stop |  |
 
 ??? note "HeatingSystem/AtlanticPassAPCZoneControl (ACTUATOR) — 37 commands, 30 states"
 
@@ -4993,13 +4993,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `delayedStopIdentify` | INT [1..254] | (IO-homecontrol specific) Ask the device to stop winking after a given number of seconds |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `refreshAbsenceSchedulingAvailability` |  | Check if the absence (holiday) scheduling feature is available |
     | `refreshDeviceSerialNumber` |  | Refresh the device serial number |
     | `refreshErrorCode` |  | Refresh the current error code |
     | `refreshHeatingDerogationAvailability` |  | Check if the heating derogation feature is available |
     | `refreshOperatingMode` |  | Refresh an operating mode. |
+    | `refreshProductType` |  | Refresh product type |
+    | `refreshThermalSchedulingAvailability` |  | Check if the thermal (heating or cooling) scheduling feature is available |
     | `refreshTimeProgramById` | STRING | Refresh time programmation corresponding to given id (usually a number) |
     | `refreshZonesNumber` |  | Refresh the number of associated zones |
+    | `refreshZonesPassAPCCoolingProfile` |  | Refresh the cooling profile for each zones |
+    | `refreshZonesPassAPCHeatingProfile` |  | Refresh the heating profile for each zones |
     | `refreshZonesTargetTemperature` |  | Refresh the temperature value for each zones |
+    | `refreshZonesTemperature` |  | Refresh temperature of all zones |
+    | `refreshZonesTemperatureSensorAvailability` |  | Check if zones have an internal temperature sensor |
+    | `refreshZonesThermalConfiguration` |  | Refresh zones thermal configuration (heating, cooling, both) |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
     | `setAbsenceCoolingTargetTemperature` | FLOAT [18.0..40.0] | Set the cooling target temperature for absence mode. |
@@ -5008,22 +5017,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setAbsenceStartDateTime` | OBJECT | Set start date of absence period including hour, minute, day, month and year fields |
     | `setHeatingCoolingAutoSwitch` | STRING: on, off | Enable or disable automatic switch between heating and cooling modes |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setPassAPCOperatingMode` | STRING: cooling, drying, heating, stop | Set operating mode to Pass APC |
     | `setTimeProgramById` | STRING; ARRAY | Set time programmation indicating target program id (usually a number) |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `refreshAbsenceSchedulingAvailability` |  | Check if the absence (holiday) scheduling feature is available |
-    | `refreshProductType` |  | Refresh product type |
-    | `refreshThermalSchedulingAvailability` |  | Check if the thermal (heating or cooling) scheduling feature is available |
-    | `refreshZonesPassAPCCoolingProfile` |  | Refresh the cooling profile for each zones |
-    | `refreshZonesPassAPCHeatingProfile` |  | Refresh the heating profile for each zones |
-    | `refreshZonesTemperature` |  | Refresh temperature of all zones |
-    | `refreshZonesTemperatureSensorAvailability` |  | Check if zones have an internal temperature sensor |
-    | `refreshZonesThermalConfiguration` |  | Refresh zones thermal configuration (heating, cooling, both) |
-    | `setPassAPCOperatingMode` | STRING: cooling, drying, heating, stop | Set operating mode to Pass APC |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -5032,6 +5032,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `AbsenceCoolingTargetTemperatureState` | ContinuousState |  |  |
     | `AbsenceEndDateTimeState` | DataState |  |  |
     | `AbsenceHeatingTargetTemperatureState` | ContinuousState |  |  |
+    | `AbsenceSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `AbsenceSchedulingModeState` | DiscreteState | dateScheduling, numberOfDaysScheduling |  |
     | `AbsenceStartDateTimeState` | DataState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
     | `DeviceSerialNumberState` | DataState |  |  |
@@ -5039,26 +5041,24 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ErrorCodeState` | DataState |  |  |
     | `HeatingCoolingAutoSwitchState` | DiscreteState | off, on |  |
     | `HeatingDerogationAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `LastPassAPCOperatingModeState` | DiscreteState | cooling, drying, heating, stop |  |
     | `NameState` | DataState |  |  |
+    | `PassAPCOperatingModeState` | DiscreteState | cooling, drying, heating, stop |  |
+    | `PassAPCProductTypeState` | DiscreteState | accumulationDomesticHotWater, airConditioning, boiler, convector, doubleFlowControlledMechanicalVentilation, heatPump, heater, hybrid, singleFlowControlledMechanicalVentilation, thermodynamicDomesticHotWater, zoneController |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `ProductModelNameState` | DataState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
+    | `ThermalSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
+    | `ThermalSchedulingModeState` | DiscreteState | heatingAndCoolingCommonScheduling, heatingAndCoolingSeparatedScheduling |  |
     | `TimeProgram1State` | DataState |  |  |
     | `TimeProgram2State` | DataState |  |  |
     | `TimeProgram3State` | DataState |  |  |
     | `TimeProgram4State` | DataState |  |  |
     | `VersionState` | ContinuousState |  |  |
     | `ZonesNumberState` | DataState |  |  |
-    | `AbsenceSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
-    | `AbsenceSchedulingModeState` | DiscreteState | dateScheduling, numberOfDaysScheduling |  |
-    | `LastPassAPCOperatingModeState` | DiscreteState | cooling, drying, heating, stop |  |
-    | `PassAPCOperatingModeState` | DiscreteState | cooling, drying, heating, stop |  |
-    | `PassAPCProductTypeState` | DiscreteState | accumulationDomesticHotWater, airConditioning, boiler, convector, doubleFlowControlledMechanicalVentilation, heatPump, heater, hybrid, singleFlowControlledMechanicalVentilation, thermodynamicDomesticHotWater, zoneController |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
-    | `ThermalSchedulingAvailabilityState` | DiscreteState | available, unavailable |  |
-    | `ThermalSchedulingModeState` | DiscreteState | heatingAndCoolingCommonScheduling, heatingAndCoolingSeparatedScheduling |  |
 
 ??? note "HeatingSystem/AtlanticPassAPCHeatingAndCoolingZone (ACTUATOR) — 35 commands, 26 states"
 
@@ -5078,6 +5078,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshMaximumHeatingTargetTemperature` |  | Refresh the maximum heating target temperature |
     | `refreshMinimumCoolingTargetTemperature` |  | Refresh the minimum cooling target temperature |
     | `refreshMinimumHeatingTargetTemperature` |  | Refresh the minimum heating target temperature |
+    | `refreshPassAPCCoolingMode` |  | Ask the device to return coling mode |
+    | `refreshPassAPCCoolingProfile` |  | Ask the device to return cooling profile |
+    | `refreshPassAPCHeatingMode` |  | Ask the device to return heating mode |
+    | `refreshPassAPCHeatingProfile` |  | Ask the device to return heating profile |
     | `refreshTargetTemperature` |  | Refresh the temperature value |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
@@ -5097,10 +5101,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setMinimumCoolingTargetTemperature` | FLOAT [4.0..40.0] | Set the minimum cooling target temperature (manual set point) |
     | `setMinimumHeatingTargetTemperature` | FLOAT [4.0..40.0] | Set the minimum heating target temperature (manual set point) |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
-    | `refreshPassAPCCoolingMode` |  | Ask the device to return coling mode |
-    | `refreshPassAPCCoolingProfile` |  | Ask the device to return cooling profile |
-    | `refreshPassAPCHeatingMode` |  | Ask the device to return heating mode |
-    | `refreshPassAPCHeatingProfile` |  | Ask the device to return heating profile |
     | `setPassAPCCoolingMode` | STRING: absence, auto, comfort, eco, externalScheduling | Set the cooling mode |
     | `setPassAPCHeatingMode` | STRING: absence, auto, comfort, eco, externalScheduling | Set the heating mode |
 
@@ -5113,11 +5113,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ComfortCoolingTargetTemperatureState` | ContinuousState |  |  |
     | `ComfortHeatingTargetTemperatureState` | ContinuousState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
+    | `CoolingManualModeAvailabilityState` | DiscreteState | available, unavailable |  |
     | `CoolingOnOffState` | DiscreteState | off, on |  |
     | `CoolingTargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `DerogationOnOffState` | DiscreteState | off, on |  |
     | `EcoCoolingTargetTemperatureState` | ContinuousState |  |  |
     | `EcoHeatingTargetTemperatureState` | ContinuousState |  |  |
+    | `HeatingManualModeAvailabilityState` | DiscreteState | available, unavailable |  |
     | `HeatingOnOffState` | DiscreteState | off, on |  |
     | `HeatingTargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `MaximumCoolingTargetTemperatureState` | ContinuousState |  |  |
@@ -5125,15 +5127,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MinimumCoolingTargetTemperatureState` | ContinuousState |  |  |
     | `MinimumHeatingTargetTemperatureState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
-    | `ThermalConfigurationState` | DiscreteState | cooling, heating, heatingAndCooling |  |
-    | `CoolingManualModeAvailabilityState` | DiscreteState | available, unavailable |  |
-    | `HeatingManualModeAvailabilityState` | DiscreteState | available, unavailable |  |
     | `PassAPCCoolingModeState` | DiscreteState | absence, auto, comfort, eco, externalScheduling, internalScheduling, manu, stop |  |
     | `PassAPCCoolingProfileState` | DiscreteState | absence, comfort, derogation, eco, externalSetpoint, frostprotection, manu, stop |  |
     | `PassAPCHeatingModeState` | DiscreteState | absence, auto, comfort, eco, externalScheduling, internalScheduling, manu, stop |  |
     | `PassAPCHeatingProfileState` | DiscreteState | absence, comfort, derogation, eco, externalSetpoint, frostprotection, manu, stop |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
+    | `ThermalConfigurationState` | DiscreteState | cooling, heating, heatingAndCooling |  |
 
 ??? note "Light/DimmerLight (ACTUATOR) — 33 commands, 15 states"
 
@@ -5153,14 +5153,19 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off) |
     | `setIntensityWithTimer` | INT [0..100]; INT [5..14400]; INT [0..100] (optional) | Set the light intensity to p1% then after p2 seconds, set it to p3%. (If p3 is not specified the light is turned off after the delay) |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
@@ -5170,16 +5175,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setSecuredPosition` | INT [0..100] | Set the relative position value (0-100%) to be used for the 'secured' position alias |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -5194,12 +5194,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Light/DimmerRGBColouredLight (ACTUATOR) — 35 commands, 18 states"
 
@@ -5219,14 +5219,19 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off) |
     | `setIntensityWithTimer` | INT [0..100]; INT [5..14400]; INT [0..100] (optional) | Set the light intensity to p1% then after p2 seconds, set it to p3%. (If p3 is not specified the light is turned off after the delay) |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
@@ -5238,16 +5243,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setSecuredPosition` | INT [0..100] | Set the relative position value (0-100%) to be used for the 'secured' position alias |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -5264,13 +5264,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RedColorIntensityState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Light/DimmerColorTemperatureLight (ACTUATOR) — 34 commands, 16 states"
 
@@ -5290,15 +5290,20 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setColorTemperature` | INT [2000..6500] | Set the perceived white temperature for this lamp (°K) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off) |
     | `setIntensityWithTimer` | INT [0..100]; INT [5..14400]; INT [0..100] (optional) | Set the light intensity to p1% then after p2 seconds, set it to p3%. (If p3 is not specified the light is turned off after the delay) |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
@@ -5308,16 +5313,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setSecuredPosition` | INT [0..100] | Set the relative position value (0-100%) to be used for the 'secured' position alias |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -5333,12 +5333,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Light/StatefulOnOffLight (ACTUATOR) — 26 commands, 12 states"
 
@@ -5358,26 +5358,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setOnOff` | STRING: off, on | Turn the device on or off |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -5390,11 +5390,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ManufacturerSettingsState` | DataState |  |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Light/TimedOnOffLight (ACTUATOR) — 29 commands, 15 states"
 
@@ -5414,29 +5414,29 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithInternalTimer` |  | on using product internal timer |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setInternalTimer` | INT [0..65535] | set component internal timer |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setOnOff` | STRING: off, on | Turn the device on or off |
+    | `setPictoValue` | STRING: onOffLight, onOffSwitch | set the picto value state |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `setPictoValue` | STRING: onOffLight, onOffSwitch | set the picto value state |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -5449,14 +5449,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ManufacturerSettingsState` | DataState |  |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `PriorityLockTimerState` | ContinuousState |  |  |
-    | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `TimerState` | ContinuousState |  |  |
     | `PairedMicroModuleWithLowBatteryState` | DataState |  |  |
     | `PictoState` | DiscreteState | onOffLight |  |
     | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
     | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
+    | `PriorityLockTimerState` | ContinuousState |  |  |
+    | `RSSILevelState` | ContinuousState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `TimerState` | ContinuousState |  |  |
 
 ??? note "Light/DimmerLight (ACTUATOR) — 35 commands, 14 states"
 
@@ -5472,18 +5472,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration. |
     | `advancedRefresh` | STRING: normal, advanced, custom; ARRAY (optional) | Refresh extra states |
+    | `decreaseIntensityForBoundConfiguration` | INT [25..3175] (optional) | Decrease the intensity to configure the bounds. p1: Duration of intensity change, time in millisecond. |
     | `delayedStopIdentify` | INT [1..254] | (IO-homecontrol specific) Ask the device to stop winking after a given number of seconds |
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `increaseIntensityForBoundConfiguration` | INT [25..3200] (optional) | Increase the intensity to configure the bounds. p1: Duration of intensity change, time in millisecond. |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `saveBound` | STRING: lower, upper | Save a bound value with the current position value. p1 : the type of the bound saved. |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off) |
     | `setIntensityWithTimer` | INT [0..100]; INT [5..14400]; INT [0..100] (optional) | Set the light intensity to p1% then after p2 seconds, set it to p3%. (If p3 is not specified the light is turned off after the delay) |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
@@ -5492,19 +5500,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setPosition` | STRING: my, memorized1, secured; INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%) |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `saveBound` | STRING: lower, upper | Save a bound value with the current position value. p1 : the type of the bound saved. |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `decreaseIntensityForBoundConfiguration` | INT [25..3175] (optional) | Decrease the intensity to configure the bounds. p1: Duration of intensity change, time in millisecond. |
-    | `increaseIntensityForBoundConfiguration` | INT [25..3200] (optional) | Increase the intensity to configure the bounds. p1: Duration of intensity change, time in millisecond. |
 
     **States**
 
@@ -5519,11 +5519,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Light/DimmerLight (ACTUATOR) — 32 commands, 13 states"
 
@@ -5543,14 +5543,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off) |
     | `setIntensityWithTimer` | INT [0..100]; INT [5..14400]; INT [0..100] (optional) | Set the light intensity to p1% then after p2 seconds, set it to p3%. (If p3 is not specified the light is turned off after the delay) |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
@@ -5560,15 +5564,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setSecuredPosition` | INT [0..100] | Set the relative position value (0-100%) to be used for the 'secured' position alias |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -5581,12 +5581,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Light/DimmerRGBColouredLight (ACTUATOR) — 34 commands, 16 states"
 
@@ -5606,14 +5606,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off) |
     | `setIntensityWithTimer` | INT [0..100]; INT [5..14400]; INT [0..100] (optional) | Set the light intensity to p1% then after p2 seconds, set it to p3%. (If p3 is not specified the light is turned off after the delay) |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
@@ -5625,15 +5629,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setSecuredPosition` | INT [0..100] | Set the relative position value (0-100%) to be used for the 'secured' position alias |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -5648,13 +5648,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RedColorIntensityState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Light/DimmerColorTemperatureLight (ACTUATOR) — 33 commands, 14 states"
 
@@ -5674,15 +5674,19 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setColorTemperature` | INT [2000..6500] | Set the perceived white temperature for this lamp (°K) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off) |
     | `setIntensityWithTimer` | INT [0..100]; INT [5..14400]; INT [0..100] (optional) | Set the light intensity to p1% then after p2 seconds, set it to p3%. (If p3 is not specified the light is turned off after the delay) |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
@@ -5692,15 +5696,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setSecuredPosition` | INT [0..100] | Set the relative position value (0-100%) to be used for the 'secured' position alias |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -5714,12 +5714,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Light/StatefulOnOffLight (ACTUATOR) — 25 commands, 10 states"
 
@@ -5739,25 +5739,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setOnOff` | STRING: off, on | Turn the device on or off |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -5768,11 +5768,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Light/TimedOnOffLight (ACTUATOR) — 28 commands, 13 states"
 
@@ -5792,28 +5792,28 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithInternalTimer` |  | on using product internal timer |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setInternalTimer` | INT [0..65535] | set component internal timer |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setOnOff` | STRING: off, on | Turn the device on or off |
+    | `setPictoValue` | STRING: onOffLight, onOffSwitch | set the picto value state |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `setPictoValue` | STRING: onOffLight, onOffSwitch | set the picto value state |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -5824,14 +5824,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
-    | `PriorityLockTimerState` | ContinuousState |  |  |
-    | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `TimerState` | ContinuousState |  |  |
     | `PairedMicroModuleWithLowBatteryState` | DataState |  |  |
     | `PictoState` | DiscreteState | onOffLight |  |
     | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
     | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
+    | `PriorityLockTimerState` | ContinuousState |  |  |
+    | `RSSILevelState` | ContinuousState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `TimerState` | ContinuousState |  |  |
 
 ??? note "Light/DimmerLight (ACTUATOR) — 34 commands, 12 states"
 
@@ -5847,19 +5847,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration. |
     | `advancedRefresh` | STRING: normal, advanced, custom; ARRAY (optional) | Refresh extra states |
+    | `decreaseIntensityForBoundConfiguration` | INT [25..3175] (optional) | Decrease the intensity to configure the bounds. p1: Duration of intensity change, time in millisecond. |
     | `delayedStopIdentify` | INT [1..254] | (IO-homecontrol specific) Ask the device to stop winking after a given number of seconds |
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `increaseIntensityForBoundConfiguration` | INT [25..3200] (optional) | Increase the intensity to configure the bounds. p1: Duration of intensity change, time in millisecond. |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
     | `saveBound` | STRING: lower, upper | Save a bound value with the current position value. p1 : the type of the bound saved. |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off) |
     | `setIntensityWithTimer` | INT [0..100]; INT [5..14400]; INT [0..100] (optional) | Set the light intensity to p1% then after p2 seconds, set it to p3%. (If p3 is not specified the light is turned off after the delay) |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
@@ -5868,17 +5874,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setPosition` | STRING: my, memorized1, secured; INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%) |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `decreaseIntensityForBoundConfiguration` | INT [25..3175] (optional) | Decrease the intensity to configure the bounds. p1: Duration of intensity change, time in millisecond. |
-    | `increaseIntensityForBoundConfiguration` | INT [25..3200] (optional) | Increase the intensity to configure the bounds. p1: Duration of intensity change, time in millisecond. |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -5891,11 +5891,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 20 commands, 9 states"
 
@@ -5917,18 +5917,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setOnOff` | STRING: off, on | Turn the device on or off |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
     | `toggle` |  | Toggle on/off status |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -5938,11 +5938,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "OnOff/TimedOnOff (ACTUATOR) — 20 commands, 9 states"
 
@@ -5965,17 +5965,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `on` |  | Turn on the device |
     | `onWithInternalTimer` |  | on using product internal timer |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setOnOff` | STRING: off, on | Turn the device on or off |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -5985,11 +5985,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Pergola/PergolaHorizontalAwning (ACTUATOR) — 36 commands, 17 states"
 
@@ -6012,13 +6012,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
@@ -6028,17 +6033,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
     | `undeploy` |  | Fully undeploy the device |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -6054,13 +6054,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Pergola/PergolaHorizontalAwning (ACTUATOR) — 35 commands, 15 states"
 
@@ -6083,13 +6083,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
@@ -6099,16 +6103,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
     | `undeploy` |  | Fully undeploy the device |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -6122,13 +6122,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "RollerShutter/PositionableRollerShutter (ACTUATOR) — 34 commands, 17 states"
 
@@ -6150,13 +6150,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
@@ -6165,17 +6170,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -6191,13 +6191,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "RollerShutter/PositionableTiltedRollerShutter (ACTUATOR) — 29 commands, 13 states"
 
@@ -6220,26 +6220,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
-    | `setClosureAndLinearSpeed` | INT [0..100]; STRING: lowspeed (optional) | Set the device to a closure level (0-100%) with an optional given speed |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setClosureAndLinearSpeed` | INT [0..100]; STRING: lowspeed (optional) | Set the device to a closure level (0-100%) with an optional given speed |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
-    | `setPositionAndLinearSpeed` | STRING: my; INT [0..100]; STRING: lowspeed (optional) | Set the device to a pre-defined position (enum) or a relative position (0-100%) with a given speed |
     | `setPosition` | STRING: my, memorized1, secured; INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%) |
+    | `setPositionAndLinearSpeed` | STRING: my; INT [0..100]; STRING: lowspeed (optional) | Set the device to a pre-defined position (enum) or a relative position (0-100%) with a given speed |
     | `setSecuredPosition` | INT [0..100] | Set the relative position value (0-100%) to be used for the 'secured' position alias |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `up` |  | Move the device completely up |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `up` |  | Move the device completely up |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -6252,12 +6252,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "RollerShutter/PositionableProjectionRollerShutter (ACTUATOR) — 29 commands, 13 states"
 
@@ -6280,11 +6280,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
-    | `setClosureAndProjectionAngle` | INT [0..100]; INT [0..100] |  |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setClosureAndProjectionAngle` | INT [0..100]; INT [0..100] |  |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
@@ -6294,12 +6296,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `up` |  | Move the device completely up |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `up` |  | Move the device completely up |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -6311,13 +6311,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `ProjectionAngleState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "RollerShutter/PositionableDualRollerShutter (ACTUATOR) — 43 commands, 16 states"
 
@@ -6347,33 +6347,33 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `lowerUp` |  |  |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setLowerClosure` | ANY |  |
     | `setLowerPosition` | ANY |  |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setPosition` | STRING: my, memorized1, secured; INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%) |
     | `setSecuredPosition` | INT [0..100] | Set the relative position value (0-100%) to be used for the 'secured' position alias |
+    | `setUpperAndLowerClosure` | INT [0..100]; INT [0..100] |  |
+    | `setUpperAndLowerPosition` | INT [0..100]; INT [0..100] |  |
     | `setUpperClosure` | ANY |  |
     | `setUpperPosition` | ANY |  |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `upperClose` |  |  |
     | `upperDown` |  |  |
     | `upperOpen` |  |  |
     | `upperUp` |  |  |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `setUpperAndLowerClosure` | INT [0..100]; INT [0..100] |  |
-    | `setUpperAndLowerPosition` | INT [0..100]; INT [0..100] |  |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -6387,14 +6387,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `UpperClosureState` | ContinuousState |  |  |
     | `UpperOpenClosedState` | DiscreteState | closed, open |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "RollerShutter/PositionableRollerShutter (ACTUATOR) — 33 commands, 15 states"
 
@@ -6416,13 +6416,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed) |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
@@ -6431,16 +6435,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -6454,13 +6454,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Screen/PositionableScreen (ACTUATOR) — 33 commands, 17 states"
 
@@ -6482,13 +6482,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setPosition` | STRING: my, memorized1, secured; INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%) |
@@ -6496,17 +6501,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -6522,13 +6522,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Screen/PositionableTiltedScreen (ACTUATOR) — 26 commands, 12 states"
 
@@ -6551,10 +6551,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setPosition` | STRING: my, memorized1, secured; INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%) |
@@ -6562,12 +6564,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `up` |  | Move the device completely up |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `up` |  | Move the device completely up |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -6579,12 +6579,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Screen/PositionableScreen (ACTUATOR) — 32 commands, 15 states"
 
@@ -6606,13 +6606,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setPosition` | STRING: my, memorized1, secured; INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%) |
@@ -6620,16 +6624,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `up` |  | Move the device completely up |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -6643,13 +6643,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "SwimmingPool (ACTUATOR) — 19 commands, 9 states"
 
@@ -6671,17 +6671,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setOnOff` | STRING: off, on | Turn the device on or off |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -6691,11 +6691,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "SwingingShutter (ACTUATOR) — 30 commands, 15 states"
 
@@ -6716,13 +6716,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setPosition` | STRING: my, memorized1, secured; INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%) |
@@ -6730,15 +6735,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
 
     **States**
 
@@ -6753,12 +6753,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "SwingingShutter (ACTUATOR) — 27 commands, 13 states"
 
@@ -6779,26 +6779,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
 
     **States**
 
@@ -6812,11 +6812,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "SwingingShutter (ACTUATOR) — 29 commands, 13 states"
 
@@ -6837,13 +6837,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setPosition` | STRING: my, memorized1, secured; INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%) |
@@ -6851,14 +6855,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
 
     **States**
 
@@ -6871,12 +6871,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "SwingingShutter (ACTUATOR) — 26 commands, 11 states"
 
@@ -6897,25 +6897,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
+    | `sendIOKey` |  | Send the IO key to device. |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
 
     **States**
 
@@ -6927,11 +6927,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "TemperatureSensor (SENSOR) — 0 commands, 2 states"
 
@@ -6965,25 +6965,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
-    | `setClosureAndOrientation` | INT [0..100]; INT [0..100] | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setClosureAndOrientation` | INT [0..100]; INT [0..100] | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setOrientation` | INT [0..100] | Set the relative orientation (0-100%) of the device slats |
     | `setPosition` | STRING: my, memorized1, secured; INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%) |
     | `setSecuredPosition` | INT [0..100] | Set the relative position value (0-100%) to be used for the 'secured' position alias |
-    | `setOrientation` | INT [0..100] | Set the relative orientation (0-100%) of the device slats |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `up` |  | Move the device completely up |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `up` |  | Move the device completely up |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -6996,14 +6996,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MovingState` | DiscreteState | false, true |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `SlateOrientationState` | ContinuousState | [0..100] |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "VentilationSystem/VentilationInlet (ACTUATOR) — 18 commands, 11 states"
 
@@ -7024,17 +7024,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
     | `setAirInput` | INT [0..100] | Set ventilation strength (%) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -7045,12 +7045,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "VentilationSystem/VentilationTransfer (ACTUATOR) — 18 commands, 11 states"
 
@@ -7071,17 +7071,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
     | `setAirTransfer` | INT [0..100] | Set ventilation strength (%) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -7092,12 +7092,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "VentilationSystem/VentilationOutlet (ACTUATOR) — 18 commands, 12 states"
 
@@ -7118,17 +7118,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
     | `setAirOutput` | INT [0..100] | Set ventilation strength (%) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -7140,12 +7140,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SecuredPositionState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "WaterHeatingSystem/AtlanticPassAPCDHW (ACTUATOR) — 17 commands, 11 states"
 
@@ -7158,9 +7158,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration. |
     | `advancedRefresh` | STRING: normal, advanced, custom; ARRAY (optional) | Refresh extra states |
     | `refreshComfortTargetDHWTemperature` |  | Refresh comfort target DHW temperature. |
+    | `refreshDHWConfiguration` |  | Refesh the ECS configuration |
     | `refreshDHWDerogationAvailability` |  | Check if Domestic Hot Water system supports derogations |
     | `refreshDHWOnOffState` |  | Check if DHW module is on or off |
     | `refreshEcoTargetDHWTemperature` |  | Refresh eco target DHW temperature. |
+    | `refreshPassAPCDHWMode` |  | Refresh DHW mode. |
+    | `refreshPassAPCDHWProfile` |  | Refresh DHW profile. |
     | `refreshTargetDHWTemperature` |  | Refresh the target DHW temperature |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
@@ -7168,9 +7171,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setComfortTargetDHWTemperature` | FLOAT [8.0..80.0] | Set the comfort mode target temperature of Domestic Hot Water system |
     | `setDHWOnOffState` | STRING: off, on | Switch on or switch off the DHW module |
     | `setEcoTargetDHWTemperature` | FLOAT [8.0..80.0] | Set the eco mode target temperature of Domestic Hot Water system |
-    | `refreshDHWConfiguration` |  | Refesh the ECS configuration |
-    | `refreshPassAPCDHWMode` |  | Refresh DHW mode. |
-    | `refreshPassAPCDHWProfile` |  | Refresh DHW profile. |
     | `setPassAPCDHWMode` | STRING: comfort, eco, externalScheduling, internalScheduling, manu | Set the Domestic Hot Water system mode |
 
     **States**
@@ -7183,11 +7183,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DHWDerogationAvailabilityState` | DiscreteState | available, unavailable |  |
     | `DHWOnOffState` | DiscreteState | off, on |  |
     | `EcoTargetDHWTemperatureState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `TargetDHWTemperatureState` | ContinuousState | [38.0..60.0] |  |
     | `PassAPCDHWConfigurationState` | DiscreteState | cumulated, snapshot |  |
     | `PassAPCDHWModeState` | DiscreteState | comfort, eco, externalScheduling, internalScheduling, manu, peakAndOffPeakScheduling, peakAndOffPeakTimes, stop |  |
     | `PassAPCDHWProfileState` | DiscreteState | absence, comfort, derogation, eco, externalSetpoint, frostprotection, manu, other, stop |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `TargetDHWTemperatureState` | ContinuousState | [38.0..60.0] |  |
 
 ??? note "Window/PositionableWindow (ACTUATOR) — 19 commands, 10 states"
 
@@ -7208,18 +7208,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -7230,11 +7230,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Window/PositionableTiltedWindow (ACTUATOR) — 23 commands, 12 states"
 
@@ -7256,21 +7256,21 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `goToAlias` | STRING | Send alias command linked with the ID. |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
     | `saveAlias` | STRING | Allow to send an order for the product to save the current state of the alias. |
-    | `setClosureAndLinearSpeed` | INT [0..100]; STRING: lowspeed (optional) | Set the device to a closure level (0-100%) with an optional given speed |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setClosureAndLinearSpeed` | INT [0..100]; STRING: lowspeed (optional) | Set the device to a closure level (0-100%) with an optional given speed |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setPositionAndLinearSpeed` | STRING: my; INT [0..100]; STRING: lowspeed (optional) | Set the device to a pre-defined position (enum) or a relative position (0-100%) with a given speed |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -7282,12 +7282,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `ReachedAliasesState` | DataState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Window/PositionableSlidingWindow (ACTUATOR) — 25 commands, 11 states"
 
@@ -7309,23 +7309,23 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
-    | `setClosureAndLinearSpeed` | INT [0..100]; STRING: lowspeed (optional) | Set the device to a closure level (0-100%) with an optional given speed |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setClosureAndLinearSpeed` | INT [0..100]; STRING: lowspeed (optional) | Set the device to a closure level (0-100%) with an optional given speed |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
-    | `setPositionAndLinearSpeed` | STRING: my; INT [0..100]; STRING: lowspeed (optional) | Set the device to a pre-defined position (enum) or a relative position (0-100%) with a given speed |
     | `setPosition` | STRING: my; INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%) |
+    | `setPositionAndLinearSpeed` | STRING: my; INT [0..100]; STRING: lowspeed (optional) | Set the device to a pre-defined position (enum) or a relative position (0-100%) with a given speed |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
     | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
+    | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
 
     **States**
 
@@ -7337,11 +7337,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Memorized1PositionState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Window/PositionableAndLockableSlidingWindow (ACTUATOR) — 37 commands, 20 states"
 
@@ -7364,34 +7364,34 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `lock` |  | Lock the device |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
-    | `setClosureAndLinearSpeed` | INT [0..100]; STRING: lowspeed (optional) | Set the device to a closure level (0-100%) with an optional given speed |
+    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setClosureAndLinearSpeed` | INT [0..100]; STRING: lowspeed (optional) | Set the device to a closure level (0-100%) with an optional given speed |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
-    | `setPositionAndLinearSpeed` | STRING: my, securedVentilation; INT [0..100]; STRING: lowspeed (optional) | Set the device to a pre-defined position (enum) or a relative position (0-100%) with a given speed |
     | `setPosition` | STRING: my, securedVentilation; INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%) |
+    | `setPositionAndLinearSpeed` | STRING: my, securedVentilation; INT [0..100]; STRING: lowspeed (optional) | Set the device to a pre-defined position (enum) or a relative position (0-100%) with a given speed |
     | `setTimer` | INT [0..65535] | set the duration in second of the timer |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
     | `unlock` |  | Unlock the device |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `runManufacturerSettingsCommand` | STRING; OBJECT | Send a manufacturer configuration command. p1: The manufacturer configuration command to use p2: The arguments to send to this command |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -7408,6 +7408,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `NameState` | DataState |  |  |
     | `OpenClosedSecuredVentilationState` | DiscreteState | open, securedVentilation, closed |  |
     | `OpeningDirectionState` | DiscreteState | left, right |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RemainingTimeState` | ContinuousState |  |  |
@@ -7415,8 +7417,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TimerActivationState` | DataState |  |  |
     | `TimerState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 ??? note "Window/PositionableAndLockableSlidingWindow (ACTUATOR) — 36 commands, 18 states"
 
@@ -7439,33 +7439,33 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `executeManufacturerProcedure` | STRING; OBJECT; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
     | `lock` |  | Lock the device |
     | `my` |  | Set the device to a user pre-defined position |
     | `open` |  | Fully open the device |
+    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `refreshMemorized1Position` |  | Refresh memorized 1 position state |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove |
     | `resetLockLevels` |  | Remove all lock levels on the device |
-    | `setClosureAndLinearSpeed` | INT [0..100]; STRING: lowspeed (optional) | Set the device to a closure level (0-100%) with an optional given speed |
+    | `sendIOKey` |  | Send the IO key to device. |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open) |
+    | `setClosureAndLinearSpeed` | INT [0..100]; STRING: lowspeed (optional) | Set the device to a closure level (0-100%) with an optional given speed |
+    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
     | `setMemorized1Position` | INT [0..100] | Set favorite position |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
-    | `setPositionAndLinearSpeed` | STRING: my, securedVentilation; INT [0..100]; STRING: lowspeed (optional) | Set the device to a pre-defined position (enum) or a relative position (0-100%) with a given speed |
     | `setPosition` | STRING: my, securedVentilation; INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%) |
+    | `setPositionAndLinearSpeed` | STRING: my, securedVentilation; INT [0..100]; STRING: lowspeed (optional) | Set the device to a pre-defined position (enum) or a relative position (0-100%) with a given speed |
     | `setTimer` | INT [0..65535] | set the duration in second of the timer |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
     | `unlock` |  | Unlock the device |
+    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
+    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
+    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
     | `wink` | INT [1..254] | Ask the device to identify itself by doing a slight movement or blink or beep for a given amount of seconds. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `keepOneWayControllersAndDeleteNode` |  | Delete 2way key from actuator and delete the device. All one way controllers remain linked to the actuator. |
-    | `pairOneWayController` | STRING; INT [1..16] (optional) | Pair a one way controller to actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
-    | `sendIOKey` |  | Send the IO key to device. |
-    | `setConfigState` | STRING: configuration, virgin, close, transmitting | Set the device in configuration state. p1: configuration mode. |
-    | `unpairAllOneWayControllersAndDeleteNode` |  | Unpair all one way controllers from actuator. Delete 2way key from actuator and delete the device. |
-    | `unpairAllOneWayControllers` |  | Unpair all one way controllers from actuator. |
-    | `unpairOneWayController` | STRING; INT [1..16] (optional) | Unpair a one way controller from actuator. p1 : Payload of the QRCode associated to the one way controller p2 : channel (Optional - default : 1) |
 
     **States**
 
@@ -7480,6 +7480,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `NameState` | DataState |  |  |
     | `OpenClosedSecuredVentilationState` | DiscreteState | open, securedVentilation, closed |  |
     | `OpeningDirectionState` | DiscreteState | left, right |  |
+    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
+    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
     | `PriorityLockTimerState` | ContinuousState |  |  |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RemainingTimeState` | ContinuousState |  |  |
@@ -7487,8 +7489,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TimerActivationState` | DataState |  |  |
     | `TimerState` | ContinuousState |  |  |
-    | `PriorityLockLevelState` | DiscreteState | comfortLevel1, comfortLevel2, comfortLevel3, comfortLevel4, environmentProtection, humanProtection, userLevel1, userLevel2 |  |
-    | `PriorityLockOriginatorState` | DiscreteState | LSC, SAAC, SFC, UPS, externalGateway, localUser, myself, rain, security, temperature, timer, user, wind |  |
 
 
 ## JSW
@@ -7503,18 +7503,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `downloadRecordedFile` | INT | Allow to get an URL to download a recorded file p1: event time of a recorded file, obtained from listRecordedFiles command (The URL is returned asynchronously in a DownloadRecordedFileEvent) |
-    | `listRecordedFiles` | INT; INT (optional) | List recorded files in a given time period p1: start_Time -> unix time format (UTC) p2: end_Time -> unix time format (UTC) - optional field (defaults to now) (The list is returned asynchronously in a ListRecordedFilesEvent) |
-    | `setPassword` | STRING (sensitive); STRING (sensitive) | Change the current password p1:old password p2:new password |
     | `connect` |  | Open a new session on the camera and return a session token (The token is returned asynchronously in a JSWConnectTokenObtainedEvent) |
     | `deleteRecordedFile` | INT | Delete an recorded file p1: event time of a recorded file, obtained from returning value of listRecordedFiles command |
     | `disconnect` | STRING | Close a camera session p1: token obtained by "connect" command (The session token is invalidated after using this command) |
+    | `downloadRecordedFile` | INT | Allow to get an URL to download a recorded file p1: event time of a recorded file, obtained from listRecordedFiles command (The URL is returned asynchronously in a DownloadRecordedFileEvent) |
     | `getSessionStatus` | STRING | Refresh the camera status state p1:token obtained by "connect" command |
+    | `listRecordedFiles` | INT; INT (optional) | List recorded files in a given time period p1: start_Time -> unix time format (UTC) p2: end_Time -> unix time format (UTC) - optional field (defaults to now) (The list is returned asynchronously in a ListRecordedFilesEvent) |
     | `playJSWRecordedFile` | INT; STRING | Play a recorded file p1: event time of a recorded file, obtained from listRecordedFiles command p2: token obtained by "connect" command |
+    | `setPassword` | STRING (sensitive); STRING (sensitive) | Change the current password p1:old password p2:new password |
     | `startJSWLiveVideo` | STRING | Start a live video and get an URL for live streaming p1: token obtained by "connect" command |
     | `startJSWRecording` |  | Start recording a video. Uses a temporary session for 1 minute. |
-    | `stopJSWPlayRecordedFile` | STRING | Stop playing a recorded file p1: token obtained by "connect" command, same token that was used for playJSWRecordedFileCommand |
     | `stopJSWLiveVideo` | STRING | Stop live video streaming p1: token obtained by "connect" command, same token that was used for startJSWLiveVideoCommand |
+    | `stopJSWPlayRecordedFile` | STRING | Stop playing a recorded file p1: token obtained by "connect" command, same token that was used for playJSWRecordedFileCommand |
 
     **States**
 
@@ -7920,17 +7920,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `ping` |  | Check if device is available |
-    | `setTargetTemperature` | FLOAT [0.0..100.0]; STRING: eco, secured, comfort, halted, antifrost | Set the new air temperature to reach |
     | `setHVACMode` | STRING: auto, comfort, standby, economy, buildingProtection | Set a HVAC mode |
     | `setHeatingOrCoolingMode` | ANY |  |
+    | `setTargetTemperature` | FLOAT [0.0..100.0]; STRING: eco, secured, comfort, halted, antifrost | Set the new air temperature to reach |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `HVACModeState` | DiscreteState | auto, buildingProtection, comfort, economy, standby |  |
     | `HeatingOrCoolingModeState` | DiscreteState | cooling, heating |  |
+    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
 
 ??? note "HeatingSystem/HeatingTemperatureInterfaceSyncoRoom (ACTUATOR) — 5 commands, 4 states"
 
@@ -7943,8 +7943,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ping` |  | Check if device is available |
     | `setComfortTargetTemperature` | FLOAT [0.0..100.0] | Define the temperature for the comfort mode |
     | `setEcoTargetTemperature` | FLOAT [0.0..100.0] | Define the temperature for the eco mode |
-    | `setPrecomfortTargetTemperature` | FLOAT [0.0..100.0] | Define the temperature for the  precomfort mode |
     | `setHVACMode` | STRING: auto, comfort, standby, economy, buildingProtection | Set a HVAC mode |
+    | `setPrecomfortTargetTemperature` | FLOAT [0.0..100.0] | Define the temperature for the  precomfort mode |
 
     **States**
 
@@ -7952,8 +7952,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ComfortTargetTemperatureState` | ContinuousState |  |  |
     | `EcoTargetTemperatureState` | ContinuousState |  |  |
-    | `PrecomfortTargetTemperatureState` | ContinuousState |  |  |
     | `HVACModeState` | DiscreteState | auto, buildingProtection, comfort, economy, standby |  |
+    | `PrecomfortTargetTemperatureState` | ContinuousState |  |  |
 
 ??? note "HeatingSystem/HVACController (ACTUATOR) — 2 commands, 1 states"
 
@@ -8411,16 +8411,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `ping` |  | Check if device is available |
-    | `setTargetTemperature` | FLOAT [0.0..100.0]; STRING: eco, secured, comfort, halted, antifrost | Set the new air temperature to reach |
     | `setDHWMMode` | STRING: auto, frostprotection, legionellaprotection, normal, reduced | Set a DHWM mode |
     | `setForceHeating` |  | Set the force heating mode |
+    | `setTargetTemperature` | FLOAT [0.0..100.0]; STRING: eco, secured, comfort, halted, antifrost | Set the new air temperature to reach |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `DHWMModeState` | DiscreteState | auto, frostprotection, legionellaprotection, normal, reduced |  |
+    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
 
 ??? note "WindSensor/WindSpeedSensor (SENSOR) — 1 commands, 1 states"
 
@@ -8483,9 +8483,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `refreshEcoModeOffset` |  |  |
-    | `refreshEcoModeOffsetTarget` |  |  |
-    | `setEcoModeOffset` | ANY |  |
     | `refreshCentralSetting1` |  |  |
     | `refreshCentralSetting2` |  |  |
     | `refreshCentralSetting3` |  |  |
@@ -8493,6 +8490,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshControlCommunicationAlarmBit` |  |  |
     | `refreshControlUnit` |  |  |
     | `refreshControlUnitMode` |  |  |
+    | `refreshEcoModeOffset` |  |  |
+    | `refreshEcoModeOffsetTarget` |  |  |
     | `refreshHLinkCommunicationAlarm` |  |  |
     | `refreshHardwareVersion` |  |  |
     | `refreshLCDCentralMode` |  |  |
@@ -8521,6 +8520,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setControlUnit` | ANY |  |
     | `setControlUnitMode` | ANY |  |
     | `setEcoComfortMode` | ANY; ANY; ANY; ANY |  |
+    | `setEcoModeOffset` | ANY |  |
     | `setGlobalAutoManuMode` | ANY |  |
     | `setSpaceMode` | ANY |  |
     | `setTahomaRoomThermostatAvailable` | STRING |  |
@@ -8529,8 +8529,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `AutoManuModeState` | DiscreteState | auto, manu |  |
     | `AlarmNumberState` | DataState |  |  |
+    | `AutoManuModeState` | DiscreteState | auto, manu |  |
     | `CauseOfStoppageState` | DataState |  |  |
     | `CentralSetting1State` | DataState |  |  |
     | `CentralSetting2State` | DataState |  |  |
@@ -8736,13 +8736,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DHWTemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `AlarmNumberState` | DataState |  |  |
     | `ControlAntiLegionellaSettingTemperatureState` | DataState |  |  |
     | `ControlAntiLegionellaState` | DiscreteState | run, stop |  |
     | `ControlDHWSettingTemperatureState` | DataState |  |  |
     | `ControlDHWState` | DiscreteState | run, stop |  |
     | `DHWModeState` | DiscreteState | high demand, standard |  |
+    | `DHWTemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `StatusAntiLegionellaSettingTemperatureState` | DataState |  |  |
     | `StatusAntiLegionellaState` | DiscreteState | run, stop |  |
     | `StatusDHWSettingTemperatureState` | DataState |  |  |
@@ -8785,11 +8785,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `refreshMode` |  | Refresh the mode |
     | `globalControl` | ANY; ANY; ANY |  |
     | `refreshControlCircuit1` |  |  |
     | `refreshControlCoolingOTCZone1` |  |  |
     | `refreshControlHeatingOTCZone1` |  |  |
+    | `refreshMode` |  | Refresh the mode |
     | `refreshRoomAmbientTemperatureControlZone1` |  |  |
     | `refreshRoomAmbientTemperatureStatusZone1` |  |  |
     | `refreshStatusCircuit1` |  |  |
@@ -8844,11 +8844,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `refreshMode` |  | Refresh the mode |
     | `globalControl` | ANY; ANY; ANY |  |
     | `refreshControlCircuit2` |  |  |
     | `refreshControlCoolingOTCZone2` |  |  |
     | `refreshControlHeatingOTCZone2` |  |  |
+    | `refreshMode` |  | Refresh the mode |
     | `refreshRoomAmbientTemperatureControlZone2` |  |  |
     | `refreshRoomAmbientTemperatureStatusZone2` |  |  |
     | `refreshStatusCircuit2` |  |  |
@@ -8903,8 +8903,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `refreshBoostMode` |  | Refresh the boost mode |
     | `globalControlDHW` | ANY; ANY; ANY |  |
+    | `refreshBoostMode` |  | Refresh the boost mode |
     | `refreshControlAntiLegionella` |  |  |
     | `refreshControlAntiLegionellaSettingTemperature` |  |  |
     | `refreshControlDHW` |  |  |
@@ -8926,13 +8926,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DHWTemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `AlarmNumberState` | DataState |  |  |
     | `ControlAntiLegionellaSettingTemperatureState` | DataState |  |  |
     | `ControlAntiLegionellaState` | DiscreteState | run, stop |  |
     | `ControlDHWSettingTemperatureState` | DataState |  |  |
     | `ControlDHWState` | DiscreteState | run, stop |  |
     | `DHWModeState` | DiscreteState | high demand, standard |  |
+    | `DHWTemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `StatusAntiLegionellaSettingTemperatureState` | DataState |  |  |
     | `StatusAntiLegionellaState` | DiscreteState | run, stop |  |
     | `StatusDHWSettingTemperatureState` | DataState |  |  |
@@ -9009,8 +9009,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `OperatingHoursCountState` | DataState |  |  |
-    | `WaterPressureState` | ContinuousState |  |  |
     | `AverageFlowSensorTemperatureState` | ContinuousState |  |  |
     | `BoilerTypeState` | DiscreteState | SBK, normale |  |
     | `BoilersStartsCountState` | DataState |  |  |
@@ -9033,6 +9031,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `HeatPumpTemperatureState` | ContinuousState |  |  |
     | `InputVoltageState` | ContinuousState |  |  |
     | `InstantaneousPowerState` | ContinuousState |  |  |
+    | `OperatingHoursCountState` | DataState |  |  |
     | `OutdoorSensorTemperatureState` | ContinuousState |  |  |
     | `ProgramCircuitAState` | DataState |  |  |
     | `ProgramCircuitBState` | DataState |  |  |
@@ -9045,6 +9044,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `StorageTankSensorTemperatureState` | ContinuousState |  |  |
     | `SwimmingpoolWaterSensorTemperatureState` | ContinuousState |  |  |
     | `SystemInputFunctionState` | DiscreteState | Boucle DHW, Piscine, aux |  |
+    | `WaterPressureState` | ContinuousState |  |  |
     | `WishedComfortPeriodTemperatureState` | ContinuousState |  |  |
     | `WishedDomesticHotWaterTemperatureState` | ContinuousState |  |  |
     | `WishedReducedPeriodTemperatureState` | ContinuousState |  |  |
@@ -9086,8 +9086,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshDeadZoneYesNoState` |  | refresh dead zone Yes/No state |
     | `refreshDecreaseFanSpeedYesNoState` |  | refresh Decrease Fan Speed Yes/No state |
     | `refreshDefrostingFunction` |  | refresh the defrosting function state |
-    | `refreshDirtyFilterAlarmTime` |  |  |
     | `refreshDirtyFilter` |  |  |
+    | `refreshDirtyFilterAlarmTime` |  |  |
     | `refreshExternalTimer1` |  |  |
     | `refreshExternalTimer2` |  |  |
     | `refreshExtractFanError` |  |  |
@@ -9151,16 +9151,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshSensorErrorFrostProtectPostH` |  |  |
     | `refreshSensorErrorOutDoorTemp` |  |  |
     | `refreshSensorErrorSupplyTemp` |  |  |
+    | `refreshSetPoint` |  | Refresh setpoint |
     | `refreshSetPointAirPressure` |  | Refresh SetPoint Air Pressure |
     | `refreshSetPointCO2` |  |  |
-    | `refreshSetPoint` |  | Refresh setpoint |
+    | `refreshSetpoint` |  | Refresh Setpoint |
     | `refreshSetpointAirAirFlow` |  | Refresh Setpoint Air Air Flow |
     | `refreshSetpointAirAirflowBoost` |  | Refresh setpoint air airflow boost |
     | `refreshSetpointAirAirflowTrickle` |  | Refresh Setpoint Air Airflow Trickle |
     | `refreshSetpointAirPressureBoost` |  | Refresh Setpoint Air Pressure Boost |
     | `refreshSetpointAirPressureNormal` |  | Refresh Setpoint Air Pressure Normal |
     | `refreshSetpointAirPressureTrickle` |  | Refresh Setpoint Air Pressure Trickle |
-    | `refreshSetpoint` |  | Refresh Setpoint |
     | `refreshShutdownTime` |  | Refresh Shutdown Time |
     | `refreshSoftwareFloatVersion` |  | refresh the software version state |
     | `refreshStartupTime` |  | Refresh startup time |
@@ -9190,8 +9190,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setDeadZoneYesNoState` | STRING: no, yes | set dead zone Yes/No state |
     | `setDecreaseFanSpeedYesNoState` | STRING: no, yes | set decrease fan speed Yes/No state |
     | `setDefrostingFunctionRunning` | STRING: no, yes | start/stop the defrosting function |
-    | `setDirtyFilterAlarmTime` | ANY |  |
     | `setDirtyFilter` | STRING: no, yes | Set the dirty filter |
+    | `setDirtyFilterAlarmTime` | ANY |  |
     | `setExtractFanError` | STRING: no, yes | Set the extract fan error |
     | `setExtractFanSpeedBoost` | INT |  |
     | `setExtractFanSpeedCookerHood` | INT |  |
@@ -9223,8 +9223,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setSensorErrorFrostProtect` | STRING: no, yes | set sensor frost protect |
     | `setSensorErrorOutDoorTemp` | STRING: no, yes | Set the Sensor Error OutDoorTemperature |
     | `setSensorErrorSupplyTemp` | STRING: no, yes | Set the Sensor Error Supply Temperature |
-    | `setSetPointCO2` | INT |  |
     | `setSetPoint` | FLOAT |  |
+    | `setSetPointCO2` | INT |  |
     | `setSummaryAlarmCooler` | STRING: no, yes | Set the Summary Alarm Cooler |
     | `setSummerWinterMode` | STRING: summer, winter | set summer/winter mode |
     | `setSupplyFanError` | STRING: no, yes | set the supply fan error |
@@ -9406,6 +9406,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshAbsenceStartDate` |  | Refresh the start date absence |
     | `refreshBoostActivation` |  | Refresh the boost activation |
     | `refreshDateTime` |  | Refresh the date |
+    | `refreshDiagnostic` |  | Refresh some states to help problem analysis |
     | `refreshErrorCode` |  | Refresh the current error code |
     | `refreshFridayTimeProgram` |  | refresh the friday time program |
     | `refreshHeatingLevel` |  | Refresh the heating level mode |
@@ -9417,6 +9418,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshOnOffState` |  | Get the device on/off state |
     | `refreshOperatingMode` |  | Refresh an operating mode. |
     | `refreshSaturdayTimeProgram` |  | refresh the saturday time program |
+    | `refreshSetpointLoweringTemperatureInProgMode` |  | Refresh lowering temperature in the room on prog mode |
+    | `refreshStaticStates1` |  | Refresh some static states |
+    | `refreshStaticStates2` |  | Refresh some static states |
     | `refreshSundayTimeProgram` |  | refresh the sunday time program |
     | `refreshTargetTemperature` |  | Refresh the temperature value |
     | `refreshThursdayTimeProgram` |  | refresh the thursday time program |
@@ -9427,6 +9431,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setAbsenceStartDate` | OBJECT | Set the start date absence |
     | `setBoostActivation` | STRING: inactive, active | Activate the boost |
     | `setDateTime` | OBJECT | Set the date and time |
+    | `setFridayTimeProgram` | OBJECT | set friday  timeProgram |
     | `setHeatingLevel` | STRING: comfort, boost, eco | Sets the device heating level mode |
     | `setLanguage` | STRING: fr, en, es, nl, pt | Set the language |
     | `setMaximumHeatingTargetTemperature` | FLOAT [19.0..30.0] | Set the maximum heating target temperature (manual set point) |
@@ -9435,25 +9440,21 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setOnOff` | STRING: off, on | Turn the device on or off |
     | `setOperatingMode` | STRING: manual, prog, auto | Set an operating mode |
     | `setSaturdayTimeProgram` | OBJECT | set saturday timeProgram |
+    | `setSetpointLoweringTemperatureInProgMode` | FLOAT [6.0..19.0]; STRING: off | Set lowering temperature in the room on prog mode |
     | `setSundayTimeProgram` | OBJECT | set sunday timeProgram |
     | `setTargetTemperature` | INT: 7; FLOAT [12.0..30.0] | Set the new air temperature to reach |
+    | `setThursdayTimeProgram` | OBJECT | set thursday timeProgram |
+    | `setTuesdayTimeProgram` | OBJECT | set tuesday timeProgram |
     | `setWednesdayTimeProgram` | OBJECT | set wednesday timeProgram |
     | `startIdentify` |  | Ask the device to start winking immediately for an unlimited amount of time |
     | `stopIdentify` |  | Ask the device to stop winking immediately |
-    | `setFridayTimeProgram` | OBJECT | set friday  timeProgram |
-    | `setThursdayTimeProgram` | OBJECT | set thursday timeProgram |
-    | `setTuesdayTimeProgram` | OBJECT | set tuesday timeProgram |
-    | `refreshDiagnostic` |  | Refresh some states to help problem analysis |
-    | `refreshSetpointLoweringTemperatureInProgMode` |  | Refresh lowering temperature in the room on prog mode |
-    | `refreshStaticStates1` |  | Refresh some static states |
-    | `refreshStaticStates2` |  | Refresh some static states |
-    | `setSetpointLoweringTemperatureInProgMode` | FLOAT [6.0..19.0]; STRING: off | Set lowering temperature in the room on prog mode |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `AbsenceEndDateState` | DataState |  |  |
+    | `AbsenceModeState` | DiscreteState | off, on, prog |  |
     | `AbsenceStartDateState` | DataState |  |  |
     | `BoostActivationState` | DiscreteState | active, inactive |  |
     | `DateTimeState` | DataState |  |  |
@@ -9469,16 +9470,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `OnOffState` | DiscreteState | on, off |  |
     | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
     | `SaturdayTimeProgramState` | DataState |  |  |
+    | `SetpointLoweringTemperatureInProgModeState` | ContinuousState |  |  |
     | `SundayTimeProgramState` | DataState |  |  |
+    | `TargetHeatingLevelState` | DiscreteState | boost, comfort, eco |  |
     | `TargetHeatingLevelState` | DiscreteState | boost, comfort, eco |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `ThursdayTimeProgramState` | DataState |  |  |
     | `TuesdayTimeProgramState` | DataState |  |  |
     | `VersionState` | ContinuousState |  |  |
     | `WednesdayTimeProgramState` | DataState |  |  |
-    | `AbsenceModeState` | DiscreteState | off, on, prog |  |
-    | `SetpointLoweringTemperatureInProgModeState` | ContinuousState |  |  |
-    | `TargetHeatingLevelState` | DiscreteState | boost, comfort, eco |  |
 
 ??? note "HumiditySensor/RelativeHumiditySensor (ACTUATOR) — 1 commands, 1 states"
 
@@ -9571,37 +9571,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshAbsenceEndDate` |  | Refresh the end date absence |
     | `refreshAbsenceMode` |  | Refresh the absence mode |
     | `refreshAbsenceStartDate` |  | Refresh the start date absence |
+    | `refreshAntiLegionellosis` |  | Refresh the anti legionellosis mode |
+    | `refreshBoostElectricPowerConsumption` |  | Refresh the boost electric power consumption |
     | `refreshBoostEndDate` |  | Refresh the end date boost |
     | `refreshBoostMode` |  | Refresh the boost mode |
     | `refreshBoostStartDate` |  | Refresh the start date boost |
     | `refreshBottomTankWaterTemperature` |  | Refresh the bottom of tank water temperature |
     | `refreshControlWaterTargetTemperature` |  | Refresh the control target temperature of the water |
-    | `refreshDateTime` |  | Refresh the date |
-    | `refreshMiddleWaterTemperatureIn` |  | Refresh the middle water temperature in |
-    | `refreshRemainingHotWater` |  | Refresh the remaining hot water |
-    | `refreshWaterTargetTemperature` |  | Refresh the target temperature of the water |
-    | `setAbsenceEndDate` | OBJECT | Set the end date absence |
-    | `setAbsenceMode` | STRING: on, off, prog | Set the absence mode |
-    | `setAbsenceStartDate` | OBJECT | Set the start date absence |
-    | `setBoostEndDate` | OBJECT | Set the end date boost |
-    | `setBoostMode` | STRING: on, off, prog | Set the boost mode |
-    | `setBoostStartDate` | OBJECT | Set the start date boost |
-    | `setDateTime` | OBJECT | Set the date and time |
-    | `setExpectedNumberOfShower` | INT [0..5] | Set the expected number of shower |
-    | `setTargetDHWTemperature` | FLOAT [5.0..70.0] | Set the new water temperature to reach for a Domestic Hot Water system |
-    | `setWaterTargetTemperature` | FLOAT [5.0..70.0] | Set the target temperature of the water |
-    | `refreshExpectedNumberOfShower` |  | Refresh the expected number of shower |
-    | `refreshAntiLegionellosis` |  | Refresh the anti legionellosis mode |
-    | `refreshBoostElectricPowerConsumption` |  | Refresh the boost electric power consumption |
     | `refreshDHWError` |  | Refresh the DHW error |
     | `refreshDHWMode` |  | Refresh the DHW mode |
+    | `refreshDateTime` |  | Refresh the date |
     | `refreshDiagnostic` |  | Refresh some states to help problem analysis |
     | `refreshElectricBoosterOperatingTime` |  | Refresh the electical operating time |
+    | `refreshExpectedNumberOfShower` |  | Refresh the expected number of shower |
     | `refreshHeatPumpOperatingTime` |  | Refresh the heat pump operating time |
     | `refreshHeatingStatus` |  | Refresh the heating status |
     | `refreshIHMType` |  | Refresh the IHM type state |
     | `refreshManufacturer` |  | Refresh the manufacturer state |
     | `refreshMiddleWaterTemperature` |  | Refresh the middle water temperature |
+    | `refreshMiddleWaterTemperatureIn` |  | Refresh the middle water temperature in |
     | `refreshNumberControlShowerRequest` |  | Refresh the automatic number of shower |
     | `refreshNumberOfShowerRemaining` |  | Refresh the number of shower remaining |
     | `refreshOperatingRange` |  | Refresh the operating range state |
@@ -9610,15 +9598,27 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshPowerHeatPump` |  | Refresh the power heat pump |
     | `refreshProgrammingAvailable` |  | Refresh the programming available |
     | `refreshProgrammingSlots` |  | Refresh the programming slots |
+    | `refreshRemainingHotWater` |  | Refresh the remaining hot water |
     | `refreshSmartGridOption` |  | Refresh the smart grid option |
     | `refreshStaticStates1` |  | Refresh some static states |
     | `refreshStaticStates2` |  | Refresh some static states |
     | `refreshV40WaterVolumeEstimation` |  | Refresh the V40 water volume estimation |
+    | `refreshWaterTargetTemperature` |  | Refresh the target temperature of the water |
+    | `setAbsenceEndDate` | OBJECT | Set the end date absence |
+    | `setAbsenceMode` | STRING: on, off, prog | Set the absence mode |
+    | `setAbsenceStartDate` | OBJECT | Set the start date absence |
     | `setAntiLegionellosis` | INT [0..4] | Set how many time the anti legionellosis have to be activated per month |
+    | `setBoostEndDate` | OBJECT | Set the end date boost |
+    | `setBoostMode` | STRING: on, off, prog | Set the boost mode |
+    | `setBoostStartDate` | OBJECT | Set the start date boost |
     | `setDHWMode` | STRING: autoMode, manualEcoActive, manualEcoInactive | Change the mode |
+    | `setDateTime` | OBJECT | Set the date and time |
+    | `setExpectedNumberOfShower` | INT [0..5] | Set the expected number of shower |
     | `setOperatingRange` | STRING: pac24h_elec24h, pac24h_elecHC, pac24h_elecProg, pacHC_elecHC, pacProg_elecProg | Change the DHW's operating range |
     | `setProgrammingSlots` | OBJECT | Set programming slots Constraints:  - Slot 2 is optional  - Minutes have to be increase by step of 10  - Minimum duration for slot 1    - 4h if slot 2 is set    - 8h otherwise  - Maximum duration for slot 1    - 12h  - Minimum duration of slot 2    - 0h if not set    - 4h otherwise  - Maximum duration of slot 2    - 8h  - Slot can't be stacked  Example: {     "slot1":     {         "start": "08:30",         "end": "17:50"     },     "slot2":     {         "start": "00:00",         "end": "00:00"     } } |
     | `setSmartGridOption` | STRING: active, deactive | Activate or deactivate smart grid option |
+    | `setTargetDHWTemperature` | FLOAT [5.0..70.0] | Set the new water temperature to reach for a Domestic Hot Water system |
+    | `setWaterTargetTemperature` | FLOAT [5.0..70.0] | Set the target temperature of the water |
 
     **States**
 
@@ -9626,47 +9626,47 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AbsenceEndDateState` | DataState |  |  |
     | `AbsenceStartDateState` | DataState |  |  |
+    | `AntiLegionellosisState` | ContinuousState |  |  |
     | `BoostElectricPowerConsumptionState` | ContinuousState |  |  |
     | `BoostEndDateState` | DataState |  |  |
     | `BoostStartDateState` | DataState |  |  |
     | `BottomTankWaterTemperatureState` | ContinuousState |  |  |
     | `ControlWaterTargetTemperatureState` | ContinuousState |  |  |
-    | `DateTimeState` | DataState |  |  |
-    | `ExpectedNumberOfShowerState` | ContinuousState |  |  |
-    | `HeatingStatusState` | DataState |  |  |
-    | `ManufacturerNameState` | DataState |  |  |
-    | `MaximalShowerManualModeState` | ContinuousState |  |  |
-    | `MaximalTemperatureManualModeState` | ContinuousState |  |  |
-    | `MiddleWaterTemperatureInState` | ContinuousState |  |  |
-    | `MinimalShowerManualModeState` | ContinuousState |  |  |
-    | `MinimalTemperatureManualModeState` | ContinuousState |  |  |
-    | `NameState` | DataState |  |  |
-    | `NumberOfShowerRemainingState` | ContinuousState |  |  |
-    | `NumberOfTankState` | ContinuousState |  |  |
-    | `PowerHeatElectricalInState` | ContinuousState |  |  |
-    | `ProgrammingAvailableState` | DataState |  |  |
-    | `RemainingHotWaterState` | ContinuousState |  |  |
-    | `StopRelaunchState` | DataState |  |  |
-    | `TargetDHWTemperatureState` | ContinuousState | [38.0..60.0] |  |
-    | `V40WaterVolumeEstimationState` | DataState |  |  |
-    | `WaterTargetTemperatureState` | ContinuousState |  |  |
-    | `AntiLegionellosisState` | ContinuousState |  |  |
     | `DHWAbsenceModeState` | DiscreteState | off, on, prog |  |
     | `DHWBoostModeState` | DiscreteState | off, on, prog |  |
     | `DHWCapacityState` | ContinuousState |  |  |
     | `DHWErrorState` | DataState |  |  |
     | `DHWModeState` | DiscreteState | auto, eco, manual |  |
+    | `DateTimeState` | DataState |  |  |
     | `ElectricBoosterOperatingTimeState` | ContinuousState |  |  |
+    | `ExpectedNumberOfShowerState` | ContinuousState |  |  |
     | `HeatPumpOperatingTimeState` | ContinuousState |  |  |
+    | `HeatingStatusState` | DataState |  |  |
     | `IHMTypeState` | DiscreteState | IHMNO2, WaterdropCE, WaterdropCETHI |  |
+    | `ManufacturerNameState` | DataState |  |  |
     | `ManufacturerState` | DiscreteState | Atlantic, Deltadore |  |
+    | `MaximalShowerManualModeState` | ContinuousState |  |  |
+    | `MaximalTemperatureManualModeState` | ContinuousState |  |  |
+    | `MiddleWaterTemperatureInState` | ContinuousState |  |  |
     | `MiddleWaterTemperatureState` | ContinuousState |  |  |
+    | `MinimalShowerManualModeState` | ContinuousState |  |  |
+    | `MinimalTemperatureManualModeState` | ContinuousState |  |  |
+    | `NameState` | DataState |  |  |
     | `NumberControlShowerRequestState` | ContinuousState |  |  |
+    | `NumberOfShowerRemainingState` | ContinuousState |  |  |
+    | `NumberOfTankState` | ContinuousState |  |  |
     | `OperatingRangeState` | DiscreteState | pac24h_elec24h, pac24h_elecHC, pac24h_elecProg, pacHC_elecHC, pacProg_elecProg |  |
+    | `PowerHeatElectricalInState` | ContinuousState |  |  |
     | `PowerHeatElectricalState` | DataState |  |  |
     | `PowerHeatPumpState` | DataState |  |  |
+    | `ProgrammingAvailableState` | DataState |  |  |
     | `ProgrammingSlotsState` | DataState |  |  |
+    | `RemainingHotWaterState` | ContinuousState |  |  |
     | `SmartGridOptionState` | DiscreteState | active, deactive |  |
+    | `StopRelaunchState` | DataState |  |  |
+    | `TargetDHWTemperatureState` | ContinuousState | [38.0..60.0] |  |
+    | `V40WaterVolumeEstimationState` | DataState |  |  |
+    | `WaterTargetTemperatureState` | ContinuousState |  |  |
 
 
 ## MYFOX
@@ -9691,10 +9691,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `PowerSupplyUpDownState` | DiscreteState | down, up |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `AlarmStatusState` | DiscreteState | armed, disarmed, partial |  |
     | `AlertTrespassState` | DataState |  |  |
+    | `PowerSupplyUpDownState` | DiscreteState | down, up |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Alarm/MyFoxAlarmController (ACTUATOR) — 6 commands, 5 states"
 
@@ -9715,11 +9715,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `AlarmStatusState` | DiscreteState | armed, disarmed, partial |  |
+    | `AlertTrespassState` | DataState |  |  |
     | `CloudDeviceStatusState` | DiscreteState | offline, online, uninstalled |  |
     | `IntrusionState` | DiscreteState | detected, notDetected |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `AlarmStatusState` | DiscreteState | armed, disarmed, partial |  |
-    | `AlertTrespassState` | DataState |  |  |
 
 ??? note "Camera/MyFoxCamera (ACTUATOR) — 3 commands, 1 states"
 
@@ -9729,9 +9729,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `takePicture` |  | Take a still picture |
     | `recordingStart` |  |  |
     | `recordingStop` |  |  |
+    | `takePicture` |  | Take a still picture |
 
     **States**
 
@@ -9755,8 +9755,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `getName` |  | Refresh the device internal name |
     | `open` |  | Fully open the device |
     | `refreshDeviceStatus` |  | Refresh the device status |
-    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `refreshShutterStatus` |  | Refresh the shutter status |
+    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
 
     **States**
 
@@ -9764,8 +9764,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `CloudDeviceStatusState` | DiscreteState | offline, online, uninstalled |  |
     | `NameState` | DataState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ShutterStatusState` | DiscreteState | closed, opened |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Camera/MyFoxSecurityCamera (ACTUATOR) — 6 commands, 5 states"
 
@@ -9779,8 +9779,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `getName` |  | Refresh the device internal name |
     | `open` |  | Fully open the device |
     | `refreshDeviceStatus` |  | Refresh the device status |
-    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `refreshShutterStatus` |  | Refresh the shutter status |
+    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
 
     **States**
 
@@ -9789,8 +9789,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `CloudDeviceStatusState` | DiscreteState | offline, online, uninstalled |  |
     | `NameState` | DataState |  |  |
     | `PowerSupplyUpDownState` | DiscreteState | down, up |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ShutterStatusState` | DiscreteState | closed, opened |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "ContactSensor (SENSOR) — 1 commands, 3 states"
 
@@ -9819,8 +9819,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `lock` |  | Lock the device |
-    | `unlock` |  | Unlock the device |
     | `refreshDoorLockStatus` |  | Refresh the door lock status |
+    | `unlock` |  | Unlock the device |
 
     **States**
 
@@ -9884,22 +9884,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
+    | `refreshFanTimerActive` |  | Refresh fan timer active |
+    | `refreshFanTimerDuration` |  | Refresh fan timer duration |
+    | `refreshLabel` |  | Refresh label |
     | `refreshLockedUnlocked` |  | Refresh locked/unlocked state |
     | `refreshMaximumTargetTemperature` |  | Refresh the maximum target temperature value |
     | `refreshMinimumTargetTemperature` |  | Refresh the minimum target temperature value. |
     | `refreshOperatingMode` |  | Refresh an operating mode. |
     | `refreshTargetTemperature` |  | Refresh the temperature value |
-    | `setOperatingMode` | STRING: heat, cool, eco, off, heat-cool | Set an operating mode |
-    | `setTargetTemperature` | FLOAT [9.0..32.0] | Target temperature, in half degrees (0.5°C) |
-    | `refreshFanTimerActive` |  | Refresh fan timer active |
-    | `refreshFanTimerDuration` |  | Refresh fan timer duration |
-    | `refreshLabel` |  | Refresh label |
     | `refreshTemperatureUnit` |  | Refresh temperature unit |
     | `setFanTimerActive` | STRING: true, false | Indicates if the fan timer is engaged |
     | `setFanTimerDuration` | INT: 15, 30, 45, 60, 120 | Specifies the length of time (in minutes) that the fan is set to run |
     | `setLabel` | STRING | Thermostat custom label |
     | `setMaximumTargetTemperature` | FLOAT [9.0..32.0] | Maximum target temperature, in half degrees (0.5°C) |
     | `setMinimumTargetTemperature` | FLOAT [9.0..32.0] | Minimum target temperature, in half degrees (0.5°C) |
+    | `setOperatingMode` | STRING: heat, cool, eco, off, heat-cool | Set an operating mode |
+    | `setTargetTemperature` | FLOAT [9.0..32.0] | Target temperature, in half degrees (0.5°C) |
     | `setTemperatureUnit` | STRING: fahrenheit, celsius | Set the unit temperature. |
 
     **States**
@@ -9921,10 +9921,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `MinimumEcoHeatingTargetTemperatureState` | ContinuousState |  |  |
     | `MinimumTargetTemperatureState` | ContinuousState |  |  |
     | `NameState` | DataState |  |  |
-    | `PreviousOperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection, manual, max, normal, off, on, program |  |
-    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
-    | `TemperatureUnitState` | ContinuousState |  |  |
-    | `VersionState` | ContinuousState |  |  |
     | `NestEffectiveOperatingModeState` | ContinuousState |  |  |
     | `NestEmergencyHeatActiveState` | DiscreteState | false, true |  |
     | `NestFanTimerActiveState` | DiscreteState | false, true |  |
@@ -9938,6 +9934,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `NestSunlightCorrectionEnabledState` | DiscreteState | false, true |  |
     | `NestTimeToTemperatureState` | ContinuousState |  |  |
     | `NestTimeToTemperatureTrainingState` | ContinuousState |  |  |
+    | `PreviousOperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection, manual, max, normal, off, on, program |  |
+    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
+    | `TemperatureUnitState` | ContinuousState |  |  |
+    | `VersionState` | ContinuousState |  |  |
 
 ??? note "HumiditySensor/RelativeHumiditySensor (SENSOR) — 1 commands, 1 states"
 
@@ -9985,8 +9985,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `HealthIndexState` | DiscreteState | Healthy, Fine, Fair, Poor, Unhealthy, Error |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Camera (ACTUATOR) — 0 commands, 7 states"
 
@@ -10016,10 +10016,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ConnectivityState` | DiscreteState | offline, online |  |
     | `LastEventState` | DataState |  |  |
     | `LastEventTypeState` | DataState |  |  |
+    | `NetatmoPresenceLightState` | DiscreteState | auto, off, on |  |
     | `PowerSupplyUpDownState` | DiscreteState | down, up |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `StreamingURLState` | DataState |  |  |
-    | `NetatmoPresenceLightState` | DiscreteState | auto, off, on |  |
 
 ??? note "CarbonDioxideSensor/CO2Sensor (SENSOR) — 0 commands, 2 states"
 
@@ -10051,14 +10051,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `FirmwareRevisionState` | DataState |  |  |
-    | `OnOffState` | DiscreteState | on, off |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
+    | `FirmwareRevisionState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
     | `OffloadState` | DiscreteState | offload, notOffload |  |
+    | `OnOffState` | DiscreteState | on, off |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "CircuitBreaker/CircuitBreakerPeakAndOffPeak (ACTUATOR) — 4 commands, 8 states"
 
@@ -10077,14 +10077,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `FirmwareRevisionState` | DataState |  |  |
-    | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
+    | `FirmwareRevisionState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
     | `OffloadState` | DiscreteState | offload, notOffload |  |
+    | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "ConfigurationComponent/NetatmoHome (ACTUATOR) — 10 commands, 8 states"
 
@@ -10094,15 +10094,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `refreshState` |  | Refresh the device states |
-    | `setOperatingMode` | STRING: program, away, frostprotection; INT (optional) | p1: operating mode p2: endTime in seconds. Must be greater than currentTime |
     | `createSchedule` | STRING; ARRAY; ARRAY; FLOAT; FLOAT | Create Netatmo schedule. p1 : The schedule name p2 : Array of timetables. minuteOffset max: 10080. Example: [{"zoneId":0,"minuteOffset":0},{"zoneId":0,"minuteOffset":420},...] p3 : Array of zones. Example: [{"id":0,"type":"DAY","name":"my zone","roomTemperature":[{"temperature":17,"roomId":"123456789"},...]},...] p4 : Frost guard temperature value p5 : Away temperature value |
     | `deleteSchedule` | STRING | Delete Netatmo schedule. p1 : The netatmo schedule id |
     | `getScenarios` |  | Get Netatmo scenarios. |
     | `getSchedules` |  | Get Netatmo schedules (sent by event). |
     | `launchScenario` | STRING | Start a Netatmo scenarios. p1 :The scenario Id |
+    | `refreshState` |  | Refresh the device states |
     | `renameSchedule` | STRING; STRING | Rename Netatmo schedule. p1 : The netatmo schedule id p2 : The new name |
     | `setActiveSchedule` | STRING | Set Netatmo schedule as active. p1 : The schedule id |
+    | `setOperatingMode` | STRING: program, away, frostprotection; INT (optional) | p1: operating mode p2: endTime in seconds. Must be greater than currentTime |
     | `updateSchedule` | STRING; STRING; ARRAY; ARRAY; FLOAT; FLOAT | Update Netatmo schedule. p1 : The schedule id p2 : The schedule name p3 : Array of timetables. minuteOffset max: 10080. Example: [{"zoneId":0,"minuteOffset":0},{"zoneId":0,"minuteOffset":420},...] p4 : Array of zones. Example: [{"id":0,"type":"DAY","name":"my zone","roomTemperature":[{"temperature":17,"roomId":"123456789"},...]},...] p5 : Frost guard temperature value p6 : Away temperature value |
 
     **States**
@@ -10110,13 +10110,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `DerogationEndDateTimeState` | DataState |  |  |
+    | `LastScenarioLaunchedIdState` | DataState |  |  |
     | `NameState` | DataState |  |  |
+    | `NetatmoDerogationDefaultDurationState` | DataState |  |  |
     | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
+    | `ScenariosState` | DataState |  |  |
     | `ScheduleStatusState` | DataState |  |  |
     | `ThermalConfigurationState` | DiscreteState | cooling, heating |  |
-    | `LastScenarioLaunchedIdState` | DataState |  |  |
-    | `NetatmoDerogationDefaultDurationState` | DataState |  |  |
-    | `ScenariosState` | DataState |  |  |
 
 ??? note "ConfigurationComponent/NetatmoHomeCoachConfiguration (SENSOR) — 1 commands, 8 states"
 
@@ -10132,14 +10132,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `FirmwareRevisionState` | DataState |  |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
+    | `FirmwareRevisionState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
     | `OffloadState` | DiscreteState | offload, notOffload |  |
     | `PowerSourceState` | DiscreteState | Battery, DC source |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "ConfigurationComponent/NetatmoConfigurationComponent (SENSOR) — 0 commands, 9 states"
 
@@ -10149,15 +10149,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `ApplianceTypeState` | DataState |  |  |
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `FirmwareRevisionState` | DataState |  |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
     | `OffloadState` | DiscreteState | offload, notOffload |  |
     | `PowerSourceState` | DiscreteState | Battery, DC source |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 1 commands, 1 states"
 
@@ -10184,8 +10184,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ElectricPowerConsumptionState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `LastEnergyOverconsumptionState` | DiscreteState | normal, high, critical |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "HeatingSystem/NetatmoHeatingTemperatureInterface (ACTUATOR) — 6 commands, 14 states"
 
@@ -10195,11 +10195,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `refreshState` |  | Refresh the device states |
     | `cancelNetatmoDerogatedTargetTemperature` |  | Cancel the derogated temperature of the room |
+    | `refreshAllThermostatStates` |  | Refresh all states of the thermostat. @deprecated : use refreshState instead. |
+    | `refreshState` |  | Refresh the device states |
     | `setNetatmoDerogatedTargetRoomTemperature` | FLOAT [5.0..30.0]; INT (optional) | p1: target temperature in Celsius p2: endTime in seconds. Must be greater than currentTime |
     | `setNetatmoDerogatedTimeTargetRoomTemperature` | FLOAT [5.0..30.0]; INT (optional) | Set the derogated temperature in half degrees (0.5°C) of the room and when this new temperature has to end. p1 : The temperature in half degrees (0.5°C) p2 : The duration of the derogation in minute |
-    | `refreshAllThermostatStates` |  | Refresh all states of the thermostat. @deprecated : use refreshState instead. |
     | `setNetatmoOperatingMode` | STRING: program, away, frostprotection, off, max; INT (optional) | p1: operating mode p2: endTime in seconds. Must be greater than currentTime |
 
     **States**
@@ -10211,6 +10211,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `IdentifierState` | DataState |  |  |
     | `LastDeviceConnectionState` | DataState |  |  |
     | `NameState` | DataState |  |  |
+    | `NetatmoLastMeasurementTimeState` | DataState |  |  |
+    | `NetatmoThermostatTypeState` | DiscreteState | NACamera, NAPlug, NATherm1, NMG, NMH, NMR, NOC, NRV |  |
     | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
     | `PreviousOperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection, manual, max, normal, off, on, program |  |
     | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
@@ -10218,8 +10220,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `VersionState` | ContinuousState |  |  |
     | `WeeklySchedulesState` | DataState |  |  |
-    | `NetatmoLastMeasurementTimeState` | DataState |  |  |
-    | `NetatmoThermostatTypeState` | DiscreteState | NACamera, NAPlug, NATherm1, NMG, NMH, NMR, NOC, NRV |  |
 
 ??? note "HeatingSystem/NetatmoHeatingTemperatureInterface (ACTUATOR) — 6 commands, 13 states"
 
@@ -10240,19 +10240,19 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `AnticipatingHeatingState` | DataState |  |  |
     | `CoolingDerogationEndTimeState` | DataState |  |  |
     | `CoolingOperatingModeState` | DiscreteState | manual, max, off, home |  |
     | `CoolingTargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `DerogationEndDateTimeState` | DataState |  |  |
     | `NameState` | DataState |  |  |
+    | `NetatmoPilotWireModeState` | DiscreteState | away, comfort, frostprotection, off |  |
     | `OpenWindowDetectionState` | DiscreteState | false, true |  |
     | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `UnavailableCommandsState` | DataState |  |  |
     | `WeeklySchedulesState` | DataState |  |  |
-    | `AnticipatingHeatingState` | DataState |  |  |
-    | `NetatmoPilotWireModeState` | DiscreteState | away, comfort, frostprotection, off |  |
 
 ??? note "HeatingSystem/NetatmoHeatingTemperatureInterface (ACTUATOR) — 3 commands, 8 states"
 
@@ -10297,10 +10297,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `DerogationEndDateTimeState` | DataState |  |  |
     | `NameState` | DataState |  |  |
+    | `NetatmoPilotWireModeState` | DiscreteState | away, comfort, frostprotection, off |  |
     | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `WeeklySchedulesState` | DataState |  |  |
-    | `NetatmoPilotWireModeState` | DiscreteState | away, comfort, frostprotection, off |  |
 
 ??? note "HeatingSystem/NetatmoHeatingTemperatureInterface (ACTUATOR) — 1 commands, 10 states"
 
@@ -10316,16 +10316,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `ApplianceTypeState` | DataState |  |  |
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `BoostOnOffState` | DiscreteState | off, on |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `HeatingOnOffState` | DiscreteState | off, on |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
     | `OffloadState` | DiscreteState | offload, notOffload |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "HeatingSystem/ValveHeatingTemperatureInterface (ACTUATOR) — 1 commands, 8 states"
 
@@ -10341,14 +10341,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `ApplianceTypeState` | DataState |  |  |
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `FirmwareRevisionState` | DataState |  |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
     | `OffloadState` | DiscreteState | offload, notOffload |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "HeatingSystem/NetatmoHeatingTemperatureInterface (ACTUATOR) — 1 commands, 7 states"
 
@@ -10364,13 +10364,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `ApplianceTypeState` | DataState |  |  |
     | `BoostOnOffState` | DiscreteState | off, on |  |
     | `CoolingOnOffState` | DiscreteState | off, on |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `HeatingOnOffState` | DiscreteState | off, on |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `ApplianceTypeState` | DataState |  |  |
 
 ??? note "HeatingSystem/NetatmoHeatingTemperatureInterface (ACTUATOR) — 1 commands, 7 states"
 
@@ -10386,13 +10386,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `ApplianceTypeState` | DataState |  |  |
+    | `BoilerErrorState` | DiscreteState | boiler_not_responding, maintenance, water_pressure, boiler_flame, air_pressure, boiler_temperature |  |
     | `BoostOnOffState` | DiscreteState | off, on |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `HeatingOnOffState` | DiscreteState | off, on |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `ApplianceTypeState` | DataState |  |  |
-    | `BoilerErrorState` | DiscreteState | boiler_not_responding, maintenance, water_pressure, boiler_flame, air_pressure, boiler_temperature |  |
 
 ??? note "HeatingSystem/OnOffHeatingSystem (ACTUATOR) — 6 commands, 8 states"
 
@@ -10413,14 +10413,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `FirmwareRevisionState` | DataState |  |  |
-    | `OnOffState` | DiscreteState | on, off |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
+    | `FirmwareRevisionState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
     | `OffloadState` | DiscreteState | offload, notOffload |  |
+    | `OnOffState` | DiscreteState | on, off |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "HeatingSystem/OnOffHeatingSystemPilotWire (ACTUATOR) — 1 commands, 8 states"
 
@@ -10436,14 +10436,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `FirmwareRevisionState` | DataState |  |  |
-    | `OnOffState` | DiscreteState | on, off |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
+    | `FirmwareRevisionState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
     | `OffloadState` | DiscreteState | offload, notOffload |  |
+    | `OnOffState` | DiscreteState | on, off |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "HumiditySensor/RelativeHumiditySensor (SENSOR) — 0 commands, 2 states"
 
@@ -10475,14 +10475,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `FirmwareRevisionState` | DataState |  |  |
-    | `OnOffState` | DiscreteState | on, off |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
+    | `FirmwareRevisionState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
     | `OffloadState` | DiscreteState | offload, notOffload |  |
+    | `OnOffState` | DiscreteState | on, off |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Light/DimmerLight (ACTUATOR) — 17 commands, 15 states"
 
@@ -10514,7 +10514,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `ApplianceTypeState` | DataState |  |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LastErrorReceivedState` | DataState |  |  |
+    | `LastMessageDateTimeState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] |  |
     | `Memorized1PositionNameState` | DataState |  |  |
     | `Memorized1PositionState` | ContinuousState |  |  |
@@ -10522,13 +10525,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `Memorized2PositionState` | ContinuousState |  |  |
     | `Memorized3PositionNameState` | DataState |  |  |
     | `Memorized3PositionState` | ContinuousState |  |  |
+    | `OffloadState` | DiscreteState | offload, notOffload |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `ApplianceTypeState` | DataState |  |  |
-    | `LastErrorReceivedState` | DataState |  |  |
-    | `LastMessageDateTimeState` | DataState |  |  |
-    | `OffloadState` | DiscreteState | offload, notOffload |  |
 
 ??? note "NoiseSensor (SENSOR) — 0 commands, 2 states"
 
@@ -10560,14 +10560,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `FirmwareRevisionState` | DataState |  |  |
-    | `OnOffState` | DiscreteState | on, off |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
+    | `FirmwareRevisionState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
     | `OffloadState` | DiscreteState | offload, notOffload |  |
+    | `OnOffState` | DiscreteState | on, off |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "ProtocolGateway/NetatmoGateway (PROTOCOL_GATEWAY) — 1 commands, 8 states"
 
@@ -10583,14 +10583,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `ApplianceTypeState` | DataState |  |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
     | `OffloadState` | DiscreteState | offload, notOffload |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "ProtocolGateway/NetatmoGateway (PROTOCOL_GATEWAY) — 1 commands, 9 states"
 
@@ -10606,15 +10606,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `FirmwareRevisionState` | DataState |  |  |
-    | `HeatingOnOffState` | DiscreteState | off, on |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
     | `DHWControlState` | DiscreteState | none, instantaneous, water_tank |  |
+    | `FirmwareRevisionState` | DataState |  |  |
+    | `HeatingOnOffState` | DiscreteState | off, on |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
     | `OffloadState` | DiscreteState | offload, notOffload |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "RainSensor (SENSOR) — 0 commands, 2 states"
 
@@ -10641,14 +10641,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `ApplianceTypeState` | DataState |  |  |
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `FirmwareRevisionState` | DataState |  |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
     | `OffloadState` | DiscreteState | offload, notOffload |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "RollerShutter/UpDownRollerShutter (ACTUATOR) — 8 commands, 10 states"
 
@@ -10671,16 +10671,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `ApplianceTypeState` | DataState |  |  |
     | `ClosureState` | ContinuousState | [0..100] |  |
     | `FirmwareRevisionState` | DataState |  |  |
-    | `OpenClosedState` | DiscreteState | open, closed |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `ApplianceTypeState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
     | `MinimumClosureStepState` | ContinuousState |  |  |
     | `OffloadState` | DiscreteState | offload, notOffload |  |
+    | `OpenClosedState` | DiscreteState | open, closed |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "TemperatureSensor (SENSOR) — 0 commands, 2 states"
 
@@ -10708,14 +10708,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `FirmwareRevisionState` | DataState |  |  |
-    | `OnOffState` | DiscreteState | on, off |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
+    | `FirmwareRevisionState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
     | `OffloadState` | DiscreteState | offload, notOffload |  |
+    | `OnOffState` | DiscreteState | on, off |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "WaterHeatingSystem/DomesticHotWaterProduction (ACTUATOR) — 6 commands, 8 states"
 
@@ -10736,14 +10736,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `FirmwareRevisionState` | DataState |  |  |
-    | `OnOffState` | DiscreteState | on, off |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
+    | `FirmwareRevisionState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
     | `OffloadState` | DiscreteState | offload, notOffload |  |
+    | `OnOffState` | DiscreteState | on, off |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "WaterHeatingSystem/DomesticHotWaterProductionPeakAndOffPeak (ACTUATOR) — 4 commands, 8 states"
 
@@ -10762,14 +10762,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `FirmwareRevisionState` | DataState |  |  |
-    | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
-    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ApplianceTypeState` | DataState |  |  |
+    | `FirmwareRevisionState` | DataState |  |  |
     | `LastErrorReceivedState` | DataState |  |  |
     | `LastMessageDateTimeState` | DataState |  |  |
     | `OffloadState` | DiscreteState | offload, notOffload |  |
+    | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
+    | `RadioFrequencySignalStrengthState` | DiscreteState | average, bad, full, good, high, low, medium |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "WindSensor/WindSpeedAndDirectionSensor (SENSOR) — 0 commands, 3 states"
 
@@ -12308,6 +12308,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `getCandidates` |  | Discover all candidates available for association. |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `joinSetup` |  | Join an existing setup |
+    | `pair` | STRING; STRING (optional); STRING (optional) | Execute the pairing procedure p1: type (mandatory) p2: subType (mandatory if definition is set) p3: definition |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `reset` |  | Bring back into initial condition. |
     | `sendPrivate` | OBJECT | send a private command |
@@ -12316,7 +12317,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `shareSetup` |  | Share the current setup with another controller |
     | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `pair` | STRING; STRING (optional); STRING (optional) | Execute the pairing procedure p1: type (mandatory) p2: subType (mandatory if definition is set) p3: definition |
 
     **States**
 
@@ -14962,6 +14962,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `getCandidates` |  | Discover all candidates available for association. |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `joinSetup` |  | Join an existing setup |
+    | `pair` | STRING; STRING (optional); STRING (optional) | Execute the pairing procedure p1: type (mandatory) p2: subType (mandatory if definition is set) p3: definition |
     | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
     | `reset` |  | Bring back into initial condition. |
     | `sendPrivate` | OBJECT | send a private command |
@@ -14970,7 +14971,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `shareSetup` |  | Share the current setup with another controller |
     | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
     | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
-    | `pair` | STRING; STRING (optional); STRING (optional) | Execute the pairing procedure p1: type (mandatory) p2: subType (mandatory if definition is set) p3: definition |
 
     **States**
 
@@ -16205,14 +16205,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshSetPointMode` |  | Refresh the heating target mode or temperature (if supported) |
     | `refreshTargetTemperature` |  | Refresh the temperature value |
     | `refreshTemperature` |  | Refresh the last measured temperature |
+    | `setActiveMode` | STRING: auto, manu | Select the active mode (auto mode activates device internal regulation) |
     | `setComfortTemperature` | FLOAT [7.0..30.0] | Set target temperature of comfort mode |
     | `setEcoTemperature` | FLOAT [6.0..29.0] | Set target temperature of eco mode |
+    | `setManuAndSetPointModes` | STRING: comfort, eco, secured | Change active mode to manu and select setpoint mode |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setOnOff` | STRING: off, on | Turn the device on or off |
     | `setOperatingMode` | STRING: heating, cooling, heatingCooling | Set an operating mode |
     | `setSecuredPositionTemperature` | FLOAT [5.0..15.0] | Set target temperature of secured mode |
-    | `setActiveMode` | STRING: auto, manu | Select the active mode (auto mode activates device internal regulation) |
-    | `setManuAndSetPointModes` | STRING: comfort, eco, secured | Change active mode to manu and select setpoint mode |
 
     **States**
 
@@ -16221,15 +16221,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
     | `ComfortRoomTemperatureState` | ContinuousState |  |  |
     | `EcoRoomTemperatureState` | ContinuousState |  |  |
+    | `HeatingTemperatureInterfaceActiveModeState` | DiscreteState | auto, manu |  |
+    | `HeatingTemperatureInterfaceOperatingModeState` | DiscreteState | both, cooling, heating |  |
+    | `HeatingTemperatureInterfaceSetPointModeState` | DiscreteState | comfort, eco, free, secured |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `SecuredPositionTemperatureState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `VersionState` | ContinuousState |  |  |
-    | `HeatingTemperatureInterfaceActiveModeState` | DiscreteState | auto, manu |  |
-    | `HeatingTemperatureInterfaceOperatingModeState` | DiscreteState | both, cooling, heating |  |
-    | `HeatingTemperatureInterfaceSetPointModeState` | DiscreteState | comfort, eco, free, secured |  |
 
 ??? note "HeatingSystem/ImhotepHeatingTemperatureInterface (ACTUATOR) — 19 commands, 12 states"
 
@@ -16254,13 +16254,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshSetPointMode` |  | Refresh the heating target mode or temperature (if supported) |
     | `refreshTargetTemperature` |  | Refresh the temperature value |
     | `refreshTemperature` |  | Refresh the last measured temperature |
+    | `setActiveAndSetPointModes` | STRING: auto, manu; STRING: comfort, eco, secured; FLOAT [7.0..26.0] | Select the active mode and change setpoint |
+    | `setActiveMode` | STRING: auto, manu | Select the active mode (auto mode activates device internal regulation) |
+    | `setAutoAndSetPointModes` | STRING: comfort, eco, secured | Change active mode to auto and select setpoint mode |
     | `setComfortTemperature` | FLOAT [14.5..26.0] | Set target temperature of comfort mode |
     | `setEcoTemperature` | FLOAT [12.5..24.0] | Set target temperature of eco mode |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setSecuredPositionTemperature` | FLOAT [7.0..12.0] | Set target temperature of secured mode |
-    | `setActiveAndSetPointModes` | STRING: auto, manu; STRING: comfort, eco, secured; FLOAT [7.0..26.0] | Select the active mode and change setpoint |
-    | `setActiveMode` | STRING: auto, manu | Select the active mode (auto mode activates device internal regulation) |
-    | `setAutoAndSetPointModes` | STRING: comfort, eco, secured | Change active mode to auto and select setpoint mode |
     | `setSetPointMode` | STRING: comfort, eco, secured; FLOAT [7.0..26.0] | Set the target heating mode or temperature (if supported) |
 
     **States**
@@ -16268,17 +16268,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
+    | `BoilerOperatingTimeState` | DataState |  |  |
     | `ComfortRoomTemperatureState` | ContinuousState |  |  |
     | `DeviceSerialNumberState` | DataState |  |  |
     | `EcoRoomTemperatureState` | ContinuousState |  |  |
-    | `NameState` | DataState |  |  |
-    | `SecuredPositionTemperatureState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
-    | `BoilerOperatingTimeState` | DataState |  |  |
     | `HeatingTemperatureInterfaceActiveModeState` | DiscreteState | auto, manu |  |
     | `HeatingTemperatureInterfaceSetPointModeState` | DiscreteState | comfort, eco, free, secured |  |
+    | `NameState` | DataState |  |  |
+    | `SecuredPositionTemperatureState` | ContinuousState |  |  |
     | `SetSetPointModeInProgressState` | DiscreteState | false, true |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
 
 ??? note "HeatingSystem/StatefulOnOff (ACTUATOR) — 7 commands, 5 states"
 
@@ -16297,8 +16297,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshConnectivity` |  |  |
     | `refreshDeviceSerialNumber` |  | Refresh the device serial number |
     | `refreshOnOffState` |  | Get the device on/off state |
-    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `refreshOperatingTime` |  |  |
+    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
 
     **States**
 
@@ -16326,19 +16326,19 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `off` |  | Turn off the device |
     | `setHeatingLevel` | STRING: boost, comfort, comfort-1, comfort-2, eco | Sets the device heating level mode |
-    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setHeatingLevelForTrigger` | ANY |  |
+    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setTimerForTransitoryState` | ANY |  |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `MaximumHeatingLevelState` | DiscreteState | boost, comfort, comfort-1, comfort-2, eco, frostprotection, off, secured |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetHeatingLevelState` | DiscreteState | comfort, eco |  |
-    | `MaximumHeatingLevelState` | DiscreteState | boost, comfort, comfort-1, comfort-2, eco, frostprotection, off, secured |  |
     | `TargetHeatingLevelState` | DiscreteState | boost, comfort, comfort-1, comfort-2, eco, frostprotection, off, secured |  |
     | `TimerForTransitoryStateState` | ContinuousState |  |  |
 
@@ -16360,8 +16360,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AlarmState` | ContinuousState |  |  |
     | `OperatingStateState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `RedAlarmState` | ContinuousState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "HeatingSystem/DeDietrichHeatingCircuit (ACTUATOR) — 14 commands, 9 states"
 
@@ -16372,19 +16372,19 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `refreshActiveTimeProgram` |  | Refresh curent active time program. |
+    | `refreshCircuitType` |  |  |
     | `refreshComfortTemperature` |  | Refresh the temperature of comfort mode |
+    | `refreshDerogationMode` |  | Refresh derogation command |
     | `refreshOperatingMode` |  | Refresh an operating mode. |
     | `refreshReducedTemperature` |  |  |
     | `refreshSecuredPositionTemperature` |  | Refresh the temperature of secured mode |
     | `refreshTimeProgram` |  |  |
     | `setActiveTimeProgram` | ANY | Defines curent active time program |
     | `setComfortTemperature` | FLOAT [0.0..100.0] | Set target temperature of comfort mode |
+    | `setDerogationMode` | STRING: holidays, eco, comfort, auto | set a derogation mode |
     | `setReducedTemperature` | ANY |  |
     | `setSecuredPositionTemperature` | ANY | Set target temperature of secured mode |
     | `setTimeProgram` | ANY |  |
-    | `refreshCircuitType` |  |  |
-    | `refreshDerogationMode` |  | Refresh derogation command |
-    | `setDerogationMode` | STRING: holidays, eco, comfort, auto | set a derogation mode |
 
     **States**
 
@@ -16392,13 +16392,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ActiveTimeProgramState` | DataState |  |  |
     | `ComfortRoomTemperatureState` | ContinuousState |  |  |
+    | `HeatingDerogationModeState` | DiscreteState | auto, comfort, eco, holidays |  |
     | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
     | `ReducedTemperatureState` | ContinuousState |  |  |
     | `SecuredPositionTemperatureState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `TimeProgramState` | DataState |  |  |
-    | `HeatingDerogationModeState` | DiscreteState | auto, comfort, eco, holidays |  |
 
 ??? note "HeatingSystem/CothermThermostat (ACTUATOR) — 113 commands, 89 states"
 
@@ -16414,21 +16414,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `getName` |  | Refresh the device internal name |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
-    | `refreshComfortTemperature` |  | Refresh the temperature of comfort mode |
-    | `refreshEcoTemperature` |  | Refresh the temperature of eco mode |
-    | `refreshLockedUnlockedButton` |  |  |
-    | `refreshOpenWindowDetectionActivation` |  |  |
-    | `setComfortTemperature` | FLOAT [0.0..100.0] | Set target temperature of comfort mode |
-    | `setEcoTemperature` | ANY | Set target temperature of eco mode |
-    | `setLockedUnlockedButton` | ANY |  |
-    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
-    | `setOpenWindowDetectionActivation` | ANY |  |
     | `refreshAbscenceTime` |  |  |
     | `refreshAbscenceTimeMax` |  |  |
     | `refreshAbscenceTimeMin` |  |  |
     | `refreshBabyCareFunctionActivation` |  |  |
     | `refreshBabyCareFunctionActivationMax` |  |  |
     | `refreshBabyCareFunctionActivationMin` |  |  |
+    | `refreshComfortTemperature` |  | Refresh the temperature of comfort mode |
     | `refreshComfortTemperatureMax` |  |  |
     | `refreshComfortTemperatureMin` |  |  |
     | `refreshConsignRegul` |  |  |
@@ -16440,6 +16432,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshDurationEnergyCounter` |  |  |
     | `refreshDurationEnergyCounterMax` |  |  |
     | `refreshDurationEnergyCounterMin` |  |  |
+    | `refreshEcoTemperature` |  | Refresh the temperature of eco mode |
     | `refreshEcoTemperatureMax` |  |  |
     | `refreshEcoTemperatureMin` |  |  |
     | `refreshElectricPower` |  |  |
@@ -16453,6 +16446,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshHoursEnergyCounter` |  |  |
     | `refreshHoursEnergyCounterMax` |  |  |
     | `refreshHoursEnergyCounterMin` |  |  |
+    | `refreshLockedUnlockedButton` |  |  |
     | `refreshMiniboxHolidayMode` |  |  |
     | `refreshMiniboxHolidayModeMax` |  |  |
     | `refreshMiniboxHolidayModeMin` |  |  |
@@ -16460,6 +16454,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshMiniboxProgModeMax` |  |  |
     | `refreshMiniboxProgModeMin` |  |  |
     | `refreshNbSecAfterLastDetect` |  |  |
+    | `refreshOpenWindowDetectionActivation` |  |  |
     | `refreshOpenWindowDetectionActivationMax` |  |  |
     | `refreshOpenWindowDetectionActivationMin` |  |  |
     | `refreshProductType` |  |  |
@@ -16501,18 +16496,23 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setAutoProgW3J6` | ANY |  |
     | `setAutoProgW3J7` | ANY |  |
     | `setBabyCareFunctionActivation` | ANY |  |
+    | `setComfortTemperature` | FLOAT [0.0..100.0] | Set target temperature of comfort mode |
     | `setConsignRegul` | ANY |  |
     | `setCountDetectPresence` | ANY |  |
     | `setCurrentState` | ANY |  |
     | `setCycleReport` | ANY |  |
     | `setDurationEnergyCounter` | ANY |  |
+    | `setEcoTemperature` | ANY | Set target temperature of eco mode |
     | `setElectricPower` | ANY |  |
     | `setErrorThermostat` | ANY |  |
     | `setFrostProtectionTemperature` | ANY |  |
     | `setHoursEnergyCounter` | ANY |  |
+    | `setLockedUnlockedButton` | ANY |  |
     | `setMiniboxHolidayMode` | ANY |  |
     | `setMiniboxProgMode` | ANY |  |
+    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setNbSecAfterLastDetect` | ANY |  |
+    | `setOpenWindowDetectionActivation` | ANY |  |
     | `setRoomTemperature` | ANY |  |
     | `setTechnicalOffset` | ANY |  |
     | `setTemporaryTemperature` | ANY |  |
@@ -16530,13 +16530,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `ComfortRoomTemperatureState` | ContinuousState |  |  |
-    | `EcoRoomTemperatureState` | ContinuousState |  |  |
-    | `FrostProtectionRoomTemperatureState` | ContinuousState |  |  |
-    | `LockedButtonState` | DiscreteState | locked, unlocked |  |
-    | `NameState` | DataState |  |  |
-    | `OpenWindowDetectionActivationState` | DiscreteState | active, inactive |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `AbscenceTimeMaxState` | DataState |  |  |
     | `AbscenceTimeMinState` | DataState |  |  |
     | `AbscenceTimeState` | DataState |  |  |
@@ -16566,6 +16559,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `BabyCareFunctionActivationState` | DiscreteState | active, inactive |  |
     | `ComfortRoomTemperatureMaxState` | ContinuousState |  |  |
     | `ComfortRoomTemperatureMinState` | ContinuousState |  |  |
+    | `ComfortRoomTemperatureState` | ContinuousState |  |  |
     | `ConsignRegulState` | ContinuousState |  |  |
     | `CountDetectPresenceState` | ContinuousState |  |  |
     | `CurrentStateMaxState` | DataState |  |  |
@@ -16577,6 +16571,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DurationEnergyCounterState` | ContinuousState |  |  |
     | `EcoRoomTemperatureMaxState` | ContinuousState |  |  |
     | `EcoRoomTemperatureMinState` | ContinuousState |  |  |
+    | `EcoRoomTemperatureState` | ContinuousState |  |  |
     | `ElectricPowerMaxState` | DataState |  |  |
     | `ElectricPowerMinState` | DataState |  |  |
     | `ElectricPowerState` | DataState |  |  |
@@ -16584,23 +16579,28 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `FirmwareVersionState` | DataState |  |  |
     | `FrostProtectionRoomTemperatureMaxState` | ContinuousState |  |  |
     | `FrostProtectionRoomTemperatureMinState` | ContinuousState |  |  |
+    | `FrostProtectionRoomTemperatureState` | ContinuousState |  |  |
     | `HoursEnergyCounterMaxState` | ContinuousState |  |  |
     | `HoursEnergyCounterMinState` | ContinuousState |  |  |
     | `HoursEnergyCounterState` | ContinuousState |  |  |
+    | `LockedButtonState` | DiscreteState | locked, unlocked |  |
     | `MiniboxHolidayModeMaxState` | DiscreteState | antifrost, comfort, eco, no_program |  |
     | `MiniboxHolidayModeMinState` | DiscreteState | antifrost, comfort, eco, no_program |  |
     | `MiniboxHolidayModeState` | DiscreteState | antifrost, comfort, eco, no_program |  |
     | `MiniboxProgModeMaxState` | DiscreteState | antifrost, comfort, eco, no_program |  |
     | `MiniboxProgModeMinState` | DiscreteState | antifrost, comfort, eco, no_program |  |
     | `MiniboxProgModeState` | DiscreteState | antifrost, comfort, eco, no_program |  |
+    | `NameState` | DataState |  |  |
     | `NbSecAfterLastDetectState` | ContinuousState |  |  |
     | `OpenWindowDetectionActivationMaxState` | DiscreteState | active, inactive |  |
     | `OpenWindowDetectionActivationMinState` | DiscreteState | active, inactive |  |
+    | `OpenWindowDetectionActivationState` | DiscreteState | active, inactive |  |
     | `ProductTypeState` | DataState |  |  |
     | `ProductVersionState` | DataState |  |  |
     | `RoomTemperatureMaxState` | ContinuousState |  |  |
     | `RoomTemperatureMinState` | ContinuousState |  |  |
     | `RoomTemperatureState` | ContinuousState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `TechnicalOffsetMaxState` | DataState |  |  |
     | `TechnicalOffsetMinState` | DataState |  |  |
     | `TechnicalOffsetState` | DataState |  |  |
@@ -16643,29 +16643,29 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `BurnerOperationHoursState` | ContinuousState |  |  |
+    | `CH1ActiveModeState` | DiscreteState | active, inactive |  |
+    | `CH2ActiveModeState` | DiscreteState | active, inactive |  |
+    | `DHWActiveModeState` | DiscreteState | active, inactive |  |
     | `DHWTemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `ElectricEnergyGenerationState` | ContinuousState |  |  |
     | `ElectricPowerGenerationState` | ContinuousState |  |  |
     | `ElectricityGenerationOnOffState` | DiscreteState | off, on |  |
     | `FaultState` | DiscreteState | fault, noFault |  |
+    | `KizOThermCapabilitiesState` | DataState |  |  |
+    | `KizOThermOperatingModesState` | DataState |  |  |
+    | `LowWaterPressureFaultState` | DataState |  |  |
     | `NameState` | DataState |  |  |
+    | `OEMFaultCodeState` | ContinuousState |  |  |
     | `OnOffFlameState` | DiscreteState | off, on |  |
     | `PrimaryTargetWaterTemperatureState` | ContinuousState |  |  |
+    | `RemoteRoomOverrideSetpointState` | ContinuousState |  |  |
     | `SecondaryTargetWaterTemperatureState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetDHWTemperatureState` | ContinuousState | [38.0..60.0] |  |
     | `TargetRoomTemperatureState` | ContinuousState |  |  |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `WaterPressureState` | ContinuousState |  |  |
-    | `BurnerOperationHoursState` | ContinuousState |  |  |
-    | `CH1ActiveModeState` | DiscreteState | active, inactive |  |
-    | `CH2ActiveModeState` | DiscreteState | active, inactive |  |
-    | `DHWActiveModeState` | DiscreteState | active, inactive |  |
-    | `KizOThermCapabilitiesState` | DataState |  |  |
-    | `KizOThermOperatingModesState` | DataState |  |  |
-    | `LowWaterPressureFaultState` | DataState |  |  |
-    | `OEMFaultCodeState` | ContinuousState |  |  |
-    | `RemoteRoomOverrideSetpointState` | ContinuousState |  |  |
 
 ??? note "HeatingSystem/SomfyPilotWireElectricalHeater (ACTUATOR) — 9 commands, 10 states"
 
@@ -16685,24 +16685,24 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshHeatingLevel` |  | Refresh the heating level mode |
     | `refreshIdentifier` |  | Refresh the device system identifier (can be used to link several devices) |
     | `setHeatingLevel` | STRING: boost, comfort, comfort-1, comfort-2, eco | Sets the device heating level mode |
-    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setHeatingLevelForTrigger` | ANY |  |
+    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setTimerForTransitoryState` | ANY |  |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `HeatingTemperatureInterfaceActiveModeState` | DiscreteState | auto, manu |  |
     | `IdentifierState` | DataState |  |  |
+    | `MaximumHeatingLevelState` | DiscreteState | boost, comfort, comfort-1, comfort-2, eco, frostprotection, off, secured |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetHeatingLevelState` | DiscreteState | comfort, eco |  |
-    | `VersionState` | ContinuousState |  |  |
-    | `HeatingTemperatureInterfaceActiveModeState` | DiscreteState | auto, manu |  |
-    | `MaximumHeatingLevelState` | DiscreteState | boost, comfort, comfort-1, comfort-2, eco, frostprotection, off, secured |  |
     | `TargetHeatingLevelState` | DiscreteState | boost, comfort, comfort-1, comfort-2, eco, frostprotection, off, secured |  |
     | `TimerForTransitoryStateState` | ContinuousState |  |  |
+    | `VersionState` | ContinuousState |  |  |
 
 ??? note "HeatingSystem/SomfyPilotWireHeatingInterface (ACTUATOR) — 11 commands, 7 states"
 
@@ -16723,9 +16723,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshIdentifier` |  | Refresh the device system identifier (can be used to link several devices) |
     | `refreshOnOffState` |  | Get the device on/off state |
     | `refreshSetPointMode` |  | Refresh the heating target mode or temperature (if supported) |
+    | `setActiveMode` | STRING: auto, manu | Select the active mode (auto mode activates device internal regulation) |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
     | `setOnOff` | STRING: off, on | Turn the device on or off |
-    | `setActiveMode` | STRING: auto, manu | Select the active mode (auto mode activates device internal regulation) |
     | `setSetPointMode` | STRING: comfort, eco, secured | Set the target heating mode or temperature (if supported) |
 
     **States**
@@ -16733,12 +16733,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `BatteryState` | DiscreteState | verylow, low, normal, full |  |
+    | `HeatingTemperatureInterfaceActiveModeState` | DiscreteState | auto, manu |  |
+    | `HeatingTemperatureInterfaceSetPointModeState` | DiscreteState | comfort, eco, free, secured |  |
     | `IdentifierState` | DataState |  |  |
     | `NameState` | DataState |  |  |
     | `OnOffState` | DiscreteState | on, off |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `HeatingTemperatureInterfaceActiveModeState` | DiscreteState | auto, manu |  |
-    | `HeatingTemperatureInterfaceSetPointModeState` | DiscreteState | comfort, eco, free, secured |  |
 
 ??? note "HitachiHeatingSystem/HitachiAirToAirHeatPump (ACTUATOR) — 7 commands, 17 states"
 
@@ -16753,32 +16753,32 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `getName` |  | Refresh the device internal name |
+    | `globalControl` | STRING: On, Off; STRING: off, on; INT; STRING: auto, hi, med, lo, silent; STRING: auto, heating, dehumidify, cooling, fan; STRING: timer, manu, holidays (optional) | Manage device |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `setAutoManu` | STRING: auto, manu | Set device mode to auto or manual mode |
     | `setHolidays` | STRING: off, on | Set holidays mode |
-    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
-    | `globalControl` | STRING: On, Off; STRING: off, on; INT; STRING: auto, hi, med, lo, silent; STRING: auto, heating, dehumidify, cooling, fan; STRING: timer, manu, holidays (optional) | Manage device |
     | `setMainOperation` | STRING: On, Off; STRING: off, on | Set device main operating mode |
+    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `AutoManuModeState` | DiscreteState | auto, manu |  |
-    | `HolidaysModeState` | DiscreteState | off, on |  |
-    | `NameState` | DataState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `DiagnosticCodeState` | DataState |  |  |
     | `FanSpeedState` | DiscreteState | Auto FAN, Hi FAN, Lo FAN, Med FAN, silent |  |
     | `FilterConditionState` | DiscreteState | OK, alert |  |
     | `FilterResetState` | DiscreteState | normal, reset |  |
     | `HLinkVirtualOperatingModeState` | DiscreteState | auto, holidays, normal, timer |  |
+    | `HolidaysModeState` | DiscreteState | off, on |  |
     | `MainOperationState` | DiscreteState | off, on |  |
     | `ModeChangeState` | DiscreteState | auto cooling, auto heating, circulator, cooling, dehumidify, fan, heating |  |
+    | `NameState` | DataState |  |  |
     | `OutdoorTemperatureState` | ContinuousState |  |  |
     | `RemoconControlState` | DiscreteState | disable, enable |  |
     | `RoomTemperatureState` | ContinuousState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
     | `TemperatureChangeState` | ContinuousState |  |  |
     | `ThermoStatusState` | DiscreteState | off, on |  |
 
@@ -16842,16 +16842,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `autoMode` |  | Switch device to auto mode |
     | `refreshActiveTimeProgram` |  | Refresh curent active time program. |
+    | `refreshCircuitType` |  |  |
     | `refreshComfortTemperature` |  | Refresh the temperature of comfort mode |
     | `refreshOperatingMode` |  | Refresh an operating mode. |
     | `refreshReducedTemperature` |  |  |
     | `refreshTimeProgram` |  |  |
+    | `refreshWaterSensorValue` |  |  |
     | `setActiveTimeProgram` | ANY | Defines curent active time program |
     | `setComfortTemperature` | FLOAT [0.0..100.0] | Set target temperature of comfort mode |
     | `setReducedTemperature` | ANY |  |
     | `setTimeProgram` | ANY |  |
-    | `refreshCircuitType` |  |  |
-    | `refreshWaterSensorValue` |  |  |
 
     **States**
 
@@ -16946,28 +16946,28 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
+    | `refreshCircuitType` |  |  |
     | `refreshComfortTemperature` |  | Refresh the temperature of comfort mode |
+    | `refreshDHWDerogationMode` |  | Refresh derogation command |
     | `refreshOperatingMode` |  | Refresh an operating mode. |
     | `refreshReducedTemperature` |  |  |
     | `refreshTimeProgram` |  |  |
     | `setComfortTemperature` | FLOAT [0.0..100.0] | Set target temperature of comfort mode |
+    | `setDHWDerogationMode` | STRING: auto, comfort | set a derogation mode |
     | `setReducedTemperature` | ANY |  |
     | `setTimeProgram` | ANY |  |
-    | `refreshCircuitType` |  |  |
-    | `refreshDHWDerogationMode` |  | Refresh derogation command |
-    | `setDHWDerogationMode` | STRING: auto, comfort | set a derogation mode |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `ComfortRoomTemperatureState` | ContinuousState |  |  |
+    | `DHWDerogationModeState` | DiscreteState | auto, comfort |  |
     | `OperatingModeState` | DiscreteState | antifreeze, auto, away, eco, frostprotection |  |
     | `ReducedTemperatureState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `TimeProgramState` | DataState |  |  |
-    | `DHWDerogationModeState` | DiscreteState | auto, comfort |  |
 
 ??? note "WaterHeatingSystem/DeDietrichDHW (ACTUATOR) — 6 commands, 5 states"
 
@@ -16978,11 +16978,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `refreshActiveTimeProgram` |  | Refresh curent active time program. |
+    | `refreshCircuitType` |  |  |
     | `refreshOperatingMode` |  | Refresh an operating mode. |
     | `refreshTimeProgram` |  |  |
     | `setActiveTimeProgram` | ANY | Defines curent active time program |
     | `setTimeProgram` | ANY |  |
-    | `refreshCircuitType` |  |  |
 
     **States**
 
@@ -17002,10 +17002,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
+    | `refreshCircuitType` |  |  |
     | `refreshOperatingMode` |  | Refresh an operating mode. |
     | `refreshTimeProgram` |  |  |
     | `setTimeProgram` | ANY |  |
-    | `refreshCircuitType` |  |  |
 
     **States**
 
@@ -17149,8 +17149,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `getName` |  | Refresh the device internal name |
     | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
-    | `setTargetTemperature` | FLOAT [0.0..100.0]; STRING: eco, secured, comfort, halted, antifrost | Set the new air temperature to reach |
     | `setSetpointOverride` | INT; STRING: NoOverride, OverrideUntilNextTimeProgram, PermanentOverride, DelayedOverride, PeriodicOverride; ANY (optional) |  |
+    | `setTargetTemperature` | FLOAT [0.0..100.0]; STRING: eco, secured, comfort, halted, antifrost | Set the new air temperature to reach |
     | `setTimeProgram` | OBJECT |  |
 
     **States**
@@ -17158,11 +17158,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `NameState` | DataState |  |  |
-    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
-    | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
     | `RAMSESSetPointOverrideDurationState` | DataState |  |  |
     | `RAMSESSetPointOverrideModeState` | DataState |  |  |
     | `RAMSESZoneTimeProgramState` | DataState |  |  |
+    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
+    | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
 
 ??? note "EvoHome/DHWSetPoint (ACTUATOR) — 2 commands, 4 states"
 
@@ -17180,9 +17180,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `NameState` | DataState |  |  |
+    | `RAMSESDHWTimeProgramState` | DataState |  |  |
     | `TargetDHWTemperatureState` | ContinuousState | [38.0..60.0] |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] |  |
-    | `RAMSESDHWTimeProgramState` | DataState |  |  |
 
 ??? note "EvoHome/EvoHomeController (ACTUATOR) — 1 commands, 2 states"
 
@@ -17299,14 +17299,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `bip` |  | Ask the device to make a "bip" sound |
+    | `dingDong` |  | Ask the device to make a "dingDong" sound |
+    | `fastBipSequence` |  | Ask the device to make a fast bip sequence |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `pair` |  | Execute the pairing procedure |
     | `ring` |  | Ask the device to start ringing |
     | `setVolume` | INT [0..100] | Set the device output volume |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
-    | `dingDong` |  | Ask the device to make a "dingDong" sound |
-    | `fastBipSequence` |  | Ask the device to make a fast bip sequence |
 
 ??? note "Siren/RTDOutdoorSiren (ACTUATOR) — 9 commands, 0 states"
 
@@ -17317,6 +17317,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `bip` |  | Ask the device to make a "bip" sound |
+    | `fastBipSequence` |  | Ask the device to make a fast bip sequence |
     | `flash` |  | Ask the device to make a light flash sequence |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
@@ -17324,7 +17325,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ring` |  | Ask the device to start ringing |
     | `setVolume` | INT [0..100] | Set the device output volume |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
-    | `fastBipSequence` |  | Ask the device to make a fast bip sequence |
 
 
 ## RTDS
@@ -17403,13 +17403,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ControllerBatteryState` | ContinuousState |  |  |
     | `ControllerBipState` | ContinuousState |  |  |
     | `ControllerOrderTypeState` | ContinuousState |  |  |
     | `ControllerOriginatorState` | ContinuousState |  |  |
     | `ControllerSensingState` | ContinuousState |  |  |
     | `ControllerSirenState` | ContinuousState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
 
 ??? note "Siren/SirenStatus (SENSOR) — 0 commands, 4 states"
 
@@ -17483,12 +17483,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `my` | INT [0..30] (optional) | Set the device to a user pre-defined position p1: Set the execution duration in seconds (Optional - default : 30) |
     | `open` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` | INT [0..30] (optional) | p1: Set the execution duration in seconds (Optional - default : 30) |
     | `stop` | INT [0..30] (optional) | Ask the device to stop p1: Set the execution duration in seconds (Optional - default : 30) |
     | `test` |  |  |
     | `undeploy` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
     | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
 
 ??? note "Curtain/UpDownCurtain (ACTUATOR) — 10 commands, 0 states"
 
@@ -17507,11 +17507,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `my` | INT [0..30] (optional) | Set the device to a user pre-defined position p1: Set the execution duration in seconds (Optional - default : 30) |
     | `open` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` | INT [0..30] (optional) | p1: Set the execution duration in seconds (Optional - default : 30) |
     | `stop` | INT [0..30] (optional) | Ask the device to stop p1: Set the execution duration in seconds (Optional - default : 30) |
     | `test` |  |  |
     | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
 
 ??? note "ExteriorHeatingSystem/StatelessExteriorHeating (ACTUATOR) — 11 commands, 0 states"
 
@@ -17531,11 +17531,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` | INT [0..30] (optional) | p1: Set the execution duration in seconds (Optional - default : 30) |
     | `stop` | INT [0..30] (optional) | Ask the device to stop p1: Set the execution duration in seconds (Optional - default : 30) |
     | `test` |  |  |
     | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
 
 ??? note "ExteriorScreen/UpDownExteriorScreen (ACTUATOR) — 10 commands, 0 states"
 
@@ -17554,11 +17554,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `my` | INT [0..30] (optional) | Set the device to a user pre-defined position p1: Set the execution duration in seconds (Optional - default : 30) |
     | `open` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` | INT [0..30] (optional) | p1: Set the execution duration in seconds (Optional - default : 30) |
     | `stop` | INT [0..30] (optional) | Ask the device to stop p1: Set the execution duration in seconds (Optional - default : 30) |
     | `test` |  |  |
     | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
 
 ??? note "ExteriorVenetianBlind/UpDownExteriorVenetianBlind (ACTUATOR) — 13 commands, 0 states"
 
@@ -17575,16 +17575,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `close` | INT [0..30] (optional) | Move the device completely down p1: Set the execution duration in seconds (Optional - default : 30) |
     | `down` | INT [0..30] (optional) | Move the device completely down p1: Set the execution duration in seconds (Optional - default : 30) |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `moveOf` | INT [-127..127]; INT [0..15] (optional) | Move/tilt to the specified position |
     | `my` | INT [0..30] (optional) | Set the device to a user pre-defined position p1: Set the execution duration in seconds (Optional - default : 30) |
     | `open` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` | INT [0..30] (optional) | p1: Set the execution duration in seconds (Optional - default : 30) |
     | `stop` | INT [0..30] (optional) | Ask the device to stop p1: Set the execution duration in seconds (Optional - default : 30) |
     | `test` |  |  |
-    | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `moveOf` | INT [-127..127]; INT [0..15] (optional) | Move/tilt to the specified position |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `tiltNegative` | INT [0..127]; INT [0..15] | Tilt to negative position p1. You can cancel this command before timeout specified with p2. p1: Negative position to tilt to p2: Set the execution duration in seconds (Optional - default : 15) |
     | `tiltPositive` | INT [0..127]; INT [0..15] | Tilt to positive position p1. You can cancel this command before timeout specified with p2. p1: Positive position to tilt to p2: Set the execution duration in seconds (Optional - default : 15) |
+    | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
 
 ??? note "GarageDoor/UpDownGarageDoor (ACTUATOR) — 9 commands, 0 states"
 
@@ -17602,11 +17602,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `down` | INT [0..30] (optional) | Move the device completely down p1: Set the execution duration in seconds (Optional - default : 30) |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `open` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` | INT [0..30] (optional) | p1: Set the execution duration in seconds (Optional - default : 30) |
     | `stop` | INT [0..30] (optional) | Ask the device to stop p1: Set the execution duration in seconds (Optional - default : 30) |
     | `test` |  |  |
     | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
 
 ??? note "GarageDoor/OpenCloseSlidingGarageDoorWithPedestrianPosition (ACTUATOR) — 10 commands, 0 states"
 
@@ -17625,11 +17625,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `my` | INT [0..30] (optional) | Set the device to a user pre-defined position p1: Set the execution duration in seconds (Optional - default : 30) |
     | `open` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` | INT [0..30] (optional) | p1: Set the execution duration in seconds (Optional - default : 30) |
     | `stop` | INT [0..30] (optional) | Ask the device to stop p1: Set the execution duration in seconds (Optional - default : 30) |
     | `test` |  |  |
     | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
 
 ??? note "GarageDoor/UpDownGarageDoor4T (ACTUATOR) — 3 commands, 0 states"
 
@@ -17644,8 +17644,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `cycle` | INT [0..30] (optional) | Do a cycle of supported motion kinematics or modes p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `test` |  |  |
     | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
+    | `test` |  |  |
 
 ??? note "Gate/OpenCloseGate (ACTUATOR) — 9 commands, 0 states"
 
@@ -17663,11 +17663,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `down` | INT [0..30] (optional) | Move the device completely down p1: Set the execution duration in seconds (Optional - default : 30) |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `open` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` | INT [0..30] (optional) | p1: Set the execution duration in seconds (Optional - default : 30) |
     | `stop` | INT [0..30] (optional) | Ask the device to stop p1: Set the execution duration in seconds (Optional - default : 30) |
     | `test` |  |  |
     | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
 
 ??? note "Gate/OpenCloseGateWithPedestrianPosition (ACTUATOR) — 10 commands, 0 states"
 
@@ -17686,11 +17686,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `my` | INT [0..30] (optional) | Set the device to a user pre-defined position p1: Set the execution duration in seconds (Optional - default : 30) |
     | `open` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` | INT [0..30] (optional) | p1: Set the execution duration in seconds (Optional - default : 30) |
     | `stop` | INT [0..30] (optional) | Ask the device to stop p1: Set the execution duration in seconds (Optional - default : 30) |
     | `test` |  |  |
     | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
 
 ??? note "Gate/OpenCloseGate4T (ACTUATOR) — 3 commands, 0 states"
 
@@ -17705,8 +17705,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `cycle` | INT [0..30] (optional) | Do a cycle of supported motion kinematics or modes p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `test` |  |  |
     | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
+    | `test` |  |  |
 
 ??? note "Generic/RTSGeneric (ACTUATOR) — 7 commands, 0 states"
 
@@ -17722,11 +17722,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `down` | INT [0..30] (optional) | Move the device completely down p1: Set the execution duration in seconds (Optional - default : 30) |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` | INT [0..30] (optional) | p1: Set the execution duration in seconds (Optional - default : 30) |
     | `stop` | INT [0..30] (optional) | Ask the device to stop p1: Set the execution duration in seconds (Optional - default : 30) |
     | `test` |  |  |
     | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
 
 ??? note "Generic/RTSGeneric4T (ACTUATOR) — 3 commands, 0 states"
 
@@ -17741,8 +17741,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `cycle` | INT [0..30] (optional) | Do a cycle of supported motion kinematics or modes p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `test` |  |  |
     | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
+    | `test` |  |  |
 
 ??? note "Generic/RTSGeneric (ACTUATOR) — 1 commands, 0 states"
 
@@ -17776,11 +17776,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ecoMode` |  |  |
     | `freezeProtectionMode` |  |  |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` |  |  |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `test` |  |  |
     | `up` |  | Move the device completely up |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
 
 ??? note "Light/OnOffLight (ACTUATOR) — 12 commands, 0 states"
 
@@ -17797,15 +17797,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `down` | INT [0..30] (optional) | Move the device completely down p1: Set the execution duration in seconds (Optional - default : 30) |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `my` | INT [0..30] (optional) | Set the device to a user pre-defined position p1: Set the execution duration in seconds (Optional - default : 30) |
+    | `myWithTimer` | ANY |  |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` | INT [0..30] (optional) | p1: Set the execution duration in seconds (Optional - default : 30) |
     | `stop` | INT [0..30] (optional) | Ask the device to stop p1: Set the execution duration in seconds (Optional - default : 30) |
     | `test` |  |  |
     | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `myWithTimer` | ANY |  |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
 
 ??? note "Light/DimmerOnOffLight (ACTUATOR) — 13 commands, 0 states"
 
@@ -17825,13 +17825,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` | INT [0..30] (optional) | p1: Set the execution duration in seconds (Optional - default : 30) |
+    | `stepNegative` | INT [0..127]; INT [0..15] | Tilt to negative position p1. You can cancel this command before timeout specified with p2. p1: Negative position to tilt to p2: Set the execution duration in seconds (Optional - default : 15) |
+    | `stepPositive` | INT [0..127]; INT [0..15] | Tilt to positive position p1. You can cancel this command before timeout specified with p2. p1: Positive position to tilt to p2: Set the execution duration in seconds (Optional - default : 15) |
     | `stop` | INT [0..30] (optional) | Ask the device to stop p1: Set the execution duration in seconds (Optional - default : 30) |
     | `test` |  |  |
     | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `stepNegative` | INT [0..127]; INT [0..15] | Tilt to negative position p1. You can cancel this command before timeout specified with p2. p1: Negative position to tilt to p2: Set the execution duration in seconds (Optional - default : 15) |
-    | `stepPositive` | INT [0..127]; INT [0..15] | Tilt to positive position p1. You can cancel this command before timeout specified with p2. p1: Positive position to tilt to p2: Set the execution duration in seconds (Optional - default : 15) |
 
 ??? note "OnOff/StatelessOnOff (ACTUATOR) — 10 commands, 0 states"
 
@@ -17850,11 +17850,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
     | `onWithTimer` | INT [5..14400] | Turn the device on for a given amount of seconds then turn it off |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` | INT [0..30] (optional) | p1: Set the execution duration in seconds (Optional - default : 30) |
     | `stop` | INT [0..30] (optional) | Ask the device to stop p1: Set the execution duration in seconds (Optional - default : 30) |
     | `test` |  |  |
     | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
 
 ??? note "Pergola/UpDownBioclimaticPergola (ACTUATOR) — 13 commands, 0 states"
 
@@ -17871,16 +17871,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `close` | INT [0..30] (optional) | Move the device completely down p1: Set the execution duration in seconds (Optional - default : 30) |
     | `down` | INT [0..30] (optional) | Move the device completely down p1: Set the execution duration in seconds (Optional - default : 30) |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `moveOf` | INT [-127..127]; INT [0..15] (optional) | Move/tilt to the specified position |
     | `my` | INT [0..30] (optional) | Set the device to a user pre-defined position p1: Set the execution duration in seconds (Optional - default : 30) |
     | `open` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` | INT [0..30] (optional) | p1: Set the execution duration in seconds (Optional - default : 30) |
     | `stop` | INT [0..30] (optional) | Ask the device to stop p1: Set the execution duration in seconds (Optional - default : 30) |
     | `test` |  |  |
-    | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `moveOf` | INT [-127..127]; INT [0..15] (optional) | Move/tilt to the specified position |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `tiltNegative` | INT [0..127]; INT [0..15] | Tilt to negative position p1. You can cancel this command before timeout specified with p2. p1: Negative position to tilt to p2: Set the execution duration in seconds (Optional - default : 15) |
     | `tiltPositive` | INT [0..127]; INT [0..15] | Tilt to positive position p1. You can cancel this command before timeout specified with p2. p1: Positive position to tilt to p2: Set the execution duration in seconds (Optional - default : 15) |
+    | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
 
 ??? note "RollerShutter/UpDownRollerShutter (ACTUATOR) — 10 commands, 0 states"
 
@@ -17899,11 +17899,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `my` | INT [0..30] (optional) | Set the device to a user pre-defined position p1: Set the execution duration in seconds (Optional - default : 30) |
     | `open` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` | INT [0..30] (optional) | p1: Set the execution duration in seconds (Optional - default : 30) |
     | `stop` | INT [0..30] (optional) | Ask the device to stop p1: Set the execution duration in seconds (Optional - default : 30) |
     | `test` |  |  |
     | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
 
 ??? note "Screen/UpDownScreen (ACTUATOR) — 10 commands, 0 states"
 
@@ -17922,11 +17922,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `my` | INT [0..30] (optional) | Set the device to a user pre-defined position p1: Set the execution duration in seconds (Optional - default : 30) |
     | `open` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` | INT [0..30] (optional) | p1: Set the execution duration in seconds (Optional - default : 30) |
     | `stop` | INT [0..30] (optional) | Ask the device to stop p1: Set the execution duration in seconds (Optional - default : 30) |
     | `test` |  |  |
     | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
 
 ??? note "Screen/UpDownZebraScreen (ACTUATOR) — 13 commands, 0 states"
 
@@ -17943,16 +17943,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `close` | INT [0..30] (optional) | Move the device completely down p1: Set the execution duration in seconds (Optional - default : 30) |
     | `down` | INT [0..30] (optional) | Move the device completely down p1: Set the execution duration in seconds (Optional - default : 30) |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `moveOf` | INT [-127..127]; INT [0..15] (optional) | Move/tilt to the specified position |
     | `my` | INT [0..30] (optional) | Set the device to a user pre-defined position p1: Set the execution duration in seconds (Optional - default : 30) |
     | `open` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` | INT [0..30] (optional) | p1: Set the execution duration in seconds (Optional - default : 30) |
     | `stop` | INT [0..30] (optional) | Ask the device to stop p1: Set the execution duration in seconds (Optional - default : 30) |
     | `test` |  |  |
-    | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `moveOf` | INT [-127..127]; INT [0..15] (optional) | Move/tilt to the specified position |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `tiltNegative` | INT [0..127]; INT [0..15] | Tilt to negative position p1. You can cancel this command before timeout specified with p2. p1: Negative position to tilt to p2: Set the execution duration in seconds (Optional - default : 15) |
     | `tiltPositive` | INT [0..127]; INT [0..15] | Tilt to positive position p1. You can cancel this command before timeout specified with p2. p1: Positive position to tilt to p2: Set the execution duration in seconds (Optional - default : 15) |
+    | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
 
 ??? note "SwingingShutter/UpDownSwingingShutter (ACTUATOR) — 10 commands, 0 states"
 
@@ -17971,11 +17971,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `my` | INT [0..30] (optional) | Set the device to a user pre-defined position p1: Set the execution duration in seconds (Optional - default : 30) |
     | `open` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` | INT [0..30] (optional) | p1: Set the execution duration in seconds (Optional - default : 30) |
     | `stop` | INT [0..30] (optional) | Ask the device to stop p1: Set the execution duration in seconds (Optional - default : 30) |
     | `test` |  |  |
     | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
 
 ??? note "VenetianBlind/UpDownVenetianBlind (ACTUATOR) — 13 commands, 0 states"
 
@@ -17992,16 +17992,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `close` | INT [0..30] (optional) | Move the device completely down p1: Set the execution duration in seconds (Optional - default : 30) |
     | `down` | INT [0..30] (optional) | Move the device completely down p1: Set the execution duration in seconds (Optional - default : 30) |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `moveOf` | INT [-127..127]; INT [0..15] (optional) | Move/tilt to the specified position |
     | `my` | INT [0..30] (optional) | Set the device to a user pre-defined position p1: Set the execution duration in seconds (Optional - default : 30) |
     | `open` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` | INT [0..30] (optional) | p1: Set the execution duration in seconds (Optional - default : 30) |
     | `stop` | INT [0..30] (optional) | Ask the device to stop p1: Set the execution duration in seconds (Optional - default : 30) |
     | `test` |  |  |
-    | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `moveOf` | INT [-127..127]; INT [0..15] (optional) | Move/tilt to the specified position |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `tiltNegative` | INT [0..127]; INT [0..15] | Tilt to negative position p1. You can cancel this command before timeout specified with p2. p1: Negative position to tilt to p2: Set the execution duration in seconds (Optional - default : 15) |
     | `tiltPositive` | INT [0..127]; INT [0..15] | Tilt to positive position p1. You can cancel this command before timeout specified with p2. p1: Positive position to tilt to p2: Set the execution duration in seconds (Optional - default : 15) |
+    | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
 
 ??? note "Window/UpDownWindow (ACTUATOR) — 10 commands, 0 states"
 
@@ -18020,11 +18020,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `my` | INT [0..30] (optional) | Set the device to a user pre-defined position p1: Set the execution duration in seconds (Optional - default : 30) |
     | `open` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
+    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
     | `rest` | INT [0..30] (optional) | p1: Set the execution duration in seconds (Optional - default : 30) |
     | `stop` | INT [0..30] (optional) | Ask the device to stop p1: Set the execution duration in seconds (Optional - default : 30) |
     | `test` |  |  |
     | `up` | INT [0..30] (optional) | Move the device completely up p1: Set the execution duration in seconds (Optional - default : 30) |
-    | `openConfiguration` | INT [0..30] (optional) | Put a RTS product in configuration mode p1: Set the execution duration in seconds (Optional - default : 30) |
 
 
 ## SOMFY_THERMOSTAT
@@ -18039,38 +18039,38 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
+    | `exitDerogation` |  | Exit the derogation mode for the programming mode in the thermostat's timetable |
     | `getName` |  | Refresh the device internal name |
     | `refreshDerogation` |  | Refresh the last derogation |
-    | `refreshState` |  | Refresh the device states |
-    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
-    | `exitDerogation` |  | Exit the derogation mode for the programming mode in the thermostat's timetable |
     | `refreshModeSettings` |  | Refresh actual mode settings on thermostat |
+    | `refreshState` |  | Refresh the device states |
     | `setDerogation` | STRING: atHomeMode, sleepingMode, awayMode, freezeMode, geofencingMode; FLOAT [15.0..26.0]; STRING: further_notice, next_mode; INT | set a new derogation p1: mode to activate or temperature to reach  for derogation  p2: derogation type (further_notice, next_mode or a time value in seconds) |
     | `setModeTemperature` | STRING: atHomeMode, awayMode, freezeMode, geofencingMode, manualMode; FLOAT | set the target temperature for the given mode |
+    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `AtHomeTargetTemperatureState` | ContinuousState |  |  |
     | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `AwayModeTargetTemperatureState` | ContinuousState |  |  |
     | `BatteryLevelState` | ContinuousState |  |  |
     | `DerogatedTargetTemperatureState` | ContinuousState |  |  |
     | `DerogationActivationState` | DiscreteState | active, inactive |  |
     | `DerogationEndDateTimeState` | DataState |  |  |
-    | `DerogationStartDateTimeState` | DataState |  |  |
-    | `NameState` | DataState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
-    | `AtHomeTargetTemperatureState` | ContinuousState |  |  |
-    | `AwayModeTargetTemperatureState` | ContinuousState |  |  |
     | `DerogationHeatingModeState` | DiscreteState | atHomeMode, awayMode, freezeMode, geofencingMode, manualMode, sleepingMode, suddenDropMode |  |
+    | `DerogationStartDateTimeState` | DataState |  |  |
     | `DerogationTypeState` | DiscreteState | date, furtherNotice, nextMode |  |
     | `FreezeModeTargetTemperatureState` | ContinuousState |  |  |
     | `GeofencingModeTargetTemperatureState` | ContinuousState |  |  |
     | `HeatingModeState` | DiscreteState | atHomeMode, awayMode, freezeMode, geofencingMode, manualMode, sleepingMode, suddenDropMode |  |
     | `ManualModeTargetTemperatureState` | ContinuousState |  |  |
+    | `NameState` | DataState |  |  |
     | `SleepingModeTargetTemperatureState` | ContinuousState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `SuddenDropModeTargetTemperatureState` | ContinuousState |  |  |
+    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
 
 ??? note "HumiditySensor/RelativeHumiditySensor (SENSOR) — 1 commands, 3 states"
 
@@ -18121,23 +18121,23 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
+    | `getAllPlayingInfo` |  | Get all information about the playing track and media |
+    | `getCurrentTransportActions` |  | get current action available on the playing media |
+    | `getMediaInfo` |  | Get playing media information |
     | `getMute` |  | Get the mute Status |
+    | `getPositionInfo` |  | Get information about the playing track |
+    | `getTransportInfo` |  | get information about the player state |
     | `getVolume` |  | Get the device output volume |
     | `mute` |  | Mute the device |
     | `next` |  | Play next track |
     | `pause` |  | Pause current action |
     | `play` |  | Play media |
+    | `playURI` | STRING; STRING | Play a media from a given URI p1 : URI to play p2 : Associated metadatas |
     | `previous` |  | Play previous track |
     | `rewind` |  | Rewind media |
     | `setVolume` | INT [0..100] | Set the device output volume |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `unmute` |  | Unmute the device |
-    | `getAllPlayingInfo` |  | Get all information about the playing track and media |
-    | `getCurrentTransportActions` |  | get current action available on the playing media |
-    | `getMediaInfo` |  | Get playing media information |
-    | `getPositionInfo` |  | Get information about the playing track |
-    | `getTransportInfo` |  | get information about the player state |
-    | `playURI` | STRING; STRING | Play a media from a given URI p1 : URI to play p2 : Associated metadatas |
 
     **States**
 
@@ -18153,29 +18153,29 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `getMute` |  | Get the mute Status |
-    | `getVolume` |  | Get the device output volume |
-    | `mute` |  | Mute the device |
-    | `next` |  | Play next track |
-    | `pause` |  | Pause current action |
-    | `play` |  | Play media |
-    | `previous` |  | Play previous track |
-    | `rewind` |  | Rewind media |
-    | `setVolume` | INT [0..100] | Set the device output volume |
-    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
-    | `unmute` |  | Unmute the device |
     | `getAllPlayingInfo` |  | Get all information about the playing track and media |
     | `getCurrentTransportActions` |  | get current action available on the playing media |
     | `getGroupMute` |  | Get the mute status for the group |
     | `getGroupVolume` |  | Get the volume for the group |
     | `getMediaInfo` |  | Get playing media information |
+    | `getMute` |  | Get the mute Status |
     | `getPositionInfo` |  | Get information about the playing track |
     | `getSonosFavorites` |  | Get the sonos favorit |
     | `getSonosPlaylist` |  | Get the sonos playlist |
     | `getTransportInfo` |  | get information about the player state |
+    | `getVolume` |  | Get the device output volume |
+    | `mute` |  | Mute the device |
     | `muteGroup` |  | Mute the Group |
+    | `next` |  | Play next track |
+    | `pause` |  | Pause current action |
+    | `play` |  | Play media |
     | `playURI` | STRING; STRING | Play a media from a given URI p1 : URI to play p2 : Associated metadatas |
+    | `previous` |  | Play previous track |
+    | `rewind` |  | Rewind media |
     | `setGroupVolume` | INT | Set the volume of the group p1: volume to set |
+    | `setVolume` | INT [0..100] | Set the device output volume |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+    | `unmute` |  | Unmute the device |
     | `unmuteGroup` |  | Unmute the Group |
 
     **States**
@@ -18407,8 +18407,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `refreshState` |  | Refresh the device states |
     | `setTimerUnit` | STRING: sec, min | Set unit of device internal timer (sec=seconds, min=minutes) |
-    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `setYokisTimer` | INT: 0, 2, 4, 8, 15 | Set Yokis device internal temporization value |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
     **States**
 
@@ -18439,19 +18439,19 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshState` |  | Refresh the device states |
     | `setAutomaticClosingOnPowerOn` | STRING: false, true | Activate (true) or deactivate (false) automatic closing on power on |
     | `setTimerUnit` | STRING: sec, min | Set unit of device internal timer (sec=seconds, min=minutes) |
-    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `setYokisTimer` | INT: 0, 2, 4, 8, 15 | Set Yokis device internal temporization value |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `AutomaticClosingOnPowerOnState` | DiscreteState | false, true |  |
+    | `AutomationOperatingModeState` | DiscreteState | faac, universal, yokis |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `TimerState` | ContinuousState |  |  |
     | `TimerUnitState` | DiscreteState | min, sec |  |
     | `UpdateStatusState` | DiscreteState | error, inProgress, initialized, moduleUnreachableError, networkError, queued, timeout, usbUnreachableError |  |
-    | `AutomationOperatingModeState` | DiscreteState | faac, universal, yokis |  |
 
 ??? note "Gate/CyclicGate (ACTUATOR) — 7 commands, 3 states"
 
@@ -18470,8 +18470,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
     | `refreshState` |  | Refresh the device states |
     | `setTimerUnit` | STRING: sec, min | Set unit of device internal timer (sec=seconds, min=minutes) |
-    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `setYokisTimer` | INT: 0, 2, 4, 8, 15 | Set Yokis device internal temporization value |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
     **States**
 
@@ -18556,19 +18556,19 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshState` |  | Refresh the device states |
     | `setAutomaticClosingOnPowerOn` | STRING: false, true | Activate (true) or deactivate (false) automatic closing on power on |
     | `setTimerUnit` | STRING: sec, min | Set unit of device internal timer (sec=seconds, min=minutes) |
-    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `setYokisTimer` | INT: 0, 2, 4, 8, 15 | Set Yokis device internal temporization value |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `AutomaticClosingOnPowerOnState` | DiscreteState | false, true |  |
+    | `AutomationOperatingModeState` | DiscreteState | faac, universal, yokis |  |
     | `OpenClosedState` | DiscreteState | open, closed |  |
     | `TimerState` | ContinuousState |  |  |
     | `TimerUnitState` | DiscreteState | min, sec |  |
     | `UpdateStatusState` | DiscreteState | error, inProgress, initialized, moduleUnreachableError, networkError, queued, timeout, usbUnreachableError |  |
-    | `AutomationOperatingModeState` | DiscreteState | faac, universal, yokis |  |
 
 ??? note "HeatingSystem/ElectricalHeater (ACTUATOR) — 6 commands, 7 states"
 
@@ -18593,13 +18593,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `ConfigState` | DataState |  |  |
     | `ErrorState` | DataState |  |  |
     | `LEDOnOffState` | DiscreteState | on, off |  |
     | `NumberOfOrderState` | DiscreteState | 4, 6 |  |
     | `ScrollOnOffState` | DiscreteState | on, off |  |
     | `TargetHeatingLevelState` | DiscreteState | comfort, eco |  |
     | `UpdateStatusState` | DiscreteState | error, inProgress, initialized, moduleUnreachableError, networkError, queued, timeout, usbUnreachableError |  |
-    | `ConfigState` | DataState |  |  |
 
 ??? note "Light/DimmerLight (ACTUATOR) — 28 commands, 18 states"
 
@@ -18896,8 +18896,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshState` |  | Refresh the device states |
     | `setButtonMode` | STRING: onOff, push | Set device button behavior |
     | `setTimerUnit` | STRING: sec, min | Set unit of device internal timer (sec=seconds, min=minutes) |
-    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
     | `setYokisTimer` | INT: 0, 2, 4, 8, 15 | Set Yokis device internal temporization value |
+    | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
 
     **States**
 
@@ -18984,6 +18984,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `deploy` |  | Fully deploy the device; cluster:258 |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
@@ -18992,9 +18993,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setDeployment` | INT [0..100] | Device deployment level (100%=fully deployed, 0%=fully undeployed); cluster:258 |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer); cluster:258 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `undeploy` |  | Fully undeploy the device; cluster:258 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
+    | `undeploy` |  | Fully undeploy the device; cluster:258 |
 
     **States**
 
@@ -19004,12 +19004,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DeploymentState` | ContinuousState | [0..100] | cluster:258 |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -19027,33 +19027,33 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
-    | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `setBallastMaxLevel` | INT [1..100] | Set the maximum value (1% = 2, 100% = 254) for Ballast; cluster:769 |
     | `setBallastMinLevel` | INT [1..100] | Set the minimum value (1% = 2, 100% = 254) for Ballast; cluster:769 |
+    | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
-    | `FirmwareRevisionState` | DataState |  |  |
-    | `ManufacturerNameState` | DataState |  | cluster:0 |
-    | `ProductModelNameState` | DataState |  | cluster:0 |
-    | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `BallastMaxLevelState` | DataState |  | cluster:769 |
     | `BallastMinLevelState` | DataState |  | cluster:769 |
     | `BallastStatusLampState` | DiscreteState | active, inactive | cluster:769 |
     | `BallastStatusState` | DiscreteState | active, inactive | cluster:769 |
+    | `CommandLockLevelsState` | DataState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `FirmwareRevisionState` | DataState |  |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
+    | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
+    | `ProductModelNameState` | DataState |  | cluster:0 |
+    | `RSSILevelState` | ContinuousState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -19071,35 +19071,35 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0; cluster:6 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
-    | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `setBallastMaxLevel` | INT [1..100] | Set the maximum value (1% = 2, 100% = 254) for Ballast; cluster:769 |
     | `setBallastMinLevel` | INT [1..100] | Set the minimum value (1% = 2, 100% = 254) for Ballast; cluster:769 |
     | `setSchneiderBallastControlMode` | STRING: automatic, RC mode, RL mode, RL-LED | Set the ballast control mode; cluster:769 |
+    | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
-    | `FirmwareRevisionState` | DataState |  |  |
-    | `ManufacturerNameState` | DataState |  | cluster:0 |
-    | `ProductModelNameState` | DataState |  | cluster:0 |
-    | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `BallastMaxLevelState` | DataState |  | cluster:769 |
     | `BallastMinLevelState` | DataState |  | cluster:769 |
     | `BallastStatusLampState` | DiscreteState | active, inactive | cluster:769 |
     | `BallastStatusState` | DiscreteState | active, inactive | cluster:769 |
+    | `CommandLockLevelsState` | DataState |  |  |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `FirmwareRevisionState` | DataState |  |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
+    | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
+    | `ProductModelNameState` | DataState |  | cluster:0 |
+    | `RSSILevelState` | ContinuousState |  |  |
     | `SchneiderBallastControlModeState` | DataState |  | cluster:769 |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -19117,15 +19117,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0; cluster:8 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
-    | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `setStartUpCurrentLevel` | STRING: min, previous; INT [0..100] | p1: min => set the current level on the minimum allow by the device previous => set the value to the state saved on the device integer[0-100] => set the custom intesity on start up.; cluster:8 |
     | `setSwitchActionsConfiguration` | STRING: light, lightOpp, dimmer, dimmerOpp, standardShutter | Set the switch actions configuration. p1: light       lightOpp = light opposite       dimmer       dimmerOpp = dimmer opposite       standardShutter = standard Shutter       standardShutterOpp = standard Shutter opposite       schneiderShutter = schneider Shutter       schneiderShutterOpp = schneider shutter opposite       toggleLight = toggle light       toggleDimmer = toogle dimmer; cluster:65303 |
     | `setSwitchIndicationConfiguration` | STRING: indicatorOnWhenLoadOn, indicatorAlwaysOn, indicatorOnWhenLoadOff, indicatorAlwaysOff | Set the switch Led indication configuration. p1: indicatorOnWhenLoadOn       indicatorAlwaysOn       indicatorOnWhenLoadOff       indicatorAlwaysOff; cluster:65303 |
+    | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -19136,14 +19136,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `CommandLockLevelsState` | DataState |  |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `LowBatteryThresholdState` | ContinuousState |  | cluster:1 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `StartUpCurrentLevelState` | DataState |  | cluster:8 |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `SwitchActionsState` | DataState |  | cluster:65303 |
     | `SwitchIndicationState` | DataState |  | cluster:65303 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
@@ -19162,10 +19162,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -19176,13 +19176,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ContactState` | DiscreteState | open, closed | cluster:1280 |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `LowBatteryThresholdState` | ContinuousState |  | cluster:1 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -19200,6 +19200,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0; cluster:258 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `close` |  | Fully close the device; cluster:258 |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `open` |  | Fully open the device; cluster:258 |
@@ -19207,11 +19208,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open); cluster:258 |
+    | `setModes` | OBJECT | Set modes, all modes must be specified.   - motorDirection: string(normal;reversed), the reversal of the motor rotating direction associated with commands.   - motorRunMode: string(normal;calibration), placing the motor into Calibration Mode where limits are either setup using physical tools or limits are learned by the controller based on physical setup of the Window Covering by an installer   - motorRunningMode: string(normal;maintenance), placing the motor into Maintenance Mode where the motor cannot be moved over the network or by a switch connected to a Local Switch Input.   - motorLedFeedback: string(enable;disable), the display of any feedback LEDs.  Example: {     "motorDirection":"reversed",     "motorRunMode":"normal",     "motorRunningMode":"normal",     "motorLedFeedback":"enable" }; cluster:258 |
     | `setPosition` | INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%); cluster:258 |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer); cluster:258 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
-    | `setModes` | OBJECT | Set modes, all modes must be specified.   - motorDirection: string(normal;reversed), the reversal of the motor rotating direction associated with commands.   - motorRunMode: string(normal;calibration), placing the motor into Calibration Mode where limits are either setup using physical tools or limits are learned by the controller based on physical setup of the Window Covering by an installer   - motorRunningMode: string(normal;maintenance), placing the motor into Maintenance Mode where the motor cannot be moved over the network or by a switch connected to a Local Switch Input.   - motorLedFeedback: string(enable;disable), the display of any feedback LEDs.  Example: {     "motorDirection":"reversed",     "motorRunMode":"normal",     "motorRunningMode":"normal",     "motorLedFeedback":"enable" }; cluster:258 |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -19220,25 +19220,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ClosureState` | ContinuousState | [0..100] | cluster:258 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
-    | `FirmwareRevisionState` | DataState |  |  |
-    | `ManufacturerNameState` | DataState |  | cluster:0 |
-    | `OperationalStatusState` | DataState |  | cluster:258 |
-    | `ProductModelNameState` | DataState |  | cluster:0 |
-    | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ControlLiftState` | DiscreteState | lift control is open loop, lift control is closed loop | cluster:258 |
     | `ControlTiltState` | DiscreteState | tilt control is closed loop, tilt control is open loop | cluster:258 |
     | `DirectionState` | DiscreteState | counterClockwise, clockwise | cluster:258 |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `EncoderLiftState` | DiscreteState | encoder controlled, timer controlled | cluster:258 |
     | `EncoderTiltState` | DiscreteState | encoder controlled, timer controlled | cluster:258 |
+    | `FirmwareRevisionState` | DataState |  |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
+    | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `MotorLEDFeedbackState` | DiscreteState | LEDs will display feedback, LEDs are off | cluster:258 |
     | `MotorRunModeState` | DiscreteState | run in calibration mode, run in normal mode | cluster:258 |
     | `MotorRunningModeState` | DiscreteState | motor is running in maintenance mode, motor is running normally | cluster:258 |
     | `NetworkOnlineState` | DiscreteState | online, not online | cluster:258 |
+    | `OperationalStatusState` | DataState |  | cluster:258 |
     | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
+    | `ProductModelNameState` | DataState |  | cluster:0 |
+    | `RSSILevelState` | ContinuousState |  |  |
     | `ReversalLiftState` | DiscreteState | reversal lift commands, not reversal lift commands | cluster:258 |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -19255,10 +19255,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -19269,12 +19269,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ElectricEnergyConsumptionState` | ContinuousState |  | cluster:1794 |
     | `ElectricPowerConsumptionState` | ContinuousState |  | cluster:1794 |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -19291,10 +19291,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -19303,23 +19303,23 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `ElectricEnergyConsumptionState` | ContinuousState |  | cluster:1794 |
-    | `ElectricPowerConsumptionState` | ContinuousState |  | cluster:1794 |
-    | `ElectricalContractIntensityState` | ContinuousState |  | cluster:2817 |
-    | `ElectricalIntensityThresholdExceededState` | DataState |  | cluster:1794 |
-    | `FirmwareRevisionState` | DataState |  |  |
-    | `ManufacturerNameState` | DataState |  | cluster:0 |
-    | `ProductModelNameState` | DataState |  | cluster:0 |
-    | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ElectricEnergyConsumptionTier1State` | ContinuousState |  | cluster:1794 |
     | `ElectricEnergyConsumptionTier2State` | ContinuousState |  | cluster:1794 |
     | `ElectricEnergyConsumptionTier3State` | ContinuousState |  | cluster:1794 |
     | `ElectricEnergyConsumptionTier4State` | ContinuousState |  | cluster:1794 |
     | `ElectricEnergyConsumptionTier5State` | ContinuousState |  | cluster:1794 |
     | `ElectricEnergyConsumptionTier6State` | ContinuousState |  | cluster:1794 |
+    | `ElectricPowerConsumptionState` | ContinuousState |  | cluster:1794 |
+    | `ElectricalContractIntensityState` | ContinuousState |  | cluster:2817 |
+    | `ElectricalIntensityThresholdExceededState` | DataState |  | cluster:1794 |
+    | `FirmwareRevisionState` | DataState |  |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `LinkyModeState` | DiscreteState | historical, standard | cluster:1794 |
+    | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
+    | `ProductModelNameState` | DataState |  | cluster:0 |
+    | `RSSILevelState` | ContinuousState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -19336,32 +19336,20 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
-    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
-    | `ElectricEnergyConsumptionState` | ContinuousState |  | cluster:1794 |
-    | `ElectricEnergyGenerationState` | ContinuousState |  | cluster:1794 |
-    | `ElectricPowerConsumptionState` | ContinuousState |  | cluster:1794 |
-    | `ElectricalContractIntensityState` | ContinuousState |  | cluster:2817 |
-    | `ElectricalIntensityThresholdExceededState` | DataState |  | cluster:1794 |
-    | `FirmwareRevisionState` | DataState |  |  |
-    | `IdentifierState` | DataState |  | cluster:1794 |
-    | `ManufacturerNameState` | DataState |  | cluster:0 |
-    | `MaxElectricPowerConsumptionState` | ContinuousState |  | cluster:1794 |
-    | `MaxElectricPowerGenerationState` | ContinuousState |  | cluster:1794 |
-    | `ProductModelNameState` | DataState |  | cluster:0 |
-    | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ActiveTierLabelState` | DataState |  | cluster:1794 |
     | `ActiveTierState` | ContinuousState | [0..48] | cluster:1794 |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `ElectricEnergyConsumptionState` | ContinuousState |  | cluster:1794 |
     | `ElectricEnergyConsumptionTier10State` | ContinuousState |  | cluster:1794 |
     | `ElectricEnergyConsumptionTier1State` | ContinuousState |  | cluster:1794 |
     | `ElectricEnergyConsumptionTier2State` | ContinuousState |  | cluster:1794 |
@@ -19372,10 +19360,22 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ElectricEnergyConsumptionTier7State` | ContinuousState |  | cluster:1794 |
     | `ElectricEnergyConsumptionTier8State` | ContinuousState |  | cluster:1794 |
     | `ElectricEnergyConsumptionTier9State` | ContinuousState |  | cluster:1794 |
+    | `ElectricEnergyGenerationState` | ContinuousState |  | cluster:1794 |
     | `ElectricInstantaneousIntensityState` | ContinuousState |  | cluster:2820 |
+    | `ElectricPowerConsumptionState` | ContinuousState |  | cluster:1794 |
+    | `ElectricalContractIntensityState` | ContinuousState |  | cluster:2817 |
+    | `ElectricalIntensityThresholdExceededState` | DataState |  | cluster:1794 |
+    | `FirmwareRevisionState` | DataState |  |  |
+    | `IdentifierState` | DataState |  | cluster:1794 |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `LinkyModeState` | DiscreteState | historical, standard | cluster:1794 |
+    | `ManufacturerNameState` | DataState |  | cluster:0 |
+    | `MaxElectricPowerConsumptionState` | ContinuousState |  | cluster:1794 |
+    | `MaxElectricPowerGenerationState` | ContinuousState |  | cluster:1794 |
     | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
+    | `ProductModelNameState` | DataState |  | cluster:0 |
+    | `RSSILevelState` | ContinuousState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -19392,10 +19392,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -19405,12 +19405,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `ElectricPowerConsumptionState` | ContinuousState |  | cluster:2820 |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -19428,6 +19428,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0; cluster:258 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `close` |  | Fully close the device; cluster:258 |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `open` |  | Fully open the device; cluster:258 |
@@ -19435,11 +19436,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open); cluster:258 |
+    | `setModes` | OBJECT | Set modes, all modes must be specified.   - motorDirection: string(normal;reversed), the reversal of the motor rotating direction associated with commands.   - motorRunMode: string(normal;calibration), placing the motor into Calibration Mode where limits are either setup using physical tools or limits are learned by the controller based on physical setup of the Window Covering by an installer   - motorRunningMode: string(normal;maintenance), placing the motor into Maintenance Mode where the motor cannot be moved over the network or by a switch connected to a Local Switch Input.   - motorLedFeedback: string(enable;disable), the display of any feedback LEDs.  Example: {     "motorDirection":"reversed",     "motorRunMode":"normal",     "motorRunningMode":"normal",     "motorLedFeedback":"enable" }; cluster:258 |
     | `setPosition` | INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%); cluster:258 |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer); cluster:258 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
-    | `setModes` | OBJECT | Set modes, all modes must be specified.   - motorDirection: string(normal;reversed), the reversal of the motor rotating direction associated with commands.   - motorRunMode: string(normal;calibration), placing the motor into Calibration Mode where limits are either setup using physical tools or limits are learned by the controller based on physical setup of the Window Covering by an installer   - motorRunningMode: string(normal;maintenance), placing the motor into Maintenance Mode where the motor cannot be moved over the network or by a switch connected to a Local Switch Input.   - motorLedFeedback: string(enable;disable), the display of any feedback LEDs.  Example: {     "motorDirection":"reversed",     "motorRunMode":"normal",     "motorRunningMode":"normal",     "motorLedFeedback":"enable" }; cluster:258 |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -19448,25 +19448,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ClosureState` | ContinuousState | [0..100] | cluster:258 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
-    | `FirmwareRevisionState` | DataState |  |  |
-    | `ManufacturerNameState` | DataState |  | cluster:0 |
-    | `OperationalStatusState` | DataState |  | cluster:258 |
-    | `ProductModelNameState` | DataState |  | cluster:0 |
-    | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ControlLiftState` | DiscreteState | lift control is open loop, lift control is closed loop | cluster:258 |
     | `ControlTiltState` | DiscreteState | tilt control is closed loop, tilt control is open loop | cluster:258 |
     | `DirectionState` | DiscreteState | counterClockwise, clockwise | cluster:258 |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `EncoderLiftState` | DiscreteState | encoder controlled, timer controlled | cluster:258 |
     | `EncoderTiltState` | DiscreteState | encoder controlled, timer controlled | cluster:258 |
+    | `FirmwareRevisionState` | DataState |  |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
+    | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `MotorLEDFeedbackState` | DiscreteState | LEDs will display feedback, LEDs are off | cluster:258 |
     | `MotorRunModeState` | DiscreteState | run in calibration mode, run in normal mode | cluster:258 |
     | `MotorRunningModeState` | DiscreteState | motor is running in maintenance mode, motor is running normally | cluster:258 |
     | `NetworkOnlineState` | DiscreteState | online, not online | cluster:258 |
+    | `OperationalStatusState` | DataState |  | cluster:258 |
     | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
+    | `ProductModelNameState` | DataState |  | cluster:0 |
+    | `RSSILevelState` | ContinuousState |  |  |
     | `ReversalLiftState` | DiscreteState | reversal lift commands, not reversal lift commands | cluster:258 |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -19483,10 +19483,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -19497,13 +19497,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `CODetectionState` | DiscreteState | detected, notDetected | cluster:1280 |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `LowBatteryThresholdState` | ContinuousState |  | cluster:1 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -19521,16 +19521,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0; cluster:513 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
+    | `raiseLowerTargetTemperature` | FLOAT [-10.0..10.0] | p1: amount The final temperature (actual + amount) must be included in the min/max range of temperature defined for this product.; cluster:513; cluster:513 |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
-    | `setTargetTemperature` | FLOAT [5.0..35.0] | Set the new air temperature to reach; cluster:513 |
-    | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
-    | `raiseLowerTargetTemperature` | FLOAT [-10.0..10.0] | p1: amount The final temperature (actual + amount) must be included in the min/max range of temperature defined for this product.; cluster:513; cluster:513 |
     | `setControlSequenceOfThermostatOperation` | STRING: coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating | Set the overall operating environment of the thermostat, and thus, the possible system modes that the thermostat can operate in.; cluster:513 |
+    | `setTargetTemperature` | FLOAT [5.0..35.0] | Set the new air temperature to reach; cluster:513 |
     | `setThermostatMode` | STRING: off, auto, cool, heat, emergencyHeating | Set the current operating mode of the thermostat; cluster:513 |
+    | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -19539,9 +19539,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AvailableModesState` | DataState |  | cluster:513 |
     | `CommandLockLevelsState` | DataState |  |  |
+    | `ControlSequenceOfThermostatOperationState` | DiscreteState | coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating, coolingHeatingWithReheat | cluster:513 |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RoomTemperatureState` | ContinuousState |  | cluster:513 |
@@ -19550,9 +19553,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `TargetTemperatureCurrentUpperBoundState` | ContinuousState |  | cluster:513 |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] | cluster:513 |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] | cluster:513 |
-    | `ControlSequenceOfThermostatOperationState` | DiscreteState | coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating, coolingHeatingWithReheat | cluster:513 |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ThermostatModeState` | DiscreteState | off, auto, cool, heat, emergencyHeating, precooling, fanOnly, dry, sleep | cluster:513 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
@@ -19571,17 +19571,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0; cluster:513 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
+    | `raiseLowerTargetTemperature` | FLOAT [-10.0..10.0] | p1: amount The final temperature (actual + amount) must be included in the min/max range of temperature defined for this product.; cluster:513; cluster:513 |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
+    | `setControlSequenceOfThermostatOperation` | STRING: coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating | Set the overall operating environment of the thermostat, and thus, the possible system modes that the thermostat can operate in.; cluster:513 |
     | `setCoolingTargetTemperature` | FLOAT [5.0..35.0] | Set the cooling target temperature (manual set point); cluster:513 |
     | `setTargetTemperature` | FLOAT [5.0..35.0] | Set the new air temperature to reach; cluster:513 |
-    | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
-    | `raiseLowerTargetTemperature` | FLOAT [-10.0..10.0] | p1: amount The final temperature (actual + amount) must be included in the min/max range of temperature defined for this product.; cluster:513; cluster:513 |
-    | `setControlSequenceOfThermostatOperation` | STRING: coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating | Set the overall operating environment of the thermostat, and thus, the possible system modes that the thermostat can operate in.; cluster:513 |
     | `setThermostatMode` | STRING: off, auto, cool, heat, emergencyHeating | Set the current operating mode of the thermostat; cluster:513 |
+    | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -19590,10 +19590,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AvailableModesState` | DataState |  | cluster:513 |
     | `CommandLockLevelsState` | DataState |  |  |
+    | `ControlSequenceOfThermostatOperationState` | DiscreteState | coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating, coolingHeatingWithReheat | cluster:513 |
     | `CoolingTargetTemperatureState` | ContinuousState | [12.0..30.0] | cluster:513 |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RoomTemperatureState` | ContinuousState |  | cluster:513 |
@@ -19602,9 +19605,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `TargetTemperatureCurrentUpperBoundState` | ContinuousState |  | cluster:513 |
     | `TargetTemperatureState` | ContinuousState | [12.0..30.0] | cluster:513 |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] | cluster:513 |
-    | `ControlSequenceOfThermostatOperationState` | DiscreteState | coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating, coolingHeatingWithReheat | cluster:513 |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ThermostatModeState` | DiscreteState | off, auto, cool, heat, emergencyHeating, precooling, fanOnly, dry, sleep | cluster:513 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
@@ -19623,17 +19623,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0; cluster:513 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
+    | `raiseLowerTargetTemperature` | STRING: heat, cool, both; FLOAT [-10.0..10.0] | p1: heat => adjust heat setpoint     cool => adjust cool setpoint     both => adjust heat setpoint and cool setpoint p2: amount The final temperature (actual + amount) must be included in the min/max range of temperature defined for this product.; cluster:513; cluster:513 |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
+    | `setControlSequenceOfThermostatOperation` | STRING: coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating | Set the overall operating environment of the thermostat, and thus, the possible system modes that the thermostat can operate in.; cluster:513 |
     | `setCoolingTargetTemperature` | FLOAT [5.0..35.0] | Set the cooling target temperature (manual set point); cluster:513 |
     | `setHeatingTargetTemperature` | FLOAT [5.0..35.0] | Set the heating target temperature (manual set point); cluster:513 |
-    | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
-    | `raiseLowerTargetTemperature` | STRING: heat, cool, both; FLOAT [-10.0..10.0] | p1: heat => adjust heat setpoint     cool => adjust cool setpoint     both => adjust heat setpoint and cool setpoint p2: amount The final temperature (actual + amount) must be included in the min/max range of temperature defined for this product.; cluster:513; cluster:513 |
-    | `setControlSequenceOfThermostatOperation` | STRING: coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating | Set the overall operating environment of the thermostat, and thus, the possible system modes that the thermostat can operate in.; cluster:513 |
     | `setThermostatMode` | STRING: off, auto, cool, heat, emergencyHeating | Set the current operating mode of the thermostat; cluster:513 |
+    | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -19642,6 +19642,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AvailableModesState` | DataState |  | cluster:513 |
     | `CommandLockLevelsState` | DataState |  |  |
+    | `ControlSequenceOfThermostatOperationState` | DiscreteState | coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating, coolingHeatingWithReheat | cluster:513 |
     | `CoolingTargetTemperatureCurrentLowerBoundState` | ContinuousState |  | cluster:513 |
     | `CoolingTargetTemperatureCurrentUpperBoundState` | ContinuousState |  | cluster:513 |
     | `CoolingTargetTemperatureState` | ContinuousState | [12.0..30.0] | cluster:513 |
@@ -19650,15 +19651,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `HeatingTargetTemperatureCurrentLowerBoundState` | ContinuousState |  | cluster:513 |
     | `HeatingTargetTemperatureCurrentUpperBoundState` | ContinuousState |  | cluster:513 |
     | `HeatingTargetTemperatureState` | ContinuousState | [12.0..30.0] | cluster:513 |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RoomTemperatureState` | ContinuousState |  | cluster:513 |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] | cluster:513 |
-    | `ControlSequenceOfThermostatOperationState` | DiscreteState | coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating, coolingHeatingWithReheat | cluster:513 |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ThermostatModeState` | DiscreteState | off, auto, cool, heat, emergencyHeating, precooling, fanOnly, dry, sleep | cluster:513 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
@@ -19677,30 +19677,32 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0; cluster:513 |
+    | `autoBind` |  | Ask the device to do an automatic binding with other compatible devices of the setup. Mostly manufacturer dependant and private procedures.; cluster:513 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
+    | `raiseLowerTargetTemperature` | STRING: heat, cool, both; FLOAT [-10.0..10.0] | p1: heat => adjust heat setpoint     cool => adjust cool setpoint     both => adjust heat setpoint and cool setpoint p2: amount The final temperature (actual + amount) must be included in the min/max range of temperature defined for this product.; cluster:513; cluster:513 |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
+    | `setControlSequenceOfThermostatOperation` | STRING: coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating | Set the overall operating environment of the thermostat, and thus, the possible system modes that the thermostat can operate in.; cluster:513 |
     | `setCoolingTargetTemperature` | FLOAT [5.0..35.0] | Set the cooling target temperature (manual set point); cluster:513 |
     | `setDerogationOnOffState` | STRING: on, off | Switch on or switch off the derogation mode; cluster:513 |
     | `setDerogationTime` | INT [0..1440] | Defines the duration of derogation mode; cluster:513 |
     | `setHeatingTargetTemperature` | FLOAT [5.0..35.0] | Set the heating target temperature (manual set point); cluster:513 |
     | `setInternalSchedulingOnOffState` | STRING: on, off | Enable or disable device internal scheduling program; cluster:513 |
-    | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `autoBind` |  | Ask the device to do an automatic binding with other compatible devices of the setup. Mostly manufacturer dependant and private procedures.; cluster:513 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
-    | `raiseLowerTargetTemperature` | STRING: heat, cool, both; FLOAT [-10.0..10.0] | p1: heat => adjust heat setpoint     cool => adjust cool setpoint     both => adjust heat setpoint and cool setpoint p2: amount The final temperature (actual + amount) must be included in the min/max range of temperature defined for this product.; cluster:513; cluster:513 |
-    | `setControlSequenceOfThermostatOperation` | STRING: coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating | Set the overall operating environment of the thermostat, and thus, the possible system modes that the thermostat can operate in.; cluster:513 |
     | `setThermostatMode` | STRING: off, auto, cool, heat, emergencyHeating | Set the current operating mode of the thermostat; cluster:513 |
     | `stopAutoBind` |  | Ask the device to stop automatic binding with other compatible devices of the setup.; cluster:513 |
+    | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `AutoBindingState` | DataState |  | cluster:513 |
     | `AvailableModesState` | DataState |  | cluster:513 |
     | `CommandLockLevelsState` | DataState |  |  |
+    | `ControlSequenceOfThermostatOperationState` | DiscreteState | coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating, coolingHeatingWithReheat | cluster:513 |
     | `CoolingTargetTemperatureCurrentLowerBoundState` | ContinuousState |  | cluster:513 |
     | `CoolingTargetTemperatureCurrentUpperBoundState` | ContinuousState |  | cluster:513 |
     | `CoolingTargetTemperatureState` | ContinuousState | [12.0..30.0] | cluster:513 |
@@ -19714,17 +19716,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `HolidayModeConfiguredState` | DataState |  | cluster:513 |
     | `HolidaysModeState` | DiscreteState | off, on | cluster:513 |
     | `InternalSchedulingOnOffState` | DiscreteState | on, off | cluster:513 |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RemainingDerogationTimeState` | DataState |  | cluster:513 |
     | `RoomTemperatureState` | ContinuousState |  | cluster:513 |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] | cluster:513 |
-    | `AutoBindingState` | DataState |  | cluster:513 |
-    | `ControlSequenceOfThermostatOperationState` | DiscreteState | coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating, coolingHeatingWithReheat | cluster:513 |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ThermostatModeState` | DiscreteState | off, auto, cool, heat, emergencyHeating, precooling, fanOnly, dry, sleep | cluster:513 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
@@ -19743,49 +19743,49 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0; cluster:513 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
+    | `raiseLowerTargetTemperature` | STRING: heat, cool, both; FLOAT [-10.0..10.0] | p1: heat => adjust heat setpoint     cool => adjust cool setpoint     both => adjust heat setpoint and cool setpoint p2: amount The final temperature (actual + amount) must be included in the min/max range of temperature defined for this product.; cluster:513; cluster:513 |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
-    | `setCoolingTargetTemperature` | FLOAT [5.0..35.0] | Set the cooling target temperature (manual set point); cluster:513 |
-    | `setHeatingTargetTemperature` | FLOAT [5.0..35.0] | Set the heating target temperature (manual set point); cluster:513 |
-    | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
-    | `raiseLowerTargetTemperature` | STRING: heat, cool, both; FLOAT [-10.0..10.0] | p1: heat => adjust heat setpoint     cool => adjust cool setpoint     both => adjust heat setpoint and cool setpoint p2: amount The final temperature (actual + amount) must be included in the min/max range of temperature defined for this product.; cluster:513; cluster:513 |
     | `setACLouverPosition` | STRING: fullyClosed, fullyOpen, quarterOpen, halfOpen, threeQuartersOpen | Specify the AC louver position; cluster:513 |
     | `setControlSequenceOfThermostatOperation` | STRING: coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating | Set the overall operating environment of the thermostat, and thus, the possible system modes that the thermostat can operate in.; cluster:513 |
+    | `setCoolingTargetTemperature` | FLOAT [5.0..35.0] | Set the cooling target temperature (manual set point); cluster:513 |
     | `setEconomyEnergyStarMode` | STRING: enable, disable | Specify the economy/energyStar mode; cluster:513 |
     | `setFanMode` | STRING: off, low, medium, high, on | Specify the mode of fan; cluster:514 |
+    | `setHeatingTargetTemperature` | FLOAT [5.0..35.0] | Set the heating target temperature (manual set point); cluster:513 |
     | `setThermostatMode` | STRING: off, auto, cool, heat, fanOnly | Set the current operating mode of the thermostat; cluster:513 |
     | `setThermostatProgrammingOperationMode` | STRING: setpoint, schedule; STRING: enable, disable; STRING: enable, disable | Set the operational state of the thermostat's programming p1: schedule => enable any programmed weekly schedule configurations     setpoint => thermostat setopint is altered only by manual changes, not by internal schedule programming p2: status of the auto/recovery mode p3: status of the economy/energyStar mode; cluster:513 |
+    | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `ACLouverPositionState` | DiscreteState | fully closed, fully open, quarter open, half open, three quarters open | cluster:513 |
     | `AvailableModesState` | DataState |  | cluster:513 |
     | `CommandLockLevelsState` | DataState |  |  |
+    | `ControlSequenceOfThermostatOperationState` | DiscreteState | coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating, coolingHeatingWithReheat | cluster:513 |
     | `CoolingTargetTemperatureCurrentLowerBoundState` | ContinuousState |  | cluster:513 |
     | `CoolingTargetTemperatureCurrentUpperBoundState` | ContinuousState |  | cluster:513 |
     | `CoolingTargetTemperatureState` | ContinuousState | [12.0..30.0] | cluster:513 |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `EconomyEnergyStarModeEnabledState` | DiscreteState | enable, disable | cluster:513 |
+    | `FanModeSequenceState` | DiscreteState | low/medium/high, low/high, low/medium/high/auto, low/high/auto, on/auto | cluster:514 |
+    | `FanSpeedModeState` | DiscreteState | off, low, medium, high, on | cluster:514 |
     | `FirmwareRevisionState` | DataState |  |  |
     | `HeatingTargetTemperatureCurrentLowerBoundState` | ContinuousState |  | cluster:513 |
     | `HeatingTargetTemperatureCurrentUpperBoundState` | ContinuousState |  | cluster:513 |
     | `HeatingTargetTemperatureState` | ContinuousState | [12.0..30.0] | cluster:513 |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] | cluster:513 |
-    | `ACLouverPositionState` | DiscreteState | fully closed, fully open, quarter open, half open, three quarters open | cluster:513 |
-    | `ControlSequenceOfThermostatOperationState` | DiscreteState | coolingOnly, coolingWithReheat, heatingOnly, heatingWithReheat, coolingHeating, coolingHeatingWithReheat | cluster:513 |
-    | `EconomyEnergyStarModeEnabledState` | DiscreteState | enable, disable | cluster:513 |
-    | `FanModeSequenceState` | DiscreteState | low/medium/high, low/high, low/medium/high/auto, low/high/auto, on/auto | cluster:514 |
-    | `FanSpeedModeState` | DiscreteState | off, low, medium, high, on | cluster:514 |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ThermostatModeState` | DiscreteState | off, auto, cool, heat, emergencyHeating, precooling, fanOnly, dry, sleep | cluster:513 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
@@ -19804,6 +19804,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `off` |  | Turn off the device |
     | `on` |  | Turn on the device |
@@ -19815,7 +19816,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setOnOff` | STRING: off, on | Turn the device on or off; cluster:64512 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `toggle` |  | Toggle on/off status; cluster:64512 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -19825,14 +19825,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `CommandLockLevelsState` | DataState |  |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ModeState` | DataState |  | cluster:64512 |
     | `OnOffState` | DiscreteState | on, off | cluster:64512 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -19850,6 +19850,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `off` |  | Turn off the device; cluster:6 |
     | `on` |  | Turn on the device; cluster:6 |
@@ -19861,24 +19862,23 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setOnOff` | STRING: off, on | Turn the device on or off; cluster:6 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `toggle` |  | Toggle on/off status; cluster:6 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
 
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
+    | `CleodeHeatingModeState` | DiscreteState | comfort, comfort-1, comfort-2, eco, frostprotection, offloading | cluster:64513 |
     | `CommandLockLevelsState` | DataState |  |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `CleodeHeatingModeState` | DiscreteState | comfort, comfort-1, comfort-2, eco, frostprotection, offloading | cluster:64513 |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -19895,10 +19895,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -19908,17 +19908,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `BatteryLevelState` | ContinuousState |  | cluster:1 |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `LowBatteryThresholdState` | ContinuousState |  | cluster:1 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `MaxMeasuredValueState` | DataState |  | cluster:1029 |
     | `MinMeasuredValueState` | DataState |  | cluster:1029 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `RelativeHumidityState` | ContinuousState | [0.0..100.0] | cluster:1029 |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `ToleranceState` | DataState |  | cluster:1029 |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -19937,6 +19937,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `off` |  | Turn off the device; cluster:6 |
     | `on` |  | Turn on the device; cluster:6 |
@@ -19947,7 +19948,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setOnOff` | STRING: off, on | Turn the device on or off; cluster:6 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `toggle` |  | Toggle on/off status; cluster:6 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -19957,13 +19957,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `CommandLockLevelsState` | DataState |  |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -19982,6 +19982,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `off` |  | Turn off the device; cluster:6 |
     | `on` |  | Turn on the device; cluster:6 |
@@ -19994,7 +19995,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setOnOff` | STRING: off, on | Turn the device on or off; cluster:6 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `toggle` |  | Toggle on/off status; cluster:6 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -20005,13 +20005,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -20030,6 +20030,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `off` |  | Turn off the device; cluster:6 |
     | `on` |  | Turn on the device; cluster:6 |
@@ -20037,9 +20038,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `ping` |  | Check if device is available; cluster:3 |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
+    | `setHue` | INT [0..360] | Set the color hue (°) of the lamp; cluster:768 |
     | `setHueAndSaturation` | INT [0..360]; INT [0..100] | Set the color hue (°) and color saturation(%) of the lamp |
     | `setHueAndSaturationWithTransitionTime` | INT [0..360]; INT [0..100]; FLOAT [0.0..6553.5] | Set the color hue (°) and color saturation(%) of the lamp with a transition time.; cluster:768 |
-    | `setHue` | INT [0..360] | Set the color hue (°) of the lamp; cluster:768 |
     | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off); cluster:8 |
     | `setIntensityWithTimer` | INT [0..100]; INT [5..14400]; INT [0..100] (optional) | Set the light intensity to p1% then after p2 seconds, set it to p3%. (If p3 is not specified the light is turned off after the delay); cluster:8 |
     | `setOnOff` | STRING: off, on | Turn the device on or off; cluster:6 |
@@ -20047,7 +20048,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `stopMoveStepColor` |  | Allow Move to and Step commands to be stopped.; cluster:768 |
     | `toggle` |  | Toggle on/off status; cluster:6 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -20061,13 +20061,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -20086,6 +20086,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `off` |  | Turn off the device; cluster:6 |
     | `on` |  | Turn on the device; cluster:6 |
@@ -20094,9 +20095,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
     | `setColorLoopWithTransitionTime` | STRING: deactivated, activatedStartFromColorLoopStartEnhancedHue, activatedStartFromEnhancedCurrentHue; STRING: decremented, incremented; FLOAT [0.0..6550.0]; INT [0..360] | The Color Loop Set command allows a color loop to be activated such that the color lamp cycles through its range of hues. p1 : specifies the action to take for the color loop. p2 : specifies the direction for the color loop. p3 : specifies the number of seconds over which to perform a full color loop. p4 : specifies the starting hue to use for the color loop.; cluster:768 |
+    | `setHue` | INT [0..360] | Set the color hue (°) of the lamp; cluster:768 |
     | `setHueAndSaturation` | INT [0..360]; INT [0..100] | Set the color hue (°) and color saturation(%) of the lamp |
     | `setHueAndSaturationWithTransitionTime` | INT [0..360]; INT [0..100]; FLOAT [0.0..6553.5] | Set the color hue (°) and color saturation(%) of the lamp with a transition time.; cluster:768 |
-    | `setHue` | INT [0..360] | Set the color hue (°) of the lamp; cluster:768 |
     | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off); cluster:8 |
     | `setIntensityWithTimer` | INT [0..100]; INT [5..14400]; INT [0..100] (optional) | Set the light intensity to p1% then after p2 seconds, set it to p3%. (If p3 is not specified the light is turned off after the delay); cluster:8 |
     | `setOnOff` | STRING: off, on | Turn the device on or off; cluster:6 |
@@ -20104,7 +20105,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `stopMoveStepColor` |  | Allow Move to and Step commands to be stopped.; cluster:768 |
     | `toggle` |  | Toggle on/off status; cluster:6 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -20121,13 +20121,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -20146,6 +20146,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `off` |  | Turn off the device; cluster:6 |
     | `on` |  | Turn on the device; cluster:6 |
@@ -20154,14 +20155,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
     | `setCieColorSpaceXY` | FLOAT [0.001..0.999]; FLOAT [0.001..0.999] | Set the CIE color space coordinates (X,Y) of the lamp |
+    | `setCieColorSpaceXYWithTransitionTime` | FLOAT [0.001..0.999]; FLOAT [0.001..0.999]; FLOAT [0.0..6553.5] | Set color in the Cie color space XY with transition time. p1 : color X p2 : color Y p3 : time transition in second; cluster:768 |
     | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off); cluster:8 |
     | `setIntensityWithTimer` | INT [0..100]; INT [5..14400]; INT [0..100] (optional) | Set the light intensity to p1% then after p2 seconds, set it to p3%. (If p3 is not specified the light is turned off after the delay); cluster:8 |
     | `setOnOff` | STRING: off, on | Turn the device on or off; cluster:6 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `stopMoveStepColor` |  | Allow Move to and Step commands to be stopped.; cluster:768 |
     | `toggle` |  | Toggle on/off status; cluster:6 |
-    | `setCieColorSpaceXYWithTransitionTime` | FLOAT [0.001..0.999]; FLOAT [0.001..0.999]; FLOAT [0.0..6553.5] | Set color in the Cie color space XY with transition time. p1 : color X p2 : color Y p3 : time transition in second; cluster:768 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -20175,13 +20175,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -20200,6 +20200,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `off` |  | Turn off the device; cluster:6 |
     | `on` |  | Turn on the device; cluster:6 |
@@ -20208,9 +20209,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
     | `setCieColorSpaceXY` | FLOAT [0.001..0.999]; FLOAT [0.001..0.999] | Set the CIE color space coordinates (X,Y) of the lamp |
+    | `setCieColorSpaceXYWithTransitionTime` | FLOAT [0.001..0.999]; FLOAT [0.001..0.999]; FLOAT [0.0..6553.5] | Set color in the Cie color space XY with transition time. p1 : color X p2 : color Y p3 : time transition in second; cluster:768 |
+    | `setHue` | INT [0..360] | Set the color hue (°) of the lamp; cluster:768 |
     | `setHueAndSaturation` | INT [0..360]; INT [0..100] | Set the color hue (°) and color saturation(%) of the lamp |
     | `setHueAndSaturationWithTransitionTime` | INT [0..360]; INT [0..100]; FLOAT [0.0..6553.5] | Set the color hue (°) and color saturation(%) of the lamp with a transition time.; cluster:768 |
-    | `setHue` | INT [0..360] | Set the color hue (°) of the lamp; cluster:768 |
     | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off); cluster:8 |
     | `setIntensityWithTimer` | INT [0..100]; INT [5..14400]; INT [0..100] (optional) | Set the light intensity to p1% then after p2 seconds, set it to p3%. (If p3 is not specified the light is turned off after the delay); cluster:8 |
     | `setOnOff` | STRING: off, on | Turn the device on or off; cluster:6 |
@@ -20218,8 +20220,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `stopMoveStepColor` |  | Allow Move to and Step commands to be stopped.; cluster:768 |
     | `toggle` |  | Toggle on/off status; cluster:6 |
-    | `setCieColorSpaceXYWithTransitionTime` | FLOAT [0.001..0.999]; FLOAT [0.001..0.999]; FLOAT [0.0..6553.5] | Set color in the Cie color space XY with transition time. p1 : color X p2 : color Y p3 : time transition in second; cluster:768 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -20235,13 +20235,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -20260,6 +20260,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `off` |  | Turn off the device; cluster:6 |
     | `on` |  | Turn on the device; cluster:6 |
@@ -20268,10 +20269,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
     | `setCieColorSpaceXY` | FLOAT [0.0..1.0]; FLOAT [0.0..1.0] | Set the CIE color space coordinates (X,Y) of the lamp |
+    | `setCieColorSpaceXYWithTransitionTime` | FLOAT [0.0..1.0]; FLOAT [0.0..1.0]; FLOAT [0.0..6550.0] | Set color in the Cie color space XY with transition time. p1 : color X p2 : color Y p3 : time transition in second; cluster:768 |
     | `setColorLoopWithTransitionTime` | STRING: deactivated, activatedStartFromColorLoopStartEnhancedHue, activatedStartFromEnhancedCurrentHue; STRING: decremented, incremented; FLOAT [0.0..6550.0]; INT [0..360] | The Color Loop Set command allows a color loop to be activated such that the color lamp cycles through its range of hues. p1 : specifies the action to take for the color loop. p2 : specifies the direction for the color loop. p3 : specifies the number of seconds over which to perform a full color loop. p4 : specifies the starting hue to use for the color loop.; cluster:768 |
+    | `setHue` | INT [0..360] | Set the color hue (°) of the lamp; cluster:768 |
     | `setHueAndSaturation` | INT [0..360]; INT [0..100] | Set the color hue (°) and color saturation(%) of the lamp |
     | `setHueAndSaturationWithTransitionTime` | INT [0..360]; INT [0..100]; FLOAT [0.0..6553.5] | Set the color hue (°) and color saturation(%) of the lamp with a transition time.; cluster:768 |
-    | `setHue` | INT [0..360] | Set the color hue (°) of the lamp; cluster:768 |
     | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off); cluster:8 |
     | `setIntensityWithTimer` | INT [0..100]; INT [5..14400]; INT [0..100] (optional) | Set the light intensity to p1% then after p2 seconds, set it to p3%. (If p3 is not specified the light is turned off after the delay); cluster:8 |
     | `setOnOff` | STRING: off, on | Turn the device on or off; cluster:6 |
@@ -20279,8 +20281,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `stopMoveStepColor` |  | Allow Move to and Step commands to be stopped.; cluster:768 |
     | `toggle` |  | Toggle on/off status; cluster:6 |
-    | `setCieColorSpaceXYWithTransitionTime` | FLOAT [0.0..1.0]; FLOAT [0.0..1.0]; FLOAT [0.0..6550.0] | Set color in the Cie color space XY with transition time. p1 : color X p2 : color Y p3 : time transition in second; cluster:768 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -20299,13 +20299,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -20324,6 +20324,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `moveToColorTemperature` | FLOAT [2000.0..6500.0]; FLOAT [0.0..6550.0] | Move to a color temperature. p1 : color temperature in kelvin p2 : time transition in second; cluster:768 |
     | `off` |  | Turn off the device; cluster:6 |
@@ -20339,7 +20340,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `stopMoveStepColor` |  | Allow Move to and Step commands to be stopped.; cluster:768 |
     | `toggle` |  | Toggle on/off status; cluster:6 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -20352,13 +20352,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -20377,6 +20377,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `moveToColorTemperature` | FLOAT [2000.0..6500.0]; FLOAT [0.0..6550.0] | Move to a color temperature. p1 : color temperature in kelvin p2 : time transition in second; cluster:768 |
     | `off` |  | Turn off the device; cluster:6 |
@@ -20386,9 +20387,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
     | `setColorTemperature` | INT [2000..6500] | Set the perceived white temperature for this lamp (°K) |
+    | `setHue` | INT [0..360] | Set the color hue (°) of the lamp; cluster:768 |
     | `setHueAndSaturation` | INT [0..360]; INT [0..100] | Set the color hue (°) and color saturation(%) of the lamp |
     | `setHueAndSaturationWithTransitionTime` | INT [0..360]; INT [0..100]; FLOAT [0.0..6553.5] | Set the color hue (°) and color saturation(%) of the lamp with a transition time.; cluster:768 |
-    | `setHue` | INT [0..360] | Set the color hue (°) of the lamp; cluster:768 |
     | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off); cluster:8 |
     | `setIntensityWithTimer` | INT [0..100]; INT [5..14400]; INT [0..100] (optional) | Set the light intensity to p1% then after p2 seconds, set it to p3%. (If p3 is not specified the light is turned off after the delay); cluster:8 |
     | `setOnOff` | STRING: off, on | Turn the device on or off; cluster:6 |
@@ -20396,7 +20397,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `stopMoveStepColor` |  | Allow Move to and Step commands to be stopped.; cluster:768 |
     | `toggle` |  | Toggle on/off status; cluster:6 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -20411,13 +20411,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -20436,6 +20436,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `moveToColorTemperature` | FLOAT [2000.0..6500.0]; FLOAT [0.0..6550.0] | Move to a color temperature. p1 : color temperature in kelvin p2 : time transition in second; cluster:768 |
     | `off` |  | Turn off the device; cluster:6 |
@@ -20446,9 +20447,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
     | `setColorLoopWithTransitionTime` | STRING: deactivated, activatedStartFromColorLoopStartEnhancedHue, activatedStartFromEnhancedCurrentHue; STRING: decremented, incremented; FLOAT [0.0..6550.0]; INT [0..360] | The Color Loop Set command allows a color loop to be activated such that the color lamp cycles through its range of hues. p1 : specifies the action to take for the color loop. p2 : specifies the direction for the color loop. p3 : specifies the number of seconds over which to perform a full color loop. p4 : specifies the starting hue to use for the color loop.; cluster:768 |
     | `setColorTemperature` | INT [2000..6500] | Set the perceived white temperature for this lamp (°K) |
+    | `setHue` | INT [0..360] | Set the color hue (°) of the lamp; cluster:768 |
     | `setHueAndSaturation` | INT [0..360]; INT [0..100] | Set the color hue (°) and color saturation(%) of the lamp |
     | `setHueAndSaturationWithTransitionTime` | INT [0..360]; INT [0..100]; FLOAT [0.0..6553.5] | Set the color hue (°) and color saturation(%) of the lamp with a transition time.; cluster:768 |
-    | `setHue` | INT [0..360] | Set the color hue (°) of the lamp; cluster:768 |
     | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off); cluster:8 |
     | `setIntensityWithTimer` | INT [0..100]; INT [5..14400]; INT [0..100] (optional) | Set the light intensity to p1% then after p2 seconds, set it to p3%. (If p3 is not specified the light is turned off after the delay); cluster:8 |
     | `setOnOff` | STRING: off, on | Turn the device on or off; cluster:6 |
@@ -20456,7 +20457,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `stopMoveStepColor` |  | Allow Move to and Step commands to be stopped.; cluster:768 |
     | `toggle` |  | Toggle on/off status; cluster:6 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -20474,13 +20474,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -20499,6 +20499,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `moveToColorTemperature` | FLOAT [2000.0..6500.0]; FLOAT [0.0..6550.0] | Move to a color temperature. p1 : color temperature in kelvin p2 : time transition in second; cluster:768 |
     | `off` |  | Turn off the device; cluster:6 |
@@ -20508,6 +20509,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
     | `setCieColorSpaceXY` | FLOAT [0.001..0.999]; FLOAT [0.001..0.999] | Set the CIE color space coordinates (X,Y) of the lamp |
+    | `setCieColorSpaceXYWithTransitionTime` | FLOAT [0.001..0.999]; FLOAT [0.001..0.999]; FLOAT [0.0..6553.5] | Set color in the Cie color space XY with transition time. p1 : color X p2 : color Y p3 : time transition in second; cluster:768 |
     | `setColorTemperature` | INT [2000..6500] | Set the perceived white temperature for this lamp (°K) |
     | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off); cluster:8 |
     | `setIntensityWithTimer` | INT [0..100]; INT [5..14400]; INT [0..100] (optional) | Set the light intensity to p1% then after p2 seconds, set it to p3%. (If p3 is not specified the light is turned off after the delay); cluster:8 |
@@ -20515,8 +20517,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `stopMoveStepColor` |  | Allow Move to and Step commands to be stopped.; cluster:768 |
     | `toggle` |  | Toggle on/off status; cluster:6 |
-    | `setCieColorSpaceXYWithTransitionTime` | FLOAT [0.001..0.999]; FLOAT [0.001..0.999]; FLOAT [0.0..6553.5] | Set color in the Cie color space XY with transition time. p1 : color X p2 : color Y p3 : time transition in second; cluster:768 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -20531,13 +20531,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -20556,6 +20556,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `moveToColorTemperature` | FLOAT [2000.0..6500.0]; FLOAT [0.0..6550.0] | Move to a color temperature. p1 : color temperature in kelvin p2 : time transition in second; cluster:768 |
     | `off` |  | Turn off the device; cluster:6 |
@@ -20565,10 +20566,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
     | `setCieColorSpaceXY` | FLOAT [0.001..0.999]; FLOAT [0.001..0.999] | Set the CIE color space coordinates (X,Y) of the lamp |
+    | `setCieColorSpaceXYWithTransitionTime` | FLOAT [0.001..0.999]; FLOAT [0.001..0.999]; FLOAT [0.0..6553.5] | Set color in the Cie color space XY with transition time. p1 : color X p2 : color Y p3 : time transition in second; cluster:768 |
     | `setColorTemperature` | INT [2000..6500] | Set the perceived white temperature for this lamp (°K) |
+    | `setHue` | INT [0..360] | Set the color hue (°) of the lamp; cluster:768 |
     | `setHueAndSaturation` | INT [0..360]; INT [0..100] | Set the color hue (°) and color saturation(%) of the lamp |
     | `setHueAndSaturationWithTransitionTime` | INT [0..360]; INT [0..100]; FLOAT [0.0..6553.5] | Set the color hue (°) and color saturation(%) of the lamp with a transition time.; cluster:768 |
-    | `setHue` | INT [0..360] | Set the color hue (°) of the lamp; cluster:768 |
     | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off); cluster:8 |
     | `setIntensityWithTimer` | INT [0..100]; INT [5..14400]; INT [0..100] (optional) | Set the light intensity to p1% then after p2 seconds, set it to p3%. (If p3 is not specified the light is turned off after the delay); cluster:8 |
     | `setOnOff` | STRING: off, on | Turn the device on or off; cluster:6 |
@@ -20576,8 +20578,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `stopMoveStepColor` |  | Allow Move to and Step commands to be stopped.; cluster:768 |
     | `toggle` |  | Toggle on/off status; cluster:6 |
-    | `setCieColorSpaceXYWithTransitionTime` | FLOAT [0.001..0.999]; FLOAT [0.001..0.999]; FLOAT [0.0..6553.5] | Set color in the Cie color space XY with transition time. p1 : color X p2 : color Y p3 : time transition in second; cluster:768 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -20594,13 +20594,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -20619,6 +20619,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `moveToColorTemperature` | FLOAT [2000.0..6500.0]; FLOAT [0.0..6550.0] | Move to a color temperature. p1 : color temperature in kelvin p2 : time transition in second; cluster:768 |
     | `off` |  | Turn off the device; cluster:6 |
@@ -20628,11 +20629,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
     | `setCieColorSpaceXY` | FLOAT [0.001..0.999]; FLOAT [0.001..0.999] | Set the CIE color space coordinates (X,Y) of the lamp |
+    | `setCieColorSpaceXYWithTransitionTime` | FLOAT [0.001..0.999]; FLOAT [0.001..0.999]; FLOAT [0.0..6553.5] | Set color in the Cie color space XY with transition time. p1 : color X p2 : color Y p3 : time transition in second; cluster:768 |
     | `setColorLoopWithTransitionTime` | STRING: deactivated, activatedStartFromColorLoopStartEnhancedHue, activatedStartFromEnhancedCurrentHue; STRING: decremented, incremented; FLOAT [0.0..6550.0]; INT [0..360] | The Color Loop Set command allows a color loop to be activated such that the color lamp cycles through its range of hues. p1 : specifies the action to take for the color loop. p2 : specifies the direction for the color loop. p3 : specifies the number of seconds over which to perform a full color loop. p4 : specifies the starting hue to use for the color loop.; cluster:768 |
     | `setColorTemperature` | INT [2000..6500] | Set the perceived white temperature for this lamp (°K) |
+    | `setHue` | INT [0..360] | Set the color hue (°) of the lamp; cluster:768 |
     | `setHueAndSaturation` | INT [0..360]; INT [0..100] | Set the color hue (°) and color saturation(%) of the lamp |
     | `setHueAndSaturationWithTransitionTime` | INT [0..360]; INT [0..100]; FLOAT [0.0..6550.0] | Set the color hue (°) and color saturation(%) of the lamp with a transition time.; cluster:768 |
-    | `setHue` | INT [0..360] | Set the color hue (°) of the lamp; cluster:768 |
     | `setIntensity` | INT [0..100] | Light intensity level (100%=maximum intensity, 0%=off); cluster:8 |
     | `setIntensityWithTimer` | INT [0..100]; INT [5..14400]; INT [0..100] (optional) | Set the light intensity to p1% then after p2 seconds, set it to p3%. (If p3 is not specified the light is turned off after the delay); cluster:8 |
     | `setOnOff` | STRING: off, on | Turn the device on or off; cluster:6 |
@@ -20640,8 +20642,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `stopMoveStepColor` |  | Allow Move to and Step commands to be stopped.; cluster:768 |
     | `toggle` |  | Toggle on/off status; cluster:6 |
-    | `setCieColorSpaceXYWithTransitionTime` | FLOAT [0.001..0.999]; FLOAT [0.001..0.999]; FLOAT [0.0..6553.5] | Set color in the Cie color space XY with transition time. p1 : color X p2 : color Y p3 : time transition in second; cluster:768 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -20661,13 +20661,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -20686,6 +20686,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0; cluster:6 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `off` |  | Turn off the device; cluster:6 |
     | `on` |  | Turn on the device; cluster:6 |
@@ -20696,12 +20697,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setDefaultOnOffState` | STRING: off, on, previous, togglePrevious | set the Default Output State; cluster:6 |
     | `setOffWaitTime` | FLOAT [0.0..6553.5] | Set the timer that the "off" state shall be guarded to prevent an "on" command turning the device back to its "on" state; cluster:6 |
     | `setOnOff` | STRING: off, on | Turn the device on or off; cluster:6 |
-    | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `toggle` |  | Toggle on/off status; cluster:6 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `setSchneiderOnTimeReload` | INT [0..4294967295] | Set the number of seconds before the light is automaticaly switched off; cluster:6 |
     | `setSchneiderOnTimeReloadOptions` | STRING: enable, disable | Enable or disable cancellation for automatic off timer. If enable : timer can be cancelled by receiving OFF command (light goes off immediately) If disable : timer can not be cancelled, is always restarted; cluster:6 |
     | `setSchneiderPreWarningTime` | INT [0..6553] | Set the number of seconds before the light is switched off automatically during which the user is informed that the light will be switched off automaticaly; cluster:6 |
+    | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
+    | `toggle` |  | Toggle on/off status; cluster:6 |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -20712,17 +20712,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `DefaultOnOffState` | DiscreteState | off, on, previous, togglePrevious, unknown | cluster:6 |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OffWaitTimeState` | ContinuousState |  | cluster:6 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
-    | `ProductModelNameState` | DataState |  | cluster:0 |
-    | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `OnTimeReloadOptionsState` | DiscreteState | enable, disable | cluster:6 |
     | `OnTimeReloadState` | DataState |  | cluster:6 |
     | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `PreWarningTimeState` | DataState |  | cluster:6 |
+    | `ProductModelNameState` | DataState |  | cluster:0 |
+    | `RSSILevelState` | ContinuousState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -20741,6 +20741,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0; cluster:6 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `off` |  | Turn off the device; cluster:6 |
     | `on` |  | Turn on the device; cluster:6 |
@@ -20754,13 +20755,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setOffWaitTime` | FLOAT [0.0..6553.5] | Set the timer that the "off" state shall be guarded to prevent an "on" command turning the device back to its "on" state; cluster:6 |
     | `setOnIntensity` | INT [0..100]; STRING: previous | Light intensity level when the device is turned on (100%=maximum intensity, 0%=off). Some devices support previous intensity. If the parameter is at "previous" then the switching on intensity will be that which had been set when switching off; cluster:8 |
     | `setOnOff` | STRING: off, on | Turn the device on or off; cluster:6 |
-    | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `toggle` |  | Toggle on/off status; cluster:6 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `setSchneiderOnTimeReload` | INT [0..4294967295] | Set the number of seconds before the light is automaticaly switched off; cluster:6 |
     | `setSchneiderOnTimeReloadOptions` | STRING: enable, disable | Enable or disable cancellation for automatic off timer. If enable : timer can be cancelled by receiving OFF command (light goes off immediately) If disable : timer can not be cancelled, is always restarted; cluster:6 |
     | `setSchneiderPreWarningTime` | INT [0..6553] | Set the number of seconds before the light is switched off automatically during which the user is informed that the light will be switched off automaticaly; cluster:6 |
     | `setStartUpCurrentLevel` | STRING: min, previous; INT [0..100] | p1: min => set the current level on the minimum allow by the device previous => set the value to the state saved on the device integer[0-100] => set the custom intesity on start up.; cluster:8 |
+    | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
+    | `toggle` |  | Toggle on/off status; cluster:6 |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -20773,18 +20773,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `FirmwareRevisionState` | DataState |  |  |
     | `LightIntensityState` | ContinuousState | [0..100] | cluster:8 |
     | `LightOnIntensityState` | ContinuousState |  | cluster:8 |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OffWaitTimeState` | ContinuousState |  | cluster:6 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
-    | `ProductModelNameState` | DataState |  | cluster:0 |
-    | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `OnTimeReloadOptionsState` | DiscreteState | enable, disable | cluster:6 |
     | `OnTimeReloadState` | DataState |  | cluster:6 |
     | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `PreWarningTimeState` | DataState |  | cluster:6 |
+    | `ProductModelNameState` | DataState |  | cluster:0 |
+    | `RSSILevelState` | ContinuousState |  |  |
     | `StartUpCurrentLevelState` | DataState |  | cluster:8 |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -20801,10 +20801,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:1024 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -20813,17 +20813,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `LuminanceState` | ContinuousState |  | cluster:1024 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `MaxMeasuredValueState` | DataState |  | cluster:1024 |
     | `MinMeasuredValueState` | DataState |  | cluster:1024 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SensorTypeState` | DataState |  | cluster:1024 |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `ToleranceState` | DataState |  | cluster:1024 |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -20840,10 +20840,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -20853,14 +20853,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `BatteryLevelState` | ContinuousState |  | cluster:1 |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `LowBatteryThresholdState` | ContinuousState |  | cluster:1 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OccupancyState` | DiscreteState | personInside, noPersonInside | cluster:1280 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -20877,10 +20877,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -20889,13 +20889,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OccupancyState` | DiscreteState | personInside, noPersonInside | cluster:1030 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -20914,6 +20914,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `off` |  | Turn off the device; cluster:6 |
     | `on` |  | Turn on the device; cluster:6 |
@@ -20924,7 +20925,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setOnOff` | STRING: off, on | Turn the device on or off; cluster:6 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
     | `toggle` |  | Toggle on/off status; cluster:6 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -20934,13 +20934,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `CommandLockLevelsState` | DataState |  |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `OnOffState` | DiscreteState | on, off | cluster:6 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -20956,11 +20956,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `bindingNetwork` |  | Ask the device to bind its state to box |
     | `closeNetwork` |  | Ask the device to close network |
     | `openNetwork` | INT [0..300] | (Deprecated) Ask the device to open network over the number of seconds use as parameter. |
     | `refreshNetwork` |  | Retrieve all node on network |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -20968,10 +20968,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
 
 ??? note "ProtocolGateway/ZigbeeStack (PROTOCOL_GATEWAY) — 9 commands, 5 states"
 
@@ -20981,14 +20981,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `bindingNetwork` |  | Ask the device to bind its state to box |
     | `closeNetwork` |  | Ask the device to close network |
-    | `openNetwork` | INT [0..300] | (Deprecated) Ask the device to open network over the number of seconds use as parameter. |
-    | `refreshNetwork` |  | Retrieve all node on network |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `closeNetworkManagement` |  | Ask the device to close network management |
+    | `openNetwork` | INT [0..300] | (Deprecated) Ask the device to open network over the number of seconds use as parameter. |
     | `openNetworkManagement` |  | Ask the device to open network management without any security restriction over 180 seconds. |
     | `openNetworkWithCommissioningManagement` |  | Open network over 180 seconds only to devices which have right commissioning code. |
+    | `refreshNetwork` |  | Retrieve all node on network |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -20996,10 +20996,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | State | Type | Range / Values | Notes |
     |-------|------|----------------|-------|
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
 
 ??? note "RemoteController/EmptyRemoteController (REMOTE_CONTROLLER) — 2 commands, 12 states"
 
@@ -21019,13 +21019,13 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `BatteryLevelState` | ContinuousState |  | cluster:1 |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `LowBatteryThresholdState` | ContinuousState |  | cluster:1 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -21043,6 +21043,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `close` |  | Fully close the device |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `open` |  | Fully open the device |
@@ -21053,7 +21054,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setPosition` | INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%); cluster:8 |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer); cluster:258 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -21064,12 +21064,12 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `CommandLockLevelsState` | DataState |  |  |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -21087,6 +21087,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0; cluster:258 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `close` |  | Fully close the device; cluster:258 |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `open` |  | Fully open the device; cluster:258 |
@@ -21094,11 +21095,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open); cluster:258 |
+    | `setModes` | OBJECT | Set modes, all modes must be specified.   - motorDirection: string(normal;reversed), the reversal of the motor rotating direction associated with commands.   - motorRunMode: string(normal;calibration), placing the motor into Calibration Mode where limits are either setup using physical tools or limits are learned by the controller based on physical setup of the Window Covering by an installer   - motorRunningMode: string(normal;maintenance), placing the motor into Maintenance Mode where the motor cannot be moved over the network or by a switch connected to a Local Switch Input.   - motorLedFeedback: string(enable;disable), the display of any feedback LEDs.  Example: {     "motorDirection":"reversed",     "motorRunMode":"normal",     "motorRunningMode":"normal",     "motorLedFeedback":"enable" }; cluster:258 |
     | `setPosition` | INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%); cluster:258 |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer); cluster:258 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
-    | `setModes` | OBJECT | Set modes, all modes must be specified.   - motorDirection: string(normal;reversed), the reversal of the motor rotating direction associated with commands.   - motorRunMode: string(normal;calibration), placing the motor into Calibration Mode where limits are either setup using physical tools or limits are learned by the controller based on physical setup of the Window Covering by an installer   - motorRunningMode: string(normal;maintenance), placing the motor into Maintenance Mode where the motor cannot be moved over the network or by a switch connected to a Local Switch Input.   - motorLedFeedback: string(enable;disable), the display of any feedback LEDs.  Example: {     "motorDirection":"reversed",     "motorRunMode":"normal",     "motorRunningMode":"normal",     "motorLedFeedback":"enable" }; cluster:258 |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -21107,25 +21107,25 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ClosureState` | ContinuousState | [0..100] | cluster:258 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
-    | `FirmwareRevisionState` | DataState |  |  |
-    | `ManufacturerNameState` | DataState |  | cluster:0 |
-    | `OperationalStatusState` | DataState |  | cluster:258 |
-    | `ProductModelNameState` | DataState |  | cluster:0 |
-    | `RSSILevelState` | ContinuousState |  |  |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ControlLiftState` | DiscreteState | lift control is open loop, lift control is closed loop | cluster:258 |
     | `ControlTiltState` | DiscreteState | tilt control is closed loop, tilt control is open loop | cluster:258 |
     | `DirectionState` | DiscreteState | counterClockwise, clockwise | cluster:258 |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `EncoderLiftState` | DiscreteState | encoder controlled, timer controlled | cluster:258 |
     | `EncoderTiltState` | DiscreteState | encoder controlled, timer controlled | cluster:258 |
+    | `FirmwareRevisionState` | DataState |  |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
+    | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `MotorLEDFeedbackState` | DiscreteState | LEDs will display feedback, LEDs are off | cluster:258 |
     | `MotorRunModeState` | DiscreteState | run in calibration mode, run in normal mode | cluster:258 |
     | `MotorRunningModeState` | DiscreteState | motor is running in maintenance mode, motor is running normally | cluster:258 |
     | `NetworkOnlineState` | DiscreteState | online, not online | cluster:258 |
+    | `OperationalStatusState` | DataState |  | cluster:258 |
     | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
+    | `ProductModelNameState` | DataState |  | cluster:0 |
+    | `RSSILevelState` | ContinuousState |  |  |
     | `ReversalLiftState` | DiscreteState | reversal lift commands, not reversal lift commands | cluster:258 |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -21142,10 +21142,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -21155,14 +21155,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `BatteryLevelState` | ContinuousState |  | cluster:1 |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `LowBatteryThresholdState` | ContinuousState |  | cluster:1 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `SmokeState` | DiscreteState | detected, notDetected | cluster:1280 |
     | `StatusState` | DiscreteState | available, unavailable |  |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -21179,10 +21179,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -21191,15 +21191,15 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `MaxMeasuredValueState` | DataState |  | cluster:513 |
     | `MinMeasuredValueState` | DataState |  | cluster:513 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] | cluster:513 |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -21216,10 +21216,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -21229,17 +21229,17 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `BatteryLevelState` | ContinuousState |  | cluster:1 |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `LowBatteryThresholdState` | ContinuousState |  | cluster:1 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `MaxMeasuredValueState` | DataState |  | cluster:1026 |
     | `MinMeasuredValueState` | DataState |  | cluster:1026 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TemperatureState` | ContinuousState | [-100.0..100.0] | cluster:1026 |
     | `ToleranceState` | DataState |  | cluster:1026 |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -21257,20 +21257,20 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |---------|-----------|-------|
     | `addLockLevel` | INT; INT (optional) | Add a command lock level on the device p1 : The lock level to add p2 : (optional) Duration in second of the lock Level. By default there is no expiration.; cluster:0 |
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0; cluster:258 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `close` |  | Fully close the device; cluster:258 |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `open` |  | Fully open the device; cluster:258 |
     | `ping` |  | Check if device is available; cluster:3 |
     | `removeLockLevel` | INT | Remove the command lock level on the device p1 : The lock level to remove; cluster:0 |
     | `resetLockLevels` |  | Remove all lock levels on the device; cluster:0 |
-    | `setClosureAndOrientation` | INT [0..100]; INT [0..100] | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device; cluster:258 |
     | `setClosure` | INT [0..100] | Closure level (100%=fully close, 0%=open); cluster:258 |
-    | `setPosition` | INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%); cluster:258 |
+    | `setClosureAndOrientation` | INT [0..100]; INT [0..100] | Set both the closure level (0-100%) and relative slats orientation (0-100%) of the device; cluster:258 |
+    | `setModes` | OBJECT | Set modes, all modes must be specified.   - motorDirection: string(normal;reversed), the reversal of the motor rotating direction associated with commands.   - motorRunMode: string(normal;calibration), placing the motor into Calibration Mode where limits are either setup using physical tools or limits are learned by the controller based on physical setup of the Window Covering by an installer   - motorRunningMode: string(normal;maintenance), placing the motor into Maintenance Mode where the motor cannot be moved over the network or by a switch connected to a Local Switch Input.   - motorLedFeedback: string(enable;disable), the display of any feedback LEDs.  Example: {     "motorDirection":"reversed",     "motorRunMode":"normal",     "motorRunningMode":"normal",     "motorLedFeedback":"enable" }; cluster:258 |
     | `setOrientation` | INT [0..100] | Set the relative orientation (0-100%) of the device slats; cluster:258 |
+    | `setPosition` | INT [0..100] | Set the device to a pre-defined position (enum) or a relative position (0-100%); cluster:258 |
     | `stop` |  | Stop the current actuator behavior (movement, sound or timer); cluster:258 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
-    | `setModes` | OBJECT | Set modes, all modes must be specified.   - motorDirection: string(normal;reversed), the reversal of the motor rotating direction associated with commands.   - motorRunMode: string(normal;calibration), placing the motor into Calibration Mode where limits are either setup using physical tools or limits are learned by the controller based on physical setup of the Window Covering by an installer   - motorRunningMode: string(normal;maintenance), placing the motor into Maintenance Mode where the motor cannot be moved over the network or by a switch connected to a Local Switch Input.   - motorLedFeedback: string(enable;disable), the display of any feedback LEDs.  Example: {     "motorDirection":"reversed",     "motorRunMode":"normal",     "motorRunningMode":"normal",     "motorLedFeedback":"enable" }; cluster:258 |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -21279,26 +21279,26 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `ClosureState` | ContinuousState | [0..100] | cluster:258 |
     | `CommandLockLevelsState` | DataState |  |  |
-    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
-    | `FirmwareRevisionState` | DataState |  |  |
-    | `ManufacturerNameState` | DataState |  | cluster:0 |
-    | `OperationalStatusState` | DataState |  | cluster:258 |
-    | `ProductModelNameState` | DataState |  | cluster:0 |
-    | `RSSILevelState` | ContinuousState |  |  |
-    | `SlateOrientationState` | ContinuousState | [0..100] | cluster:258 |
-    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ControlLiftState` | DiscreteState | lift control is open loop, lift control is closed loop | cluster:258 |
     | `ControlTiltState` | DiscreteState | tilt control is closed loop, tilt control is open loop | cluster:258 |
     | `DirectionState` | DiscreteState | counterClockwise, clockwise | cluster:258 |
+    | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `EncoderLiftState` | DiscreteState | encoder controlled, timer controlled | cluster:258 |
     | `EncoderTiltState` | DiscreteState | encoder controlled, timer controlled | cluster:258 |
+    | `FirmwareRevisionState` | DataState |  |  |
     | `LinkQualityIndicatorState` | ContinuousState |  |  |
+    | `ManufacturerNameState` | DataState |  | cluster:0 |
     | `MotorLEDFeedbackState` | DiscreteState | LEDs will display feedback, LEDs are off | cluster:258 |
     | `MotorRunModeState` | DiscreteState | run in calibration mode, run in normal mode | cluster:258 |
     | `MotorRunningModeState` | DiscreteState | motor is running in maintenance mode, motor is running normally | cluster:258 |
     | `NetworkOnlineState` | DiscreteState | online, not online | cluster:258 |
+    | `OperationalStatusState` | DataState |  | cluster:258 |
     | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
+    | `ProductModelNameState` | DataState |  | cluster:0 |
+    | `RSSILevelState` | ContinuousState |  |  |
     | `ReversalLiftState` | DiscreteState | reversal lift commands, not reversal lift commands | cluster:258 |
+    | `SlateOrientationState` | ContinuousState | [0..100] | cluster:258 |
+    | `StatusState` | DiscreteState | available, unavailable |  |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -21315,10 +21315,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | Command | Parameters | Notes |
     |---------|-----------|-------|
     | `advancedRefresh` | STRING: normal, advanced | Refresh extra states; cluster:0 |
+    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep; cluster:3 |
     | `ping` |  | Check if device is available; cluster:3 |
     | `stopIdentify` |  | Ask the device to stop winking immediately; cluster:3 |
-    | `bind` | STRING; STRING | Bind a device with another device. First parameter is target device address. Second parameter is list of clusters to bind (string of clusters separated by ","). |
     | `unbind` | STRING; STRING | Unbind a device with another device. First parameter is target device address. Second parameter is list of clusters to unbind (string of clusters separated by ","). |
 
     **States**
@@ -21328,14 +21328,14 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `BatteryLevelState` | ContinuousState |  | cluster:1 |
     | `DiscreteRSSILevelState` | DiscreteState | good, low, normal, verylow |  |
     | `FirmwareRevisionState` | DataState |  |  |
+    | `LinkQualityIndicatorState` | ContinuousState |  |  |
     | `LowBatteryThresholdState` | ContinuousState |  | cluster:1 |
     | `ManufacturerNameState` | DataState |  | cluster:0 |
+    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ProductModelNameState` | DataState |  | cluster:0 |
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `WaterDetectionState` | DiscreteState | detected, notDetected | cluster:1280 |
-    | `LinkQualityIndicatorState` | ContinuousState |  |  |
-    | `PowerSourceState` | DiscreteState | Unknown, Mains (single phase), Mains (3 phase), Battery, DC source, Emergency mains constantly powered, Emergency mains and transfer switch | cluster:0 |
     | `ZigbeeUpdateDownloadProgressState` | ContinuousState |  |  |
     | `ZigbeeUpdateState` | DiscreteState | idle, running, error-timeout, error-default-initial-condition, error-on-upgrade, success, error-abort, error-not-authorized, error-invalid-image, error-wait-for-data, error-no-image-available, error-malformed-command, error-require-more-image |  |
 
@@ -21419,6 +21419,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `refreshButton3Configuration` |  | Refresh how button 3 behaves. |
     | `refreshButton4Configuration` |  | Refresh how button 4 behaves. |
     | `refreshLedManagementConfiguration` |  | Refresh LED behaviour. |
+    | `refreshSceneTypeConfiguration` |  | Refresh the choosen way of sending Scene to the gateway. |
     | `resetButton1And3ProfileConfiguration` |  | Reset profile of button 1 and 3. |
     | `resetButton1Configuration` |  | Reset how button 1 behaves. |
     | `resetButton2And4ProfileConfiguration` |  | Reset profile of button 2 and 4. |
@@ -21433,7 +21434,6 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `setButton3Configuration` | STRING: controlGroup, allSwitchOn, allSwitchOff | Set how button 3 behaves. |
     | `setButton4Configuration` | STRING: controlGroup, allSwitchOn, allSwitchOff | Set how button 4 behaves. |
     | `setLedManagementConfiguration` | STRING: noLed, flashBlue, blinkToConfirm, flashAndBlinkToConfirm | Set LED behaviour. |
-    | `refreshSceneTypeConfiguration` |  | Refresh the choosen way of sending Scene to the gateway. |
 
     **States**
 
@@ -21497,9 +21497,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
+    | `refreshMeteringSupported` |  | Refresh the supported scales in a sub meter. |
     | `refreshMeteringWithSpecificScale` | STRING: kWh, kVAh, W, pulseCount, cubicMeters | Refresh the current metering of the device. |
     | `resetMetering` |  | Used to reset ALL accumulated values stored in the meter device. |
-    | `refreshMeteringSupported` |  | Refresh the supported scales in a sub meter. |
 
     **States**
 
@@ -21529,9 +21529,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
+    | `refreshMeteringSupported` |  | Refresh the supported scales in a sub meter. |
     | `refreshMeteringWithSpecificScale` | STRING: kWh, kVAh, W, pulseCount, cubicMeters | Refresh the current metering of the device. |
     | `resetMetering` |  | Used to reset ALL accumulated values stored in the meter device. |
-    | `refreshMeteringSupported` |  | Refresh the supported scales in a sub meter. |
 
     **States**
 
@@ -21580,20 +21580,20 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `lock` |  | Lock the device |
-    | `refreshLockedUnlocked` |  | Refresh locked/unlocked state |
-    | `unlock` |  | Unlock the device |
     | `disableInsideHandles` |  | Disable the inside handle of the door lock. |
     | `disableLockTimeout` |  | Set the door lock to constant operation. |
     | `disableOutsideHandles` |  | Disable the outside handle of the door lock. |
     | `enableInsideHandles` |  | Enable the inside handle of the door lock. |
     | `enableOutsideHandles` |  | Enable the outside handle of the door lock. |
+    | `lock` |  | Lock the device |
     | `refreshDoorLockConfiguration` |  | Refresh the door lock configuration |
     | `refreshDoorLockMode` |  | Refresh a door lock operation. |
+    | `refreshLockedUnlocked` |  | Refresh locked/unlocked state |
     | `setDoorLockConfiguration` | INT [0..253]; INT [0..59]; STRING: enabled, disabled; STRING: enabled, disabled | Set the lock configuration.  p1: Timeout minutes (enabled/disabled). p2: Timeout seconds (enabled/disabled). p3: Outside handles mode (enabled/disabled). p4: Inside handles mode (enabled/disabled). |
     | `setDoorLockMode` | STRING: unsecured, unsecuredWithTimeout, unsecuredForInsideDoorHandles, unsecuredForInsideDoorHandlesWithTimeout, unsecuredForOutsideDoorHandles | Set a door lock mode. |
     | `setHandlesMode` | STRING: enabled, disabled, none; STRING: enabled, disabled, none | Set the handles mode of the door lock.  p1: Outside handles mode (enabled:disabled) p2: Inside handles mode (enabled:disabled) |
     | `setLockTimeout` | INT [0..253]; INT [0..59] | Set timeout of the door lock.  p1 : minutes timeout bewteen 0 and 253 p2 : seconds timeout bewteen 0 and 59 |
+    | `unlock` |  | Unlock the device |
 
     **States**
 
@@ -21631,9 +21631,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
+    | `refreshNotification` | INT [0..255]; STRING; STRING (optional) | This command is used to request if the unsolicited transmission of a specific Notification Type is enabled. p1: The use of this field depends on the V1 Alarm field advertised in the Alarm Type Supported Report Command. p2: This field is used to specify a Notification Type p3: This field is used to optionally specify a Notification Event/State within the Notification Type |
     | `refreshNotificationSupportedEvent` | STRING | This command is used to request the supported Notifications for a specified Notification Type. p1: This field is used to specify a Notification Type |
     | `refreshNotificationSupportedType` |  | This command is used to request supported Notification Types |
-    | `refreshNotification` | INT [0..255]; STRING; STRING (optional) | This command is used to request if the unsolicited transmission of a specific Notification Type is enabled. p1: The use of this field depends on the V1 Alarm field advertised in the Alarm Type Supported Report Command. p2: This field is used to specify a Notification Type p3: This field is used to optionally specify a Notification Event/State within the Notification Type |
     | `setNotificationStatus` | STRING; STRING: enabled, disabled | This command is used to enable or disable the unsolicited transmission of a specific Notification Type. p1: This field is used to specify a Notification Type p2: This field is used to set the Status of a Notification Type. |
 
     **States**
@@ -22015,19 +22015,19 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
     | Command | Parameters | Notes |
     |---------|-----------|-------|
-    | `startExclusion` | INT [1..3600] | Start zwave exclusion with a given timeout. |
-    | `startExclusionWithMode` | INT [1..3600]; STRING: low, normal, wide | Start zwave exclusion with a given timeout and mode. p1 : timeout p2 : mode     "low" value if the device is less than 3 meters of the gateway     "normal" value if the device is under the network cover of the gateway     "wide" value if the device is further away than the network coverage of the gateway |
-    | `stopExclusion` |  | Stop zwave exclusion. |
-    | `startInclusion` | INT [1..3600] | Start zwave inclusion with a given timeout. |
-    | `startInclusionWithModeAndSecurityLevel` | INT [1..3600]; STRING: low, normal, wide; STRING: none, CRC16, S0, S2 | !!! Warning !!! You should use another security level than S2 only if you have no other choice, Be caution with this command.  Start zwave inclusion with a given timeout, mode and security level. If you set none for example for a device which can use S2 all frame will be readble without security key. p1 : timeout p2 : mode     "low" value if the device is less than 3 meters of the gateway.     "normal" value if the device is under the network cover of the gateway.     "wide" value if the device is further away than the network coverage of the gateway. p3 : highest security level to use. |
-    | `startInclusionWithMode` | INT [1..3600]; STRING: low, normal, wide | Start zwave inclusion with a given timeout and mode. p1 : timeout p2 : mode     "low" value if the device is less than 3 meters of the gateway.     "normal" value if the device is under the network cover of the gateway.     "wide" value if the device is further away than the network coverage of the gateway. |
-    | `stopInclusion` |  | Stop zwave inclusion. |
-    | `startLearn` | INT [1..3600] | Start zwave learn with a given timeout. |
-    | `startLearnWithMode` | INT [1..3600]; STRING: classic, inclusion, exclusion | Start zwave learn with a given timeout and mode. p1 : timeout p2 : mode     "classic" gateway can be included or excluded from another network.     "inclusion" gateway can only be included from another network.     "exclusion" gateway can only be excluded from another network. |
-    | `stopLearn` |  | Stop zwave learn. |
     | `isFailedDevice` | INT [0..255] | Test if the device is still reachable into the network. p1 : nodeId |
     | `removeFailedNode` | INT [0..255] | Remove a failed node. p1 : nodeId |
     | `replaceFailedDevice` | INT [0..255] | Replace a failed node. p1 : nodeId |
+    | `startExclusion` | INT [1..3600] | Start zwave exclusion with a given timeout. |
+    | `startExclusionWithMode` | INT [1..3600]; STRING: low, normal, wide | Start zwave exclusion with a given timeout and mode. p1 : timeout p2 : mode     "low" value if the device is less than 3 meters of the gateway     "normal" value if the device is under the network cover of the gateway     "wide" value if the device is further away than the network coverage of the gateway |
+    | `startInclusion` | INT [1..3600] | Start zwave inclusion with a given timeout. |
+    | `startInclusionWithMode` | INT [1..3600]; STRING: low, normal, wide | Start zwave inclusion with a given timeout and mode. p1 : timeout p2 : mode     "low" value if the device is less than 3 meters of the gateway.     "normal" value if the device is under the network cover of the gateway.     "wide" value if the device is further away than the network coverage of the gateway. |
+    | `startInclusionWithModeAndSecurityLevel` | INT [1..3600]; STRING: low, normal, wide; STRING: none, CRC16, S0, S2 | !!! Warning !!! You should use another security level than S2 only if you have no other choice, Be caution with this command.  Start zwave inclusion with a given timeout, mode and security level. If you set none for example for a device which can use S2 all frame will be readble without security key. p1 : timeout p2 : mode     "low" value if the device is less than 3 meters of the gateway.     "normal" value if the device is under the network cover of the gateway.     "wide" value if the device is further away than the network coverage of the gateway. p3 : highest security level to use. |
+    | `startLearn` | INT [1..3600] | Start zwave learn with a given timeout. |
+    | `startLearnWithMode` | INT [1..3600]; STRING: classic, inclusion, exclusion | Start zwave learn with a given timeout and mode. p1 : timeout p2 : mode     "classic" gateway can be included or excluded from another network.     "inclusion" gateway can only be included from another network.     "exclusion" gateway can only be excluded from another network. |
+    | `stopExclusion` |  | Stop zwave exclusion. |
+    | `stopInclusion` |  | Stop zwave inclusion. |
+    | `stopLearn` |  | Stop zwave learn. |
 
     **States**
 
@@ -22065,4 +22065,3 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `NeighboursAddressesState` | DataState |  |  |
     | `RockerSwitchPushWayState` | DiscreteState | heldDown, pressed, pressedX2, pressedX3, pressedX4 |  |
     | `RockerSwitchx2State` | DiscreteState | A0, A1, B0, B1, released |  |
-
