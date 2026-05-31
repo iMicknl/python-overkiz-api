@@ -952,6 +952,18 @@ def test_command_to_payload_preserves_dict_parameter():
     assert payload["parameters"] == [date]
 
 
+def test_command_to_payload_preserves_list_parameter():
+    """Command.to_payload passes a nested list parameter through untouched."""
+    from pyoverkiz.models import Command
+
+    schedule = [[0, 1, 2], [3, 4, 5]]
+    cmd = Command(name="setSchedule", parameters=[schedule])
+
+    payload = cmd.to_payload()
+
+    assert payload["parameters"] == [schedule]
+
+
 def test_action_to_payload_and_parameters_conversion():
     """Action.to_payload converts nested Command enums to primitives."""
     from pyoverkiz.enums.command import OverkizCommand, OverkizCommandParam
