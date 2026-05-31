@@ -663,6 +663,106 @@ class TestNexityAuthStrategy:
                 await strategy.login()
 
 
+def _server_error_response(status: int = 502):
+    """Return a mock token-endpoint response with a 5xx HTML body.
+
+    Mirrors aiohttp: ``response.json()`` (the default, content-type-checked
+    call the strategies use) raises ContentTypeError on an HTML body, while
+    ``response.json(content_type=None)`` (used by check_response) raises
+    JSONDecodeError when it tries to parse the HTML as JSON.
+    """
+    from json import JSONDecodeError
+
+    from aiohttp import ContentTypeError
+
+    html = "<html><head><title>502 Bad Gateway</title></head></html>"
+
+    async def _json(content_type: str | None = "application/json"):
+        if content_type is None:
+            raise JSONDecodeError("Expecting value", html, 0)
+        raise ContentTypeError(
+            request_info=MagicMock(),
+            history=(),
+            message="Attempt to decode JSON with unexpected mimetype: text/html",
+        )
+
+    response = MagicMock()
+    response.status = status
+    response.url = "https://apis.groupe-atlantic.com/token"
+    response.json = AsyncMock(side_effect=_json)
+    response.text = AsyncMock(return_value=html)
+    response.__aenter__ = AsyncMock(return_value=response)
+    response.__aexit__ = AsyncMock(return_value=None)
+    return response
+
+
+class TestTokenEndpointServerErrors:
+    """A 5xx HTML body from a token endpoint must raise a typed Overkiz error."""
+
+    @pytest.mark.asyncio
+    async def test_somfy_token_502_raises_service_unavailable(self):
+        """Somfy token endpoint 502 maps to ServiceUnavailableError, not aiohttp."""
+        from pyoverkiz.exceptions import ServiceUnavailableError
+
+        server_config = ServerConfig(
+            server=Server.SOMFY_EUROPE,
+            name="Somfy",
+            endpoint="https://api.somfy.com",
+            manufacturer="Somfy",
+            api_type=APIType.CLOUD,
+        )
+        credentials = UsernamePasswordCredentials("user", "pass")
+        session = AsyncMock(spec=ClientSession)
+        session.post = MagicMock(return_value=_server_error_response(502))
+
+        strategy = SomfyAuthStrategy(credentials, session, server_config, True)
+
+        with pytest.raises(ServiceUnavailableError):
+            await strategy.login()
+
+    @pytest.mark.asyncio
+    async def test_cozytouch_token_502_raises_service_unavailable(self):
+        """Cozytouch token endpoint 502 maps to ServiceUnavailableError."""
+        from pyoverkiz.exceptions import ServiceUnavailableError
+
+        server_config = ServerConfig(
+            server=Server.ATLANTIC_COZYTOUCH,
+            name="Cozytouch",
+            endpoint="https://api.cozytouch.com",
+            manufacturer="Atlantic",
+            api_type=APIType.CLOUD,
+        )
+        credentials = UsernamePasswordCredentials("user", "pass")
+        session = AsyncMock(spec=ClientSession)
+        session.post = MagicMock(return_value=_server_error_response(502))
+
+        strategy = CozytouchAuthStrategy(credentials, session, server_config, True)
+
+        with pytest.raises(ServiceUnavailableError):
+            await strategy.login()
+
+    @pytest.mark.asyncio
+    async def test_rexel_token_504_raises_service_unavailable(self):
+        """Rexel token exchange 504 maps to ServiceUnavailableError."""
+        from pyoverkiz.exceptions import ServiceUnavailableError
+
+        server_config = ServerConfig(
+            server=Server.REXEL,
+            name="Rexel",
+            endpoint="https://api.rexel.com",
+            manufacturer="Rexel",
+            api_type=APIType.CLOUD,
+        )
+        credentials = RexelOAuthCodeCredentials("code", "https://redirect", "verifier")
+        session = AsyncMock(spec=ClientSession)
+        session.post = MagicMock(return_value=_server_error_response(504))
+
+        strategy = RexelAuthStrategy(credentials, session, server_config, True)
+
+        with pytest.raises(ServiceUnavailableError):
+            await strategy._exchange_token({"grant_type": "authorization_code"})
+
+
 class TestRexelAuthStrategy:
     """Tests for Rexel auth specifics."""
 
