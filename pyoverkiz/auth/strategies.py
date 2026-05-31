@@ -329,52 +329,20 @@ class LocalTokenAuthStrategy(BaseAuthStrategy):
         return {"Authorization": f"Bearer {self.credentials.token}"}
 
 
-class RexelAuthStrategy(BaseAuthStrategy):
-    """Authentication strategy using Rexel OAuth2."""
+class RexelGatewayMixin:
+    """Shared Rexel gateway discovery/selection for Rexel auth strategies.
 
-    def __init__(
-        self,
-        credentials: RexelOAuthCodeCredentials,
-        session: ClientSession,
-        server: ServerConfig,
-        ssl_context: ssl.SSLContext | bool,
-    ) -> None:
-        """Create a Rexel OAuth2 strategy with a fresh auth context."""
-        super().__init__(session, server, ssl_context)
-        self.credentials = credentials
-        self.context = AuthContext()
-        self._gateway_id: str | None = None
+    The only per-strategy difference is how the access token is obtained,
+    supplied by overriding ``_current_access_token``.
+    """
 
-    async def login(self) -> None:
-        """Exchange the authorization code, then auto-select a sole gateway."""
-        await self._exchange_token(
-            {
-                "grant_type": "authorization_code",
-                "client_id": REXEL_OAUTH_CLIENT_ID,
-                "scope": REXEL_OAUTH_SCOPE,
-                "code": self.credentials.code,
-                "redirect_uri": self.credentials.redirect_uri,
-                "code_verifier": self.credentials.code_verifier,
-            }
-        )
-        gateways = await self.discover_gateways()
-        if len(gateways) == 1:
-            self.select_gateway(gateways[0].gateway_id)
+    session: ClientSession
+    _ssl: ssl.SSLContext | bool
+    _gateway_id: str | None
 
-    async def refresh_if_needed(self) -> bool:
-        """Refresh Rexel OAuth2 tokens if needed."""
-        if not self.context.is_expired() or not self.context.refresh_token:
-            return False
-
-        await self._exchange_token(
-            {
-                "grant_type": "refresh_token",
-                "client_id": REXEL_OAUTH_CLIENT_ID,
-                "scope": REXEL_OAUTH_SCOPE,
-                "refresh_token": cast(str, self.context.refresh_token),
-            }
-        )
-        return True
+    async def _current_access_token(self) -> str | None:
+        """Return the current access token. Overridden per strategy."""
+        raise NotImplementedError
 
     async def discover_gateways(self) -> list[GatewayCandidate]:
         """Enumerate every home x gateway available to this account."""
@@ -418,25 +386,79 @@ class RexelAuthStrategy(BaseAuthStrategy):
         """
         async with self.session.get(
             f"{REXEL_ENDUSER_API}/{path}",
-            headers={"Authorization": f"Bearer {self.context.access_token}"},
+            headers={"Authorization": f"Bearer {await self._current_access_token()}"},
             ssl=self._ssl,
         ) as response:
             await check_response(response)
             return cast(list[dict[str, Any]], await response.json())
 
-    async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
-        """Return authentication headers, including the selected gateway."""
-        if not self.context.access_token:
-            return {}
+    def _gateway_headers(self) -> dict[str, str]:
+        """Return the gatewayId header; raise if no gateway is selected."""
         if self._gateway_id is None:
             raise NoGatewaySelectedError(
                 "Multiple Rexel gateways available; call discover_gateways() "
                 "and select_gateway() before making requests."
             )
-        return {
-            "Authorization": f"Bearer {self.context.access_token}",
-            REXEL_GATEWAY_HEADER: self._gateway_id,
-        }
+        return {REXEL_GATEWAY_HEADER: self._gateway_id}
+
+    async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
+        """Return Bearer + gatewayId headers, or {} before a token exists."""
+        token = await self._current_access_token()
+        if not token:
+            return {}
+        return {"Authorization": f"Bearer {token}", **self._gateway_headers()}
+
+
+class RexelAuthStrategy(RexelGatewayMixin, BaseAuthStrategy):
+    """Authentication strategy using Rexel OAuth2 code exchange."""
+
+    def __init__(
+        self,
+        credentials: RexelOAuthCodeCredentials,
+        session: ClientSession,
+        server: ServerConfig,
+        ssl_context: ssl.SSLContext | bool,
+    ) -> None:
+        """Create a Rexel OAuth2 strategy with a fresh auth context."""
+        super().__init__(session, server, ssl_context)
+        self.credentials = credentials
+        self.context = AuthContext()
+        self._gateway_id: str | None = None
+
+    async def _current_access_token(self) -> str | None:
+        """Return the access token from the OAuth2 code-exchange context."""
+        return self.context.access_token
+
+    async def login(self) -> None:
+        """Exchange the authorization code, then auto-select a sole gateway."""
+        await self._exchange_token(
+            {
+                "grant_type": "authorization_code",
+                "client_id": REXEL_OAUTH_CLIENT_ID,
+                "scope": REXEL_OAUTH_SCOPE,
+                "code": self.credentials.code,
+                "redirect_uri": self.credentials.redirect_uri,
+                "code_verifier": self.credentials.code_verifier,
+            }
+        )
+        gateways = await self.discover_gateways()
+        if len(gateways) == 1:
+            self.select_gateway(gateways[0].gateway_id)
+
+    async def refresh_if_needed(self) -> bool:
+        """Refresh Rexel OAuth2 tokens if needed."""
+        if not self.context.is_expired() or not self.context.refresh_token:
+            return False
+
+        await self._exchange_token(
+            {
+                "grant_type": "refresh_token",
+                "client_id": REXEL_OAUTH_CLIENT_ID,
+                "scope": REXEL_OAUTH_SCOPE,
+                "refresh_token": cast(str, self.context.refresh_token),
+            }
+        )
+        return True
 
     async def _exchange_token(self, payload: Mapping[str, str]) -> None:
         """Exchange authorization code or refresh token for access token."""
