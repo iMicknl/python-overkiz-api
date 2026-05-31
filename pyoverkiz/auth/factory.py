@@ -10,6 +10,7 @@ from pyoverkiz.auth.credentials import (
     Credentials,
     LocalTokenCredentials,
     RexelOAuthCodeCredentials,
+    RexelTokenCredentials,
     TokenCredentials,
     UsernamePasswordCredentials,
 )
@@ -20,6 +21,7 @@ from pyoverkiz.auth.strategies import (
     LocalTokenAuthStrategy,
     NexityAuthStrategy,
     RexelAuthStrategy,
+    RexelTokenAuthStrategy,
     SessionLoginStrategy,
     SomfyAuthStrategy,
 )
@@ -66,6 +68,10 @@ def build_auth_strategy(
         )
 
     if server == Server.REXEL:
+        if isinstance(credentials, RexelTokenCredentials):
+            return RexelTokenAuthStrategy(
+                credentials, session, server_config, ssl_context
+            )
         return RexelAuthStrategy(
             _ensure_credentials(credentials, RexelOAuthCodeCredentials),
             session,

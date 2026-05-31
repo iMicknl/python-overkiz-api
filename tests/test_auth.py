@@ -275,6 +275,50 @@ class TestAuthFactory:
         assert isinstance(strategy, RexelAuthStrategy)
 
     @pytest.mark.asyncio
+    async def test_build_auth_strategy_rexel_token(self):
+        """RexelTokenCredentials build a RexelTokenAuthStrategy for Rexel."""
+        server_config = ServerConfig(
+            server=Server.REXEL,
+            name="Rexel",
+            endpoint="https://api.rexel.com",
+            manufacturer="Rexel",
+            api_type=APIType.CLOUD,
+        )
+        credentials = RexelTokenCredentials(access_token="static-token")
+        session = AsyncMock(spec=ClientSession)
+
+        strategy = build_auth_strategy(
+            server_config=server_config,
+            credentials=credentials,
+            session=session,
+            ssl_context=True,
+        )
+
+        assert isinstance(strategy, RexelTokenAuthStrategy)
+
+    @pytest.mark.asyncio
+    async def test_build_auth_strategy_rexel_code_still_works(self):
+        """RexelOAuthCodeCredentials still build the code-exchange strategy."""
+        server_config = ServerConfig(
+            server=Server.REXEL,
+            name="Rexel",
+            endpoint="https://api.rexel.com",
+            manufacturer="Rexel",
+            api_type=APIType.CLOUD,
+        )
+        credentials = RexelOAuthCodeCredentials("code", "uri", "verifier")
+        session = AsyncMock(spec=ClientSession)
+
+        strategy = build_auth_strategy(
+            server_config=server_config,
+            credentials=credentials,
+            session=session,
+            ssl_context=True,
+        )
+
+        assert isinstance(strategy, RexelAuthStrategy)
+
+    @pytest.mark.asyncio
     async def test_build_auth_strategy_local_token(self):
         """Test building local token auth strategy."""
         server_config = ServerConfig(
