@@ -37,10 +37,6 @@ ADDITIONAL_WIDGETS = [
     "CyclicSlidingGateOpener",
     "CyclicSwingingGateOpener",
     "DiscreteGateWithPedestrianPosition",
-    "HLRRWifiBridge",
-    "MediaRenderer",
-    "Node",
-    "SwimmingPoolRollerShutter",
 ]
 
 
@@ -77,7 +73,38 @@ def load_merged_reference_metadata() -> dict:
             ):
                 merged["uiProfiles"][name] = profile
 
+    _merge_ui_data_from_fixtures(merged)
+
     return merged
+
+
+def _merge_ui_data_from_fixtures(merged: dict) -> None:
+    """Merge UI classes, widgets, classifiers and profiles from setup fixtures.
+
+    Server reference metadata is the primary source, but the setup fixtures in
+    tests/fixtures/setup/ occasionally reference UI values (especially profiles)
+    that the reference endpoints of the servers we have access to do not expose.
+    Profiles found only in fixtures are added without details (None), matching
+    how unfetchable profiles are represented.
+    """
+    for fixture_file in FIXTURES_DIR.glob("*.json"):
+        try:
+            data = json.loads(fixture_file.read_text())
+        except (json.JSONDecodeError, KeyError, TypeError):
+            continue
+        for device in data.get("devices", []):
+            definition = device.get("definition", {})
+            for ui_class in (device.get("uiClass"), definition.get("uiClass")):
+                if ui_class:
+                    merged["uiClasses"].add(ui_class)
+            for widget in (device.get("widget"), definition.get("widgetName")):
+                if widget:
+                    merged["uiWidgets"].add(widget)
+            for source in (device, definition):
+                for classifier in source.get("uiClassifiers", []) or []:
+                    merged["uiClassifiers"].add(classifier)
+            for profile_name in definition.get("uiProfiles", []) or []:
+                merged["uiProfiles"].setdefault(profile_name, None)
 
 
 def to_enum_name(value: str) -> str:
@@ -779,7 +806,13 @@ def extract_commands_from_servers(servers_dir: Path) -> set[str]:
 
 
 def extract_state_values_from_servers(servers_dir: Path) -> set[str]:
-    """Extract discrete state enum values from per-server JSON files."""
+    """Extract discrete state and command parameter enum values from per-server JSON.
+
+    Pulls values from three places:
+      - ``protocols.*.states[].valuePrototypes[].enumValues``
+      - ``protocols.*.commands[].parameters[].valuePrototypes[].enumValues``
+      - ``controllableDefinitions.*.states[].values`` (DiscreteState values)
+    """
     values: set[str] = set()
 
     if not servers_dir.exists():
@@ -795,6 +828,18 @@ def extract_state_values_from_servers(servers_dir: Path) -> set[str]:
                             for ev in vp.get("enumValues", []):
                                 if isinstance(ev, str):
                                     values.add(ev)
+                    for command in dt.get("commands", []):
+                        for param in command.get("parameters", []):
+                            for vp in param.get("valuePrototypes", []):
+                                for ev in vp.get("enumValues", []):
+                                    if isinstance(ev, str):
+                                        values.add(ev)
+            for cd in data.get("controllableDefinitions", {}).values():
+                for state in cd.get("states", []):
+                    if state.get("type") == "DiscreteState":
+                        for value in state.get("values", []):
+                            if isinstance(value, str):
+                                values.add(value)
         except (json.JSONDecodeError, KeyError, TypeError):
             pass
 
@@ -869,11 +914,17 @@ def generate_command_enums() -> None:
 
     param_enum_names: set[str] = set()
     param_tuples: list[tuple[str, str]] = []
+    skipped_params: list[str] = []
     for param_value in sorted(all_param_values):
         if param_value in existing_params:
             enum_name = existing_params[param_value]
         else:
             enum_name = command_to_enum_name(param_value)
+        # Some discrete values are purely numeric (e.g. "1", "2") and cannot
+        # become valid Python identifiers — skip them rather than emit broken code.
+        if not enum_name.isidentifier():
+            skipped_params.append(param_value)
+            continue
         if enum_name not in param_enum_names:
             param_tuples.append((enum_name, param_value))
             param_enum_names.add(enum_name)
@@ -884,8 +935,9 @@ def generate_command_enums() -> None:
     lines = [
         '"""Command-related enums and parameters used by device commands."""',
         "",
-        "# ruff: noqa: S105",
-        '# Enum values contain "PASS" in API names (e.g. PassAPC), not passwords',
+        "# ruff: noqa: S105, RUF001",
+        '# Enum values contain "PASS" in API names (e.g. PassAPC), not passwords,',
+        "# and some are verbatim API values with ambiguous (e.g. Cyrillic) characters.",
         "",
         "from enum import StrEnum, unique",
         "",
@@ -927,12 +979,18 @@ def generate_command_enums() -> None:
     command_file.write_text("\n".join(lines))
 
     new_commands = len(all_command_values - set(existing_commands.keys()))
-    new_params = len(all_param_values - set(existing_params.keys()))
+    emitted_param_values = {value for _, value in param_tuples}
+    new_params = len(emitted_param_values - set(existing_params.keys()))
     print(
         f"✓ Generated {command_file} "
         f"({len(command_tuples)} commands [+{new_commands} new], "
         f"{len(param_tuples)} params [+{new_params} new])"
     )
+    if skipped_params:
+        print(
+            f"  Skipped {len(skipped_params)} param value(s) without a valid "
+            f"identifier: {', '.join(repr(v) for v in sorted(skipped_params))}"
+        )
 
 
 # ---------------------------------------------------------------------------

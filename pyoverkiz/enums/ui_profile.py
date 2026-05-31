@@ -749,6 +749,9 @@ class UIProfile(UnknownEnumMixin, StrEnum):
     #   - stop(): Stop the current actuator behavior (movement, sound or timer)
     START_STOP = "StartStop"
 
+    # Startable (details unavailable)
+    STARTABLE = "Startable"
+
     #
     # StatefulAirFan
     #
@@ -1453,6 +1456,9 @@ class UIProfile(UnknownEnumMixin, StrEnum):
     #
     # Form factor specific: Yes
     STATEFUL_START_STOP_WASHING_MACHINE = "StatefulStartStopWashingMachine"
+
+    # StatefulStartable (details unavailable)
+    STATEFUL_STARTABLE = "StatefulStartable"
 
     #
     # StatefulSwitchable
