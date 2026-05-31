@@ -2,7 +2,7 @@
 
 This guide will help you install the library, connect to your hub, and perform your first actions.
 
-> Need the official Overkiz cloud API reference? Visit the [Overkiz API Documentation](https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/doc) ([mirror](/api)). Most endpoints are accessible via the pyOverkiz package.
+> Need the official Overkiz cloud API reference? Visit the [Overkiz API Documentation](https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/doc) ([mirror](api/index.html)). Most endpoints are accessible via the pyOverkiz package.
 
 > Upgrading from pyOverkiz 1.x? See the [migration guide](migration-v2.md) for a full list of breaking changes.
 
@@ -178,6 +178,10 @@ Use a cloud server when you want to connect through the vendor’s public API. U
     https://my.home-assistant.io/redirect/oauth?code=AUTHORIZATION_CODE&state=STATE_VALUE
     ```
 
+    Compare the returned `state` against the value from step 1 before
+    continuing, and reject the response if they differ — this is what guards
+    against CSRF.
+
     **Step 3: Exchange authorization code for access token**
 
     ```python
@@ -187,7 +191,11 @@ Use a cloud server when you want to connect through the vendor’s public API. U
     from pyoverkiz.enums import Server
     from pyoverkiz.const import REXEL_OAUTH_REDIRECT_URI
 
-    async def main() -> None:
+    async def main(returned_state: str) -> None:
+        # Verify the state echoed back by the redirect matches step 1.
+        if returned_state != state:
+            raise ValueError("State mismatch — possible CSRF, aborting.")
+
         # Use the authorization code from the redirect
         async with OverkizClient(
             server=Server.REXEL,
@@ -197,10 +205,16 @@ Use a cloud server when you want to connect through the vendor’s public API. U
                 code_verifier=code_verifier,  # From step 1
             ),
         ) as client:
-            await client.login()
+            await client.login()  # auto-selects a sole gateway
+
+            # Accounts with more than one gateway must select one explicitly.
+            gateways = await client.discover_gateways()
+            if len(gateways) > 1:
+                client.select_gateway(gateways[0].gateway_id)
+
             # Client is now authenticated and ready to use
 
-    asyncio.run(main())
+    asyncio.run(main(returned_state="STATE_VALUE_FROM_REDIRECT"))
     ```
 
 === "Rexel (externally-managed token)"

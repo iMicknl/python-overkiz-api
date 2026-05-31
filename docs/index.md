@@ -24,8 +24,10 @@ pyOverkiz is an async Python library for interacting with Overkiz-based platform
 
 - Atlantic Cozytouch
 - Bouygues Flexom
+- Brandt Smart Control **\***
 - Hitachi Hi Kumo
 - Nexity Eugénie
+- Rexel Energeasy Connect **\*\***
 - Sauter Cozytouch
 - Simu (LiveIn2)
 - Somfy Connexoon IO
@@ -33,7 +35,6 @@ pyOverkiz is an async Python library for interacting with Overkiz-based platform
 - Somfy TaHoma
 - Somfy TaHoma Switch
 - Thermor Cozytouch
-- Brandt Smart Control **\***
-- Rexel Energeasy Connect **\***
 
-\[*] _These servers utilize an authentication method that is currently not supported by this library._
+\[*] _This server's authentication method isn't supported yet. To use it, obtain an access token (by sniffing the original app) and create a local user on the Overkiz API platform._
+\[**] _Requires OAuth credentials provided by Rexel._
