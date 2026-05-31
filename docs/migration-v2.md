@@ -264,6 +264,17 @@ if device.definition:
 - `Gateway.connectivity` is now `Connectivity | None` (was always set in v1).
 - `Gateway.id` and `Place.id` are now read-only properties.
 
+## Authentication methods
+
+The per-server login helpers on `OverkizClient` have been removed. Authentication is now handled internally by the credential/strategy system — call the single `login()` method, which dispatches to the correct strategy based on the `Credentials` you passed to the constructor.
+
+| v1 | v2 |
+|----|-----|
+| `client.cozytouch_login()` | `await client.login()` (with the appropriate credentials) |
+| `client.nexity_login()` | `await client.login()` |
+| `client.somfy_tahoma_get_access_token()` | `await client.login()` |
+| `client.refresh_token()` | Handled internally; call `await client.login()` again to re-authenticate |
+
 ## Client internals
 
 These changes affect you if you subclass `OverkizClient` or use internal APIs:
@@ -334,13 +345,18 @@ Several enum members have been renamed for consistent `UPPER_SNAKE_CASE` or to f
     |----|-----|------|
     | `VENTILATION_SYTEM` | `VENTILATION_SYSTEM` | Typo fix |
 
+??? note "Changed values"
+
+    | Member | v1 value | v2 value |
+    |--------|----------|----------|
+    | `UNKNOWN` | `unknown` | `Unknown` |
+
 ### UIWidget
 
 ??? note "Renamed members"
 
     | v1 | v2 | Note |
     |----|-----|------|
-    | `CYCLIC_SWINGING_GATE_OPENER` | `CYCLIC_SWINGING_GATE_OPENER` | Trailing space removed from value |
     | `DIMMER_RGBCOLOURED_LIGHT` | `DIMMER_RGB_COLOURED_LIGHT` | |
     | `EWATTCH_TICCOUNTER` | `EWATTCH_TIC_COUNTER` | |
     | `GENERIC_16_CHANNELS_COUNTER` | `GENERIC16_CHANNELS_COUNTER` | |
@@ -350,19 +366,56 @@ Several enum members have been renamed for consistent `UPPER_SNAKE_CASE` or to f
     | `IOSTACK` | `IO_STACK` | |
     | `IRBLASTER` | `IR_BLASTER` | |
     | `JSWCAMERA` | `JSW_CAMERA` | |
-    | `OPEN_CLOSE_GATE_4T` | *unchanged* | |
-    | `OPEN_CLOSE_SLIDING_GARAGE_DOOR_4T` | *unchanged* | |
-    | `OPEN_CLOSE_SLIDING_GATE_4T` | *unchanged* | |
     | `OVPGENERIC` | `OVP_GENERIC` | |
-    | `RTS_GENERIC_4T` | *unchanged* | |
     | `ROCKER_SWITCHX_1_CONTROLLER` | `ROCKER_SWITCHX1_CONTROLLER` | |
     | `ROCKER_SWITCHX_2_CONTROLLER` | `ROCKER_SWITCHX2_CONTROLLER` | |
     | `ROCKER_SWITCHX_4_CONTROLLER` | `ROCKER_SWITCHX4_CONTROLLER` | |
     | `TSKALARM_CONTROLLER` | `TSK_ALARM_CONTROLLER` | |
-    | `UP_DOWN_GARAGE_DOOR_4T` | *unchanged* | |
     | `VOCSENSOR` | `VOC_SENSOR` | |
     | `ZWAVE_DANFOSS_RSLINK` | `ZWAVE_DANFOSS_RS_LINK` | |
     | `ZWAVE_SEDEVICE_CONFIGURATION` | `ZWAVE_SE_DEVICE_CONFIGURATION` | |
+
+??? note "Changed values"
+
+    | Member | v1 value | v2 value |
+    |--------|----------|----------|
+    | `UNKNOWN` | `unknown` | `Unknown` |
+
+### OverkizState
+
+??? note "Renamed members"
+
+    | v1 | v2 | Note |
+    |----|-----|------|
+    | `CORE_HOLIDAYS_MODE_STATE` | `CORE_HOLIDAYS_MODE` | `_STATE` suffix dropped |
+    | `CORE_PROGRAMING_AVAILABLE_STATE` | `CORE_PROGRAMMING_AVAILABLE` | Typo fix + `_STATE` suffix dropped |
+    | `SOMFY_THERMOSTAT_AT_HOME_TARGET_TEMPERATURE` | `SOMFYTHERMOSTAT_AT_HOME_TARGET_TEMPERATURE` | Prefix `SOMFY_THERMOSTAT_` → `SOMFYTHERMOSTAT_` |
+    | `SOMFY_THERMOSTAT_AWAY_MODE_TARGET_TEMPERATURE` | `SOMFYTHERMOSTAT_AWAY_MODE_TARGET_TEMPERATURE` | |
+    | `SOMFY_THERMOSTAT_DEROGATION_HEATING_MODE` | `SOMFYTHERMOSTAT_DEROGATION_HEATING_MODE` | |
+    | `SOMFY_THERMOSTAT_FREEZE_MODE_TARGET_TEMPERATURE` | `SOMFYTHERMOSTAT_FREEZE_MODE_TARGET_TEMPERATURE` | |
+    | `SOMFY_THERMOSTAT_HEATING_MODE` | `SOMFYTHERMOSTAT_HEATING_MODE` | |
+    | `SOMFY_THERMOSTAT_SLEEPING_MODE_TARGET_TEMPERATURE` | `SOMFYTHERMOSTAT_SLEEPING_MODE_TARGET_TEMPERATURE` | |
+
+    The underlying state values (e.g. `somfythermostat:HeatingModeState`) are unchanged — only the Python member names changed.
+
+### EventName
+
+??? note "Renamed members"
+
+    | v1 | v2 | Note |
+    |----|-----|------|
+    | `DELAYED_TRIGGER_SET_EVENT` | `DELAYED_TRIGGER_SET` | `_EVENT` suffix dropped |
+
+### OverkizCommandParam
+
+??? note "Changed values"
+
+    These members kept their names but their string **values** were corrected to match the API. Code comparing against the enum member is unaffected; code comparing against the old hard-coded string must update.
+
+    | Member | v1 value | v2 value |
+    |--------|----------|----------|
+    | `FURTHER_NOTICE` | `further_notice` | `furtherNotice` |
+    | `STANDARD` | `standard` | `Standard` |
 
 ### Protocol
 
