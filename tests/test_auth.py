@@ -661,3 +661,24 @@ def test_base_strategy_endpoint_defaults_to_server_endpoint():
         ssl_context=True,
     )
     assert strategy.endpoint == "https://example.test/api/"
+
+
+def test_gateway_candidate_fields():
+    """GatewayCandidate holds gateway_id with optional home_id and label."""
+    from pyoverkiz.auth.base import GatewayCandidate
+
+    candidate = GatewayCandidate(
+        gateway_id="1234-5678-9012", home_id="home-1", label="Living room"
+    )
+    assert candidate.gateway_id == "1234-5678-9012"
+    assert candidate.home_id == "home-1"
+    assert candidate.label == "Living room"
+
+
+def test_gateway_candidate_optional_fields_default_none():
+    """home_id and label default to None."""
+    from pyoverkiz.auth.base import GatewayCandidate
+
+    candidate = GatewayCandidate(gateway_id="g1")
+    assert candidate.home_id is None
+    assert candidate.label is None
