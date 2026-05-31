@@ -89,6 +89,10 @@ class InvalidTokenError(BaseOverkizError):
     """Raised when an invalid token is provided."""
 
 
+class NoGatewaySelectedError(BaseOverkizError):
+    """No gateway selected for a server that requires gateway selection."""
+
+
 class NoSuchTokenError(BaseOverkizError):
     """Raised when no such token exists."""
 

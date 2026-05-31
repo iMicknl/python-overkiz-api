@@ -22,7 +22,13 @@ from aiohttp import (
 from backoff.types import Details
 
 from pyoverkiz.action_queue import ActionQueue, ActionQueueSettings
-from pyoverkiz.auth import AuthStrategy, Credentials, build_auth_strategy
+from pyoverkiz.auth import (
+    AuthStrategy,
+    Credentials,
+    GatewayCandidate,
+    SupportsGatewaySelection,
+    build_auth_strategy,
+)
 from pyoverkiz.const import SUPPORTED_SERVERS, USER_AGENT
 from pyoverkiz.converter import converter
 from pyoverkiz.enums import APIType, ExecutionMode, Protocol, Server
@@ -897,13 +903,29 @@ class OverkizClient:
         )
         return converter.structure(response, list[DeviceManufacturerReference])
 
+    async def discover_gateways(self) -> list[GatewayCandidate]:
+        """Discover selectable gateways. Raises TypeError if unsupported."""
+        if not isinstance(self._auth, SupportsGatewaySelection):
+            raise TypeError(
+                f"{self.server_config.name} does not support gateway selection."
+            )
+        return await self._auth.discover_gateways()
+
+    def select_gateway(self, gateway_id: str) -> None:
+        """Select the gateway to scope requests to. Raises TypeError if unsupported."""
+        if not isinstance(self._auth, SupportsGatewaySelection):
+            raise TypeError(
+                f"{self.server_config.name} does not support gateway selection."
+            )
+        self._auth.select_gateway(gateway_id)
+
     async def _get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API."""
         await self._refresh_token_if_expired()
 
         async with self.session.get(
-            f"{self.server_config.endpoint}{path}",
-            headers=self._auth.auth_headers(path),
+            f"{self._auth.endpoint}{path}",
+            headers=await self._auth.auth_headers(path),
             ssl=self._ssl,
         ) as response:
             return await self._parse_response(response)
@@ -918,10 +940,10 @@ class OverkizClient:
         await self._refresh_token_if_expired()
 
         async with self.session.post(
-            f"{self.server_config.endpoint}{path}",
+            f"{self._auth.endpoint}{path}",
             data=data,
             json=payload,
-            headers=self._auth.auth_headers(path),
+            headers=await self._auth.auth_headers(path),
             ssl=self._ssl,
         ) as response:
             return await self._parse_response(response)
@@ -931,9 +953,9 @@ class OverkizClient:
         await self._refresh_token_if_expired()
 
         async with self.session.put(
-            f"{self.server_config.endpoint}{path}",
+            f"{self._auth.endpoint}{path}",
             json=payload,
-            headers=self._auth.auth_headers(path),
+            headers=await self._auth.auth_headers(path),
             ssl=self._ssl,
         ) as response:
             return await self._parse_response(response)
@@ -943,8 +965,8 @@ class OverkizClient:
         await self._refresh_token_if_expired()
 
         async with self.session.delete(
-            f"{self.server_config.endpoint}{path}",
-            headers=self._auth.auth_headers(path),
+            f"{self._auth.endpoint}{path}",
+            headers=await self._auth.auth_headers(path),
             ssl=self._ssl,
         ) as response:
             await check_response(response)

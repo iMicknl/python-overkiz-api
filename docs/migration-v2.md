@@ -411,3 +411,26 @@ These are not breaking, but worth knowing about when migrating:
 - **Reference endpoints** — query server metadata: `get_reference_ui_classes()`, `get_reference_ui_widgets()`, `get_reference_ui_profile()`, `get_reference_controllable_types()`, etc.
 - **Firmware management** — `get_devices_not_up_to_date()`, `get_device_firmware_status()`, `update_device_firmware()`.
 - **Optional Nexity dependencies** — `boto3` and `warrant-lite` are no longer installed by default. Install them with `pip install "pyoverkiz[nexity]"` if you use the Nexity server. A clear `ImportError` is raised at login time if the extra is missing.
+
+## `auth_headers` is now async
+
+`AuthStrategy.auth_headers()` and every concrete strategy's implementation are
+now coroutines. This only affects code that calls `auth_headers()` directly or
+implements a custom `AuthStrategy` — normal `OverkizClient` use is unaffected.
+
+=== "Before"
+
+    ```python
+    headers = strategy.auth_headers(path)
+    ```
+
+=== "After"
+
+    ```python
+    headers = await strategy.auth_headers(path)
+    ```
+
+Custom strategies must change the method signature to `async def auth_headers`.
+This change lets token-supplied strategies (such as Rexel's
+`RexelTokenAuthStrategy`) await an externally-supplied access-token callback per
+request instead of caching token state.

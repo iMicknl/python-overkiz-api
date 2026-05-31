@@ -5,7 +5,7 @@ from __future__ import annotations
 import datetime
 from collections.abc import Mapping
 from dataclasses import dataclass, field
-from typing import Any, Protocol
+from typing import Any, Protocol, runtime_checkable
 
 
 @dataclass(slots=True)
@@ -47,8 +47,37 @@ class AuthStrategy(Protocol):
     async def refresh_if_needed(self) -> bool:
         """Refresh tokens if they are expired. Return True if refreshed."""
 
-    def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
+    async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
         """Generate authentication headers for requests."""
+
+    @property
+    def endpoint(self) -> str:
+        """Return the base API endpoint for requests."""
 
     async def close(self) -> None:
         """Clean up any resources held by the strategy."""
+
+
+@dataclass(slots=True)
+class GatewayCandidate:
+    """A selectable Overkiz gateway behind a multi-account directory."""
+
+    gateway_id: str
+    home_id: str | None = None
+    label: str | None = None
+    external_id: str | None = None
+
+
+@runtime_checkable
+class SupportsGatewaySelection(Protocol):
+    """Optional capability: discover and select among multiple gateways."""
+
+    async def discover_gateways(self) -> list[GatewayCandidate]:
+        """Return all selectable gateways for the authenticated account."""
+
+    def select_gateway(self, gateway_id: str) -> None:
+        """Select the gateway to scope subsequent requests to."""
+
+    @property
+    def selected_gateway(self) -> str | None:
+        """Return the currently selected gateway id, or None."""

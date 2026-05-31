@@ -16,10 +16,11 @@ if TYPE_CHECKING:
 
 from aiohttp import ClientSession, FormData
 
-from pyoverkiz.auth.base import AuthContext, AuthStrategy
+from pyoverkiz.auth.base import AuthContext, AuthStrategy, GatewayCandidate
 from pyoverkiz.auth.credentials import (
     LocalTokenCredentials,
     RexelOAuthCodeCredentials,
+    RexelTokenCredentials,
     TokenCredentials,
     UsernamePasswordCredentials,
 )
@@ -30,6 +31,8 @@ from pyoverkiz.const import (
     NEXITY_COGNITO_CLIENT_ID,
     NEXITY_COGNITO_REGION,
     NEXITY_COGNITO_USER_POOL,
+    REXEL_ENDUSER_API,
+    REXEL_GATEWAY_HEADER,
     REXEL_OAUTH_CLIENT_ID,
     REXEL_OAUTH_SCOPE,
     REXEL_OAUTH_TOKEN_URL,
@@ -45,10 +48,12 @@ from pyoverkiz.exceptions import (
     InvalidTokenError,
     NexityBadCredentialsError,
     NexityServiceError,
+    NoGatewaySelectedError,
     SomfyBadCredentialsError,
     SomfyServiceError,
 )
 from pyoverkiz.models import ServerConfig
+from pyoverkiz.response_handler import check_response
 
 MIN_JWT_SEGMENTS = 2
 
@@ -67,6 +72,11 @@ class BaseAuthStrategy(AuthStrategy):
         self.server = server
         self._ssl = ssl_context
 
+    @property
+    def endpoint(self) -> str:
+        """Return the base API endpoint; defaults to the server endpoint."""
+        return self.server.endpoint
+
     async def login(self) -> None:
         """Perform authentication; default is a no-op for subclasses to override."""
         return
@@ -75,7 +85,7 @@ class BaseAuthStrategy(AuthStrategy):
         """Refresh authentication tokens if needed; default returns False."""
         return False
 
-    def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
+    async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
         """Return authentication headers for a request path."""
         return {}
 
@@ -163,7 +173,7 @@ class SomfyAuthStrategy(BaseAuthStrategy):
         )
         return True
 
-    def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
+    async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
         """Return authentication headers for a request path."""
         if self.context.access_token:
             return {"Authorization": f"Bearer {self.context.access_token}"}
@@ -315,13 +325,93 @@ class LocalTokenAuthStrategy(BaseAuthStrategy):
         if not self.credentials.token:
             raise InvalidTokenError("Local API requires a token.")
 
-    def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
+    async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
         """Return authentication headers for a request path."""
         return {"Authorization": f"Bearer {self.credentials.token}"}
 
 
-class RexelAuthStrategy(BaseAuthStrategy):
-    """Authentication strategy using Rexel OAuth2."""
+class RexelGatewayMixin:
+    """Shared Rexel gateway discovery/selection for Rexel auth strategies.
+
+    The only per-strategy difference is how the access token is obtained,
+    supplied by overriding ``_current_access_token``.
+    """
+
+    session: ClientSession
+    _ssl: ssl.SSLContext | bool
+    _gateway_id: str | None
+
+    async def _current_access_token(self) -> str | None:
+        """Return the current access token. Overridden per strategy."""
+        raise NotImplementedError
+
+    async def discover_gateways(self) -> list[GatewayCandidate]:
+        """Enumerate every home x gateway available to this account."""
+        candidates: list[GatewayCandidate] = []
+        for home in await self._get_enduser("homes"):
+            home_id = str(home["id"])
+            home_label = home.get("label")
+            for gateway in await self._get_enduser(f"overkizgateways?homeId={home_id}"):
+                external_id = gateway.get("externalId")
+                candidates.append(
+                    GatewayCandidate(
+                        gateway_id=str(gateway["gatewayId"]),
+                        home_id=home_id,
+                        label=home_label,
+                        external_id=(
+                            str(external_id) if external_id is not None else None
+                        ),
+                    )
+                )
+        return candidates
+
+    def select_gateway(self, gateway_id: str) -> None:
+        """Select the gateway to scope subsequent requests to.
+
+        The caller is responsible for passing a ``gateway_id`` obtained from
+        ``discover_gateways()``; an unknown id is only rejected server-side on
+        the next request.
+        """
+        self._gateway_id = gateway_id
+
+    @property
+    def selected_gateway(self) -> str | None:
+        """Return the currently selected gateway id, or None."""
+        return self._gateway_id
+
+    async def _get_enduser(self, path: str) -> list[dict[str, Any]]:
+        """GET a Rexel directory resource (homes/gateways) with Bearer auth.
+
+        Uses REXEL_ENDUSER_API, NOT the device endpoint, and a Bearer-only
+        header so it works before a gateway has been selected.
+        """
+        async with self.session.get(
+            f"{REXEL_ENDUSER_API}/{path}",
+            headers={"Authorization": f"Bearer {await self._current_access_token()}"},
+            ssl=self._ssl,
+        ) as response:
+            await check_response(response)
+            return cast(list[dict[str, Any]], await response.json())
+
+    def _gateway_headers(self) -> dict[str, str]:
+        """Return the gatewayId header; raise if no gateway is selected."""
+        if self._gateway_id is None:
+            raise NoGatewaySelectedError(
+                "Multiple Rexel gateways available; call discover_gateways() "
+                "and select_gateway() before making requests."
+            )
+        return {REXEL_GATEWAY_HEADER: self._gateway_id}
+
+    async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
+        """Return Bearer + gatewayId headers, or {} before a token exists."""
+        token = await self._current_access_token()
+        if not token:
+            return {}
+        return {"Authorization": f"Bearer {token}", **self._gateway_headers()}
+
+
+class RexelAuthStrategy(RexelGatewayMixin, BaseAuthStrategy):
+    """Authentication strategy using Rexel OAuth2 code exchange."""
 
     def __init__(
         self,
@@ -334,9 +424,14 @@ class RexelAuthStrategy(BaseAuthStrategy):
         super().__init__(session, server, ssl_context)
         self.credentials = credentials
         self.context = AuthContext()
+        self._gateway_id: str | None = None
+
+    async def _current_access_token(self) -> str | None:
+        """Return the access token from the OAuth2 code-exchange context."""
+        return self.context.access_token
 
     async def login(self) -> None:
-        """Perform login using Rexel OAuth2 authorization code."""
+        """Exchange the authorization code, then auto-select a sole gateway."""
         await self._exchange_token(
             {
                 "grant_type": "authorization_code",
@@ -344,8 +439,12 @@ class RexelAuthStrategy(BaseAuthStrategy):
                 "scope": REXEL_OAUTH_SCOPE,
                 "code": self.credentials.code,
                 "redirect_uri": self.credentials.redirect_uri,
+                "code_verifier": self.credentials.code_verifier,
             }
         )
+        gateways = await self.discover_gateways()
+        if len(gateways) == 1:
+            self.select_gateway(gateways[0].gateway_id)
 
     async def refresh_if_needed(self) -> bool:
         """Refresh Rexel OAuth2 tokens if needed."""
@@ -362,19 +461,11 @@ class RexelAuthStrategy(BaseAuthStrategy):
         )
         return True
 
-    def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
-        """Return authentication headers for a request path."""
-        if self.context.access_token:
-            return {"Authorization": f"Bearer {self.context.access_token}"}
-        return {}
-
     async def _exchange_token(self, payload: Mapping[str, str]) -> None:
         """Exchange authorization code or refresh token for access token."""
-        form = FormData(payload)
         async with self.session.post(
             REXEL_OAUTH_TOKEN_URL,
-            data=form,
-            headers={"Content-Type": "application/x-www-form-urlencoded"},
+            data=payload,
         ) as response:
             token = await response.json()
 
@@ -404,6 +495,42 @@ class RexelAuthStrategy(BaseAuthStrategy):
             raise InvalidTokenError("Consent is missing or revoked for Rexel token.")
 
 
+class RexelTokenAuthStrategy(RexelGatewayMixin, BaseAuthStrategy):
+    """Rexel strategy backed by an externally-managed access token.
+
+    The OAuth2 lifecycle (authorize, exchange, refresh, persistence) is owned
+    by the caller. This strategy only sources the current token and applies the
+    Rexel gateway selection + header logic from RexelGatewayMixin.
+    """
+
+    def __init__(
+        self,
+        credentials: RexelTokenCredentials,
+        session: ClientSession,
+        server: ServerConfig,
+        ssl_context: ssl.SSLContext | bool,
+    ) -> None:
+        """Create a token-backed Rexel strategy bound to the credentials."""
+        super().__init__(session, server, ssl_context)
+        self.credentials = credentials
+        self._gateway_id: str | None = None
+
+    async def login(self) -> None:
+        """Apply a stored gateway, or auto-select a sole discovered gateway."""
+        if self.credentials.gateway_id:
+            self.select_gateway(self.credentials.gateway_id)
+            return
+        gateways = await self.discover_gateways()
+        if len(gateways) == 1:
+            self.select_gateway(gateways[0].gateway_id)
+
+    async def _current_access_token(self) -> str | None:
+        """Return a token from the callback, or the static fallback."""
+        if self.credentials.access_token_callback:
+            return await self.credentials.access_token_callback()
+        return self.credentials.access_token
+
+
 class BearerTokenAuthStrategy(BaseAuthStrategy):
     """Authentication strategy using a static bearer token."""
 
@@ -418,7 +545,7 @@ class BearerTokenAuthStrategy(BaseAuthStrategy):
         super().__init__(session, server, ssl_context)
         self.credentials = credentials
 
-    def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
+    async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
         """Return authentication headers for a request path."""
         if self.credentials.token:
             return {"Authorization": f"Bearer {self.credentials.token}"}

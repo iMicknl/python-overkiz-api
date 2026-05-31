@@ -2,11 +2,17 @@
 
 from __future__ import annotations
 
-from pyoverkiz.auth.base import AuthContext, AuthStrategy
+from pyoverkiz.auth.base import (
+    AuthContext,
+    AuthStrategy,
+    GatewayCandidate,
+    SupportsGatewaySelection,
+)
 from pyoverkiz.auth.credentials import (
     Credentials,
     LocalTokenCredentials,
     RexelOAuthCodeCredentials,
+    RexelTokenCredentials,
     TokenCredentials,
     UsernamePasswordCredentials,
 )
@@ -16,8 +22,11 @@ __all__ = [
     "AuthContext",
     "AuthStrategy",
     "Credentials",
+    "GatewayCandidate",
     "LocalTokenCredentials",
     "RexelOAuthCodeCredentials",
+    "RexelTokenCredentials",
+    "SupportsGatewaySelection",
     "TokenCredentials",
     "UsernamePasswordCredentials",
     "build_auth_strategy",

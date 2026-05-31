@@ -19,6 +19,7 @@ from pyoverkiz.auth.base import AuthContext
 from pyoverkiz.auth.credentials import (
     LocalTokenCredentials,
     RexelOAuthCodeCredentials,
+    RexelTokenCredentials,
     TokenCredentials,
     UsernamePasswordCredentials,
 )
@@ -32,12 +33,17 @@ from pyoverkiz.auth.strategies import (
     LocalTokenAuthStrategy,
     NexityAuthStrategy,
     RexelAuthStrategy,
+    RexelTokenAuthStrategy,
     SessionLoginStrategy,
     SomfyAuthStrategy,
     _decode_jwt_payload,
 )
 from pyoverkiz.enums import APIType, Server
-from pyoverkiz.exceptions import InvalidTokenError, NexityBadCredentialsError
+from pyoverkiz.exceptions import (
+    InvalidTokenError,
+    NexityBadCredentialsError,
+    NoGatewaySelectedError,
+)
 from pyoverkiz.models import ServerConfig
 
 HAS_NEXITY_DEPS = importlib.util.find_spec("boto3") is not None
@@ -102,9 +108,35 @@ class TestCredentials:
 
     def test_rexel_oauth_credentials(self):
         """Test RexelOAuthCodeCredentials creation."""
-        creds = RexelOAuthCodeCredentials("auth_code_xyz", "http://redirect.uri")
+        creds = RexelOAuthCodeCredentials(
+            "auth_code_xyz", "http://redirect.uri", "code_verifier_123"
+        )
         assert creds.code == "auth_code_xyz"
         assert creds.redirect_uri == "http://redirect.uri"
+        assert creds.code_verifier == "code_verifier_123"
+
+    def test_rexel_token_credentials_with_static_token(self):
+        """RexelTokenCredentials accepts a static access token."""
+        creds = RexelTokenCredentials(access_token="static-token")
+        assert creds.access_token == "static-token"
+        assert creds.access_token_callback is None
+        assert creds.gateway_id is None
+
+    def test_rexel_token_credentials_with_callback(self):
+        """RexelTokenCredentials accepts an async access-token callback."""
+
+        async def _token() -> str:
+            return "fresh-token"
+
+        creds = RexelTokenCredentials(access_token_callback=_token, gateway_id="g1")
+        assert creds.access_token_callback is _token
+        assert creds.gateway_id == "g1"
+        assert creds.access_token is None
+
+    def test_rexel_token_credentials_requires_a_token_source(self):
+        """Constructing with neither callback nor static token raises ValueError."""
+        with pytest.raises(ValueError, match="access_token_callback or access_token"):
+            RexelTokenCredentials()
 
 
 class TestAuthFactory:
@@ -142,7 +174,7 @@ class TestAuthFactory:
 
     def test_ensure_credentials_rexel_valid(self):
         """Test that valid Rexel credentials pass validation."""
-        creds = RexelOAuthCodeCredentials("code", "uri")
+        creds = RexelOAuthCodeCredentials("code", "uri", "verifier")
         result = _ensure_credentials(creds, RexelOAuthCodeCredentials)
         assert result is creds
 
@@ -228,7 +260,53 @@ class TestAuthFactory:
             manufacturer="Rexel",
             api_type=APIType.CLOUD,
         )
-        credentials = RexelOAuthCodeCredentials("code", "http://redirect.uri")
+        credentials = RexelOAuthCodeCredentials(
+            "code", "http://redirect.uri", "verifier"
+        )
+        session = AsyncMock(spec=ClientSession)
+
+        strategy = build_auth_strategy(
+            server_config=server_config,
+            credentials=credentials,
+            session=session,
+            ssl_context=True,
+        )
+
+        assert isinstance(strategy, RexelAuthStrategy)
+
+    @pytest.mark.asyncio
+    async def test_build_auth_strategy_rexel_token(self):
+        """RexelTokenCredentials build a RexelTokenAuthStrategy for Rexel."""
+        server_config = ServerConfig(
+            server=Server.REXEL,
+            name="Rexel",
+            endpoint="https://api.rexel.com",
+            manufacturer="Rexel",
+            api_type=APIType.CLOUD,
+        )
+        credentials = RexelTokenCredentials(access_token="static-token")
+        session = AsyncMock(spec=ClientSession)
+
+        strategy = build_auth_strategy(
+            server_config=server_config,
+            credentials=credentials,
+            session=session,
+            ssl_context=True,
+        )
+
+        assert isinstance(strategy, RexelTokenAuthStrategy)
+
+    @pytest.mark.asyncio
+    async def test_build_auth_strategy_rexel_code_still_works(self):
+        """RexelOAuthCodeCredentials still build the code-exchange strategy."""
+        server_config = ServerConfig(
+            server=Server.REXEL,
+            name="Rexel",
+            endpoint="https://api.rexel.com",
+            manufacturer="Rexel",
+            api_type=APIType.CLOUD,
+        )
+        credentials = RexelOAuthCodeCredentials("code", "uri", "verifier")
         session = AsyncMock(spec=ClientSession)
 
         strategy = build_auth_strategy(
@@ -422,7 +500,8 @@ class TestSessionLoginStrategy:
 
         assert not result
 
-    def test_auth_headers_no_token(self):
+    @pytest.mark.asyncio
+    async def test_auth_headers_no_token(self):
         """Test that auth headers return empty dict when no token."""
         server_config = ServerConfig(
             server=Server.SOMFY_OCEANIA,
@@ -435,7 +514,7 @@ class TestSessionLoginStrategy:
         session = AsyncMock(spec=ClientSession)
 
         strategy = SessionLoginStrategy(credentials, session, server_config, True)
-        headers = strategy.auth_headers()
+        headers = await strategy.auth_headers()
 
         assert headers == {}
 
@@ -462,7 +541,8 @@ class TestBearerTokenAuthStrategy:
         # Login should be a no-op
         assert result is None
 
-    def test_auth_headers_with_token(self):
+    @pytest.mark.asyncio
+    async def test_auth_headers_with_token(self):
         """Test that auth headers include Bearer token."""
         server_config = ServerConfig(
             server=None,
@@ -475,7 +555,7 @@ class TestBearerTokenAuthStrategy:
         session = AsyncMock(spec=ClientSession)
 
         strategy = BearerTokenAuthStrategy(credentials, session, server_config, True)
-        headers = strategy.auth_headers()
+        headers = await strategy.auth_headers()
 
         assert headers == {"Authorization": "Bearer my_bearer_token"}
 
@@ -596,7 +676,9 @@ class TestRexelAuthStrategy:
             manufacturer="Rexel",
             api_type=APIType.CLOUD,
         )
-        credentials = RexelOAuthCodeCredentials("code", "https://redirect")
+        credentials = RexelOAuthCodeCredentials(
+            "code", "https://redirect", "code_verifier_value"
+        )
         session = AsyncMock(spec=ClientSession)
 
         mock_response = MagicMock()
@@ -629,3 +711,423 @@ class TestRexelAuthStrategy:
         """Malformed tokens raise InvalidTokenError during decoding."""
         with pytest.raises(InvalidTokenError):
             _decode_jwt_payload("invalid.token")
+
+
+def test_base_strategy_endpoint_defaults_to_server_endpoint():
+    """Endpoint property defaults to the server config endpoint."""
+    from unittest.mock import AsyncMock
+
+    from aiohttp import ClientSession
+
+    from pyoverkiz.auth.strategies import BaseAuthStrategy
+    from pyoverkiz.enums.server import APIType
+    from pyoverkiz.models import ServerConfig
+
+    server = ServerConfig(
+        server=None,
+        name="Test",
+        endpoint="https://example.test/api/",
+        manufacturer="Test",
+        api_type=APIType.CLOUD,
+    )
+    strategy = BaseAuthStrategy(
+        session=AsyncMock(spec=ClientSession),
+        server=server,
+        ssl_context=True,
+    )
+    assert strategy.endpoint == "https://example.test/api/"
+
+
+def test_gateway_candidate_fields():
+    """GatewayCandidate holds gateway_id with optional home_id, label, external_id."""
+    from pyoverkiz.auth.base import GatewayCandidate
+
+    candidate = GatewayCandidate(
+        gateway_id="42760",
+        home_id="44571",
+        label="Demo",
+        external_id="0201-0012-0000",
+    )
+    assert candidate.gateway_id == "42760"
+    assert candidate.home_id == "44571"
+    assert candidate.label == "Demo"
+    assert candidate.external_id == "0201-0012-0000"
+
+
+def test_gateway_candidate_optional_fields_default_none():
+    """home_id, label and external_id default to None."""
+    from pyoverkiz.auth.base import GatewayCandidate
+
+    candidate = GatewayCandidate(gateway_id="g1")
+    assert candidate.home_id is None
+    assert candidate.label is None
+    assert candidate.external_id is None
+
+
+def test_no_gateway_selected_error_is_overkiz_error():
+    """NoGatewaySelectedError subclasses BaseOverkizError."""
+    from pyoverkiz.exceptions import BaseOverkizError
+
+    assert issubclass(NoGatewaySelectedError, BaseOverkizError)
+
+
+def test_rexel_enduser_api_strips_overkiz_suffix():
+    """REXEL_ENDUSER_API points one level up from the overkiz device base."""
+    from pyoverkiz.const import (
+        REXEL_BACKEND_API,
+        REXEL_ENDUSER_API,
+        REXEL_GATEWAY_HEADER,
+    )
+
+    # Device control goes to .../api/enduser/overkiz/{command};
+    # the homes/gateways directory lives at .../api/enduser.
+    assert (
+        REXEL_BACKEND_API
+        == "https://econnect-api.rexelservices.fr/api/enduser/overkiz/"
+    )
+    assert REXEL_ENDUSER_API == "https://econnect-api.rexelservices.fr/api/enduser"
+    assert REXEL_BACKEND_API.rsplit("/overkiz/", 1)[0] == REXEL_ENDUSER_API
+    assert not REXEL_ENDUSER_API.endswith("/")
+    assert REXEL_GATEWAY_HEADER == "gatewayId"
+
+
+def _build_rexel_strategy_with_token(json_bodies):
+    """Return a RexelAuthStrategy with a fake token and a session.
+
+    json_bodies (a list) are returned in order from session.get().
+    """
+    from unittest.mock import AsyncMock, MagicMock
+
+    from aiohttp import ClientSession
+
+    from pyoverkiz.auth.credentials import RexelOAuthCodeCredentials
+    from pyoverkiz.auth.strategies import RexelAuthStrategy
+    from pyoverkiz.enums.server import APIType
+    from pyoverkiz.models import ServerConfig
+
+    server = ServerConfig(
+        server=None,
+        name="Rexel",
+        endpoint="https://econnect-api.rexelservices.fr/api/enduser/overkiz/",
+        manufacturer="Rexel",
+        api_type=APIType.CLOUD,
+    )
+    session = MagicMock(spec=ClientSession)
+
+    responses = []
+    for body in json_bodies:
+        resp = MagicMock()
+        resp.status = 200
+        resp.json = AsyncMock(return_value=body)
+        resp.text = AsyncMock(return_value="")
+        ctx = MagicMock()
+        ctx.__aenter__ = AsyncMock(return_value=resp)
+        ctx.__aexit__ = AsyncMock(return_value=None)
+        responses.append(ctx)
+    session.get = MagicMock(side_effect=responses)
+
+    strategy = RexelAuthStrategy(
+        credentials=RexelOAuthCodeCredentials("code", "uri", "verifier"),
+        session=session,
+        server=server,
+        ssl_context=True,
+    )
+    strategy.context.access_token = "fake-jwt"
+    return strategy, session
+
+
+@pytest.mark.asyncio
+async def test_rexel_discover_gateways_flattens_homes_and_gateways():
+    """discover_gateways returns one GatewayCandidate per gateway across homes."""
+    strategy, _ = _build_rexel_strategy_with_token(
+        [
+            [{"id": 44571, "label": "Demo"}],  # GET /homes (id is an int)
+            [  # GET /overkizgateways?homeId=44571
+                {"gatewayId": 42760, "externalId": "0201-0012-0000"},
+                {"gatewayId": 99999, "externalId": "0201-0012-9999"},
+            ],
+        ]
+    )
+
+    candidates = await strategy.discover_gateways()
+
+    assert len(candidates) == 2
+    assert candidates[0].gateway_id == "42760"
+    assert candidates[0].home_id == "44571"
+    assert candidates[0].label == "Demo"
+    assert candidates[0].external_id == "0201-0012-0000"
+    assert candidates[1].gateway_id == "99999"
+    assert candidates[1].external_id == "0201-0012-9999"
+
+
+@pytest.mark.asyncio
+async def test_rexel_discover_gateways_empty_when_no_homes():
+    """discover_gateways returns [] when the account has no homes."""
+    strategy, _ = _build_rexel_strategy_with_token([[]])  # GET /homes -> []
+
+    assert await strategy.discover_gateways() == []
+
+
+@pytest.mark.asyncio
+async def test_rexel_login_with_no_gateways_leaves_unselected():
+    """Login does not select anything when discovery yields zero gateways."""
+    from unittest.mock import AsyncMock
+
+    strategy, _ = _build_rexel_strategy_with_token([])
+    strategy._exchange_token = AsyncMock(return_value=None)
+    strategy.discover_gateways = AsyncMock(return_value=[])
+
+    await strategy.login()
+
+    assert strategy.selected_gateway is None
+    # A subsequent device request must then fail loudly rather than silently.
+    with pytest.raises(NoGatewaySelectedError):
+        await strategy.auth_headers()
+
+
+@pytest.mark.asyncio
+async def test_rexel_auth_headers_includes_gateway_when_selected():
+    """auth_headers includes Authorization and gatewayId after selection."""
+    strategy, _ = _build_rexel_strategy_with_token([])
+    strategy.select_gateway("1111-2222-3333")
+
+    headers = await strategy.auth_headers()
+
+    assert headers["Authorization"] == "Bearer fake-jwt"
+    assert headers["gatewayId"] == "1111-2222-3333"
+
+
+@pytest.mark.asyncio
+async def test_rexel_auth_headers_raises_when_unselected():
+    """auth_headers raises NoGatewaySelectedError when no gateway is selected."""
+    strategy, _ = _build_rexel_strategy_with_token([])
+
+    with pytest.raises(NoGatewaySelectedError):
+        await strategy.auth_headers()
+
+
+@pytest.mark.asyncio
+async def test_rexel_auth_headers_empty_without_token():
+    """auth_headers returns empty mapping before login (no token)."""
+    strategy, _ = _build_rexel_strategy_with_token([])
+    strategy.context.access_token = None
+
+    assert await strategy.auth_headers() == {}
+
+
+@pytest.mark.asyncio
+async def test_rexel_login_auto_selects_single_gateway():
+    """Login auto-selects the only gateway when exactly one is found."""
+    from unittest.mock import AsyncMock
+
+    from pyoverkiz.auth.base import GatewayCandidate
+
+    strategy, _ = _build_rexel_strategy_with_token([])
+    strategy._exchange_token = AsyncMock(return_value=None)
+    strategy.discover_gateways = AsyncMock(
+        return_value=[GatewayCandidate(gateway_id="only-one")]
+    )
+
+    await strategy.login()
+
+    assert strategy.selected_gateway == "only-one"
+
+
+@pytest.mark.asyncio
+async def test_rexel_login_does_not_auto_select_multiple_gateways():
+    """Login leaves selection unset when multiple gateways are found."""
+    from unittest.mock import AsyncMock
+
+    from pyoverkiz.auth.base import GatewayCandidate
+
+    strategy, _ = _build_rexel_strategy_with_token([])
+    strategy._exchange_token = AsyncMock(return_value=None)
+    strategy.discover_gateways = AsyncMock(
+        return_value=[
+            GatewayCandidate(gateway_id="a"),
+            GatewayCandidate(gateway_id="b"),
+        ]
+    )
+
+    await strategy.login()
+
+    assert strategy.selected_gateway is None
+
+
+def test_auth_package_exports_gateway_selection_types():
+    """GatewayCandidate and SupportsGatewaySelection are exported from auth."""
+    from pyoverkiz.auth import GatewayCandidate, SupportsGatewaySelection
+
+    assert GatewayCandidate is not None
+    assert SupportsGatewaySelection is not None
+
+
+def test_auth_package_exports_rexel_token_credentials():
+    """RexelTokenCredentials is importable from pyoverkiz.auth."""
+    from pyoverkiz.auth import RexelTokenCredentials
+
+    assert RexelTokenCredentials is not None
+
+
+def _build_rexel_token_strategy(json_bodies, *, credentials):
+    """Return a RexelTokenAuthStrategy whose session.get yields json_bodies."""
+    from unittest.mock import AsyncMock, MagicMock
+
+    from aiohttp import ClientSession
+
+    from pyoverkiz.enums.server import APIType
+    from pyoverkiz.models import ServerConfig
+
+    server = ServerConfig(
+        server=None,
+        name="Rexel",
+        endpoint="https://econnect-api.rexelservices.fr/api/enduser/overkiz/",
+        manufacturer="Rexel",
+        api_type=APIType.CLOUD,
+    )
+    session = MagicMock(spec=ClientSession)
+
+    responses = []
+    for body in json_bodies:
+        resp = MagicMock()
+        resp.status = 200
+        resp.json = AsyncMock(return_value=body)
+        resp.text = AsyncMock(return_value="")
+        ctx = MagicMock()
+        ctx.__aenter__ = AsyncMock(return_value=resp)
+        ctx.__aexit__ = AsyncMock(return_value=None)
+        responses.append(ctx)
+    session.get = MagicMock(side_effect=responses)
+
+    strategy = RexelTokenAuthStrategy(
+        credentials=credentials,
+        session=session,
+        server=server,
+        ssl_context=True,
+    )
+    return strategy, session
+
+
+@pytest.mark.asyncio
+async def test_rexel_token_auth_headers_uses_static_token():
+    """auth_headers builds Bearer + gatewayId from a static access token."""
+    creds = RexelTokenCredentials(access_token="static-token")
+    strategy, _ = _build_rexel_token_strategy([], credentials=creds)
+    strategy.select_gateway("gw-1")
+
+    headers = await strategy.auth_headers()
+
+    assert headers["Authorization"] == "Bearer static-token"
+    assert headers["gatewayId"] == "gw-1"
+
+
+@pytest.mark.asyncio
+async def test_rexel_token_auth_headers_invokes_callback():
+    """auth_headers awaits the callback to obtain a fresh token each call."""
+    calls = []
+
+    async def _token() -> str:
+        calls.append(1)
+        return f"token-{len(calls)}"
+
+    creds = RexelTokenCredentials(access_token_callback=_token)
+    strategy, _ = _build_rexel_token_strategy([], credentials=creds)
+    strategy.select_gateway("gw-1")
+
+    first = await strategy.auth_headers()
+    second = await strategy.auth_headers()
+
+    # Callback is re-invoked per request: proves no caching / no staleness.
+    assert first["Authorization"] == "Bearer token-1"
+    assert second["Authorization"] == "Bearer token-2"
+    assert len(calls) == 2
+
+
+@pytest.mark.asyncio
+async def test_rexel_token_auth_headers_raises_when_unselected():
+    """auth_headers raises NoGatewaySelectedError before a gateway is chosen."""
+    creds = RexelTokenCredentials(access_token="static-token")
+    strategy, _ = _build_rexel_token_strategy([], credentials=creds)
+
+    with pytest.raises(NoGatewaySelectedError):
+        await strategy.auth_headers()
+
+
+@pytest.mark.asyncio
+async def test_rexel_token_login_applies_stored_gateway_without_discovery():
+    """login() with credentials.gateway_id selects it and skips discovery."""
+    creds = RexelTokenCredentials(access_token="static-token", gateway_id="stored-gw")
+    # No json bodies: discovery would raise StopIteration on session.get if called.
+    strategy, session = _build_rexel_token_strategy([], credentials=creds)
+
+    await strategy.login()
+
+    assert strategy.selected_gateway == "stored-gw"
+    session.get.assert_not_called()
+
+
+@pytest.mark.asyncio
+async def test_rexel_token_login_auto_selects_single_gateway():
+    """login() without a stored gateway auto-selects a sole discovered gateway."""
+    creds = RexelTokenCredentials(access_token="static-token")
+    strategy, _ = _build_rexel_token_strategy(
+        [
+            [{"id": 1, "label": "Home"}],  # GET /homes
+            [{"gatewayId": "only-gw", "externalId": "x"}],  # GET /overkizgateways
+        ],
+        credentials=creds,
+    )
+
+    await strategy.login()
+
+    assert strategy.selected_gateway == "only-gw"
+
+
+@pytest.mark.asyncio
+async def test_rexel_token_login_leaves_multiple_unselected():
+    """login() leaves selection unset when several gateways are discovered."""
+    creds = RexelTokenCredentials(access_token="static-token")
+    strategy, _ = _build_rexel_token_strategy(
+        [
+            [{"id": 1, "label": "Home"}],  # GET /homes
+            [  # GET /overkizgateways
+                {"gatewayId": "a", "externalId": "x"},
+                {"gatewayId": "b", "externalId": "y"},
+            ],
+        ],
+        credentials=creds,
+    )
+
+    await strategy.login()
+
+    assert strategy.selected_gateway is None
+
+
+@pytest.mark.asyncio
+async def test_rexel_token_discovery_uses_callback_token():
+    """discover_gateways works using the callback-supplied token."""
+
+    async def _token() -> str:
+        return "callback-token"
+
+    creds = RexelTokenCredentials(access_token_callback=_token)
+    strategy, _ = _build_rexel_token_strategy(
+        [
+            [{"id": 7, "label": "H"}],
+            [{"gatewayId": "g7", "externalId": "e7"}],
+        ],
+        credentials=creds,
+    )
+
+    candidates = await strategy.discover_gateways()
+
+    assert [c.gateway_id for c in candidates] == ["g7"]
+
+
+def test_rexel_token_strategy_supports_gateway_selection():
+    """RexelTokenAuthStrategy satisfies the SupportsGatewaySelection protocol."""
+    from pyoverkiz.auth import SupportsGatewaySelection
+
+    creds = RexelTokenCredentials(access_token="static-token")
+    strategy, _ = _build_rexel_token_strategy([], credentials=creds)
+    assert isinstance(strategy, SupportsGatewaySelection)
