@@ -851,3 +851,11 @@ async def test_rexel_login_does_not_auto_select_multiple_gateways():
     await strategy.login()
 
     assert strategy.selected_gateway is None
+
+
+def test_auth_package_exports_gateway_selection_types():
+    """GatewayCandidate and SupportsGatewaySelection are exported from auth."""
+    from pyoverkiz.auth import GatewayCandidate, SupportsGatewaySelection
+
+    assert GatewayCandidate is not None
+    assert SupportsGatewaySelection is not None
