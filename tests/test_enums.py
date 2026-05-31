@@ -81,3 +81,20 @@ class TestStrEnumBackport:
             f"{OverkizCommandParam.A},{OverkizCommandParam.B},{OverkizCommandParam.C}"
             == "A,B,C"
         )
+
+
+class TestOverkizCommandParamApiValues:
+    """Guard against casing regressions in state-comparison params (see #2093).
+
+    The real Overkiz API returns these state values in lowercase. A capitalized
+    command-input value in the server catalog (e.g. Hi Kumo's ``["On", "Off"]``)
+    must never clobber the lowercase value that downstream consumers compare
+    against, so pin the expected API values here.
+    """
+
+    def test_lowercase_state_values(self):
+        """ON/OFF/UNKNOWN/BATTERY must equal their lowercase API state values."""
+        assert OverkizCommandParam.ON == "on"
+        assert OverkizCommandParam.OFF == "off"
+        assert OverkizCommandParam.UNKNOWN == "unknown"
+        assert OverkizCommandParam.BATTERY == "battery"

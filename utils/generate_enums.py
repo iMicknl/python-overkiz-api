@@ -903,7 +903,12 @@ def generate_command_enums() -> None:
 
     command_enum_names: set[str] = set()
     command_tuples: list[tuple[str, str]] = []
-    for cmd_value in sorted(all_command_values):
+    # Process already-defined commands first so their values win on an enum-name
+    # collision (same casing-clobber guard as the params loop below).
+    ordered_command_values = sorted(
+        all_command_values, key=lambda value: (value not in existing_commands, value)
+    )
+    for cmd_value in ordered_command_values:
         if cmd_value in existing_commands:
             enum_name = existing_commands[cmd_value]
         else:
@@ -922,7 +927,15 @@ def generate_command_enums() -> None:
     param_enum_names: set[str] = set()
     param_tuples: list[tuple[str, str]] = []
     skipped_params: list[str] = []
-    for param_value in sorted(all_param_values):
+    # Process already-defined params first so their values win on an enum-name
+    # collision. Harvested catalog/fixture values that only differ by casing
+    # (e.g. a command-input "On" vs the real state value "on") must not overwrite
+    # the established value that downstream code relies on; they may only add new
+    # names. Within each group, sort by value for deterministic output.
+    ordered_param_values = sorted(
+        all_param_values, key=lambda value: (value not in existing_params, value)
+    )
+    for param_value in ordered_param_values:
         if param_value in existing_params:
             enum_name = existing_params[param_value]
         else:
