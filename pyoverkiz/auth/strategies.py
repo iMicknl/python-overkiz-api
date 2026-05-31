@@ -397,7 +397,12 @@ class RexelAuthStrategy(BaseAuthStrategy):
         return candidates
 
     def select_gateway(self, gateway_id: str) -> None:
-        """Select the gateway to scope subsequent requests to."""
+        """Select the gateway to scope subsequent requests to.
+
+        The caller is responsible for passing a ``gateway_id`` obtained from
+        ``discover_gateways()``; an unknown id is only rejected server-side on
+        the next request.
+        """
         self._gateway_id = gateway_id
 
     @property

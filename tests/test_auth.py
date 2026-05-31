@@ -37,7 +37,11 @@ from pyoverkiz.auth.strategies import (
     _decode_jwt_payload,
 )
 from pyoverkiz.enums import APIType, Server
-from pyoverkiz.exceptions import InvalidTokenError, NexityBadCredentialsError
+from pyoverkiz.exceptions import (
+    InvalidTokenError,
+    NexityBadCredentialsError,
+    NoGatewaySelectedError,
+)
 from pyoverkiz.models import ServerConfig
 
 HAS_NEXITY_DEPS = importlib.util.find_spec("boto3") is not None
@@ -691,7 +695,7 @@ def test_gateway_candidate_optional_fields_default_none():
 
 def test_no_gateway_selected_error_is_overkiz_error():
     """NoGatewaySelectedError subclasses BaseOverkizError."""
-    from pyoverkiz.exceptions import BaseOverkizError, NoGatewaySelectedError
+    from pyoverkiz.exceptions import BaseOverkizError
 
     assert issubclass(NoGatewaySelectedError, BaseOverkizError)
 
@@ -785,6 +789,31 @@ async def test_rexel_discover_gateways_flattens_homes_and_gateways():
     assert candidates[1].external_id == "0201-0012-9999"
 
 
+@pytest.mark.asyncio
+async def test_rexel_discover_gateways_empty_when_no_homes():
+    """discover_gateways returns [] when the account has no homes."""
+    strategy, _ = _build_rexel_strategy_with_token([[]])  # GET /homes -> []
+
+    assert await strategy.discover_gateways() == []
+
+
+@pytest.mark.asyncio
+async def test_rexel_login_with_no_gateways_leaves_unselected():
+    """Login does not select anything when discovery yields zero gateways."""
+    from unittest.mock import AsyncMock
+
+    strategy, _ = _build_rexel_strategy_with_token([])
+    strategy._exchange_token = AsyncMock(return_value=None)
+    strategy.discover_gateways = AsyncMock(return_value=[])
+
+    await strategy.login()
+
+    assert strategy.selected_gateway is None
+    # A subsequent device request must then fail loudly rather than silently.
+    with pytest.raises(NoGatewaySelectedError):
+        strategy.auth_headers()
+
+
 def test_rexel_auth_headers_includes_gateway_when_selected():
     """auth_headers includes Authorization and gatewayId after selection."""
     strategy, _ = _build_rexel_strategy_with_token([])
@@ -798,8 +827,6 @@ def test_rexel_auth_headers_includes_gateway_when_selected():
 
 def test_rexel_auth_headers_raises_when_unselected():
     """auth_headers raises NoGatewaySelectedError when no gateway is selected."""
-    from pyoverkiz.exceptions import NoGatewaySelectedError
-
     strategy, _ = _build_rexel_strategy_with_token([])
 
     with pytest.raises(NoGatewaySelectedError):
