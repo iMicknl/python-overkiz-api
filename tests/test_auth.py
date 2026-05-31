@@ -783,3 +783,32 @@ async def test_rexel_discover_gateways_flattens_homes_and_gateways():
     assert candidates[0].external_id == "0201-0012-0000"
     assert candidates[1].gateway_id == "99999"
     assert candidates[1].external_id == "0201-0012-9999"
+
+
+def test_rexel_auth_headers_includes_gateway_when_selected():
+    """auth_headers includes Authorization and gatewayId after selection."""
+    strategy, _ = _build_rexel_strategy_with_token([])
+    strategy.select_gateway("1111-2222-3333")
+
+    headers = strategy.auth_headers()
+
+    assert headers["Authorization"] == "Bearer fake-jwt"
+    assert headers["gatewayId"] == "1111-2222-3333"
+
+
+def test_rexel_auth_headers_raises_when_unselected():
+    """auth_headers raises NoGatewaySelectedError when no gateway is selected."""
+    from pyoverkiz.exceptions import NoGatewaySelectedError
+
+    strategy, _ = _build_rexel_strategy_with_token([])
+
+    with pytest.raises(NoGatewaySelectedError):
+        strategy.auth_headers()
+
+
+def test_rexel_auth_headers_empty_without_token():
+    """auth_headers returns empty mapping before login (no token)."""
+    strategy, _ = _build_rexel_strategy_with_token([])
+    strategy.context.access_token = None
+
+    assert strategy.auth_headers() == {}

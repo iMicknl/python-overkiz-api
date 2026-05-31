@@ -31,6 +31,7 @@ from pyoverkiz.const import (
     NEXITY_COGNITO_REGION,
     NEXITY_COGNITO_USER_POOL,
     REXEL_ENDUSER_API,
+    REXEL_GATEWAY_HEADER,
     REXEL_OAUTH_CLIENT_ID,
     REXEL_OAUTH_SCOPE,
     REXEL_OAUTH_TOKEN_URL,
@@ -46,6 +47,7 @@ from pyoverkiz.exceptions import (
     InvalidTokenError,
     NexityBadCredentialsError,
     NexityServiceError,
+    NoGatewaySelectedError,
     SomfyBadCredentialsError,
     SomfyServiceError,
 )
@@ -415,10 +417,18 @@ class RexelAuthStrategy(BaseAuthStrategy):
             return cast(list[dict[str, Any]], await response.json())
 
     def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
-        """Return authentication headers for a request path."""
-        if self.context.access_token:
-            return {"Authorization": f"Bearer {self.context.access_token}"}
-        return {}
+        """Return authentication headers, including the selected gateway."""
+        if not self.context.access_token:
+            return {}
+        if self._gateway_id is None:
+            raise NoGatewaySelectedError(
+                "Multiple Rexel gateways available; call discover_gateways() "
+                "and select_gateway() before making requests."
+            )
+        return {
+            "Authorization": f"Bearer {self.context.access_token}",
+            REXEL_GATEWAY_HEADER: self._gateway_id,
+        }
 
     async def _exchange_token(self, payload: Mapping[str, str]) -> None:
         """Exchange authorization code or refresh token for access token."""
