@@ -123,6 +123,10 @@ class TestObfucscateSensitive:
             "core:MacAddress",
             "core:SerialNumber",
             "core:DeviceSerialNumberState",
+            "core:IPAddressState",
+            "core:LabelState",
+            "core:LocationLatitudeState",
+            "core:LocationLongitudeState",
         ],
     )
     def test_obfuscate_sensitive_states(self, state_name: str):

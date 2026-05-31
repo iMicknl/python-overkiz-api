@@ -55,6 +55,10 @@ def _obfuscate_value(key: str, value: Any, mask_next_value: bool) -> tuple[Any, 
         "core:MacAddress",
         "core:SerialNumber",
         "core:DeviceSerialNumberState",
+        "core:IPAddressState",
+        "core:LabelState",
+        "core:LocationLatitudeState",
+        "core:LocationLongitudeState",
     ):
         mask_next_value = True
 
