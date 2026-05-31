@@ -358,7 +358,7 @@ class Command:
 
         if self.parameters is not None:
             payload["parameters"] = [
-                p if isinstance(p, (str, int, float, bool)) else str(p)
+                p if isinstance(p, (str, int, float, bool, dict, list)) else str(p)
                 for p in self.parameters
             ]
 

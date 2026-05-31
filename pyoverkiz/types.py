@@ -11,7 +11,9 @@ from pyoverkiz.enums.command import OverkizCommandParam
 
 StateType = str | int | float | bool | dict[str, Any] | list[Any] | None
 
-CommandParameterValue = str | int | float | bool | OverkizCommandParam
+CommandParameterValue = (
+    str | int | float | bool | dict[str, Any] | list[Any] | OverkizCommandParam
+)
 
 
 def _parse_bool(value: str) -> bool:

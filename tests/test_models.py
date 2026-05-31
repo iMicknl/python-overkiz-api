@@ -927,6 +927,43 @@ def test_command_to_payload_omits_none():
     assert payload == {"name": "close"}
 
 
+def test_command_to_payload_preserves_dict_parameter():
+    """Command.to_payload passes dict/list parameters through untouched.
+
+    Several Atlantic/Thermor commands (e.g. setAbsenceStartDate,
+    setCurrentOperatingMode) take a dict parameter that must reach the API as a
+    JSON object, not a stringified repr.
+    """
+    from pyoverkiz.models import Command
+
+    date = {
+        "year": 2026,
+        "month": 5,
+        "day": 28,
+        "hour": 12,
+        "minute": 0,
+        "second": 0,
+        "weekday": 3,
+    }
+    cmd = Command(name="setAbsenceStartDate", parameters=[date])
+
+    payload = cmd.to_payload()
+
+    assert payload["parameters"] == [date]
+
+
+def test_command_to_payload_preserves_list_parameter():
+    """Command.to_payload passes a nested list parameter through untouched."""
+    from pyoverkiz.models import Command
+
+    schedule = [[0, 1, 2], [3, 4, 5]]
+    cmd = Command(name="setSchedule", parameters=[schedule])
+
+    payload = cmd.to_payload()
+
+    assert payload["parameters"] == [schedule]
+
+
 def test_action_to_payload_and_parameters_conversion():
     """Action.to_payload converts nested Command enums to primitives."""
     from pyoverkiz.enums.command import OverkizCommand, OverkizCommandParam
