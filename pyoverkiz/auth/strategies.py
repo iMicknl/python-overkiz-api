@@ -346,7 +346,7 @@ class RexelAuthStrategy(BaseAuthStrategy):
         self._gateway_id: str | None = None
 
     async def login(self) -> None:
-        """Perform login using Rexel OAuth2 authorization code."""
+        """Exchange the authorization code, then auto-select a sole gateway."""
         await self._exchange_token(
             {
                 "grant_type": "authorization_code",
@@ -357,6 +357,9 @@ class RexelAuthStrategy(BaseAuthStrategy):
                 "code_verifier": self.credentials.code_verifier,
             }
         )
+        gateways = await self.discover_gateways()
+        if len(gateways) == 1:
+            self.select_gateway(gateways[0].gateway_id)
 
     async def refresh_if_needed(self) -> bool:
         """Refresh Rexel OAuth2 tokens if needed."""

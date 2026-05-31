@@ -812,3 +812,42 @@ def test_rexel_auth_headers_empty_without_token():
     strategy.context.access_token = None
 
     assert strategy.auth_headers() == {}
+
+
+@pytest.mark.asyncio
+async def test_rexel_login_auto_selects_single_gateway():
+    """Login auto-selects the only gateway when exactly one is found."""
+    from unittest.mock import AsyncMock
+
+    from pyoverkiz.auth.base import GatewayCandidate
+
+    strategy, _ = _build_rexel_strategy_with_token([])
+    strategy._exchange_token = AsyncMock(return_value=None)
+    strategy.discover_gateways = AsyncMock(
+        return_value=[GatewayCandidate(gateway_id="only-one")]
+    )
+
+    await strategy.login()
+
+    assert strategy.selected_gateway == "only-one"
+
+
+@pytest.mark.asyncio
+async def test_rexel_login_does_not_auto_select_multiple_gateways():
+    """Login leaves selection unset when multiple gateways are found."""
+    from unittest.mock import AsyncMock
+
+    from pyoverkiz.auth.base import GatewayCandidate
+
+    strategy, _ = _build_rexel_strategy_with_token([])
+    strategy._exchange_token = AsyncMock(return_value=None)
+    strategy.discover_gateways = AsyncMock(
+        return_value=[
+            GatewayCandidate(gateway_id="a"),
+            GatewayCandidate(gateway_id="b"),
+        ]
+    )
+
+    await strategy.login()
+
+    assert strategy.selected_gateway is None
