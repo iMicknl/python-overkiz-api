@@ -88,6 +88,20 @@ The library supports multiple authentication methods depending on the server:
 
 Each server automatically selects the appropriate authentication strategy based on the credentials provided.
 
+Rexel supports two authentication modes:
+
+- **Library-driven code exchange** (`RexelOAuthCodeCredentials`): pyoverkiz
+  performs the PKCE code exchange and refreshes its own tokens. Best for
+  standalone use.
+- **Externally-managed token** (`RexelTokenCredentials`): the OAuth2 lifecycle
+  is owned outside the library (e.g. Home Assistant's `application_credentials`
+  platform). Supply an async `access_token_callback` or a static `access_token`.
+  Best when a host application already manages OAuth.
+
+Both Rexel modes support multiple gateways: after `login()`, call
+`discover_gateways()` and `select_gateway()` to scope requests (a sole gateway
+is auto-selected).
+
 ## Relationship diagram
 
 ```
