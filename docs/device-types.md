@@ -10,7 +10,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 !!! note
     This page is auto-generated from the Overkiz API. Run `uv run utils/generate_device_catalog.py` to regenerate.
 
-**26 protocols**, **477 unique device types** documented below.
+**27 protocols**, **479 unique device types** documented below.
 
 ## Protocols
 
@@ -18,6 +18,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 - [CAMERA](#camera) (1 types)
 - [ELIOT](#eliot) (11 types)
 - [ENOCEAN](#enocean) (35 types)
+- [HLRR_WIFI](#hlrr_wifi) (2 types)
 - [HOMEKIT](#homekit) (1 types)
 - [HUE](#hue) (5 types)
 - [INTERNAL](#internal) (15 types)
@@ -1509,6 +1510,58 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `StatusState` | DiscreteState | available, unavailable |  |
 
 
+## HLRR_WIFI
+
+2 device types.
+
+??? note "HitachiHeatingSystem/HitachiAirToAirHeatPump (ACTUATOR) — 1 commands, 14 states"
+
+    **Type IDs:** `655360` | **Servers:** `hi_kumo_europe` | **Controllable:** `hlrrwifi:HLinkMainController` | **Profiles:** `ThermostatTargetReader`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `globalControl` | STRING: off, on; INT; STRING: auto, high, low, medium, silent; STRING: auto, circulator, cooling, dehumidify, fan; STRING: both, horizontal, stop, vertical; STRING: off, on | p1: Main operation => on\|off p2: Temperature in Celsius p3: Fan speed => auto\|high\|medium\|low\|silent p4: Mode => auto\|heating\|dehumidify\|cooling\|fan\|circulator\|leaveHome p5: Swing => stop\|vertical\|horizontal\|both p6: Leave home => on\|off |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `FilterConditionState` | DiscreteState | OK, alert |  |
+    | `ProductModelNameState` | DataState |  |  |
+    | `RSSILevelState` | ContinuousState |  |  |
+    | `TargetTemperatureState` | ContinuousState | [12.0..30.0] |  |
+    | `DiagnosticCodeState` | DataState |  |  |
+    | `FanSpeedState` | DiscreteState | auto, high, low, medium, silent |  |
+    | `LeaveHomeState` | DiscreteState | off, on |  |
+    | `MainOperationState` | DiscreteState | off, on |  |
+    | `ModeChangeState` | DiscreteState | auto, autoCooling, autoHeating, circulator, cooling, dehumidify, fan, heating |  |
+    | `OutdoorTemperatureState` | ContinuousState |  |  |
+    | `RemoconControlState` | DiscreteState | disable, enable |  |
+    | `RoomTemperatureState` | ContinuousState |  |  |
+    | `SwingState` | DiscreteState | both, horizontal, stop, vertical |  |
+    | `TemperatureChangeState` | ContinuousState |  |  |
+
+??? note "ProtocolGateway/HLRRWifiBridge (PROTOCOL_GATEWAY) — 2 commands, 2 states"
+
+    **Type IDs:** `8589934592` | **Servers:** `hi_kumo_europe` | **Controllable:** `hlrrwifi:HLRRWifiBridge` | **Profiles:** `Specific`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `getName` |  | Refresh the device internal name |
+    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `LocalModeState` | DiscreteState | false, true |  |
+    | `NameState` | DataState |  |  |
+
+
 ## HOMEKIT
 
 1 device types.
@@ -1696,7 +1749,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Alarm/TSKAlarmController (ACTUATOR) — 16 commands, 5 states"
 
-    **Type IDs:** `1` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `internal:TSKAlarmComponent` | **Profiles:** `Alarm`, `Switchable`
+    **Type IDs:** `1` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `internal:TSKAlarmComponent` | **Profiles:** `Alarm`, `Switchable`
 
     **Commands**
 
@@ -1731,7 +1784,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Dock (ACTUATOR) — 25 commands, 14 states"
 
-    **Type IDs:** `3` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `internal:TSKDockComponent` | **Profiles:** `Specific`
+    **Type IDs:** `3` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `internal:TSKDockComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -1784,7 +1837,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pod (ACTUATOR) — 2 commands, 1 states"
 
-    **Type IDs:** `2` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `internal:PodComponent` | **Profiles:** `Specific`
+    **Type IDs:** `2` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `internal:PodComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -1801,7 +1854,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pod (ACTUATOR) — 11 commands, 7 states"
 
-    **Type IDs:** `4` | **Servers:** `atlantic_cozytouch` | **Controllable:** `internal:PodMiniComponent` | **Profiles:** `UpdatableComponent`
+    **Type IDs:** `4` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `internal:PodMiniComponent` | **Profiles:** `UpdatableComponent`
 
     **Commands**
 
@@ -1833,7 +1886,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pod (ACTUATOR) — 12 commands, 8 states"
 
-    **Type IDs:** `5` | **Servers:** `atlantic_cozytouch` | **Controllable:** `internal:PodV2Component` | **Profiles:** `UpdatableComponent`
+    **Type IDs:** `5` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `internal:PodV2Component` | **Profiles:** `UpdatableComponent`
 
     **Commands**
 
@@ -1867,11 +1920,11 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pod (ACTUATOR) — 0 commands, 0 states"
 
-    **Type IDs:** `6` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `internal:UPodComponent` | **Profiles:** `Specific`
+    **Type IDs:** `6` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `internal:UPodComponent` | **Profiles:** `Specific`
 
 ??? note "Pod (ACTUATOR) — 0 commands, 2 states"
 
-    **Type IDs:** `7` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `internal:UPodNetWorkComponent` | **Profiles:** `Specific`
+    **Type IDs:** `7` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `internal:UPodNetWorkComponent` | **Profiles:** `Specific`
 
     **States**
 
@@ -1882,7 +1935,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pod (ACTUATOR) — 11 commands, 9 states"
 
-    **Type IDs:** `10` | **Servers:** `atlantic_cozytouch` | **Controllable:** `internal:PodV3Component` | **Profiles:** `UpdatableComponent`
+    **Type IDs:** `10` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `internal:PodV3Component` | **Profiles:** `UpdatableComponent`
 
     **Commands**
 
@@ -1916,7 +1969,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pod (ACTUATOR) — 11 commands, 6 states"
 
-    **Type IDs:** `11` | **Servers:** `atlantic_cozytouch` | **Controllable:** `internal:PodV3RDComponent` | **Profiles:** `UpdatableComponent`
+    **Type IDs:** `11` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `internal:PodV3RDComponent` | **Profiles:** `UpdatableComponent`
 
     **Commands**
 
@@ -1947,7 +2000,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pod/MultiGateway (ACTUATOR) — 2 commands, 4 states"
 
-    **Type IDs:** `12` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `internal:MultiGatewayComponent` | **Profiles:** `Specific`
+    **Type IDs:** `12` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `internal:MultiGatewayComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -2102,7 +2155,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Wifi (ACTUATOR) — 3 commands, 3 states"
 
-    **Type IDs:** `9` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `internal:WifiComponent` | **Profiles:** `Specific`
+    **Type IDs:** `9` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `internal:WifiComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -2127,7 +2180,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "AdjustableSlatsRollerShutter/PositionableOrOrientableRollerShutter (ACTUATOR) — 33 commands, 16 states"
 
-    **Type IDs:** `131328`, `131330` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:AdjustableSlatsRollerShutterIOComponent` | **Profiles:** `StatefulRockingShutter`, `StatefulOrientableOrCloseable`, `OrientableOrCloseable`, `StatefulCloseable`, `Closeable`, `OpenClose`
+    **Type IDs:** `131328`, `131330` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:AdjustableSlatsRollerShutterIOComponent` | **Profiles:** `StatefulRockingShutter`, `StatefulOrientableOrCloseable`, `OrientableOrCloseable`, `StatefulCloseable`, `Closeable`, `OpenClose`
 
     **Data Properties**
 
@@ -2258,7 +2311,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Alarm/StatefulAlarmController (ACTUATOR) — 21 commands, 9 states"
 
-    **Type IDs:** `1507328` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:AlarmIOComponent` | **Profiles:** `Alarm`
+    **Type IDs:** `1507328` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:AlarmIOComponent` | **Profiles:** `Alarm`
 
     **Data Properties**
 
@@ -2306,7 +2359,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Awning/DynamicAwning (ACTUATOR) — 30 commands, 17 states"
 
-    **Type IDs:** `18691697868802` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:DynamicAwningIOComponent` | **Profiles:** `StatefulDeployUndeployAwning`, `StatefulDeployUndeploy`, `DeployUndeploy`, `StatefulDeployable`, `Deployable`
+    **Type IDs:** `18691697868802` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:DynamicAwningIOComponent` | **Profiles:** `StatefulDeployUndeployAwning`, `StatefulDeployUndeploy`, `DeployUndeploy`, `StatefulDeployable`, `Deployable`
 
     **Data Properties**
 
@@ -2371,7 +2424,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Awning/PositionableHorizontalAwning (ACTUATOR) — 36 commands, 17 states"
 
-    **Type IDs:** `1048576` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:HorizontalAwningIOComponent` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `1048576` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:HorizontalAwningIOComponent` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -2572,7 +2625,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "CarButtonSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `590336` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:CarButtonIODeviceSensor` | **Profiles:** `PushButtonSensor`
+    **Type IDs:** `590336` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:CarButtonIODeviceSensor` | **Profiles:** `PushButtonSensor`
 
     **States**
 
@@ -2583,7 +2636,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ConsumptionSensor/CumulativeFossilEnergyConsumptionSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `1442316` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:TotalFossilEnergyConsumptionSensor` | **Profiles:** `FossilEnergyConsumption`
+    **Type IDs:** `1442316` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:TotalFossilEnergyConsumptionSensor` | **Profiles:** `FossilEnergyConsumption`
 
     **States**
 
@@ -2594,7 +2647,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "DoorLock (ACTUATOR) — 30 commands, 13 states"
 
-    **Type IDs:** `589824`, `589826` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:DoorLockIOComponent` | **Profiles:** `StatefulDoorLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `589824`, `589826` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:DoorLockIOComponent` | **Profiles:** `StatefulDoorLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Data Properties**
 
@@ -2655,7 +2708,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "DoorLock/WindowLock (ACTUATOR) — 22 commands, 11 states"
 
-    **Type IDs:** `590080`, `590090` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:WindowLockIOComponent` | **Profiles:** `StatefulWindowLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulBasicOpenClose`, `BasicOpenClose`
+    **Type IDs:** `590080`, `590090` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:WindowLockIOComponent` | **Profiles:** `StatefulWindowLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulBasicOpenClose`, `BasicOpenClose`
 
     **Data Properties**
 
@@ -2706,7 +2759,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "DoorLock/CarLock (ACTUATOR) — 22 commands, 10 states"
 
-    **Type IDs:** `590336` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:CarLockIOComponent` | **Profiles:** `StatefulCarLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `590336` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:CarLockIOComponent` | **Profiles:** `StatefulCarLockWithOpeningStatus`, `StatefulLockWithOpeningStatus`, `StatefulLock`, `LockStatus`, `Lock`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -2814,7 +2867,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 0 commands, 12 states"
 
-    **Type IDs:** `1442060` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:TotalElectricalEnergyConsumptionSensor` | **Profiles:** `ElectricEnergyConsumption`
+    **Type IDs:** `1442060` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:TotalElectricalEnergyConsumptionSensor` | **Profiles:** `ElectricEnergyConsumption`
 
     **States**
 
@@ -2835,7 +2888,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorHeatingSystem/DimmerExteriorHeating (ACTUATOR) — 28 commands, 13 states"
 
-    **Type IDs:** `1376258` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:ExteriorHeatingIOComponent` | **Profiles:** `StatefulLevelControlHeating`, `StatefulLevelControl`, `LevelControl`, `Switchable`
+    **Type IDs:** `1376258` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:ExteriorHeatingIOComponent` | **Profiles:** `StatefulLevelControlHeating`, `StatefulLevelControl`, `LevelControl`, `Switchable`
 
     **Data Properties**
 
@@ -2894,7 +2947,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorHeatingSystem/DiscreteExteriorHeating (ACTUATOR) — 24 commands, 12 states"
 
-    **Type IDs:** `1391106` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:DiscreteExteriorHeatingIOComponent` | **Profiles:** `StatefulSwitchableHeating`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `1391106` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:DiscreteExteriorHeatingIOComponent` | **Profiles:** `StatefulSwitchableHeating`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -3055,7 +3108,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorScreen/PositionableScreen (ACTUATOR) — 36 commands, 18 states"
 
-    **Type IDs:** `196608`, `196610` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:VerticalExteriorAwningIOComponent` | **Profiles:** `StatefulDeployableVerticalAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulCloseable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `196608`, `196610` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:VerticalExteriorAwningIOComponent` | **Profiles:** `StatefulDeployableVerticalAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulCloseable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -3127,7 +3180,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorScreen/PositionableScreen (ACTUATOR) — 33 commands, 17 states"
 
-    **Type IDs:** `196609` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:VerticalExteriorAwningVeluxIOComponent` | **Profiles:** `StatefulDeployableVerticalAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulCloseable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `196609` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:VerticalExteriorAwningVeluxIOComponent` | **Profiles:** `StatefulDeployableVerticalAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulCloseable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -3329,7 +3382,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorVenetianBlind/PositionableExteriorVenetianBlind (ACTUATOR) — 38 commands, 19 states"
 
-    **Type IDs:** `1114112` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:ExteriorVenetianBlindIOComponent` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
+    **Type IDs:** `1114112` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:ExteriorVenetianBlindIOComponent` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
 
     **Data Properties**
 
@@ -3476,7 +3529,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GarageDoor/PositionableGarageDoor (ACTUATOR) — 28 commands, 13 states"
 
-    **Type IDs:** `327680`, `327682` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:GarageOpenerIOComponent` | **Profiles:** `StatefulCloseableGarageOpener`, `StatefulCloseable`, `Closeable`, `OpenClose`
+    **Type IDs:** `327680`, `327682` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:GarageOpenerIOComponent` | **Profiles:** `StatefulCloseableGarageOpener`, `StatefulCloseable`, `Closeable`, `OpenClose`
 
     **Data Properties**
 
@@ -3535,7 +3588,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GarageDoor/DiscretePositionableGarageDoor (ACTUATOR) — 27 commands, 12 states"
 
-    **Type IDs:** `342528`, `342530` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:DiscreteGarageOpenerIOComponent` | **Profiles:** `OpenCloseGarageOpener`, `OpenClose`
+    **Type IDs:** `342528`, `342530` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:DiscreteGarageOpenerIOComponent` | **Profiles:** `OpenCloseGarageOpener`, `OpenClose`
 
     **Data Properties**
 
@@ -3592,7 +3645,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GarageDoor/PositionableGarageDoor (ACTUATOR) — 26 commands, 13 states"
 
-    **Type IDs:** `524288`, `524290` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:RollingDoorOpenerIOComponent` | **Profiles:** `StatefulCloseableSlidingDoor`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `524288`, `524290` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:RollingDoorOpenerIOComponent` | **Profiles:** `StatefulCloseableSlidingDoor`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -3813,7 +3866,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Gate/PositionableGateWithPedestrianPosition (ACTUATOR) — 30 commands, 14 states"
 
-    **Type IDs:** `458752`, `458754` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:GateOpenerIOComponent` | **Profiles:** `StatefulCloseableGateOpener`, `StatefulCloseable`, `Closeable`, `OpenClose`
+    **Type IDs:** `458752`, `458754` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:GateOpenerIOComponent` | **Profiles:** `StatefulCloseableGateOpener`, `StatefulCloseable`, `Closeable`, `OpenClose`
 
     **Data Properties**
 
@@ -3875,7 +3928,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Gate/SlidingDiscreteGateWithPedestrianPosition (ACTUATOR) — 27 commands, 13 states"
 
-    **Type IDs:** `473600`, `473602` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:SlidingDiscreteGateOpenerIOComponent` | **Profiles:** `OpenCloseSlidingGateOpener`, `OpenClose`
+    **Type IDs:** `473600`, `473602` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:SlidingDiscreteGateOpenerIOComponent` | **Profiles:** `OpenCloseSlidingGateOpener`, `OpenClose`
 
     **Data Properties**
 
@@ -4047,7 +4100,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/IOGeneric (ACTUATOR) — 16 commands, 9 states"
 
-    **Type IDs:** `0`, `1179648`, `1245184`, `1376256`, `1572864`, `1573120` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:UnknownIOComponent` | **Profiles:** `StatefulLevelControl`, `LevelControl`, `Generic`
+    **Type IDs:** `0`, `1179648`, `1245184`, `1376256`, `1572864`, `1573120` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:UnknownIOComponent` | **Profiles:** `StatefulLevelControl`, `LevelControl`, `Generic`
 
     **Data Properties**
 
@@ -4090,7 +4143,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatPumpSystem/HeatPump (ACTUATOR) — 27 commands, 18 states"
 
-    **Type IDs:** `1441792` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:HeatPumpIOComponent` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`
+    **Type IDs:** `1441792` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:HeatPumpIOComponent` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`
 
     **Data Properties**
 
@@ -4153,7 +4206,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/KizOThermBridge (ACTUATOR) — 17 commands, 15 states"
 
-    **Type IDs:** `267` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:KizOThermIOComponent` | **Profiles:** `DHWThermostatTargetReader`
+    **Type IDs:** `267` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:KizOThermIOComponent` | **Profiles:** `DHWThermostatTargetReader`
 
     **Data Properties**
 
@@ -4203,7 +4256,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/HeatingTemperatureInterface (ACTUATOR) — 31 commands, 18 states"
 
-    **Type IDs:** `917504` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:HeatingTemperatureInterfaceIOComponent` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`
+    **Type IDs:** `917504` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:HeatingTemperatureInterfaceIOComponent` | **Profiles:** `StatefulThermostatWithSensor`, `StatefulThermostat`, `Thermostat`
 
     **Data Properties**
 
@@ -4270,7 +4323,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/AtlanticPassAPCHeatPump (ACTUATOR) — 41 commands, 39 states"
 
-    **Type IDs:** `1442060` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCHeatPumpMainComponent` | **Profiles:** `Specific`
+    **Type IDs:** `1442060` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCHeatPumpMainComponent` | **Profiles:** `Specific`
 
     **Data Properties**
 
@@ -4368,7 +4421,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/AtlanticPassAPCHeatingAndCoolingZone (ACTUATOR) — 28 commands, 22 states"
 
-    **Type IDs:** `1442060` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCHeatingAndCoolingZoneComponent` | **Profiles:** `ThermostatTargetReader`
+    **Type IDs:** `1442060` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCHeatingAndCoolingZoneComponent` | **Profiles:** `ThermostatTargetReader`
 
     **Commands**
 
@@ -4432,7 +4485,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/AtlanticPassAPCBoiler (ACTUATOR) — 38 commands, 38 states"
 
-    **Type IDs:** `1442316` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCBoilerMainComponent` | **Profiles:** `Specific`
+    **Type IDs:** `1442316` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCBoilerMainComponent` | **Profiles:** `Specific`
 
     **Data Properties**
 
@@ -4526,7 +4579,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/AtlanticPassAPCHeatingZone (ACTUATOR) — 19 commands, 15 states"
 
-    **Type IDs:** `1442316` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCHeatingZoneComponent` | **Profiles:** `ThermostatTargetReader`
+    **Type IDs:** `1442316` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCHeatingZoneComponent` | **Profiles:** `ThermostatTargetReader`
 
     **Commands**
 
@@ -4574,7 +4627,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/AtlanticPassAPCZoneControl (ACTUATOR) — 37 commands, 30 states"
 
-    **Type IDs:** `1835020` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCZoneControlMainComponent` | **Profiles:** `Specific`
+    **Type IDs:** `1835020` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCZoneControlMainComponent` | **Profiles:** `Specific`
 
     **Data Properties**
 
@@ -4659,7 +4712,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/AtlanticPassAPCHeatingAndCoolingZone (ACTUATOR) — 35 commands, 26 states"
 
-    **Type IDs:** `1835020` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCZoneControlZoneComponent` | **Profiles:** `StatefulCoolingThermostat`, `CoolingThermostat`, `StatefulDualThermostat`, `DualThermostat`, `ThermostatTargetReader`
+    **Type IDs:** `1835020` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCZoneControlZoneComponent` | **Profiles:** `StatefulCoolingThermostat`, `CoolingThermostat`, `StatefulDualThermostat`, `DualThermostat`, `ThermostatTargetReader`
 
     **Commands**
 
@@ -4734,7 +4787,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerLight (ACTUATOR) — 33 commands, 15 states"
 
-    **Type IDs:** `393216`, `393218` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:DimmableLightIOComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `393216`, `393218` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:DimmableLightIOComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -4800,7 +4853,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerRGBColouredLight (ACTUATOR) — 35 commands, 18 states"
 
-    **Type IDs:** `393472`, `393474` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:DimmableRGBLightIOComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `393472`, `393474` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:DimmableRGBLightIOComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -4871,7 +4924,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerColorTemperatureLight (ACTUATOR) — 34 commands, 16 states"
 
-    **Type IDs:** `393730` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:DimmableColorTemperatureLightIOComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `393730` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:DimmableColorTemperatureLightIOComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -4939,7 +4992,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/StatefulOnOffLight (ACTUATOR) — 26 commands, 12 states"
 
-    **Type IDs:** `408064`, `408066`, `2199023663618` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:OnOffLightIOComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `408064`, `408066`, `2199023663618` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:OnOffLightIOComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -4995,7 +5048,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/TimedOnOffLight (ACTUATOR) — 29 commands, 15 states"
 
-    **Type IDs:** `983554` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:LightMicroModuleSomfyIOComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `983554` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:LightMicroModuleSomfyIOComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -5057,7 +5110,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Light/DimmerLight (ACTUATOR) — 35 commands, 14 states"
 
-    **Type IDs:** `2199023648770` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:DimmableLightMicroModuleSomfyIOComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `2199023648770` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:DimmableLightMicroModuleSomfyIOComponent` | **Profiles:** `StatefulLightDimmer`, `StatefulDimmable`, `Dimmable`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -5496,7 +5549,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 20 commands, 9 states"
 
-    **Type IDs:** `983040` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:OnOffIOComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `983040` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:OnOffIOComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -5543,7 +5596,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/TimedOnOff (ACTUATOR) — 20 commands, 9 states"
 
-    **Type IDs:** `983552` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:SwitchMicroModuleIOComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `983552` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:SwitchMicroModuleIOComponent` | **Profiles:** `StatefulSwitchableLight`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -5590,7 +5643,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pergola/PergolaHorizontalAwning (ACTUATOR) — 36 commands, 17 states"
 
-    **Type IDs:** `1048832`, `1048834` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:PergolaRailGuidedAwningIOComponent` | **Profiles:** `StatefulSlidingPergola`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `1048832`, `1048834` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:PergolaRailGuidedAwningIOComponent` | **Profiles:** `StatefulSlidingPergola`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -5729,7 +5782,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/PositionableRollerShutter (ACTUATOR) — 34 commands, 17 states"
 
-    **Type IDs:** `131072`, `131074` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:RollerShutterGenericIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `131072`, `131074` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:RollerShutterGenericIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -5798,7 +5851,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/PositionableTiltedRollerShutter (ACTUATOR) — 29 commands, 13 states"
 
-    **Type IDs:** `131073` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:RollerShutterVeluxIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `131073` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:RollerShutterVeluxIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -5858,7 +5911,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/PositionableProjectionRollerShutter (ACTUATOR) — 29 commands, 13 states"
 
-    **Type IDs:** `131584` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:ProjectionRollerShutterIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `131584` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:ProjectionRollerShutterIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -5918,7 +5971,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/PositionableDualRollerShutter (ACTUATOR) — 43 commands, 16 states"
 
-    **Type IDs:** `851968` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:DualRollerShutterIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `851968` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:DualRollerShutterIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -6061,7 +6114,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Screen/PositionableScreen (ACTUATOR) — 33 commands, 17 states"
 
-    **Type IDs:** `655360`, `655362` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:VerticalInteriorBlindGenericIOComponent` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `655360`, `655362` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:VerticalInteriorBlindGenericIOComponent` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -6129,7 +6182,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Screen/PositionableTiltedScreen (ACTUATOR) — 26 commands, 12 states"
 
-    **Type IDs:** `655361` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:VerticalInteriorBlindVeluxIOComponent` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `655361` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:VerticalInteriorBlindVeluxIOComponent` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -6250,7 +6303,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "SwimmingPool (ACTUATOR) — 19 commands, 9 states"
 
-    **Type IDs:** `393471` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:SwimmingPoolIOComponent` | **Profiles:** `SwitchableLight`, `StatefulSwitchable`, `Switchable`
+    **Type IDs:** `393471` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:SwimmingPoolIOComponent` | **Profiles:** `SwitchableLight`, `StatefulSwitchable`, `Switchable`
 
     **Data Properties**
 
@@ -6296,7 +6349,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "SwingingShutter (ACTUATOR) — 30 commands, 15 states"
 
-    **Type IDs:** `1572866` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:SwingingShutterSomfyIOComponent` | **Profiles:** `StatefulCloseableSwingingShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `1572866` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:SwingingShutterSomfyIOComponent` | **Profiles:** `StatefulCloseableSwingingShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -6359,7 +6412,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "SwingingShutter (ACTUATOR) — 27 commands, 13 states"
 
-    **Type IDs:** `1587714` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:DiscreteSwingingShutterSomfyIOComponent` | **Profiles:** `StatefulOpenCloseSwingingShutter`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `1587714` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:DiscreteSwingingShutterSomfyIOComponent` | **Profiles:** `StatefulOpenCloseSwingingShutter`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -6532,7 +6585,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "TemperatureSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `267`, `1442060`, `1442316`, `1835020` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:KizOThermRoomTemperatureSensor` | **Profiles:** `Temperature`
+    **Type IDs:** `267`, `1442060`, `1442316`, `1835020` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:KizOThermRoomTemperatureSensor` | **Profiles:** `Temperature`
 
     **States**
 
@@ -6543,7 +6596,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VenetianBlind/PositionableVenetianBlind (ACTUATOR) — 28 commands, 15 states"
 
-    **Type IDs:** `65536` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:VenetianBlindIOComponent` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
+    **Type IDs:** `65536` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:VenetianBlindIOComponent` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
 
     **Data Properties**
 
@@ -6604,7 +6657,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VentilationSystem/VentilationInlet (ACTUATOR) — 18 commands, 11 states"
 
-    **Type IDs:** `1310720`, `1310976` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:VentilationPointIOComponent` | **Profiles:** `SwitchableVentilation`, `Switchable`
+    **Type IDs:** `1310720`, `1310976` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:VentilationPointIOComponent` | **Profiles:** `SwitchableVentilation`, `Switchable`
 
     **Data Properties**
 
@@ -6651,7 +6704,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VentilationSystem/VentilationTransfer (ACTUATOR) — 18 commands, 11 states"
 
-    **Type IDs:** `1311232` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:VentilationPointAirTransferIOComponent` | **Profiles:** `SwitchableVentilation`, `Switchable`
+    **Type IDs:** `1311232` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:VentilationPointAirTransferIOComponent` | **Profiles:** `SwitchableVentilation`, `Switchable`
 
     **Data Properties**
 
@@ -6698,7 +6751,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "VentilationSystem/VentilationOutlet (ACTUATOR) — 18 commands, 12 states"
 
-    **Type IDs:** `1311488` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:VentilationPointAirOutletIOComponent` | **Profiles:** `SwitchableVentilation`, `AirOutputLevelSensor`, `Switchable`
+    **Type IDs:** `1311488` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:VentilationPointAirOutletIOComponent` | **Profiles:** `SwitchableVentilation`, `AirOutputLevelSensor`, `Switchable`
 
     **Data Properties**
 
@@ -6746,7 +6799,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterHeatingSystem/AtlanticPassAPCDHW (ACTUATOR) — 17 commands, 11 states"
 
-    **Type IDs:** `1442060`, `1442316` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCDHWComponent` | **Profiles:** `DHWThermostatTargetReader`
+    **Type IDs:** `1442060`, `1442316` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCDHWComponent` | **Profiles:** `DHWThermostatTargetReader`
 
     **Commands**
 
@@ -6788,7 +6841,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Window/PositionableWindow (ACTUATOR) — 19 commands, 10 states"
 
-    **Type IDs:** `262144` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:WindowOpenerGenericIOComponent` | **Profiles:** `StatefulCloseableWindow`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `262144` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:WindowOpenerGenericIOComponent` | **Profiles:** `StatefulCloseableWindow`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -6835,7 +6888,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Window/PositionableTiltedWindow (ACTUATOR) — 23 commands, 12 states"
 
-    **Type IDs:** `262145`, `262401` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:WindowOpenerVeluxIOComponent` | **Profiles:** `StatefulCloseableWindow`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `262145`, `262401` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:WindowOpenerVeluxIOComponent` | **Profiles:** `StatefulCloseableWindow`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -6888,7 +6941,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Window/PositionableSlidingWindow (ACTUATOR) — 25 commands, 11 states"
 
-    **Type IDs:** `1769472` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `io:PositionableSlidingWindowComponent` | **Profiles:** `StatefulCloseableSlidingWindow`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `1769472` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `io:PositionableSlidingWindowComponent` | **Profiles:** `StatefulCloseableSlidingWindow`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
 
     **Data Properties**
 
@@ -6942,7 +6995,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Window/PositionableAndLockableSlidingWindow (ACTUATOR) — 37 commands, 20 states"
 
-    **Type IDs:** `1769730`, `2199025025282` | **Servers:** `atlantic_cozytouch` | **Controllable:** `io:PositionableAndLockableSlidingWindowComponent` | **Profiles:** `StatefulCloseableSlidingWindow`, `StatefulCloseable`, `Closeable`, `StatefulLock`, `LockStatus`, `Lock`, `OpenClose`
+    **Type IDs:** `1769730`, `2199025025282` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe` | **Controllable:** `io:PositionableAndLockableSlidingWindowComponent` | **Profiles:** `StatefulCloseableSlidingWindow`, `StatefulCloseable`, `Closeable`, `StatefulLock`, `LockStatus`, `Lock`, `OpenClose`
 
     **Data Properties**
 
@@ -7127,7 +7180,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `14` | **Servers:** `somfy_europe` | **Controllable:** `modbus:YutakiV2SpaceCoolingElectricalEnergyConsumptionComponent` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
+    **Type IDs:** `14` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:YutakiV2SpaceCoolingElectricalEnergyConsumptionComponent` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyConsumption`
 
     **States**
 
@@ -7138,7 +7191,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/HitachiThermostat (SENSOR) — 0 commands, 1 states"
 
-    **Type IDs:** `12`, `14` | **Servers:** `somfy_europe` | **Controllable:** `modbus:YutakiRoomThermostatZone1Component` | **Profiles:** `Specific`
+    **Type IDs:** `12`, `14` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:YutakiRoomThermostatZone1Component` | **Profiles:** `Specific`
 
     **States**
 
@@ -7148,7 +7201,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiAirToWaterMainComponent (ACTUATOR) — 41 commands, 67 states"
 
-    **Type IDs:** `12`, `14` | **Servers:** `somfy_europe` | **Controllable:** `modbus:YutakiMainComponent` | **Profiles:** `Specific`
+    **Type IDs:** `12`, `14` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:YutakiMainComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -7270,7 +7323,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiAirToWaterHeatingZone (ACTUATOR) — 24 commands, 17 states"
 
-    **Type IDs:** `12` | **Servers:** `somfy_europe` | **Controllable:** `modbus:YutakiZone1Component` | **Profiles:** `Specific`
+    **Type IDs:** `12` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:YutakiZone1Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -7325,7 +7378,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiAirToWaterHeatingZone (ACTUATOR) — 24 commands, 17 states"
 
-    **Type IDs:** `12` | **Servers:** `somfy_europe` | **Controllable:** `modbus:YutakiZone2Component` | **Profiles:** `Specific`
+    **Type IDs:** `12` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:YutakiZone2Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -7380,7 +7433,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiDHW (ACTUATOR) — 16 commands, 13 states"
 
-    **Type IDs:** `12` | **Servers:** `somfy_europe` | **Controllable:** `modbus:YutakiDHWTComponent` | **Profiles:** `DHWTemperature`
+    **Type IDs:** `12` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:YutakiDHWTComponent` | **Profiles:** `DHWTemperature`
 
     **Commands**
 
@@ -7423,7 +7476,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiSwimmingPool (ACTUATOR) — 7 commands, 6 states"
 
-    **Type IDs:** `12`, `14` | **Servers:** `somfy_europe` | **Controllable:** `modbus:YutakiSwimmingPoolComponent` | **Profiles:** `Specific`
+    **Type IDs:** `12`, `14` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:YutakiSwimmingPoolComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -7450,7 +7503,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiAirToWaterHeatingZone (ACTUATOR) — 26 commands, 19 states"
 
-    **Type IDs:** `14` | **Servers:** `somfy_europe` | **Controllable:** `modbus:YutakiV2Zone1Component` | **Profiles:** `Specific`
+    **Type IDs:** `14` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:YutakiV2Zone1Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -7509,7 +7562,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiAirToWaterHeatingZone (ACTUATOR) — 26 commands, 19 states"
 
-    **Type IDs:** `14` | **Servers:** `somfy_europe` | **Controllable:** `modbus:YutakiV2Zone2Component` | **Profiles:** `Specific`
+    **Type IDs:** `14` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:YutakiV2Zone2Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -7568,7 +7621,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiDHW (ACTUATOR) — 18 commands, 15 states"
 
-    **Type IDs:** `14` | **Servers:** `somfy_europe` | **Controllable:** `modbus:YutakiV2DHWTComponent` | **Profiles:** `DHWTemperature`
+    **Type IDs:** `14` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:YutakiV2DHWTComponent` | **Profiles:** `DHWTemperature`
 
     **Commands**
 
@@ -7615,7 +7668,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "unknown (ACTUATOR) — 54 commands, 40 states"
 
-    **Type IDs:** `11` | **Servers:** `somfy_europe` | **Controllable:** `modbus:DeDietrichGatewayComponent` | **Profiles:** `Specific`
+    **Type IDs:** `11` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:DeDietrichGatewayComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -7723,7 +7776,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "unknown (ACTUATOR) — 177 commands, 119 states"
 
-    **Type IDs:** `13` | **Servers:** `somfy_europe` | **Controllable:** `modbus:FlaktWoodsRS485Component` | **Profiles:** `Specific`
+    **Type IDs:** `13` | **Servers:** `hi_kumo_europe`, `somfy_europe` | **Controllable:** `modbus:FlaktWoodsRS485Component` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -14584,7 +14637,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:CoolingCumulatedElectricalEnergyConsumptionSensor` | **Profiles:** `ElectricEnergyConsumption`
+    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:CoolingCumulatedElectricalEnergyConsumptionSensor` | **Profiles:** `ElectricEnergyConsumption`
 
     **States**
 
@@ -14595,7 +14648,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/OVPGeneric (ACTUATOR) — 4 commands, 3 states"
 
-    **Type IDs:** `0` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:UnknownOVPComponent` | **Profiles:** `StatefulLevelControl`, `LevelControl`, `Generic`
+    **Type IDs:** `0` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:UnknownOVPComponent` | **Profiles:** `StatefulLevelControl`, `LevelControl`, `Generic`
 
     **Data Properties**
 
@@ -14620,7 +14673,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Generic/unknown (ACTUATOR) — 3 commands, 2 states"
 
-    **Type IDs:** `16843019`, `1099528470795` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:ModbusMainController` | **Profiles:** `Specific`
+    **Type IDs:** `16843019`, `1099528470795` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:ModbusMainController` | **Profiles:** `Specific`
 
     **Data Properties**
 
@@ -14643,7 +14696,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/SomfyHeatingTemperatureInterface (ACTUATOR) — 19 commands, 12 states"
 
-    **Type IDs:** `917506` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:SomfyHeatingTemperatureInterfaceOVPComponent` | **Profiles:** `OperatingModeHeating`, `ThermostatTargetReader`, `OnOffStatus`
+    **Type IDs:** `917506` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:SomfyHeatingTemperatureInterfaceOVPComponent` | **Profiles:** `OperatingModeHeating`, `ThermostatTargetReader`, `OnOffStatus`
 
     **Data Properties**
 
@@ -14692,7 +14745,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/ImhotepHeatingTemperatureInterface (ACTUATOR) — 19 commands, 12 states"
 
-    **Type IDs:** `917515` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:ImhotepHeatingTemperatureInterfaceOVPComponent` | **Profiles:** `ThermostatTargetReader`
+    **Type IDs:** `917515` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:ImhotepHeatingTemperatureInterfaceOVPComponent` | **Profiles:** `ThermostatTargetReader`
 
     **Data Properties**
 
@@ -14741,7 +14794,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/StatefulOnOff (ACTUATOR) — 7 commands, 5 states"
 
-    **Type IDs:** `917515` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:ImhotepHeatingTemperatureRelayOVPComponent` | **Profiles:** `SwitchableHeatingStatus`, `OnOffStatus`
+    **Type IDs:** `917515` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:ImhotepHeatingTemperatureRelayOVPComponent` | **Profiles:** `SwitchableHeatingStatus`, `OnOffStatus`
 
     **Data Properties**
 
@@ -14771,7 +14824,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/unknown (ACTUATOR) — 7 commands, 7 states"
 
-    **Type IDs:** `3407872` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:ElectricalHeaterGenericOVPComponent` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
+    **Type IDs:** `3407872` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:ElectricalHeaterGenericOVPComponent` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
 
     **Data Properties**
 
@@ -14803,7 +14856,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/DeDietrichBoiler (ACTUATOR) — 3 commands, 4 states"
 
-    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:BoilerControllerOVPComponent` | **Profiles:** `Specific`
+    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:BoilerControllerOVPComponent` | **Profiles:** `Specific`
 
     **Commands**
 
@@ -14824,7 +14877,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/DeDietrichHeatingCircuit (ACTUATOR) — 14 commands, 9 states"
 
-    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:HeatingCircuitOnCircuitAOVPComponent` | **Profiles:** `Temperature`
+    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:HeatingCircuitOnCircuitAOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -14861,7 +14914,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/CothermThermostat (ACTUATOR) — 113 commands, 89 states"
 
-    **Type IDs:** `17043211` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:CothermThermostatOVPComponent` | **Profiles:** `Specific`
+    **Type IDs:** `17043211` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:CothermThermostatOVPComponent` | **Profiles:** `Specific`
 
     **Data Properties**
 
@@ -15081,7 +15134,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/KizOThermV2Bridge (ACTUATOR) — 6 commands, 23 states"
 
-    **Type IDs:** `1099511628043`, `2199023255819` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:KizOThermV2OVPComponent` | **Profiles:** `ThermostatTargetReader`, `DHWThermostatTargetReader`, `DHWTemperature`
+    **Type IDs:** `1099511628043`, `2199023255819` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:KizOThermV2OVPComponent` | **Profiles:** `ThermostatTargetReader`, `DHWThermostatTargetReader`, `DHWTemperature`
 
     **Data Properties**
 
@@ -15128,7 +15181,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/SomfyPilotWireElectricalHeater (ACTUATOR) — 9 commands, 10 states"
 
-    **Type IDs:** `1099515035650` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:SomfyPilotWireElectricalHeaterOVPComponent` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
+    **Type IDs:** `1099515035650` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:SomfyPilotWireElectricalHeaterOVPComponent` | **Profiles:** `StatefulHeatingLevel`, `HeatingLevel`
 
     **Data Properties**
 
@@ -15165,7 +15218,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/SomfyPilotWireHeatingInterface (ACTUATOR) — 11 commands, 7 states"
 
-    **Type IDs:** `1103806726146` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:SomfyPilotWireHeatingInterfaceOVPComponent` | **Profiles:** `SwitchableHeatingStatus`, `OnOffStatus`
+    **Type IDs:** `1103806726146` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:SomfyPilotWireHeatingInterfaceOVPComponent` | **Profiles:** `SwitchableHeatingStatus`, `OnOffStatus`
 
     **Data Properties**
 
@@ -15201,7 +15254,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HitachiHeatingSystem/HitachiAirToAirHeatPump (ACTUATOR) — 7 commands, 17 states"
 
-    **Type IDs:** `1099513069579` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:HLinkMainController` | **Profiles:** `ThermostatTargetReader`
+    **Type IDs:** `1099513069579` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:HLinkMainController` | **Profiles:** `ThermostatTargetReader`
 
     **Data Properties**
 
@@ -15243,7 +15296,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 6 commands, 3 states"
 
-    **Type IDs:** `983040`, `1099512610827` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:OnOffOVPComponent` | **Profiles:** `StatefulSwitchable`, `Switchable`, `Generic`
+    **Type IDs:** `983040`, `1099512610827` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:OnOffOVPComponent` | **Profiles:** `StatefulSwitchable`, `Switchable`, `Generic`
 
     **Data Properties**
 
@@ -15270,7 +15323,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ProtocolGateway/DeDietrichModbusGateway (PROTOCOL_GATEWAY) — 3 commands, 2 states"
 
-    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:DeDietrichModbusGatewayOVPComponent` | **Profiles:** `Specific`
+    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:DeDietrichModbusGatewayOVPComponent` | **Profiles:** `Specific`
 
     **Data Properties**
 
@@ -15293,7 +15346,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "SwimmingPool/DeDietrichSwimmingPool (ACTUATOR) — 12 commands, 8 states"
 
-    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:SwimmingPoolOnCircuitBOVPComponent` | **Profiles:** `Temperature`
+    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:SwimmingPoolOnCircuitBOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -15327,7 +15380,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "TemperatureSensor (SENSOR) — 2 commands, 3 states"
 
-    **Type IDs:** `917506`, `917515`, `1099511628043`, `2199023255819` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:HeatingTemperatureInterfaceTemperatureSensor` | **Profiles:** `Temperature`
+    **Type IDs:** `917506`, `917515`, `1099511628043`, `2199023255819` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:HeatingTemperatureInterfaceTemperatureSensor` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -15346,7 +15399,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "TemperatureSensor (SENSOR) — 0 commands, 2 states"
 
-    **Type IDs:** `16842763`, `1099511628043`, `2199023255819` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:OutsideTemperatureSensorOVPComponent` | **Profiles:** `Temperature`
+    **Type IDs:** `16842763`, `1099511628043`, `2199023255819` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:OutsideTemperatureSensorOVPComponent` | **Profiles:** `Temperature`
 
     **States**
 
@@ -15357,7 +15410,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "TemperatureSensor (SENSOR) — 2 commands, 4 states"
 
-    **Type IDs:** `4295098368` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:InsideTemperatureSensorOVPComponent` | **Profiles:** `Temperature`
+    **Type IDs:** `4295098368` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:InsideTemperatureSensorOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -15377,7 +15430,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "TemperatureSensor (SENSOR) — 3 commands, 5 states"
 
-    **Type IDs:** `1103806726146` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:SomfyPilotWireTemperatureSensorOVPComponent` | **Profiles:** `Temperature`
+    **Type IDs:** `1103806726146` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:SomfyPilotWireTemperatureSensorOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -15399,7 +15452,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterHeatingSystem/DeDietrichDHW (ACTUATOR) — 10 commands, 7 states"
 
-    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:DHW1OnDHWCircuitOVPComponent` | **Profiles:** `Temperature`
+    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:DHW1OnDHWCircuitOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -15430,7 +15483,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterHeatingSystem/DeDietrichDHW (ACTUATOR) — 6 commands, 5 states"
 
-    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:DHW2OnCircuitAOVPComponent` | **Profiles:** `Temperature`
+    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:DHW2OnCircuitAOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -15455,7 +15508,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "WaterHeatingSystem/DeDietrichDHW (ACTUATOR) — 4 commands, 4 states"
 
-    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:DHW2OnAuxiliaryCircuitOVPComponent` | **Profiles:** `Temperature`
+    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:DHW2OnAuxiliaryCircuitOVPComponent` | **Profiles:** `Temperature`
 
     **Commands**
 
@@ -15477,7 +15530,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "unknown (ACTUATOR) — 1 commands, 1 states"
 
-    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `somfy_europe` | **Controllable:** `ovp:SolarCircuitOVPComponent` | **Profiles:** `Specific`
+    **Type IDs:** `16842763` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `somfy_europe` | **Controllable:** `ovp:SolarCircuitOVPComponent` | **Profiles:** `Specific`
 
     **Commands**
 

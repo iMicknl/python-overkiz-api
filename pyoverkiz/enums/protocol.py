@@ -22,7 +22,7 @@ class Protocol(UnknownEnumMixin, StrEnum):
     CAMERA = "camera"  # 13: Generic Camera Control Protocol
     ELIOT = "eliot"  # 45: Eliot Webservices
     ENOCEAN = "enocean"  # 7: EnOcean
-    HLRR_WIFI = "hlrrwifi"
+    HLRR_WIFI = "hlrrwifi"  # 31: Hitachi HLink Protocol (Wifi Bridge)
     HOMEKIT = "homekit"  # 48: HOMEKIT
     HUE = "hue"  # 22: Philips HUE - Personal Wireless Lighting
     INTERNAL = "internal"  # 29: Kizbox Internal Modules

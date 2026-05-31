@@ -580,6 +580,7 @@ class OverkizState(StrEnum):
     CORE_WINDOW_LOCKED = "core:WindowLockedState"
     CORE_WIND_DIRECTION = "core:WindDirectionState"
     CORE_WIND_SPEED = "core:WindSpeedState"
+    CORE_WINTER_MODE = "core:WinterModeState"
     CORE_ZONE_NUMBER = "core:ZonesNumberState"
     DDMODBUS_AVERAGE_FLOW_SENSOR_TEMPERATURE = (
         "ddmodbus:AverageFlowSensorTemperatureState"
@@ -714,13 +715,19 @@ class OverkizState(StrEnum):
     ENOCEAN_VALVE_POSITION = "enocean:ValvePositionState"
     HLRRWIFI_DIAGNOSTIC_CODE = "hlrrwifi:DiagnosticCodeState"
     HLRRWIFI_FAN_SPEED = "hlrrwifi:FanSpeedState"
+    HLRRWIFI_FILTER_CONDITION = "hlrrwifi:FilterConditionState"
     HLRRWIFI_LEAVE_HOME = "hlrrwifi:LeaveHomeState"
+    HLRRWIFI_LOCAL_MODE = "hlrrwifi:LocalModeState"
     HLRRWIFI_MAIN_OPERATION = "hlrrwifi:MainOperationState"
     HLRRWIFI_MODE_CHANGE = "hlrrwifi:ModeChangeState"
+    HLRRWIFI_NAME = "hlrrwifi:NameState"
     HLRRWIFI_OUTDOOR_TEMPERATURE = "hlrrwifi:OutdoorTemperatureState"
+    HLRRWIFI_PRODUCT_MODEL_NAME = "hlrrwifi:ProductModelNameState"
     HLRRWIFI_REMOCON_CONTROL = "hlrrwifi:RemoconControlState"
     HLRRWIFI_ROOM_TEMPERATURE = "hlrrwifi:RoomTemperatureState"
+    HLRRWIFI_RSSI_LEVEL = "hlrrwifi:RSSILevelState"
     HLRRWIFI_SWING = "hlrrwifi:SwingState"
+    HLRRWIFI_TARGET_TEMPERATURE = "hlrrwifi:TargetTemperatureState"
     HLRRWIFI_TEMPERATURE_CHANGE = "hlrrwifi:TemperatureChangeState"
     HUE_CIE_COLOR_SPACE_X = "hue:CieColorSpaceXState"
     HUE_CIE_COLOR_SPACE_Y = "hue:CieColorSpaceYState"
@@ -1025,6 +1032,7 @@ class OverkizState(StrEnum):
     IO_VERSION = "io:VersionState"
     IO_VIBRATION_DETECTED = "io:VibrationDetectedState"
     IO_WINDOW_LOCKED = "io:WindowLockedState"
+    IO_WINTER_MODE_SUPPORTED = "io:WinterModeSupportedState"
     IO_ZONES_NUMBER = "io:ZonesNumberState"
     JSW_FREE_MEMORY = "jsw:FreeMemoryState"
     JSW_TOTAL_MEMORY = "jsw:TotalMemoryState"
@@ -2089,11 +2097,23 @@ class OverkizState(StrEnum):
     SOMFYTHERMOSTAT_AT_HOME_TARGET_TEMPERATURE = (
         "somfythermostat:AtHomeTargetTemperatureState"
     )
+    SOMFYTHERMOSTAT_AVAILABILITY = "somfythermostat:AvailabilityState"
     SOMFYTHERMOSTAT_AWAY_MODE_TARGET_TEMPERATURE = (
         "somfythermostat:AwayModeTargetTemperatureState"
     )
+    SOMFYTHERMOSTAT_BATTERY_LEVEL = "somfythermostat:BatteryLevelState"
+    SOMFYTHERMOSTAT_DEROGATED_TARGET_TEMPERATURE = (
+        "somfythermostat:DerogatedTargetTemperatureState"
+    )
+    SOMFYTHERMOSTAT_DEROGATION_ACTIVATION = "somfythermostat:DerogationActivationState"
+    SOMFYTHERMOSTAT_DEROGATION_END_DATE_TIME = (
+        "somfythermostat:DerogationEndDateTimeState"
+    )
     SOMFYTHERMOSTAT_DEROGATION_HEATING_MODE = (
         "somfythermostat:DerogationHeatingModeState"
+    )
+    SOMFYTHERMOSTAT_DEROGATION_START_DATE_TIME = (
+        "somfythermostat:DerogationStartDateTimeState"
     )
     SOMFYTHERMOSTAT_DEROGATION_TYPE = "somfythermostat:DerogationTypeState"
     SOMFYTHERMOSTAT_FREEZE_MODE_TARGET_TEMPERATURE = (
@@ -2106,57 +2126,17 @@ class OverkizState(StrEnum):
     SOMFYTHERMOSTAT_MANUAL_MODE_TARGET_TEMPERATURE = (
         "somfythermostat:ManualModeTargetTemperatureState"
     )
+    SOMFYTHERMOSTAT_NAME = "somfythermostat:NameState"
+    SOMFYTHERMOSTAT_RELATIVE_HUMIDITY = "somfythermostat:RelativeHumidityState"
     SOMFYTHERMOSTAT_SLEEPING_MODE_TARGET_TEMPERATURE = (
         "somfythermostat:SleepingModeTargetTemperatureState"
     )
+    SOMFYTHERMOSTAT_STATUS = "somfythermostat:StatusState"
     SOMFYTHERMOSTAT_SUDDEN_DROP_MODE_TARGET_TEMPERATURE = (
         "somfythermostat:SuddenDropModeTargetTemperatureState"
     )
-    SOMFY_THERMOSTAT_AT_HOME_TARGET_TEMPERATURE = (
-        "somfy_thermostat:AtHomeTargetTemperatureState"
-    )
-    SOMFY_THERMOSTAT_AVAILABILITY = "somfy_thermostat:AvailabilityState"
-    SOMFY_THERMOSTAT_AWAY_MODE_TARGET_TEMPERATURE = (
-        "somfy_thermostat:AwayModeTargetTemperatureState"
-    )
-    SOMFY_THERMOSTAT_BATTERY_LEVEL = "somfy_thermostat:BatteryLevelState"
-    SOMFY_THERMOSTAT_DEROGATED_TARGET_TEMPERATURE = (
-        "somfy_thermostat:DerogatedTargetTemperatureState"
-    )
-    SOMFY_THERMOSTAT_DEROGATION_ACTIVATION = (
-        "somfy_thermostat:DerogationActivationState"
-    )
-    SOMFY_THERMOSTAT_DEROGATION_END_DATE_TIME = (
-        "somfy_thermostat:DerogationEndDateTimeState"
-    )
-    SOMFY_THERMOSTAT_DEROGATION_HEATING_MODE = (
-        "somfy_thermostat:DerogationHeatingModeState"
-    )
-    SOMFY_THERMOSTAT_DEROGATION_START_DATE_TIME = (
-        "somfy_thermostat:DerogationStartDateTimeState"
-    )
-    SOMFY_THERMOSTAT_DEROGATION_TYPE = "somfy_thermostat:DerogationTypeState"
-    SOMFY_THERMOSTAT_FREEZE_MODE_TARGET_TEMPERATURE = (
-        "somfy_thermostat:FreezeModeTargetTemperatureState"
-    )
-    SOMFY_THERMOSTAT_GEOFENCING_MODE_TARGET_TEMPERATURE = (
-        "somfy_thermostat:GeofencingModeTargetTemperatureState"
-    )
-    SOMFY_THERMOSTAT_HEATING_MODE = "somfy_thermostat:HeatingModeState"
-    SOMFY_THERMOSTAT_MANUAL_MODE_TARGET_TEMPERATURE = (
-        "somfy_thermostat:ManualModeTargetTemperatureState"
-    )
-    SOMFY_THERMOSTAT_NAME = "somfy_thermostat:NameState"
-    SOMFY_THERMOSTAT_RELATIVE_HUMIDITY = "somfy_thermostat:RelativeHumidityState"
-    SOMFY_THERMOSTAT_SLEEPING_MODE_TARGET_TEMPERATURE = (
-        "somfy_thermostat:SleepingModeTargetTemperatureState"
-    )
-    SOMFY_THERMOSTAT_STATUS = "somfy_thermostat:StatusState"
-    SOMFY_THERMOSTAT_SUDDEN_DROP_MODE_TARGET_TEMPERATURE = (
-        "somfy_thermostat:SuddenDropModeTargetTemperatureState"
-    )
-    SOMFY_THERMOSTAT_TARGET_TEMPERATURE = "somfy_thermostat:TargetTemperatureState"
-    SOMFY_THERMOSTAT_TEMPERATURE = "somfy_thermostat:TemperatureState"
+    SOMFYTHERMOSTAT_TARGET_TEMPERATURE = "somfythermostat:TargetTemperatureState"
+    SOMFYTHERMOSTAT_TEMPERATURE = "somfythermostat:TemperatureState"
     VERISURE_ALARM_PANEL_MAIN_ARM_TYPE = "verisure:AlarmPanelMainArmTypeState"
     ZIGBEE_ACTIVE_TIER = "zigbee:ActiveTierState"
     ZIGBEE_ACTIVE_TIER_LABEL = "zigbee:ActiveTierLabelState"
