@@ -273,7 +273,7 @@ The per-server login helpers on `OverkizClient` have been removed. Authenticatio
 | `client.cozytouch_login()` | `await client.login()` (with the appropriate credentials) |
 | `client.nexity_login()` | `await client.login()` |
 | `client.somfy_tahoma_get_access_token()` | `await client.login()` |
-| `client.refresh_token()` | Handled internally; use `client.relogin()` to force re-auth |
+| `client.refresh_token()` | Handled internally; call `await client.login()` again to re-authenticate |
 
 ## Client internals
 
