@@ -9,7 +9,6 @@ from pyoverkiz.const import (
     LOCAL_API_PATH,
     REXEL_OAUTH_AUTHORIZE_URL,
     REXEL_OAUTH_CLIENT_ID,
-    REXEL_OAUTH_POLICY,
     REXEL_OAUTH_REDIRECT_URI,
     REXEL_OAUTH_SCOPE,
 )
@@ -79,8 +78,8 @@ def build_rexel_authorization_url(
     Returns:
         Complete authorization URL
     """
+    # REXEL_OAUTH_AUTHORIZE_URL already carries the required B2C policy (?p=...).
     params = {
-        "p": REXEL_OAUTH_POLICY,
         "client_id": REXEL_OAUTH_CLIENT_ID,
         "response_type": "code",
         "redirect_uri": redirect_uri or REXEL_OAUTH_REDIRECT_URI,
@@ -94,4 +93,4 @@ def build_rexel_authorization_url(
         params["state"] = state
 
     query_string = urllib.parse.urlencode(params)
-    return f"{REXEL_OAUTH_AUTHORIZE_URL}?{query_string}"
+    return f"{REXEL_OAUTH_AUTHORIZE_URL}&{query_string}"

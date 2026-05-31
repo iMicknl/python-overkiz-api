@@ -32,7 +32,9 @@ REXEL_OAUTH_TENANT = (
     "https://consumerlogin.rexelservices.fr/670998c0-f737-4d75-a32f-ba9292755b70"
 )
 REXEL_OAUTH_POLICY = "b2c_1a_signinonlyhomeassistant"
-REXEL_OAUTH_AUTHORIZE_URL = f"{REXEL_OAUTH_TENANT}/oauth2/v2.0/authorize"
+REXEL_OAUTH_AUTHORIZE_URL = (
+    f"{REXEL_OAUTH_TENANT}/oauth2/v2.0/authorize?p={REXEL_OAUTH_POLICY}"
+)
 REXEL_OAUTH_TOKEN_URL = f"{REXEL_OAUTH_TENANT}/oauth2/v2.0/token?p={REXEL_OAUTH_POLICY}"
 REXEL_REQUIRED_CONSENT = "homeassistant"
 REXEL_GATEWAY_HEADER = "gatewayId"
