@@ -19,6 +19,7 @@ from pyoverkiz.auth.base import AuthContext
 from pyoverkiz.auth.credentials import (
     LocalTokenCredentials,
     RexelOAuthCodeCredentials,
+    RexelTokenCredentials,
     TokenCredentials,
     UsernamePasswordCredentials,
 )
@@ -112,6 +113,29 @@ class TestCredentials:
         assert creds.code == "auth_code_xyz"
         assert creds.redirect_uri == "http://redirect.uri"
         assert creds.code_verifier == "code_verifier_123"
+
+    def test_rexel_token_credentials_with_static_token(self):
+        """RexelTokenCredentials accepts a static access token."""
+        creds = RexelTokenCredentials(access_token="static-token")
+        assert creds.access_token == "static-token"
+        assert creds.access_token_callback is None
+        assert creds.gateway_id is None
+
+    def test_rexel_token_credentials_with_callback(self):
+        """RexelTokenCredentials accepts an async access-token callback."""
+
+        async def _token() -> str:
+            return "fresh-token"
+
+        creds = RexelTokenCredentials(access_token_callback=_token, gateway_id="g1")
+        assert creds.access_token_callback is _token
+        assert creds.gateway_id == "g1"
+        assert creds.access_token is None
+
+    def test_rexel_token_credentials_requires_a_token_source(self):
+        """Constructing with neither callback nor static token raises ValueError."""
+        with pytest.raises(ValueError, match="access_token_callback or access_token"):
+            RexelTokenCredentials()
 
 
 class TestAuthFactory:
