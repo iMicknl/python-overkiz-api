@@ -10,7 +10,7 @@ UI profiles describe device capabilities through the commands they accept and th
 !!! note
     This page is auto-generated. Run `uv run utils/generate_enums.py` to regenerate.
 
-**192 profiles** documented below.
+**204 profiles** documented below.
 
 ## AirFan
 
@@ -53,6 +53,14 @@ UI profiles describe device capabilities through the commands they accept and th
 | `arm` |  | Arm the system |
 | `disarm` |  | Disarm the system |
 
+## AlarmStatus
+
+### States
+
+| State | Type | Description |
+|-------|------|-------------|
+| `core:ArmedState` | `boolean` | Indicate if the security device is armed (true=armed) |
+
 ## AmbientNoiseSensor
 
 ### States
@@ -94,6 +102,14 @@ UI profiles describe device capabilities through the commands they accept and th
 | State | Type | Description |
 |-------|------|-------------|
 | `core:BatteryState` | `string` — `verylow`, `low`, `normal`, `full` | Device battery status |
+
+## Button
+
+### States
+
+| State | Type | Description |
+|-------|------|-------------|
+| `core:LastButtonPressedState` | `string` | Indicate the name of the last pressed button |
 
 ## CO2Concentration
 
@@ -235,6 +251,26 @@ UI profiles describe device capabilities through the commands they accept and th
 | `cycle` |  | Do a cycle of supported motion kinematics or modes |
 
 ## CyclicGateOpener
+
+*Form factor specific* — tied to a specific physical device type.
+
+### Commands
+
+| Command | Parameters | Description |
+|---------|-----------|-------------|
+| `cycle` |  | Do a cycle of supported motion kinematics or modes |
+
+## CyclicSlidingDoor
+
+*Form factor specific* — tied to a specific physical device type.
+
+### Commands
+
+| Command | Parameters | Description |
+|---------|-----------|-------------|
+| `cycle` |  | Do a cycle of supported motion kinematics or modes |
+
+## CyclicWindow
 
 *Form factor specific* — tied to a specific physical device type.
 
@@ -650,6 +686,18 @@ UI profiles describe device capabilities through the commands they accept and th
 | `close` |  | Fully close the device |
 | `open` |  | Fully open the device |
 
+## OpenCloseSlidingDoor
+
+*Form factor specific* — tied to a specific physical device type.
+
+### Commands
+
+| Command | Parameters | Description |
+|---------|-----------|-------------|
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+
 ## OpenCloseSlidingGateOpener
 
 *Form factor specific* — tied to a specific physical device type.
@@ -792,6 +840,14 @@ UI profiles describe device capabilities through the commands they accept and th
 |-------|------|-------------|
 | `core:LaunchStatusState` | `string` — `launched`, `standby` | Indicates if the scene is launched or standby. "launched" value indicates that the launch conditions have been met (ex button pressed on a remote controller). "standby" value matches with an intermediate status, typically between two launch actions (ex button released on a remote controller). "launched" value should be used during a very short time and not persist across different launch events, whereas "standby" is a more stable value. |
 
+## SceneController
+
+### Commands
+
+| Command | Parameters | Description |
+|---------|-----------|-------------|
+| `activate` |  | Activate a scene or pre-defined scenario |
+
 ## Siren
 
 ### Commands
@@ -834,7 +890,11 @@ UI profiles describe device capabilities through the commands they accept and th
 
 ## Startable
 
-*Details unavailable.*
+### Commands
+
+| Command | Parameters | Description |
+|---------|-----------|-------------|
+| `start` |  | Start the default actuator behavior (movement, sound or timer) |
 
 ## StatefulAirFan
 
@@ -849,6 +909,20 @@ UI profiles describe device capabilities through the commands they accept and th
 | State | Type | Description |
 |-------|------|-------------|
 | `core:FanSpeedLevelState` | `int` (0–100) | Fan speed level (%) |
+
+## StatefulAirFanMode
+
+### Commands
+
+| Command | Parameters | Description |
+|---------|-----------|-------------|
+| `setFanSpeedMode` | `string` — `low`, `high` | Set the device fan speed mode |
+
+### States
+
+| State | Type | Description |
+|-------|------|-------------|
+| `core:FanSpeedModeState` | `string` — `low`, `high` | Fan speed mode |
 
 ## StatefulAlarm
 
@@ -1455,6 +1529,24 @@ UI profiles describe device capabilities through the commands they accept and th
 |-------|------|-------------|
 | `core:OpenClosedState` | `string` — `open`, `closed` | Indicate if the device is open or closed |
 
+## StatefulOpenCloseGarageOpener
+
+*Form factor specific* — tied to a specific physical device type.
+
+### Commands
+
+| Command | Parameters | Description |
+|---------|-----------|-------------|
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+
+### States
+
+| State | Type | Description |
+|-------|------|-------------|
+| `core:OpenClosedState` | `string` — `open`, `closed` | Indicate if the device is open or closed |
+
 ## StatefulOpenCloseGateOpener
 
 *Form factor specific* — tied to a specific physical device type.
@@ -1474,6 +1566,24 @@ UI profiles describe device capabilities through the commands they accept and th
 | `core:OpenClosedState` | `string` — `open`, `closed` | Indicate if the device is open or closed |
 
 ## StatefulOpenCloseShutter
+
+*Form factor specific* — tied to a specific physical device type.
+
+### Commands
+
+| Command | Parameters | Description |
+|---------|-----------|-------------|
+| `close` |  | Fully close the device |
+| `open` |  | Fully open the device |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+
+### States
+
+| State | Type | Description |
+|-------|------|-------------|
+| `core:OpenClosedState` | `string` — `open`, `closed` | Indicate if the device is open or closed |
+
+## StatefulOpenCloseSlidingGateOpener
 
 *Form factor specific* — tied to a specific physical device type.
 
@@ -1754,6 +1864,23 @@ UI profiles describe device capabilities through the commands they accept and th
 |-------|------|-------------|
 | `core:StartedStoppedState` | `string` — `started`, `stopped` | Indicate if the sequence if started or stopped |
 
+## StatefulStartStopTimer
+
+*Form factor specific* — tied to a specific physical device type.
+
+### Commands
+
+| Command | Parameters | Description |
+|---------|-----------|-------------|
+| `start` |  | Start the default actuator behavior (movement, sound or timer) |
+| `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+
+### States
+
+| State | Type | Description |
+|-------|------|-------------|
+| `core:StartedStoppedState` | `string` — `started`, `stopped` | Indicate if the sequence if started or stopped |
+
 ## StatefulStartStopWashingMachine
 
 *Form factor specific* — tied to a specific physical device type.
@@ -1773,7 +1900,33 @@ UI profiles describe device capabilities through the commands they accept and th
 
 ## StatefulStartable
 
-*Details unavailable.*
+### Commands
+
+| Command | Parameters | Description |
+|---------|-----------|-------------|
+| `start` |  | Start the default actuator behavior (movement, sound or timer) |
+
+### States
+
+| State | Type | Description |
+|-------|------|-------------|
+| `core:StartedStoppedState` | `string` — `started`, `stopped` | Indicate if the sequence if started or stopped |
+
+## StatefulStartableTimer
+
+*Form factor specific* — tied to a specific physical device type.
+
+### Commands
+
+| Command | Parameters | Description |
+|---------|-----------|-------------|
+| `start` |  | Start the default actuator behavior (movement, sound or timer) |
+
+### States
+
+| State | Type | Description |
+|-------|------|-------------|
+| `core:StartedStoppedState` | `string` — `started`, `stopped` | Indicate if the sequence if started or stopped |
 
 ## StatefulSwitchable
 
@@ -1948,6 +2101,16 @@ UI profiles describe device capabilities through the commands they accept and th
 | `play` |  | Play media |
 | `setVolume` | `int` (0–100) | Set the device output volume |
 | `stop` |  | Stop the current actuator behavior (movement, sound or timer) |
+
+## SwingingCyclicShutter
+
+*Form factor specific* — tied to a specific physical device type.
+
+### Commands
+
+| Command | Parameters | Description |
+|---------|-----------|-------------|
+| `cycle` |  | Do a cycle of supported motion kinematics or modes |
 
 ## Switch
 

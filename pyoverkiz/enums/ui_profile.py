@@ -57,6 +57,13 @@ class UIProfile(UnknownEnumMixin, StrEnum):
     ALARM = "Alarm"
 
     #
+    # AlarmStatus
+    #
+    # States:
+    #   - core:ArmedState (boolean): Indicate if the security device is armed (true=armed)
+    ALARM_STATUS = "AlarmStatus"
+
+    #
     # AmbientNoiseSensor
     #
     # States:
@@ -92,6 +99,13 @@ class UIProfile(UnknownEnumMixin, StrEnum):
     # States:
     #   - core:BatteryState (string values: 'verylow', 'low', 'normal', 'full'): Device battery status
     BATTERY_STATUS = "BatteryStatus"
+
+    #
+    # Button
+    #
+    # States:
+    #   - core:LastButtonPressedState (string): Indicate the name of the last pressed button
+    BUTTON = "Button"
 
     #
     # CO2Concentration
@@ -225,6 +239,24 @@ class UIProfile(UnknownEnumMixin, StrEnum):
     #
     # Form factor specific: Yes
     CYCLIC_GATE_OPENER = "CyclicGateOpener"
+
+    #
+    # CyclicSlidingDoor
+    #
+    # Commands:
+    #   - cycle(): Do a cycle of supported motion kinematics or modes
+    #
+    # Form factor specific: Yes
+    CYCLIC_SLIDING_DOOR = "CyclicSlidingDoor"
+
+    #
+    # CyclicWindow
+    #
+    # Commands:
+    #   - cycle(): Do a cycle of supported motion kinematics or modes
+    #
+    # Form factor specific: Yes
+    CYCLIC_WINDOW = "CyclicWindow"
 
     #
     # DHWTemperature
@@ -589,6 +621,17 @@ class UIProfile(UnknownEnumMixin, StrEnum):
     OPEN_CLOSE_SHUTTER_SWITCH = "OpenCloseShutterSwitch"
 
     #
+    # OpenCloseSlidingDoor
+    #
+    # Commands:
+    #   - close(): Fully close the device
+    #   - open(): Fully open the device
+    #   - stop(): Stop the current actuator behavior (movement, sound or timer)
+    #
+    # Form factor specific: Yes
+    OPEN_CLOSE_SLIDING_DOOR = "OpenCloseSlidingDoor"
+
+    #
     # OpenCloseSlidingGateOpener
     #
     # Commands:
@@ -715,6 +758,13 @@ class UIProfile(UnknownEnumMixin, StrEnum):
     SCENARIO_TRIGGER = "ScenarioTrigger"
 
     #
+    # SceneController
+    #
+    # Commands:
+    #   - activate(): Activate a scene or pre-defined scenario
+    SCENE_CONTROLLER = "SceneController"
+
+    #
     # Siren
     #
     # Commands:
@@ -749,7 +799,11 @@ class UIProfile(UnknownEnumMixin, StrEnum):
     #   - stop(): Stop the current actuator behavior (movement, sound or timer)
     START_STOP = "StartStop"
 
-    # Startable (details unavailable)
+    #
+    # Startable
+    #
+    # Commands:
+    #   - start(): Start the default actuator behavior (movement, sound or timer)
     STARTABLE = "Startable"
 
     #
@@ -761,6 +815,16 @@ class UIProfile(UnknownEnumMixin, StrEnum):
     # States:
     #   - core:FanSpeedLevelState (int 0-100): Fan speed level (%)
     STATEFUL_AIR_FAN = "StatefulAirFan"
+
+    #
+    # StatefulAirFanMode
+    #
+    # Commands:
+    #   - setFanSpeedMode(string values: 'low', 'high'): Set the device fan speed mode
+    #
+    # States:
+    #   - core:FanSpeedModeState (string values: 'low', 'high'): Fan speed mode
+    STATEFUL_AIR_FAN_MODE = "StatefulAirFanMode"
 
     #
     # StatefulAlarm
@@ -1216,6 +1280,20 @@ class UIProfile(UnknownEnumMixin, StrEnum):
     STATEFUL_OPEN_CLOSE = "StatefulOpenClose"
 
     #
+    # StatefulOpenCloseGarageOpener
+    #
+    # Commands:
+    #   - close(): Fully close the device
+    #   - open(): Fully open the device
+    #   - stop(): Stop the current actuator behavior (movement, sound or timer)
+    #
+    # States:
+    #   - core:OpenClosedState (string values: 'open', 'closed'): Indicate if the device is open or closed
+    #
+    # Form factor specific: Yes
+    STATEFUL_OPEN_CLOSE_GARAGE_OPENER = "StatefulOpenCloseGarageOpener"
+
+    #
     # StatefulOpenCloseGateOpener
     #
     # Commands:
@@ -1242,6 +1320,20 @@ class UIProfile(UnknownEnumMixin, StrEnum):
     #
     # Form factor specific: Yes
     STATEFUL_OPEN_CLOSE_SHUTTER = "StatefulOpenCloseShutter"
+
+    #
+    # StatefulOpenCloseSlidingGateOpener
+    #
+    # Commands:
+    #   - close(): Fully close the device
+    #   - open(): Fully open the device
+    #   - stop(): Stop the current actuator behavior (movement, sound or timer)
+    #
+    # States:
+    #   - core:OpenClosedState (string values: 'open', 'closed'): Indicate if the device is open or closed
+    #
+    # Form factor specific: Yes
+    STATEFUL_OPEN_CLOSE_SLIDING_GATE_OPENER = "StatefulOpenCloseSlidingGateOpener"
 
     #
     # StatefulOpenCloseSwimmingPoolShutter
@@ -1445,6 +1537,19 @@ class UIProfile(UnknownEnumMixin, StrEnum):
     STATEFUL_START_STOP_OVEN = "StatefulStartStopOven"
 
     #
+    # StatefulStartStopTimer
+    #
+    # Commands:
+    #   - start(): Start the default actuator behavior (movement, sound or timer)
+    #   - stop(): Stop the current actuator behavior (movement, sound or timer)
+    #
+    # States:
+    #   - core:StartedStoppedState (string values: 'started', 'stopped'): Indicate if the sequence if started or stopped
+    #
+    # Form factor specific: Yes
+    STATEFUL_START_STOP_TIMER = "StatefulStartStopTimer"
+
+    #
     # StatefulStartStopWashingMachine
     #
     # Commands:
@@ -1457,8 +1562,27 @@ class UIProfile(UnknownEnumMixin, StrEnum):
     # Form factor specific: Yes
     STATEFUL_START_STOP_WASHING_MACHINE = "StatefulStartStopWashingMachine"
 
-    # StatefulStartable (details unavailable)
+    #
+    # StatefulStartable
+    #
+    # Commands:
+    #   - start(): Start the default actuator behavior (movement, sound or timer)
+    #
+    # States:
+    #   - core:StartedStoppedState (string values: 'started', 'stopped'): Indicate if the sequence if started or stopped
     STATEFUL_STARTABLE = "StatefulStartable"
+
+    #
+    # StatefulStartableTimer
+    #
+    # Commands:
+    #   - start(): Start the default actuator behavior (movement, sound or timer)
+    #
+    # States:
+    #   - core:StartedStoppedState (string values: 'started', 'stopped'): Indicate if the sequence if started or stopped
+    #
+    # Form factor specific: Yes
+    STATEFUL_STARTABLE_TIMER = "StatefulStartableTimer"
 
     #
     # StatefulSwitchable
@@ -1592,6 +1716,15 @@ class UIProfile(UnknownEnumMixin, StrEnum):
     #   - setVolume(int 0-100): Set the device output volume
     #   - stop(): Stop the current actuator behavior (movement, sound or timer)
     STOPPABLE_MUSIC_PLAYER = "StoppableMusicPlayer"
+
+    #
+    # SwingingCyclicShutter
+    #
+    # Commands:
+    #   - cycle(): Do a cycle of supported motion kinematics or modes
+    #
+    # Form factor specific: Yes
+    SWINGING_CYCLIC_SHUTTER = "SwingingCyclicShutter"
 
     #
     # Switch

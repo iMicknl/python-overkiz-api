@@ -249,7 +249,7 @@ def _render_commands_table(lines: list[str], commands: list[dict]) -> None:
     lines.append("")
     lines.append("    | Command | Parameters | Notes |")
     lines.append("    |---------|-----------|-------|")
-    for cmd in commands:
+    for cmd in sorted(commands, key=lambda c: c.get("commandName", "")):
         cmd_name = cmd.get("commandName", "?")
         nparams = cmd.get("nparams", 0)
         param_info = ""
@@ -317,7 +317,7 @@ def _render_states_table(
     lines.append("")
     lines.append("    | State | Type | Range / Values | Notes |")
     lines.append("    |-------|------|----------------|-------|")
-    for state in states:
+    for state in sorted(states, key=lambda s: s.get("name", "")):
         s_name = state.get("name", "?")
         s_type = state.get("type", "")
         range_info = ""
