@@ -20,6 +20,7 @@ from pyoverkiz.auth.base import AuthContext, AuthStrategy, GatewayCandidate
 from pyoverkiz.auth.credentials import (
     LocalTokenCredentials,
     RexelOAuthCodeCredentials,
+    RexelTokenCredentials,
     TokenCredentials,
     UsernamePasswordCredentials,
 )
@@ -492,6 +493,42 @@ class RexelAuthStrategy(RexelGatewayMixin, BaseAuthStrategy):
         consent = payload.get("consent")
         if consent != REXEL_REQUIRED_CONSENT:
             raise InvalidTokenError("Consent is missing or revoked for Rexel token.")
+
+
+class RexelTokenAuthStrategy(RexelGatewayMixin, BaseAuthStrategy):
+    """Rexel strategy backed by an externally-managed access token.
+
+    The OAuth2 lifecycle (authorize, exchange, refresh, persistence) is owned
+    by the caller. This strategy only sources the current token and applies the
+    Rexel gateway selection + header logic from RexelGatewayMixin.
+    """
+
+    def __init__(
+        self,
+        credentials: RexelTokenCredentials,
+        session: ClientSession,
+        server: ServerConfig,
+        ssl_context: ssl.SSLContext | bool,
+    ) -> None:
+        """Create a token-backed Rexel strategy bound to the credentials."""
+        super().__init__(session, server, ssl_context)
+        self.credentials = credentials
+        self._gateway_id: str | None = None
+
+    async def login(self) -> None:
+        """Apply a stored gateway, or auto-select a sole discovered gateway."""
+        if self.credentials.gateway_id:
+            self.select_gateway(self.credentials.gateway_id)
+            return
+        gateways = await self.discover_gateways()
+        if len(gateways) == 1:
+            self.select_gateway(gateways[0].gateway_id)
+
+    async def _current_access_token(self) -> str | None:
+        """Return a token from the callback, or the static fallback."""
+        if self.credentials.access_token_callback:
+            return await self.credentials.access_token_callback()
+        return self.credentials.access_token
 
 
 class BearerTokenAuthStrategy(BaseAuthStrategy):
