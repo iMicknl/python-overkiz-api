@@ -21,7 +21,10 @@ NEXITY_COGNITO_CLIENT_ID = "3mca95jd5ase5lfde65rerovok"
 NEXITY_COGNITO_USER_POOL = "eu-west-1_wj277ucoI"
 NEXITY_COGNITO_REGION = "eu-west-1"
 
-REXEL_BACKEND_API = "https://econnect-api.rexelservices.fr/api/enduser/overkiz/"
+# Account-wide homes/gateways directory; works before a gateway is selected.
+REXEL_ENDUSER_API = "https://econnect-api.rexelservices.fr/api/enduser"
+# Device (Overkiz-proxy) calls live under /overkiz; gateway-scoped, need the gatewayId header.
+REXEL_BACKEND_API = f"{REXEL_ENDUSER_API}/overkiz/"
 REXEL_OAUTH_CLIENT_ID = "2b635ede-c3fb-43bc-8d23-f6d17f80e96d"
 REXEL_OAUTH_REDIRECT_URI = "https://my.home-assistant.io/redirect/oauth"
 REXEL_OAUTH_SCOPE = "https://adb2cservicesfrenduserprod.onmicrosoft.com/94f05108-65f7-477a-a84d-e67e1aed6f79/ExternalProvider"
@@ -32,9 +35,6 @@ REXEL_OAUTH_POLICY = "b2c_1a_signinonlyhomeassistant"
 REXEL_OAUTH_AUTHORIZE_URL = f"{REXEL_OAUTH_TENANT}/oauth2/v2.0/authorize"
 REXEL_OAUTH_TOKEN_URL = f"{REXEL_OAUTH_TENANT}/oauth2/v2.0/token?p={REXEL_OAUTH_POLICY}"
 REXEL_REQUIRED_CONSENT = "homeassistant"
-# The homes/gateways directory lives one level up from the device API base
-# (REXEL_BACKEND_API ends in .../overkiz/; directory calls are at .../enduser).
-REXEL_ENDUSER_API = REXEL_BACKEND_API.rsplit("/overkiz/", 1)[0]
 REXEL_GATEWAY_HEADER = "gatewayId"
 
 SOMFY_API = "https://accounts.somfy.com"
