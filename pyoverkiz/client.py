@@ -923,7 +923,7 @@ class OverkizClient:
 
         async with self.session.get(
             f"{self._auth.endpoint}{path}",
-            headers=self._auth.auth_headers(path),
+            headers=await self._auth.auth_headers(path),
             ssl=self._ssl,
         ) as response:
             return await self._parse_response(response)
@@ -941,7 +941,7 @@ class OverkizClient:
             f"{self._auth.endpoint}{path}",
             data=data,
             json=payload,
-            headers=self._auth.auth_headers(path),
+            headers=await self._auth.auth_headers(path),
             ssl=self._ssl,
         ) as response:
             return await self._parse_response(response)
@@ -953,7 +953,7 @@ class OverkizClient:
         async with self.session.put(
             f"{self._auth.endpoint}{path}",
             json=payload,
-            headers=self._auth.auth_headers(path),
+            headers=await self._auth.auth_headers(path),
             ssl=self._ssl,
         ) as response:
             return await self._parse_response(response)
@@ -964,7 +964,7 @@ class OverkizClient:
 
         async with self.session.delete(
             f"{self._auth.endpoint}{path}",
-            headers=self._auth.auth_headers(path),
+            headers=await self._auth.auth_headers(path),
             ssl=self._ssl,
         ) as response:
             await check_response(response)

@@ -84,7 +84,7 @@ class BaseAuthStrategy(AuthStrategy):
         """Refresh authentication tokens if needed; default returns False."""
         return False
 
-    def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
+    async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
         """Return authentication headers for a request path."""
         return {}
 
@@ -172,7 +172,7 @@ class SomfyAuthStrategy(BaseAuthStrategy):
         )
         return True
 
-    def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
+    async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
         """Return authentication headers for a request path."""
         if self.context.access_token:
             return {"Authorization": f"Bearer {self.context.access_token}"}
@@ -324,7 +324,7 @@ class LocalTokenAuthStrategy(BaseAuthStrategy):
         if not self.credentials.token:
             raise InvalidTokenError("Local API requires a token.")
 
-    def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
+    async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
         """Return authentication headers for a request path."""
         return {"Authorization": f"Bearer {self.credentials.token}"}
 
@@ -424,7 +424,7 @@ class RexelAuthStrategy(BaseAuthStrategy):
             await check_response(response)
             return cast(list[dict[str, Any]], await response.json())
 
-    def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
+    async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
         """Return authentication headers, including the selected gateway."""
         if not self.context.access_token:
             return {}
@@ -486,7 +486,7 @@ class BearerTokenAuthStrategy(BaseAuthStrategy):
         super().__init__(session, server, ssl_context)
         self.credentials = credentials
 
-    def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
+    async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
         """Return authentication headers for a request path."""
         if self.credentials.token:
             return {"Authorization": f"Bearer {self.credentials.token}"}

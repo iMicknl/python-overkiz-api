@@ -47,7 +47,7 @@ class AuthStrategy(Protocol):
     async def refresh_if_needed(self) -> bool:
         """Refresh tokens if they are expired. Return True if refreshed."""
 
-    def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
+    async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
         """Generate authentication headers for requests."""
 
     @property

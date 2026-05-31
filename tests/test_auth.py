@@ -455,7 +455,8 @@ class TestSessionLoginStrategy:
 
         assert not result
 
-    def test_auth_headers_no_token(self):
+    @pytest.mark.asyncio
+    async def test_auth_headers_no_token(self):
         """Test that auth headers return empty dict when no token."""
         server_config = ServerConfig(
             server=Server.SOMFY_OCEANIA,
@@ -468,7 +469,7 @@ class TestSessionLoginStrategy:
         session = AsyncMock(spec=ClientSession)
 
         strategy = SessionLoginStrategy(credentials, session, server_config, True)
-        headers = strategy.auth_headers()
+        headers = await strategy.auth_headers()
 
         assert headers == {}
 
@@ -495,7 +496,8 @@ class TestBearerTokenAuthStrategy:
         # Login should be a no-op
         assert result is None
 
-    def test_auth_headers_with_token(self):
+    @pytest.mark.asyncio
+    async def test_auth_headers_with_token(self):
         """Test that auth headers include Bearer token."""
         server_config = ServerConfig(
             server=None,
@@ -508,7 +510,7 @@ class TestBearerTokenAuthStrategy:
         session = AsyncMock(spec=ClientSession)
 
         strategy = BearerTokenAuthStrategy(credentials, session, server_config, True)
-        headers = strategy.auth_headers()
+        headers = await strategy.auth_headers()
 
         assert headers == {"Authorization": "Bearer my_bearer_token"}
 
@@ -835,34 +837,37 @@ async def test_rexel_login_with_no_gateways_leaves_unselected():
     assert strategy.selected_gateway is None
     # A subsequent device request must then fail loudly rather than silently.
     with pytest.raises(NoGatewaySelectedError):
-        strategy.auth_headers()
+        await strategy.auth_headers()
 
 
-def test_rexel_auth_headers_includes_gateway_when_selected():
+@pytest.mark.asyncio
+async def test_rexel_auth_headers_includes_gateway_when_selected():
     """auth_headers includes Authorization and gatewayId after selection."""
     strategy, _ = _build_rexel_strategy_with_token([])
     strategy.select_gateway("1111-2222-3333")
 
-    headers = strategy.auth_headers()
+    headers = await strategy.auth_headers()
 
     assert headers["Authorization"] == "Bearer fake-jwt"
     assert headers["gatewayId"] == "1111-2222-3333"
 
 
-def test_rexel_auth_headers_raises_when_unselected():
+@pytest.mark.asyncio
+async def test_rexel_auth_headers_raises_when_unselected():
     """auth_headers raises NoGatewaySelectedError when no gateway is selected."""
     strategy, _ = _build_rexel_strategy_with_token([])
 
     with pytest.raises(NoGatewaySelectedError):
-        strategy.auth_headers()
+        await strategy.auth_headers()
 
 
-def test_rexel_auth_headers_empty_without_token():
+@pytest.mark.asyncio
+async def test_rexel_auth_headers_empty_without_token():
     """auth_headers returns empty mapping before login (no token)."""
     strategy, _ = _build_rexel_strategy_with_token([])
     strategy.context.access_token = None
 
-    assert strategy.auth_headers() == {}
+    assert await strategy.auth_headers() == {}
 
 
 @pytest.mark.asyncio
