@@ -22,7 +22,13 @@ from aiohttp import (
 from backoff.types import Details
 
 from pyoverkiz.action_queue import ActionQueue, ActionQueueSettings
-from pyoverkiz.auth import AuthStrategy, Credentials, build_auth_strategy
+from pyoverkiz.auth import (
+    AuthStrategy,
+    Credentials,
+    GatewayCandidate,
+    SupportsGatewaySelection,
+    build_auth_strategy,
+)
 from pyoverkiz.const import SUPPORTED_SERVERS, USER_AGENT
 from pyoverkiz.converter import converter
 from pyoverkiz.enums import APIType, ExecutionMode, Protocol, Server
@@ -894,6 +900,22 @@ class OverkizClient:
             f"setup/devices/{urllib.parse.quote_plus(device_url)}/manufacturerReferences"
         )
         return converter.structure(response, list[DeviceManufacturerReference])
+
+    async def discover_gateways(self) -> list[GatewayCandidate]:
+        """Discover selectable gateways. Raises TypeError if unsupported."""
+        if not isinstance(self._auth, SupportsGatewaySelection):
+            raise TypeError(
+                f"{self.server_config.name} does not support gateway selection."
+            )
+        return await self._auth.discover_gateways()
+
+    def select_gateway(self, gateway_id: str) -> None:
+        """Select the gateway to scope requests to. Raises TypeError if unsupported."""
+        if not isinstance(self._auth, SupportsGatewaySelection):
+            raise TypeError(
+                f"{self.server_config.name} does not support gateway selection."
+            )
+        self._auth.select_gateway(gateway_id)
 
     async def _get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API."""

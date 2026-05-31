@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 from pathlib import Path
-from unittest.mock import AsyncMock, patch
+from unittest.mock import AsyncMock, MagicMock, patch
 
 import aiohttp
 import pytest
@@ -1225,6 +1225,44 @@ class TestOverkizClient:
             await local_client.schedule_persisted_action_group(
                 "00000000-0000-0000-0000-000000000000", 9999999999
             )
+
+    @pytest.mark.asyncio
+    async def test_discover_gateways_delegates_to_strategy(
+        self, client: OverkizClient
+    ) -> None:
+        """discover_gateways delegates to a selection-capable strategy."""
+        from pyoverkiz.auth.base import GatewayCandidate, SupportsGatewaySelection
+
+        fake_auth = MagicMock(spec=SupportsGatewaySelection)
+        fake_auth.discover_gateways = AsyncMock(
+            return_value=[GatewayCandidate(gateway_id="g1")]
+        )
+        client._auth = fake_auth
+
+        result = await client.discover_gateways()
+
+        assert result[0].gateway_id == "g1"
+        client._auth.discover_gateways.assert_awaited_once()
+
+    @pytest.mark.asyncio
+    async def test_discover_gateways_raises_for_unsupported_strategy(
+        self, client: OverkizClient
+    ) -> None:
+        """discover_gateways raises TypeError when the strategy lacks the capability."""
+        # The default Somfy strategy does not implement SupportsGatewaySelection.
+        with pytest.raises(TypeError, match="does not support gateway selection"):
+            await client.discover_gateways()
+
+    def test_select_gateway_delegates_to_strategy(self, client: OverkizClient) -> None:
+        """select_gateway forwards to a selection-capable strategy."""
+        from pyoverkiz.auth.base import SupportsGatewaySelection
+
+        fake_auth = MagicMock(spec=SupportsGatewaySelection)
+        client._auth = fake_auth
+
+        client.select_gateway("g1")
+
+        fake_auth.select_gateway.assert_called_once_with("g1")
 
 
 class TestUserAgent:
