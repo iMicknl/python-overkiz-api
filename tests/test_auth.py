@@ -636,3 +636,28 @@ class TestRexelAuthStrategy:
         """Malformed tokens raise InvalidTokenError during decoding."""
         with pytest.raises(InvalidTokenError):
             _decode_jwt_payload("invalid.token")
+
+
+def test_base_strategy_endpoint_defaults_to_server_endpoint():
+    """Endpoint property defaults to the server config endpoint."""
+    from unittest.mock import AsyncMock
+
+    from aiohttp import ClientSession
+
+    from pyoverkiz.auth.strategies import BaseAuthStrategy
+    from pyoverkiz.enums.server import APIType
+    from pyoverkiz.models import ServerConfig
+
+    server = ServerConfig(
+        server=None,
+        name="Test",
+        endpoint="https://example.test/api/",
+        manufacturer="Test",
+        api_type=APIType.CLOUD,
+    )
+    strategy = BaseAuthStrategy(
+        session=AsyncMock(spec=ClientSession),
+        server=server,
+        ssl_context=True,
+    )
+    assert strategy.endpoint == "https://example.test/api/"

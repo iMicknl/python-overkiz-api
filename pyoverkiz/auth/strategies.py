@@ -67,6 +67,11 @@ class BaseAuthStrategy(AuthStrategy):
         self.server = server
         self._ssl = ssl_context
 
+    @property
+    def endpoint(self) -> str:
+        """Return the base API endpoint; defaults to the server endpoint."""
+        return self.server.endpoint
+
     async def login(self) -> None:
         """Perform authentication; default is a no-op for subclasses to override."""
         return

@@ -50,5 +50,9 @@ class AuthStrategy(Protocol):
     def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
         """Generate authentication headers for requests."""
 
+    @property
+    def endpoint(self) -> str:
+        """Return the base API endpoint for requests."""
+
     async def close(self) -> None:
         """Clean up any resources held by the strategy."""
