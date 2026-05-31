@@ -6,6 +6,15 @@
 - Re-run `login()` and retry the call.
 - On `NotAuthenticatedError`, re-authenticate before retrying.
 
+## Rexel (Energeasy Connect)
+
+Rexel authenticates with OAuth2 and scopes every request to a single gateway, so its failure modes differ from username/password servers.
+
+- `InvalidTokenError: Consent is missing or revoked for Rexel token.` — the access token does not carry the consent Rexel requires. Re-run the OAuth2 authorization flow so the user grants consent again.
+- `InvalidTokenError: Error retrieving Rexel access token: ...` — the code exchange or refresh failed (expired authorization code, reused code, or invalid `code_verifier`). Restart the flow from a freshly generated PKCE pair.
+- `NoGatewaySelectedError: Multiple Rexel gateways available; call discover_gateways() ...` — the account has more than one gateway and none is selected. Call `discover_gateways()` and pass one id to `select_gateway()` before making device calls. A single-gateway account is auto-selected on `login()`.
+- `AccessDeniedToGatewayError` — the selected `gateway_id` is not reachable for this token. Re-discover gateways and select a valid one; if you persisted a `gateway_id`, confirm it still belongs to the account.
+
 ## Rate limits and concurrency
 
 - Reduce polling frequency.
@@ -54,6 +63,8 @@ asyncio.run(fetch_devices_with_retry())
 - `TooManyExecutionsError`
 - `MaintenanceError`
 - `AccessDeniedToGatewayError`
+- `NoGatewaySelectedError`
+- `InvalidTokenError`
 
 ## SSL and local certificates
 

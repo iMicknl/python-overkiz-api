@@ -21,7 +21,7 @@ Full documentation is available at **[imicknl.github.io/python-overkiz-api](http
 - Brandt Smart Control **\***
 - Hitachi Hi Kumo
 - Nexity Eugénie
-- Rexel Energeasy Connect **\***
+- Rexel Energeasy Connect **\*\***
 - Sauter Cozytouch
 - Simu (LiveIn2)
 - Somfy Connexoon IO
@@ -31,6 +31,7 @@ Full documentation is available at **[imicknl.github.io/python-overkiz-api](http
 - Thermor Cozytouch
 
 \[*] _These servers utilize an authentication method that is currently not supported by this library. To use this library with these servers, you will need to obtain an access token (by sniffing the original app) and create a local user on the Overkiz API platform._
+\[**] _Requires OAuth credentials provided by Rexel._
 
 ## Installation
 
