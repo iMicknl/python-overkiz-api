@@ -682,3 +682,10 @@ def test_gateway_candidate_optional_fields_default_none():
     candidate = GatewayCandidate(gateway_id="g1")
     assert candidate.home_id is None
     assert candidate.label is None
+
+
+def test_no_gateway_selected_error_is_overkiz_error():
+    """NoGatewaySelectedError subclasses BaseOverkizError."""
+    from pyoverkiz.exceptions import BaseOverkizError, NoGatewaySelectedError
+
+    assert issubclass(NoGatewaySelectedError, BaseOverkizError)
