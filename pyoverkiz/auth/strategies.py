@@ -14,7 +14,7 @@ from typing import TYPE_CHECKING, Any, cast
 if TYPE_CHECKING:
     from botocore.client import BaseClient
 
-from aiohttp import ClientSession, FormData
+from aiohttp import ClientResponse, ClientSession, FormData
 
 from pyoverkiz.auth.base import AuthContext, AuthStrategy, GatewayCandidate
 from pyoverkiz.auth.credentials import (
@@ -56,6 +56,19 @@ from pyoverkiz.models import ServerConfig
 from pyoverkiz.response_handler import check_response
 
 MIN_JWT_SEGMENTS = 2
+
+
+async def _raise_for_server_error(response: ClientResponse) -> None:
+    """Map a 5xx token-endpoint response to a typed Overkiz exception.
+
+    Token endpoints return their own JSON error format on 4xx (handled by each
+    strategy), but on 5xx they often serve an HTML error page. Decoding that
+    with ``response.json()`` raises a raw aiohttp ``ContentTypeError`` that
+    leaks to consumers and is not retried. Route 5xx through ``check_response``,
+    which raises ``ServiceUnavailableError`` (or ``MaintenanceError``).
+    """
+    if response.status >= HTTPStatus.INTERNAL_SERVER_ERROR:
+        await check_response(response)
 
 
 class BaseAuthStrategy(AuthStrategy):
@@ -197,6 +210,7 @@ class SomfyAuthStrategy(BaseAuthStrategy):
             data=form,
             headers={"Content-Type": "application/x-www-form-urlencoded"},
         ) as response:
+            await _raise_for_server_error(response)
             token = await response.json()
 
             if token.get("message") == "error.invalid.grant":
@@ -229,6 +243,7 @@ class CozytouchAuthStrategy(SessionLoginStrategy):
                 "Content-Type": "application/x-www-form-urlencoded",
             },
         ) as response:
+            await _raise_for_server_error(response)
             token = await response.json()
 
             if token.get("error") == "invalid_grant":
@@ -297,6 +312,7 @@ class NexityAuthStrategy(SessionLoginStrategy):
             f"{NEXITY_API}/deploy/api/v1/domotic/token",
             headers={"Authorization": id_token},
         ) as response:
+            await _raise_for_server_error(response)
             token = await response.json()
 
             if "token" not in token:
@@ -467,6 +483,7 @@ class RexelAuthStrategy(RexelGatewayMixin, BaseAuthStrategy):
             REXEL_OAUTH_TOKEN_URL,
             data=payload,
         ) as response:
+            await _raise_for_server_error(response)
             token = await response.json()
 
             # Handle OAuth error responses explicitly before accessing the access token.

@@ -135,7 +135,9 @@ async def check_response(response: ClientResponse) -> None:
         if "is down for maintenance" in result:
             raise MaintenanceError("Server is down for maintenance") from error
 
-        if response.status == HTTPStatus.SERVICE_UNAVAILABLE:
+        # Any 5xx with a non-JSON body (e.g. an HTML error page from a proxy
+        # returning 500/502/503/504) is a transient server/gateway failure.
+        if response.status >= HTTPStatus.INTERNAL_SERVER_ERROR:
             raise ServiceUnavailableError(result) from error
 
         raise OverkizError(

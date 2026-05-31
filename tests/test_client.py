@@ -445,6 +445,9 @@ class TestOverkizClient:
         [
             ("cloud/503-empty.html", exceptions.ServiceUnavailableError, 503),
             ("cloud/503-maintenance.html", exceptions.MaintenanceError, 503),
+            ("cloud/502-bad-gateway.html", exceptions.ServiceUnavailableError, 502),
+            ("cloud/502-bad-gateway.html", exceptions.ServiceUnavailableError, 504),
+            ("cloud/502-bad-gateway.html", exceptions.ServiceUnavailableError, 500),
             (
                 "cloud/access-denied-to-gateway.json",
                 exceptions.AccessDeniedToGatewayError,
