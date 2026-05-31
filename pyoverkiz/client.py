@@ -611,7 +611,7 @@ class OverkizClient:
             mode: Optional execution mode (``HIGH_PRIORITY``, ``GEOLOCATED``,
                 or ``INTERNAL``). Only supported by the Cloud API; the local
                 API rejects requests that specify an execution mode (see
-                Somfy-TaHoma-Developer-Mode issue #227).
+                https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode/issues/227).
             label: Human-readable label for the execution.
 
         Returns:
