@@ -254,6 +254,12 @@ exec_id = await client.execute_action_group(
 
 Available modes: `HIGH_PRIORITY`, `GEOLOCATED`, `INTERNAL`. When omitted, the default execution mode is used.
 
+!!! warning
+    Execution modes are only supported by the **Cloud API**. The local API
+    (Somfy TaHoma Developer Mode) does not accept an execution mode and will
+    reject the request. See
+    [Somfy-TaHoma-Developer-Mode#227](https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode/issues/227).
+
 ## Track and cancel executions
 
 ```python
