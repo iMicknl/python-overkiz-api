@@ -664,24 +664,29 @@ def test_base_strategy_endpoint_defaults_to_server_endpoint():
 
 
 def test_gateway_candidate_fields():
-    """GatewayCandidate holds gateway_id with optional home_id and label."""
+    """GatewayCandidate holds gateway_id with optional home_id, label, external_id."""
     from pyoverkiz.auth.base import GatewayCandidate
 
     candidate = GatewayCandidate(
-        gateway_id="1234-5678-9012", home_id="home-1", label="Living room"
+        gateway_id="42760",
+        home_id="44571",
+        label="Demo",
+        external_id="0201-0012-0000",
     )
-    assert candidate.gateway_id == "1234-5678-9012"
-    assert candidate.home_id == "home-1"
-    assert candidate.label == "Living room"
+    assert candidate.gateway_id == "42760"
+    assert candidate.home_id == "44571"
+    assert candidate.label == "Demo"
+    assert candidate.external_id == "0201-0012-0000"
 
 
 def test_gateway_candidate_optional_fields_default_none():
-    """home_id and label default to None."""
+    """home_id, label and external_id default to None."""
     from pyoverkiz.auth.base import GatewayCandidate
 
     candidate = GatewayCandidate(gateway_id="g1")
     assert candidate.home_id is None
     assert candidate.label is None
+    assert candidate.external_id is None
 
 
 def test_no_gateway_selected_error_is_overkiz_error():
@@ -699,6 +704,82 @@ def test_rexel_enduser_api_strips_overkiz_suffix():
         REXEL_GATEWAY_HEADER,
     )
 
-    assert REXEL_ENDUSER_API == REXEL_BACKEND_API.rsplit("/overkiz/", 1)[0]
+    # Device control goes to .../api/enduser/overkiz/{command};
+    # the homes/gateways directory lives at .../api/enduser.
+    assert (
+        REXEL_BACKEND_API
+        == "https://econnect-api.rexelservices.fr/api/enduser/overkiz/"
+    )
+    assert REXEL_ENDUSER_API == "https://econnect-api.rexelservices.fr/api/enduser"
+    assert REXEL_BACKEND_API.rsplit("/overkiz/", 1)[0] == REXEL_ENDUSER_API
     assert not REXEL_ENDUSER_API.endswith("/")
     assert REXEL_GATEWAY_HEADER == "gatewayId"
+
+
+def _build_rexel_strategy_with_token(json_bodies):
+    """Return a RexelAuthStrategy with a fake token and a session.
+
+    json_bodies (a list) are returned in order from session.get().
+    """
+    from unittest.mock import AsyncMock, MagicMock
+
+    from aiohttp import ClientSession
+
+    from pyoverkiz.auth.credentials import RexelOAuthCodeCredentials
+    from pyoverkiz.auth.strategies import RexelAuthStrategy
+    from pyoverkiz.enums.server import APIType
+    from pyoverkiz.models import ServerConfig
+
+    server = ServerConfig(
+        server=None,
+        name="Rexel",
+        endpoint="https://econnect-api.rexelservices.fr/api/enduser/overkiz/",
+        manufacturer="Rexel",
+        api_type=APIType.CLOUD,
+    )
+    session = MagicMock(spec=ClientSession)
+
+    responses = []
+    for body in json_bodies:
+        resp = MagicMock()
+        resp.status = 200
+        resp.json = AsyncMock(return_value=body)
+        resp.text = AsyncMock(return_value="")
+        ctx = MagicMock()
+        ctx.__aenter__ = AsyncMock(return_value=resp)
+        ctx.__aexit__ = AsyncMock(return_value=None)
+        responses.append(ctx)
+    session.get = MagicMock(side_effect=responses)
+
+    strategy = RexelAuthStrategy(
+        credentials=RexelOAuthCodeCredentials("code", "uri", "verifier"),
+        session=session,
+        server=server,
+        ssl_context=True,
+    )
+    strategy.context.access_token = "fake-jwt"
+    return strategy, session
+
+
+@pytest.mark.asyncio
+async def test_rexel_discover_gateways_flattens_homes_and_gateways():
+    """discover_gateways returns one GatewayCandidate per gateway across homes."""
+    strategy, _ = _build_rexel_strategy_with_token(
+        [
+            [{"id": 44571, "label": "Demo"}],  # GET /homes (id is an int)
+            [  # GET /overkizgateways?homeId=44571
+                {"gatewayId": 42760, "externalId": "0201-0012-0000"},
+                {"gatewayId": 99999, "externalId": "0201-0012-9999"},
+            ],
+        ]
+    )
+
+    candidates = await strategy.discover_gateways()
+
+    assert len(candidates) == 2
+    assert candidates[0].gateway_id == "42760"
+    assert candidates[0].home_id == "44571"
+    assert candidates[0].label == "Demo"
+    assert candidates[0].external_id == "0201-0012-0000"
+    assert candidates[1].gateway_id == "99999"
+    assert candidates[1].external_id == "0201-0012-9999"

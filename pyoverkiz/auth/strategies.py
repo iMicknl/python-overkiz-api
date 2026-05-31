@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 from aiohttp import ClientSession, FormData
 
-from pyoverkiz.auth.base import AuthContext, AuthStrategy
+from pyoverkiz.auth.base import AuthContext, AuthStrategy, GatewayCandidate
 from pyoverkiz.auth.credentials import (
     LocalTokenCredentials,
     RexelOAuthCodeCredentials,
@@ -30,6 +30,7 @@ from pyoverkiz.const import (
     NEXITY_COGNITO_CLIENT_ID,
     NEXITY_COGNITO_REGION,
     NEXITY_COGNITO_USER_POOL,
+    REXEL_ENDUSER_API,
     REXEL_OAUTH_CLIENT_ID,
     REXEL_OAUTH_SCOPE,
     REXEL_OAUTH_TOKEN_URL,
@@ -49,6 +50,7 @@ from pyoverkiz.exceptions import (
     SomfyServiceError,
 )
 from pyoverkiz.models import ServerConfig
+from pyoverkiz.response_handler import check_response
 
 MIN_JWT_SEGMENTS = 2
 
@@ -339,6 +341,7 @@ class RexelAuthStrategy(BaseAuthStrategy):
         super().__init__(session, server, ssl_context)
         self.credentials = credentials
         self.context = AuthContext()
+        self._gateway_id: str | None = None
 
     async def login(self) -> None:
         """Perform login using Rexel OAuth2 authorization code."""
@@ -367,6 +370,49 @@ class RexelAuthStrategy(BaseAuthStrategy):
             }
         )
         return True
+
+    async def discover_gateways(self) -> list[GatewayCandidate]:
+        """Enumerate every home x gateway available to this account."""
+        candidates: list[GatewayCandidate] = []
+        for home in await self._get_enduser("homes"):
+            home_id = str(home["id"])
+            home_label = home.get("label")
+            for gateway in await self._get_enduser(f"overkizgateways?homeId={home_id}"):
+                external_id = gateway.get("externalId")
+                candidates.append(
+                    GatewayCandidate(
+                        gateway_id=str(gateway["gatewayId"]),
+                        home_id=home_id,
+                        label=home_label,
+                        external_id=(
+                            str(external_id) if external_id is not None else None
+                        ),
+                    )
+                )
+        return candidates
+
+    def select_gateway(self, gateway_id: str) -> None:
+        """Select the gateway to scope subsequent requests to."""
+        self._gateway_id = gateway_id
+
+    @property
+    def selected_gateway(self) -> str | None:
+        """Return the currently selected gateway id, or None."""
+        return self._gateway_id
+
+    async def _get_enduser(self, path: str) -> list[dict[str, Any]]:
+        """GET a Rexel directory resource (homes/gateways) with Bearer auth.
+
+        Uses REXEL_ENDUSER_API, NOT the device endpoint, and a Bearer-only
+        header so it works before a gateway has been selected.
+        """
+        async with self.session.get(
+            f"{REXEL_ENDUSER_API}/{path}",
+            headers={"Authorization": f"Bearer {self.context.access_token}"},
+            ssl=self._ssl,
+        ) as response:
+            await check_response(response)
+            return cast(list[dict[str, Any]], await response.json())
 
     def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
         """Return authentication headers for a request path."""

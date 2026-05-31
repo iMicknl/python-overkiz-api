@@ -65,6 +65,7 @@ class GatewayCandidate:
     gateway_id: str
     home_id: str | None = None
     label: str | None = None
+    external_id: str | None = None
 
 
 @runtime_checkable

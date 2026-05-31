@@ -21,7 +21,7 @@ NEXITY_COGNITO_CLIENT_ID = "3mca95jd5ase5lfde65rerovok"
 NEXITY_COGNITO_USER_POOL = "eu-west-1_wj277ucoI"
 NEXITY_COGNITO_REGION = "eu-west-1"
 
-REXEL_BACKEND_API = "https://econnect-api.rexelservices.fr/overkiz/"
+REXEL_BACKEND_API = "https://econnect-api.rexelservices.fr/api/enduser/overkiz/"
 REXEL_OAUTH_CLIENT_ID = "2b635ede-c3fb-43bc-8d23-f6d17f80e96d"
 REXEL_OAUTH_REDIRECT_URI = "https://my.home-assistant.io/redirect/oauth"
 REXEL_OAUTH_SCOPE = "https://adb2cservicesfrenduserprod.onmicrosoft.com/94f05108-65f7-477a-a84d-e67e1aed6f79/ExternalProvider"
