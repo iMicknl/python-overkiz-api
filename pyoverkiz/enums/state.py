@@ -715,30 +715,20 @@ class OverkizState(StrEnum):
     ENOCEAN_VALVE_POSITION = "enocean:ValvePositionState"
     HLRRWIFI_DIAGNOSTIC_CODE = "hlrrwifi:DiagnosticCodeState"
     HLRRWIFI_FAN_SPEED = "hlrrwifi:FanSpeedState"
+    HLRRWIFI_FILTER_CONDITION = "hlrrwifi:FilterConditionState"
     HLRRWIFI_LEAVE_HOME = "hlrrwifi:LeaveHomeState"
+    HLRRWIFI_LOCAL_MODE = "hlrrwifi:LocalModeState"
     HLRRWIFI_MAIN_OPERATION = "hlrrwifi:MainOperationState"
     HLRRWIFI_MODE_CHANGE = "hlrrwifi:ModeChangeState"
+    HLRRWIFI_NAME = "hlrrwifi:NameState"
     HLRRWIFI_OUTDOOR_TEMPERATURE = "hlrrwifi:OutdoorTemperatureState"
+    HLRRWIFI_PRODUCT_MODEL_NAME = "hlrrwifi:ProductModelNameState"
     HLRRWIFI_REMOCON_CONTROL = "hlrrwifi:RemoconControlState"
     HLRRWIFI_ROOM_TEMPERATURE = "hlrrwifi:RoomTemperatureState"
+    HLRRWIFI_RSSI_LEVEL = "hlrrwifi:RSSILevelState"
     HLRRWIFI_SWING = "hlrrwifi:SwingState"
+    HLRRWIFI_TARGET_TEMPERATURE = "hlrrwifi:TargetTemperatureState"
     HLRRWIFI_TEMPERATURE_CHANGE = "hlrrwifi:TemperatureChangeState"
-    HLRR_WIFI_DIAGNOSTIC_CODE = "hlrr_wifi:DiagnosticCodeState"
-    HLRR_WIFI_FAN_SPEED = "hlrr_wifi:FanSpeedState"
-    HLRR_WIFI_FILTER_CONDITION = "hlrr_wifi:FilterConditionState"
-    HLRR_WIFI_LEAVE_HOME = "hlrr_wifi:LeaveHomeState"
-    HLRR_WIFI_LOCAL_MODE = "hlrr_wifi:LocalModeState"
-    HLRR_WIFI_MAIN_OPERATION = "hlrr_wifi:MainOperationState"
-    HLRR_WIFI_MODE_CHANGE = "hlrr_wifi:ModeChangeState"
-    HLRR_WIFI_NAME = "hlrr_wifi:NameState"
-    HLRR_WIFI_OUTDOOR_TEMPERATURE = "hlrr_wifi:OutdoorTemperatureState"
-    HLRR_WIFI_PRODUCT_MODEL_NAME = "hlrr_wifi:ProductModelNameState"
-    HLRR_WIFI_REMOCON_CONTROL = "hlrr_wifi:RemoconControlState"
-    HLRR_WIFI_ROOM_TEMPERATURE = "hlrr_wifi:RoomTemperatureState"
-    HLRR_WIFI_RSSI_LEVEL = "hlrr_wifi:RSSILevelState"
-    HLRR_WIFI_SWING = "hlrr_wifi:SwingState"
-    HLRR_WIFI_TARGET_TEMPERATURE = "hlrr_wifi:TargetTemperatureState"
-    HLRR_WIFI_TEMPERATURE_CHANGE = "hlrr_wifi:TemperatureChangeState"
     HUE_CIE_COLOR_SPACE_X = "hue:CieColorSpaceXState"
     HUE_CIE_COLOR_SPACE_Y = "hue:CieColorSpaceYState"
     HUE_COLOR_HUE = "hue:ColorHueState"
@@ -2107,11 +2097,23 @@ class OverkizState(StrEnum):
     SOMFYTHERMOSTAT_AT_HOME_TARGET_TEMPERATURE = (
         "somfythermostat:AtHomeTargetTemperatureState"
     )
+    SOMFYTHERMOSTAT_AVAILABILITY = "somfythermostat:AvailabilityState"
     SOMFYTHERMOSTAT_AWAY_MODE_TARGET_TEMPERATURE = (
         "somfythermostat:AwayModeTargetTemperatureState"
     )
+    SOMFYTHERMOSTAT_BATTERY_LEVEL = "somfythermostat:BatteryLevelState"
+    SOMFYTHERMOSTAT_DEROGATED_TARGET_TEMPERATURE = (
+        "somfythermostat:DerogatedTargetTemperatureState"
+    )
+    SOMFYTHERMOSTAT_DEROGATION_ACTIVATION = "somfythermostat:DerogationActivationState"
+    SOMFYTHERMOSTAT_DEROGATION_END_DATE_TIME = (
+        "somfythermostat:DerogationEndDateTimeState"
+    )
     SOMFYTHERMOSTAT_DEROGATION_HEATING_MODE = (
         "somfythermostat:DerogationHeatingModeState"
+    )
+    SOMFYTHERMOSTAT_DEROGATION_START_DATE_TIME = (
+        "somfythermostat:DerogationStartDateTimeState"
     )
     SOMFYTHERMOSTAT_DEROGATION_TYPE = "somfythermostat:DerogationTypeState"
     SOMFYTHERMOSTAT_FREEZE_MODE_TARGET_TEMPERATURE = (
@@ -2124,57 +2126,17 @@ class OverkizState(StrEnum):
     SOMFYTHERMOSTAT_MANUAL_MODE_TARGET_TEMPERATURE = (
         "somfythermostat:ManualModeTargetTemperatureState"
     )
+    SOMFYTHERMOSTAT_NAME = "somfythermostat:NameState"
+    SOMFYTHERMOSTAT_RELATIVE_HUMIDITY = "somfythermostat:RelativeHumidityState"
     SOMFYTHERMOSTAT_SLEEPING_MODE_TARGET_TEMPERATURE = (
         "somfythermostat:SleepingModeTargetTemperatureState"
     )
+    SOMFYTHERMOSTAT_STATUS = "somfythermostat:StatusState"
     SOMFYTHERMOSTAT_SUDDEN_DROP_MODE_TARGET_TEMPERATURE = (
         "somfythermostat:SuddenDropModeTargetTemperatureState"
     )
-    SOMFY_THERMOSTAT_AT_HOME_TARGET_TEMPERATURE = (
-        "somfy_thermostat:AtHomeTargetTemperatureState"
-    )
-    SOMFY_THERMOSTAT_AVAILABILITY = "somfy_thermostat:AvailabilityState"
-    SOMFY_THERMOSTAT_AWAY_MODE_TARGET_TEMPERATURE = (
-        "somfy_thermostat:AwayModeTargetTemperatureState"
-    )
-    SOMFY_THERMOSTAT_BATTERY_LEVEL = "somfy_thermostat:BatteryLevelState"
-    SOMFY_THERMOSTAT_DEROGATED_TARGET_TEMPERATURE = (
-        "somfy_thermostat:DerogatedTargetTemperatureState"
-    )
-    SOMFY_THERMOSTAT_DEROGATION_ACTIVATION = (
-        "somfy_thermostat:DerogationActivationState"
-    )
-    SOMFY_THERMOSTAT_DEROGATION_END_DATE_TIME = (
-        "somfy_thermostat:DerogationEndDateTimeState"
-    )
-    SOMFY_THERMOSTAT_DEROGATION_HEATING_MODE = (
-        "somfy_thermostat:DerogationHeatingModeState"
-    )
-    SOMFY_THERMOSTAT_DEROGATION_START_DATE_TIME = (
-        "somfy_thermostat:DerogationStartDateTimeState"
-    )
-    SOMFY_THERMOSTAT_DEROGATION_TYPE = "somfy_thermostat:DerogationTypeState"
-    SOMFY_THERMOSTAT_FREEZE_MODE_TARGET_TEMPERATURE = (
-        "somfy_thermostat:FreezeModeTargetTemperatureState"
-    )
-    SOMFY_THERMOSTAT_GEOFENCING_MODE_TARGET_TEMPERATURE = (
-        "somfy_thermostat:GeofencingModeTargetTemperatureState"
-    )
-    SOMFY_THERMOSTAT_HEATING_MODE = "somfy_thermostat:HeatingModeState"
-    SOMFY_THERMOSTAT_MANUAL_MODE_TARGET_TEMPERATURE = (
-        "somfy_thermostat:ManualModeTargetTemperatureState"
-    )
-    SOMFY_THERMOSTAT_NAME = "somfy_thermostat:NameState"
-    SOMFY_THERMOSTAT_RELATIVE_HUMIDITY = "somfy_thermostat:RelativeHumidityState"
-    SOMFY_THERMOSTAT_SLEEPING_MODE_TARGET_TEMPERATURE = (
-        "somfy_thermostat:SleepingModeTargetTemperatureState"
-    )
-    SOMFY_THERMOSTAT_STATUS = "somfy_thermostat:StatusState"
-    SOMFY_THERMOSTAT_SUDDEN_DROP_MODE_TARGET_TEMPERATURE = (
-        "somfy_thermostat:SuddenDropModeTargetTemperatureState"
-    )
-    SOMFY_THERMOSTAT_TARGET_TEMPERATURE = "somfy_thermostat:TargetTemperatureState"
-    SOMFY_THERMOSTAT_TEMPERATURE = "somfy_thermostat:TemperatureState"
+    SOMFYTHERMOSTAT_TARGET_TEMPERATURE = "somfythermostat:TargetTemperatureState"
+    SOMFYTHERMOSTAT_TEMPERATURE = "somfythermostat:TemperatureState"
     VERISURE_ALARM_PANEL_MAIN_ARM_TYPE = "verisure:AlarmPanelMainArmTypeState"
     ZIGBEE_ACTIVE_TIER = "zigbee:ActiveTierState"
     ZIGBEE_ACTIVE_TIER_LABEL = "zigbee:ActiveTierLabelState"

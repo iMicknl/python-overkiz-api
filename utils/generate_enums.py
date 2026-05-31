@@ -592,12 +592,19 @@ def extract_states_from_servers(servers_dir: Path) -> set[str]:
     for server_file in servers_dir.glob("*.json"):
         try:
             data = json.loads(server_file.read_text())
+            # Map protocol name (e.g. HLRR_WIFI) to its qualified-name prefix
+            # (e.g. hlrrwifi); they differ for some protocols.
+            prefixes = {
+                p["name"]: p["prefix"]
+                for p in data.get("referenceMetadata", {}).get("protocolTypes", [])
+            }
             # From protocols section (prefix:StateName)
             for protocol, device_types in data.get("protocols", {}).items():
+                prefix = prefixes.get(protocol, protocol.lower())
                 for dt in device_types:
                     for s in dt.get("states", []):
                         if "name" in s:
-                            states.add(f"{protocol.lower()}:{s['name']}")
+                            states.add(f"{prefix}:{s['name']}")
             # From controllableDefinitions (has qualifiedName)
             for cd in data.get("controllableDefinitions", {}).values():
                 for s in cd.get("states", []):
