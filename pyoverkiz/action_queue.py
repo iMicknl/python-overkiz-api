@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 class ActionQueueSettings:
     """Settings for configuring the action queue behavior."""
 
-    delay: float = 0.5
+    delay: float = 0.1
     max_actions: int = 20
 
     def validate(self) -> None:

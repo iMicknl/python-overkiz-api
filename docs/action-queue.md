@@ -99,8 +99,13 @@ print(exec_id1 == exec_id2)
 ```
 
 Defaults:
-- `delay=0.5`
+- `delay=0.1`
 - `max_actions=20`
+
+The `delay` is a debounce window: commands that arrive within it are merged into
+a single action group. Scenes and automations typically fan their commands out in
+the same event-loop tick, so they still collapse into one API call even with a
+short window — the window mainly adds latency to standalone interactive commands.
 
 ## Advanced settings
 
