@@ -53,13 +53,17 @@ print(f"Orientation: {slats_orientation}")
 slats_orientation = device.states.first_value([OverkizState.CORE_SLATS_ORIENTATION, OverkizState.CORE_SLATE_ORIENTATION])
 print(f"Orientation: {slats_orientation}")
 
-# Check if a single state has a non-None value
-if device.states.has(OverkizState.CORE_SLATS_ORIENTATION):
+# Check if a single state exists with a non-None value
+if device.states.has_value(OverkizState.CORE_SLATS_ORIENTATION):
     print("Device has a slats orientation")
 
-# Check if any of the states have non-None values
-if device.states.has_any([OverkizState.CORE_SLATS_ORIENTATION, OverkizState.CORE_SLATE_ORIENTATION]):
+# Check if any of the states exist with a non-None value
+if device.states.has_any_value([OverkizState.CORE_SLATS_ORIENTATION, OverkizState.CORE_SLATE_ORIENTATION]):
     print("Device has a slats orientation")
+
+# For a pure existence check (ignoring the value), use `in`
+if OverkizState.CORE_SLATS_ORIENTATION in device.states:
+    print("Device reports a slats orientation state")
 ```
 
 #### Get state definition

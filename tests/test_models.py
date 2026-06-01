@@ -20,6 +20,7 @@ from pyoverkiz.enums import (
     UIProfile,
 )
 from pyoverkiz.enums.command import OverkizCommand
+from pyoverkiz.enums.state import OverkizState
 from pyoverkiz.models import (
     Action,
     ActionGroup,
@@ -299,17 +300,25 @@ class TestDevice:
         value = device.states.first_value(["nonexistent", "core:ClosureState"])
         assert value == 100
 
-    def test_states_has(self):
-        """device.states.has() checks if a single state exists with non-None value."""
+    def test_states_has_value(self):
+        """device.states.has_value() checks if a single state exists with non-None value."""
         device = _make_device()
-        assert device.states.has("core:ClosureState")
-        assert not device.states.has("nonexistent")
+        assert device.states.has_value("core:ClosureState")
+        assert not device.states.has_value("nonexistent")
 
-    def test_states_has_any(self):
-        """device.states.has_any() checks if any state exists with non-None value."""
+    def test_states_has_any_value(self):
+        """device.states.has_any_value() checks if any state exists with non-None value."""
         device = _make_device()
-        assert device.states.has_any(["nonexistent", "core:ClosureState"])
-        assert not device.states.has_any(["nonexistent"])
+        assert device.states.has_any_value(["nonexistent", "core:ClosureState"])
+        assert not device.states.has_any_value(["nonexistent"])
+
+    def test_states_accept_enum_keys(self):
+        """States accessors accept OverkizState enums, not just plain strings."""
+        device = _make_device()
+        assert device.states.has_value(OverkizState.CORE_CLOSURE)
+        assert device.states.get_value(OverkizState.CORE_CLOSURE) == 100
+        assert device.states.first([OverkizState.CORE_CLOSURE]) is not None
+        assert device.states.has_any_value([OverkizState.CORE_CLOSURE])
 
     def test_definition_states_get(self):
         """device.definition.states.get() returns StateDefinition for a single state."""
@@ -451,25 +460,25 @@ class TestStates:
         states = self._make_states(RAW_STATES)
         assert states.first_value(["nonexistent"]) is None
 
-    def test_has_returns_true(self):
-        """has() returns True when the state exists with a non-None value."""
+    def test_has_value_returns_true(self):
+        """has_value() returns True when the state exists with a non-None value."""
         states = self._make_states(RAW_STATES)
-        assert states.has("core:NameState")
+        assert states.has_value("core:NameState")
 
-    def test_has_returns_false(self):
-        """has() returns False when the state does not exist."""
+    def test_has_value_returns_false(self):
+        """has_value() returns False when the state does not exist."""
         states = self._make_states(RAW_STATES)
-        assert not states.has("nonexistent")
+        assert not states.has_value("nonexistent")
 
-    def test_has_any_true(self):
-        """has_any() returns True when at least one state exists."""
+    def test_has_any_value_true(self):
+        """has_any_value() returns True when at least one state exists."""
         states = self._make_states(RAW_STATES)
-        assert states.has_any(["nonexistent", "core:NameState"])
+        assert states.has_any_value(["nonexistent", "core:NameState"])
 
-    def test_has_any_false(self):
-        """has_any() returns False when no state exists."""
+    def test_has_any_value_false(self):
+        """has_any_value() returns False when no state exists."""
         states = self._make_states(RAW_STATES)
-        assert not states.has_any(["nonexistent", "also_nonexistent"])
+        assert not states.has_any_value(["nonexistent", "also_nonexistent"])
 
     def test_getitem_raises_keyerror_on_missing(self):
         """Subscript access raises KeyError for missing states."""
