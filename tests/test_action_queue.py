@@ -352,6 +352,13 @@ async def test_queued_execution_awaitable():
     await task
 
 
+def test_action_queue_settings_defaults():
+    """Default settings keep batching snappy while still merging same-tick calls."""
+    settings = ActionQueueSettings()
+    assert settings.delay == 0.1
+    assert settings.max_actions == 20
+
+
 @pytest.mark.asyncio
 async def test_action_queue_settings_validate():
     """Test that validate raises on invalid settings."""
