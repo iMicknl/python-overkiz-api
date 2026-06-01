@@ -969,8 +969,11 @@ class OverkizClient:
         """Put the gateway into local pairing mode (~180 seconds).
 
         During this window, new tokens can be registered directly on the
-        gateway without requiring developer mode. Used by Atlantic/Cozytouch
-        gateways (SmartKiz).
+        gateway without requiring developer mode.
+
+        .. warning::
+            Experimental (preview). This endpoint is not yet fully validated
+            and its behaviour or signature may change in a future release.
         """
         return await self._post(f"config/{gateway_id}/local/openPairing")
 
