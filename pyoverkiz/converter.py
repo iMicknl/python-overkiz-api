@@ -11,6 +11,7 @@ import cattrs
 from cattrs.gen import make_dict_structure_fn, override
 
 from pyoverkiz._case import camelize_key
+from pyoverkiz.enums import GatewaySubType
 from pyoverkiz.models import (
     CommandDefinition,
     CommandDefinitions,
@@ -62,6 +63,16 @@ def _make_converter() -> cattrs.Converter:
     c.register_structure_hook_func(
         lambda t: isinstance(t, type) and issubclass(t, Enum),
         lambda v, t: v if isinstance(v, t) else t(v),
+    )
+
+    # Gateways report subType 0 to mean "no specific sub-type" — surface that as None
+    # rather than GatewaySubType.UNKNOWN, which stays reserved for genuinely unrecognised
+    # values. Scoped to the Optional field (GatewaySubType | None) so bare GatewaySubType
+    # structuring keeps the generic enum behaviour; exact-type hook (direct dispatch) so it
+    # overrides the primitive-union and generic enum hooks.
+    c.register_structure_hook(
+        GatewaySubType | None,
+        lambda v, _: None if v in (0, None) else c.structure(v, GatewaySubType),
     )
 
     # Custom container types that wrap a list in __init__
