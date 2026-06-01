@@ -29,6 +29,7 @@ from pyoverkiz.enums import (
 from pyoverkiz.models import (
     Action,
     Command,
+    DeveloperMode,
     Execution,
     HistoryExecution,
     LocalToken,
@@ -1452,16 +1453,16 @@ class TestLocalTokenManagement:
 
     @pytest.mark.asyncio
     async def test_get_developer_mode(self, client: OverkizClient) -> None:
-        """get_developer_mode gets the gateway developerMode endpoint."""
-        resp = MockResponse('{"status": "ACTIVATED"}')
+        """get_developer_mode parses the status into a DeveloperMode model."""
+        resp = MockResponse('{"active": true}')
 
         with (
             patch.object(client, "_refresh_token_if_expired", new=AsyncMock()),
             patch.object(aiohttp.ClientSession, "get", return_value=resp) as mock_get,
         ):
-            status = await client.get_developer_mode("gw-1234")
+            developer_mode = await client.get_developer_mode("gw-1234")
 
-        assert status == {"status": "ACTIVATED"}
+        assert developer_mode == DeveloperMode(active=True)
         assert (
             mock_get.call_args[0][0]
             == f"{self.ENDPOINT}setup/gateways/gw-1234/developerMode"

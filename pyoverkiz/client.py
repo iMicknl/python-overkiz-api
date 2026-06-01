@@ -46,6 +46,7 @@ from pyoverkiz.models import (
     Action,
     Command,
     Definition,
+    DeveloperMode,
     Device,
     DeviceManufacturerReference,
     DeviceSearchResult,
@@ -990,9 +991,10 @@ class OverkizClient:
         await self._post(f"setup/gateways/{gateway_id}/developerMode")
 
     @retry_on_auth_error
-    async def get_developer_mode(self, gateway_id: str) -> Any:
+    async def get_developer_mode(self, gateway_id: str) -> DeveloperMode:
         """Get the developer mode status for a gateway."""
-        return await self._get(f"setup/gateways/{gateway_id}/developerMode")
+        response = await self._get(f"setup/gateways/{gateway_id}/developerMode")
+        return converter.structure(response, DeveloperMode)
 
     @retry_on_auth_error
     async def deactivate_developer_mode(self, gateway_id: str) -> None:

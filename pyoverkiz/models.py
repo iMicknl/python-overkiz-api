@@ -676,6 +676,13 @@ class LocalToken:
 
 
 @define(kw_only=True)
+class DeveloperMode:
+    """Developer mode status for a gateway."""
+
+    active: bool
+
+
+@define(kw_only=True)
 class Gateway:
     """Representation of a gateway, including connectivity and partner info."""
 
