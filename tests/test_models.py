@@ -177,6 +177,14 @@ class TestGateway:
         """When subType is absent, sub_type defaults to None."""
         assert self._structure(None).sub_type is None
 
+    def test_bare_enum_zero_is_unaffected(self):
+        """Bare GatewaySubType structuring is unaffected by the 0 -> None scoping.
+
+        The special-case lives on GatewaySubType | None, so structuring a plain
+        GatewaySubType still uses the generic enum hook (0 -> UNKNOWN).
+        """
+        assert converter.structure(0, GatewaySubType) is GatewaySubType.UNKNOWN
+
 
 class TestDevice:
     """Tests for Device model parsing and property extraction."""

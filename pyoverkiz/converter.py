@@ -67,10 +67,12 @@ def _make_converter() -> cattrs.Converter:
 
     # Gateways report subType 0 to mean "no specific sub-type" — surface that as None
     # rather than GatewaySubType.UNKNOWN, which stays reserved for genuinely unrecognised
-    # values. Exact-type hook (direct dispatch) so it overrides the generic enum hook.
+    # values. Scoped to the Optional field (GatewaySubType | None) so bare GatewaySubType
+    # structuring keeps the generic enum behaviour; exact-type hook (direct dispatch) so it
+    # overrides the primitive-union and generic enum hooks.
     c.register_structure_hook(
-        GatewaySubType,
-        lambda v, t: None if v == 0 else (v if isinstance(v, t) else t(v)),
+        GatewaySubType | None,
+        lambda v, _: None if v in (0, None) else c.structure(v, GatewaySubType),
     )
 
     # Custom container types that wrap a list in __init__
