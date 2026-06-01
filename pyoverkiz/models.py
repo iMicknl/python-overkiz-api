@@ -30,6 +30,7 @@ from pyoverkiz.enums import (
 from pyoverkiz.enums.command import OverkizCommand
 from pyoverkiz.enums.protocol import Protocol
 from pyoverkiz.enums.server import APIType, Server
+from pyoverkiz.enums.state import OverkizAttribute, OverkizState
 from pyoverkiz.exceptions import OverkizError
 from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, CommandParameterValue, StateType
@@ -132,6 +133,12 @@ class EventState(State):
             ) from err
 
 
+# States are keyed by core state names (OverkizState) for device.states and by
+# attribute names (OverkizAttribute) for device.attributes; both are StrEnum, so
+# plain str keys work too.
+StateName = str | OverkizState | OverkizAttribute
+
+
 @define(init=False)
 class States(Mapping[str, State]):
     """Container of State objects implementing Mapping[str, State]."""
@@ -176,14 +183,14 @@ class States(Mapping[str, State]):
         """Return number of states in the container."""
         return len(self._states)
 
-    def get_value(self, name: str) -> StateType:
+    def get_value(self, name: StateName) -> StateType:
         """Return the value of a state by name, or None if missing."""
         state = self._index.get(name)
         if state is not None:
             return state.value
         return None
 
-    def first(self, names: list[str]) -> State | None:
+    def first(self, names: list[StateName]) -> State | None:
         """Return the first State that exists and has a non-None value, or None."""
         for name in names:
             state = self._index.get(name)
@@ -191,19 +198,22 @@ class States(Mapping[str, State]):
                 return state
         return None
 
-    def first_value(self, names: list[str]) -> StateType:
+    def first_value(self, names: list[StateName]) -> StateType:
         """Return the value of the first State with a non-None value, or None."""
         if state := self.first(names):
             return state.value
         return None
 
-    def has(self, name: str) -> bool:
-        """Return True if the state exists with a non-None value."""
+    def has_value(self, name: StateName) -> bool:
+        """Return True if the state exists and has a non-None value.
+
+        For a pure existence check (ignoring the value), use ``name in states``.
+        """
         state = self._index.get(name)
         return state is not None and state.value is not None
 
-    def has_any(self, names: list[str]) -> bool:
-        """Return True if any of the given state names exist with a non-None value."""
+    def has_any_value(self, names: list[StateName]) -> bool:
+        """Return True if any of the given states exist with a non-None value."""
         return self.first(names) is not None
 
 
@@ -317,14 +327,14 @@ class StateDefinitions(Mapping[str, StateDefinition]):
         """Return number of state definitions."""
         return len(self._definitions)
 
-    def first(self, names: list[str]) -> StateDefinition | None:
+    def first(self, names: list[str | OverkizState]) -> StateDefinition | None:
         """Return the first StateDefinition whose qualified_name matches, or None."""
         for name in names:
             if name in self._index:
                 return self._index[name]
         return None
 
-    def has_any(self, names: list[str]) -> bool:
+    def has_any(self, names: list[str | OverkizState]) -> bool:
         """Return True if any of the given state definitions exist."""
         return self.first(names) is not None
 

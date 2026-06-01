@@ -188,8 +188,9 @@ v2 provides a consistent API on `device.states` and `device.attributes` (both ar
 | `.get_value(name)` | `StateType` | Single-key value (None if missing) |
 | `.first(names)` | `State \| None` | First non-None match from fallback list |
 | `.first_value(names)` | `StateType` | First non-None value from fallback list |
-| `.has(name)` | `bool` | Check single state exists with value |
-| `.has_any(names)` | `bool` | Check any state exists with value |
+| `.has_value(name)` | `bool` | Check single state exists with a non-None value |
+| `.has_any_value(names)` | `bool` | Check any state exists with a non-None value |
+| `name in states` | `bool` | Pure existence check (ignores the value) |
 
 ```python
 # Get a single state value
@@ -198,8 +199,12 @@ temp = device.states.get_value("core:TemperatureState")
 # Fallback chain — try multiple state names, return first hit
 temp = device.states.first_value(["core:TemperatureState", "core:TemperatureInCelsiusState"])
 
-# Existence check
-if device.states.has("core:ClosureState"):
+# Value check — state exists and has a non-None value
+if device.states.has_value("core:ClosureState"):
+    ...
+
+# Pure existence check (ignores the value)
+if "core:ClosureState" in device.states:
     ...
 
 # Same API works for attributes
