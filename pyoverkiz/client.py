@@ -991,6 +991,11 @@ class OverkizClient:
         """Get the developer mode status for a gateway."""
         return await self._get(f"setup/gateways/{gateway_id}/developerMode")
 
+    @retry_on_auth_error
+    async def deactivate_developer_mode(self, gateway_id: str) -> None:
+        """Deactivate developer mode for a gateway."""
+        await self._delete(f"setup/gateways/{gateway_id}/developerMode")
+
     async def _get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API."""
         await self._refresh_token_if_expired()

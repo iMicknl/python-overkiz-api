@@ -31,6 +31,7 @@ from pyoverkiz.models import (
     Command,
     Execution,
     HistoryExecution,
+    LocalToken,
     Option,
     PersistedActionGroup,
     Place,
@@ -1315,3 +1316,171 @@ class TestOverkizClientSettings:
             settings=OverkizClientSettings(action_queue=ActionQueueSettings()),
         )
         assert client._action_queue is not None
+
+
+class TestLocalTokenManagement:
+    """Tests for the cloud-API local token, developer mode and pairing endpoints."""
+
+    ENDPOINT = "https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/"
+
+    @pytest.mark.asyncio
+    async def test_generate_local_token(self, client: OverkizClient) -> None:
+        """generate_local_token returns the token and calls the generate endpoint."""
+        resp = MockResponse('{"token": "new-token"}')
+
+        with (
+            patch.object(client, "_refresh_token_if_expired", new=AsyncMock()),
+            patch.object(aiohttp.ClientSession, "get", return_value=resp) as mock_get,
+        ):
+            token = await client.generate_local_token("gw-1234")
+
+        assert token == "new-token"  # noqa: S105
+        assert (
+            mock_get.call_args[0][0]
+            == f"{self.ENDPOINT}config/gw-1234/local/tokens/generate"
+        )
+
+    @pytest.mark.asyncio
+    async def test_activate_local_token(self, client: OverkizClient) -> None:
+        """activate_local_token posts label/token/scope and returns the request ID."""
+        resp = MockResponse('{"requestId": "req-789"}')
+
+        with (
+            patch.object(client, "_refresh_token_if_expired", new=AsyncMock()),
+            patch.object(aiohttp.ClientSession, "post", return_value=resp) as mock_post,
+        ):
+            request_id = await client.activate_local_token(
+                "gw-1234",
+                token="new-token",  # noqa: S106
+                label="Home Assistant",
+            )
+
+        assert request_id == "req-789"
+        assert (
+            mock_post.call_args[0][0] == f"{self.ENDPOINT}config/gw-1234/local/tokens"
+        )
+        assert mock_post.call_args.kwargs["json"] == {
+            "label": "Home Assistant",
+            "token": "new-token",
+            "scope": "devmode",
+        }
+
+    @pytest.mark.asyncio
+    async def test_get_local_tokens(self, client: OverkizClient) -> None:
+        """get_local_tokens parses the response into LocalToken models."""
+        resp = MockResponse(
+            json.dumps(
+                [
+                    {
+                        "label": "Home Assistant",
+                        "gatewayId": "gw-1234",
+                        "uuid": "uuid-1",
+                        "scope": "devmode",
+                    }
+                ]
+            )
+        )
+
+        with (
+            patch.object(client, "_refresh_token_if_expired", new=AsyncMock()),
+            patch.object(aiohttp.ClientSession, "get", return_value=resp) as mock_get,
+        ):
+            tokens = await client.get_local_tokens("gw-1234")
+
+        assert tokens == [
+            LocalToken(
+                label="Home Assistant",
+                gateway_id="gw-1234",
+                uuid="uuid-1",
+                scope="devmode",
+            )
+        ]
+        assert (
+            mock_get.call_args[0][0]
+            == f"{self.ENDPOINT}config/gw-1234/local/tokens/devmode"
+        )
+
+    @pytest.mark.asyncio
+    async def test_delete_local_token(self, client: OverkizClient) -> None:
+        """delete_local_token issues a DELETE to the token UUID endpoint."""
+        resp = MockResponse("", status=204)
+
+        with (
+            patch.object(client, "_refresh_token_if_expired", new=AsyncMock()),
+            patch.object(
+                aiohttp.ClientSession, "delete", return_value=resp
+            ) as mock_delete,
+        ):
+            await client.delete_local_token("gw-1234", "uuid-1")
+
+        assert (
+            mock_delete.call_args[0][0]
+            == f"{self.ENDPOINT}config/gw-1234/local/tokens/uuid-1"
+        )
+
+    @pytest.mark.asyncio
+    async def test_open_local_pairing(self, client: OverkizClient) -> None:
+        """open_local_pairing posts to the gateway openPairing endpoint."""
+        resp = MockResponse("{}")
+
+        with (
+            patch.object(client, "_refresh_token_if_expired", new=AsyncMock()),
+            patch.object(aiohttp.ClientSession, "post", return_value=resp) as mock_post,
+        ):
+            await client.open_local_pairing("gw-1234")
+
+        assert (
+            mock_post.call_args[0][0]
+            == f"{self.ENDPOINT}config/gw-1234/local/openPairing"
+        )
+
+    @pytest.mark.asyncio
+    async def test_activate_developer_mode(self, client: OverkizClient) -> None:
+        """activate_developer_mode posts to the gateway developerMode endpoint."""
+        resp = MockResponse("", status=204)
+
+        with (
+            patch.object(client, "_refresh_token_if_expired", new=AsyncMock()),
+            patch.object(aiohttp.ClientSession, "post", return_value=resp) as mock_post,
+        ):
+            await client.activate_developer_mode("gw-1234")
+
+        assert (
+            mock_post.call_args[0][0]
+            == f"{self.ENDPOINT}setup/gateways/gw-1234/developerMode"
+        )
+
+    @pytest.mark.asyncio
+    async def test_get_developer_mode(self, client: OverkizClient) -> None:
+        """get_developer_mode gets the gateway developerMode endpoint."""
+        resp = MockResponse('{"status": "ACTIVATED"}')
+
+        with (
+            patch.object(client, "_refresh_token_if_expired", new=AsyncMock()),
+            patch.object(aiohttp.ClientSession, "get", return_value=resp) as mock_get,
+        ):
+            status = await client.get_developer_mode("gw-1234")
+
+        assert status == {"status": "ACTIVATED"}
+        assert (
+            mock_get.call_args[0][0]
+            == f"{self.ENDPOINT}setup/gateways/gw-1234/developerMode"
+        )
+
+    @pytest.mark.asyncio
+    async def test_deactivate_developer_mode(self, client: OverkizClient) -> None:
+        """deactivate_developer_mode deletes the gateway developerMode endpoint."""
+        resp = MockResponse("", status=204)
+
+        with (
+            patch.object(client, "_refresh_token_if_expired", new=AsyncMock()),
+            patch.object(
+                aiohttp.ClientSession, "delete", return_value=resp
+            ) as mock_delete,
+        ):
+            await client.deactivate_developer_mode("gw-1234")
+
+        assert (
+            mock_delete.call_args[0][0]
+            == f"{self.ENDPOINT}setup/gateways/gw-1234/developerMode"
+        )
