@@ -20,7 +20,7 @@ from pyoverkiz.enums import (
     UIProfile,
 )
 from pyoverkiz.enums.command import OverkizCommand
-from pyoverkiz.enums.state import OverkizState
+from pyoverkiz.enums.state import OverkizAttribute, OverkizState
 from pyoverkiz.models import (
     Action,
     ActionGroup,
@@ -315,10 +315,29 @@ class TestDevice:
     def test_states_accept_enum_keys(self):
         """States accessors accept OverkizState enums, not just plain strings."""
         device = _make_device()
+        assert OverkizState.CORE_CLOSURE in device.states
         assert device.states.has_value(OverkizState.CORE_CLOSURE)
         assert device.states.get_value(OverkizState.CORE_CLOSURE) == 100
         assert device.states.first([OverkizState.CORE_CLOSURE]) is not None
         assert device.states.has_any_value([OverkizState.CORE_CLOSURE])
+
+    def test_attributes_accept_enum_keys(self):
+        """Attribute accessors accept OverkizAttribute enums, not just plain strings."""
+        device = _make_device(
+            {
+                **RAW_DEVICES,
+                "attributes": [
+                    {"name": "core:Manufacturer", "type": 3, "value": "VELUX"},
+                ],
+            }
+        )
+        assert OverkizAttribute.CORE_MANUFACTURER in device.attributes
+        assert device.attributes.has_value(OverkizAttribute.CORE_MANUFACTURER)
+        assert (
+            device.attributes.get_value(OverkizAttribute.CORE_MANUFACTURER) == "VELUX"
+        )
+        assert device.attributes.first([OverkizAttribute.CORE_MANUFACTURER]) is not None
+        assert device.attributes.has_any_value([OverkizAttribute.CORE_MANUFACTURER])
 
     def test_definition_states_get(self):
         """device.definition.states.get() returns StateDefinition for a single state."""
