@@ -14,6 +14,7 @@ from pyoverkiz.enums import (
     EventName,
     ExecutionState,
     FailureType,
+    GatewaySubType,
     Protocol,
     StateDefinitionType,
     UIClassifier,
@@ -29,6 +30,7 @@ from pyoverkiz.models import (
     Device,
     Event,
     EventState,
+    Gateway,
     PersistedActionGroup,
     Setup,
     State,
@@ -135,6 +137,45 @@ class TestSetup:
         setup = Setup(gateways=[], devices=[])
 
         assert setup.id is None
+
+
+class TestGateway:
+    """Tests for Gateway model parsing, focused on sub_type handling."""
+
+    @staticmethod
+    def _structure(sub_type: int | None) -> Gateway:
+        raw: dict = {
+            "gatewayId": "1234-5678-9012",
+            "connectivity": {"status": "OK", "protocolVersion": "1"},
+        }
+        if sub_type is not None:
+            raw["subType"] = sub_type
+        return converter.structure(raw, Gateway)
+
+    def test_sub_type_zero_is_none(self):
+        """A subType of 0 means 'no specific sub-type' and structures as None."""
+        assert self._structure(0).sub_type is None
+
+    def test_sub_type_zero_in_fixture_is_none(self):
+        """The Rexel gateway reports subType 0, which should surface as None."""
+        raw_setup = json.loads(
+            (FIXTURES_DIR / "setup_rexel.json").read_text(encoding="utf-8")
+        )
+        setup = converter.structure(raw_setup, Setup)
+
+        assert setup.gateways[0].sub_type is None
+
+    def test_known_sub_type_is_preserved(self):
+        """A known non-zero subType still maps to its enum member."""
+        assert self._structure(1).sub_type is GatewaySubType.TAHOMA_BASIC
+
+    def test_unknown_non_zero_sub_type_falls_back_to_unknown(self):
+        """An unrecognised non-zero subType stays UNKNOWN, not None."""
+        assert self._structure(99).sub_type is GatewaySubType.UNKNOWN
+
+    def test_missing_sub_type_is_none(self):
+        """When subType is absent, sub_type defaults to None."""
+        assert self._structure(None).sub_type is None
 
 
 class TestDevice:
