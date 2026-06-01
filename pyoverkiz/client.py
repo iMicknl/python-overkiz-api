@@ -998,7 +998,14 @@ class OverkizClient:
 
     @retry_on_auth_error
     async def deactivate_developer_mode(self, gateway_id: str) -> None:
-        """Deactivate developer mode for a gateway."""
+        """Deactivate developer mode for a gateway.
+
+        .. warning::
+            Experimental (preview). This DELETE is not part of the bundled API
+            spec and some gateways reject it (``NoSuchResourceError: Request
+            method 'DELETE' not supported``). Behaviour may change in a future
+            release.
+        """
         await self._delete(f"setup/gateways/{gateway_id}/developerMode")
 
     async def _get(self, path: str) -> Any:
