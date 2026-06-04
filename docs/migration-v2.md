@@ -38,6 +38,7 @@ Key differences:
 - `server` accepts a `Server` enum, a server key string, or a `ServerConfig` instance directly — no need to look up `SUPPORTED_SERVERS` yourself.
 - Authentication details are wrapped in a `Credentials` subclass: `UsernamePasswordCredentials`, `TokenCredentials`, `LocalTokenCredentials`, or `RexelOAuthCodeCredentials`.
 - The `token` parameter is removed. Use `TokenCredentials` or `LocalTokenCredentials` instead.
+- A new optional `verify_ssl` parameter (default `True`) controls TLS certificate verification — useful for the local API with self-signed gateway certificates.
 
 ### Local API
 
@@ -111,6 +112,27 @@ The command execution API has been consolidated into a single method.
     ```
 
 v2 also supports sending actions to **multiple devices** in a single call and choosing an `ExecutionMode` (`HIGH_PRIORITY`, `GEOLOCATED`, `INTERNAL`). Execution modes are only supported by the Cloud API; the local API rejects them (see [Somfy-TaHoma-Developer-Mode#227](https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode/issues/227)).
+
+### `Command` is no longer a `dict`
+
+In v1, `Command` subclassed `dict`, so you could access its fields by subscript (`command["name"]`) or unpack it. In v2 it is a plain attrs class — use attribute access instead, and call `to_payload()` if you need the serializable dict form.
+
+=== "v1"
+
+    ```python
+    command = Command("open", [])
+    name = command["name"]          # dict access worked
+    ```
+
+=== "v2"
+
+    ```python
+    command = Command(name="open")
+    name = command.name             # attribute access only
+    payload = command.to_payload()  # dict form, if needed
+    ```
+
+`Command` also gains an optional `type` field, and `parameters` now accepts `OverkizCommandParam` values in addition to primitives.
 
 ## Diagnostics
 
@@ -264,6 +286,48 @@ if device.definition:
         ...
     ```
 
+## Iterating state and command containers
+
+!!! danger "Silent behavior change"
+    `States`, `CommandDefinitions`, and `StateDefinitions` now implement
+    `collections.abc.Mapping`. **Iterating them yields keys (`str`), not the
+    contained objects.** This change is silent — no exception is raised, your
+    loop variable is just a different type than before.
+
+This affects `device.states`, `device.attributes`, `device.definition.states`,
+and `device.definition.commands`.
+
+=== "v1"
+
+    ```python
+    # Iterating yielded the objects directly
+    for state in device.states:
+        print(state.name, state.value)
+
+    for definition in device.definition.states:
+        print(definition.qualified_name)
+    ```
+
+=== "v2"
+
+    ```python
+    # Iterating now yields keys (str), like any Mapping
+    for name in device.states:
+        state = device.states[name]
+        print(name, state.value)
+
+    # Use .values() to iterate the objects
+    for state in device.states.values():
+        print(state.name, state.value)
+
+    for definition in device.definition.states.values():
+        print(definition.qualified_name)
+
+    # .keys() / .items() are also available
+    for name, state in device.states.items():
+        ...
+    ```
+
 ## Gateway model
 
 - `Gateway.connectivity` is now `Connectivity | None` (was always set in v1).
@@ -296,14 +360,16 @@ These changes affect you if you subclass `OverkizClient` or use internal APIs:
 | v1 | v2 |
 |----|-----|
 | `deviceurl` | `device_url` |
+| `Event.setupoid` | `Event.setup_oid` |
 
-Update any keyword arguments using the old spelling.
+Update any keyword arguments and attribute accesses using the old spelling. `Event` also gains `actions`, `owner`, and `source` fields.
 
 ## Model defaults
 
 - `Location` address/string fields now default to `None` instead of empty strings.
 - `OverkizClient` raises `OverkizError` instead of `ValueError` when server configuration cannot be resolved.
 - `obfuscate_sensitive_data()` returns a new dict instead of mutating the input.
+- Timestamp fields are now `int` (epoch milliseconds) instead of `str`: `Setup.creation_time`, `Setup.last_update_time`, and the equivalents on `ActionGroup` / `PersistedActionGroup`. Update any code that parsed or formatted these as strings.
 
 ## Boolean parsing fix
 
@@ -324,7 +390,7 @@ All exception classes have been renamed from `*Exception` to `*Error` following 
 | `NotSuchTokenException` | `NoSuchTokenError` (typo fixed) |
 | ... | _(all other exceptions follow the same pattern)_ |
 
-New exception types in v2: `NoSuchDeviceError`, `NoSuchActionGroupError`, `UnsupportedOperationError`.
+New exception types in v2: `NoSuchDeviceError`, `NoSuchActionGroupError`, `UnsupportedOperationError`, `DuplicateActionOnDeviceError`, `ActionGroupSetupNotFoundError`, `NoSuchResourceError`, `ResourceAccessDeniedError`, `ExecutionQueueFullError`, `MissingAPIKeyError`, `NoGatewaySelectedError`, and `ApplicationNotAllowedError`.
 
 A quick way to update all imports:
 
@@ -438,12 +504,22 @@ Several enum members have been renamed for consistent `UPPER_SNAKE_CASE` or to f
     |--------|-------|
     | `TAHOMA_BOX_C_IO` | `17` |
 
+### Server
+
+??? note "New members"
+
+    | Member | Value |
+    |--------|-------|
+    | `SAUTER_COZYTOUCH` | `sauter_cozytouch` |
+    | `THERMOR_COZYTOUCH` | `thermor_cozytouch` |
+
 ### New enums in v2
 
 - `UIProfile` — describes device capabilities (commands + states) at a higher level than raw command names. Auto-generated from the server's `/reference/ui/profiles` endpoint. Accessible via `device.definition.ui_profiles` (a `list[UIProfile]`). See [UI profiles and classifiers](core-concepts.md#ui-profiles-and-classifiers).
 - `UIClassifier` — categorizes device types (e.g. `SENSOR`, `EMITTER`, `GENERATOR`). Accessible via `device.definition.ui_classifiers` (a `list[UIClassifier]`).
 - `ExecutionState` — typed states for `Execution.state`.
 - `UpdateCriticityLevel` — criticity level of gateway updates.
+- `APIType` — `APIType.CLOUD` or `APIType.LOCAL`, exposed on `ServerConfig.api_type`.
 
 ## Dependencies
 
