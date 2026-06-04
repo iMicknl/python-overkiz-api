@@ -753,7 +753,7 @@ class TestOverkizClient:
         with patch.object(aiohttp.ClientSession, "post") as mock_post:
             mock_post.return_value = resp
 
-            exec_id = await client.execute_action_group([action])
+            exec_id = await client.execute_action_group(actions=[action])
 
             assert exec_id == "exec-123"
 
@@ -981,7 +981,7 @@ class TestOverkizClient:
 
         with patch.object(aiohttp.ClientSession, "post") as mock_post:
             mock_post.return_value = resp
-            exec_id = await client.execute_action_group([action])
+            exec_id = await client.execute_action_group(actions=[action])
 
             assert exec_id == "ee7a5676-c68f-43a3-956d-6f5efc745954"
             _, kwargs = mock_post.call_args
@@ -1010,7 +1010,7 @@ class TestOverkizClient:
 
         with patch.object(aiohttp.ClientSession, "post") as mock_post:
             mock_post.return_value = resp
-            exec_id = await client.execute_action_group(actions)
+            exec_id = await client.execute_action_group(actions=actions)
 
             assert exec_id == "aaa-bbb-ccc"
             _, kwargs = mock_post.call_args
@@ -1200,7 +1200,7 @@ class TestOverkizClient:
 
         with patch.object(aiohttp.ClientSession, "post") as mock_post:
             mock_post.return_value = resp
-            exec_id = await local_client.execute_action_group([action])
+            exec_id = await local_client.execute_action_group(actions=[action])
 
             assert exec_id == "45e52d27-3c08-4fd5-87f2-03d650b67f4b"
 
@@ -1255,9 +1255,12 @@ class TestOverkizClient:
     async def test_discover_gateways_raises_for_unsupported_strategy(
         self, client: OverkizClient
     ) -> None:
-        """discover_gateways raises TypeError when the strategy lacks the capability."""
+        """discover_gateways raises UnsupportedOperationError when the strategy lacks the capability."""
         # The default Somfy strategy does not implement SupportsGatewaySelection.
-        with pytest.raises(TypeError, match="does not support gateway selection"):
+        with pytest.raises(
+            exceptions.UnsupportedOperationError,
+            match="does not support gateway selection",
+        ):
             await client.discover_gateways()
 
     def test_select_gateway_delegates_to_strategy(self, client: OverkizClient) -> None:

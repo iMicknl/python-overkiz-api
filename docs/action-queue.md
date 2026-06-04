@@ -18,9 +18,9 @@ Three commands for three different devices produce three actions in one action g
 
 ```python
 # These three calls arrive within the delay window:
-await client.execute_action_group([Action(device_url="io://1234-5678-1234/12345678", commands=[Command(name=OverkizCommand.CLOSE)])])
-await client.execute_action_group([Action(device_url="io://1234-5678-1234/87654321", commands=[Command(name=OverkizCommand.OPEN)])])
-await client.execute_action_group([Action(device_url="io://1234-5678-1234/11111111", commands=[Command(name=OverkizCommand.STOP)])])
+await client.execute_action_group(actions=[Action(device_url="io://1234-5678-1234/12345678", commands=[Command(name=OverkizCommand.CLOSE)])])
+await client.execute_action_group(actions=[Action(device_url="io://1234-5678-1234/87654321", commands=[Command(name=OverkizCommand.OPEN)])])
+await client.execute_action_group(actions=[Action(device_url="io://1234-5678-1234/11111111", commands=[Command(name=OverkizCommand.STOP)])])
 
 # Sent as one API call:
 # ActionGroup(actions=[
@@ -35,8 +35,8 @@ await client.execute_action_group([Action(device_url="io://1234-5678-1234/111111
 When two calls target the same device, the queue merges their commands into a single action:
 
 ```python
-await client.execute_action_group([Action(device_url="io://1234-5678-1234/12345678", commands=[Command(name=OverkizCommand.CLOSE)])])
-await client.execute_action_group([Action(device_url="io://1234-5678-1234/12345678", commands=[Command(name=OverkizCommand.SET_CLOSURE, parameters=[50])])])
+await client.execute_action_group(actions=[Action(device_url="io://1234-5678-1234/12345678", commands=[Command(name=OverkizCommand.CLOSE)])])
+await client.execute_action_group(actions=[Action(device_url="io://1234-5678-1234/12345678", commands=[Command(name=OverkizCommand.SET_CLOSURE, parameters=[50])])])
 
 # Sent as one API call:
 # ActionGroup(actions=[
@@ -47,8 +47,8 @@ await client.execute_action_group([Action(device_url="io://1234-5678-1234/123456
 ### Mixed — both behaviors combined
 
 ```python
-await client.execute_action_group([Action(device_url="io://1234-5678-1234/12345678", commands=[Command(name=OverkizCommand.CLOSE)])])
-await client.execute_action_group([
+await client.execute_action_group(actions=[Action(device_url="io://1234-5678-1234/12345678", commands=[Command(name=OverkizCommand.CLOSE)])])
+await client.execute_action_group(actions=[
     Action(device_url="io://1234-5678-1234/87654321", commands=[Command(name=OverkizCommand.OPEN)]),
     Action(device_url="io://1234-5678-1234/12345678", commands=[Command(name=OverkizCommand.SET_CLOSURE, parameters=[50])]),
 ])
@@ -91,8 +91,8 @@ action2 = Action(
     commands=[Command(name=OverkizCommand.OPEN)],
 )
 
-task1 = asyncio.create_task(client.execute_action_group([action1]))
-task2 = asyncio.create_task(client.execute_action_group([action2]))
+task1 = asyncio.create_task(client.execute_action_group(actions=[action1]))
+task2 = asyncio.create_task(client.execute_action_group(actions=[action2]))
 exec_id1, exec_id2 = await asyncio.gather(task1, task2)
 
 print(exec_id1 == exec_id2)
@@ -160,7 +160,7 @@ action = Action(
     commands=[Command(name=OverkizCommand.CLOSE)],
 )
 
-exec_task = asyncio.create_task(client.execute_action_group([action]))
+exec_task = asyncio.create_task(client.execute_action_group(actions=[action]))
 
 # Give it time to enter the queue
 await asyncio.sleep(0.05)
@@ -199,7 +199,7 @@ action = Action(
     commands=[Command(name=OverkizCommand.CLOSE)],
 )
 
-exec_task = asyncio.create_task(client.execute_action_group([action]))
+exec_task = asyncio.create_task(client.execute_action_group(actions=[action]))
 await asyncio.sleep(0.01)
 
 pending = client.get_pending_actions_count()
