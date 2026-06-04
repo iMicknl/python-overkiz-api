@@ -98,3 +98,7 @@ class TestOverkizCommandParamApiValues:
         assert OverkizCommandParam.OFF == "off"
         assert OverkizCommandParam.UNKNOWN == "unknown"
         assert OverkizCommandParam.BATTERY == "battery"
+        assert OverkizCommandParam.STANDARD == "standard"
+        assert OverkizCommandParam.HISTORICAL == "historical"
+        assert OverkizCommandParam.ERROR == "error"
+        assert OverkizCommandParam.UNHEALTHY == "unhealthy"
