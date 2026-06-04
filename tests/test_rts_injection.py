@@ -173,7 +173,7 @@ class TestBasicInjection:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters == [0], (
@@ -194,7 +194,7 @@ class TestBasicInjection:
             client_rts_5, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_5.execute_action_group([action])
+            await client_rts_5.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters == [5]
@@ -226,7 +226,7 @@ class TestCommandsNotInjected:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters is None, (
@@ -253,7 +253,7 @@ class TestCommandsNotInjected:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters is None, (
@@ -284,7 +284,7 @@ class TestCommandsNotInjected:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters == params
@@ -328,7 +328,7 @@ class TestMultiParamInjection:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters == [*position_param, 0], (
@@ -349,7 +349,7 @@ class TestMultiParamInjection:
             client_rts_5, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_5.execute_action_group([action])
+            await client_rts_5.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters == [100, 5]
@@ -387,7 +387,7 @@ class TestNonRtsProtocols:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters is None
@@ -415,7 +415,7 @@ class TestSettingDisabled:
             client_no_rts, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_no_rts.execute_action_group([action])
+            await client_no_rts.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters is None
@@ -438,7 +438,7 @@ class TestSettingDisabled:
             client_no_rts, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_no_rts.execute_action_group([action])
+            await client_no_rts.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             for cmd in called_actions[0].commands:
@@ -467,7 +467,7 @@ class TestParameterCapacity:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters == [50]
@@ -489,7 +489,7 @@ class TestParameterCapacity:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters == [10, 20]
@@ -508,7 +508,7 @@ class TestParameterCapacity:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters == [0]
@@ -527,7 +527,7 @@ class TestParameterCapacity:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters is None
@@ -546,7 +546,7 @@ class TestParameterCapacity:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters == [50, 0]
@@ -565,7 +565,7 @@ class TestParameterCapacity:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters == [50, 5]
@@ -598,7 +598,7 @@ class TestMultiCommandActions:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
             cmds = mock_exec.call_args[0][0][0].commands
             assert cmds[0].parameters == [0]  # close: injected
@@ -628,7 +628,7 @@ class TestMultiCommandActions:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group(actions)
+            await client_rts_0.execute_action_group(actions=actions)
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters == [0]  # RTS
@@ -656,7 +656,7 @@ class TestMultiCommandActions:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group(actions)
+            await client_rts_0.execute_action_group(actions=actions)
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters == [0]
@@ -686,7 +686,7 @@ class TestDeviceUrlEdgeCases:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters == [0]
@@ -706,7 +706,7 @@ class TestDeviceUrlEdgeCases:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters is None
@@ -734,7 +734,7 @@ class TestRobustness:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters is None
@@ -756,7 +756,7 @@ class TestRobustness:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters is None
@@ -785,7 +785,7 @@ class TestRobustness:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters is None
@@ -799,7 +799,7 @@ class TestRobustness:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([])
+            await client_rts_0.execute_action_group(actions=[])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions == []
@@ -818,7 +818,7 @@ class TestRobustness:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands == []
@@ -847,7 +847,7 @@ class TestImmutability:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
         assert original_cmd.parameters is None
 
@@ -867,7 +867,7 @@ class TestImmutability:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group(original_actions)
+            await client_rts_0.execute_action_group(actions=original_actions)
 
         assert original_actions[0].commands[0].parameters is None
 
@@ -887,7 +887,7 @@ class TestImmutability:
             client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
         ) as mock_exec:
             mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group([action])
+            await client_rts_0.execute_action_group(actions=[action])
 
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters == [50, 0]
@@ -929,7 +929,7 @@ class TestRealDeviceScenarios:
                 client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
             ) as mock_exec:
                 mock_exec.return_value = "exec-123"
-                await client_rts_0.execute_action_group([action])
+                await client_rts_0.execute_action_group(actions=[action])
 
                 called_actions = mock_exec.call_args[0][0]
                 assert called_actions[0].commands[0].parameters == [0], (
@@ -955,7 +955,7 @@ class TestRealDeviceScenarios:
                 client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
             ) as mock_exec:
                 mock_exec.return_value = "exec-123"
-                await client_rts_0.execute_action_group([action])
+                await client_rts_0.execute_action_group(actions=[action])
 
                 called_actions = mock_exec.call_args[0][0]
                 assert called_actions[0].commands[0].parameters == [*position, 0], (
@@ -977,7 +977,7 @@ class TestRealDeviceScenarios:
                 client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
             ) as mock_exec:
                 mock_exec.return_value = "exec-123"
-                await client_rts_0.execute_action_group([action])
+                await client_rts_0.execute_action_group(actions=[action])
 
                 called_actions = mock_exec.call_args[0][0]
                 assert called_actions[0].commands[0].parameters is None, (
@@ -1018,7 +1018,7 @@ class TestRealDeviceScenarios:
                 client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
             ) as mock_exec:
                 mock_exec.return_value = "exec-123"
-                await client_rts_0.execute_action_group([action])
+                await client_rts_0.execute_action_group(actions=[action])
 
                 called_actions = mock_exec.call_args[0][0]
                 actual = called_actions[0].commands[0].parameters

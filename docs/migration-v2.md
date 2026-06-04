@@ -110,6 +110,8 @@ The command execution API has been consolidated into a single method.
     )
     ```
 
+`execute_action_group()` is keyword-only — pass `actions=[...]` (and optional `mode=`/`label=`) by name, not positionally.
+
 v2 also supports sending actions to **multiple devices** in a single call and choosing an `ExecutionMode` (`HIGH_PRIORITY`, `GEOLOCATED`, `INTERNAL`). Execution modes are only supported by the Cloud API; the local API rejects them (see [Somfy-TaHoma-Developer-Mode#227](https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode/issues/227)).
 
 ### `Command` is no longer a `dict`

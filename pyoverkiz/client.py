@@ -595,6 +595,7 @@ class OverkizClient:
 
     async def execute_action_group(
         self,
+        *,
         actions: list[Action],
         mode: ExecutionMode | None = None,
         label: str | None = "pyOverkiz",
@@ -906,17 +907,25 @@ class OverkizClient:
         return converter.structure(response, list[DeviceManufacturerReference])
 
     async def discover_gateways(self) -> list[GatewayCandidate]:
-        """Discover selectable gateways. Raises TypeError if unsupported."""
+        """Discover selectable gateways.
+
+        Raises:
+            UnsupportedOperationError: When the server does not support gateway selection.
+        """
         if not isinstance(self._auth, SupportsGatewaySelection):
-            raise TypeError(
+            raise UnsupportedOperationError(
                 f"{self.server_config.name} does not support gateway selection."
             )
         return await self._auth.discover_gateways()
 
     def select_gateway(self, gateway_id: str) -> None:
-        """Select the gateway to scope requests to. Raises TypeError if unsupported."""
+        """Select the gateway to scope requests to.
+
+        Raises:
+            UnsupportedOperationError: When the server does not support gateway selection.
+        """
         if not isinstance(self._auth, SupportsGatewaySelection):
-            raise TypeError(
+            raise UnsupportedOperationError(
                 f"{self.server_config.name} does not support gateway selection."
             )
         self._auth.select_gateway(gateway_id)
@@ -972,9 +981,9 @@ class OverkizClient:
         During this window, new tokens can be registered directly on the
         gateway without requiring developer mode.
 
-        .. warning::
-            Experimental (preview). This endpoint is not yet fully validated
-            and its behaviour or signature may change in a future release.
+        Returns the raw response. Observed as an empty dict on success, but the
+        shape under other conditions is not yet confirmed, so the response is
+        passed through as-is.
         """
         return await self._post(f"config/{gateway_id}/local/openPairing")
 
