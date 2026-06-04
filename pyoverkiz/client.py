@@ -984,6 +984,10 @@ class OverkizClient:
         Returns the raw response. Observed as an empty dict on success, but the
         shape under other conditions is not yet confirmed, so the response is
         passed through as-is.
+
+        .. warning::
+            Experimental (preview). This endpoint is not yet fully validated
+            and its behaviour or signature may change in a future release.
         """
         return await self._post(f"config/{gateway_id}/local/openPairing")
 
