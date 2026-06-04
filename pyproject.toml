@@ -22,7 +22,7 @@ dependencies = [
 
 [project.optional-dependencies]
 nexity = [
-    "boto3>=1.43.15,<2.0.0",
+    "boto3>=1.43.22,<2.0.0",
     "warrant-lite<2.0.0,>=1.0.4",
 ]
 docs = [
