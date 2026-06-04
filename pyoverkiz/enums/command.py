@@ -1681,7 +1681,7 @@ class OverkizCommandParam(StrEnum):
     ENERGYHEAT = "energyheat"
     ENERGY_DEMAND_STATUS = "energyDemandStatus"
     ENVIRONMENT_PROTECTION = "environmentProtection"
-    ERROR = "Error"
+    ERROR = "error"
     ERROR_ABORT = "error-abort"
     ERROR_DEFAULT_INITIAL_CONDITION = "error-default-initial-condition"
     ERROR_INVALID_IMAGE = "error-invalid-image"
@@ -1771,7 +1771,7 @@ class OverkizCommandParam(StrEnum):
     HIGH = "high"
     HIGHEST = "highest"
     HIGH_DEMAND = "high demand"  # value with space
-    HISTORICAL = "Historical"
+    HISTORICAL = "historical"
     HI_FAN = "Hi FAN"  # value with space
     HOLIDAYS = "holidays"
     HOME = "home"
@@ -2048,7 +2048,7 @@ class OverkizCommandParam(StrEnum):
     SMOOTH = "smooth"
     SNAPSHOT = "snapshot"
     SOS = "sos"
-    STANDARD = "Standard"
+    STANDARD = "standard"
     STANDARD_SHUTTER = "standardShutter"
     STANDARD_SHUTTER_OPP = "standardShutterOpp"
     STANDBY = "standby"
@@ -2089,7 +2089,7 @@ class OverkizCommandParam(StrEnum):
     UNAVAILABLE = "unavailable"
     UNDEPLOYED = "undeployed"
     UNDETECTED = "undetected"
-    UNHEALTHY = "Unhealthy"
+    UNHEALTHY = "unhealthy"
     UNHEALTHY_ERROR = "Unhealthy, Error"  # value with space
     UNHEALTHY_FOR_SENSITIVE_GROUPS = "unhealthyForSensitiveGroups"
     UNINSTALLED = "uninstalled"
