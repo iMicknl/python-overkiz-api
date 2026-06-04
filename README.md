@@ -30,8 +30,9 @@ Full documentation is available at **[imicknl.github.io/python-overkiz-api](http
 - Somfy TaHoma Switch
 - Thermor Cozytouch
 
-\[*] _This server's authentication method isn't supported yet. To use it, obtain an access token (by sniffing the original app) and create a local user on the Overkiz API platform._
-\[**] _Requires OAuth credentials provided by Rexel._
+**\*** _This server's authentication method isn't supported yet. To use it, obtain an access token (by sniffing the original app) and create a local user on the Overkiz API platform._
+
+**\*\*** _Requires OAuth credentials provided by Rexel._
 
 ## Installation
 
