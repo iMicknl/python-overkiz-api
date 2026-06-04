@@ -46,6 +46,7 @@ from pyoverkiz.models import (
     Action,
     Command,
     Definition,
+    DeveloperMode,
     Device,
     DeviceManufacturerReference,
     DeviceSearchResult,
@@ -54,6 +55,7 @@ from pyoverkiz.models import (
     FirmwareStatus,
     Gateway,
     HistoryExecution,
+    LocalToken,
     Option,
     OptionParameter,
     PersistedActionGroup,
@@ -918,6 +920,93 @@ class OverkizClient:
                 f"{self.server_config.name} does not support gateway selection."
             )
         self._auth.select_gateway(gateway_id)
+
+    # -----------------------------------------------------------------------
+    # Local token management (cloud API)
+    # -----------------------------------------------------------------------
+
+    @retry_on_auth_error
+    async def generate_local_token(self, gateway_id: str) -> str:
+        """Generate a new local API token for a gateway.
+
+        The token must be activated before it can be used.
+        """
+        response = await self._get(f"config/{gateway_id}/local/tokens/generate")
+        return cast(str, response["token"])
+
+    @retry_on_auth_error
+    async def activate_local_token(
+        self,
+        gateway_id: str,
+        token: str,
+        label: str,
+        scope: str = "devmode",
+    ) -> str:
+        """Activate a local API token with the given label and scope.
+
+        Returns the activation request ID.
+        """
+        response = await self._post(
+            f"config/{gateway_id}/local/tokens",
+            payload={"label": label, "token": token, "scope": scope},
+        )
+        return cast(str, response["requestId"])
+
+    @retry_on_auth_error
+    async def get_local_tokens(
+        self, gateway_id: str, scope: str = "devmode"
+    ) -> list[LocalToken]:
+        """Get all active local API tokens for a gateway with a given scope."""
+        response = await self._get(f"config/{gateway_id}/local/tokens/{scope}")
+        return converter.structure(response, list[LocalToken])
+
+    @retry_on_auth_error
+    async def delete_local_token(self, gateway_id: str, uuid: str) -> None:
+        """Delete a local API token by its UUID."""
+        await self._delete(f"config/{gateway_id}/local/tokens/{uuid}")
+
+    @retry_on_auth_error
+    async def open_local_pairing(self, gateway_id: str) -> Any:
+        """Put the gateway into local pairing mode (~180 seconds).
+
+        During this window, new tokens can be registered directly on the
+        gateway without requiring developer mode.
+
+        .. warning::
+            Experimental (preview). This endpoint is not yet fully validated
+            and its behaviour or signature may change in a future release.
+        """
+        return await self._post(f"config/{gateway_id}/local/openPairing")
+
+    # -----------------------------------------------------------------------
+    # Developer mode (cloud API)
+    # -----------------------------------------------------------------------
+
+    @retry_on_auth_error
+    async def activate_developer_mode(self, gateway_id: str) -> None:
+        """Activate developer mode for a gateway.
+
+        Required for Somfy gateways before local API tokens can be used.
+        """
+        await self._post(f"setup/gateways/{gateway_id}/developerMode")
+
+    @retry_on_auth_error
+    async def get_developer_mode(self, gateway_id: str) -> DeveloperMode:
+        """Get the developer mode status for a gateway."""
+        response = await self._get(f"setup/gateways/{gateway_id}/developerMode")
+        return converter.structure(response, DeveloperMode)
+
+    @retry_on_auth_error
+    async def deactivate_developer_mode(self, gateway_id: str) -> None:
+        """Deactivate developer mode for a gateway.
+
+        .. warning::
+            Experimental (preview). This DELETE is not part of the bundled API
+            spec and some gateways reject it (``NoSuchResourceError: Request
+            method 'DELETE' not supported``). Behaviour may change in a future
+            release.
+        """
+        await self._delete(f"setup/gateways/{gateway_id}/developerMode")
 
     async def _get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API."""
