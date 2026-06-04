@@ -112,6 +112,27 @@ The command execution API has been consolidated into a single method.
 
 v2 also supports sending actions to **multiple devices** in a single call and choosing an `ExecutionMode` (`HIGH_PRIORITY`, `GEOLOCATED`, `INTERNAL`). Execution modes are only supported by the Cloud API; the local API rejects them (see [Somfy-TaHoma-Developer-Mode#227](https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode/issues/227)).
 
+### `Command` is no longer a `dict`
+
+In v1, `Command` subclassed `dict`, so you could access its fields by subscript (`command["name"]`) or unpack it. In v2 it is a plain attrs class — use attribute access instead, and call `to_payload()` if you need the serializable dict form.
+
+=== "v1"
+
+    ```python
+    command = Command("open", [])
+    name = command["name"]          # dict access worked
+    ```
+
+=== "v2"
+
+    ```python
+    command = Command(name="open")
+    name = command.name             # attribute access only
+    payload = command.to_payload()  # dict form, if needed
+    ```
+
+`Command` also gains an optional `type` field, and `parameters` now accepts `OverkizCommandParam` values in addition to primitives.
+
 ## Diagnostics
 
 `get_diagnostic_data()` now returns a structured dict with named sections instead of a flat setup dump.
@@ -264,6 +285,48 @@ if device.definition:
         ...
     ```
 
+## Iterating state and command containers
+
+!!! danger "Silent behavior change"
+    `States`, `CommandDefinitions`, and `StateDefinitions` now implement
+    `collections.abc.Mapping`. **Iterating them yields keys (`str`), not the
+    contained objects.** This change is silent — no exception is raised, your
+    loop variable is just a different type than before.
+
+This affects `device.states`, `device.attributes`, `device.definition.states`,
+and `device.definition.commands`.
+
+=== "v1"
+
+    ```python
+    # Iterating yielded the objects directly
+    for state in device.states:
+        print(state.name, state.value)
+
+    for definition in device.definition.states:
+        print(definition.qualified_name)
+    ```
+
+=== "v2"
+
+    ```python
+    # Iterating now yields keys (str), like any Mapping
+    for name in device.states:
+        state = device.states[name]
+        print(name, state.value)
+
+    # Use .values() to iterate the objects
+    for state in device.states.values():
+        print(state.name, state.value)
+
+    for definition in device.definition.states.values():
+        print(definition.qualified_name)
+
+    # .keys() / .items() are also available
+    for name, state in device.states.items():
+        ...
+    ```
+
 ## Gateway model
 
 - `Gateway.connectivity` is now `Connectivity | None` (was always set in v1).
@@ -296,8 +359,9 @@ These changes affect you if you subclass `OverkizClient` or use internal APIs:
 | v1 | v2 |
 |----|-----|
 | `deviceurl` | `device_url` |
+| `Event.setupoid` | `Event.setup_oid` |
 
-Update any keyword arguments using the old spelling.
+Update any keyword arguments and attribute accesses using the old spelling. `Event` also gains `actions`, `owner`, and `source` fields.
 
 ## Model defaults
 
