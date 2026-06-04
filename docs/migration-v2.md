@@ -38,7 +38,6 @@ Key differences:
 - `server` accepts a `Server` enum, a server key string, or a `ServerConfig` instance directly — no need to look up `SUPPORTED_SERVERS` yourself.
 - Authentication details are wrapped in a `Credentials` subclass: `UsernamePasswordCredentials`, `TokenCredentials`, `LocalTokenCredentials`, or `RexelOAuthCodeCredentials`.
 - The `token` parameter is removed. Use `TokenCredentials` or `LocalTokenCredentials` instead.
-- A new optional `verify_ssl` parameter (default `True`) controls TLS certificate verification — useful for the local API with self-signed gateway certificates.
 
 ### Local API
 
@@ -369,7 +368,6 @@ Update any keyword arguments and attribute accesses using the old spelling. `Eve
 - `Location` address/string fields now default to `None` instead of empty strings.
 - `OverkizClient` raises `OverkizError` instead of `ValueError` when server configuration cannot be resolved.
 - `obfuscate_sensitive_data()` returns a new dict instead of mutating the input.
-- Timestamp fields are now `int` (epoch milliseconds) instead of `str`: `Setup.creation_time`, `Setup.last_update_time`, and the equivalents on `ActionGroup` / `PersistedActionGroup`. Update any code that parsed or formatted these as strings.
 
 ## Boolean parsing fix
 
@@ -390,7 +388,7 @@ All exception classes have been renamed from `*Exception` to `*Error` following 
 | `NotSuchTokenException` | `NoSuchTokenError` (typo fixed) |
 | ... | _(all other exceptions follow the same pattern)_ |
 
-New exception types in v2: `NoSuchDeviceError`, `NoSuchActionGroupError`, `UnsupportedOperationError`, `DuplicateActionOnDeviceError`, `ActionGroupSetupNotFoundError`, `NoSuchResourceError`, `ResourceAccessDeniedError`, `ExecutionQueueFullError`, `MissingAPIKeyError`, `NoGatewaySelectedError`, and `ApplicationNotAllowedError`.
+New exception types in v2: `NoSuchDeviceError`, `NoSuchActionGroupError`, `UnsupportedOperationError`.
 
 A quick way to update all imports:
 
@@ -504,22 +502,12 @@ Several enum members have been renamed for consistent `UPPER_SNAKE_CASE` or to f
     |--------|-------|
     | `TAHOMA_BOX_C_IO` | `17` |
 
-### Server
-
-??? note "New members"
-
-    | Member | Value |
-    |--------|-------|
-    | `SAUTER_COZYTOUCH` | `sauter_cozytouch` |
-    | `THERMOR_COZYTOUCH` | `thermor_cozytouch` |
-
 ### New enums in v2
 
 - `UIProfile` — describes device capabilities (commands + states) at a higher level than raw command names. Auto-generated from the server's `/reference/ui/profiles` endpoint. Accessible via `device.definition.ui_profiles` (a `list[UIProfile]`). See [UI profiles and classifiers](core-concepts.md#ui-profiles-and-classifiers).
 - `UIClassifier` — categorizes device types (e.g. `SENSOR`, `EMITTER`, `GENERATOR`). Accessible via `device.definition.ui_classifiers` (a `list[UIClassifier]`).
 - `ExecutionState` — typed states for `Execution.state`.
 - `UpdateCriticityLevel` — criticity level of gateway updates.
-- `APIType` — `APIType.CLOUD` or `APIType.LOCAL`, exposed on `ServerConfig.api_type`.
 
 ## Dependencies
 
