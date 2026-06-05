@@ -700,6 +700,24 @@ class ZoneUpdatedEvent(Event):
     place_oids: list[str] = field(factory=list)
 
 
+# Maps an event name to the subtype it should structure into. Names not listed
+# here structure into the base Event (forward-compatible for unmodeled events).
+EVENT_TYPE_BY_NAME: dict[EventName, type[Event]] = {
+    EventName.DEVICE_STATE_CHANGED: DeviceStateChangedEvent,
+    EventName.EXECUTION_REGISTERED: ExecutionRegisteredEvent,
+    EventName.EXECUTION_STATE_CHANGED: ExecutionStateChangedEvent,
+    EventName.DEVICE_AVAILABLE: DeviceAvailableEvent,
+    EventName.DEVICE_UNAVAILABLE: DeviceUnavailableEvent,
+    EventName.DEVICE_DISABLED: DeviceDisabledEvent,
+    EventName.DEVICE_CREATED: DeviceCreatedEvent,
+    EventName.DEVICE_UPDATED: DeviceUpdatedEvent,
+    EventName.DEVICE_REMOVED: DeviceRemovedEvent,
+    EventName.ZONE_CREATED: ZoneCreatedEvent,
+    EventName.ZONE_UPDATED: ZoneUpdatedEvent,
+    EventName.ZONE_DELETED: ZoneDeletedEvent,
+}
+
+
 @define(kw_only=True)
 class Execution:
     """Execution occurrence with owner, state and action group metadata."""

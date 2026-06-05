@@ -1302,6 +1302,59 @@ class TestEvent:
         assert deleted.zone_oid == "zone-1"
         assert not hasattr(deleted, "device_urls")
 
+    def test_converter_dispatches_device_state_changed(self):
+        """Structuring a DeviceStateChangedEvent payload yields the subtype."""
+        event = converter.structure(
+            {
+                "name": "DeviceStateChangedEvent",
+                "timestamp": 1631130646544,
+                "deviceURL": "io://1234-5678-9012/4468654#1",
+                "deviceStates": [
+                    {
+                        "name": "core:ElectricEnergyConsumptionState",
+                        "type": 1,
+                        "value": "23247220",
+                    }
+                ],
+            },
+            Event,
+        )
+        assert isinstance(event, DeviceStateChangedEvent)
+        assert event.device_url == "io://1234-5678-9012/4468654#1"
+        assert event.device_states[0].value == 23247220  # cast by EventState
+
+    def test_converter_dispatches_execution_state_changed(self):
+        """Structuring an ExecutionStateChangedEvent payload yields the subtype."""
+        event = converter.structure(
+            {
+                "name": "ExecutionStateChangedEvent",
+                "newState": "IN_PROGRESS",
+                "oldState": "TRANSMITTED",
+                "execId": "abc",
+            },
+            Event,
+        )
+        assert isinstance(event, ExecutionStateChangedEvent)
+        assert event.new_state is ExecutionState.IN_PROGRESS
+
+    def test_converter_falls_back_to_base_event(self):
+        """Unmodeled event names structure into the base Event."""
+        event = converter.structure(
+            {"name": "GatewaySynchronizationEndedEvent", "timestamp": 1},
+            Event,
+        )
+        assert type(event) is Event
+        assert event.name == EventName.GATEWAY_SYNCHRONIZATION_ENDED
+
+    def test_converter_unknown_event_name_falls_back_to_base(self):
+        """Genuinely unknown event names use UnknownEnumMixin and base Event."""
+        event = converter.structure(
+            {"name": "SomeBrandNewEvent", "timestamp": 1},
+            Event,
+        )
+        assert type(event) is Event
+        assert event.name == EventName.UNKNOWN
+
 
 class TestActionGroup:
     """Tests for ActionGroup and PersistedActionGroup model split."""

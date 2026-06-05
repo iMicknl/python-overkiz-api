@@ -11,10 +11,12 @@ import cattrs
 from cattrs.gen import make_dict_structure_fn, override
 
 from pyoverkiz._case import camelize_key
-from pyoverkiz.enums import GatewaySubType
+from pyoverkiz.enums import EventName, GatewaySubType
 from pyoverkiz.models import (
+    EVENT_TYPE_BY_NAME,
     CommandDefinition,
     CommandDefinitions,
+    Event,
     State,
     StateDefinition,
     StateDefinitions,
@@ -102,6 +104,26 @@ def _make_converter() -> cattrs.Converter:
         lambda t: isinstance(t, type) and attr.has(t) and t not in skip,
         _rename_hook_factory,
     )
+
+    # Event is a discriminated union keyed on the "name" field. Resolve the
+    # concrete subtype, then delegate to that class's generated (rename-aware)
+    # hook. Unknown / unmodeled names fall back to the base Event.
+    #
+    # We pre-build each class's hook and call it directly. Routing through
+    # c.structure(val, subtype) would re-enter this hook (cattrs dispatches a
+    # subclass to its base class's registered hook), causing infinite recursion.
+    event_hooks: dict[type[Event], Any] = {Event: _rename_hook_factory(Event, c)}
+    for subtype in set(EVENT_TYPE_BY_NAME.values()):
+        event_hooks[subtype] = _rename_hook_factory(subtype, c)
+
+    def _structure_event(val: Any, _: type) -> Event:
+        name = val.get("name") if isinstance(val, dict) else None
+        target: type[Event] = Event
+        if name is not None:
+            target = EVENT_TYPE_BY_NAME.get(EventName(name), Event)
+        return event_hooks[target](val, target)  # type: ignore[no-any-return]
+
+    c.register_structure_hook(Event, _structure_event)
 
     return c
 
