@@ -717,6 +717,15 @@ EVENT_TYPE_BY_NAME: dict[EventName, type[Event]] = {
     EventName.ZONE_DELETED: ZoneDeletedEvent,
 }
 
+# Every "*FailedEvent" structures into FailureEvent so failure_type and
+# failure_type_code travel together. Derived from the enum so new failure
+# events are covered automatically; explicit mappings above take precedence.
+# Failure events carrying extra payload can grow a dedicated subtype later.
+for _event_name in EventName:
+    if _event_name.value.endswith("FailedEvent"):
+        EVENT_TYPE_BY_NAME.setdefault(_event_name, FailureEvent)
+del _event_name
+
 
 @define(kw_only=True)
 class Execution:

@@ -1357,6 +1357,21 @@ class TestEvent:
         assert type(event) is Event
         assert event.name == EventName.UNKNOWN
 
+    def test_converter_dispatches_failed_event_to_failure_event(self):
+        """Any *FailedEvent structures into FailureEvent with the failure fields."""
+        event = converter.structure(
+            {
+                "name": "GatewaySynchronizationFailedEvent",
+                "timestamp": 1,
+                "failureType": "some failure",
+                "failureTypeCode": 0,
+            },
+            Event,
+        )
+        assert isinstance(event, FailureEvent)
+        assert event.failure_type == "some failure"
+        assert event.failure_type_code is FailureType.NO_FAILURE
+
     def test_local_event_fixture_structures_all_events(self):
         """All events in the local-API fixture structure into DeviceStateChangedEvent."""
         raw_events = json.loads(
