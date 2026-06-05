@@ -31,7 +31,11 @@ from pyoverkiz.models import (
     Device,
     DeviceAvailableEvent,
     DeviceCreatedEvent,
+    DeviceDisabledEvent,
+    DeviceRemovedEvent,
     DeviceStateChangedEvent,
+    DeviceUnavailableEvent,
+    DeviceUpdatedEvent,
     Event,
     EventState,
     ExecutionRegisteredEvent,
@@ -1244,13 +1248,30 @@ class TestEvent:
         assert created.device_url == "io://1234-5678-9012/4468654"
         assert created.controllable_name == "io:RollerShutterGenericIOComponent"
 
-        available = DeviceAvailableEvent(
-            name=EventName.DEVICE_AVAILABLE,
+        updated = DeviceUpdatedEvent(
+            name=EventName.DEVICE_UPDATED,
             device_url="io://1234-5678-9012/4468654",
+            controllable_name="io:RollerShutterGenericIOComponent",
         )
-        assert isinstance(available, Event)
-        assert available.device_url == "io://1234-5678-9012/4468654"
-        assert not hasattr(available, "controllable_name")
+        assert updated.controllable_name == "io:RollerShutterGenericIOComponent"
+
+        removed = DeviceRemovedEvent(
+            name=EventName.DEVICE_REMOVED,
+            device_url="io://1234-5678-9012/4468654",
+            controllable_name="io:RollerShutterGenericIOComponent",
+        )
+        assert removed.controllable_name == "io:RollerShutterGenericIOComponent"
+
+        # Available / Unavailable / Disabled carry only device_url (no controllable_name).
+        for cls, event_name in (
+            (DeviceAvailableEvent, EventName.DEVICE_AVAILABLE),
+            (DeviceUnavailableEvent, EventName.DEVICE_UNAVAILABLE),
+            (DeviceDisabledEvent, EventName.DEVICE_DISABLED),
+        ):
+            event = cls(name=event_name, device_url="io://1234-5678-9012/4468654")
+            assert isinstance(event, Event)
+            assert event.device_url == "io://1234-5678-9012/4468654"
+            assert not hasattr(event, "controllable_name")
 
 
 class TestActionGroup:
