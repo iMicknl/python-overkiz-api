@@ -621,6 +621,11 @@ class ExecutionStateChangedEvent(Event):
 class FailureEvent(Event):
     """Any ``*FailedEvent``: failure reason plus the operation's scope id.
 
+    By design every ``*FailedEvent`` name structures into this one type rather
+    than a per-name class: consumers branch on "did it fail, and why"
+    (``failure_type``), not on which of the ~30 operations failed. The specific
+    operation is identified by ``event.name``.
+
     gateway_id / device_url / protocol_type cover the documented failure
     payloads. failureTypeCode is omitted; the API only sends it on
     ExecutionStateChangedEvent.
@@ -633,14 +638,127 @@ class FailureEvent(Event):
 
 
 @define(kw_only=True)
-class GatewayEvent(Event):
-    """A gateway lifecycle event (down, alive, synchronization, mode, ...).
-
-    gateway_id is required. The few events with extra payload (firmware, mode,
-    timeout) can grow a dedicated subtype when needed.
-    """
+class _GatewayEvent(Event):
+    """Shared base for gateway events; gateway_id is required."""
 
     gateway_id: str = field(repr=obfuscate_id)
+
+
+@define(kw_only=True)
+class GatewayActivatedEvent(_GatewayEvent):
+    """A gateway was activated."""
+
+
+@define(kw_only=True)
+class GatewayActiveProtocolsChangedEvent(_GatewayEvent):
+    """A gateway's active protocols changed."""
+
+
+@define(kw_only=True)
+class GatewayAliveEvent(_GatewayEvent):
+    """A gateway became reachable."""
+
+
+@define(kw_only=True)
+class GatewayAssociatedEvent(_GatewayEvent):
+    """A gateway was associated with the setup."""
+
+
+@define(kw_only=True)
+class GatewayAttachedEvent(_GatewayEvent):
+    """A gateway was attached."""
+
+
+@define(kw_only=True)
+class GatewayBootEvent(_GatewayEvent):
+    """A gateway booted."""
+
+
+@define(kw_only=True)
+class GatewayDeactivatedEvent(_GatewayEvent):
+    """A gateway was deactivated."""
+
+
+@define(kw_only=True)
+class GatewayDetachedEvent(_GatewayEvent):
+    """A gateway was detached."""
+
+
+@define(kw_only=True)
+class GatewayDissociatedEvent(_GatewayEvent):
+    """A gateway was dissociated from the setup."""
+
+
+@define(kw_only=True)
+class GatewayDownEvent(_GatewayEvent):
+    """A gateway became unreachable."""
+
+
+@define(kw_only=True)
+class GatewayDownOptionsChangedEvent(_GatewayEvent):
+    """A gateway's down-detection timeout changed."""
+
+    timeout: int | None = None
+
+
+@define(kw_only=True)
+class GatewayFirmwareUpdatedEvent(_GatewayEvent):
+    """A gateway's firmware was updated."""
+
+
+@define(kw_only=True)
+class GatewayFirmwareUpdateCompletedEvent(_GatewayEvent):
+    """A gateway firmware update completed."""
+
+    firmware_type: str | None = None
+
+
+@define(kw_only=True)
+class GatewayFunctionChangedEvent(_GatewayEvent):
+    """A gateway function was enabled or disabled."""
+
+    function_type: int | None = None
+    enabled: bool | None = None
+
+
+@define(kw_only=True)
+class GatewayMigratedEvent(_GatewayEvent):
+    """A gateway was migrated."""
+
+
+@define(kw_only=True)
+class GatewayModeChangedEvent(_GatewayEvent):
+    """A gateway's mode changed."""
+
+
+@define(kw_only=True)
+class GatewayPlaceUpdatedEvent(_GatewayEvent):
+    """A gateway's place was updated."""
+
+
+@define(kw_only=True)
+class GatewayProtocolDownEvent(_GatewayEvent):
+    """A gateway protocol became unavailable."""
+
+
+@define(kw_only=True)
+class GatewayProtocolReadyEvent(_GatewayEvent):
+    """A gateway protocol became available."""
+
+
+@define(kw_only=True)
+class GatewaySynchronizationEndedEvent(_GatewayEvent):
+    """A gateway synchronization ended."""
+
+
+@define(kw_only=True)
+class GatewaySynchronizationStartedEvent(_GatewayEvent):
+    """A gateway synchronization started."""
+
+
+@define(kw_only=True)
+class GatewayTimeReliabilityChangedEvent(_GatewayEvent):
+    """A gateway's time reliability changed."""
 
 
 @define(kw_only=True)
@@ -731,15 +849,36 @@ EVENT_TYPE_BY_NAME: dict[EventName, type[Event]] = {
     EventName.ZONE_CREATED: ZoneCreatedEvent,
     EventName.ZONE_UPDATED: ZoneUpdatedEvent,
     EventName.ZONE_DELETED: ZoneDeletedEvent,
+    EventName.GATEWAY_ACTIVATED: GatewayActivatedEvent,
+    EventName.GATEWAY_ACTIVE_PROTOCOLS_CHANGED: GatewayActiveProtocolsChangedEvent,
+    EventName.GATEWAY_ALIVE: GatewayAliveEvent,
+    EventName.GATEWAY_ASSOCIATED: GatewayAssociatedEvent,
+    EventName.GATEWAY_ATTACHED: GatewayAttachedEvent,
+    EventName.GATEWAY_BOOT: GatewayBootEvent,
+    EventName.GATEWAY_DEACTIVATED: GatewayDeactivatedEvent,
+    EventName.GATEWAY_DETACHED: GatewayDetachedEvent,
+    EventName.GATEWAY_DISSOCIATED: GatewayDissociatedEvent,
+    EventName.GATEWAY_DOWN: GatewayDownEvent,
+    EventName.GATEWAY_DOWN_OPTIONS_CHANGED: GatewayDownOptionsChangedEvent,
+    EventName.GATEWAY_FIRMWARE_UPDATED: GatewayFirmwareUpdatedEvent,
+    EventName.GATEWAY_FIRMWARE_UPDATE_COMPLETED: GatewayFirmwareUpdateCompletedEvent,
+    EventName.GATEWAY_FUNCTION_CHANGED: GatewayFunctionChangedEvent,
+    EventName.GATEWAY_MIGRATED: GatewayMigratedEvent,
+    EventName.GATEWAY_MODE_CHANGED: GatewayModeChangedEvent,
+    EventName.GATEWAY_PLACE_UPDATED: GatewayPlaceUpdatedEvent,
+    EventName.GATEWAY_PROTOCOL_DOWN: GatewayProtocolDownEvent,
+    EventName.GATEWAY_PROTOCOL_READY: GatewayProtocolReadyEvent,
+    EventName.GATEWAY_SYNCHRONIZATION_ENDED: GatewaySynchronizationEndedEvent,
+    EventName.GATEWAY_SYNCHRONIZATION_STARTED: GatewaySynchronizationStartedEvent,
+    EventName.GATEWAY_TIME_RELIABILITY_CHANGED: GatewayTimeReliabilityChangedEvent,
 }
 
-# Auto-map by name so new events are covered; explicit mappings above win.
-# "*FailedEvent" -> FailureEvent, other "Gateway*" -> GatewayEvent.
+# Every "*FailedEvent" structures into the shared FailureEvent (see its
+# docstring); derived from the enum so new failure names are covered too.
+# Explicit mappings above win.
 for _name in EventName:
     if _name.value.endswith("FailedEvent"):
         EVENT_TYPE_BY_NAME.setdefault(_name, FailureEvent)
-    elif _name.value.startswith("Gateway"):
-        EVENT_TYPE_BY_NAME.setdefault(_name, GatewayEvent)
 del _name
 
 

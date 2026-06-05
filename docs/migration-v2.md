@@ -340,10 +340,20 @@ In v1, `Event` was a single flat class that carried every field any event could
 possibly have, so every field was optional and present on every event regardless
 of its `name`. In v2, `Event` is the base of a **typed hierarchy**: structuring an
 event payload returns a concrete subtype chosen by its `name` (e.g.
-`DeviceStateChangedEvent`, `ExecutionStateChangedEvent`, `GatewayEvent`,
-`FailureEvent`). The base `Event` keeps only the fields common to every event
-(`name`, `timestamp`, `setup_oid`, `owning_partners`); everything else lives on
-the relevant subtype.
+`DeviceStateChangedEvent`, `ExecutionStateChangedEvent`, `GatewayDownEvent`). The
+base `Event` keeps only the fields common to every event (`name`, `timestamp`,
+`setup_oid`, `owning_partners`); everything else lives on the relevant subtype.
+
+The model is three rules:
+
+1. **Each modeled event is its own typed class** whose fields are that event's
+   payload — narrow with `isinstance` and the present fields are typed.
+2. **All `*FailedEvent` names structure into one `FailureEvent`.** Consumers
+   branch on *did it fail, and why* (`failure_type`), not on which of the ~30
+   operations failed; the specific operation is in `event.name`. (See the
+   `FailureEvent` docstring.)
+3. **Anything unmodeled is the base `Event`** — including new names the API adds
+   later — so unknown events never raise. Check `event.name`.
 
 Narrow with `isinstance` before accessing subtype-specific fields:
 
@@ -367,9 +377,6 @@ Narrow with `isinstance` before accessing subtype-specific fields:
             for state in event.device_states:
                 ...
     ```
-
-Event names without a dedicated subtype (including any new name the API adds
-later) structure into the base `Event`, so unknown events never raise.
 
 ### Strict subtypes, resilient batches
 

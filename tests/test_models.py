@@ -43,7 +43,8 @@ from pyoverkiz.models import (
     ExecutionStateChangedEvent,
     FailureEvent,
     Gateway,
-    GatewayEvent,
+    GatewayFunctionChangedEvent,
+    GatewaySynchronizationEndedEvent,
     PersistedActionGroup,
     Setup,
     State,
@@ -1347,7 +1348,7 @@ class TestEvent:
         assert event.new_state is ExecutionState.IN_PROGRESS
 
     def test_converter_dispatches_gateway_event(self):
-        """Gateway* events structure into GatewayEvent and keep gateway_id."""
+        """A Gateway* event structures into its own per-name class with gateway_id."""
         event = converter.structure(
             {
                 "name": "GatewaySynchronizationEndedEvent",
@@ -1356,9 +1357,24 @@ class TestEvent:
             },
             Event,
         )
-        assert isinstance(event, GatewayEvent)
+        assert isinstance(event, GatewaySynchronizationEndedEvent)
         assert event.name == EventName.GATEWAY_SYNCHRONIZATION_ENDED
         assert event.gateway_id == "9876-1234-8767"
+
+    def test_converter_dispatches_gateway_event_with_extra_fields(self):
+        """A gateway event with documented extra payload exposes it on its subtype."""
+        event = converter.structure(
+            {
+                "name": "GatewayFunctionChangedEvent",
+                "gatewayId": "9876-1234-8767",
+                "functionType": 1,
+                "enabled": False,
+            },
+            Event,
+        )
+        assert isinstance(event, GatewayFunctionChangedEvent)
+        assert event.function_type == 1
+        assert event.enabled is False
 
     def test_converter_falls_back_to_base_event(self):
         """Unmodeled, non-gateway, non-failure event names structure into base Event."""
@@ -1470,7 +1486,7 @@ class TestEvent:
         assert len(events) == 3
         assert isinstance(events[0], DeviceStateChangedEvent)
         assert type(events[1]) is Event  # degraded
-        assert isinstance(events[2], GatewayEvent)
+        assert isinstance(events[2], GatewaySynchronizationEndedEvent)
 
     def test_local_event_fixture_structures_all_events(self):
         """All events in the local-API fixture structure into DeviceStateChangedEvent."""
