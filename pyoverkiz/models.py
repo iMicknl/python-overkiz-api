@@ -615,6 +615,14 @@ class ExecutionStateChangedEvent(Event):
 
 
 @define(kw_only=True)
+class FailureEvent(Event):
+    """Base for events reporting a failure (the various *FailedEvent names)."""
+
+    failure_type: str | None = None
+    failure_type_code: FailureType | None = None
+
+
+@define(kw_only=True)
 class Execution:
     """Execution occurrence with owner, state and action group metadata."""
 

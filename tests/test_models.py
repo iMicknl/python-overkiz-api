@@ -34,6 +34,7 @@ from pyoverkiz.models import (
     EventState,
     ExecutionRegisteredEvent,
     ExecutionStateChangedEvent,
+    FailureEvent,
     Gateway,
     PersistedActionGroup,
     Setup,
@@ -1219,6 +1220,17 @@ class TestEvent:
         assert isinstance(event, Event)
         assert event.exec_id == "c6f83624-ac10-3e01-653e-2b025fee956d"
         assert len(event.actions) == 1
+
+    def test_failure_event_subtype(self):
+        """FailureEvent carries failure_type and failure_type_code together."""
+        event = FailureEvent(
+            name=EventName.GATEWAY_SYNCHRONIZATION_FAILED,
+            failure_type="some failure",
+            failure_type_code=FailureType.NO_FAILURE,
+        )
+        assert isinstance(event, Event)
+        assert event.failure_type == "some failure"
+        assert event.failure_type_code is FailureType.NO_FAILURE
 
 
 class TestActionGroup:
