@@ -623,6 +623,55 @@ class FailureEvent(Event):
 
 
 @define(kw_only=True)
+class _DeviceEvent(Event):
+    """Shared base for device lifecycle events (carries device_url)."""
+
+    device_url: str = field(repr=obfuscate_id, default="")
+
+
+@define(kw_only=True)
+class DeviceAvailableEvent(_DeviceEvent):
+    """A device became available."""
+
+
+@define(kw_only=True)
+class DeviceUnavailableEvent(_DeviceEvent):
+    """A device became unavailable."""
+
+
+@define(kw_only=True)
+class DeviceDisabledEvent(_DeviceEvent):
+    """A device was disabled."""
+
+
+@define(kw_only=True)
+class DeviceCreatedEvent(_DeviceEvent):
+    """A device was created."""
+
+    controllable_name: str | None = None
+    label: str | None = field(repr=obfuscate_string, default=None)
+    place_oid: str | None = None
+    metadata: str | None = None
+
+
+@define(kw_only=True)
+class DeviceUpdatedEvent(_DeviceEvent):
+    """A device was updated."""
+
+    controllable_name: str | None = None
+    label: str | None = field(repr=obfuscate_string, default=None)
+    place_oid: str | None = None
+    metadata: str | None = None
+
+
+@define(kw_only=True)
+class DeviceRemovedEvent(_DeviceEvent):
+    """A device was removed."""
+
+    controllable_name: str | None = None
+
+
+@define(kw_only=True)
 class Execution:
     """Execution occurrence with owner, state and action group metadata."""
 

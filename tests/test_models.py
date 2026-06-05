@@ -29,6 +29,8 @@ from pyoverkiz.models import (
     CommandDefinitions,
     Definition,
     Device,
+    DeviceAvailableEvent,
+    DeviceCreatedEvent,
     DeviceStateChangedEvent,
     Event,
     EventState,
@@ -1231,6 +1233,24 @@ class TestEvent:
         assert isinstance(event, Event)
         assert event.failure_type == "some failure"
         assert event.failure_type_code is FailureType.NO_FAILURE
+
+    def test_device_lifecycle_subtypes(self):
+        """Device lifecycle events carry device_url; created/updated/removed add controllable_name."""
+        created = DeviceCreatedEvent(
+            name=EventName.DEVICE_CREATED,
+            device_url="io://1234-5678-9012/4468654",
+            controllable_name="io:RollerShutterGenericIOComponent",
+        )
+        assert created.device_url == "io://1234-5678-9012/4468654"
+        assert created.controllable_name == "io:RollerShutterGenericIOComponent"
+
+        available = DeviceAvailableEvent(
+            name=EventName.DEVICE_AVAILABLE,
+            device_url="io://1234-5678-9012/4468654",
+        )
+        assert isinstance(available, Event)
+        assert available.device_url == "io://1234-5678-9012/4468654"
+        assert not hasattr(available, "controllable_name")
 
 
 class TestActionGroup:
