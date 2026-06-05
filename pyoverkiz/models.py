@@ -633,8 +633,7 @@ class FailureEvent(Event):
     operation is identified by ``event.name``.
 
     gateway_id / device_url / protocol_type cover the documented failure
-    payloads. failureTypeCode is omitted; the API only sends it on
-    ExecutionStateChangedEvent.
+    payloads.
     """
 
     failure_type: str | None = None
