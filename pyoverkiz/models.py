@@ -557,11 +557,7 @@ class PersistedActionGroup(ActionGroup):
 
 
 def _to_event_states(states: list[Any] | None) -> list[EventState]:
-    """Structure a raw deviceStates list into EventState instances.
-
-    Tolerates a missing / null ``deviceStates`` (the API may send ``null``
-    rather than omitting the key) by treating it as an empty list.
-    """
+    """Structure a raw deviceStates list into EventState instances (None -> [])."""
     if not states:
         return []
     return [EventState(**s) if isinstance(s, dict) else s for s in states]
@@ -569,12 +565,7 @@ def _to_event_states(states: list[Any] | None) -> list[EventState]:
 
 @define(kw_only=True)
 class Event:
-    """Base Overkiz event. Carries fields common to every event.
-
-    Concrete events are structured into a subtype based on ``name`` (see the
-    discriminator in pyoverkiz.converter). Unknown / unmodeled event names
-    structure into this base class.
-    """
+    """Base Overkiz event; structured into a subtype by ``name`` (see converter)."""
 
     name: EventName
     timestamp: int | None = None
@@ -584,12 +575,7 @@ class Event:
 
 @define(kw_only=True)
 class _DeviceEvent(Event):
-    """Shared base for device-scoped events (carries device_url).
-
-    ``device_url`` is required: a device-scoped event is, by definition, about a
-    device. A payload missing it degrades to the base Event (see the
-    discriminator in pyoverkiz.converter).
-    """
+    """Shared base for device-scoped events; device_url is required."""
 
     device_url: str = field(repr=obfuscate_id)
 
@@ -603,11 +589,7 @@ class DeviceStateChangedEvent(_DeviceEvent):
 
 @define(kw_only=True)
 class ExecutionRegisteredEvent(Event):
-    """A new execution was registered.
-
-    ``exec_id`` identifies the registered execution and is required; a payload
-    missing it degrades to the base Event.
-    """
+    """A new execution was registered; exec_id is required."""
 
     exec_id: str
     label: str | None = None
@@ -621,12 +603,7 @@ class ExecutionRegisteredEvent(Event):
 
 @define(kw_only=True)
 class ExecutionStateChangedEvent(Event):
-    """An execution state has changed.
-
-    ``exec_id``, ``new_state`` and ``old_state`` are the identity of the
-    transition and are required; a payload missing any of them degrades to the
-    base Event.
-    """
+    """An execution state has changed; exec_id/new_state/old_state are required."""
 
     exec_id: str
     new_state: ExecutionState
@@ -642,15 +619,11 @@ class ExecutionStateChangedEvent(Event):
 
 @define(kw_only=True)
 class FailureEvent(Event):
-    """Any ``*FailedEvent``.
+    """Any ``*FailedEvent``: failure reason plus the operation's scope id.
 
-    Carries the failure reason plus whichever identifier the failing operation
-    was scoped to. Across the documented failure events the extra fields are
-    ``gatewayId`` (gateway / protocol / network operations), ``deviceURL``
-    (device-scoped operations) and ``protocolType`` (discovery / refresh);
-    these are surfaced here so no failure context is silently dropped.
-    ``failureTypeCode`` is intentionally absent: the API only sends it on
-    ExecutionStateChangedEvent, never on a ``*FailedEvent``.
+    gateway_id / device_url / protocol_type cover the documented failure
+    payloads. failureTypeCode is omitted; the API only sends it on
+    ExecutionStateChangedEvent.
     """
 
     failure_type: str | None = None
@@ -663,10 +636,8 @@ class FailureEvent(Event):
 class GatewayEvent(Event):
     """A gateway lifecycle event (down, alive, synchronization, mode, ...).
 
-    Every documented ``Gateway*`` event carries ``gatewayId``, so it is required;
-    a payload missing it degrades to the base Event. The few events that add more
-    (e.g. firmware/function/timeout details) are not modeled here yet and can grow
-    a dedicated subtype when needed.
+    gateway_id is required. The few events with extra payload (firmware, mode,
+    timeout) can grow a dedicated subtype when needed.
     """
 
     gateway_id: str = field(repr=obfuscate_id)
@@ -716,11 +687,7 @@ class DeviceRemovedEvent(_DeviceEvent):
 
 @define(kw_only=True)
 class _ZoneEvent(Event):
-    """Shared base for zone events (carries zone_oid).
-
-    ``zone_oid`` is required: a zone event identifies the zone it concerns. A
-    payload missing it degrades to the base Event.
-    """
+    """Shared base for zone events; zone_oid is required."""
 
     zone_oid: str
 
@@ -750,8 +717,7 @@ class ZoneUpdatedEvent(_ZoneMutationEvent):
     """A zone was updated."""
 
 
-# Maps an event name to the subtype it should structure into. Names not listed
-# here structure into the base Event (forward-compatible for unmodeled events).
+# Event name -> subtype. Unlisted names structure into the base Event.
 EVENT_TYPE_BY_NAME: dict[EventName, type[Event]] = {
     EventName.DEVICE_STATE_CHANGED: DeviceStateChangedEvent,
     EventName.EXECUTION_REGISTERED: ExecutionRegisteredEvent,
@@ -767,11 +733,8 @@ EVENT_TYPE_BY_NAME: dict[EventName, type[Event]] = {
     EventName.ZONE_DELETED: ZoneDeletedEvent,
 }
 
-# Derive the name-based mappings from the enum so new events are covered
-# automatically. Explicit mappings above take precedence (setdefault), so an
-# event needing a richer subtype can simply be added to the dict above.
-#   * "Gateway*" (non-failure) -> GatewayEvent, to keep gateway_id.
-#   * "*FailedEvent" -> FailureEvent, to keep failure_type + gateway_id/device_url.
+# Auto-map by name so new events are covered; explicit mappings above win.
+# "*FailedEvent" -> FailureEvent, other "Gateway*" -> GatewayEvent.
 for _name in EventName:
     if _name.value.endswith("FailedEvent"):
         EVENT_TYPE_BY_NAME.setdefault(_name, FailureEvent)

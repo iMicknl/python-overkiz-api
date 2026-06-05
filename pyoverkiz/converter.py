@@ -102,9 +102,7 @@ def _make_converter() -> cattrs.Converter:
     c.register_structure_hook(CommandDefinitions, _structure_command_definitions)
     c.register_structure_hook(StateDefinitions, _structure_state_definitions)
 
-    # DeviceStateChangedEvent.device_states: the API may send "deviceStates": null
-    # instead of omitting the key. cattrs' default list hook would choke on None,
-    # so tolerate it as an empty list.
+    # Treat a missing / null deviceStates as empty; cattrs' list hook raises on None.
     def _structure_event_states(val: Any, _: type) -> list[EventState]:
         if not val:
             return []
@@ -122,13 +120,9 @@ def _make_converter() -> cattrs.Converter:
         _rename_hook_factory,
     )
 
-    # Event is a discriminated union keyed on the "name" field. Resolve the
-    # concrete subtype, then delegate to that class's generated (rename-aware)
-    # hook. Unknown / unmodeled names fall back to the base Event.
-    #
-    # We pre-build each class's hook and call it directly. Routing through
-    # c.structure(val, subtype) would re-enter this hook (cattrs dispatches a
-    # subclass to its base class's registered hook), causing infinite recursion.
+    # Event is a discriminated union keyed on "name". Pre-build each subtype's
+    # hook and call it directly; routing via c.structure(val, subtype) would
+    # re-enter this hook (subclass dispatches to its base) and recurse forever.
     event_types: set[type[Event]] = {Event, *EVENT_TYPE_BY_NAME.values()}
     event_hooks: dict[type[Event], Any] = {
         cls: _rename_hook_factory(cls, c) for cls in event_types
@@ -142,12 +136,8 @@ def _make_converter() -> cattrs.Converter:
         try:
             return event_hooks[target](val, target)  # type: ignore[no-any-return]
         except ClassValidationError as err:
-            # Subtypes declare the fields the API is documented to send as
-            # required. If a payload omits one (undocumented quirk, partial
-            # data), degrade that single event to the base Event rather than
-            # failing the whole batch. The warning flags a field worth
-            # loosening — strictness stays the default, resilience the
-            # fallback.
+            # A payload missing a required field degrades to base Event rather
+            # than failing the whole batch; the warning flags a field to loosen.
             if target is Event:
                 raise
             _LOGGER.warning(
