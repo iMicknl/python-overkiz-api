@@ -1093,6 +1093,7 @@ class TestEvent:
             Event,
         )
 
+        assert isinstance(event, ExecutionStateChangedEvent)
         assert event.name == EventName.EXECUTION_STATE_CHANGED
         assert event.old_state is ExecutionState.TRANSMITTED
         assert event.new_state is ExecutionState.IN_PROGRESS
@@ -1109,23 +1110,24 @@ class TestEvent:
             Event,
         )
 
+        assert isinstance(event, ExecutionStateChangedEvent)
         assert isinstance(event.failure_type_code, FailureType)
         assert event.failure_type_code is FailureType.NO_FAILURE
 
     def test_optional_enum_fields_none_when_absent(self):
-        """Optional enum fields default to None when not present in the payload."""
+        """Base events do not expose subtype-only enum fields."""
         event = converter.structure(
             {
                 "name": "GatewaySynchronizationEndedEvent",
                 "timestamp": 1631130645998,
-                "gatewayId": "9876-1234-8767",
             },
             Event,
         )
 
-        assert event.old_state is None
-        assert event.new_state is None
-        assert event.failure_type_code is None
+        assert type(event) is Event
+        assert not hasattr(event, "old_state")
+        assert not hasattr(event, "new_state")
+        assert not hasattr(event, "failure_type_code")
 
     def test_device_state_changed_event_with_states(self):
         """DeviceStateChangedEvent payload structures device_states as EventState."""
@@ -1146,6 +1148,7 @@ class TestEvent:
             Event,
         )
 
+        assert isinstance(event, DeviceStateChangedEvent)
         assert event.name == EventName.DEVICE_STATE_CHANGED
         assert len(event.device_states) == 1
         assert isinstance(event.device_states[0], EventState)
@@ -1157,8 +1160,9 @@ class TestEvent:
 
         assert len(events) == len(raw_events)
         state_changed = [
-            e for e in events if e.name == EventName.EXECUTION_STATE_CHANGED
+            e for e in events if isinstance(e, ExecutionStateChangedEvent)
         ]
+        assert state_changed  # fixture contains ExecutionStateChangedEvent entries
         for e in state_changed:
             assert isinstance(e.old_state, ExecutionState)
             assert isinstance(e.new_state, ExecutionState)
