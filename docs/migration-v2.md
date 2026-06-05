@@ -334,6 +334,73 @@ and `device.definition.commands`.
 - `Gateway.connectivity` is now `Connectivity | None` (was always set in v1).
 - `Gateway.id` and `Place.id` are now read-only properties.
 
+## Events
+
+In v1, `Event` was a single flat class that carried every field any event could
+possibly have, so every field was optional and present on every event regardless
+of its `name`. In v2, `Event` is the base of a **typed hierarchy**: structuring an
+event payload returns a concrete subtype chosen by its `name` (e.g.
+`DeviceStateChangedEvent`, `ExecutionStateChangedEvent`, `GatewayEvent`,
+`FailureEvent`). The base `Event` keeps only the fields common to every event
+(`name`, `timestamp`, `setup_oid`, `owning_partners`); everything else lives on
+the relevant subtype.
+
+Narrow with `isinstance` before accessing subtype-specific fields:
+
+=== "v1"
+
+    ```python
+    for event in events:
+        # Every field existed on every Event (None when not applicable)
+        if event.device_states:
+            ...
+    ```
+
+=== "v2"
+
+    ```python
+    from pyoverkiz.models import DeviceStateChangedEvent
+
+    for event in events:
+        # device_states only exists on DeviceStateChangedEvent
+        if isinstance(event, DeviceStateChangedEvent):
+            for state in event.device_states:
+                ...
+    ```
+
+Event names without a dedicated subtype (including any new name the API adds
+later) structure into the base `Event`, so unknown events never raise.
+
+### Strict subtypes, resilient batches
+
+Subtypes mark the fields the API is documented to always send for that event as
+**required** (no `None` default): `device_url` on device events, `gateway_id` on
+gateway events, `zone_oid` on zone events, and `exec_id` / `new_state` /
+`old_state` on execution-state events. This means once you have narrowed to a
+subtype, those fields are guaranteed non-`None` — no defensive checks needed.
+
+To keep that strictness from making event fetching fragile, structuring degrades
+**per event**: if a single payload is missing a required field (an undocumented
+API quirk or partial data), that one event falls back to the base `Event` and a
+warning is logged — the rest of the batch is unaffected. A flood of such warnings
+is a signal that a field marked required should be loosened.
+
+### Removed fields
+
+These v1 `Event` fields are not carried by any v2 event subtype and are no longer
+available:
+
+| Field | v1 events that carried it |
+|-------|---------------------------|
+| `camera_id` | `CameraDiscoveredEvent`, `CameraUploadPhotoEvent` |
+| `condition_groupoid` | `ConditionGroup*Event` |
+| `deleted_raw_devices_count` | `PurgePartialRawDevicesEvent` |
+
+`failure_type_code` is no longer on failure events either: the API only ever
+sends it on `ExecutionStateChangedEvent`, where it remains. The `*FailedEvent`
+payloads carry `failure_type` (plus `gateway_id` / `device_url` / `protocol_type`
+where applicable), all surfaced on `FailureEvent`.
+
 ## Authentication methods
 
 The per-server login helpers on `OverkizClient` have been removed. Authentication is now handled internally by the credential/strategy system — call the single `login()` method, which dispatches to the correct strategy based on the `Credentials` you passed to the constructor.
@@ -363,7 +430,7 @@ These changes affect you if you subclass `OverkizClient` or use internal APIs:
 | `deviceurl` | `device_url` |
 | `Event.setupoid` | `Event.setup_oid` |
 
-Update any keyword arguments and attribute accesses using the old spelling. `Event` also gains `actions`, `owner`, and `source` fields.
+Update any keyword arguments and attribute accesses using the old spelling. The `actions`, `owner`, and `source` fields now live on `ExecutionRegisteredEvent` (see [Events](#events)).
 
 ## Model defaults
 

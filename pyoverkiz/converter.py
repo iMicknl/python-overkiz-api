@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import logging
 import types
 from enum import Enum
 from typing import Any, Union, get_args, get_origin
 
 import attr
 import cattrs
+from cattrs.errors import ClassValidationError
 from cattrs.gen import make_dict_structure_fn, override
 
 from pyoverkiz._case import camelize_key
@@ -17,11 +19,14 @@ from pyoverkiz.models import (
     CommandDefinition,
     CommandDefinitions,
     Event,
+    EventState,
     State,
     StateDefinition,
     StateDefinitions,
     States,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 
 def _is_primitive_union(t: Any) -> bool:
@@ -97,6 +102,18 @@ def _make_converter() -> cattrs.Converter:
     c.register_structure_hook(CommandDefinitions, _structure_command_definitions)
     c.register_structure_hook(StateDefinitions, _structure_state_definitions)
 
+    # DeviceStateChangedEvent.device_states: the API may send "deviceStates": null
+    # instead of omitting the key. cattrs' default list hook would choke on None,
+    # so tolerate it as an empty list.
+    def _structure_event_states(val: Any, _: type) -> list[EventState]:
+        if not val:
+            return []
+        return [c.structure(s, EventState) for s in val]
+
+    c.register_structure_hook_func(
+        lambda t: t == list[EventState], _structure_event_states
+    )
+
     # For all other attrs classes: lazily generate a hook that renames camelCase
     # API keys to snake_case on first use. This avoids manual dependency ordering.
     skip = {States, CommandDefinitions, StateDefinitions}
@@ -112,16 +129,34 @@ def _make_converter() -> cattrs.Converter:
     # We pre-build each class's hook and call it directly. Routing through
     # c.structure(val, subtype) would re-enter this hook (cattrs dispatches a
     # subclass to its base class's registered hook), causing infinite recursion.
-    event_hooks: dict[type[Event], Any] = {Event: _rename_hook_factory(Event, c)}
-    for subtype in set(EVENT_TYPE_BY_NAME.values()):
-        event_hooks[subtype] = _rename_hook_factory(subtype, c)
+    event_types: set[type[Event]] = {Event, *EVENT_TYPE_BY_NAME.values()}
+    event_hooks: dict[type[Event], Any] = {
+        cls: _rename_hook_factory(cls, c) for cls in event_types
+    }
 
     def _structure_event(val: Any, _: type) -> Event:
         name = val.get("name") if isinstance(val, dict) else None
         target: type[Event] = Event
         if name is not None:
             target = EVENT_TYPE_BY_NAME.get(EventName(name), Event)
-        return event_hooks[target](val, target)  # type: ignore[no-any-return]
+        try:
+            return event_hooks[target](val, target)  # type: ignore[no-any-return]
+        except ClassValidationError as err:
+            # Subtypes declare the fields the API is documented to send as
+            # required. If a payload omits one (undocumented quirk, partial
+            # data), degrade that single event to the base Event rather than
+            # failing the whole batch. The warning flags a field worth
+            # loosening — strictness stays the default, resilience the
+            # fallback.
+            if target is Event:
+                raise
+            _LOGGER.warning(
+                "Could not structure %s as %s (%s); falling back to base Event",
+                name,
+                target.__name__,
+                err,
+            )
+            return event_hooks[Event](val, Event)  # type: ignore[no-any-return]
 
     c.register_structure_hook(Event, _structure_event)
 

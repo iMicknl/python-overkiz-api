@@ -556,6 +556,17 @@ class PersistedActionGroup(ActionGroup):
         return self.oid
 
 
+def _to_event_states(states: list[Any] | None) -> list[EventState]:
+    """Structure a raw deviceStates list into EventState instances.
+
+    Tolerates a missing / null ``deviceStates`` (the API may send ``null``
+    rather than omitting the key) by treating it as an empty list.
+    """
+    if not states:
+        return []
+    return [EventState(**s) if isinstance(s, dict) else s for s in states]
+
+
 @define(kw_only=True)
 class Event:
     """Base Overkiz event. Carries fields common to every event.
@@ -572,23 +583,33 @@ class Event:
 
 
 @define(kw_only=True)
-class DeviceStateChangedEvent(Event):
+class _DeviceEvent(Event):
+    """Shared base for device-scoped events (carries device_url).
+
+    ``device_url`` is required: a device-scoped event is, by definition, about a
+    device. A payload missing it degrades to the base Event (see the
+    discriminator in pyoverkiz.converter).
+    """
+
+    device_url: str = field(repr=obfuscate_id)
+
+
+@define(kw_only=True)
+class DeviceStateChangedEvent(_DeviceEvent):
     """One or more states of a device changed (high-level)."""
 
-    device_url: str = field(repr=obfuscate_id, default="")
-    device_states: list[EventState] = field(
-        factory=list,
-        converter=lambda states: [
-            EventState(**s) if isinstance(s, dict) else s for s in states
-        ],
-    )
+    device_states: list[EventState] = field(factory=list, converter=_to_event_states)
 
 
 @define(kw_only=True)
 class ExecutionRegisteredEvent(Event):
-    """A new execution was registered."""
+    """A new execution was registered.
 
-    exec_id: str | None = None
+    ``exec_id`` identifies the registered execution and is required; a payload
+    missing it degrades to the base Event.
+    """
+
+    exec_id: str
     label: str | None = None
     metadata: str | None = None
     type: int | None = None
@@ -600,11 +621,16 @@ class ExecutionRegisteredEvent(Event):
 
 @define(kw_only=True)
 class ExecutionStateChangedEvent(Event):
-    """An execution state has changed."""
+    """An execution state has changed.
 
-    exec_id: str | None = None
-    new_state: ExecutionState | None = None
-    old_state: ExecutionState | None = None
+    ``exec_id``, ``new_state`` and ``old_state`` are the identity of the
+    transition and are required; a payload missing any of them degrades to the
+    base Event.
+    """
+
+    exec_id: str
+    new_state: ExecutionState
+    old_state: ExecutionState
     owner_key: str | None = field(repr=obfuscate_id, default=None)
     type: int | None = None
     sub_type: int | None = None
@@ -616,17 +642,34 @@ class ExecutionStateChangedEvent(Event):
 
 @define(kw_only=True)
 class FailureEvent(Event):
-    """Base for events reporting a failure (the various *FailedEvent names)."""
+    """Any ``*FailedEvent``.
+
+    Carries the failure reason plus whichever identifier the failing operation
+    was scoped to. Across the documented failure events the extra fields are
+    ``gatewayId`` (gateway / protocol / network operations), ``deviceURL``
+    (device-scoped operations) and ``protocolType`` (discovery / refresh);
+    these are surfaced here so no failure context is silently dropped.
+    ``failureTypeCode`` is intentionally absent: the API only sends it on
+    ExecutionStateChangedEvent, never on a ``*FailedEvent``.
+    """
 
     failure_type: str | None = None
-    failure_type_code: FailureType | None = None
+    gateway_id: str | None = field(repr=obfuscate_id, default=None)
+    device_url: str | None = field(repr=obfuscate_id, default=None)
+    protocol_type: int | None = None
 
 
 @define(kw_only=True)
-class _DeviceEvent(Event):
-    """Shared base for device lifecycle events (carries device_url)."""
+class GatewayEvent(Event):
+    """A gateway lifecycle event (down, alive, synchronization, mode, ...).
 
-    device_url: str = field(repr=obfuscate_id, default="")
+    Every documented ``Gateway*`` event carries ``gatewayId``, so it is required;
+    a payload missing it degrades to the base Event. The few events that add more
+    (e.g. firmware/function/timeout details) are not modeled here yet and can grow
+    a dedicated subtype when needed.
+    """
+
+    gateway_id: str = field(repr=obfuscate_id)
 
 
 @define(kw_only=True)
@@ -645,8 +688,8 @@ class DeviceDisabledEvent(_DeviceEvent):
 
 
 @define(kw_only=True)
-class DeviceCreatedEvent(_DeviceEvent):
-    """A device was created."""
+class _DeviceMetadataEvent(_DeviceEvent):
+    """Shared base for device create/update events (carry label/place metadata)."""
 
     controllable_name: str | None = None
     label: str | None = field(repr=obfuscate_string, default=None)
@@ -655,13 +698,13 @@ class DeviceCreatedEvent(_DeviceEvent):
 
 
 @define(kw_only=True)
-class DeviceUpdatedEvent(_DeviceEvent):
-    """A device was updated."""
+class DeviceCreatedEvent(_DeviceMetadataEvent):
+    """A device was created."""
 
-    controllable_name: str | None = None
-    label: str | None = field(repr=obfuscate_string, default=None)
-    place_oid: str | None = None
-    metadata: str | None = None
+
+@define(kw_only=True)
+class DeviceUpdatedEvent(_DeviceMetadataEvent):
+    """A device was updated."""
 
 
 @define(kw_only=True)
@@ -672,32 +715,39 @@ class DeviceRemovedEvent(_DeviceEvent):
 
 
 @define(kw_only=True)
-class ZoneDeletedEvent(Event):
+class _ZoneEvent(Event):
+    """Shared base for zone events (carries zone_oid).
+
+    ``zone_oid`` is required: a zone event identifies the zone it concerns. A
+    payload missing it degrades to the base Event.
+    """
+
+    zone_oid: str
+
+
+@define(kw_only=True)
+class ZoneDeletedEvent(_ZoneEvent):
     """A zone was deleted."""
 
-    zone_oid: str | None = None
+
+@define(kw_only=True)
+class _ZoneMutationEvent(_ZoneEvent):
+    """Shared base for zone create/update events (carry membership lists)."""
+
+    type: int | None = None
+    label: str | None = field(repr=obfuscate_string, default=None)
+    device_urls: list[str] = field(factory=list)
+    place_oids: list[str] = field(factory=list)
 
 
 @define(kw_only=True)
-class ZoneCreatedEvent(Event):
+class ZoneCreatedEvent(_ZoneMutationEvent):
     """A zone was created."""
 
-    zone_oid: str | None = None
-    type: int | None = None
-    label: str | None = field(repr=obfuscate_string, default=None)
-    device_urls: list[str] = field(factory=list)
-    place_oids: list[str] = field(factory=list)
-
 
 @define(kw_only=True)
-class ZoneUpdatedEvent(Event):
+class ZoneUpdatedEvent(_ZoneMutationEvent):
     """A zone was updated."""
-
-    zone_oid: str | None = None
-    type: int | None = None
-    label: str | None = field(repr=obfuscate_string, default=None)
-    device_urls: list[str] = field(factory=list)
-    place_oids: list[str] = field(factory=list)
 
 
 # Maps an event name to the subtype it should structure into. Names not listed
@@ -717,14 +767,17 @@ EVENT_TYPE_BY_NAME: dict[EventName, type[Event]] = {
     EventName.ZONE_DELETED: ZoneDeletedEvent,
 }
 
-# Every "*FailedEvent" structures into FailureEvent so failure_type and
-# failure_type_code travel together. Derived from the enum so new failure
-# events are covered automatically; explicit mappings above take precedence.
-# Failure events carrying extra payload can grow a dedicated subtype later.
-for _event_name in EventName:
-    if _event_name.value.endswith("FailedEvent"):
-        EVENT_TYPE_BY_NAME.setdefault(_event_name, FailureEvent)
-del _event_name
+# Derive the name-based mappings from the enum so new events are covered
+# automatically. Explicit mappings above take precedence (setdefault), so an
+# event needing a richer subtype can simply be added to the dict above.
+#   * "Gateway*" (non-failure) -> GatewayEvent, to keep gateway_id.
+#   * "*FailedEvent" -> FailureEvent, to keep failure_type + gateway_id/device_url.
+for _name in EventName:
+    if _name.value.endswith("FailedEvent"):
+        EVENT_TYPE_BY_NAME.setdefault(_name, FailureEvent)
+    elif _name.value.startswith("Gateway"):
+        EVENT_TYPE_BY_NAME.setdefault(_name, GatewayEvent)
+del _name
 
 
 @define(kw_only=True)
