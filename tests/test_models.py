@@ -32,6 +32,8 @@ from pyoverkiz.models import (
     DeviceStateChangedEvent,
     Event,
     EventState,
+    ExecutionRegisteredEvent,
+    ExecutionStateChangedEvent,
     Gateway,
     PersistedActionGroup,
     Setup,
@@ -1188,6 +1190,35 @@ class TestEvent:
         assert isinstance(event, Event)
         assert event.device_url == "io://1234-5678-9012/4468654#1"
         assert len(event.device_states) == 1
+
+    def test_execution_state_changed_event_subtype(self):
+        """ExecutionStateChangedEvent carries execution transition fields."""
+        event = ExecutionStateChangedEvent(
+            name=EventName.EXECUTION_STATE_CHANGED,
+            exec_id="c6f83624-ac10-3e01-653e-2b025fee956d",
+            new_state=ExecutionState.IN_PROGRESS,
+            old_state=ExecutionState.TRANSMITTED,
+        )
+        assert isinstance(event, Event)
+        assert event.new_state is ExecutionState.IN_PROGRESS
+        assert event.old_state is ExecutionState.TRANSMITTED
+
+    def test_execution_registered_event_subtype(self):
+        """ExecutionRegisteredEvent carries actions and exec metadata."""
+        event = ExecutionRegisteredEvent(
+            name=EventName.EXECUTION_REGISTERED,
+            exec_id="c6f83624-ac10-3e01-653e-2b025fee956d",
+            label="Volet salon",
+            actions=[
+                Action(
+                    device_url="io://1234-5678-9012/11212197",
+                    commands=[Command(name="setClosure")],
+                )
+            ],
+        )
+        assert isinstance(event, Event)
+        assert event.exec_id == "c6f83624-ac10-3e01-653e-2b025fee956d"
+        assert len(event.actions) == 1
 
 
 class TestActionGroup:

@@ -15,6 +15,7 @@ from pyoverkiz.enums import (
     ExecutionState,
     ExecutionSubType,
     ExecutionType,
+    FailureType,
     GatewaySubType,
     GatewayType,
     ProductType,
@@ -581,6 +582,36 @@ class DeviceStateChangedEvent(Event):
             EventState(**s) if isinstance(s, dict) else s for s in states
         ],
     )
+
+
+@define(kw_only=True)
+class ExecutionRegisteredEvent(Event):
+    """A new execution was registered."""
+
+    exec_id: str | None = None
+    label: str | None = None
+    metadata: str | None = None
+    type: int | None = None
+    sub_type: int | None = None
+    actions: list[Action] = field(factory=list)
+    source: str | None = None
+    owner: str | None = field(repr=obfuscate_email, default=None)
+
+
+@define(kw_only=True)
+class ExecutionStateChangedEvent(Event):
+    """An execution state has changed."""
+
+    exec_id: str | None = None
+    new_state: ExecutionState | None = None
+    old_state: ExecutionState | None = None
+    owner_key: str | None = field(repr=obfuscate_id, default=None)
+    type: int | None = None
+    sub_type: int | None = None
+    time_to_next_state: int | None = None
+    failed_commands: list[dict[str, Any]] | None = None
+    failure_type: str | None = None
+    failure_type_code: FailureType | None = None
 
 
 @define(kw_only=True)
