@@ -556,13 +556,6 @@ class PersistedActionGroup(ActionGroup):
         return self.oid
 
 
-def _to_event_states(states: list[Any] | None) -> list[EventState]:
-    """Structure a raw deviceStates list into EventState instances (None -> [])."""
-    if not states:
-        return []
-    return [EventState(**s) if isinstance(s, dict) else s for s in states]
-
-
 @define(kw_only=True)
 class Event:
     """Base Overkiz event; structured into a subtype by ``name`` (see converter)."""
@@ -588,7 +581,7 @@ class DeviceEvent(Event):
 class DeviceStateChangedEvent(DeviceEvent):
     """One or more states of a device changed (high-level)."""
 
-    device_states: list[EventState] = field(factory=list, converter=_to_event_states)
+    device_states: list[EventState] = field(factory=list)
 
 
 @define(kw_only=True)

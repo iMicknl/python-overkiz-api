@@ -19,7 +19,6 @@ from pyoverkiz.models import (
     CommandDefinition,
     CommandDefinitions,
     Event,
-    EventState,
     State,
     StateDefinition,
     StateDefinitions,
@@ -102,16 +101,6 @@ def _make_converter() -> cattrs.Converter:
     c.register_structure_hook(CommandDefinitions, _structure_command_definitions)
     c.register_structure_hook(StateDefinitions, _structure_state_definitions)
 
-    # Treat a missing / null deviceStates as empty; cattrs' list hook raises on None.
-    def _structure_event_states(val: Any, _: type) -> list[EventState]:
-        if not val:
-            return []
-        return [c.structure(s, EventState) for s in val]
-
-    c.register_structure_hook_func(
-        lambda t: t == list[EventState], _structure_event_states
-    )
-
     # For all other attrs classes: lazily generate a hook that renames camelCase
     # API keys to snake_case on first use. This avoids manual dependency ordering.
     skip = {States, CommandDefinitions, StateDefinitions}
@@ -149,6 +138,22 @@ def _make_converter() -> cattrs.Converter:
             return event_hooks[Event](val, Event)  # type: ignore[no-any-return]
 
     c.register_structure_hook(Event, _structure_event)
+
+    def _structure_event_list(val: Any, _: type) -> list[Event]:
+        # A single unstructurable event (e.g. missing "name", or not a dict) must
+        # not sink the whole poll. _structure_event already degrades known
+        # subtypes to base Event; here we drop the few items it can't build at all.
+        if not val:
+            return []
+        events: list[Event] = []
+        for raw in val:
+            try:
+                events.append(_structure_event(raw, Event))
+            except (ClassValidationError, ValueError, TypeError) as err:
+                _LOGGER.warning("Dropping unstructurable event %r (%s)", raw, err)
+        return events
+
+    c.register_structure_hook_func(lambda t: t == list[Event], _structure_event_list)
 
     return c
 

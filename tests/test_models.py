@@ -1456,19 +1456,6 @@ class TestEvent:
         assert event.gateway_id == "9876-1234-8767"
         assert event.protocol_type == 8
 
-    def test_device_state_changed_tolerates_null_device_states(self):
-        """A present-but-null deviceStates structures into an empty list, not a crash."""
-        event = converter.structure(
-            {
-                "name": "DeviceStateChangedEvent",
-                "deviceURL": "io://1234-5678-9012/4468654#1",
-                "deviceStates": None,
-            },
-            Event,
-        )
-        assert isinstance(event, DeviceStateChangedEvent)
-        assert event.device_states == []
-
     def test_subtype_missing_required_field_degrades_to_base_event(self, caplog):
         """A subtype payload missing a required field degrades to base Event, with a warning."""
         with caplog.at_level(logging.WARNING, logger="pyoverkiz.converter"):
@@ -1504,6 +1491,29 @@ class TestEvent:
         assert isinstance(events[0], DeviceStateChangedEvent)
         assert type(events[1]) is Event  # degraded
         assert isinstance(events[2], GatewaySynchronizationEndedEvent)
+
+    def test_unstructurable_event_is_dropped_from_the_batch(self, caplog):
+        """Events that cannot be built at all (no name, not a dict) are dropped, not raised."""
+        raw_events = [
+            {
+                "name": "DeviceStateChangedEvent",
+                "deviceURL": "io://1234-5678-9012/1",
+                "deviceStates": [],
+            },
+            {"deviceURL": "io://1234-5678-9012/2"},  # no "name" -> unstructurable
+            "garbage",  # not a dict -> unstructurable
+            {
+                "name": "GatewaySynchronizationEndedEvent",
+                "gatewayId": "9876-1234-8767",
+            },
+        ]
+        with caplog.at_level(logging.WARNING, logger="pyoverkiz.converter"):
+            events = converter.structure(raw_events, list[Event])
+
+        assert len(events) == 2  # the two unstructurable entries are dropped
+        assert isinstance(events[0], DeviceStateChangedEvent)
+        assert isinstance(events[1], GatewaySynchronizationEndedEvent)
+        assert "Dropping unstructurable event" in caplog.text
 
     def test_local_event_fixture_structures_all_events(self):
         """All events in the local-API fixture structure into DeviceStateChangedEvent."""
