@@ -571,6 +571,19 @@ class Event:
 
 
 @define(kw_only=True)
+class DeviceStateChangedEvent(Event):
+    """One or more states of a device changed (high-level)."""
+
+    device_url: str = field(repr=obfuscate_id, default="")
+    device_states: list[EventState] = field(
+        factory=list,
+        converter=lambda states: [
+            EventState(**s) if isinstance(s, dict) else s for s in states
+        ],
+    )
+
+
+@define(kw_only=True)
 class Execution:
     """Execution occurrence with owner, state and action group metadata."""
 

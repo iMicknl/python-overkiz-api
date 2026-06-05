@@ -29,6 +29,7 @@ from pyoverkiz.models import (
     CommandDefinitions,
     Definition,
     Device,
+    DeviceStateChangedEvent,
     Event,
     EventState,
     Gateway,
@@ -1169,6 +1170,24 @@ class TestEvent:
         assert event.owning_partners == ["partner-a"]
         assert not hasattr(event, "device_states")
         assert not hasattr(event, "new_state")
+
+    def test_device_state_changed_event_subtype(self):
+        """DeviceStateChangedEvent has required device_url and device_states."""
+        event = DeviceStateChangedEvent(
+            name=EventName.DEVICE_STATE_CHANGED,
+            device_url="io://1234-5678-9012/4468654#1",
+            device_states=[
+                EventState(
+                    name="core:ElectricEnergyConsumptionState",
+                    type=DataType.INTEGER,
+                    value=23247220,
+                )
+            ],
+        )
+
+        assert isinstance(event, Event)
+        assert event.device_url == "io://1234-5678-9012/4468654#1"
+        assert len(event.device_states) == 1
 
 
 class TestActionGroup:
