@@ -1150,6 +1150,26 @@ class TestEvent:
             assert isinstance(e.old_state, ExecutionState)
             assert isinstance(e.new_state, ExecutionState)
 
+    def test_base_event_has_universal_fields_only(self):
+        """Base Event keeps universal fields incl. new owning_partners; no subtype fields."""
+        event = converter.structure(
+            {
+                "name": "GatewaySynchronizationEndedEvent",
+                "timestamp": 1631130645998,
+                "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+                "owningPartners": ["partner-a"],
+            },
+            Event,
+        )
+
+        assert type(event) is Event
+        assert event.name == EventName.GATEWAY_SYNCHRONIZATION_ENDED
+        assert event.timestamp == 1631130645998
+        assert event.setup_oid == "741bc89f-a47b-4ad6-894d-a785c06956c2"
+        assert event.owning_partners == ["partner-a"]
+        assert not hasattr(event, "device_states")
+        assert not hasattr(event, "new_state")
+
 
 class TestActionGroup:
     """Tests for ActionGroup and PersistedActionGroup model split."""

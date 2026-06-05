@@ -15,7 +15,6 @@ from pyoverkiz.enums import (
     ExecutionState,
     ExecutionSubType,
     ExecutionType,
-    FailureType,
     GatewaySubType,
     GatewayType,
     ProductType,
@@ -558,39 +557,17 @@ class PersistedActionGroup(ActionGroup):
 
 @define(kw_only=True)
 class Event:
-    """Represents an Overkiz event containing metadata and device states."""
+    """Base Overkiz event. Carries fields common to every event.
+
+    Concrete events are structured into a subtype based on ``name`` (see the
+    discriminator in pyoverkiz.converter). Unknown / unmodeled event names
+    structure into this base class.
+    """
 
     name: EventName
     timestamp: int | None = None
     setup_oid: str | None = field(repr=obfuscate_id, default=None)
-    owner_key: str | None = field(repr=obfuscate_id, default=None)
-    type: int | None = None
-    sub_type: int | None = None
-    time_to_next_state: int | None = None
-    failed_commands: list[dict[str, Any]] | None = None
-    failure_type_code: FailureType | None = None
-    failure_type: str | None = None
-    condition_groupoid: str | None = None
-    place_oid: str | None = None
-    label: str | None = None
-    metadata: str | None = None
-    camera_id: str | None = None
-    deleted_raw_devices_count: int | None = None
-    protocol_type: int | None = None
-    gateway_id: str | None = field(repr=obfuscate_id, default=None)
-    exec_id: str | None = None
-    device_url: str | None = field(repr=obfuscate_id, default=None)
-    device_states: list[EventState] = field(
-        factory=list,
-        converter=lambda states: [
-            EventState(**s) if isinstance(s, dict) else s for s in states
-        ],
-    )
-    old_state: ExecutionState | None = None
-    new_state: ExecutionState | None = None
-    actions: list[Action] | None = None
-    owner: str | None = field(repr=obfuscate_email, default=None)
-    source: str | None = None
+    owning_partners: list[str] | None = None
 
 
 @define(kw_only=True)
