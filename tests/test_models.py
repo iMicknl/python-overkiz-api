@@ -1159,9 +1159,7 @@ class TestEvent:
         events = [converter.structure(e, Event) for e in raw_events]
 
         assert len(events) == len(raw_events)
-        state_changed = [
-            e for e in events if isinstance(e, ExecutionStateChangedEvent)
-        ]
+        state_changed = [e for e in events if isinstance(e, ExecutionStateChangedEvent)]
         assert state_changed  # fixture contains ExecutionStateChangedEvent entries
         for e in state_changed:
             assert isinstance(e.old_state, ExecutionState)
