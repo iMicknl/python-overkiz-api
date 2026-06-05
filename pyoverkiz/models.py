@@ -558,39 +558,341 @@ class PersistedActionGroup(ActionGroup):
 
 @define(kw_only=True)
 class Event:
-    """Represents an Overkiz event containing metadata and device states."""
+    """Base Overkiz event; structured into a subtype by ``name`` (see converter)."""
 
     name: EventName
     timestamp: int | None = None
     setup_oid: str | None = field(repr=obfuscate_id, default=None)
+    owning_partners: list[str] | None = None
+
+
+@define(kw_only=True)
+class DeviceEvent(Event):
+    """Any event about a device; ``device_url`` identifies it (required).
+
+    Narrow to this to handle all device events uniformly, or to a leaf subtype
+    (e.g. DeviceStateChangedEvent) for that event's full payload.
+    """
+
+    device_url: str = field(repr=obfuscate_id)
+
+
+@define(kw_only=True)
+class DeviceStateChangedEvent(DeviceEvent):
+    """One or more states of a device changed (high-level)."""
+
+    device_states: list[EventState] = field(factory=list)
+
+
+@define(kw_only=True)
+class ExecutionEvent(Event):
+    """Any event about an execution; ``exec_id`` identifies it (required).
+
+    Narrow to this to handle all execution events uniformly, or to a leaf
+    subtype (e.g. ExecutionStateChangedEvent) for that event's full payload.
+    """
+
+    exec_id: str
+
+
+@define(kw_only=True)
+class ExecutionRegisteredEvent(ExecutionEvent):
+    """A new execution was registered."""
+
+    label: str | None = None
+    metadata: str | None = None
+    type: int | None = None
+    sub_type: int | None = None
+    actions: list[Action] = field(factory=list)
+    source: str | None = None
+    owner: str | None = field(repr=obfuscate_email, default=None)
+
+
+@define(kw_only=True)
+class ExecutionStateChangedEvent(ExecutionEvent):
+    """An execution state has changed; new_state/old_state are required."""
+
+    new_state: ExecutionState
+    old_state: ExecutionState
     owner_key: str | None = field(repr=obfuscate_id, default=None)
     type: int | None = None
     sub_type: int | None = None
     time_to_next_state: int | None = None
     failed_commands: list[dict[str, Any]] | None = None
-    failure_type_code: FailureType | None = None
     failure_type: str | None = None
-    condition_groupoid: str | None = None
-    place_oid: str | None = None
-    label: str | None = None
-    metadata: str | None = None
-    camera_id: str | None = None
-    deleted_raw_devices_count: int | None = None
-    protocol_type: int | None = None
+    failure_type_code: FailureType | None = None
+
+
+@define(kw_only=True)
+class FailureEvent(Event):
+    """Any ``*FailedEvent``: failure reason plus the operation's scope id.
+
+    By design every ``*FailedEvent`` name structures into this one type rather
+    than a per-name class: consumers branch on "did it fail, and why"
+    (``failure_type``), not on which of the ~30 operations failed. The specific
+    operation is identified by ``event.name``.
+
+    gateway_id / device_url / protocol_type cover the documented failure
+    payloads.
+    """
+
+    failure_type: str | None = None
     gateway_id: str | None = field(repr=obfuscate_id, default=None)
-    exec_id: str | None = None
     device_url: str | None = field(repr=obfuscate_id, default=None)
-    device_states: list[EventState] = field(
-        factory=list,
-        converter=lambda states: [
-            EventState(**s) if isinstance(s, dict) else s for s in states
-        ],
-    )
-    old_state: ExecutionState | None = None
-    new_state: ExecutionState | None = None
-    actions: list[Action] | None = None
-    owner: str | None = field(repr=obfuscate_email, default=None)
-    source: str | None = None
+    protocol_type: int | None = None
+
+
+@define(kw_only=True)
+class GatewayEvent(Event):
+    """Any gateway event; ``gateway_id`` identifies it (required).
+
+    Narrow to this to handle all gateway events uniformly, or to a leaf subtype
+    (e.g. GatewayDownEvent) for that event's full payload.
+    """
+
+    gateway_id: str = field(repr=obfuscate_id)
+
+
+@define(kw_only=True)
+class GatewayActivatedEvent(GatewayEvent):
+    """A gateway was activated."""
+
+
+@define(kw_only=True)
+class GatewayActiveProtocolsChangedEvent(GatewayEvent):
+    """A gateway's active protocols changed."""
+
+
+@define(kw_only=True)
+class GatewayAliveEvent(GatewayEvent):
+    """A gateway became reachable."""
+
+
+@define(kw_only=True)
+class GatewayAssociatedEvent(GatewayEvent):
+    """A gateway was associated with the setup."""
+
+
+@define(kw_only=True)
+class GatewayAttachedEvent(GatewayEvent):
+    """A gateway was attached."""
+
+
+@define(kw_only=True)
+class GatewayBootEvent(GatewayEvent):
+    """A gateway booted."""
+
+
+@define(kw_only=True)
+class GatewayDeactivatedEvent(GatewayEvent):
+    """A gateway was deactivated."""
+
+
+@define(kw_only=True)
+class GatewayDetachedEvent(GatewayEvent):
+    """A gateway was detached."""
+
+
+@define(kw_only=True)
+class GatewayDissociatedEvent(GatewayEvent):
+    """A gateway was dissociated from the setup."""
+
+
+@define(kw_only=True)
+class GatewayDownEvent(GatewayEvent):
+    """A gateway became unreachable."""
+
+
+@define(kw_only=True)
+class GatewayDownOptionsChangedEvent(GatewayEvent):
+    """A gateway's down-detection timeout changed."""
+
+    timeout: int | None = None
+
+
+@define(kw_only=True)
+class GatewayFirmwareUpdatedEvent(GatewayEvent):
+    """A gateway's firmware was updated."""
+
+
+@define(kw_only=True)
+class GatewayFirmwareUpdateCompletedEvent(GatewayEvent):
+    """A gateway firmware update completed."""
+
+    firmware_type: str | None = None
+
+
+@define(kw_only=True)
+class GatewayFunctionChangedEvent(GatewayEvent):
+    """A gateway function was enabled or disabled."""
+
+    function_type: int | None = None
+    enabled: bool | None = None
+
+
+@define(kw_only=True)
+class GatewayMigratedEvent(GatewayEvent):
+    """A gateway was migrated."""
+
+
+@define(kw_only=True)
+class GatewayModeChangedEvent(GatewayEvent):
+    """A gateway's mode changed."""
+
+
+@define(kw_only=True)
+class GatewayPlaceUpdatedEvent(GatewayEvent):
+    """A gateway's place was updated."""
+
+
+@define(kw_only=True)
+class GatewayProtocolDownEvent(GatewayEvent):
+    """A gateway protocol became unavailable."""
+
+
+@define(kw_only=True)
+class GatewayProtocolReadyEvent(GatewayEvent):
+    """A gateway protocol became available."""
+
+
+@define(kw_only=True)
+class GatewaySynchronizationEndedEvent(GatewayEvent):
+    """A gateway synchronization ended."""
+
+
+@define(kw_only=True)
+class GatewaySynchronizationStartedEvent(GatewayEvent):
+    """A gateway synchronization started."""
+
+
+@define(kw_only=True)
+class GatewayTimeReliabilityChangedEvent(GatewayEvent):
+    """A gateway's time reliability changed."""
+
+
+@define(kw_only=True)
+class DeviceAvailableEvent(DeviceEvent):
+    """A device became available."""
+
+
+@define(kw_only=True)
+class DeviceUnavailableEvent(DeviceEvent):
+    """A device became unavailable."""
+
+
+@define(kw_only=True)
+class DeviceDisabledEvent(DeviceEvent):
+    """A device was disabled."""
+
+
+@define(kw_only=True)
+class _DeviceMetadataEvent(DeviceEvent):
+    """Shared base for device create/update events (carry label/place metadata)."""
+
+    controllable_name: str | None = None
+    label: str | None = field(repr=obfuscate_string, default=None)
+    place_oid: str | None = None
+    metadata: str | None = None
+
+
+@define(kw_only=True)
+class DeviceCreatedEvent(_DeviceMetadataEvent):
+    """A device was created."""
+
+
+@define(kw_only=True)
+class DeviceUpdatedEvent(_DeviceMetadataEvent):
+    """A device was updated."""
+
+
+@define(kw_only=True)
+class DeviceRemovedEvent(DeviceEvent):
+    """A device was removed."""
+
+    controllable_name: str | None = None
+
+
+@define(kw_only=True)
+class ZoneEvent(Event):
+    """Any zone event; ``zone_oid`` identifies it (required).
+
+    Narrow to this to handle all zone events uniformly, or to a leaf subtype
+    (e.g. ZoneCreatedEvent) for that event's full payload.
+    """
+
+    zone_oid: str
+
+
+@define(kw_only=True)
+class ZoneDeletedEvent(ZoneEvent):
+    """A zone was deleted."""
+
+
+@define(kw_only=True)
+class _ZoneMutationEvent(ZoneEvent):
+    """Shared base for zone create/update events (carry membership lists)."""
+
+    type: int | None = None
+    label: str | None = field(repr=obfuscate_string, default=None)
+    device_urls: list[str] = field(factory=list)
+    place_oids: list[str] = field(factory=list)
+
+
+@define(kw_only=True)
+class ZoneCreatedEvent(_ZoneMutationEvent):
+    """A zone was created."""
+
+
+@define(kw_only=True)
+class ZoneUpdatedEvent(_ZoneMutationEvent):
+    """A zone was updated."""
+
+
+# Event name -> subtype. Unlisted names structure into the base Event.
+EVENT_TYPE_BY_NAME: dict[EventName, type[Event]] = {
+    EventName.DEVICE_STATE_CHANGED: DeviceStateChangedEvent,
+    EventName.EXECUTION_REGISTERED: ExecutionRegisteredEvent,
+    EventName.EXECUTION_STATE_CHANGED: ExecutionStateChangedEvent,
+    EventName.DEVICE_AVAILABLE: DeviceAvailableEvent,
+    EventName.DEVICE_UNAVAILABLE: DeviceUnavailableEvent,
+    EventName.DEVICE_DISABLED: DeviceDisabledEvent,
+    EventName.DEVICE_CREATED: DeviceCreatedEvent,
+    EventName.DEVICE_UPDATED: DeviceUpdatedEvent,
+    EventName.DEVICE_REMOVED: DeviceRemovedEvent,
+    EventName.ZONE_CREATED: ZoneCreatedEvent,
+    EventName.ZONE_UPDATED: ZoneUpdatedEvent,
+    EventName.ZONE_DELETED: ZoneDeletedEvent,
+    EventName.GATEWAY_ACTIVATED: GatewayActivatedEvent,
+    EventName.GATEWAY_ACTIVE_PROTOCOLS_CHANGED: GatewayActiveProtocolsChangedEvent,
+    EventName.GATEWAY_ALIVE: GatewayAliveEvent,
+    EventName.GATEWAY_ASSOCIATED: GatewayAssociatedEvent,
+    EventName.GATEWAY_ATTACHED: GatewayAttachedEvent,
+    EventName.GATEWAY_BOOT: GatewayBootEvent,
+    EventName.GATEWAY_DEACTIVATED: GatewayDeactivatedEvent,
+    EventName.GATEWAY_DETACHED: GatewayDetachedEvent,
+    EventName.GATEWAY_DISSOCIATED: GatewayDissociatedEvent,
+    EventName.GATEWAY_DOWN: GatewayDownEvent,
+    EventName.GATEWAY_DOWN_OPTIONS_CHANGED: GatewayDownOptionsChangedEvent,
+    EventName.GATEWAY_FIRMWARE_UPDATED: GatewayFirmwareUpdatedEvent,
+    EventName.GATEWAY_FIRMWARE_UPDATE_COMPLETED: GatewayFirmwareUpdateCompletedEvent,
+    EventName.GATEWAY_FUNCTION_CHANGED: GatewayFunctionChangedEvent,
+    EventName.GATEWAY_MIGRATED: GatewayMigratedEvent,
+    EventName.GATEWAY_MODE_CHANGED: GatewayModeChangedEvent,
+    EventName.GATEWAY_PLACE_UPDATED: GatewayPlaceUpdatedEvent,
+    EventName.GATEWAY_PROTOCOL_DOWN: GatewayProtocolDownEvent,
+    EventName.GATEWAY_PROTOCOL_READY: GatewayProtocolReadyEvent,
+    EventName.GATEWAY_SYNCHRONIZATION_ENDED: GatewaySynchronizationEndedEvent,
+    EventName.GATEWAY_SYNCHRONIZATION_STARTED: GatewaySynchronizationStartedEvent,
+    EventName.GATEWAY_TIME_RELIABILITY_CHANGED: GatewayTimeReliabilityChangedEvent,
+}
+
+# Every "*FailedEvent" structures into the shared FailureEvent (see its
+# docstring); derived from the enum so new failure names are covered too.
+# Explicit mappings above win.
+for _name in EventName:
+    if _name.value.endswith("FailedEvent"):
+        EVENT_TYPE_BY_NAME.setdefault(_name, FailureEvent)
+del _name
 
 
 @define(kw_only=True)

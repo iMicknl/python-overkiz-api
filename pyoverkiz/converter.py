@@ -2,24 +2,30 @@
 
 from __future__ import annotations
 
+import logging
 import types
 from enum import Enum
 from typing import Any, Union, get_args, get_origin
 
 import attr
 import cattrs
+from cattrs.errors import ClassValidationError
 from cattrs.gen import make_dict_structure_fn, override
 
 from pyoverkiz._case import camelize_key
-from pyoverkiz.enums import GatewaySubType
+from pyoverkiz.enums import EventName, GatewaySubType
 from pyoverkiz.models import (
+    EVENT_TYPE_BY_NAME,
     CommandDefinition,
     CommandDefinitions,
+    Event,
     State,
     StateDefinition,
     StateDefinitions,
     States,
 )
+
+_LOGGER = logging.getLogger(__name__)
 
 
 def _is_primitive_union(t: Any) -> bool:
@@ -102,6 +108,52 @@ def _make_converter() -> cattrs.Converter:
         lambda t: isinstance(t, type) and attr.has(t) and t not in skip,
         _rename_hook_factory,
     )
+
+    # Event is a discriminated union keyed on "name". Pre-build each subtype's
+    # hook and call it directly; routing via c.structure(val, subtype) would
+    # re-enter this hook (subclass dispatches to its base) and recurse forever.
+    event_types: set[type[Event]] = {Event, *EVENT_TYPE_BY_NAME.values()}
+    event_hooks: dict[type[Event], Any] = {
+        cls: _rename_hook_factory(cls, c) for cls in event_types
+    }
+
+    def _structure_event(val: Any, _: type) -> Event:
+        name = val.get("name") if isinstance(val, dict) else None
+        target: type[Event] = Event
+        if name is not None:
+            target = EVENT_TYPE_BY_NAME.get(EventName(name), Event)
+        try:
+            return event_hooks[target](val, target)  # type: ignore[no-any-return]
+        except ClassValidationError as err:
+            # A payload missing a required field degrades to base Event rather
+            # than failing the whole batch; the warning flags a field to loosen.
+            if target is Event:
+                raise
+            _LOGGER.warning(
+                "Could not structure %s as %s (%s); falling back to base Event",
+                name,
+                target.__name__,
+                err,
+            )
+            return event_hooks[Event](val, Event)  # type: ignore[no-any-return]
+
+    c.register_structure_hook(Event, _structure_event)
+
+    def _structure_event_list(val: Any, _: type) -> list[Event]:
+        # A single unstructurable event (e.g. missing "name", or not a dict) must
+        # not sink the whole poll. _structure_event already degrades known
+        # subtypes to base Event; here we drop the few items it can't build at all.
+        if not val:
+            return []
+        events: list[Event] = []
+        for raw in val:
+            try:
+                events.append(_structure_event(raw, Event))
+            except (ClassValidationError, ValueError, TypeError) as err:
+                _LOGGER.warning("Dropping unstructurable event %r (%s)", raw, err)
+        return events
+
+    c.register_structure_hook_func(lambda t: t == list[Event], _structure_event_list)
 
     return c
 

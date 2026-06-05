@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import logging
 from pathlib import Path
 
 import cattrs.errors
@@ -29,15 +30,30 @@ from pyoverkiz.models import (
     CommandDefinitions,
     Definition,
     Device,
+    DeviceAvailableEvent,
+    DeviceCreatedEvent,
+    DeviceDisabledEvent,
+    DeviceRemovedEvent,
+    DeviceStateChangedEvent,
+    DeviceUnavailableEvent,
+    DeviceUpdatedEvent,
     Event,
     EventState,
+    ExecutionRegisteredEvent,
+    ExecutionStateChangedEvent,
+    FailureEvent,
     Gateway,
+    GatewayFunctionChangedEvent,
+    GatewaySynchronizationEndedEvent,
     PersistedActionGroup,
     Setup,
     State,
     StateDefinition,
     StateDefinitions,
     States,
+    ZoneCreatedEvent,
+    ZoneDeletedEvent,
+    ZoneUpdatedEvent,
 )
 from pyoverkiz.obfuscate import obfuscate_id
 
@@ -1080,6 +1096,7 @@ class TestEvent:
             Event,
         )
 
+        assert isinstance(event, ExecutionStateChangedEvent)
         assert event.name == EventName.EXECUTION_STATE_CHANGED
         assert event.old_state is ExecutionState.TRANSMITTED
         assert event.new_state is ExecutionState.IN_PROGRESS
@@ -1091,28 +1108,32 @@ class TestEvent:
             {
                 "name": "ExecutionStateChangedEvent",
                 "timestamp": 123,
+                "execId": "c6f83624-ac10-3e01-653e-2b025fee956d",
+                "newState": "FAILED",
+                "oldState": "IN_PROGRESS",
                 "failureTypeCode": 0,
             },
             Event,
         )
 
+        assert isinstance(event, ExecutionStateChangedEvent)
         assert isinstance(event.failure_type_code, FailureType)
         assert event.failure_type_code is FailureType.NO_FAILURE
 
     def test_optional_enum_fields_none_when_absent(self):
-        """Optional enum fields default to None when not present in the payload."""
+        """Base events do not expose subtype-only enum fields."""
         event = converter.structure(
             {
-                "name": "GatewaySynchronizationEndedEvent",
+                "name": "CommandExecutionStateChangedEvent",
                 "timestamp": 1631130645998,
-                "gatewayId": "9876-1234-8767",
             },
             Event,
         )
 
-        assert event.old_state is None
-        assert event.new_state is None
-        assert event.failure_type_code is None
+        assert type(event) is Event
+        assert not hasattr(event, "old_state")
+        assert not hasattr(event, "new_state")
+        assert not hasattr(event, "failure_type_code")
 
     def test_device_state_changed_event_with_states(self):
         """DeviceStateChangedEvent payload structures device_states as EventState."""
@@ -1133,6 +1154,7 @@ class TestEvent:
             Event,
         )
 
+        assert isinstance(event, DeviceStateChangedEvent)
         assert event.name == EventName.DEVICE_STATE_CHANGED
         assert len(event.device_states) == 1
         assert isinstance(event.device_states[0], EventState)
@@ -1143,12 +1165,373 @@ class TestEvent:
         events = [converter.structure(e, Event) for e in raw_events]
 
         assert len(events) == len(raw_events)
-        state_changed = [
-            e for e in events if e.name == EventName.EXECUTION_STATE_CHANGED
-        ]
+        state_changed = [e for e in events if isinstance(e, ExecutionStateChangedEvent)]
+        assert state_changed  # fixture contains ExecutionStateChangedEvent entries
         for e in state_changed:
             assert isinstance(e.old_state, ExecutionState)
             assert isinstance(e.new_state, ExecutionState)
+
+    def test_base_event_has_universal_fields_only(self):
+        """Base Event keeps universal fields incl. new owning_partners; no subtype fields."""
+        event = converter.structure(
+            {
+                "name": "CommandExecutionStateChangedEvent",
+                "timestamp": 1631130645998,
+                "setupOID": "741bc89f-a47b-4ad6-894d-a785c06956c2",
+                "owningPartners": ["partner-a"],
+            },
+            Event,
+        )
+
+        assert type(event) is Event
+        assert event.name == EventName.COMMAND_EXECUTION_STATE_CHANGE
+        assert event.timestamp == 1631130645998
+        assert event.setup_oid == "741bc89f-a47b-4ad6-894d-a785c06956c2"
+        assert event.owning_partners == ["partner-a"]
+        assert not hasattr(event, "device_states")
+        assert not hasattr(event, "new_state")
+
+    def test_device_state_changed_event_subtype(self):
+        """DeviceStateChangedEvent has required device_url and device_states."""
+        event = DeviceStateChangedEvent(
+            name=EventName.DEVICE_STATE_CHANGED,
+            device_url="io://1234-5678-9012/4468654#1",
+            device_states=[
+                EventState(
+                    name="core:ElectricEnergyConsumptionState",
+                    type=DataType.INTEGER,
+                    value=23247220,
+                )
+            ],
+        )
+
+        assert isinstance(event, Event)
+        assert event.device_url == "io://1234-5678-9012/4468654#1"
+        assert len(event.device_states) == 1
+
+    def test_execution_state_changed_event_subtype(self):
+        """ExecutionStateChangedEvent carries execution transition fields."""
+        event = ExecutionStateChangedEvent(
+            name=EventName.EXECUTION_STATE_CHANGED,
+            exec_id="c6f83624-ac10-3e01-653e-2b025fee956d",
+            new_state=ExecutionState.IN_PROGRESS,
+            old_state=ExecutionState.TRANSMITTED,
+        )
+        assert isinstance(event, Event)
+        assert event.new_state is ExecutionState.IN_PROGRESS
+        assert event.old_state is ExecutionState.TRANSMITTED
+
+    def test_execution_registered_event_subtype(self):
+        """ExecutionRegisteredEvent carries actions and exec metadata."""
+        event = ExecutionRegisteredEvent(
+            name=EventName.EXECUTION_REGISTERED,
+            exec_id="c6f83624-ac10-3e01-653e-2b025fee956d",
+            label="Volet salon",
+            actions=[
+                Action(
+                    device_url="io://1234-5678-9012/11212197",
+                    commands=[Command(name="setClosure")],
+                )
+            ],
+        )
+        assert isinstance(event, Event)
+        assert event.exec_id == "c6f83624-ac10-3e01-653e-2b025fee956d"
+        assert len(event.actions) == 1
+
+    def test_failure_event_subtype(self):
+        """FailureEvent carries failure_type plus the operation's scope id."""
+        event = FailureEvent(
+            name=EventName.GATEWAY_SYNCHRONIZATION_FAILED,
+            failure_type="some failure",
+            gateway_id="9876-1234-8767",
+        )
+        assert isinstance(event, Event)
+        assert event.failure_type == "some failure"
+        assert event.gateway_id == "9876-1234-8767"
+        # failureTypeCode is never sent on *FailedEvent; it is not modeled here.
+        assert not hasattr(event, "failure_type_code")
+
+    def test_device_lifecycle_subtypes(self):
+        """Device lifecycle events carry device_url; created/updated/removed add controllable_name."""
+        created = DeviceCreatedEvent(
+            name=EventName.DEVICE_CREATED,
+            device_url="io://1234-5678-9012/4468654",
+            controllable_name="io:RollerShutterGenericIOComponent",
+        )
+        assert created.device_url == "io://1234-5678-9012/4468654"
+        assert created.controllable_name == "io:RollerShutterGenericIOComponent"
+
+        updated = DeviceUpdatedEvent(
+            name=EventName.DEVICE_UPDATED,
+            device_url="io://1234-5678-9012/4468654",
+            controllable_name="io:RollerShutterGenericIOComponent",
+        )
+        assert updated.controllable_name == "io:RollerShutterGenericIOComponent"
+
+        removed = DeviceRemovedEvent(
+            name=EventName.DEVICE_REMOVED,
+            device_url="io://1234-5678-9012/4468654",
+            controllable_name="io:RollerShutterGenericIOComponent",
+        )
+        assert removed.controllable_name == "io:RollerShutterGenericIOComponent"
+
+        # Available / Unavailable / Disabled carry only device_url (no controllable_name).
+        for cls, event_name in (
+            (DeviceAvailableEvent, EventName.DEVICE_AVAILABLE),
+            (DeviceUnavailableEvent, EventName.DEVICE_UNAVAILABLE),
+            (DeviceDisabledEvent, EventName.DEVICE_DISABLED),
+        ):
+            event = cls(name=event_name, device_url="io://1234-5678-9012/4468654")
+            assert isinstance(event, Event)
+            assert event.device_url == "io://1234-5678-9012/4468654"
+            assert not hasattr(event, "controllable_name")
+
+    def test_zone_event_subtypes(self):
+        """Zone events carry zone_oid; create/update add device_urls and place_oids."""
+        created = ZoneCreatedEvent(
+            name=EventName.ZONE_CREATED,
+            zone_oid="zone-1",
+            device_urls=["io://1234-5678-9012/1"],
+            place_oids=["place-1"],
+        )
+        assert created.zone_oid == "zone-1"
+        assert created.device_urls == ["io://1234-5678-9012/1"]
+        assert created.place_oids == ["place-1"]
+
+        updated = ZoneUpdatedEvent(
+            name=EventName.ZONE_UPDATED,
+            zone_oid="zone-1",
+            device_urls=["io://1234-5678-9012/1"],
+            place_oids=["place-1"],
+        )
+        assert updated.zone_oid == "zone-1"
+        assert updated.device_urls == ["io://1234-5678-9012/1"]
+
+        deleted = ZoneDeletedEvent(name=EventName.ZONE_DELETED, zone_oid="zone-1")
+        assert isinstance(deleted, Event)
+        assert deleted.zone_oid == "zone-1"
+        assert not hasattr(deleted, "device_urls")
+
+    def test_converter_dispatches_zone_created_with_api_casing(self):
+        """Zone payload keys (zoneOID/deviceURLs/placeOIDs) map to snake_case fields."""
+        event = converter.structure(
+            {
+                "name": "ZoneCreatedEvent",
+                "zoneOID": "zone-1",
+                "type": 1,
+                "deviceURLs": ["io://1234-5678-9012/1"],
+                "placeOIDs": ["place-1"],
+            },
+            Event,
+        )
+        assert isinstance(event, ZoneCreatedEvent)
+        assert event.zone_oid == "zone-1"
+        assert event.device_urls == ["io://1234-5678-9012/1"]
+        assert event.place_oids == ["place-1"]
+
+    def test_converter_dispatches_device_state_changed(self):
+        """Structuring a DeviceStateChangedEvent payload yields the subtype."""
+        event = converter.structure(
+            {
+                "name": "DeviceStateChangedEvent",
+                "timestamp": 1631130646544,
+                "deviceURL": "io://1234-5678-9012/4468654#1",
+                "deviceStates": [
+                    {
+                        "name": "core:ElectricEnergyConsumptionState",
+                        "type": 1,
+                        "value": "23247220",
+                    }
+                ],
+            },
+            Event,
+        )
+        assert isinstance(event, DeviceStateChangedEvent)
+        assert event.device_url == "io://1234-5678-9012/4468654#1"
+        assert event.device_states[0].value == 23247220  # cast by EventState
+
+    def test_converter_dispatches_execution_state_changed(self):
+        """Structuring an ExecutionStateChangedEvent payload yields the subtype."""
+        event = converter.structure(
+            {
+                "name": "ExecutionStateChangedEvent",
+                "newState": "IN_PROGRESS",
+                "oldState": "TRANSMITTED",
+                "execId": "abc",
+            },
+            Event,
+        )
+        assert isinstance(event, ExecutionStateChangedEvent)
+        assert event.new_state is ExecutionState.IN_PROGRESS
+
+    def test_converter_dispatches_gateway_event(self):
+        """A Gateway* event structures into its own per-name class with gateway_id."""
+        event = converter.structure(
+            {
+                "name": "GatewaySynchronizationEndedEvent",
+                "timestamp": 1631130645998,
+                "gatewayId": "9876-1234-8767",
+            },
+            Event,
+        )
+        assert isinstance(event, GatewaySynchronizationEndedEvent)
+        assert event.name == EventName.GATEWAY_SYNCHRONIZATION_ENDED
+        assert event.gateway_id == "9876-1234-8767"
+
+    def test_converter_dispatches_gateway_event_with_extra_fields(self):
+        """A gateway event with documented extra payload exposes it on its subtype."""
+        event = converter.structure(
+            {
+                "name": "GatewayFunctionChangedEvent",
+                "gatewayId": "9876-1234-8767",
+                "functionType": 1,
+                "enabled": False,
+            },
+            Event,
+        )
+        assert isinstance(event, GatewayFunctionChangedEvent)
+        assert event.function_type == 1
+        assert event.enabled is False
+
+    def test_converter_falls_back_to_base_event(self):
+        """Unmodeled, non-gateway, non-failure event names structure into base Event."""
+        event = converter.structure(
+            {"name": "CommandExecutionStateChangedEvent", "timestamp": 1},
+            Event,
+        )
+        assert type(event) is Event
+        assert event.name == EventName.COMMAND_EXECUTION_STATE_CHANGE
+
+    def test_converter_unknown_event_name_falls_back_to_base(self):
+        """Genuinely unknown event names use UnknownEnumMixin and base Event."""
+        event = converter.structure(
+            {"name": "SomeBrandNewEvent", "timestamp": 1},
+            Event,
+        )
+        assert type(event) is Event
+        assert event.name == EventName.UNKNOWN
+
+    def test_converter_dispatches_failed_event_to_failure_event(self):
+        """A gateway *FailedEvent structures into FailureEvent and keeps gateway_id."""
+        event = converter.structure(
+            {
+                "name": "GatewaySynchronizationFailedEvent",
+                "timestamp": 1,
+                "failureType": "some failure",
+                "gatewayId": "9876-1234-8767",
+            },
+            Event,
+        )
+        assert isinstance(event, FailureEvent)
+        assert event.failure_type == "some failure"
+        assert event.gateway_id == "9876-1234-8767"
+
+    def test_converter_dispatches_device_failed_event_keeps_device_url(self):
+        """A device-scoped *FailedEvent keeps its deviceURL via FailureEvent."""
+        event = converter.structure(
+            {
+                "name": "DeviceFirmwareUpdateFailedEvent",
+                "timestamp": 1,
+                "failureType": "some failure",
+                "deviceURL": "io://1234-5678-9012/4468654",
+            },
+            Event,
+        )
+        assert isinstance(event, FailureEvent)
+        assert event.device_url == "io://1234-5678-9012/4468654"
+
+    def test_converter_dispatches_failed_event_keeps_protocol_type(self):
+        """A discovery/refresh *FailedEvent keeps its protocolType via FailureEvent."""
+        event = converter.structure(
+            {
+                "name": "RefreshAllDevicesStatesFailedEvent",
+                "timestamp": 1,
+                "failureType": "some failure",
+                "gatewayId": "9876-1234-8767",
+                "protocolType": 8,
+            },
+            Event,
+        )
+        assert isinstance(event, FailureEvent)
+        assert event.gateway_id == "9876-1234-8767"
+        assert event.protocol_type == 8
+
+    def test_subtype_missing_required_field_degrades_to_base_event(self, caplog):
+        """A subtype payload missing a required field degrades to base Event, with a warning."""
+        with caplog.at_level(logging.WARNING, logger="pyoverkiz.converter"):
+            event = converter.structure(
+                # DeviceStateChangedEvent without the required deviceURL.
+                {"name": "DeviceStateChangedEvent", "deviceStates": []},
+                Event,
+            )
+
+        assert type(event) is Event
+        assert event.name == EventName.DEVICE_STATE_CHANGED
+        assert "falling back to base Event" in caplog.text
+
+    def test_one_malformed_event_does_not_fail_the_batch(self, caplog):
+        """A malformed event in a list degrades alone; the rest structure normally."""
+        raw_events = [
+            {
+                "name": "DeviceStateChangedEvent",
+                "deviceURL": "io://1234-5678-9012/1",
+                "deviceStates": [],
+            },
+            # Missing the required deviceURL -> degrades to base Event.
+            {"name": "DeviceStateChangedEvent", "deviceStates": []},
+            {
+                "name": "GatewaySynchronizationEndedEvent",
+                "gatewayId": "9876-1234-8767",
+            },
+        ]
+        with caplog.at_level(logging.WARNING, logger="pyoverkiz.converter"):
+            events = converter.structure(raw_events, list[Event])
+
+        assert len(events) == 3
+        assert isinstance(events[0], DeviceStateChangedEvent)
+        assert type(events[1]) is Event  # degraded
+        assert isinstance(events[2], GatewaySynchronizationEndedEvent)
+
+    def test_unstructurable_event_is_dropped_from_the_batch(self, caplog):
+        """Events that cannot be built at all (no name, not a dict) are dropped, not raised."""
+        raw_events = [
+            {
+                "name": "DeviceStateChangedEvent",
+                "deviceURL": "io://1234-5678-9012/1",
+                "deviceStates": [],
+            },
+            {"deviceURL": "io://1234-5678-9012/2"},  # no "name" -> unstructurable
+            "garbage",  # not a dict -> unstructurable
+            {
+                "name": "GatewaySynchronizationEndedEvent",
+                "gatewayId": "9876-1234-8767",
+            },
+        ]
+        with caplog.at_level(logging.WARNING, logger="pyoverkiz.converter"):
+            events = converter.structure(raw_events, list[Event])
+
+        assert len(events) == 2  # the two unstructurable entries are dropped
+        assert isinstance(events[0], DeviceStateChangedEvent)
+        assert isinstance(events[1], GatewaySynchronizationEndedEvent)
+        assert "Dropping unstructurable event" in caplog.text
+
+    def test_local_event_fixture_structures_all_events(self):
+        """All events in the local-API fixture structure into DeviceStateChangedEvent."""
+        raw_events = json.loads(
+            (Path("tests/fixtures/event/local_events.json")).read_text()
+        )
+        events = [converter.structure(e, Event) for e in raw_events]
+
+        assert len(events) == len(raw_events)
+        for e in events:
+            assert isinstance(e, DeviceStateChangedEvent)
+            assert e.device_url  # non-empty
+            assert e.device_states  # non-empty
+
+        # Local API returns already-typed values; nested object value is preserved.
+        manufacturer = events[0].device_states[0]
+        assert manufacturer.name == "core:ManufacturerSettingsState"
+        assert manufacturer.value == {"current_position": 0}
 
 
 class TestActionGroup:

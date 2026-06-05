@@ -30,6 +30,7 @@ from pyoverkiz.models import (
     Action,
     Command,
     DeveloperMode,
+    DeviceStateChangedEvent,
     Execution,
     HistoryExecution,
     LocalToken,
@@ -201,6 +202,9 @@ class TestOverkizClient:
             events = await client.fetch_events()
 
             for event in events:
+                # Only device state changed events carry device_states.
+                if not isinstance(event, DeviceStateChangedEvent):
+                    continue
                 for state in event.device_states:
                     if state.type == 0:
                         assert state.value is None

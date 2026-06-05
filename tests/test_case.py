@@ -19,3 +19,11 @@ class TestCamelize:
     def test_device_url(self):
         """device_url camelizes to deviceURL (non-standard API casing)."""
         assert camelize_key("device_url") == "deviceURL"
+
+    def test_acronym_overrides(self):
+        """Keys ending in OID/URL(s) use the API's uppercase acronym casing."""
+        assert camelize_key("setup_oid") == "setupOID"
+        assert camelize_key("place_oid") == "placeOID"
+        assert camelize_key("zone_oid") == "zoneOID"
+        assert camelize_key("device_urls") == "deviceURLs"
+        assert camelize_key("place_oids") == "placeOIDs"
