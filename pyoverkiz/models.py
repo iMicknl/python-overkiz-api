@@ -574,24 +574,38 @@ class Event:
 
 
 @define(kw_only=True)
-class _DeviceEvent(Event):
-    """Shared base for device-scoped events; device_url is required."""
+class DeviceEvent(Event):
+    """Any event about a device; ``device_url`` identifies it (required).
+
+    Narrow to this to handle all device events uniformly, or to a leaf subtype
+    (e.g. DeviceStateChangedEvent) for that event's full payload.
+    """
 
     device_url: str = field(repr=obfuscate_id)
 
 
 @define(kw_only=True)
-class DeviceStateChangedEvent(_DeviceEvent):
+class DeviceStateChangedEvent(DeviceEvent):
     """One or more states of a device changed (high-level)."""
 
     device_states: list[EventState] = field(factory=list, converter=_to_event_states)
 
 
 @define(kw_only=True)
-class ExecutionRegisteredEvent(Event):
-    """A new execution was registered; exec_id is required."""
+class ExecutionEvent(Event):
+    """Any event about an execution; ``exec_id`` identifies it (required).
+
+    Narrow to this to handle all execution events uniformly, or to a leaf
+    subtype (e.g. ExecutionStateChangedEvent) for that event's full payload.
+    """
 
     exec_id: str
+
+
+@define(kw_only=True)
+class ExecutionRegisteredEvent(ExecutionEvent):
+    """A new execution was registered."""
+
     label: str | None = None
     metadata: str | None = None
     type: int | None = None
@@ -602,10 +616,9 @@ class ExecutionRegisteredEvent(Event):
 
 
 @define(kw_only=True)
-class ExecutionStateChangedEvent(Event):
-    """An execution state has changed; exec_id/new_state/old_state are required."""
+class ExecutionStateChangedEvent(ExecutionEvent):
+    """An execution state has changed; new_state/old_state are required."""
 
-    exec_id: str
     new_state: ExecutionState
     old_state: ExecutionState
     owner_key: str | None = field(repr=obfuscate_id, default=None)
@@ -638,83 +651,87 @@ class FailureEvent(Event):
 
 
 @define(kw_only=True)
-class _GatewayEvent(Event):
-    """Shared base for gateway events; gateway_id is required."""
+class GatewayEvent(Event):
+    """Any gateway event; ``gateway_id`` identifies it (required).
+
+    Narrow to this to handle all gateway events uniformly, or to a leaf subtype
+    (e.g. GatewayDownEvent) for that event's full payload.
+    """
 
     gateway_id: str = field(repr=obfuscate_id)
 
 
 @define(kw_only=True)
-class GatewayActivatedEvent(_GatewayEvent):
+class GatewayActivatedEvent(GatewayEvent):
     """A gateway was activated."""
 
 
 @define(kw_only=True)
-class GatewayActiveProtocolsChangedEvent(_GatewayEvent):
+class GatewayActiveProtocolsChangedEvent(GatewayEvent):
     """A gateway's active protocols changed."""
 
 
 @define(kw_only=True)
-class GatewayAliveEvent(_GatewayEvent):
+class GatewayAliveEvent(GatewayEvent):
     """A gateway became reachable."""
 
 
 @define(kw_only=True)
-class GatewayAssociatedEvent(_GatewayEvent):
+class GatewayAssociatedEvent(GatewayEvent):
     """A gateway was associated with the setup."""
 
 
 @define(kw_only=True)
-class GatewayAttachedEvent(_GatewayEvent):
+class GatewayAttachedEvent(GatewayEvent):
     """A gateway was attached."""
 
 
 @define(kw_only=True)
-class GatewayBootEvent(_GatewayEvent):
+class GatewayBootEvent(GatewayEvent):
     """A gateway booted."""
 
 
 @define(kw_only=True)
-class GatewayDeactivatedEvent(_GatewayEvent):
+class GatewayDeactivatedEvent(GatewayEvent):
     """A gateway was deactivated."""
 
 
 @define(kw_only=True)
-class GatewayDetachedEvent(_GatewayEvent):
+class GatewayDetachedEvent(GatewayEvent):
     """A gateway was detached."""
 
 
 @define(kw_only=True)
-class GatewayDissociatedEvent(_GatewayEvent):
+class GatewayDissociatedEvent(GatewayEvent):
     """A gateway was dissociated from the setup."""
 
 
 @define(kw_only=True)
-class GatewayDownEvent(_GatewayEvent):
+class GatewayDownEvent(GatewayEvent):
     """A gateway became unreachable."""
 
 
 @define(kw_only=True)
-class GatewayDownOptionsChangedEvent(_GatewayEvent):
+class GatewayDownOptionsChangedEvent(GatewayEvent):
     """A gateway's down-detection timeout changed."""
 
     timeout: int | None = None
 
 
 @define(kw_only=True)
-class GatewayFirmwareUpdatedEvent(_GatewayEvent):
+class GatewayFirmwareUpdatedEvent(GatewayEvent):
     """A gateway's firmware was updated."""
 
 
 @define(kw_only=True)
-class GatewayFirmwareUpdateCompletedEvent(_GatewayEvent):
+class GatewayFirmwareUpdateCompletedEvent(GatewayEvent):
     """A gateway firmware update completed."""
 
     firmware_type: str | None = None
 
 
 @define(kw_only=True)
-class GatewayFunctionChangedEvent(_GatewayEvent):
+class GatewayFunctionChangedEvent(GatewayEvent):
     """A gateway function was enabled or disabled."""
 
     function_type: int | None = None
@@ -722,62 +739,62 @@ class GatewayFunctionChangedEvent(_GatewayEvent):
 
 
 @define(kw_only=True)
-class GatewayMigratedEvent(_GatewayEvent):
+class GatewayMigratedEvent(GatewayEvent):
     """A gateway was migrated."""
 
 
 @define(kw_only=True)
-class GatewayModeChangedEvent(_GatewayEvent):
+class GatewayModeChangedEvent(GatewayEvent):
     """A gateway's mode changed."""
 
 
 @define(kw_only=True)
-class GatewayPlaceUpdatedEvent(_GatewayEvent):
+class GatewayPlaceUpdatedEvent(GatewayEvent):
     """A gateway's place was updated."""
 
 
 @define(kw_only=True)
-class GatewayProtocolDownEvent(_GatewayEvent):
+class GatewayProtocolDownEvent(GatewayEvent):
     """A gateway protocol became unavailable."""
 
 
 @define(kw_only=True)
-class GatewayProtocolReadyEvent(_GatewayEvent):
+class GatewayProtocolReadyEvent(GatewayEvent):
     """A gateway protocol became available."""
 
 
 @define(kw_only=True)
-class GatewaySynchronizationEndedEvent(_GatewayEvent):
+class GatewaySynchronizationEndedEvent(GatewayEvent):
     """A gateway synchronization ended."""
 
 
 @define(kw_only=True)
-class GatewaySynchronizationStartedEvent(_GatewayEvent):
+class GatewaySynchronizationStartedEvent(GatewayEvent):
     """A gateway synchronization started."""
 
 
 @define(kw_only=True)
-class GatewayTimeReliabilityChangedEvent(_GatewayEvent):
+class GatewayTimeReliabilityChangedEvent(GatewayEvent):
     """A gateway's time reliability changed."""
 
 
 @define(kw_only=True)
-class DeviceAvailableEvent(_DeviceEvent):
+class DeviceAvailableEvent(DeviceEvent):
     """A device became available."""
 
 
 @define(kw_only=True)
-class DeviceUnavailableEvent(_DeviceEvent):
+class DeviceUnavailableEvent(DeviceEvent):
     """A device became unavailable."""
 
 
 @define(kw_only=True)
-class DeviceDisabledEvent(_DeviceEvent):
+class DeviceDisabledEvent(DeviceEvent):
     """A device was disabled."""
 
 
 @define(kw_only=True)
-class _DeviceMetadataEvent(_DeviceEvent):
+class _DeviceMetadataEvent(DeviceEvent):
     """Shared base for device create/update events (carry label/place metadata)."""
 
     controllable_name: str | None = None
@@ -797,26 +814,30 @@ class DeviceUpdatedEvent(_DeviceMetadataEvent):
 
 
 @define(kw_only=True)
-class DeviceRemovedEvent(_DeviceEvent):
+class DeviceRemovedEvent(DeviceEvent):
     """A device was removed."""
 
     controllable_name: str | None = None
 
 
 @define(kw_only=True)
-class _ZoneEvent(Event):
-    """Shared base for zone events; zone_oid is required."""
+class ZoneEvent(Event):
+    """Any zone event; ``zone_oid`` identifies it (required).
+
+    Narrow to this to handle all zone events uniformly, or to a leaf subtype
+    (e.g. ZoneCreatedEvent) for that event's full payload.
+    """
 
     zone_oid: str
 
 
 @define(kw_only=True)
-class ZoneDeletedEvent(_ZoneEvent):
+class ZoneDeletedEvent(ZoneEvent):
     """A zone was deleted."""
 
 
 @define(kw_only=True)
-class _ZoneMutationEvent(_ZoneEvent):
+class _ZoneMutationEvent(ZoneEvent):
     """Shared base for zone create/update events (carry membership lists)."""
 
     type: int | None = None

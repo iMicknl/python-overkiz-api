@@ -18,8 +18,11 @@ def recursive_key_map(data: Any, key_fn: Callable[[str], str]) -> Any:
 
 _CAMELIZE_OVERRIDES: dict[str, str] = {
     "device_url": "deviceURL",
+    "device_urls": "deviceURLs",
     "place_oid": "placeOID",
+    "place_oids": "placeOIDs",
     "setup_oid": "setupOID",
+    "zone_oid": "zoneOID",
 }
 
 

@@ -347,7 +347,17 @@ base `Event` keeps only the fields common to every event (`name`, `timestamp`,
 The model is three rules:
 
 1. **Each modeled event is its own typed class** whose fields are that event's
-   payload — narrow with `isinstance` and the present fields are typed.
+   payload — narrow with `isinstance` and the present fields are typed. Related
+   events share a **category base** carrying that category's identity field, so
+   you can narrow broadly or precisely:
+
+   | Category base | Identity field | Leaf subtypes |
+   |---------------|----------------|---------------|
+   | `DeviceEvent` | `device_url` | `DeviceStateChangedEvent`, `DeviceAvailableEvent`, … |
+   | `GatewayEvent` | `gateway_id` | `GatewayDownEvent`, `GatewayAliveEvent`, … |
+   | `ZoneEvent` | `zone_oid` | `ZoneCreatedEvent`, `ZoneUpdatedEvent`, `ZoneDeletedEvent` |
+   | `ExecutionEvent` | `exec_id` | `ExecutionRegisteredEvent`, `ExecutionStateChangedEvent` |
+
 2. **All `*FailedEvent` names structure into one `FailureEvent`.** Consumers
    branch on *did it fail, and why* (`failure_type`), not on which of the ~30
    operations failed; the specific operation is in `event.name`. (See the

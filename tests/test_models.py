@@ -1312,6 +1312,23 @@ class TestEvent:
         assert deleted.zone_oid == "zone-1"
         assert not hasattr(deleted, "device_urls")
 
+    def test_converter_dispatches_zone_created_with_api_casing(self):
+        """Zone payload keys (zoneOID/deviceURLs/placeOIDs) map to snake_case fields."""
+        event = converter.structure(
+            {
+                "name": "ZoneCreatedEvent",
+                "zoneOID": "zone-1",
+                "type": 1,
+                "deviceURLs": ["io://1234-5678-9012/1"],
+                "placeOIDs": ["place-1"],
+            },
+            Event,
+        )
+        assert isinstance(event, ZoneCreatedEvent)
+        assert event.zone_oid == "zone-1"
+        assert event.device_urls == ["io://1234-5678-9012/1"]
+        assert event.place_oids == ["place-1"]
+
     def test_converter_dispatches_device_state_changed(self):
         """Structuring a DeviceStateChangedEvent payload yields the subtype."""
         event = converter.structure(
