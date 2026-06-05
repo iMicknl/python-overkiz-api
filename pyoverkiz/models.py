@@ -672,6 +672,35 @@ class DeviceRemovedEvent(_DeviceEvent):
 
 
 @define(kw_only=True)
+class ZoneDeletedEvent(Event):
+    """A zone was deleted."""
+
+    zone_oid: str | None = None
+
+
+@define(kw_only=True)
+class ZoneCreatedEvent(Event):
+    """A zone was created."""
+
+    zone_oid: str | None = None
+    type: int | None = None
+    label: str | None = field(repr=obfuscate_string, default=None)
+    device_urls: list[str] = field(factory=list)
+    place_oids: list[str] = field(factory=list)
+
+
+@define(kw_only=True)
+class ZoneUpdatedEvent(Event):
+    """A zone was updated."""
+
+    zone_oid: str | None = None
+    type: int | None = None
+    label: str | None = field(repr=obfuscate_string, default=None)
+    device_urls: list[str] = field(factory=list)
+    place_oids: list[str] = field(factory=list)
+
+
+@define(kw_only=True)
 class Execution:
     """Execution occurrence with owner, state and action group metadata."""
 

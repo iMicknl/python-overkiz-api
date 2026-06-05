@@ -48,6 +48,9 @@ from pyoverkiz.models import (
     StateDefinition,
     StateDefinitions,
     States,
+    ZoneCreatedEvent,
+    ZoneDeletedEvent,
+    ZoneUpdatedEvent,
 )
 from pyoverkiz.obfuscate import obfuscate_id
 
@@ -1272,6 +1275,32 @@ class TestEvent:
             assert isinstance(event, Event)
             assert event.device_url == "io://1234-5678-9012/4468654"
             assert not hasattr(event, "controllable_name")
+
+    def test_zone_event_subtypes(self):
+        """Zone events carry zone_oid; create/update add device_urls and place_oids."""
+        created = ZoneCreatedEvent(
+            name=EventName.ZONE_CREATED,
+            zone_oid="zone-1",
+            device_urls=["io://1234-5678-9012/1"],
+            place_oids=["place-1"],
+        )
+        assert created.zone_oid == "zone-1"
+        assert created.device_urls == ["io://1234-5678-9012/1"]
+        assert created.place_oids == ["place-1"]
+
+        updated = ZoneUpdatedEvent(
+            name=EventName.ZONE_UPDATED,
+            zone_oid="zone-1",
+            device_urls=["io://1234-5678-9012/1"],
+            place_oids=["place-1"],
+        )
+        assert updated.zone_oid == "zone-1"
+        assert updated.device_urls == ["io://1234-5678-9012/1"]
+
+        deleted = ZoneDeletedEvent(name=EventName.ZONE_DELETED, zone_oid="zone-1")
+        assert isinstance(deleted, Event)
+        assert deleted.zone_oid == "zone-1"
+        assert not hasattr(deleted, "device_urls")
 
 
 class TestActionGroup:
