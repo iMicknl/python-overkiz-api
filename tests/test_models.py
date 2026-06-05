@@ -1359,6 +1359,24 @@ class TestEvent:
         assert type(event) is Event
         assert event.name == EventName.UNKNOWN
 
+    def test_local_event_fixture_structures_all_events(self):
+        """All events in the local-API fixture structure into DeviceStateChangedEvent."""
+        raw_events = json.loads(
+            (Path("tests/fixtures/event/local_events.json")).read_text()
+        )
+        events = [converter.structure(e, Event) for e in raw_events]
+
+        assert len(events) == len(raw_events)
+        for e in events:
+            assert isinstance(e, DeviceStateChangedEvent)
+            assert e.device_url  # non-empty
+            assert e.device_states  # non-empty
+
+        # Local API returns already-typed values; nested object value is preserved.
+        manufacturer = events[0].device_states[0]
+        assert manufacturer.name == "core:ManufacturerSettingsState"
+        assert manufacturer.value == {"current_position": 0}
+
 
 class TestActionGroup:
     """Tests for ActionGroup and PersistedActionGroup model split."""
