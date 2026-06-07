@@ -1,6 +1,6 @@
 [project]
 name = "pyoverkiz"
-version = "2.0.0rc9"
+version = "2.0.0"
 description = "A fully asynchronous API client for interaction with smart devices connected to OverKiz, supporting multiple vendors such as Somfy TaHoma and Atlantic Cozytouch."
 readme = "README.md"
 authors = [
