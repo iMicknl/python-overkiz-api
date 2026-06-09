@@ -277,8 +277,8 @@ Use a cloud server when you want to connect through the vendor’s public API. U
 === "Rexel (local)"
 
     Rexel Energeasy Connect gateways expose a local API that third-party
-    software (such as Home Assistant) can connect to over your local network.
-    Supported by the following gateways:
+    software can connect to over your local network. Supported by the following
+    gateways:
 
     - Energeasy Connect Rail Din (`48`)
     - Energeasy Connect V2 (`57`)
@@ -308,7 +308,11 @@ Use a cloud server when you want to connect through the vendor’s public API. U
 
     async def main() -> None:
         async with OverkizClient(
-            server=create_local_server_config(host="gateway-xxxx-xxxx-xxxx.local:8443"),
+            server=create_local_server_config(
+                host="gateway-xxxx-xxxx-xxxx.local:8443",
+                name="Rexel Energeasy Connect (local)",
+                manufacturer="Rexel",
+            ),
             credentials=LocalTokenCredentials("token-from-the-econnect-app"),
             verify_ssl=True, # disable if you connect via IP
         ) as client:
@@ -316,3 +320,8 @@ Use a cloud server when you want to connect through the vendor’s public API. U
 
     asyncio.run(main())
     ```
+
+    !!! note
+        Keep the default `server` value — the local token auth strategy is only
+        selected when `server` is *not* a cloud-mapped server like `Server.REXEL`.
+        Override `name`/`manufacturer` for labeling, but leave `server` as-is.
