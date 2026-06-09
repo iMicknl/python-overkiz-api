@@ -273,3 +273,46 @@ Use a cloud server when you want to connect through the vendor’s public API. U
         gateway_id="STORED_GATEWAY_ID",
     )
     ```
+
+=== "Rexel (local)"
+
+    Rexel Energeasy Connect gateways expose a local API that third-party
+    software (such as Home Assistant) can connect to over your local network.
+    Supported by the following gateways:
+
+    - Energeasy Connect Rail Din (`48`)
+    - Energeasy Connect V2 (`57`)
+    - Energeasy Connect V3 (`120`)
+    - Energeasy Connect V3 Rail Din (`125`)
+
+    To obtain a token, enable the local API of your Energeasy Connect Box from
+    the EConnect mobile app:
+
+    1. Open the EConnect app.
+    2. Go to **Settings** » **My home** » **Maintenance**.
+    3. Select your gateway » **Local API**.
+    4. Generate a token to authenticate your API requests.
+    5. Use the generated token below, and set the host to your gateway PIN code
+       (e.g. `gateway-xxxx-xxxx-xxxx.local:8443`) or its IP address.
+
+    Use the helper function `create_local_server_config` to create a `Server`
+    with `LocalTokenCredentials` to provide your token.
+
+    ```python
+    import asyncio
+
+    from pyoverkiz.auth.credentials import LocalTokenCredentials
+    from pyoverkiz.client import OverkizClient
+    from pyoverkiz.utils import create_local_server_config
+
+
+    async def main() -> None:
+        async with OverkizClient(
+            server=create_local_server_config(host="gateway-xxxx-xxxx-xxxx.local:8443"),
+            credentials=LocalTokenCredentials("token-from-the-econnect-app"),
+            verify_ssl=True, # disable if you connect via IP
+        ) as client:
+            await client.login()
+
+    asyncio.run(main())
+    ```

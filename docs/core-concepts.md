@@ -85,7 +85,7 @@ The library supports multiple authentication methods depending on the server:
 
 - **Username/Password**: Most cloud servers (Somfy, Cozytouch, Hitachi, Nexity)
 - **Bearer Token**: Cloud servers with pre-issued tokens
-- **Local Token**: Somfy Developer Mode (local gateways)
+- **Local Token**: local gateways (Somfy Developer Mode, Rexel Energeasy Connect)
 - **OAuth2 with PKCE**: Rexel (Azure AD B2C)
 
 Each server automatically selects the appropriate authentication strategy based on the credentials provided.
