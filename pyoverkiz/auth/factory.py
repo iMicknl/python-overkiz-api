@@ -39,20 +39,6 @@ def build_auth_strategy(
     """Build the correct auth strategy for the given server and credentials."""
     server: Server | None = server_config.server
 
-    # Local API routing keys off api_type, not server, so a local config can
-    # carry any server identity (e.g. Server.REXEL) purely for labelling.
-    if server_config.api_type == APIType.LOCAL:
-        if isinstance(credentials, LocalTokenCredentials):
-            return LocalTokenAuthStrategy(
-                credentials, session, server_config, ssl_context
-            )
-        return BearerTokenAuthStrategy(
-            _ensure_credentials(credentials, TokenCredentials),
-            session,
-            server_config,
-            ssl_context,
-        )
-
     if server == Server.SOMFY_EUROPE:
         return SomfyAuthStrategy(
             _ensure_credentials(credentials, UsernamePasswordCredentials),
@@ -88,6 +74,18 @@ def build_auth_strategy(
             )
         return RexelAuthStrategy(
             _ensure_credentials(credentials, RexelOAuthCodeCredentials),
+            session,
+            server_config,
+            ssl_context,
+        )
+
+    if server_config.api_type == APIType.LOCAL:
+        if isinstance(credentials, LocalTokenCredentials):
+            return LocalTokenAuthStrategy(
+                credentials, session, server_config, ssl_context
+            )
+        return BearerTokenAuthStrategy(
+            _ensure_credentials(credentials, TokenCredentials),
             session,
             server_config,
             ssl_context,

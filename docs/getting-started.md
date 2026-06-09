@@ -303,7 +303,6 @@ Use a cloud server when you want to connect through the vendor’s public API. U
 
     from pyoverkiz.auth.credentials import LocalTokenCredentials
     from pyoverkiz.client import OverkizClient
-    from pyoverkiz.enums import Server
     from pyoverkiz.utils import create_local_server_config
 
 
@@ -311,7 +310,6 @@ Use a cloud server when you want to connect through the vendor’s public API. U
         async with OverkizClient(
             server=create_local_server_config(
                 host="gateway-xxxx-xxxx-xxxx.local:8443",
-                server=Server.REXEL,
                 name="Rexel Energeasy Connect (local)",
                 manufacturer="Rexel",
             ),
@@ -322,8 +320,3 @@ Use a cloud server when you want to connect through the vendor’s public API. U
 
     asyncio.run(main())
     ```
-
-    !!! note
-        Local API routing keys off `api_type`, so `server`, `name`, and
-        `manufacturer` are free to label the connection for your gateway —
-        setting `server=Server.REXEL` keeps the local token strategy.
