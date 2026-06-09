@@ -341,6 +341,33 @@ class TestAuthFactory:
         assert isinstance(strategy, LocalTokenAuthStrategy)
 
     @pytest.mark.asyncio
+    async def test_build_auth_strategy_local_token_with_cloud_server(self):
+        """A local config keeps local routing even when server is a cloud id.
+
+        Local API routing keys off api_type, so a config labelled with a
+        cloud-mapped server (e.g. Server.REXEL) must still select the local
+        token strategy rather than the Rexel OAuth strategy.
+        """
+        server_config = ServerConfig(
+            server=Server.REXEL,
+            name="Rexel Energeasy Connect (local)",
+            endpoint="https://gateway.local",
+            manufacturer="Rexel",
+            api_type=APIType.LOCAL,
+        )
+        credentials = LocalTokenCredentials("local_token")
+        session = AsyncMock(spec=ClientSession)
+
+        strategy = build_auth_strategy(
+            server_config=server_config,
+            credentials=credentials,
+            session=session,
+            ssl_context=True,
+        )
+
+        assert isinstance(strategy, LocalTokenAuthStrategy)
+
+    @pytest.mark.asyncio
     async def test_build_auth_strategy_local_bearer(self):
         """Test building local bearer token auth strategy."""
         server_config = ServerConfig(
