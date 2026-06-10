@@ -78,6 +78,14 @@ Use a cloud server when you want to connect through the vendor’s public API. U
 
     Local authentication requires a token generated via the official mobile app. For details on obtaining a token, refer to [Somfy TaHoma Developer Mode](https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode).
 
+    The local API is available on the following gateways:
+
+    - Somfy Connexoon IO
+    - Somfy Connexoon RTS
+    - Somfy TaHoma v2
+    - Somfy TaHoma Beecon
+    - Somfy TaHoma Switch
+
     Use the helper function `create_local_server_config` to create a `Server` with `LocalTokenCredentials` to provide your token.
 
     ```python
