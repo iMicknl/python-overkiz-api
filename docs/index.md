@@ -42,3 +42,22 @@ Local API availability depends on your specific gateway. See the [Getting starte
 † _This server's authentication method isn't supported yet. To use it, obtain an access token (by sniffing the original app) and create a local user on the Overkiz API platform._
 
 ‡ _The cloud API requires OAuth credentials provided by Rexel; the local API uses a token from the EConnect app instead._
+
+### Somfy
+
+| Gateway | Cloud | Local |
+| --- | :-: | :-: |
+| Connexoon IO | ✓ | ✓ |
+| Connexoon RTS | ✓ | ✓ |
+| TaHoma v2 | ✓ | ✓ |
+| TaHoma Beecon | ✓ | ✓ |
+| TaHoma Switch | ✓ | ✓ |
+
+### Rexel Energeasy Connect
+
+| Gateway | Cloud | Local |
+| --- | :-: | :-: |
+| Energeasy Connect Rail Din | ✓ | ✓ |
+| Energeasy Connect V2 | ✓ | ✓ |
+| Energeasy Connect V3 | ✓ | ✓ |
+| Energeasy Connect V3 Rail Din | ✓ | ✓ |
