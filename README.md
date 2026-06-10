@@ -46,11 +46,13 @@ Local API availability depends on your specific gateway. See the [Getting starte
 | TaHoma v2 | ✓ | ✓ |
 | TaHoma Beecon | ✓ | ✓ |
 | TaHoma Switch | ✓ | ✓ |
+| Connectivity Kit | ✓ | |
 
 ### Rexel Energeasy Connect
 
 | Gateway | Cloud | Local |
 | --- | :-: | :-: |
+| Energeasy Connect | ✓ | |
 | Energeasy Connect Rail Din | ✓ | ✓ |
 | Energeasy Connect V2 | ✓ | ✓ |
 | Energeasy Connect V3 | ✓ | ✓ |
