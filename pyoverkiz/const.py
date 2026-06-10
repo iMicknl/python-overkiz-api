@@ -48,6 +48,7 @@ SERVERS_WITH_LOCAL_API = [
     Server.SOMFY_EUROPE,
     Server.SOMFY_OCEANIA,
     Server.SOMFY_AMERICA,
+    Server.REXEL,
 ]
 
 SUPPORTED_SERVERS: MappingProxyType[str, ServerConfig] = MappingProxyType(
