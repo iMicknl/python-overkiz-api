@@ -171,6 +171,13 @@ def _create_local_ssl_context() -> ssl.SSLContext:
 SSL_CONTEXT_LOCAL_API = _create_local_ssl_context()
 
 
+# RTS commands whose trailing parameter is NOT the execution duration and so
+# must never receive an injected ``default_rts_command_duration``. ``onWithTimer``
+# carries a user-chosen timer in its last slot; auto-filling it would override
+# the user's intent. (``on``/``off`` are nparams=0 and are skipped naturally.)
+RTS_COMMANDS_WITHOUT_DURATION = frozenset({"onWithTimer"})
+
+
 @dataclass(frozen=True, slots=True)
 class OverkizClientSettings:
     """Behavioral configuration for OverkizClient.
@@ -556,6 +563,7 @@ class OverkizClient:
                     cmd_def
                     and cmd_def.nparams > 0
                     and current_count == cmd_def.nparams - 1
+                    and str(cmd.name) not in RTS_COMMANDS_WITHOUT_DURATION
                 ):
                     updated_commands.append(
                         Command(
