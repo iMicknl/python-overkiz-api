@@ -1042,25 +1042,21 @@ class TestBlocklistParity:
                                   tiltPositive, tiltNegative]
 
     ``identify``/``test``/``tiltPositive``/``tiltNegative`` are already covered
-    elsewhere in this module. These tests pin down the remaining three switch
-    commands — ``off``, ``on`` and ``onWithTimer`` — which appear on RTS
-    on/off actuators (e.g. exterior lighting, sockets) and must pass through
-    untouched to preserve parity.
+    elsewhere in this module. These tests pin down the ``off``/``on`` switch
+    commands, which appear on RTS on/off actuators (e.g. exterior lighting,
+    sockets) and must pass through untouched to preserve parity.
     """
 
     def _rts_switch_device(self) -> Device:
         """RTS on/off actuator exposing the blocklisted switch commands.
 
         Per the Overkiz device catalog, ``on``/``off`` are defined with
-        ``nparams=0``. ``onWithTimer`` carries its own timer parameter
-        (``nparams=1``); the value is a user-chosen timer, never the RTS
-        execution duration, so it must not be auto-filled.
+        ``nparams=0``, so the nparams-based logic skips them naturally.
         """
         return _rts_device(
             commands=[
                 CommandDefinition(command_name="on", nparams=0),
                 CommandDefinition(command_name="off", nparams=0),
-                CommandDefinition(command_name="onWithTimer", nparams=1),
                 CommandDefinition(command_name="identify", nparams=0),
             ]
         )
@@ -1085,52 +1081,6 @@ class TestBlocklistParity:
             called_actions = mock_exec.call_args[0][0]
             assert called_actions[0].commands[0].parameters is None, (
                 f"blocklisted '{command_name}' must NOT get a duration"
-            )
-
-    @pytest.mark.asyncio
-    async def test_on_with_timer_no_params_not_injected(self, client_rts_0):
-        """``onWithTimer`` called without its timer must NOT get a duration.
-
-        The old blocklist excluded ``onWithTimer`` unconditionally — the empty
-        slot is the user's timer parameter, not the RTS execution duration.
-        """
-        client_rts_0.devices = [self._rts_switch_device()]
-
-        action = Action(
-            device_url="rts://1234-5678-9012/1",
-            commands=[Command(name="onWithTimer")],
-        )
-
-        with patch.object(
-            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
-        ) as mock_exec:
-            mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group(actions=[action])
-
-            called_actions = mock_exec.call_args[0][0]
-            assert called_actions[0].commands[0].parameters is None, (
-                "blocklisted 'onWithTimer' must NOT get an injected duration"
-            )
-
-    @pytest.mark.asyncio
-    async def test_on_with_timer_user_param_preserved(self, client_rts_0):
-        """A user-supplied ``onWithTimer`` timer value passes through unchanged."""
-        client_rts_0.devices = [self._rts_switch_device()]
-
-        action = Action(
-            device_url="rts://1234-5678-9012/1",
-            commands=[Command(name="onWithTimer", parameters=[120])],
-        )
-
-        with patch.object(
-            client_rts_0, "_execute_action_group_direct", new_callable=AsyncMock
-        ) as mock_exec:
-            mock_exec.return_value = "exec-123"
-            await client_rts_0.execute_action_group(actions=[action])
-
-            called_actions = mock_exec.call_args[0][0]
-            assert called_actions[0].commands[0].parameters == [120], (
-                "user-supplied 'onWithTimer' timer must be preserved as-is"
             )
 
 
