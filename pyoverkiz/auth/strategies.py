@@ -25,6 +25,8 @@ from pyoverkiz.auth.credentials import (
     UsernamePasswordCredentials,
 )
 from pyoverkiz.const import (
+    BRANDT_MIDDLEWARE_API,
+    BRANDT_PARTNER,
     COZYTOUCH_ATLANTIC_API,
     COZYTOUCH_CLIENT_ID,
     NEXITY_API,
@@ -43,6 +45,8 @@ from pyoverkiz.const import (
 )
 from pyoverkiz.exceptions import (
     BadCredentialsError,
+    BrandtBadCredentialsError,
+    BrandtServiceError,
     CozyTouchBadCredentialsError,
     CozyTouchServiceError,
     InvalidTokenError,
@@ -261,6 +265,59 @@ class CozytouchAuthStrategy(SessionLoginStrategy):
 
             jwt = jwt.strip('"')
 
+        await self._post_login({"jwt": jwt})
+
+
+class BrandtAuthStrategy(SessionLoginStrategy):
+    """Authentication strategy for Brandt Smart Control.
+
+    Brandt fronts Overkiz with a cookie-session middleware: authenticate
+    against smartcontrol-app.com, fetch a JWT using the resulting session
+    cookie, then log in to the Overkiz cloud with that JWT. The shared
+    aiohttp session carries the cookie between the two middleware calls.
+    """
+
+    async def login(self) -> None:
+        """Perform the Brandt middleware login, then Overkiz JWT login."""
+        # 1) Middleware session login (sets the devise session cookie).
+        async with self.session.post(
+            f"{BRANDT_MIDDLEWARE_API}/api/v1/sessions.json",
+            json={
+                "client": {
+                    "email": self.credentials.username,
+                    "password": self.credentials.password,
+                    "partner": BRANDT_PARTNER,
+                }
+            },
+            ssl=self._ssl,
+        ) as response:
+            if response.status >= HTTPStatus.BAD_REQUEST:
+                message = "Login failed: bad credentials"
+                try:
+                    body = await response.json()
+                    errors = body.get("error")
+                    if errors:
+                        message = errors[0]
+                except ValueError:
+                    pass
+                raise BrandtBadCredentialsError(message)
+
+        # 2) Fetch the JWT, authenticated purely by the session cookie.
+        async with self.session.get(
+            f"{BRANDT_MIDDLEWARE_API}/api/v1/profile/jwt.json",
+            ssl=self._ssl,
+        ) as response:
+            if response.status >= HTTPStatus.BAD_REQUEST:
+                raise BrandtServiceError(
+                    f"Brandt JWT request failed: {response.status}"
+                )
+            body = await response.json()
+            jwt = body.get("client", {}).get("jwt")
+
+        if not jwt:
+            raise BrandtServiceError("No Brandt JWT token provided.")
+
+        # 3) Overkiz cloud login with the JWT only (no apiKey/applicationId).
         await self._post_login({"jwt": jwt})
 
 
