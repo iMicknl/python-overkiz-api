@@ -20,7 +20,7 @@ Full documentation is available at **[imicknl.github.io/python-overkiz-api](http
 | --- | :-: | :-: |
 | Atlantic Cozytouch | ✓ | |
 | Bouygues Flexom | ✓ | |
-| Brandt Smart Control † | ✓ | |
+| Brandt Smart Control | ✓ | |
 | Hexaom HexaConnect | ✓ | |
 | Hitachi Hi Kumo | ✓ | |
 | Nexity Eugénie | ✓ | |
@@ -32,8 +32,6 @@ Full documentation is available at **[imicknl.github.io/python-overkiz-api](http
 | Ubiwizz | ✓ | |
 
 Local API availability depends on your specific gateway. See the [Getting started guide](https://imicknl.github.io/python-overkiz-api/getting-started/) for the supported gateways and setup.
-
-† _This server's authentication method isn't supported yet. To use it, obtain an access token (by sniffing the original app) and create a local user on the Overkiz API platform._
 
 ‡ _The cloud API requires OAuth credentials provided by Rexel; the local API uses a token from the EConnect app instead._
 
