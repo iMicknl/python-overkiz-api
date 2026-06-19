@@ -17,6 +17,7 @@ from pyoverkiz.auth.credentials import (
 from pyoverkiz.auth.strategies import (
     AuthStrategy,
     BearerTokenAuthStrategy,
+    BrandtAuthStrategy,
     CozytouchAuthStrategy,
     LocalTokenAuthStrategy,
     NexityAuthStrategy,
@@ -75,6 +76,14 @@ def build_auth_strategy(
 
     if server == Server.NEXITY:
         return NexityAuthStrategy(
+            _ensure_credentials(credentials, UsernamePasswordCredentials),
+            session,
+            server_config,
+            ssl_context,
+        )
+
+    if server == Server.BRANDT:
+        return BrandtAuthStrategy(
             _ensure_credentials(credentials, UsernamePasswordCredentials),
             session,
             server_config,

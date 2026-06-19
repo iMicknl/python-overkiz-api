@@ -245,6 +245,30 @@ class TestAuthFactory:
         assert isinstance(strategy, CozytouchAuthStrategy)
 
     @pytest.mark.asyncio
+    async def test_build_auth_strategy_brandt(self):
+        """Test building Brandt auth strategy."""
+        from pyoverkiz.auth.strategies import BrandtAuthStrategy
+
+        server_config = ServerConfig(
+            server=Server.BRANDT,
+            name="Brandt Smart Control",
+            endpoint="https://ha3-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+            manufacturer="Brandt",
+            api_type=APIType.CLOUD,
+        )
+        credentials = UsernamePasswordCredentials("user", "pass")
+        session = AsyncMock(spec=ClientSession)
+
+        strategy = build_auth_strategy(
+            server_config=server_config,
+            credentials=credentials,
+            session=session,
+            ssl_context=True,
+        )
+
+        assert isinstance(strategy, BrandtAuthStrategy)
+
+    @pytest.mark.asyncio
     async def test_build_auth_strategy_nexity(self):
         """Test building Nexity auth strategy."""
         server_config = ServerConfig(
