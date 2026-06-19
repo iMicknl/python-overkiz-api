@@ -24,7 +24,7 @@ Full documentation is available at **[imicknl.github.io/python-overkiz-api](http
 | Hexaom HexaConnect | ✓ | |
 | Hitachi Hi Kumo | ✓ | |
 | Nexity Eugénie | ✓ | |
-| Rexel Energeasy Connect ‡ | ✓ | ✓ |
+| Rexel Energeasy Connect † | ✓ | ✓ |
 | Sauter Cozytouch | ✓ | |
 | Simu LiveIn2 | ✓ | |
 | Somfy | ✓ | ✓ |
@@ -33,7 +33,7 @@ Full documentation is available at **[imicknl.github.io/python-overkiz-api](http
 
 Local API availability depends on your specific gateway. See the [Getting started guide](https://imicknl.github.io/python-overkiz-api/getting-started/) for the supported gateways and setup.
 
-‡ _The cloud API requires OAuth credentials provided by Rexel; the local API uses a token from the EConnect app instead._
+† _The cloud API requires OAuth credentials provided by Rexel; the local API uses a token from the EConnect app instead._
 
 ### Somfy
 
