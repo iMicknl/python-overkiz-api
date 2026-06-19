@@ -656,20 +656,24 @@ class TestBrandtAuthStrategy:
 
     @pytest.mark.asyncio
     async def test_login_bad_credentials(self):
-        """A 4xx from sessions.json raises BrandtBadCredentialsError."""
+        """A wrong-password 400 from sessions.json raises BrandtBadCredentialsError.
+
+        Pins the real middleware contract: status 400 with an ``error`` array;
+        the first element is surfaced as the exception message.
+        """
         from pyoverkiz.auth.strategies import BrandtAuthStrategy
         from pyoverkiz.exceptions import BrandtBadCredentialsError
 
         session = AsyncMock(spec=ClientSession)
         session.post = MagicMock(
             return_value=self._json_response(
-                401, {"error": ["Password wrong password"], "status": 401}
+                400, {"error": ["Password wrong password"], "status": 400}
             )
         )
 
         credentials = UsernamePasswordCredentials("a@b.c", "wrong")
         strategy = BrandtAuthStrategy(credentials, session, self._server_config(), True)
-        with pytest.raises(BrandtBadCredentialsError):
+        with pytest.raises(BrandtBadCredentialsError, match="Password wrong password"):
             await strategy.login()
 
     @pytest.mark.asyncio
