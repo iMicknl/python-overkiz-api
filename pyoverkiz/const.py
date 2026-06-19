@@ -42,6 +42,10 @@ SOMFY_CLIENT_ID = "0d8e920c-1478-11e7-a377-02dd59bd3041_1ewvaqmclfogo4kcsoo0c8k4
 # OAuth client secrets are public by design (embedded in mobile apps)
 SOMFY_CLIENT_SECRET = "12k73w1n540g8o4cokg0cw84cog840k84cwggscwg884004kgk"  # noqa: S105
 
+# Brandt Smart Control middleware (cookie-session Rails API in front of Overkiz)
+BRANDT_MIDDLEWARE_API = "https://www.smartcontrol-app.com"
+BRANDT_PARTNER = "brandt-electromenager"
+
 LOCAL_API_PATH = "/enduser-mobile-web/1/enduserAPI/"
 
 SERVERS_WITH_LOCAL_API = [

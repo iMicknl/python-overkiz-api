@@ -139,6 +139,22 @@ class TestCredentials:
             RexelTokenCredentials()
 
 
+def test_brandt_constants_and_exceptions():
+    """Brandt middleware constants and exceptions are exported correctly."""
+    from pyoverkiz.const import BRANDT_MIDDLEWARE_API, BRANDT_PARTNER
+    from pyoverkiz.exceptions import (
+        BadCredentialsError,
+        BaseOverkizError,
+        BrandtBadCredentialsError,
+        BrandtServiceError,
+    )
+
+    assert BRANDT_MIDDLEWARE_API == "https://www.smartcontrol-app.com"
+    assert BRANDT_PARTNER == "brandt-electromenager"
+    assert issubclass(BrandtBadCredentialsError, BadCredentialsError)
+    assert issubclass(BrandtServiceError, BaseOverkizError)
+
+
 class TestAuthFactory:
     """Test authentication factory functions."""
 
@@ -227,6 +243,30 @@ class TestAuthFactory:
         )
 
         assert isinstance(strategy, CozytouchAuthStrategy)
+
+    @pytest.mark.asyncio
+    async def test_build_auth_strategy_brandt(self):
+        """Test building Brandt auth strategy."""
+        from pyoverkiz.auth.strategies import BrandtAuthStrategy
+
+        server_config = ServerConfig(
+            server=Server.BRANDT,
+            name="Brandt Smart Control",
+            endpoint="https://ha3-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+            manufacturer="Brandt",
+            api_type=APIType.CLOUD,
+        )
+        credentials = UsernamePasswordCredentials("user", "pass")
+        session = AsyncMock(spec=ClientSession)
+
+        strategy = build_auth_strategy(
+            server_config=server_config,
+            credentials=credentials,
+            session=session,
+            ssl_context=True,
+        )
+
+        assert isinstance(strategy, BrandtAuthStrategy)
 
     @pytest.mark.asyncio
     async def test_build_auth_strategy_nexity(self):
@@ -544,6 +584,112 @@ class TestSessionLoginStrategy:
         headers = await strategy.auth_headers()
 
         assert headers == {}
+
+
+class TestBrandtAuthStrategy:
+    """Test BrandtAuthStrategy."""
+
+    @staticmethod
+    def _server_config():
+        return ServerConfig(
+            server=Server.BRANDT,
+            name="Brandt Smart Control",
+            endpoint="https://ha3-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+            manufacturer="Brandt",
+            api_type=APIType.CLOUD,
+        )
+
+    @staticmethod
+    def _json_response(status, payload):
+        resp = MagicMock()
+        resp.status = status
+        resp.json = AsyncMock(return_value=payload)
+        resp.__aenter__ = AsyncMock(return_value=resp)
+        resp.__aexit__ = AsyncMock(return_value=None)
+        return resp
+
+    @pytest.mark.asyncio
+    async def test_login_success_flow(self):
+        """Full flow: sessions.json -> profile/jwt.json -> Overkiz login."""
+        from pyoverkiz.auth.strategies import BrandtAuthStrategy
+
+        session = AsyncMock(spec=ClientSession)
+        # 1) POST sessions.json  2) Overkiz POST login (inherited _post_login)
+        session.post = MagicMock(
+            side_effect=[
+                self._json_response(200, {"client": {"email": "a@b.c"}}),
+                self._json_response(200, {"success": True}),
+            ]
+        )
+        # GET profile/jwt.json
+        session.get = MagicMock(
+            return_value=self._json_response(200, {"client": {"jwt": "the.jwt.token"}})
+        )
+
+        credentials = UsernamePasswordCredentials("a@b.c", "pass")
+        strategy = BrandtAuthStrategy(credentials, session, self._server_config(), True)
+        await strategy.login()
+
+        # First POST is to the middleware with the partner field.
+        first_post = session.post.call_args_list[0]
+        assert (
+            first_post.args[0]
+            == "https://www.smartcontrol-app.com/api/v1/sessions.json"
+        )
+        assert first_post.kwargs["json"] == {
+            "client": {
+                "email": "a@b.c",
+                "password": "pass",
+                "partner": "brandt-electromenager",
+            }
+        }
+        # JWT fetched from the cookie-authenticated GET.
+        session.get.assert_called_once_with(
+            "https://www.smartcontrol-app.com/api/v1/profile/jwt.json", ssl=True
+        )
+        # Final POST is the Overkiz login carrying only the jwt.
+        last_post = session.post.call_args_list[-1]
+        assert last_post.args[0] == (
+            "https://ha3-1.overkiz.com/enduser-mobile-web/enduserAPI/login"
+        )
+        assert last_post.kwargs["data"] == {"jwt": "the.jwt.token"}
+
+    @pytest.mark.asyncio
+    async def test_login_bad_credentials(self):
+        """A wrong-password 400 from sessions.json raises BrandtBadCredentialsError.
+
+        Pins the real middleware contract: status 400 with an ``error`` array;
+        the first element is surfaced as the exception message.
+        """
+        from pyoverkiz.auth.strategies import BrandtAuthStrategy
+        from pyoverkiz.exceptions import BrandtBadCredentialsError
+
+        session = AsyncMock(spec=ClientSession)
+        session.post = MagicMock(
+            return_value=self._json_response(
+                400, {"error": ["Password wrong password"], "status": 400}
+            )
+        )
+
+        credentials = UsernamePasswordCredentials("a@b.c", "wrong")
+        strategy = BrandtAuthStrategy(credentials, session, self._server_config(), True)
+        with pytest.raises(BrandtBadCredentialsError, match="Password wrong password"):
+            await strategy.login()
+
+    @pytest.mark.asyncio
+    async def test_login_missing_jwt_raises_service_error(self):
+        """Login OK but no jwt in the profile response -> BrandtServiceError."""
+        from pyoverkiz.auth.strategies import BrandtAuthStrategy
+        from pyoverkiz.exceptions import BrandtServiceError
+
+        session = AsyncMock(spec=ClientSession)
+        session.post = MagicMock(return_value=self._json_response(200, {"client": {}}))
+        session.get = MagicMock(return_value=self._json_response(200, {"client": {}}))
+
+        credentials = UsernamePasswordCredentials("a@b.c", "pass")
+        strategy = BrandtAuthStrategy(credentials, session, self._server_config(), True)
+        with pytest.raises(BrandtServiceError):
+            await strategy.login()
 
 
 class TestBearerTokenAuthStrategy:

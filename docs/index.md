@@ -26,11 +26,11 @@ pyOverkiz is an async Python library for interacting with Overkiz-based platform
 | --- | :-: | :-: |
 | Atlantic Cozytouch | ✓ | |
 | Bouygues Flexom | ✓ | |
-| Brandt Smart Control † | ✓ | |
+| Brandt Smart Control | ✓ | |
 | Hexaom HexaConnect | ✓ | |
 | Hitachi Hi Kumo | ✓ | |
 | Nexity Eugénie | ✓ | |
-| Rexel Energeasy Connect ‡ | ✓ | ✓ |
+| Rexel Energeasy Connect † | ✓ | ✓ |
 | Sauter Cozytouch | ✓ | |
 | Simu LiveIn2 | ✓ | |
 | Somfy | ✓ | ✓ |
@@ -39,9 +39,7 @@ pyOverkiz is an async Python library for interacting with Overkiz-based platform
 
 Local API availability depends on your specific gateway. See the [Getting started guide](getting-started.md) for the supported gateways and setup.
 
-† _This server's authentication method isn't supported yet. To use it, obtain an access token (by sniffing the original app) and create a local user on the Overkiz API platform._
-
-‡ _The cloud API requires OAuth credentials provided by Rexel; the local API uses a token from the EConnect app instead._
+† _The cloud API requires OAuth credentials provided by Rexel; the local API uses a token from the EConnect app instead._
 
 ### Somfy
 
