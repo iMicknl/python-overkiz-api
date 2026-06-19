@@ -139,6 +139,22 @@ class TestCredentials:
             RexelTokenCredentials()
 
 
+def test_brandt_constants_and_exceptions():
+    """Brandt middleware constants and exceptions are exported correctly."""
+    from pyoverkiz.const import BRANDT_MIDDLEWARE_API, BRANDT_PARTNER
+    from pyoverkiz.exceptions import (
+        BadCredentialsError,
+        BaseOverkizError,
+        BrandtBadCredentialsError,
+        BrandtServiceError,
+    )
+
+    assert BRANDT_MIDDLEWARE_API == "https://www.smartcontrol-app.com"
+    assert BRANDT_PARTNER == "brandt-electromenager"
+    assert issubclass(BrandtBadCredentialsError, BadCredentialsError)
+    assert issubclass(BrandtServiceError, BaseOverkizError)
+
+
 class TestAuthFactory:
     """Test authentication factory functions."""
 

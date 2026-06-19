@@ -153,3 +153,11 @@ class SomfyBadCredentialsError(BadCredentialsError):
 
 class SomfyServiceError(BaseOverkizError):
     """Raised when an error occurs while communicating with the Somfy API."""
+
+
+class BrandtBadCredentialsError(BadCredentialsError):
+    """Raised when the Brandt middleware rejects the username/password."""
+
+
+class BrandtServiceError(BaseOverkizError):
+    """Raised when the Brandt middleware returns an unexpected response."""
