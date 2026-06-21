@@ -223,6 +223,39 @@ Always use full type annotations, generics, and other modern practices.
 
 - If a function does not use a parameter, but it should still be present, you can use `# type: ignore` in a comment to suppress the type checker warning.
 
+## Pull Requests and Changelog
+
+- Write PR titles as Conventional Commits: `type(optional-scope): summary`.
+  Append `!` after the type (e.g. `feat!:`, `refactor!:`) for a breaking change.
+
+- The changelog (GitHub Releases, via Release Drafter) is generated automatically
+  from the PR **title** — there is no manual labeling step. The title prefix decides
+  both the applied label and the changelog section, so getting the prefix right is
+  what makes a change show up correctly:
+
+  | Prefix | Label | Changelog section |
+  | --- | --- | --- |
+  | any prefix with `!` | `breaking` | :boom: Breaking Changes |
+  | `feat:` | `feature` | :rocket: New Features |
+  | `fix:` | `bug` | :bug: Bug Fixes |
+  | `refactor:` `perf:` `style:` `test:` `ci:` `chore:` | `code-quality` | :broom: Code Quality |
+  | `build(deps):` / Dependabot | `dependencies` | :package: Dependencies |
+  | `docs:` | `documentation` | :books: Documentation |
+
+- Code quality work (refactors, performance, style, tests, CI, chores) all share the
+  single `code-quality` bucket — pick the most accurate prefix; they land in the same
+  section regardless.
+
+- Breaking changes route to Breaking Changes even though `feat!:`/`fix!:` also carry
+  their type label, because the `!` is matched first.
+
+- A change that should not appear in the changelog (rare) gets the `skip-changelog`
+  label manually.
+
+- The mapping lives in `.github/release-drafter.yml`. If you add a new Conventional
+  Commit prefix, add an `autolabeler` rule and a matching category there, and create
+  the GitHub label, so titles, labels, and changelog sections stay in sync.
+
 ## Guidelines for Backward Compatibility
 
 - When changing code in a library or general function, if a change to an API or library
