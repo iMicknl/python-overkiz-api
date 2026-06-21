@@ -1392,6 +1392,7 @@ class OverkizCommand(StrEnum):
     SET_VALVE_SETTINGS = "setValveSettings"
     SET_VENTILATION_CONFIGURATION_MODE = "setVentilationConfigurationMode"
     SET_VENTILATION_MODE = "setVentilationMode"
+    SET_VIBRATION_LEVEL_THRESHOLD = "setVibrationLevelThreshold"
     SET_VOLUME = "setVolume"
     SET_WAKE_UP_INTERVAL = "setWakeUpInterval"
     SET_WATER_COOLING_SETTING_TEMPERATURE_CONTROL_ZONE_1 = (
