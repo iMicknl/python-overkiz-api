@@ -242,6 +242,10 @@ Always use full type annotations, generics, and other modern practices.
   | `build(deps):` / Dependabot | `dependencies` | :package: Dependencies |
   | `docs:` | `documentation` | :books: Documentation |
 
+- The prefix is stripped from the published changelog entry (it is redundant once the
+  entry sits under its section), so `feat: add X` renders as `Add X`. Keep the prefix
+  in the title regardless — it is what drives the labeling and sectioning.
+
 - Code quality work (refactors, performance, style, tests, CI, chores) all share the
   single `code-quality` bucket — pick the most accurate prefix; they land in the same
   section regardless.
