@@ -41,6 +41,12 @@ autolabeler:
       - '/^dependabot\//'
     title:
       - '/^build\(deps\)/'
+# Strip the Conventional-Commit prefix from rendered entries: the prefix is needed
+# in the PR title for autolabeling, but is redundant once an entry is filed under its
+# section (e.g. "feat:" under New Features). "feat: Add X" renders as "Add X".
+replacers:
+  - search: '/\* (build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\(.+?\))?!?:\s*/g'
+    replace: '* '
 template: |
   ## What's changed
 
