@@ -225,8 +225,10 @@ Always use full type annotations, generics, and other modern practices.
 
 ## Pull Requests and Changelog
 
-- Write PR titles as Conventional Commits: `type(optional-scope): summary`.
+- Write PR titles as Conventional Commits: `type(optional-scope): Summary`.
   Append `!` after the type (e.g. `feat!:`, `refactor!:`) for a breaking change.
+  Capitalize the summary (`feat: Add X`, not `feat: add X`): the prefix is stripped
+  from the changelog, so the summary becomes the first word the reader sees.
 
 - The changelog (GitHub Releases, via Release Drafter) is generated automatically
   from the PR **title** — there is no manual labeling step. The title prefix decides
@@ -243,7 +245,7 @@ Always use full type annotations, generics, and other modern practices.
   | `docs:` | `documentation` | :books: Documentation |
 
 - The prefix is stripped from the published changelog entry (it is redundant once the
-  entry sits under its section), so `feat: add X` renders as `Add X`. Keep the prefix
+  entry sits under its section), so `feat: Add X` renders as `Add X`. Keep the prefix
   in the title regardless — it is what drives the labeling and sectioning.
 
 - Code quality work (refactors, performance, style, tests, CI, chores) all share the
