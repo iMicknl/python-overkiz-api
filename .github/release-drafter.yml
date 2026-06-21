@@ -1,36 +1,51 @@
 name-template: 'v$NEXT_PATCH_VERSION'
 tag-template: 'v$NEXT_PATCH_VERSION'
 exclude-labels:
+  - 'skip-changelog'
   - 'Meta: Exclude From Changelog'
-  - 'auto-changelog'
 categories:
   - title: ":boom: Breaking Changes"
     label: "breaking"
-  - title: ":rocket: Features"
-    label: "enhancement"
-  - title: ":fire: Removals and Deprecations"
-    label: "removal"
-  - title: ":beetle: Fixes"
+  - title: ":rocket: New Features"
+    label: "feature"
+  - title: ":bug: Bug Fixes"
     label: "bug"
-  - title: ":racehorse: Performance"
-    label: "performance"
-  - title: ":rotating_light: Testing"
-    label: "testing"
-  - title: ":construction_worker: Continuous Integration"
-    label: "ci"
+  - title: ":broom: Code Quality"
+    label: "code-quality"
+  - title: ":package: Dependencies"
+    label: "dependencies"
   - title: ":books: Documentation"
     label: "documentation"
-  - title: ":hammer: Refactoring"
-    label: "refactoring"
-  - title: ":lipstick: Style"
-    label: "style"
-  - title: ":package: Dependencies"
-    labels:
-      - "dependencies"
-      - "build"
+# Labels are applied automatically from the PR title (Conventional Commits).
+# release-drafter places a PR in the FIRST matching category top-to-bottom, so a
+# breaking change (a `!` in the prefix) routes to Breaking Changes even though it
+# also carries its own type label (e.g. `feature`).
+autolabeler:
+  - label: "breaking"
+    title:
+      - '/^\w+(\(.+\))?!:/'
+  - label: "feature"
+    title:
+      - '/^feat(\(.+\))?!?:/'
+  - label: "bug"
+    title:
+      - '/^fix(\(.+\))?!?:/'
+  - label: "code-quality"
+    title:
+      - '/^(refactor|perf|style|test|ci|chore)(\(.+\))?!?:/'
+  - label: "documentation"
+    title:
+      - '/^docs(\(.+\))?!?:/'
+  - label: "dependencies"
+    branch:
+      - '/^dependabot\//'
+    title:
+      - '/^build\(deps\)/'
 template: |
   ## What's changed
+
   $CHANGES
 
   ## Contributors to this release
+
   $CONTRIBUTORS

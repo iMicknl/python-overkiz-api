@@ -4,13 +4,17 @@ on:
   push:
     branches:
       - main
+  # Run on PRs so the autolabeler can apply Conventional-Commit labels from the title.
+  pull_request:
+    types: [opened, reopened, synchronize, edited]
 
 jobs:
   update_release_draft:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pull-requests: read
+      # `write` is required for the autolabeler to add labels to PRs.
+      pull-requests: write
     steps:
       - name: Update release draft
         uses: release-drafter/release-drafter@ed4bc48ec97379be2258e7b7ac2624a3e26ab809 # v7.4.0

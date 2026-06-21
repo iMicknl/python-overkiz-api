@@ -1,7 +1,0 @@
-feature: ['feature/*', 'feat/*']
-enhancement: enhancement/*
-bug: fix/*
-breaking: breaking/*
-documentation: doc/*
-ci: ci/*
-testing: ['test/*', 'testing/*']
