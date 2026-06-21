@@ -7,14 +7,32 @@ on:
   pull_request:
     types: [opened, reopened, synchronize, edited]
 
+permissions:
+  contents: read
+
 jobs:
+  # Draft the next release from merged PRs (main only).
   update_release_draft:
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: read
+    steps:
+      - uses: release-drafter/release-drafter@ed4bc48ec97379be2258e7b7ac2624a3e26ab809 # v7.4.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Apply Conventional-Commit labels from the PR title (PRs only).
+  # The autolabeler is a separate sub-action; the main action above only drafts
+  # releases and does not apply labels.
+  autolabel:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
       pull-requests: write
     steps:
-      - name: Update release draft
-        uses: release-drafter/release-drafter@ed4bc48ec97379be2258e7b7ac2624a3e26ab809 # v7.4.0
+      - uses: release-drafter/release-drafter/autolabeler@ed4bc48ec97379be2258e7b7ac2624a3e26ab809 # v7.4.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
