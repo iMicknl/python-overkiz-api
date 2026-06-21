@@ -250,6 +250,7 @@ class TestOverkizClient:
             ("setup_tahoma_siren_io.json", 11, 1),
             ("setup_tahoma_siren_rtd.json", 31, 1),
             ("setup_tahoma_be.json", 15, 1),
+            ("setup_tahoma_intellitag.json", 29, 1),
             ("setup_local.json", 3, 1),
             ("setup_local_tahoma.json", 8, 1),
             ("setup_local_with_climate.json", 33, 1),
