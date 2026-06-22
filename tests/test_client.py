@@ -120,6 +120,29 @@ class TestOverkizClient:
         assert get_mock.call_count == 2
         assert sleep_mock.await_count == 1
 
+    @pytest.mark.asyncio
+    async def test_backoff_gives_up_after_max_tries_on_connection_failure(
+        self, client: OverkizClient
+    ) -> None:
+        """Ensure connection failures are re-raised after max_tries attempts.
+
+        ``retry_on_connection_failure`` is capped at 3 attempts (1 initial + 2
+        retries); a persistent failure must surface rather than retry forever.
+        """
+        with (
+            patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
+            patch.object(
+                aiohttp.ClientSession,
+                "get",
+                side_effect=TimeoutError("timed out"),
+            ) as get_mock,
+            pytest.raises(TimeoutError),
+        ):
+            await client.get_api_version()
+
+        assert get_mock.call_count == 3
+        assert sleep_mock.await_count == 2
+
     @pytest.mark.parametrize(
         ("fixture_name", "event_length"),
         [
