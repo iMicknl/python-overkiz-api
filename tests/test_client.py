@@ -68,6 +68,58 @@ class TestOverkizClient:
             devices = await client.get_devices()
             assert len(devices) == 23
 
+    @pytest.mark.asyncio
+    async def test_backoff_retries_command_on_connection_failure(
+        self, client: OverkizClient
+    ) -> None:
+        """Ensure the command path retries transient connection failures.
+
+        Regression test for #2147: a transient ``TimeoutError`` raised on the
+        execute command path must be retried instead of propagating raw on the
+        first occurrence.
+        """
+        resp = MockResponse(json.dumps({"execId": "exec-1"}))
+
+        with (
+            patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
+            patch.object(
+                aiohttp.ClientSession,
+                "post",
+                side_effect=[TimeoutError("timed out"), resp],
+            ) as post_mock,
+        ):
+            exec_id = await client.execute_action_group(
+                actions=[Action(device_url="io://1234-5678-9012/12345678")],
+            )
+
+        assert exec_id == "exec-1"
+        assert post_mock.call_count == 2
+        assert sleep_mock.await_count == 1
+
+    @pytest.mark.asyncio
+    async def test_backoff_retries_get_on_connection_failure(
+        self, client: OverkizClient
+    ) -> None:
+        """Ensure GET requests retry transient ``ClientConnectorError`` failures."""
+        resp = MockResponse(json.dumps({"protocolVersion": "1"}))
+        connection_error = aiohttp.ClientConnectorError(
+            connection_key=MagicMock(), os_error=OSError("unreachable")
+        )
+
+        with (
+            patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
+            patch.object(
+                aiohttp.ClientSession,
+                "get",
+                side_effect=[connection_error, resp],
+            ) as get_mock,
+        ):
+            result = await client.get_api_version()
+
+        assert result == "1"
+        assert get_mock.call_count == 2
+        assert sleep_mock.await_count == 1
+
     @pytest.mark.parametrize(
         ("fixture_name", "event_length"),
         [
