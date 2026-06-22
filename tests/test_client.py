@@ -72,12 +72,7 @@ class TestOverkizClient:
     async def test_backoff_retries_command_on_connection_failure(
         self, client: OverkizClient
     ) -> None:
-        """Ensure the command path retries transient connection failures.
-
-        Regression test for #2147: a transient ``TimeoutError`` raised on the
-        execute command path must be retried instead of propagating raw on the
-        first occurrence.
-        """
+        """Ensure the command path retries a transient connection failure."""
         resp = MockResponse(json.dumps({"execId": "exec-1"}))
 
         with (
@@ -100,11 +95,7 @@ class TestOverkizClient:
     async def test_backoff_gives_up_after_max_tries_on_connection_failure(
         self, client: OverkizClient
     ) -> None:
-        """Ensure connection failures are re-raised after max_tries attempts.
-
-        ``retry_on_connection_failure`` is capped at 3 attempts (1 initial + 2
-        retries); a persistent failure must surface rather than retry forever.
-        """
+        """Ensure a persistent connection failure is re-raised after 3 attempts."""
         with (
             patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
             patch.object(
