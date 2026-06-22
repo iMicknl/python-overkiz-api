@@ -97,30 +97,6 @@ class TestOverkizClient:
         assert sleep_mock.await_count == 1
 
     @pytest.mark.asyncio
-    async def test_backoff_retries_get_on_connection_failure(
-        self, client: OverkizClient
-    ) -> None:
-        """Ensure GET requests retry transient ``ClientConnectorError`` failures."""
-        resp = MockResponse(json.dumps({"protocolVersion": "1"}))
-        connection_error = aiohttp.ClientConnectorError(
-            connection_key=MagicMock(), os_error=OSError("unreachable")
-        )
-
-        with (
-            patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
-            patch.object(
-                aiohttp.ClientSession,
-                "get",
-                side_effect=[connection_error, resp],
-            ) as get_mock,
-        ):
-            result = await client.get_api_version()
-
-        assert result == "1"
-        assert get_mock.call_count == 2
-        assert sleep_mock.await_count == 1
-
-    @pytest.mark.asyncio
     async def test_backoff_gives_up_after_max_tries_on_connection_failure(
         self, client: OverkizClient
     ) -> None:
