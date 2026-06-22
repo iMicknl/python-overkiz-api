@@ -68,6 +68,48 @@ class TestOverkizClient:
             devices = await client.get_devices()
             assert len(devices) == 23
 
+    @pytest.mark.asyncio
+    async def test_backoff_retries_command_on_connection_failure(
+        self, client: OverkizClient
+    ) -> None:
+        """Ensure the command path retries a transient connection failure."""
+        resp = MockResponse(json.dumps({"execId": "exec-1"}))
+
+        with (
+            patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
+            patch.object(
+                aiohttp.ClientSession,
+                "post",
+                side_effect=[TimeoutError("timed out"), resp],
+            ) as post_mock,
+        ):
+            exec_id = await client.execute_action_group(
+                actions=[Action(device_url="io://1234-5678-9012/12345678")],
+            )
+
+        assert exec_id == "exec-1"
+        assert post_mock.call_count == 2
+        assert sleep_mock.await_count == 1
+
+    @pytest.mark.asyncio
+    async def test_backoff_gives_up_after_max_tries_on_connection_failure(
+        self, client: OverkizClient
+    ) -> None:
+        """Ensure a persistent connection failure is re-raised after 3 attempts."""
+        with (
+            patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
+            patch.object(
+                aiohttp.ClientSession,
+                "get",
+                side_effect=TimeoutError("timed out"),
+            ) as get_mock,
+            pytest.raises(TimeoutError),
+        ):
+            await client.get_api_version()
+
+        assert get_mock.call_count == 3
+        assert sleep_mock.await_count == 2
+
     @pytest.mark.parametrize(
         ("fixture_name", "event_length"),
         [

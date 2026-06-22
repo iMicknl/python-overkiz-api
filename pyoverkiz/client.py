@@ -102,8 +102,8 @@ retry_on_auth_error = backoff.on_exception(
 retry_on_connection_failure = backoff.on_exception(
     backoff.expo,
     (TimeoutError, ClientConnectorError),
-    max_tries=5,
-    max_time=120,
+    max_tries=3,
+    max_time=30,
     jitter=backoff.full_jitter,
     logger=_LOGGER,
 )
@@ -476,7 +476,6 @@ class OverkizClient:
     @retry_on_concurrent_requests
     @retry_on_auth_error
     @retry_on_listener_error
-    @retry_on_connection_failure
     async def fetch_events(self) -> list[Event]:
         """Fetch new events from a registered event listener. Fetched events are removed.
 
@@ -1021,6 +1020,7 @@ class OverkizClient:
         """
         await self._delete(f"setup/gateways/{gateway_id}/developerMode")
 
+    @retry_on_connection_failure
     async def _get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API."""
         await self._refresh_token_if_expired()
@@ -1032,6 +1032,7 @@ class OverkizClient:
         ) as response:
             return await self._parse_response(response)
 
+    @retry_on_connection_failure
     async def _post(
         self,
         path: str,
@@ -1050,6 +1051,7 @@ class OverkizClient:
         ) as response:
             return await self._parse_response(response)
 
+    @retry_on_connection_failure
     async def _put(self, path: str, payload: dict[str, Any] | None = None) -> Any:
         """Make a PUT request to the OverKiz API."""
         await self._refresh_token_if_expired()
@@ -1062,6 +1064,7 @@ class OverkizClient:
         ) as response:
             return await self._parse_response(response)
 
+    @retry_on_connection_failure
     async def _delete(self, path: str) -> None:
         """Make a DELETE request to the OverKiz API."""
         await self._refresh_token_if_expired()
