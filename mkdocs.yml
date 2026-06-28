@@ -49,6 +49,7 @@ nav:
       - Device control: device-control.md
       - Action queue: action-queue.md
       - Event handling: event-handling.md
+      - Resiliency: resiliency.md
       - Troubleshooting: troubleshooting.md
       - Migrating from v1: migration-v2.md
   - Reference:

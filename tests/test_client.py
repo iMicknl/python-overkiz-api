@@ -59,6 +59,19 @@ class TestOverkizClient:
         assert local_client.server_config.api_type == APIType.LOCAL
 
     @pytest.mark.asyncio
+    async def test_default_session_has_request_timeout(
+        self, client: OverkizClient
+    ) -> None:
+        """A client-owned session applies a default per-request timeout."""
+        from pyoverkiz.client import DEFAULT_TIMEOUT
+
+        assert client.session.timeout.total == DEFAULT_TIMEOUT.total
+        # Must stay below the connection-retry budget so a hung socket fails fast.
+        assert client.session.timeout.total is not None
+        assert client.session.timeout.total <= 30
+        await client.session.close()
+
+    @pytest.mark.asyncio
     async def test_get_devices_basic(self, client: OverkizClient):
         """Ensure the client can fetch and parse the basic devices fixture."""
         with (CURRENT_DIR / "devices.json").open(encoding="utf-8") as raw_devices:
@@ -67,6 +80,108 @@ class TestOverkizClient:
         with patch.object(aiohttp.ClientSession, "get", return_value=resp):
             devices = await client.get_devices()
             assert len(devices) == 23
+
+    @pytest.mark.asyncio
+    async def test_backoff_retries_command_on_connection_failure(
+        self, client: OverkizClient
+    ) -> None:
+        """Ensure the command path retries a transient connection failure."""
+        resp = MockResponse(json.dumps({"execId": "exec-1"}))
+
+        with (
+            patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
+            patch.object(
+                aiohttp.ClientSession,
+                "post",
+                side_effect=[TimeoutError("timed out"), resp],
+            ) as post_mock,
+        ):
+            exec_id = await client.execute_action_group(
+                actions=[Action(device_url="io://1234-5678-9012/12345678")],
+            )
+
+        assert exec_id == "exec-1"
+        assert post_mock.call_count == 2
+        assert sleep_mock.await_count == 1
+
+    @pytest.mark.asyncio
+    async def test_backoff_gives_up_after_max_tries_on_connection_failure(
+        self, client: OverkizClient
+    ) -> None:
+        """Ensure a persistent connection failure is re-raised after 3 attempts."""
+        with (
+            patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
+            patch.object(
+                aiohttp.ClientSession,
+                "get",
+                side_effect=TimeoutError("timed out"),
+            ) as get_mock,
+            pytest.raises(TimeoutError),
+        ):
+            await client.get_api_version()
+
+        assert get_mock.call_count == 3
+        assert sleep_mock.await_count == 2
+
+    @pytest.mark.asyncio
+    async def test_backoff_retries_on_server_disconnected_without_relogin(
+        self, client: OverkizClient
+    ) -> None:
+        """A dropped keep-alive socket is retried as a connection blip, not a relogin."""
+        client.login = AsyncMock()
+        resp = MockResponse(json.dumps({"protocolVersion": "1"}))
+
+        with (
+            patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
+            patch.object(
+                aiohttp.ClientSession,
+                "get",
+                side_effect=[aiohttp.ServerDisconnectedError(), resp],
+            ) as get_mock,
+        ):
+            result = await client.get_api_version()
+
+        assert result == "1"
+        assert get_mock.call_count == 2
+        assert sleep_mock.await_count == 1
+        # A transport blip must not trigger a (heavy) relogin.
+        assert client.login.await_count == 0
+
+    @pytest.mark.asyncio
+    async def test_server_disconnected_escalates_to_relogin_when_auth_expired(
+        self, client: OverkizClient
+    ) -> None:
+        """If retrying a disconnect surfaces a real auth expiry, relogin still kicks in."""
+        client.login = AsyncMock()
+
+        with (
+            patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
+            patch.object(
+                aiohttp.ClientSession,
+                "get",
+                side_effect=[
+                    # Transport blip, retried by the connection decorator.
+                    aiohttp.ServerDisconnectedError(),
+                    # Retry reaches the server, which reports the session expired.
+                    MockResponse(
+                        json.dumps(
+                            {
+                                "errorCode": "RESOURCE_ACCESS_DENIED",
+                                "error": "Not authenticated",
+                            }
+                        ),
+                        status=401,
+                    ),
+                    # After relogin, the auth decorator retries and succeeds.
+                    MockResponse(json.dumps({"protocolVersion": "1"})),
+                ],
+            ),
+        ):
+            result = await client.get_api_version()
+
+        assert result == "1"
+        assert client.login.await_count == 1
+        assert sleep_mock.await_count >= 1
 
     @pytest.mark.parametrize(
         ("fixture_name", "event_length"),

@@ -17,6 +17,7 @@ from aiohttp import (
     ClientConnectorError,
     ClientResponse,
     ClientSession,
+    ClientTimeout,
     ServerDisconnectedError,
 )
 from backoff.types import Details
@@ -72,6 +73,8 @@ from pyoverkiz.serializers import prepare_payload
 
 _LOGGER = logging.getLogger(__name__)
 
+DEFAULT_TIMEOUT = ClientTimeout(total=15, sock_connect=10)
+
 
 def _get_client_from_invocation(invocation: Details) -> OverkizClient:
     """Return the `OverkizClient` instance from a backoff invocation."""
@@ -88,12 +91,11 @@ async def refresh_listener(invocation: Details) -> None:
     await _get_client_from_invocation(invocation).register_event_listener()
 
 
-# Reusable backoff decorators with max_tries and max_time to cap total retry duration.
 retry_on_auth_error = backoff.on_exception(
     backoff.expo,
-    (NotAuthenticatedError, ServerDisconnectedError),
+    NotAuthenticatedError,
     max_tries=2,
-    max_time=60,  # safety net for hung requests
+    max_time=60,
     jitter=backoff.full_jitter,
     on_backoff=relogin,
     logger=_LOGGER,
@@ -101,9 +103,9 @@ retry_on_auth_error = backoff.on_exception(
 
 retry_on_connection_failure = backoff.on_exception(
     backoff.expo,
-    (TimeoutError, ClientConnectorError),
-    max_tries=5,
-    max_time=120,
+    (TimeoutError, ClientConnectorError, ServerDisconnectedError),
+    max_tries=3,
+    max_time=30,
     jitter=backoff.full_jitter,
     logger=_LOGGER,
 )
@@ -226,7 +228,9 @@ class OverkizClient:
         self.gateways: list[Gateway] = []
         self._event_listener_id: str | None = None
 
-        self.session = session or ClientSession(headers={"User-Agent": USER_AGENT})
+        self.session = session or ClientSession(
+            headers={"User-Agent": USER_AGENT}, timeout=DEFAULT_TIMEOUT
+        )
         self._ssl = verify_ssl
 
         if self.server_config.api_type == APIType.LOCAL and verify_ssl:
@@ -476,7 +480,6 @@ class OverkizClient:
     @retry_on_concurrent_requests
     @retry_on_auth_error
     @retry_on_listener_error
-    @retry_on_connection_failure
     async def fetch_events(self) -> list[Event]:
         """Fetch new events from a registered event listener. Fetched events are removed.
 
@@ -1021,6 +1024,7 @@ class OverkizClient:
         """
         await self._delete(f"setup/gateways/{gateway_id}/developerMode")
 
+    @retry_on_connection_failure
     async def _get(self, path: str) -> Any:
         """Make a GET request to the OverKiz API."""
         await self._refresh_token_if_expired()
@@ -1032,6 +1036,7 @@ class OverkizClient:
         ) as response:
             return await self._parse_response(response)
 
+    @retry_on_connection_failure
     async def _post(
         self,
         path: str,
@@ -1050,6 +1055,7 @@ class OverkizClient:
         ) as response:
             return await self._parse_response(response)
 
+    @retry_on_connection_failure
     async def _put(self, path: str, payload: dict[str, Any] | None = None) -> Any:
         """Make a PUT request to the OverKiz API."""
         await self._refresh_token_if_expired()
@@ -1062,6 +1068,7 @@ class OverkizClient:
         ) as response:
             return await self._parse_response(response)
 
+    @retry_on_connection_failure
     async def _delete(self, path: str) -> None:
         """Make a DELETE request to the OverKiz API."""
         await self._refresh_token_if_expired()
