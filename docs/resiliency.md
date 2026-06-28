@@ -29,9 +29,8 @@ Delays grow exponentially — the ceilings are 1s, 2s, 4s, 8s, … — but **ful
 is applied on top, so each actual wait is a random value between 0 and that ceiling
 (e.g. the first retry waits a random `0–1s`, the second a random `0–2s`). The
 randomization is deliberate: it spreads retries out so many clients do not all retry in
-lockstep ([AWS "Exponential Backoff and Jitter"](https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/)).
-Because of the jitter, the per-attempt delays are not a fixed sequence; the `max_time`
-budget is the upper bound that matters.
+lockstep. Because of the jitter, the per-attempt delays are not a fixed sequence; the
+`max_time` budget is the upper bound that matters.
 
 ### Connection errors fail fast
 
