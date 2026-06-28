@@ -73,7 +73,6 @@ from pyoverkiz.serializers import prepare_payload
 
 _LOGGER = logging.getLogger(__name__)
 
-# Default per-request timeout for the client-owned session (see docs: Resiliency).
 DEFAULT_TIMEOUT = ClientTimeout(total=15, sock_connect=10)
 
 
@@ -92,7 +91,6 @@ async def refresh_listener(invocation: Details) -> None:
     await _get_client_from_invocation(invocation).register_event_listener()
 
 
-# Reusable backoff decorators (see docs: Resiliency for the full strategy).
 retry_on_auth_error = backoff.on_exception(
     backoff.expo,
     NotAuthenticatedError,
@@ -103,7 +101,6 @@ retry_on_auth_error = backoff.on_exception(
     logger=_LOGGER,
 )
 
-# Transient transport failures: retry fast (3 tries / ~30s), no relogin.
 retry_on_connection_failure = backoff.on_exception(
     backoff.expo,
     (TimeoutError, ClientConnectorError, ServerDisconnectedError),
