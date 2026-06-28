@@ -82,9 +82,11 @@ asyncio.run(fetch_devices_with_retry())
 - Refresh setup with `get_setup()` and re-fetch devices.
 - Confirm you are using the correct gateway and server.
 
-## Timeouts
+## Timeouts and retries
 
-For long-running operations, prefer shorter request timeouts with retries rather than a single long timeout.
+The library retries transient connection and rate-limit failures automatically and
+applies a default request timeout. See [Resiliency](resiliency.md) for the full retry
+strategy and for configuring timeouts on a custom session.
 
 ## Logging
 

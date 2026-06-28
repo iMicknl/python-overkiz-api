@@ -17,6 +17,7 @@ from aiohttp import (
     ClientConnectorError,
     ClientResponse,
     ClientSession,
+    ClientTimeout,
     ServerDisconnectedError,
 )
 from backoff.types import Details
@@ -72,6 +73,9 @@ from pyoverkiz.serializers import prepare_payload
 
 _LOGGER = logging.getLogger(__name__)
 
+# Default per-request timeout for the client-owned session (see docs: Resiliency).
+DEFAULT_TIMEOUT = ClientTimeout(total=15, sock_connect=10)
+
 
 def _get_client_from_invocation(invocation: Details) -> OverkizClient:
     """Return the `OverkizClient` instance from a backoff invocation."""
@@ -88,20 +92,21 @@ async def refresh_listener(invocation: Details) -> None:
     await _get_client_from_invocation(invocation).register_event_listener()
 
 
-# Reusable backoff decorators with max_tries and max_time to cap total retry duration.
+# Reusable backoff decorators (see docs: Resiliency for the full strategy).
 retry_on_auth_error = backoff.on_exception(
     backoff.expo,
-    (NotAuthenticatedError, ServerDisconnectedError),
+    NotAuthenticatedError,
     max_tries=2,
-    max_time=60,  # safety net for hung requests
+    max_time=60,
     jitter=backoff.full_jitter,
     on_backoff=relogin,
     logger=_LOGGER,
 )
 
+# Transient transport failures: retry fast (3 tries / ~30s), no relogin.
 retry_on_connection_failure = backoff.on_exception(
     backoff.expo,
-    (TimeoutError, ClientConnectorError),
+    (TimeoutError, ClientConnectorError, ServerDisconnectedError),
     max_tries=3,
     max_time=30,
     jitter=backoff.full_jitter,
@@ -226,7 +231,9 @@ class OverkizClient:
         self.gateways: list[Gateway] = []
         self._event_listener_id: str | None = None
 
-        self.session = session or ClientSession(headers={"User-Agent": USER_AGENT})
+        self.session = session or ClientSession(
+            headers={"User-Agent": USER_AGENT}, timeout=DEFAULT_TIMEOUT
+        )
         self._ssl = verify_ssl
 
         if self.server_config.api_type == APIType.LOCAL and verify_ssl:
