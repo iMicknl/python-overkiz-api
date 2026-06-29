@@ -94,6 +94,7 @@ class UIClass(UnknownEnumMixin, StrEnum):
     WIND_SENSOR = "WindSensor"
     WINDOW = "Window"
     WINDOW_HANDLE = "WindowHandle"
+    WATER_LEAK_SENSOR = "waterLeakSensor"
 
 
 @unique
@@ -235,6 +236,7 @@ class UIWidget(UnknownEnumMixin, StrEnum):
     DYNAMIC_SCENE_LAUNCHER_CONTROLLER = "DynamicSceneLauncherController"
     DYNAMIC_SCREEN = "DynamicScreen"
     DYNAMIC_SHUTTER = "DynamicShutter"
+    DYNAMIC_SMOKE_SENSOR = "DynamicSmokeSensor"
     DYNAMIC_SWITCH = "DynamicSwitch"
     DYNAMIC_TEMPERATURE_SENSOR = "DynamicTemperatureSensor"
     DYNAMIC_THERMOSTAT = "DynamicThermostat"
@@ -242,6 +244,7 @@ class UIWidget(UnknownEnumMixin, StrEnum):
     DYNAMIC_VENETIAN_BLIND = "DynamicVenetianBlind"
     DYNAMIC_VENTILATION = "DynamicVentilation"
     DYNAMIC_WASHING_MACHINE = "DynamicWashingMachine"
+    DYNAMIC_WATER_LEAK_SENSOR = "DynamicWaterLeakSensor"
     DYNAMIC_WATER_MEASUREMENT_SENSOR = "DynamicWaterMeasurementSensor"
     DYNAMIC_WEATHER_STATION = "DynamicWeatherStation"
     DYNAMIC_WIND_SENSOR = "DynamicWindSensor"
@@ -348,6 +351,7 @@ class UIWidget(UnknownEnumMixin, StrEnum):
     )
     OPEN_CLOSE_SWINGING_GATE = "OpenCloseSwingingGate"
     OPEN_THERM_DIAGNOSTIC = "OpenThermDiagnostic"
+    OVP_STACK = "OvpStack"
     PERGOLA_HORIZONTAL_AWNING = "PergolaHorizontalAwning"
     PERGOLA_HORIZONTAL_AWNING_UNO = "PergolaHorizontalAwningUno"
     PERGOLA_SIDE_SCREEN = "PergolaSideScreen"
