@@ -111,6 +111,7 @@ class OverkizCommand(StrEnum):
     DISCOVER = "discover"
     DISCOVER_1_WAY_CONTROLLER = "discover1WayController"
     DISCOVER_ACTUATORS = "discoverActuators"
+    DISCOVER_CONTROLLER = "discoverController"
     DISCOVER_SENSORS = "discoverSensors"
     DISCOVER_SOMFY_UNSET_ACTUATORS = "discoverSomfyUnsetActuators"
     DOWN = "down"
@@ -2128,6 +2129,7 @@ class OverkizCommandParam(StrEnum):
     WANTED = "wanted"
     WATERDROP_CE = "WaterdropCE"
     WATERDROP_CETHI = "WaterdropCETHI"
+    WATER_LEAK = "waterLeak"
     WATER_METER = "Water meter"  # value with space
     WATER_PRESSURE = "water_pressure"
     WATER_TANK = "water_tank"

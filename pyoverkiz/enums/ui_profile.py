@@ -1968,3 +1968,10 @@ class UIProfile(UnknownEnumMixin, StrEnum):
     #
     # Form factor specific: Yes
     WINDOW_OPENING_STATUS = "WindowOpeningStatus"
+
+    #
+    # waterLeakSensor
+    #
+    # States:
+    #   - core:WaterLeakState (string): Indicate if a water leak is detected or not
+    WATER_LEAK_SENSOR = "waterLeakSensor"

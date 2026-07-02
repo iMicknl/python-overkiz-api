@@ -10,7 +10,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 !!! note
     This page is auto-generated from the Overkiz API. Run `uv run utils/generate_device_catalog.py` to regenerate.
 
-**35 protocols**, **570 unique device types** documented below.
+**35 protocols**, **577 unique device types** documented below.
 
 ## Protocols
 
@@ -33,10 +33,10 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 - [MYFOX](#myfox) (9 types)
 - [NEST](#nest) (4 types)
 - [NETATMO](#netatmo) (36 types)
-- [OGCP](#ogcp) (47 types)
-- [OGP](#ogp) (47 types)
+- [OGCP](#ogcp) (50 types)
+- [OGP](#ogp) (50 types)
 - [OPENDOORS](#opendoors) (1 types)
-- [OVP](#ovp) (25 types)
+- [OVP](#ovp) (26 types)
 - [PROFALUX_868](#profalux_868) (5 types)
 - [RAMSES](#ramses) (7 types)
 - [RTD](#rtd) (5 types)
@@ -10786,7 +10786,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ## OGCP
 
-47 device types.
+50 device types.
 
 ??? note "AirSensor/DynamicAirSensor (SENSOR) — 7 commands, 26 states"
 
@@ -10837,7 +10837,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Alarm/DynamicAlarm (ACTUATOR) — 13 commands, 33 states"
 
-    **Type IDs:** `282` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Alarm` | **Profiles:** `SmokeDetector`, `IntrusionDetector`, `StatefulAlarm`, `Alarm`
+    **Type IDs:** `282` | **Servers:** `rexel` | **Controllable:** `ogp:Alarm` | **Profiles:** `SmokeDetector`, `IntrusionDetector`, `StatefulAlarm`, `Alarm`
 
     **Commands**
 
@@ -10894,6 +10894,68 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `SmokeDetectionEventState` | DiscreteState | smoke |  |
     | `SmokeState` | DiscreteState | detected, notDetected |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
+
+??? note "Alarm/DynamicAlarm (ACTUATOR) — 13 commands, 35 states"
+
+    **Type IDs:** `282` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Alarm` | **Profiles:** `SmokeDetector`, `waterLeakSensor`, `IntrusionDetector`, `StatefulAlarm`, `Alarm`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `addGroupMember` | STRING | Add member to the group p1 : Id of the member to add to the group. |
+    | `arm` |  | Arm the system |
+    | `disarm` |  | Disarm the system |
+    | `executeManufacturerProcedure` | STRING; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
+    | `removeGroupMember` | STRING | Remove a member of the group. p1 : Id of the member to remove to the group. |
+    | `sendPrivate` | OBJECT | send a private command |
+    | `setMode` | STRING | Set the active mode. |
+    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setNodeDefinition` | STRING; STRING (optional); STRING (optional) | Fill the node definition (some transitions can be forbidden) p1: type (mandatory) p2: subType (mandatory if definition is set) p3: definition |
+    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
+    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ActivePartitionState` | DataState |  |  |
+    | `ArmedState` | DataState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `AvailableModesState` | DataState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
+    | `BatteryLevelState` | ContinuousState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
+    | `ErrorState` | DataState |  |  |
+    | `ErrorsState` | DataState |  |  |
+    | `FirmwareHashState` | DataState |  |  |
+    | `FirmwareRevisionState` | DataState |  |  |
+    | `GroupMembersState` | DataState |  |  |
+    | `IntrusionDetectionEventState` | DiscreteState | panic, intrusion |  |
+    | `IntrusionState` | DiscreteState | detected, notDetected |  |
+    | `ModeState` | DataState |  |  |
+    | `NameState` | DataState |  |  |
+    | `NewFirmwareAvailableState` | DataState |  |  |
+    | `PanicEventState` | DataState |  |  |
+    | `Private10State` | DataState |  |  |
+    | `Private1State` | DataState |  |  |
+    | `Private2State` | DataState |  |  |
+    | `Private3State` | DataState |  |  |
+    | `Private4State` | DataState |  |  |
+    | `Private5State` | DataState |  |  |
+    | `Private6State` | DataState |  |  |
+    | `Private7State` | DataState |  |  |
+    | `Private8State` | DataState |  |  |
+    | `Private9State` | DataState |  |  |
+    | `RemovableState` | DataState |  |  |
+    | `SignalQualityState` | ContinuousState |  |  |
+    | `SmokeDetectionEventState` | DiscreteState | smoke |  |
+    | `SmokeState` | DiscreteState | detected, notDetected |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `WaterLeakEventState` | DiscreteState | waterLeak |  |
+    | `WaterLeakState` | DiscreteState | detected, notDetected |  |
 
 ??? note "Awning/DynamicAwning (ACTUATOR) — 17 commands, 30 states"
 
@@ -12719,6 +12781,53 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
+??? note "SmokeSensor/DynamicSmokeSensor (SENSOR) — 7 commands, 26 states"
+
+    **Type IDs:** `307` | **Servers:** `somfy_europe` | **Controllable:** `ogp:SmokeSensor` | **Profiles:** `SmokeDetector`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `executeManufacturerProcedure` | STRING; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
+    | `sendPrivate` | OBJECT | send a private command |
+    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
+    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ActivePartitionState` | DataState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
+    | `BatteryLevelState` | ContinuousState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
+    | `ErrorState` | DataState |  |  |
+    | `ErrorsState` | DataState |  |  |
+    | `FirmwareHashState` | DataState |  |  |
+    | `FirmwareRevisionState` | DataState |  |  |
+    | `NameState` | DataState |  |  |
+    | `NewFirmwareAvailableState` | DataState |  |  |
+    | `Private10State` | DataState |  |  |
+    | `Private1State` | DataState |  |  |
+    | `Private2State` | DataState |  |  |
+    | `Private3State` | DataState |  |  |
+    | `Private4State` | DataState |  |  |
+    | `Private5State` | DataState |  |  |
+    | `Private6State` | DataState |  |  |
+    | `Private7State` | DataState |  |  |
+    | `Private8State` | DataState |  |  |
+    | `Private9State` | DataState |  |  |
+    | `RemovableState` | DataState |  |  |
+    | `SignalQualityState` | ContinuousState |  |  |
+    | `SmokeDetectionEventState` | DiscreteState | smoke |  |
+    | `SmokeState` | DiscreteState | detected, notDetected |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+
 ??? note "Switch/DynamicSwitch (ACTUATOR) — 8 commands, 27 states"
 
     **Type IDs:** `297` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Switch` | **Profiles:** `SwitchEvent`, `Switch`
@@ -13436,11 +13545,58 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 ??? note "unknown/Invalid (ACTUATOR) — 0 commands, 0 states"
 
     **Type IDs:** `0` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Invalid` | **Profiles:** `Specific`
+
+??? note "waterLeakSensor/DynamicWaterLeakSensor (SENSOR) — 7 commands, 26 states"
+
+    **Type IDs:** `306` | **Servers:** `somfy_europe` | **Controllable:** `ogp:WaterLeakSensor` | **Profiles:** `waterLeakSensor`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `executeManufacturerProcedure` | STRING; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
+    | `sendPrivate` | OBJECT | send a private command |
+    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
+    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ActivePartitionState` | DataState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
+    | `BatteryLevelState` | ContinuousState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
+    | `ErrorState` | DataState |  |  |
+    | `ErrorsState` | DataState |  |  |
+    | `FirmwareHashState` | DataState |  |  |
+    | `FirmwareRevisionState` | DataState |  |  |
+    | `NameState` | DataState |  |  |
+    | `NewFirmwareAvailableState` | DataState |  |  |
+    | `Private10State` | DataState |  |  |
+    | `Private1State` | DataState |  |  |
+    | `Private2State` | DataState |  |  |
+    | `Private3State` | DataState |  |  |
+    | `Private4State` | DataState |  |  |
+    | `Private5State` | DataState |  |  |
+    | `Private6State` | DataState |  |  |
+    | `Private7State` | DataState |  |  |
+    | `Private8State` | DataState |  |  |
+    | `Private9State` | DataState |  |  |
+    | `RemovableState` | DataState |  |  |
+    | `SignalQualityState` | ContinuousState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `WaterLeakEventState` | DiscreteState | waterLeak |  |
+    | `WaterLeakState` | DiscreteState | detected, notDetected |  |
 
 
 ## OGP
 
-47 device types.
+50 device types.
 
 ??? note "AirSensor/DynamicAirSensor (SENSOR) — 7 commands, 26 states"
 
@@ -13491,7 +13647,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Alarm/DynamicAlarm (ACTUATOR) — 13 commands, 33 states"
 
-    **Type IDs:** `282` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Alarm` | **Profiles:** `SmokeDetector`, `IntrusionDetector`, `StatefulAlarm`, `Alarm`
+    **Type IDs:** `282` | **Servers:** `rexel` | **Controllable:** `ogp:Alarm` | **Profiles:** `SmokeDetector`, `IntrusionDetector`, `StatefulAlarm`, `Alarm`
 
     **Commands**
 
@@ -13548,6 +13704,68 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `SmokeDetectionEventState` | DiscreteState | smoke |  |
     | `SmokeState` | DiscreteState | detected, notDetected |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
+
+??? note "Alarm/DynamicAlarm (ACTUATOR) — 13 commands, 35 states"
+
+    **Type IDs:** `282` | **Servers:** `somfy_europe` | **Controllable:** `ogp:Alarm` | **Profiles:** `SmokeDetector`, `waterLeakSensor`, `IntrusionDetector`, `StatefulAlarm`, `Alarm`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `addGroupMember` | STRING | Add member to the group p1 : Id of the member to add to the group. |
+    | `arm` |  | Arm the system |
+    | `disarm` |  | Disarm the system |
+    | `executeManufacturerProcedure` | STRING; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
+    | `removeGroupMember` | STRING | Remove a member of the group. p1 : Id of the member to remove to the group. |
+    | `sendPrivate` | OBJECT | send a private command |
+    | `setMode` | STRING | Set the active mode. |
+    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `setNodeDefinition` | STRING; STRING (optional); STRING (optional) | Fill the node definition (some transitions can be forbidden) p1: type (mandatory) p2: subType (mandatory if definition is set) p3: definition |
+    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
+    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ActivePartitionState` | DataState |  |  |
+    | `ArmedState` | DataState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `AvailableModesState` | DataState |  |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
+    | `BatteryLevelState` | ContinuousState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
+    | `ErrorState` | DataState |  |  |
+    | `ErrorsState` | DataState |  |  |
+    | `FirmwareHashState` | DataState |  |  |
+    | `FirmwareRevisionState` | DataState |  |  |
+    | `GroupMembersState` | DataState |  |  |
+    | `IntrusionDetectionEventState` | DiscreteState | panic, intrusion |  |
+    | `IntrusionState` | DiscreteState | detected, notDetected |  |
+    | `ModeState` | DataState |  |  |
+    | `NameState` | DataState |  |  |
+    | `NewFirmwareAvailableState` | DataState |  |  |
+    | `PanicEventState` | DataState |  |  |
+    | `Private10State` | DataState |  |  |
+    | `Private1State` | DataState |  |  |
+    | `Private2State` | DataState |  |  |
+    | `Private3State` | DataState |  |  |
+    | `Private4State` | DataState |  |  |
+    | `Private5State` | DataState |  |  |
+    | `Private6State` | DataState |  |  |
+    | `Private7State` | DataState |  |  |
+    | `Private8State` | DataState |  |  |
+    | `Private9State` | DataState |  |  |
+    | `RemovableState` | DataState |  |  |
+    | `SignalQualityState` | ContinuousState |  |  |
+    | `SmokeDetectionEventState` | DiscreteState | smoke |  |
+    | `SmokeState` | DiscreteState | detected, notDetected |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `WaterLeakEventState` | DiscreteState | waterLeak |  |
+    | `WaterLeakState` | DiscreteState | detected, notDetected |  |
 
 ??? note "Awning/DynamicAwning (ACTUATOR) — 17 commands, 30 states"
 
@@ -15373,6 +15591,53 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `UnavailableFeaturesState` | DataState |  |  |
 
+??? note "SmokeSensor/DynamicSmokeSensor (SENSOR) — 7 commands, 26 states"
+
+    **Type IDs:** `307` | **Servers:** `somfy_europe` | **Controllable:** `ogp:SmokeSensor` | **Profiles:** `SmokeDetector`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `executeManufacturerProcedure` | STRING; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
+    | `sendPrivate` | OBJECT | send a private command |
+    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
+    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ActivePartitionState` | DataState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
+    | `BatteryLevelState` | ContinuousState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
+    | `ErrorState` | DataState |  |  |
+    | `ErrorsState` | DataState |  |  |
+    | `FirmwareHashState` | DataState |  |  |
+    | `FirmwareRevisionState` | DataState |  |  |
+    | `NameState` | DataState |  |  |
+    | `NewFirmwareAvailableState` | DataState |  |  |
+    | `Private10State` | DataState |  |  |
+    | `Private1State` | DataState |  |  |
+    | `Private2State` | DataState |  |  |
+    | `Private3State` | DataState |  |  |
+    | `Private4State` | DataState |  |  |
+    | `Private5State` | DataState |  |  |
+    | `Private6State` | DataState |  |  |
+    | `Private7State` | DataState |  |  |
+    | `Private8State` | DataState |  |  |
+    | `Private9State` | DataState |  |  |
+    | `RemovableState` | DataState |  |  |
+    | `SignalQualityState` | ContinuousState |  |  |
+    | `SmokeDetectionEventState` | DiscreteState | smoke |  |
+    | `SmokeState` | DiscreteState | detected, notDetected |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+
 ??? note "Switch/DynamicSwitch (ACTUATOR) — 8 commands, 27 states"
 
     **Type IDs:** `297` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Switch` | **Profiles:** `SwitchEvent`, `Switch`
@@ -16090,6 +16355,53 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 ??? note "unknown/Invalid (ACTUATOR) — 0 commands, 0 states"
 
     **Type IDs:** `0` | **Servers:** `rexel`, `somfy_europe` | **Controllable:** `ogp:Invalid` | **Profiles:** `Specific`
+
+??? note "waterLeakSensor/DynamicWaterLeakSensor (SENSOR) — 7 commands, 26 states"
+
+    **Type IDs:** `306` | **Servers:** `somfy_europe` | **Controllable:** `ogp:WaterLeakSensor` | **Profiles:** `waterLeakSensor`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `executeManufacturerProcedure` | STRING; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
+    | `sendPrivate` | OBJECT | send a private command |
+    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
+    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ActivePartitionState` | DataState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
+    | `BatteryLevelState` | ContinuousState |  |  |
+    | `ErrorEventState` | DiscreteState | accessLimitation, internal, obstacleProtection, transportBusy, deviceNoAnswer, cancelled, deprecated, interrupted, thermalProtection, maintenanceRequired, alreadyUpToDate, notSupported, hardwareError, accessDenied, updateError, resourceAlreadyExist |  |
+    | `ErrorState` | DataState |  |  |
+    | `ErrorsState` | DataState |  |  |
+    | `FirmwareHashState` | DataState |  |  |
+    | `FirmwareRevisionState` | DataState |  |  |
+    | `NameState` | DataState |  |  |
+    | `NewFirmwareAvailableState` | DataState |  |  |
+    | `Private10State` | DataState |  |  |
+    | `Private1State` | DataState |  |  |
+    | `Private2State` | DataState |  |  |
+    | `Private3State` | DataState |  |  |
+    | `Private4State` | DataState |  |  |
+    | `Private5State` | DataState |  |  |
+    | `Private6State` | DataState |  |  |
+    | `Private7State` | DataState |  |  |
+    | `Private8State` | DataState |  |  |
+    | `Private9State` | DataState |  |  |
+    | `RemovableState` | DataState |  |  |
+    | `SignalQualityState` | ContinuousState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `WaterLeakEventState` | DiscreteState | waterLeak |  |
+    | `WaterLeakState` | DiscreteState | detected, notDetected |  |
 
 
 ## OPENDOORS
@@ -16121,7 +16433,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ## OVP
 
-25 device types.
+26 device types.
 
 ??? note "ElectricitySensor/CumulativeElectricPowerConsumptionSensor (SENSOR) — 0 commands, 2 states"
 
@@ -16831,6 +17143,16 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `NameState` | DataState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
+
+??? note "ProtocolGateway/OvpStack (PROTOCOL_GATEWAY) — 1 commands, 0 states"
+
+    **Type IDs:** `8656978944` | **Servers:** `somfy_europe` | **Controllable:** `ovp:StackComponent` | **Profiles:** `Specific`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `discoverController` |  | Start a discover for an OVP controller |
 
 ??? note "SwimmingPool/DeDietrichSwimmingPool (ACTUATOR) — 12 commands, 8 states"
 
