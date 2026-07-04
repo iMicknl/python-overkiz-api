@@ -26,9 +26,9 @@ endpoint call unchanged.
   only geo signals are `country` and `partnerOIDs`). The map mirrors the TaHoma
   app's `BusinessArea.fromCountry` (from the decompiled `com.somfy.homeapp`): all
   three regions' countries are enumerated (EMEA=ha101, APAC=ha201, SNABA=ha401),
-  and **any genuinely unlisted or missing country falls back to EMEA** — identical
-  to the app. A present-but-unmapped country is logged as a warning (signals the
-  map needs updating), but still resolves to EMEA.
+  and **any unresolvable country (unlisted or missing) falls back to EMEA** —
+  identical to the app. An unresolvable country is logged as a warning (signals
+  the map needs updating), but still resolves to EMEA.
 - **Invitations deferred** (YAGNI — irreversible, no HA consumer yet).
 
 ## Background (verified live)
@@ -120,9 +120,9 @@ the strategy when it implements `SupportsGatewaySelection`.
 
 - Bad credentials in the password grant → `SomfyBadCredentialsError` (existing).
 - Token-exchange / BOB non-200 → `SomfyServiceError` (existing).
-- Unknown or missing `country` → falls back to EMEA (the app's behavior); never
-  raises. EMEA is the largest region and the safe default. A present-but-unmapped
-  country is logged as a warning so the map can be extended.
+- Unresolvable `country` (unlisted or missing) → falls back to EMEA (the app's
+  behavior); never raises. EMEA is the largest region and the safe default. It is
+  logged as a warning so the map can be extended.
 - `auth_headers`/`endpoint` before a gateway is selected: `endpoint` returns the
   placeholder; requests only succeed after selection (mirrors Rexel's
   select-before-use contract).

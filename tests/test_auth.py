@@ -1698,6 +1698,36 @@ async def test_somfy_multisite_select_unknown_country_falls_back_to_emea(caplog)
 
 
 @pytest.mark.asyncio
+async def test_somfy_multisite_select_missing_country_falls_back_to_emea(caplog):
+    """A site without a country resolves to EMEA and logs a warning."""
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    missing = {
+        "totalCount": 1,
+        "results": [
+            {
+                "siteOID": "site-x",
+                "name": "Mystery",
+                "currentUserRoles": [{"roleOID": "owner"}],
+                "subSites": [
+                    {"externalOID": "ext-x", "gateways": [{"gatewayId": "gw-x"}]}
+                ],
+            }
+        ],
+    }
+    session.get = MagicMock(return_value=_json_ctx(missing))
+    await strategy.discover_gateways()
+
+    with caplog.at_level(logging.WARNING):
+        strategy.select_gateway("gw-x")
+
+    assert strategy.endpoint == (
+        "https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/"
+    )
+    assert "EMEA" in caplog.text
+
+
+@pytest.mark.asyncio
 async def test_somfy_multisite_endpoint_defaults_to_placeholder_before_select():
     """Before selection, endpoint falls back to the server config placeholder."""
     strategy, _ = _build_somfy_multisite_strategy()

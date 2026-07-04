@@ -403,16 +403,14 @@ class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
         """Map an ISO country to an Overkiz region, defaulting to EMEA.
 
         Mirrors the TaHoma app's BusinessArea.fromCountry: known countries map
-        to their region, and anything unlisted falls back to EMEA. A country
-        that is present but unmapped is logged, since it likely means the map
-        needs updating for a newly supported region.
+        to their region, and anything unresolvable falls back to EMEA. A country
+        we cannot resolve (missing, or present but unmapped) is logged, since it
+        likely means the map needs updating for a newly supported region.
         """
-        if not country:
-            return SOMFY_DEFAULT_REGION
-        region = SOMFY_COUNTRY_REGION.get(country.upper())
+        region = SOMFY_COUNTRY_REGION.get(country.upper()) if country else None
         if region is None:
             _LOGGER.warning(
-                "Unknown Somfy site country %r; falling back to %s region",
+                "Unresolvable Somfy site country %r; falling back to %s region",
                 country,
                 SOMFY_DEFAULT_REGION,
             )
