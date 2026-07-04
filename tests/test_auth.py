@@ -1442,3 +1442,49 @@ def test_somfy_multisite_constants_and_server():
     config = SUPPORTED_SERVERS[Server.SOMFY]
     assert config.server == Server.SOMFY
     assert config.name == "Somfy"
+
+
+@pytest.mark.asyncio
+async def test_somfy_password_token_returns_token_dict():
+    """_somfy_password_token posts the password grant and returns the token dict."""
+    from unittest.mock import AsyncMock, MagicMock
+
+    from aiohttp import ClientSession
+
+    from pyoverkiz.auth.strategies import _somfy_password_token
+
+    resp = MagicMock()
+    resp.status = 200
+    resp.json = AsyncMock(
+        return_value={"access_token": "sso-abc", "refresh_token": "r1"}
+    )
+    resp.__aenter__ = AsyncMock(return_value=resp)
+    resp.__aexit__ = AsyncMock(return_value=None)
+    session = MagicMock(spec=ClientSession)
+    session.post = MagicMock(return_value=resp)
+
+    token = await _somfy_password_token(session, "user", "pass")
+
+    assert token["access_token"] == "sso-abc"
+
+
+@pytest.mark.asyncio
+async def test_somfy_password_token_bad_credentials():
+    """error.invalid.grant maps to SomfyBadCredentialsError."""
+    from unittest.mock import AsyncMock, MagicMock
+
+    from aiohttp import ClientSession
+
+    from pyoverkiz.auth.strategies import _somfy_password_token
+    from pyoverkiz.exceptions import SomfyBadCredentialsError
+
+    resp = MagicMock()
+    resp.status = 200
+    resp.json = AsyncMock(return_value={"message": "error.invalid.grant"})
+    resp.__aenter__ = AsyncMock(return_value=resp)
+    resp.__aexit__ = AsyncMock(return_value=None)
+    session = MagicMock(spec=ClientSession)
+    session.post = MagicMock(return_value=resp)
+
+    with pytest.raises(SomfyBadCredentialsError):
+        await _somfy_password_token(session, "user", "bad")

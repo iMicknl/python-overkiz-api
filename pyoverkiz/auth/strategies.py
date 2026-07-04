@@ -73,6 +73,40 @@ async def _raise_for_server_error(response: ClientResponse) -> None:
         await check_response(response)
 
 
+async def _somfy_password_token(
+    session: ClientSession, username: str, password: str
+) -> dict[str, Any]:
+    """Perform the Somfy Accounts password grant and return the raw token dict.
+
+    Shared by SomfyAuthStrategy (single-site) and SomfyMultisiteAuthStrategy
+    (which feeds the returned access_token into the Keycloak token exchange).
+    """
+    form = FormData(
+        {
+            "grant_type": "password",
+            "client_id": SOMFY_CLIENT_ID,
+            "client_secret": SOMFY_CLIENT_SECRET,
+            "username": username,
+            "password": password,
+        }
+    )
+    async with session.post(
+        f"{SOMFY_API}/oauth/oauth/v2/token/jwt",
+        data=form,
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+    ) as response:
+        await _raise_for_server_error(response)
+        token = await response.json()
+
+        if token.get("message") == "error.invalid.grant":
+            raise SomfyBadCredentialsError(token["message"])
+
+        if not token.get("access_token"):
+            raise SomfyServiceError("No Somfy access token provided.")
+
+        return cast(dict[str, Any], token)
+
+
 class BaseAuthStrategy(AuthStrategy):
     """Base class for authentication strategies."""
 
@@ -198,6 +232,15 @@ class SomfyAuthStrategy(BaseAuthStrategy):
     async def _request_access_token(
         self, *, grant_type: str, extra_fields: Mapping[str, str]
     ) -> None:
+        if grant_type == "password":
+            token = await _somfy_password_token(
+                self.session,
+                self.credentials.username,
+                self.credentials.password,
+            )
+            self.context.update_from_token(token)
+            return
+
         form = FormData(
             {
                 "grant_type": grant_type,
