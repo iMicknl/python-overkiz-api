@@ -1686,3 +1686,25 @@ async def test_somfy_multisite_refresh_scopes_to_selected_site():
     # The refresh URL must carry ?siteOID=<selected site oid>.
     called_url = session.post.call_args.args[0]
     assert "siteOID=site-a" in called_url
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_refresh_without_refresh_token_raises():
+    """No refresh_token after site selection must raise, not silently no-op.
+
+    Without a refresh token, refresh_if_needed() can't mint the site-scoped
+    token, so it must not return False and let auth_headers() keep serving
+    the unscoped global token against the site's region endpoint.
+    """
+    from pyoverkiz.exceptions import SomfyServiceError
+
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    strategy.context.refresh_token = None
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+
+    strategy.select_gateway("2025-0000-0001")  # forces expiry, no refresh_token
+
+    with pytest.raises(SomfyServiceError):
+        await strategy.refresh_if_needed()

@@ -309,7 +309,7 @@ class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
             self.session, self.credentials.username, self.credentials.password
         )
         await self._token_exchange(token["access_token"])
-        self._sites = await self.discover_gateways()
+        await self.discover_gateways()
         if len(self._sites) == 1:
             self.select_gateway(self._sites[0].gateway_id)
 
@@ -402,8 +402,19 @@ class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
         return self._endpoint or self.server.endpoint
 
     async def refresh_if_needed(self) -> bool:
-        """Mint/refresh a site-scoped token when expired."""
-        if not self.context.is_expired() or not self.context.refresh_token:
+        """Mint/refresh a site-scoped token when expired.
+
+        Raises if a site has been selected but there is no refresh token to
+        mint the site-scoped token with, rather than silently continuing to
+        serve the unscoped global token against the site's region endpoint.
+        """
+        if not self.context.is_expired():
+            return False
+        if not self.context.refresh_token:
+            if self._selected_site_oid:
+                raise SomfyServiceError(
+                    "Cannot mint a site-scoped Somfy token without a refresh token."
+                )
             return False
         await self._refresh()
         return True
