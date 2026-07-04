@@ -1,7 +1,7 @@
 """Tests for authentication module."""
 
-# ruff: noqa: S105, S106
-# S105/S106: Test credentials use dummy values.
+# ruff: noqa: S105, S106, S107
+# S105/S106/S107: Test credentials use dummy values.
 
 from __future__ import annotations
 
@@ -1755,3 +1755,89 @@ async def test_somfy_multisite_refresh_without_refresh_token_raises():
 
     with pytest.raises(SomfyServiceError):
         await strategy.refresh_if_needed()
+
+
+def _patch_somfy_login_tokens(strategy, *, ginaite_access_token="ginaite-fresh"):
+    """Patch the password grant + token exchange so login() can run offline.
+
+    Returns a context manager patching the module-level password grant to a
+    fixed SSO token, and ``strategy._token_exchange`` to install a fresh,
+    unscoped, non-expired Ginaite token via the real ``update_from_token``.
+    """
+
+    def _install_fresh_token(_sso_access_token):
+        strategy.context.update_from_token(
+            {
+                "access_token": ginaite_access_token,
+                "refresh_token": "r-fresh",
+                "expires_in": 900,
+            }
+        )
+
+    return (
+        patch(
+            "pyoverkiz.auth.strategies._somfy_password_token",
+            AsyncMock(return_value={"access_token": "sso-fresh"}),
+        ),
+        patch.object(
+            strategy,
+            "_token_exchange",
+            AsyncMock(side_effect=_install_fresh_token),
+        ),
+    )
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_relogin_rescopes_selected_gateway():
+    """Relogin on a multi-site account must re-apply site scoping.
+
+    A relogin mints a fresh, unscoped Ginaite token that is NOT expired
+    (expires_in=900), so without re-selecting the previously-selected
+    gateway, refresh_if_needed() would return False and auth_headers() would
+    serve the unscoped global token against the still-selected region
+    endpoint. The fix must re-select the gateway so the context is marked
+    expired again, forcing the next request to mint a site-scoped token.
+    """
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+    strategy.select_gateway("2025-0000-0001")
+    emea_endpoint = strategy.endpoint
+
+    patch_password, patch_exchange = _patch_somfy_login_tokens(strategy)
+    with patch_password, patch_exchange:
+        await strategy.login()
+
+    assert strategy.selected_gateway == "2025-0000-0001"
+    assert strategy.endpoint == emea_endpoint
+    # The fresh token must be treated as stale so the next request re-scopes it.
+    assert strategy.context.is_expired()
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_relogin_drops_removed_gateway():
+    """If the previously-selected gateway disappears on relogin, drop it.
+
+    Rather than silently keep pointing at a gateway/endpoint that's gone
+    (e.g. access revoked), the stale selection state must be cleared.
+    """
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+    strategy.select_gateway("2025-0000-0001")
+
+    reduced_sites = {
+        "totalCount": 1,
+        "results": [_BOB_SITES["results"][1]],  # only site-b / 1225-0000-0002
+    }
+    session.get = MagicMock(return_value=_json_ctx(reduced_sites))
+
+    patch_password, patch_exchange = _patch_somfy_login_tokens(strategy)
+    with patch_password, patch_exchange:
+        await strategy.login()
+
+    assert strategy.selected_gateway is None
+    assert strategy._selected_site_oid is None
+    assert strategy.endpoint == strategy.server.endpoint

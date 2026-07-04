@@ -305,13 +305,30 @@ class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
         self._endpoint: str | None = None
 
     async def login(self) -> None:
-        """Password grant -> token exchange -> discover, auto-select if single."""
+        """Password grant -> token exchange -> discover; (re-)select a site.
+
+        Relogin (e.g. after ``NotAuthenticatedError``) mints a fresh, unscoped
+        Ginaite token that is not itself expired, so on a multi-site account
+        the previously-selected gateway must be re-selected to re-apply site
+        scoping; otherwise the unscoped global token would keep being served
+        against the still-selected region endpoint. If that gateway is no
+        longer present after rediscovery, drop the stale selection instead of
+        silently pointing at a gateway that's gone.
+        """
         token = await _somfy_password_token(
             self.session, self.credentials.username, self.credentials.password
         )
         await self._token_exchange(token["access_token"])
         await self.discover_gateways()
-        if len(self._sites) == 1:
+
+        known = {s.gateway_id for s in self._sites}
+        if self._selected_gateway and self._selected_gateway in known:
+            self.select_gateway(self._selected_gateway)
+        elif self._selected_gateway and self._selected_gateway not in known:
+            self._selected_gateway = None
+            self._selected_site_oid = None
+            self._endpoint = None
+        elif len(self._sites) == 1:
             self.select_gateway(self._sites[0].gateway_id)
 
     async def _token_exchange(self, sso_access_token: str) -> None:
