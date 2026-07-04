@@ -1551,3 +1551,138 @@ async def test_somfy_multisite_token_exchange_error_raises():
 
     with pytest.raises(SomfyServiceError):
         await strategy._token_exchange("sso-access")
+
+
+_BOB_SITES = {
+    "totalCount": 2,
+    "results": [
+        {
+            "siteOID": "site-a",
+            "name": "Mick",
+            "country": "NL",
+            "currentUserRoles": [{"roleOID": "owner"}],
+            "subSites": [
+                {
+                    "externalOID": "ext-a",
+                    "type": "SETUP",
+                    "gateways": [{"gatewayId": "2025-0000-0001", "type": 98}],
+                }
+            ],
+        },
+        {
+            "siteOID": "site-b",
+            "name": "Smientstraat",
+            "country": "NL",
+            "currentUserRoles": [{"roleOID": "owner"}],
+            "subSites": [
+                {
+                    "externalOID": "ext-b",
+                    "type": "SETUP",
+                    "gateways": [{"gatewayId": "1225-0000-0002", "type": 29}],
+                }
+            ],
+        },
+    ],
+}
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_discover_flattens_sites():
+    """discover_gateways returns one GatewayCandidate per gateway across sites."""
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+
+    candidates = await strategy.discover_gateways()
+
+    assert [c.gateway_id for c in candidates] == ["2025-0000-0001", "1225-0000-0002"]
+    assert candidates[0].home_id == "site-a"
+    assert candidates[0].label == "Mick"
+    assert candidates[0].external_id == "ext-a"
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_select_resolves_region_endpoint():
+    """Selecting a gateway resolves its country to the EMEA endpoint."""
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+
+    strategy.select_gateway("2025-0000-0001")
+
+    assert strategy.selected_gateway == "2025-0000-0001"
+    assert strategy._selected_site_oid == "site-a"
+    assert strategy.endpoint == (
+        "https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/"
+    )
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_select_unknown_country_raises():
+    """A country absent from the region map raises SomfyServiceError."""
+    from pyoverkiz.exceptions import SomfyServiceError
+
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    unknown = {
+        "totalCount": 1,
+        "results": [
+            {
+                "siteOID": "site-x",
+                "name": "Mars",
+                "country": "ZZ",
+                "currentUserRoles": [{"roleOID": "owner"}],
+                "subSites": [
+                    {"externalOID": "ext-x", "gateways": [{"gatewayId": "gw-x"}]}
+                ],
+            }
+        ],
+    }
+    session.get = MagicMock(return_value=_json_ctx(unknown))
+    await strategy.discover_gateways()
+
+    with pytest.raises(SomfyServiceError, match="ZZ"):
+        strategy.select_gateway("gw-x")
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_endpoint_defaults_to_placeholder_before_select():
+    """Before selection, endpoint falls back to the server config placeholder."""
+    strategy, _ = _build_somfy_multisite_strategy()
+    assert strategy.endpoint == (
+        "https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/"
+    )
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_auth_headers():
+    """auth_headers returns the Bearer token, or {} when absent (no gateway header)."""
+    strategy, _ = _build_somfy_multisite_strategy()
+    assert await strategy.auth_headers() == {}
+    strategy.context.access_token = "ginaite-1"
+    headers = await strategy.auth_headers()
+    assert headers == {"Authorization": "Bearer ginaite-1"}
+    assert "gatewayId" not in headers
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_refresh_scopes_to_selected_site():
+    """refresh_if_needed posts a refresh grant to the ?siteOID URL."""
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    strategy.context.refresh_token = "r-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+    strategy.select_gateway("2025-0000-0001")  # forces expiry
+
+    posted = _json_ctx({"access_token": "scoped-1", "refresh_token": "r-2"})
+    session.post = MagicMock(return_value=posted)
+
+    refreshed = await strategy.refresh_if_needed()
+
+    assert refreshed is True
+    assert strategy.context.access_token == "scoped-1"
+    # The refresh URL must carry ?siteOID=<selected site oid>.
+    called_url = session.post.call_args.args[0]
+    assert "siteOID=site-a" in called_url

@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import base64
 import binascii
+import datetime
 import json
 import ssl
 from collections.abc import Mapping
@@ -25,6 +26,8 @@ from pyoverkiz.auth.credentials import (
     UsernamePasswordCredentials,
 )
 from pyoverkiz.const import (
+    BOB_API_KEY,
+    BOB_SITE_API,
     BRANDT_MIDDLEWARE_API,
     BRANDT_PARTNER,
     COZYTOUCH_ATLANTIC_API,
@@ -46,6 +49,8 @@ from pyoverkiz.const import (
     SOMFY_API,
     SOMFY_CLIENT_ID,
     SOMFY_CLIENT_SECRET,
+    SOMFY_COUNTRY_REGION,
+    SOMFY_REGION_ENDPOINT,
 )
 from pyoverkiz.exceptions import (
     BadCredentialsError,
@@ -326,6 +331,123 @@ class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
                     f"Somfy token exchange failed: {response.status}"
                 )
             self.context.update_from_token(await response.json())
+
+    async def discover_gateways(self) -> list[GatewayCandidate]:
+        """List the account's sites from BOB, flattened to gateway candidates."""
+        data = await self._bob_get("sites?withGateways=true&limit=20&offset=0")
+        candidates: list[GatewayCandidate] = []
+        self._site_country = {}
+        for site in data.get("results", []):
+            site_oid = str(site["siteOID"])
+            label = site.get("name")
+            country = site.get("country")
+            for sub in site.get("subSites", []):
+                external_id = sub.get("externalOID")
+                for gateway in sub.get("gateways", []):
+                    gateway_id = str(gateway["gatewayId"])
+                    if country is not None:
+                        self._site_country[gateway_id] = str(country)
+                    candidates.append(
+                        GatewayCandidate(
+                            gateway_id=gateway_id,
+                            home_id=site_oid,
+                            label=label,
+                            external_id=(
+                                str(external_id) if external_id is not None else None
+                            ),
+                        )
+                    )
+        self._sites = candidates
+        return candidates
+
+    def select_gateway(self, gateway_id: str) -> None:
+        """Scope subsequent requests to the given gateway's site and region."""
+        site = next(
+            (s for s in self._sites if s.gateway_id == gateway_id),
+            None,
+        )
+        if site is None:
+            raise SomfyServiceError(f"Unknown gateway id: {gateway_id}")
+
+        country = self._site_country.get(gateway_id)
+        if not country:
+            raise SomfyServiceError(
+                f"No country known for gateway {gateway_id}; cannot resolve region."
+            )
+        region = self._region_for_country(country)
+
+        self._selected_gateway = gateway_id
+        self._selected_site_oid = site.home_id
+        self._endpoint = SOMFY_REGION_ENDPOINT[region]
+        # Force the next request to mint a site-scoped token via refresh.
+        self.context.expires_at = datetime.datetime.now(datetime.UTC)
+
+    def _region_for_country(self, country: str) -> str:
+        """Map an ISO country to an Overkiz region, or raise if unmapped."""
+        region = SOMFY_COUNTRY_REGION.get(country.upper())
+        if region is None:
+            raise SomfyServiceError(
+                f"No Overkiz region mapped for Somfy site country {country!r}."
+            )
+        return region
+
+    @property
+    def selected_gateway(self) -> str | None:
+        """Return the currently selected gateway id, or None."""
+        return self._selected_gateway
+
+    @property
+    def endpoint(self) -> str:
+        """Return the resolved per-site endpoint, or the server placeholder."""
+        return self._endpoint or self.server.endpoint
+
+    async def refresh_if_needed(self) -> bool:
+        """Mint/refresh a site-scoped token when expired."""
+        if not self.context.is_expired() or not self.context.refresh_token:
+            return False
+        await self._refresh()
+        return True
+
+    async def _refresh(self) -> None:
+        """Refresh grant scoped to the selected site (?siteOID)."""
+        url = GINAITE_TOKEN_URL
+        if self._selected_site_oid:
+            url = f"{GINAITE_TOKEN_URL}?siteOID={self._selected_site_oid}"
+        form = FormData(
+            {
+                "grant_type": "refresh_token",
+                "client_id": SOMFY_CLIENT_ID,
+                "refresh_token": cast(str, self.context.refresh_token),
+            }
+        )
+        async with self.session.post(url, data=form) as response:
+            await _raise_for_server_error(response)
+            if response.status != HTTPStatus.OK:
+                raise SomfyServiceError(
+                    f"Somfy token refresh failed: {response.status}"
+                )
+            self.context.update_from_token(await response.json())
+
+    async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
+        """Return the Bearer header (site-scoped token), or {} before login."""
+        if self.context.access_token:
+            return {"Authorization": f"Bearer {self.context.access_token}"}
+        return {}
+
+    async def _bob_get(self, path: str) -> dict[str, Any]:
+        """GET a BOB site-directory resource with Bearer + X-Api-Key."""
+        async with self.session.get(
+            f"{BOB_SITE_API}/{path}",
+            headers={
+                "Authorization": f"Bearer {self.context.access_token}",
+                "X-Api-Key": BOB_API_KEY,
+            },
+            ssl=self._ssl,
+        ) as response:
+            await _raise_for_server_error(response)
+            if response.status != HTTPStatus.OK:
+                raise SomfyServiceError(f"BOB request failed: {response.status}")
+            return cast(dict[str, Any], await response.json())
 
 
 class CozytouchAuthStrategy(SessionLoginStrategy):
