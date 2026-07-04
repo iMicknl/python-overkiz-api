@@ -1488,3 +1488,66 @@ async def test_somfy_password_token_bad_credentials():
 
     with pytest.raises(SomfyBadCredentialsError):
         await _somfy_password_token(session, "user", "bad")
+
+
+def _build_somfy_multisite_strategy():
+    """Return a SomfyMultisiteAuthStrategy with a MagicMock session."""
+    from unittest.mock import MagicMock
+
+    from aiohttp import ClientSession
+
+    from pyoverkiz.auth.credentials import UsernamePasswordCredentials
+    from pyoverkiz.auth.strategies import SomfyMultisiteAuthStrategy
+    from pyoverkiz.const import SUPPORTED_SERVERS
+    from pyoverkiz.enums import Server
+
+    session = MagicMock(spec=ClientSession)
+    strategy = SomfyMultisiteAuthStrategy(
+        credentials=UsernamePasswordCredentials("user", "pass"),
+        session=session,
+        server=SUPPORTED_SERVERS[Server.SOMFY],
+        ssl_context=True,
+    )
+    return strategy, session
+
+
+def _json_ctx(body, status=200):
+    """A MagicMock aiohttp response context manager returning `body` as JSON."""
+    from unittest.mock import AsyncMock, MagicMock
+
+    resp = MagicMock()
+    resp.status = status
+    resp.json = AsyncMock(return_value=body)
+    resp.text = AsyncMock(return_value=str(body))
+    ctx = MagicMock()
+    ctx.__aenter__ = AsyncMock(return_value=resp)
+    ctx.__aexit__ = AsyncMock(return_value=None)
+    return ctx
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_token_exchange_populates_context():
+    """_token_exchange stores the Ginaite access + refresh token."""
+    strategy, session = _build_somfy_multisite_strategy()
+    session.post = MagicMock(
+        return_value=_json_ctx(
+            {"access_token": "ginaite-1", "refresh_token": "r-1", "expires_in": 900}
+        )
+    )
+
+    await strategy._token_exchange("sso-access")
+
+    assert strategy.context.access_token == "ginaite-1"
+    assert strategy.context.refresh_token == "r-1"
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_token_exchange_error_raises():
+    """A non-200 token exchange raises SomfyServiceError."""
+    from pyoverkiz.exceptions import SomfyServiceError
+
+    strategy, session = _build_somfy_multisite_strategy()
+    session.post = MagicMock(return_value=_json_ctx({"error": "bad"}, status=400))
+
+    with pytest.raises(SomfyServiceError):
+        await strategy._token_exchange("sso-access")

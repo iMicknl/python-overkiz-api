@@ -29,6 +29,10 @@ from pyoverkiz.const import (
     BRANDT_PARTNER,
     COZYTOUCH_ATLANTIC_API,
     COZYTOUCH_CLIENT_ID,
+    GINAITE_SUBJECT_ISSUER,
+    GINAITE_SUBJECT_TOKEN_TYPE,
+    GINAITE_TOKEN_EXCHANGE_GRANT,
+    GINAITE_TOKEN_URL,
     NEXITY_API,
     NEXITY_COGNITO_CLIENT_ID,
     NEXITY_COGNITO_REGION,
@@ -266,6 +270,62 @@ class SomfyAuthStrategy(BaseAuthStrategy):
                 raise SomfyServiceError("No Somfy access token provided.")
 
             self.context.update_from_token(token)
+
+
+class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
+    """Somfy multi-site auth: Keycloak token exchange + BOB site directory.
+
+    Reuses the Somfy Accounts password grant, exchanges the SSO token for a
+    Ginaite (Keycloak) token, then lists the account's sites from the BOB
+    directory. Selecting a site mints a site-scoped token whose Bearer drives
+    the classic Overkiz enduser API directly (no gateway header needed).
+    """
+
+    def __init__(
+        self,
+        credentials: UsernamePasswordCredentials,
+        session: ClientSession,
+        server: ServerConfig,
+        ssl_context: ssl.SSLContext | bool,
+    ) -> None:
+        """Create a Somfy multi-site strategy with a fresh auth context."""
+        super().__init__(session, server, ssl_context)
+        self.credentials = credentials
+        self.context = AuthContext()
+        self._sites: list[GatewayCandidate] = []
+        self._site_country: dict[str, str] = {}
+        self._selected_site_oid: str | None = None
+        self._selected_gateway: str | None = None
+        self._endpoint: str | None = None
+
+    async def login(self) -> None:
+        """Password grant -> token exchange -> discover, auto-select if single."""
+        token = await _somfy_password_token(
+            self.session, self.credentials.username, self.credentials.password
+        )
+        await self._token_exchange(token["access_token"])
+        self._sites = await self.discover_gateways()
+        if len(self._sites) == 1:
+            self.select_gateway(self._sites[0].gateway_id)
+
+    async def _token_exchange(self, sso_access_token: str) -> None:
+        """Exchange a Somfy Accounts SSO token for a Ginaite token (public client)."""
+        form = FormData(
+            {
+                "grant_type": GINAITE_TOKEN_EXCHANGE_GRANT,
+                "client_id": SOMFY_CLIENT_ID,
+                "subject_token": sso_access_token,
+                "subject_issuer": GINAITE_SUBJECT_ISSUER,
+                "subject_token_type": GINAITE_SUBJECT_TOKEN_TYPE,
+            }
+        )
+        async with self.session.post(GINAITE_TOKEN_URL, data=form) as response:
+            await _raise_for_server_error(response)
+            if response.status != HTTPStatus.OK:
+                raise SomfyServiceError(
+                    f"Somfy token exchange failed: {response.status}"
+                )
+            self.context.update_from_token(await response.json())
 
 
 class CozytouchAuthStrategy(SessionLoginStrategy):
