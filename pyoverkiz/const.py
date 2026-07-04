@@ -57,9 +57,10 @@ BOB_API_KEY = "184638B3FBE874ACD24C14FBD657B"
 # The BOB directory carries no region field, so a site's Overkiz region is
 # derived from its ISO 3166-1 alpha-2 country. This mirrors the TaHoma app's
 # BusinessArea.fromCountry (com.somfy.homeapp v2.5.1): the region is a static,
-# offline lookup — never runtime probing. EMEA (ha101) is the default, so only
-# the two non-default regions are enumerated; every other country resolves to
-# EMEA (matching the app's fromCountry fallback). Verified live: NL -> EMEA.
+# offline lookup — never runtime probing. All three regions' countries are
+# enumerated so a genuinely unlisted country can be detected (and logged); it
+# still falls back to EMEA, matching the app's fromCountry default.
+# Verified live: NL -> EMEA.
 SOMFY_DEFAULT_REGION = "EMEA"
 SOMFY_REGION_ENDPOINT: MappingProxyType[str, str] = MappingProxyType(
     {
@@ -68,7 +69,6 @@ SOMFY_REGION_ENDPOINT: MappingProxyType[str, str] = MappingProxyType(
         "SNABA": "https://ha401-1.overkiz.com/enduser-mobile-web/enduserAPI/",
     }
 )
-# Only non-EMEA countries are listed; unlisted countries fall back to EMEA.
 SOMFY_COUNTRY_REGION: MappingProxyType[str, str] = MappingProxyType(
     {
         # Americas — ha401 (SNABA).
@@ -90,6 +90,66 @@ SOMFY_COUNTRY_REGION: MappingProxyType[str, str] = MappingProxyType(
         "VN": "APAC",
         "KR": "APAC",
         "CN": "APAC",
+        # Europe, Middle East & Africa — ha101 (EMEA).
+        "AL": "EMEA",
+        "AD": "EMEA",
+        "AT": "EMEA",
+        "BY": "EMEA",
+        "BE": "EMEA",
+        "BG": "EMEA",
+        "HR": "EMEA",
+        "CY": "EMEA",
+        "CZ": "EMEA",
+        "DK": "EMEA",
+        "EG": "EMEA",
+        "EE": "EMEA",
+        "FO": "EMEA",
+        "FI": "EMEA",
+        "FR": "EMEA",
+        "GF": "EMEA",
+        "PF": "EMEA",
+        "DE": "EMEA",
+        "GR": "EMEA",
+        "GP": "EMEA",
+        "HU": "EMEA",
+        "IL": "EMEA",
+        "IT": "EMEA",
+        "JE": "EMEA",
+        "JO": "EMEA",
+        "KZ": "EMEA",
+        "KW": "EMEA",
+        "LV": "EMEA",
+        "LB": "EMEA",
+        "LT": "EMEA",
+        "LU": "EMEA",
+        "MQ": "EMEA",
+        "YT": "EMEA",
+        "MC": "EMEA",
+        "MA": "EMEA",
+        "NL": "EMEA",
+        "NO": "EMEA",
+        "NC": "EMEA",
+        "PS": "EMEA",
+        "PL": "EMEA",
+        "PT": "EMEA",
+        "QA": "EMEA",
+        "IE": "EMEA",
+        "RE": "EMEA",
+        "RO": "EMEA",
+        "RU": "EMEA",
+        "BL": "EMEA",
+        "SA": "EMEA",
+        "RS": "EMEA",
+        "SK": "EMEA",
+        "ZA": "EMEA",
+        "ES": "EMEA",
+        "SE": "EMEA",
+        "CH": "EMEA",
+        "TN": "EMEA",
+        "TR": "EMEA",
+        "UA": "EMEA",
+        "AE": "EMEA",
+        "GB": "EMEA",
     }
 )
 

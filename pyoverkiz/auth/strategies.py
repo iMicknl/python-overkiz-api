@@ -7,6 +7,7 @@ import base64
 import binascii
 import datetime
 import json
+import logging
 import ssl
 from collections.abc import Mapping
 from http import HTTPStatus
@@ -68,6 +69,8 @@ from pyoverkiz.exceptions import (
 )
 from pyoverkiz.models import ServerConfig
 from pyoverkiz.response_handler import check_response
+
+_LOGGER = logging.getLogger(__name__)
 
 MIN_JWT_SEGMENTS = 2
 
@@ -399,13 +402,22 @@ class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
     def _region_for_country(country: str | None) -> str:
         """Map an ISO country to an Overkiz region, defaulting to EMEA.
 
-        Mirrors the TaHoma app's BusinessArea.fromCountry: only non-EMEA
-        countries are mapped, and anything else (including an unknown or
-        missing country) resolves to EMEA.
+        Mirrors the TaHoma app's BusinessArea.fromCountry: known countries map
+        to their region, and anything unlisted falls back to EMEA. A country
+        that is present but unmapped is logged, since it likely means the map
+        needs updating for a newly supported region.
         """
         if not country:
             return SOMFY_DEFAULT_REGION
-        return SOMFY_COUNTRY_REGION.get(country.upper(), SOMFY_DEFAULT_REGION)
+        region = SOMFY_COUNTRY_REGION.get(country.upper())
+        if region is None:
+            _LOGGER.warning(
+                "Unknown Somfy site country %r; falling back to %s region",
+                country,
+                SOMFY_DEFAULT_REGION,
+            )
+            return SOMFY_DEFAULT_REGION
+        return region
 
     @property
     def selected_gateway(self) -> str | None:

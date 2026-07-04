@@ -9,6 +9,7 @@ import base64
 import datetime
 import importlib.util
 import json
+import logging
 import sys
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -1446,8 +1447,8 @@ def test_somfy_multisite_constants_and_server():
     assert BOB_SITE_API.endswith("/site-api/public/v1")
     assert BOB_API_KEY == "184638B3FBE874ACD24C14FBD657B"
 
-    # Only non-EMEA countries are mapped; every mapped region has an endpoint.
-    assert "NL" not in SOMFY_COUNTRY_REGION
+    # All three regions are enumerated; every mapped region has an endpoint.
+    assert SOMFY_COUNTRY_REGION["NL"] == "EMEA"
     assert SOMFY_COUNTRY_REGION["US"] == "SNABA"
     assert SOMFY_COUNTRY_REGION["JP"] == "APAC"
     for region in SOMFY_COUNTRY_REGION.values():
@@ -1665,8 +1666,8 @@ async def test_somfy_multisite_select_maps_non_default_region():
 
 
 @pytest.mark.asyncio
-async def test_somfy_multisite_select_unknown_country_falls_back_to_emea():
-    """An unknown or missing country resolves to EMEA (matches the app)."""
+async def test_somfy_multisite_select_unknown_country_falls_back_to_emea(caplog):
+    """An unknown country resolves to EMEA and logs a warning (matches the app)."""
     strategy, session = _build_somfy_multisite_strategy()
     strategy.context.access_token = "ginaite-1"
     unknown = {
@@ -1686,11 +1687,14 @@ async def test_somfy_multisite_select_unknown_country_falls_back_to_emea():
     session.get = MagicMock(return_value=_json_ctx(unknown))
     await strategy.discover_gateways()
 
-    strategy.select_gateway("gw-x")
+    with caplog.at_level(logging.WARNING):
+        strategy.select_gateway("gw-x")
 
     assert strategy.endpoint == (
         "https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/"
     )
+    assert "ZZ" in caplog.text
+    assert "EMEA" in caplog.text
 
 
 @pytest.mark.asyncio
