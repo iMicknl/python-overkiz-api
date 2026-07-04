@@ -44,15 +44,15 @@ SOMFY_CLIENT_SECRET = "12k73w1n540g8o4cokg0cw84cog840k84cwggscwg884004kgk"  # no
 
 # Somfy multi-site (Keycloak "Ginaite" realm + BOB back-office directory).
 # The token exchange reuses SOMFY_CLIENT_ID as a PUBLIC client (no secret).
-GINAITE_TOKEN_URL = (
+SOMFY_GINAITE_TOKEN_URL = (
     "https://ginaite-prod.ovkube.net/realms/somfy-tahoma/protocol/openid-connect/token"  # noqa: S105
 )
-GINAITE_SUBJECT_ISSUER = "somfy-customer"
-GINAITE_TOKEN_EXCHANGE_GRANT = "urn:ietf:params:oauth:grant-type:token-exchange"  # noqa: S105
-GINAITE_SUBJECT_TOKEN_TYPE = "urn:ietf:params:oauth:token-type:access_token"  # noqa: S105
+SOMFY_GINAITE_SUBJECT_ISSUER = "somfy-customer"
+SOMFY_GINAITE_TOKEN_EXCHANGE_GRANT = "urn:ietf:params:oauth:grant-type:token-exchange"  # noqa: S105
+SOMFY_GINAITE_SUBJECT_TOKEN_TYPE = "urn:ietf:params:oauth:token-type:access_token"  # noqa: S105
 
-BOB_SITE_API = "https://backoffice-service.ovkube.net/site-api/public/v1"
-BOB_API_KEY = "184638B3FBE874ACD24C14FBD657B"
+SOMFY_BOB_SITE_API = "https://backoffice-service.ovkube.net/site-api/public/v1"
+SOMFY_BOB_API_KEY = "184638B3FBE874ACD24C14FBD657B"
 
 # The BOB directory carries no region field, so a site's Overkiz region is
 # derived from its ISO 3166-1 alpha-2 country. This mirrors the TaHoma app's

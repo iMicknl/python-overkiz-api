@@ -27,16 +27,10 @@ from pyoverkiz.auth.credentials import (
     UsernamePasswordCredentials,
 )
 from pyoverkiz.const import (
-    BOB_API_KEY,
-    BOB_SITE_API,
     BRANDT_MIDDLEWARE_API,
     BRANDT_PARTNER,
     COZYTOUCH_ATLANTIC_API,
     COZYTOUCH_CLIENT_ID,
-    GINAITE_SUBJECT_ISSUER,
-    GINAITE_SUBJECT_TOKEN_TYPE,
-    GINAITE_TOKEN_EXCHANGE_GRANT,
-    GINAITE_TOKEN_URL,
     NEXITY_API,
     NEXITY_COGNITO_CLIENT_ID,
     NEXITY_COGNITO_REGION,
@@ -48,10 +42,16 @@ from pyoverkiz.const import (
     REXEL_OAUTH_TOKEN_URL,
     REXEL_REQUIRED_CONSENT,
     SOMFY_API,
+    SOMFY_BOB_API_KEY,
+    SOMFY_BOB_SITE_API,
     SOMFY_CLIENT_ID,
     SOMFY_CLIENT_SECRET,
     SOMFY_COUNTRY_REGION,
     SOMFY_DEFAULT_REGION,
+    SOMFY_GINAITE_SUBJECT_ISSUER,
+    SOMFY_GINAITE_SUBJECT_TOKEN_TYPE,
+    SOMFY_GINAITE_TOKEN_EXCHANGE_GRANT,
+    SOMFY_GINAITE_TOKEN_URL,
     SOMFY_REGION_ENDPOINT,
 )
 from pyoverkiz.exceptions import (
@@ -338,14 +338,14 @@ class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
         """Exchange a Somfy Accounts SSO token for a Ginaite token (public client)."""
         form = FormData(
             {
-                "grant_type": GINAITE_TOKEN_EXCHANGE_GRANT,
+                "grant_type": SOMFY_GINAITE_TOKEN_EXCHANGE_GRANT,
                 "client_id": SOMFY_CLIENT_ID,
                 "subject_token": sso_access_token,
-                "subject_issuer": GINAITE_SUBJECT_ISSUER,
-                "subject_token_type": GINAITE_SUBJECT_TOKEN_TYPE,
+                "subject_issuer": SOMFY_GINAITE_SUBJECT_ISSUER,
+                "subject_token_type": SOMFY_GINAITE_SUBJECT_TOKEN_TYPE,
             }
         )
-        async with self.session.post(GINAITE_TOKEN_URL, data=form) as response:
+        async with self.session.post(SOMFY_GINAITE_TOKEN_URL, data=form) as response:
             await _raise_for_server_error(response)
             if response.status != HTTPStatus.OK:
                 raise SomfyServiceError(
@@ -447,9 +447,9 @@ class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
 
     async def _refresh(self) -> None:
         """Refresh grant scoped to the selected site (?siteOID)."""
-        url = GINAITE_TOKEN_URL
+        url = SOMFY_GINAITE_TOKEN_URL
         if self._selected_site_oid:
-            url = f"{GINAITE_TOKEN_URL}?siteOID={self._selected_site_oid}"
+            url = f"{SOMFY_GINAITE_TOKEN_URL}?siteOID={self._selected_site_oid}"
         form = FormData(
             {
                 "grant_type": "refresh_token",
@@ -474,10 +474,10 @@ class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
     async def _bob_get(self, path: str) -> dict[str, Any]:
         """GET a BOB site-directory resource with Bearer + X-Api-Key."""
         async with self.session.get(
-            f"{BOB_SITE_API}/{path}",
+            f"{SOMFY_BOB_SITE_API}/{path}",
             headers={
                 "Authorization": f"Bearer {self.context.access_token}",
-                "X-Api-Key": BOB_API_KEY,
+                "X-Api-Key": SOMFY_BOB_API_KEY,
             },
             ssl=self._ssl,
         ) as response:

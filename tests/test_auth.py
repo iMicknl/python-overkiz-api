@@ -1425,27 +1425,30 @@ def test_rexel_token_strategy_supports_gateway_selection():
 def test_somfy_multisite_constants_and_server():
     """Server.SOMFY and the Ginaite/BOB constants are defined and consistent."""
     from pyoverkiz.const import (
-        BOB_API_KEY,
-        BOB_SITE_API,
-        GINAITE_SUBJECT_ISSUER,
-        GINAITE_SUBJECT_TOKEN_TYPE,
-        GINAITE_TOKEN_EXCHANGE_GRANT,
-        GINAITE_TOKEN_URL,
+        SOMFY_BOB_API_KEY,
+        SOMFY_BOB_SITE_API,
         SOMFY_COUNTRY_REGION,
+        SOMFY_GINAITE_SUBJECT_ISSUER,
+        SOMFY_GINAITE_SUBJECT_TOKEN_TYPE,
+        SOMFY_GINAITE_TOKEN_EXCHANGE_GRANT,
+        SOMFY_GINAITE_TOKEN_URL,
         SOMFY_REGION_ENDPOINT,
         SUPPORTED_SERVERS,
     )
     from pyoverkiz.enums import Server
 
     assert Server.SOMFY == "somfy"
-    assert GINAITE_TOKEN_URL.endswith("/protocol/openid-connect/token")
-    assert GINAITE_SUBJECT_ISSUER == "somfy-customer"
-    assert GINAITE_TOKEN_EXCHANGE_GRANT == (
+    assert SOMFY_GINAITE_TOKEN_URL.endswith("/protocol/openid-connect/token")
+    assert SOMFY_GINAITE_SUBJECT_ISSUER == "somfy-customer"
+    assert SOMFY_GINAITE_TOKEN_EXCHANGE_GRANT == (
         "urn:ietf:params:oauth:grant-type:token-exchange"
     )
-    assert GINAITE_SUBJECT_TOKEN_TYPE == "urn:ietf:params:oauth:token-type:access_token"
-    assert BOB_SITE_API.endswith("/site-api/public/v1")
-    assert BOB_API_KEY == "184638B3FBE874ACD24C14FBD657B"
+    assert (
+        SOMFY_GINAITE_SUBJECT_TOKEN_TYPE
+        == "urn:ietf:params:oauth:token-type:access_token"
+    )
+    assert SOMFY_BOB_SITE_API.endswith("/site-api/public/v1")
+    assert SOMFY_BOB_API_KEY == "184638B3FBE874ACD24C14FBD657B"
 
     # All three regions are enumerated; every mapped region has an endpoint.
     assert SOMFY_COUNTRY_REGION["NL"] == "EMEA"

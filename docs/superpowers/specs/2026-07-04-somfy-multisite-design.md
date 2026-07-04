@@ -88,9 +88,9 @@ auth_headers():       {"Authorization": "Bearer <token>"}  (no gateway header)
 Add `SOMFY = "somfy"`.
 
 ### `const.py`
-- `GINAITE_TOKEN_URL`, `GINAITE_SUBJECT_ISSUER = "somfy-customer"`,
-  `GINAITE_TOKEN_EXCHANGE_GRANT`, `GINAITE_SUBJECT_TOKEN_TYPE`.
-- `BOB_SITE_API`, `BOB_API_KEY`.
+- `SOMFY_GINAITE_TOKEN_URL`, `SOMFY_GINAITE_SUBJECT_ISSUER = "somfy-customer"`,
+  `SOMFY_GINAITE_TOKEN_EXCHANGE_GRANT`, `SOMFY_GINAITE_SUBJECT_TOKEN_TYPE`.
+- `SOMFY_BOB_SITE_API`, `SOMFY_BOB_API_KEY`.
 - `SOMFY_COUNTRY_REGION: Mapping[str, str]` (ISO 3166 country → region key) and
   `SOMFY_REGION_ENDPOINT: Mapping[str, str]` (region → Overkiz enduser base).
   Regions mirror the existing server groupings: EMEA=ha101, APAC=ha201,
