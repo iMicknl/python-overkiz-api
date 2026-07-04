@@ -223,6 +223,21 @@ class TestAuthFactory:
         assert isinstance(strategy, SomfyAuthStrategy)
 
     @pytest.mark.asyncio
+    async def test_build_auth_strategy_somfy_multisite(self):
+        """Server.SOMFY + username/password builds SomfyMultisiteAuthStrategy."""
+        from pyoverkiz.auth.strategies import SomfyMultisiteAuthStrategy
+        from pyoverkiz.const import SUPPORTED_SERVERS
+
+        strategy = build_auth_strategy(
+            server_config=SUPPORTED_SERVERS[Server.SOMFY],
+            credentials=UsernamePasswordCredentials("user", "pass"),
+            session=AsyncMock(spec=ClientSession),
+            ssl_context=True,
+        )
+
+        assert isinstance(strategy, SomfyMultisiteAuthStrategy)
+
+    @pytest.mark.asyncio
     async def test_build_auth_strategy_cozytouch(self):
         """Test building Cozytouch auth strategy."""
         server_config = ServerConfig(

@@ -25,6 +25,7 @@ from pyoverkiz.auth.strategies import (
     RexelTokenAuthStrategy,
     SessionLoginStrategy,
     SomfyAuthStrategy,
+    SomfyMultisiteAuthStrategy,
 )
 from pyoverkiz.enums import APIType, Server
 from pyoverkiz.models import ServerConfig
@@ -56,6 +57,14 @@ def build_auth_strategy(
 
     if server == Server.SOMFY_EUROPE:
         return SomfyAuthStrategy(
+            _ensure_credentials(credentials, UsernamePasswordCredentials),
+            session,
+            server_config,
+            ssl_context,
+        )
+
+    if server == Server.SOMFY:
+        return SomfyMultisiteAuthStrategy(
             _ensure_credentials(credentials, UsernamePasswordCredentials),
             session,
             server_config,
