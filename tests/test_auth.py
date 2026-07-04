@@ -1404,3 +1404,41 @@ def test_rexel_token_strategy_supports_gateway_selection():
     creds = RexelTokenCredentials(access_token="static-token")
     strategy, _ = _build_rexel_token_strategy([], credentials=creds)
     assert isinstance(strategy, SupportsGatewaySelection)
+
+
+def test_somfy_multisite_constants_and_server():
+    """Server.SOMFY and the Ginaite/BOB constants are defined and consistent."""
+    from pyoverkiz.const import (
+        BOB_API_KEY,
+        BOB_SITE_API,
+        GINAITE_SUBJECT_ISSUER,
+        GINAITE_SUBJECT_TOKEN_TYPE,
+        GINAITE_TOKEN_EXCHANGE_GRANT,
+        GINAITE_TOKEN_URL,
+        SOMFY_COUNTRY_REGION,
+        SOMFY_REGION_ENDPOINT,
+        SUPPORTED_SERVERS,
+    )
+    from pyoverkiz.enums import Server
+
+    assert Server.SOMFY == "somfy"
+    assert GINAITE_TOKEN_URL.endswith("/protocol/openid-connect/token")
+    assert GINAITE_SUBJECT_ISSUER == "somfy-customer"
+    assert GINAITE_TOKEN_EXCHANGE_GRANT == (
+        "urn:ietf:params:oauth:grant-type:token-exchange"
+    )
+    assert GINAITE_SUBJECT_TOKEN_TYPE == "urn:ietf:params:oauth:token-type:access_token"
+    assert BOB_SITE_API.endswith("/site-api/public/v1")
+    assert BOB_API_KEY == "184638B3FBE874ACD24C14FBD657B"
+
+    # Every mapped country points at a region that has an endpoint.
+    assert SOMFY_COUNTRY_REGION["NL"] == "EMEA"
+    for region in SOMFY_COUNTRY_REGION.values():
+        assert region in SOMFY_REGION_ENDPOINT
+    assert SOMFY_REGION_ENDPOINT["EMEA"] == (
+        "https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/"
+    )
+
+    config = SUPPORTED_SERVERS[Server.SOMFY]
+    assert config.server == Server.SOMFY
+    assert config.name == "Somfy"

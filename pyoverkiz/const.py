@@ -42,6 +42,65 @@ SOMFY_CLIENT_ID = "0d8e920c-1478-11e7-a377-02dd59bd3041_1ewvaqmclfogo4kcsoo0c8k4
 # OAuth client secrets are public by design (embedded in mobile apps)
 SOMFY_CLIENT_SECRET = "12k73w1n540g8o4cokg0cw84cog840k84cwggscwg884004kgk"  # noqa: S105
 
+# Somfy multi-site (Keycloak "Ginaite" realm + BOB back-office directory).
+# The token exchange reuses SOMFY_CLIENT_ID as a PUBLIC client (no secret).
+GINAITE_TOKEN_URL = (
+    "https://ginaite-prod.ovkube.net/realms/somfy-tahoma/protocol/openid-connect/token"  # noqa: S105
+)
+GINAITE_SUBJECT_ISSUER = "somfy-customer"
+GINAITE_TOKEN_EXCHANGE_GRANT = "urn:ietf:params:oauth:grant-type:token-exchange"  # noqa: S105
+GINAITE_SUBJECT_TOKEN_TYPE = "urn:ietf:params:oauth:token-type:access_token"  # noqa: S105
+
+BOB_SITE_API = "https://backoffice-service.ovkube.net/site-api/public/v1"
+BOB_API_KEY = "184638B3FBE874ACD24C14FBD657B"
+
+# The BOB directory carries no region field, so the site's Overkiz region is
+# derived from its ISO country. Regions mirror the existing per-region Somfy
+# servers: EMEA=ha101, APAC=ha201 (Oceania), SNABA=ha401 (Americas). Only NL is
+# verified live; other countries are seeded from those groupings. An unmapped
+# country must raise rather than guess (see SomfyMultisiteAuthStrategy).
+SOMFY_REGION_ENDPOINT: MappingProxyType[str, str] = MappingProxyType(
+    {
+        "EMEA": "https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+        "APAC": "https://ha201-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+        "SNABA": "https://ha401-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+    }
+)
+SOMFY_COUNTRY_REGION: MappingProxyType[str, str] = MappingProxyType(
+    {
+        # EMEA (Europe / Middle East / Africa) — ha101. Verified: NL.
+        "AT": "EMEA",
+        "BE": "EMEA",
+        "CH": "EMEA",
+        "CZ": "EMEA",
+        "DE": "EMEA",
+        "DK": "EMEA",
+        "ES": "EMEA",
+        "FI": "EMEA",
+        "FR": "EMEA",
+        "GB": "EMEA",
+        "GR": "EMEA",
+        "IE": "EMEA",
+        "IT": "EMEA",
+        "LU": "EMEA",
+        "NL": "EMEA",
+        "NO": "EMEA",
+        "PL": "EMEA",
+        "PT": "EMEA",
+        "SE": "EMEA",
+        # Americas — ha401 (SNABA).
+        "BR": "SNABA",
+        "CA": "SNABA",
+        "MX": "SNABA",
+        "US": "SNABA",
+        # Asia-Pacific / Oceania — ha201.
+        "AU": "APAC",
+        "CN": "APAC",
+        "JP": "APAC",
+        "NZ": "APAC",
+    }
+)
+
 # Brandt Smart Control middleware (cookie-session Rails API in front of Overkiz)
 BRANDT_MIDDLEWARE_API = "https://www.smartcontrol-app.com"
 BRANDT_PARTNER = "brandt-electromenager"
@@ -130,6 +189,16 @@ SUPPORTED_SERVERS: MappingProxyType[str, ServerConfig] = MappingProxyType(
         Server.SIMU_LIVEIN2: ServerConfig(  # alias of https://tahomalink.com
             server=Server.SIMU_LIVEIN2,
             name="SIMU (LiveIn2)",
+            endpoint="https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+            manufacturer="Somfy",
+            api_type=APIType.CLOUD,
+        ),
+        Server.SOMFY: ServerConfig(
+            server=Server.SOMFY,
+            # Region-agnostic multi-site login. The endpoint here is a
+            # placeholder; SomfyMultisiteAuthStrategy overrides it per selected
+            # site once the region is resolved.
+            name="Somfy",
             endpoint="https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/",
             manufacturer="Somfy",
             api_type=APIType.CLOUD,
