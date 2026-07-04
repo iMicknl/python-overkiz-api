@@ -1446,8 +1446,10 @@ def test_somfy_multisite_constants_and_server():
     assert BOB_SITE_API.endswith("/site-api/public/v1")
     assert BOB_API_KEY == "184638B3FBE874ACD24C14FBD657B"
 
-    # Every mapped country points at a region that has an endpoint.
-    assert SOMFY_COUNTRY_REGION["NL"] == "EMEA"
+    # Only non-EMEA countries are mapped; every mapped region has an endpoint.
+    assert "NL" not in SOMFY_COUNTRY_REGION
+    assert SOMFY_COUNTRY_REGION["US"] == "SNABA"
+    assert SOMFY_COUNTRY_REGION["JP"] == "APAC"
     for region in SOMFY_COUNTRY_REGION.values():
         assert region in SOMFY_REGION_ENDPOINT
     assert SOMFY_REGION_ENDPOINT["EMEA"] == (
@@ -1634,10 +1636,37 @@ async def test_somfy_multisite_select_resolves_region_endpoint():
 
 
 @pytest.mark.asyncio
-async def test_somfy_multisite_select_unknown_country_raises():
-    """A country absent from the region map raises SomfyServiceError."""
-    from pyoverkiz.exceptions import SomfyServiceError
+async def test_somfy_multisite_select_maps_non_default_region():
+    """A country in the map resolves to its non-default region endpoint."""
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    us_site = {
+        "totalCount": 1,
+        "results": [
+            {
+                "siteOID": "site-us",
+                "name": "Denver",
+                "country": "US",
+                "currentUserRoles": [{"roleOID": "owner"}],
+                "subSites": [
+                    {"externalOID": "ext-us", "gateways": [{"gatewayId": "gw-us"}]}
+                ],
+            }
+        ],
+    }
+    session.get = MagicMock(return_value=_json_ctx(us_site))
+    await strategy.discover_gateways()
 
+    strategy.select_gateway("gw-us")
+
+    assert strategy.endpoint == (
+        "https://ha401-1.overkiz.com/enduser-mobile-web/enduserAPI/"
+    )
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_select_unknown_country_falls_back_to_emea():
+    """An unknown or missing country resolves to EMEA (matches the app)."""
     strategy, session = _build_somfy_multisite_strategy()
     strategy.context.access_token = "ginaite-1"
     unknown = {
@@ -1657,8 +1686,11 @@ async def test_somfy_multisite_select_unknown_country_raises():
     session.get = MagicMock(return_value=_json_ctx(unknown))
     await strategy.discover_gateways()
 
-    with pytest.raises(SomfyServiceError, match="ZZ"):
-        strategy.select_gateway("gw-x")
+    strategy.select_gateway("gw-x")
+
+    assert strategy.endpoint == (
+        "https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/"
+    )
 
 
 @pytest.mark.asyncio

@@ -50,6 +50,7 @@ from pyoverkiz.const import (
     SOMFY_CLIENT_ID,
     SOMFY_CLIENT_SECRET,
     SOMFY_COUNTRY_REGION,
+    SOMFY_DEFAULT_REGION,
     SOMFY_REGION_ENDPOINT,
 )
 from pyoverkiz.exceptions import (
@@ -369,12 +370,7 @@ class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
         if site is None:
             raise SomfyServiceError(f"Unknown gateway id: {gateway_id}")
 
-        country = self._site_country.get(gateway_id)
-        if not country:
-            raise SomfyServiceError(
-                f"No country known for gateway {gateway_id}; cannot resolve region."
-            )
-        region = self._region_for_country(country)
+        region = self._region_for_country(self._site_country.get(gateway_id))
 
         self._selected_gateway = gateway_id
         self._selected_site_oid = site.home_id
@@ -382,14 +378,17 @@ class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
         # Force the next request to mint a site-scoped token via refresh.
         self.context.expires_at = datetime.datetime.now(datetime.UTC)
 
-    def _region_for_country(self, country: str) -> str:
-        """Map an ISO country to an Overkiz region, or raise if unmapped."""
-        region = SOMFY_COUNTRY_REGION.get(country.upper())
-        if region is None:
-            raise SomfyServiceError(
-                f"No Overkiz region mapped for Somfy site country {country!r}."
-            )
-        return region
+    @staticmethod
+    def _region_for_country(country: str | None) -> str:
+        """Map an ISO country to an Overkiz region, defaulting to EMEA.
+
+        Mirrors the TaHoma app's BusinessArea.fromCountry: only non-EMEA
+        countries are mapped, and anything else (including an unknown or
+        missing country) resolves to EMEA.
+        """
+        if not country:
+            return SOMFY_DEFAULT_REGION
+        return SOMFY_COUNTRY_REGION.get(country.upper(), SOMFY_DEFAULT_REGION)
 
     @property
     def selected_gateway(self) -> str | None:

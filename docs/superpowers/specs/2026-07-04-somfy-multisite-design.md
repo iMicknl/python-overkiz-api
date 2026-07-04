@@ -23,8 +23,10 @@ endpoint call unchanged.
   (WebView authorization-code) is a documented fallback, not implemented.
 - **Region resolved from a static `country → region` map** (verified: no API
   field carries the region — not the JWT, not `/sites`, not `/sites/{oid}`; the
-  only geo signals are `country` and `partnerOIDs`). An **unknown country raises**
-  a typed error rather than silently hitting the wrong server.
+  only geo signals are `country` and `partnerOIDs`). The map mirrors the TaHoma
+  app's `BusinessArea.fromCountry` (from the decompiled `com.somfy.homeapp`): only
+  the non-default regions (APAC=ha201, SNABA=ha401) are enumerated, and **any
+  unlisted or missing country falls back to EMEA=ha101** — identical to the app.
 - **Invitations deferred** (YAGNI — irreversible, no HA consumer yet).
 
 ## Background (verified live)
@@ -69,7 +71,7 @@ discover_gateways():
 
 select_gateway(gateway_id):
   - record selected siteOID + country
-  - region = COUNTRY_REGION[country]  (raise SomfyServiceError if unmapped)
+  - region = COUNTRY_REGION.get(country, EMEA)  (unlisted/missing -> EMEA)
   - self._endpoint = REGION_ENDPOINT[region]
   - mint site-scoped token: POST {ginaite}/token?siteOID=<oid> (grant_type=refresh_token)
 
@@ -116,9 +118,8 @@ the strategy when it implements `SupportsGatewaySelection`.
 
 - Bad credentials in the password grant → `SomfyBadCredentialsError` (existing).
 - Token-exchange / BOB non-200 → `SomfyServiceError` (existing).
-- Unknown `country` in the region map → `SomfyServiceError` with a message
-  naming the country and site, so the failure is diagnosable (better than a
-  downstream `403 No such user account`).
+- Unknown or missing `country` → falls back to EMEA (the app's behavior); never
+  raises. EMEA is the largest region and the safe default.
 - `auth_headers`/`endpoint` before a gateway is selected: `endpoint` returns the
   placeholder; requests only succeed after selection (mirrors Rexel's
   select-before-use contract).
@@ -130,7 +131,7 @@ calls in CI):
 - login: password grant + token exchange populate the context.
 - discovery: multi-site `/sites` flattens to the expected `GatewayCandidate`s.
 - select: resolves region from country, sets endpoint, mints a `?siteOID` token.
-- unknown country → `SomfyServiceError`.
+- unknown/missing country → falls back to EMEA endpoint.
 - refresh: expired token refreshes with `?siteOID` and stays scoped.
 - factory: `Server.SOMFY` + username/password → `SomfyMultisiteAuthStrategy`.
 

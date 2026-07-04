@@ -54,11 +54,13 @@ GINAITE_SUBJECT_TOKEN_TYPE = "urn:ietf:params:oauth:token-type:access_token"  # 
 BOB_SITE_API = "https://backoffice-service.ovkube.net/site-api/public/v1"
 BOB_API_KEY = "184638B3FBE874ACD24C14FBD657B"
 
-# The BOB directory carries no region field, so the site's Overkiz region is
-# derived from its ISO country. Regions mirror the existing per-region Somfy
-# servers: EMEA=ha101, APAC=ha201 (Oceania), SNABA=ha401 (Americas). Only NL is
-# verified live; other countries are seeded from those groupings. An unmapped
-# country must raise rather than guess (see SomfyMultisiteAuthStrategy).
+# The BOB directory carries no region field, so a site's Overkiz region is
+# derived from its ISO 3166-1 alpha-2 country. This mirrors the TaHoma app's
+# BusinessArea.fromCountry (com.somfy.homeapp v2.5.1): the region is a static,
+# offline lookup — never runtime probing. EMEA (ha101) is the default, so only
+# the two non-default regions are enumerated; every other country resolves to
+# EMEA (matching the app's fromCountry fallback). Verified live: NL -> EMEA.
+SOMFY_DEFAULT_REGION = "EMEA"
 SOMFY_REGION_ENDPOINT: MappingProxyType[str, str] = MappingProxyType(
     {
         "EMEA": "https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/",
@@ -66,38 +68,28 @@ SOMFY_REGION_ENDPOINT: MappingProxyType[str, str] = MappingProxyType(
         "SNABA": "https://ha401-1.overkiz.com/enduser-mobile-web/enduserAPI/",
     }
 )
+# Only non-EMEA countries are listed; unlisted countries fall back to EMEA.
 SOMFY_COUNTRY_REGION: MappingProxyType[str, str] = MappingProxyType(
     {
-        # EMEA (Europe / Middle East / Africa) — ha101. Verified: NL.
-        "AT": "EMEA",
-        "BE": "EMEA",
-        "CH": "EMEA",
-        "CZ": "EMEA",
-        "DE": "EMEA",
-        "DK": "EMEA",
-        "ES": "EMEA",
-        "FI": "EMEA",
-        "FR": "EMEA",
-        "GB": "EMEA",
-        "GR": "EMEA",
-        "IE": "EMEA",
-        "IT": "EMEA",
-        "LU": "EMEA",
-        "NL": "EMEA",
-        "NO": "EMEA",
-        "PL": "EMEA",
-        "PT": "EMEA",
-        "SE": "EMEA",
         # Americas — ha401 (SNABA).
-        "BR": "SNABA",
         "CA": "SNABA",
-        "MX": "SNABA",
         "US": "SNABA",
-        # Asia-Pacific / Oceania — ha201.
+        "MX": "SNABA",
+        # Asia-Pacific — ha201 (APAC).
         "AU": "APAC",
-        "CN": "APAC",
+        "HK": "APAC",
+        "IN": "APAC",
+        "ID": "APAC",
         "JP": "APAC",
+        "MY": "APAC",
         "NZ": "APAC",
+        "PH": "APAC",
+        "SG": "APAC",
+        "TW": "APAC",
+        "TH": "APAC",
+        "VN": "APAC",
+        "KR": "APAC",
+        "CN": "APAC",
     }
 )
 
