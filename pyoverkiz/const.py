@@ -54,13 +54,7 @@ SOMFY_GINAITE_SUBJECT_TOKEN_TYPE = "urn:ietf:params:oauth:token-type:access_toke
 SOMFY_BOB_SITE_API = "https://backoffice-service.ovkube.net/site-api/public/v1"
 SOMFY_BOB_API_KEY = "184638B3FBE874ACD24C14FBD657B"
 
-# The BOB directory carries no region field, so a site's Overkiz region is
-# derived from its ISO 3166-1 alpha-2 country. This mirrors the TaHoma app's
-# BusinessArea.fromCountry (com.somfy.homeapp v2.5.1): the region is a static,
-# offline lookup — never runtime probing. All three regions' countries are
-# enumerated so a genuinely unlisted country can be detected (and logged); it
-# still falls back to EMEA, matching the app's fromCountry default.
-# Verified live: NL -> EMEA.
+# Site region derived offline from its ISO country, mirroring the TaHoma app's BusinessArea.fromCountry (EMEA fallback).
 SOMFY_DEFAULT_REGION = "EMEA"
 SOMFY_REGION_ENDPOINT: MappingProxyType[str, str] = MappingProxyType(
     {

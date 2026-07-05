@@ -1596,7 +1596,7 @@ _BOB_SITES = {
     "results": [
         {
             "siteOID": "site-a",
-            "name": "Mick",
+            "name": "My Home",
             "country": "NL",
             "currentUserRoles": [{"roleOID": "owner"}],
             "subSites": [
@@ -1609,7 +1609,7 @@ _BOB_SITES = {
         },
         {
             "siteOID": "site-b",
-            "name": "Smientstraat",
+            "name": "Holiday Home",
             "country": "NL",
             "currentUserRoles": [{"roleOID": "owner"}],
             "subSites": [
@@ -1635,7 +1635,7 @@ async def test_somfy_multisite_discover_flattens_sites():
 
     assert [c.gateway_id for c in candidates] == ["2025-0000-0001", "1225-0000-0002"]
     assert candidates[0].home_id == "site-a"
-    assert candidates[0].label == "Mick"
+    assert candidates[0].label == "My Home"
     assert candidates[0].external_id == "ext-a"
 
 
