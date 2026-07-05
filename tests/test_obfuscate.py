@@ -142,3 +142,18 @@ class TestObfucscateSensitive:
         result = obfuscate_sensitive_data(data)
         assert "Séjour" not in result["label"]
         assert "é" not in result["label"]
+
+    @pytest.mark.parametrize(
+        "state_name",
+        ["core:SerialNumber", "core:NameState"],
+    )
+    def test_obfuscate_sensitive_value_before_name(self, state_name: str):
+        """Value is redacted even when it precedes name in key order.
+
+        Some hubs return attributes/states as {"value", "type", "name"}, so
+        redaction must not depend on "name" being seen before "value".
+        """
+        data = {"value": "34-7E-5C-FA-A2-86:9", "type": 3, "name": state_name}
+        result = obfuscate_sensitive_data(data)
+        assert result["name"] == state_name
+        assert result["value"] != "34-7E-5C-FA-A2-86:9"
