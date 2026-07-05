@@ -1,9 +1,8 @@
 """Models for the Somfy BOB back-office site directory.
 
-BOB is a separate service from the Overkiz enduser API, with its own payload
-shapes (``siteOID``, ``subSites``, ``externalOID``). It therefore gets its own
-tiny cattrs converter here rather than sharing ``pyoverkiz.converter``, which is
-scoped to the enduser API and its camelCase convention.
+A separate service from the Overkiz enduser API, with its own payload shapes
+and casing, so it gets its own small cattrs converter rather than sharing
+``pyoverkiz.converter``.
 """
 
 from __future__ import annotations

@@ -284,12 +284,10 @@ class SomfyAuthStrategy(BaseAuthStrategy):
 
 
 class SomfyAccountAuthStrategy(BaseAuthStrategy):
-    """Somfy multi-site auth: Keycloak token exchange + BOB site directory.
+    """Somfy multi-site auth: password grant -> Keycloak token exchange -> BOB site directory.
 
-    Reuses the Somfy Accounts password grant, exchanges the SSO token for a
-    Ginaite (Keycloak) token, then lists the account's sites from the BOB
-    directory. Selecting a site mints a site-scoped token whose Bearer drives
-    the classic Overkiz enduser API directly (no gateway header needed).
+    Selecting a site mints a site-scoped token whose Bearer drives the classic
+    Overkiz enduser API directly (no gateway header needed).
     """
 
     def __init__(
@@ -299,13 +297,7 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
         server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
     ) -> None:
-        """Create a Somfy multi-site strategy with a fresh auth context.
-
-        Accepts either ``UsernamePasswordCredentials`` (fresh login: password
-        grant + token exchange + discovery) or ``SomfyTokenCredentials``
-        (resumed session: a persisted refresh token scoped to an already-selected
-        site, skipping all three network round trips).
-        """
+        """Accept ``UsernamePasswordCredentials`` (fresh login) or ``SomfyTokenCredentials`` (resumed session)."""
         super().__init__(session, server, ssl_context)
         self.credentials = credentials
         self.context = AuthContext()
@@ -319,23 +311,7 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
         self._persisted_refresh_token: str | None = None
 
     async def login(self) -> None:
-        """Fresh login (password) or resumed session (persisted refresh token).
-
-        With ``SomfyTokenCredentials`` this resumes a session: no password grant,
-        no token exchange, no discovery. We seed the context from the stored
-        refresh token and site scope, so the first request mints a site-scoped
-        access token via the existing refresh path.
-
-        With ``UsernamePasswordCredentials`` this is a fresh login: password
-        grant -> token exchange -> discover, then (re-)select a site. Relogin
-        (e.g. after ``NotAuthenticatedError``) mints a fresh, unscoped Ginaite
-        token that is not itself expired, so on a multi-site account the
-        previously-selected gateway must be re-selected to re-apply site
-        scoping; otherwise the unscoped global token would keep being served
-        against the still-selected region endpoint. If that gateway is no
-        longer present after rediscovery, drop the stale selection instead of
-        silently pointing at a gateway that's gone.
-        """
+        """Fresh login (password grant -> exchange -> discover) or resumed session."""
         if isinstance(self.credentials, SomfyTokenCredentials):
             self._resume_session(self.credentials)
             return
@@ -346,6 +322,8 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
         await self._token_exchange(token["access_token"])
         await self.discover_gateways()
 
+        # Re-select on relogin to re-scope the fresh unscoped token; drop the
+        # selection if the gateway is gone after rediscovery.
         known = {s.gateway_id for s in self._sites}
         if self._selected_gateway and self._selected_gateway in known:
             self.select_gateway(self._selected_gateway)
@@ -357,13 +335,7 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
             self.select_gateway(self._sites[0].gateway_id)
 
     def _resume_session(self, credentials: SomfyTokenCredentials) -> None:
-        """Seed site scope from persisted tokens; skip password/exchange/discover.
-
-        Sets up exactly the state ``select_gateway`` would have produced, then
-        marks the (absent) access token expired so the first request mints a
-        site-scoped token via the existing ``refresh_if_needed`` -> ``_refresh``
-        path. No network calls happen here.
-        """
+        """Seed site scope from persisted tokens (no network); first request mints a scoped token."""
         self.context.refresh_token = credentials.refresh_token
         self.context.expires_at = datetime.datetime.now(datetime.UTC)
         self._selected_site_oid = credentials.site_oid
@@ -419,13 +391,7 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
 
     @staticmethod
     def _region_for_country(country: str | None) -> str:
-        """Map an ISO country to an Overkiz region, defaulting to EMEA.
-
-        Mirrors the TaHoma app's BusinessArea.fromCountry: known countries map
-        to their region, and anything unresolvable falls back to EMEA. A country
-        we cannot resolve (missing, or present but unmapped) is logged, since it
-        likely means the map needs updating for a newly supported region.
-        """
+        """Map an ISO country to a region, warning and defaulting to EMEA if unresolvable."""
         region = SOMFY_COUNTRY_REGION.get(country.upper()) if country else None
         if region is None:
             _LOGGER.warning(
@@ -445,12 +411,9 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
         self,
         on_token_refresh: Callable[[str], Awaitable[None]] | None = None,
     ) -> SomfyTokenCredentials:
-        """Snapshot the current session as reusable resume credentials.
+        """Snapshot the session (refresh token + site scope) as resume credentials.
 
-        Call this after login + gateway selection to persist the state a reload
-        needs (refresh token + site scope + region), skipping password grant,
-        token exchange, and discovery next time. Raises if no site is selected
-        or no refresh token is available yet.
+        Raises if no site is selected or no refresh token is available yet.
         """
         if (
             self._selected_site_oid is None
@@ -475,12 +438,7 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
         return self._endpoint or self.server.endpoint
 
     async def refresh_if_needed(self) -> bool:
-        """Mint/refresh a site-scoped token when expired.
-
-        Raises if a site has been selected but there is no refresh token to
-        mint the site-scoped token with, rather than silently continuing to
-        serve the unscoped global token against the site's region endpoint.
-        """
+        """Mint/refresh a site-scoped token when expired; raise if a selected site has no refresh token."""
         if not self.context.is_expired():
             return False
         if not self.context.refresh_token:

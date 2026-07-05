@@ -33,17 +33,11 @@ class LocalTokenCredentials(TokenCredentials):
 
 @dataclass(slots=True)
 class SomfyTokenCredentials(Credentials):
-    """Resume credentials for a previously-selected Somfy site.
+    """Resume credentials for a previously-selected Somfy site (skips login + discovery).
 
-    Skips the password grant, Keycloak token exchange, and site discovery on
-    reload: the caller persists the Ginaite ``refresh_token`` plus the selected
-    site's ``site_oid`` and ``region``, and pyoverkiz mints a site-scoped access
-    token directly on the first request. ``gateway_id`` is optional bookkeeping
-    (the id the user selected) and is surfaced via ``selected_gateway``.
-
-    Ginaite rotates the refresh token on refresh, so supply an async
-    ``on_token_refresh`` callback to re-persist the new refresh token; without
-    it a rotated token is only kept in memory and a later reload would fail.
+    Persist the ``refresh_token`` plus the site's ``site_oid`` and ``region``.
+    The refresh token rotates, so supply ``on_token_refresh`` to re-persist it;
+    otherwise a later reload fails.
     """
 
     refresh_token: str = field(repr=False)
