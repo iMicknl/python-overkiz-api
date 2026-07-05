@@ -5,9 +5,11 @@ from __future__ import annotations
 import asyncio
 import base64
 import binascii
+import datetime
 import json
+import logging
 import ssl
-from collections.abc import Mapping
+from collections.abc import Awaitable, Callable, Mapping
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Any, cast
 
@@ -21,6 +23,7 @@ from pyoverkiz.auth.credentials import (
     LocalTokenCredentials,
     RexelOAuthCodeCredentials,
     RexelTokenCredentials,
+    SomfyTokenCredentials,
     TokenCredentials,
     UsernamePasswordCredentials,
 )
@@ -40,8 +43,17 @@ from pyoverkiz.const import (
     REXEL_OAUTH_TOKEN_URL,
     REXEL_REQUIRED_CONSENT,
     SOMFY_API,
+    SOMFY_BOB_API_KEY,
+    SOMFY_BOB_SITE_API,
     SOMFY_CLIENT_ID,
     SOMFY_CLIENT_SECRET,
+    SOMFY_COUNTRY_REGION,
+    SOMFY_DEFAULT_REGION,
+    SOMFY_GINAITE_SUBJECT_ISSUER,
+    SOMFY_GINAITE_SUBJECT_TOKEN_TYPE,
+    SOMFY_GINAITE_TOKEN_EXCHANGE_GRANT,
+    SOMFY_GINAITE_TOKEN_URL,
+    SOMFY_REGION_ENDPOINT,
 )
 from pyoverkiz.exceptions import (
     BadCredentialsError,
@@ -59,6 +71,8 @@ from pyoverkiz.exceptions import (
 from pyoverkiz.models import ServerConfig
 from pyoverkiz.response_handler import check_response
 
+_LOGGER = logging.getLogger(__name__)
+
 MIN_JWT_SEGMENTS = 2
 
 
@@ -71,6 +85,40 @@ async def _raise_for_server_error(response: ClientResponse) -> None:
     """
     if response.status >= HTTPStatus.INTERNAL_SERVER_ERROR:
         await check_response(response)
+
+
+async def _somfy_password_token(
+    session: ClientSession, username: str, password: str
+) -> dict[str, Any]:
+    """Perform the Somfy Accounts password grant and return the raw token dict.
+
+    Shared by SomfyAuthStrategy (single-site) and SomfyAccountAuthStrategy
+    (which feeds the returned access_token into the Keycloak token exchange).
+    """
+    form = FormData(
+        {
+            "grant_type": "password",
+            "client_id": SOMFY_CLIENT_ID,
+            "client_secret": SOMFY_CLIENT_SECRET,
+            "username": username,
+            "password": password,
+        }
+    )
+    async with session.post(
+        f"{SOMFY_API}/oauth/oauth/v2/token/jwt",
+        data=form,
+        headers={"Content-Type": "application/x-www-form-urlencoded"},
+    ) as response:
+        await _raise_for_server_error(response)
+        token = await response.json()
+
+        if token.get("message") == "error.invalid.grant":
+            raise SomfyBadCredentialsError(token["message"])
+
+        if not token.get("access_token"):
+            raise SomfyServiceError("No Somfy access token provided.")
+
+        return cast(dict[str, Any], token)
 
 
 class BaseAuthStrategy(AuthStrategy):
@@ -198,6 +246,15 @@ class SomfyAuthStrategy(BaseAuthStrategy):
     async def _request_access_token(
         self, *, grant_type: str, extra_fields: Mapping[str, str]
     ) -> None:
+        if grant_type == "password":
+            token = await _somfy_password_token(
+                self.session,
+                self.credentials.username,
+                self.credentials.password,
+            )
+            self.context.update_from_token(token)
+            return
+
         form = FormData(
             {
                 "grant_type": grant_type,
@@ -223,6 +280,296 @@ class SomfyAuthStrategy(BaseAuthStrategy):
                 raise SomfyServiceError("No Somfy access token provided.")
 
             self.context.update_from_token(token)
+
+
+class SomfyAccountAuthStrategy(BaseAuthStrategy):
+    """Somfy multi-site auth: Keycloak token exchange + BOB site directory.
+
+    Reuses the Somfy Accounts password grant, exchanges the SSO token for a
+    Ginaite (Keycloak) token, then lists the account's sites from the BOB
+    directory. Selecting a site mints a site-scoped token whose Bearer drives
+    the classic Overkiz enduser API directly (no gateway header needed).
+    """
+
+    def __init__(
+        self,
+        credentials: UsernamePasswordCredentials | SomfyTokenCredentials,
+        session: ClientSession,
+        server: ServerConfig,
+        ssl_context: ssl.SSLContext | bool,
+    ) -> None:
+        """Create a Somfy multi-site strategy with a fresh auth context.
+
+        Accepts either ``UsernamePasswordCredentials`` (cold start: password
+        grant + token exchange + discovery) or ``SomfyTokenCredentials`` (warm
+        start: a persisted refresh token scoped to an already-selected site,
+        skipping all three network round trips).
+        """
+        super().__init__(session, server, ssl_context)
+        self.credentials = credentials
+        self.context = AuthContext()
+        self._sites: list[GatewayCandidate] = []
+        self._site_country: dict[str, str] = {}
+        self._selected_site_oid: str | None = None
+        self._selected_gateway: str | None = None
+        self._selected_region: str | None = None
+        self._endpoint: str | None = None
+        # Warm-start refresh-token persistence (no-op for cold start).
+        self._on_token_refresh: Callable[[str], Awaitable[None]] | None = None
+        self._persisted_refresh_token: str | None = None
+
+    async def login(self) -> None:
+        """Cold start (password) or warm start (persisted refresh token).
+
+        With ``SomfyTokenCredentials`` this is a warm start: no password grant,
+        no token exchange, no discovery. We seed the context from the stored
+        refresh token and site scope, so the first request mints a site-scoped
+        access token via the existing refresh path.
+
+        With ``UsernamePasswordCredentials`` this is the cold start: password
+        grant -> token exchange -> discover, then (re-)select a site. Relogin
+        (e.g. after ``NotAuthenticatedError``) mints a fresh, unscoped Ginaite
+        token that is not itself expired, so on a multi-site account the
+        previously-selected gateway must be re-selected to re-apply site
+        scoping; otherwise the unscoped global token would keep being served
+        against the still-selected region endpoint. If that gateway is no
+        longer present after rediscovery, drop the stale selection instead of
+        silently pointing at a gateway that's gone.
+        """
+        if isinstance(self.credentials, SomfyTokenCredentials):
+            self._warm_start(self.credentials)
+            return
+
+        token = await _somfy_password_token(
+            self.session, self.credentials.username, self.credentials.password
+        )
+        await self._token_exchange(token["access_token"])
+        await self.discover_gateways()
+
+        known = {s.gateway_id for s in self._sites}
+        if self._selected_gateway and self._selected_gateway in known:
+            self.select_gateway(self._selected_gateway)
+        elif self._selected_gateway and self._selected_gateway not in known:
+            self._selected_gateway = None
+            self._selected_site_oid = None
+            self._endpoint = None
+        elif len(self._sites) == 1:
+            self.select_gateway(self._sites[0].gateway_id)
+
+    def _warm_start(self, credentials: SomfyTokenCredentials) -> None:
+        """Seed site scope from persisted tokens; skip password/exchange/discover.
+
+        Sets up exactly the state ``select_gateway`` would have produced, then
+        marks the (absent) access token expired so the first request mints a
+        site-scoped token via the existing ``refresh_if_needed`` -> ``_refresh``
+        path. No network calls happen here.
+        """
+        self.context.refresh_token = credentials.refresh_token
+        self.context.expires_at = datetime.datetime.now(datetime.UTC)
+        self._selected_site_oid = credentials.site_oid
+        self._selected_gateway = credentials.gateway_id
+        self._selected_region = credentials.region
+        self._endpoint = SOMFY_REGION_ENDPOINT[credentials.region]
+        self._on_token_refresh = credentials.on_token_refresh
+        self._persisted_refresh_token = credentials.refresh_token
+
+    async def _token_exchange(self, sso_access_token: str) -> None:
+        """Exchange a Somfy Accounts SSO token for a Ginaite token (public client)."""
+        form = FormData(
+            {
+                "grant_type": SOMFY_GINAITE_TOKEN_EXCHANGE_GRANT,
+                "client_id": SOMFY_CLIENT_ID,
+                "subject_token": sso_access_token,
+                "subject_issuer": SOMFY_GINAITE_SUBJECT_ISSUER,
+                "subject_token_type": SOMFY_GINAITE_SUBJECT_TOKEN_TYPE,
+            }
+        )
+        async with self.session.post(SOMFY_GINAITE_TOKEN_URL, data=form) as response:
+            await _raise_for_server_error(response)
+            if response.status != HTTPStatus.OK:
+                raise SomfyServiceError(
+                    f"Somfy token exchange failed: {response.status}"
+                )
+            self.context.update_from_token(await response.json())
+
+    async def discover_gateways(self) -> list[GatewayCandidate]:
+        """List the account's sites from BOB, flattened to gateway candidates."""
+        data = await self._bob_get("sites?withGateways=true&limit=20&offset=0")
+        candidates: list[GatewayCandidate] = []
+        self._site_country = {}
+        for site in data.get("results", []):
+            site_oid = str(site["siteOID"])
+            label = site.get("name")
+            country = site.get("country")
+            for sub in site.get("subSites", []):
+                external_id = sub.get("externalOID")
+                for gateway in sub.get("gateways", []):
+                    gateway_id = str(gateway["gatewayId"])
+                    if country is not None:
+                        self._site_country[gateway_id] = str(country)
+                    candidates.append(
+                        GatewayCandidate(
+                            gateway_id=gateway_id,
+                            home_id=site_oid,
+                            label=label,
+                            external_id=(
+                                str(external_id) if external_id is not None else None
+                            ),
+                        )
+                    )
+        self._sites = candidates
+        return candidates
+
+    def select_gateway(self, gateway_id: str) -> None:
+        """Scope subsequent requests to the given gateway's site and region."""
+        site = next(
+            (s for s in self._sites if s.gateway_id == gateway_id),
+            None,
+        )
+        if site is None:
+            raise SomfyServiceError(f"Unknown gateway id: {gateway_id}")
+
+        region = self._region_for_country(self._site_country.get(gateway_id))
+
+        self._selected_gateway = gateway_id
+        self._selected_site_oid = site.home_id
+        self._selected_region = region
+        self._endpoint = SOMFY_REGION_ENDPOINT[region]
+        # Force the next request to mint a site-scoped token via refresh.
+        self.context.expires_at = datetime.datetime.now(datetime.UTC)
+
+    @staticmethod
+    def _region_for_country(country: str | None) -> str:
+        """Map an ISO country to an Overkiz region, defaulting to EMEA.
+
+        Mirrors the TaHoma app's BusinessArea.fromCountry: known countries map
+        to their region, and anything unresolvable falls back to EMEA. A country
+        we cannot resolve (missing, or present but unmapped) is logged, since it
+        likely means the map needs updating for a newly supported region.
+        """
+        region = SOMFY_COUNTRY_REGION.get(country.upper()) if country else None
+        if region is None:
+            _LOGGER.warning(
+                "Unresolvable Somfy site country %r; falling back to %s region",
+                country,
+                SOMFY_DEFAULT_REGION,
+            )
+            return SOMFY_DEFAULT_REGION
+        return region
+
+    @property
+    def selected_gateway(self) -> str | None:
+        """Return the currently selected gateway id, or None."""
+        return self._selected_gateway
+
+    def warm_start_credentials(
+        self,
+        on_token_refresh: Callable[[str], Awaitable[None]] | None = None,
+    ) -> SomfyTokenCredentials:
+        """Snapshot the current session as reusable warm-start credentials.
+
+        Call this after login + gateway selection to persist the state a reload
+        needs (refresh token + site scope + region), skipping password grant,
+        token exchange, and discovery next time. Raises if no site is selected
+        or no refresh token is available yet.
+        """
+        if (
+            self._selected_site_oid is None
+            or self._selected_region is None
+            or self.context.refresh_token is None
+        ):
+            raise SomfyServiceError(
+                "Cannot snapshot warm-start credentials before a site is "
+                "selected and a refresh token is available."
+            )
+        return SomfyTokenCredentials(
+            refresh_token=self.context.refresh_token,
+            site_oid=self._selected_site_oid,
+            region=self._selected_region,
+            gateway_id=self._selected_gateway,
+            on_token_refresh=on_token_refresh,
+        )
+
+    @property
+    def endpoint(self) -> str:
+        """Return the resolved per-site endpoint, or the server placeholder."""
+        return self._endpoint or self.server.endpoint
+
+    async def refresh_if_needed(self) -> bool:
+        """Mint/refresh a site-scoped token when expired.
+
+        Raises if a site has been selected but there is no refresh token to
+        mint the site-scoped token with, rather than silently continuing to
+        serve the unscoped global token against the site's region endpoint.
+        """
+        if not self.context.is_expired():
+            return False
+        if not self.context.refresh_token:
+            if self._selected_site_oid:
+                raise SomfyServiceError(
+                    "Cannot mint a site-scoped Somfy token without a refresh token."
+                )
+            return False
+        await self._refresh()
+        return True
+
+    async def _refresh(self) -> None:
+        """Refresh grant scoped to the selected site (?siteOID)."""
+        url = SOMFY_GINAITE_TOKEN_URL
+        if self._selected_site_oid:
+            url = f"{SOMFY_GINAITE_TOKEN_URL}?siteOID={self._selected_site_oid}"
+        previous_refresh_token = self.context.refresh_token
+        form = FormData(
+            {
+                "grant_type": "refresh_token",
+                "client_id": SOMFY_CLIENT_ID,
+                "refresh_token": cast(str, self.context.refresh_token),
+            }
+        )
+        async with self.session.post(url, data=form) as response:
+            await _raise_for_server_error(response)
+            if response.status != HTTPStatus.OK:
+                raise SomfyServiceError(
+                    f"Somfy token refresh failed: {response.status}"
+                )
+            self.context.update_from_token(await response.json())
+
+        # Ginaite may omit refresh_token on a refresh; keep the working one
+        # rather than dropping to None (which would break the next warm start).
+        if self.context.refresh_token is None:
+            self.context.refresh_token = previous_refresh_token
+        await self._notify_token_refresh()
+
+    async def _notify_token_refresh(self) -> None:
+        """Let a warm-start caller persist a rotated refresh token (no-op otherwise)."""
+        if (
+            self._on_token_refresh is not None
+            and self.context.refresh_token is not None
+            and self.context.refresh_token != self._persisted_refresh_token
+        ):
+            self._persisted_refresh_token = self.context.refresh_token
+            await self._on_token_refresh(self.context.refresh_token)
+
+    async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
+        """Return the Bearer header (site-scoped token), or {} before login."""
+        if self.context.access_token:
+            return {"Authorization": f"Bearer {self.context.access_token}"}
+        return {}
+
+    async def _bob_get(self, path: str) -> dict[str, Any]:
+        """GET a BOB site-directory resource with Bearer + X-Api-Key."""
+        async with self.session.get(
+            f"{SOMFY_BOB_SITE_API}/{path}",
+            headers={
+                "Authorization": f"Bearer {self.context.access_token}",
+                "X-Api-Key": SOMFY_BOB_API_KEY,
+            },
+            ssl=self._ssl,
+        ) as response:
+            await _raise_for_server_error(response)
+            if response.status != HTTPStatus.OK:
+                raise SomfyServiceError(f"BOB request failed: {response.status}")
+            return cast(dict[str, Any], await response.json())
 
 
 class CozytouchAuthStrategy(SessionLoginStrategy):
