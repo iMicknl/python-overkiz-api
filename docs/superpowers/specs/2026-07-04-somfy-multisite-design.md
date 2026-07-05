@@ -99,7 +99,7 @@ Add `SOMFY = "somfy"`.
 - `SUPPORTED_SERVERS[Server.SOMFY]`: name "Somfy", manufacturer "Somfy",
   `api_type=CLOUD`, `endpoint` = EMEA placeholder (overridden at runtime).
 
-### `auth/strategies.py` — `SomfyMultisiteAuthStrategy(BaseAuthStrategy)`
+### `auth/strategies.py` — `SomfyAccountAuthStrategy(BaseAuthStrategy)`
 Implements `SupportsGatewaySelection`. Holds: `credentials`
 (`UsernamePasswordCredentials`), `context: AuthContext` (Ginaite token),
 `_sites: list[GatewayCandidate]`, per-site `country`, `_selected_site_oid`,
@@ -109,7 +109,7 @@ function — no duplication).
 
 ### `auth/factory.py`
 Route `Server.SOMFY` + `UsernamePasswordCredentials` →
-`SomfyMultisiteAuthStrategy` (mirrors the `SOMFY_EUROPE` branch).
+`SomfyAccountAuthStrategy` (mirrors the `SOMFY_EUROPE` branch).
 
 ### `client.py`
 **No changes.** Verified: the client already requests against
@@ -136,7 +136,7 @@ calls in CI):
 - select: resolves region from country, sets endpoint, mints a `?siteOID` token.
 - unknown/missing country → falls back to EMEA endpoint.
 - refresh: expired token refreshes with `?siteOID` and stays scoped.
-- factory: `Server.SOMFY` + username/password → `SomfyMultisiteAuthStrategy`.
+- factory: `Server.SOMFY` + username/password → `SomfyAccountAuthStrategy`.
 
 Live verification is done via the throwaway `tools/` POC (not committed to the
 test suite), reproducible with the test account.

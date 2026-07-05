@@ -9,7 +9,7 @@ import datetime
 import json
 import logging
 import ssl
-from collections.abc import Mapping
+from collections.abc import Awaitable, Callable, Mapping
 from http import HTTPStatus
 from typing import TYPE_CHECKING, Any, cast
 
@@ -23,6 +23,7 @@ from pyoverkiz.auth.credentials import (
     LocalTokenCredentials,
     RexelOAuthCodeCredentials,
     RexelTokenCredentials,
+    SomfyTokenCredentials,
     TokenCredentials,
     UsernamePasswordCredentials,
 )
@@ -91,7 +92,7 @@ async def _somfy_password_token(
 ) -> dict[str, Any]:
     """Perform the Somfy Accounts password grant and return the raw token dict.
 
-    Shared by SomfyAuthStrategy (single-site) and SomfyMultisiteAuthStrategy
+    Shared by SomfyAuthStrategy (single-site) and SomfyAccountAuthStrategy
     (which feeds the returned access_token into the Keycloak token exchange).
     """
     form = FormData(
@@ -281,7 +282,7 @@ class SomfyAuthStrategy(BaseAuthStrategy):
             self.context.update_from_token(token)
 
 
-class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
+class SomfyAccountAuthStrategy(BaseAuthStrategy):
     """Somfy multi-site auth: Keycloak token exchange + BOB site directory.
 
     Reuses the Somfy Accounts password grant, exchanges the SSO token for a
@@ -292,12 +293,18 @@ class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
 
     def __init__(
         self,
-        credentials: UsernamePasswordCredentials,
+        credentials: UsernamePasswordCredentials | SomfyTokenCredentials,
         session: ClientSession,
         server: ServerConfig,
         ssl_context: ssl.SSLContext | bool,
     ) -> None:
-        """Create a Somfy multi-site strategy with a fresh auth context."""
+        """Create a Somfy multi-site strategy with a fresh auth context.
+
+        Accepts either ``UsernamePasswordCredentials`` (cold start: password
+        grant + token exchange + discovery) or ``SomfyTokenCredentials`` (warm
+        start: a persisted refresh token scoped to an already-selected site,
+        skipping all three network round trips).
+        """
         super().__init__(session, server, ssl_context)
         self.credentials = credentials
         self.context = AuthContext()
@@ -305,19 +312,34 @@ class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
         self._site_country: dict[str, str] = {}
         self._selected_site_oid: str | None = None
         self._selected_gateway: str | None = None
+        self._selected_region: str | None = None
         self._endpoint: str | None = None
+        # Warm-start refresh-token persistence (no-op for cold start).
+        self._on_token_refresh: Callable[[str], Awaitable[None]] | None = None
+        self._persisted_refresh_token: str | None = None
 
     async def login(self) -> None:
-        """Password grant -> token exchange -> discover; (re-)select a site.
+        """Cold start (password) or warm start (persisted refresh token).
 
-        Relogin (e.g. after ``NotAuthenticatedError``) mints a fresh, unscoped
-        Ginaite token that is not itself expired, so on a multi-site account
-        the previously-selected gateway must be re-selected to re-apply site
+        With ``SomfyTokenCredentials`` this is a warm start: no password grant,
+        no token exchange, no discovery. We seed the context from the stored
+        refresh token and site scope, so the first request mints a site-scoped
+        access token via the existing refresh path.
+
+        With ``UsernamePasswordCredentials`` this is the cold start: password
+        grant -> token exchange -> discover, then (re-)select a site. Relogin
+        (e.g. after ``NotAuthenticatedError``) mints a fresh, unscoped Ginaite
+        token that is not itself expired, so on a multi-site account the
+        previously-selected gateway must be re-selected to re-apply site
         scoping; otherwise the unscoped global token would keep being served
         against the still-selected region endpoint. If that gateway is no
         longer present after rediscovery, drop the stale selection instead of
         silently pointing at a gateway that's gone.
         """
+        if isinstance(self.credentials, SomfyTokenCredentials):
+            self._warm_start(self.credentials)
+            return
+
         token = await _somfy_password_token(
             self.session, self.credentials.username, self.credentials.password
         )
@@ -333,6 +355,23 @@ class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
             self._endpoint = None
         elif len(self._sites) == 1:
             self.select_gateway(self._sites[0].gateway_id)
+
+    def _warm_start(self, credentials: SomfyTokenCredentials) -> None:
+        """Seed site scope from persisted tokens; skip password/exchange/discover.
+
+        Sets up exactly the state ``select_gateway`` would have produced, then
+        marks the (absent) access token expired so the first request mints a
+        site-scoped token via the existing ``refresh_if_needed`` -> ``_refresh``
+        path. No network calls happen here.
+        """
+        self.context.refresh_token = credentials.refresh_token
+        self.context.expires_at = datetime.datetime.now(datetime.UTC)
+        self._selected_site_oid = credentials.site_oid
+        self._selected_gateway = credentials.gateway_id
+        self._selected_region = credentials.region
+        self._endpoint = SOMFY_REGION_ENDPOINT[credentials.region]
+        self._on_token_refresh = credentials.on_token_refresh
+        self._persisted_refresh_token = credentials.refresh_token
 
     async def _token_exchange(self, sso_access_token: str) -> None:
         """Exchange a Somfy Accounts SSO token for a Ginaite token (public client)."""
@@ -394,6 +433,7 @@ class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
 
         self._selected_gateway = gateway_id
         self._selected_site_oid = site.home_id
+        self._selected_region = region
         self._endpoint = SOMFY_REGION_ENDPOINT[region]
         # Force the next request to mint a site-scoped token via refresh.
         self.context.expires_at = datetime.datetime.now(datetime.UTC)
@@ -421,6 +461,34 @@ class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
     def selected_gateway(self) -> str | None:
         """Return the currently selected gateway id, or None."""
         return self._selected_gateway
+
+    def warm_start_credentials(
+        self,
+        on_token_refresh: Callable[[str], Awaitable[None]] | None = None,
+    ) -> SomfyTokenCredentials:
+        """Snapshot the current session as reusable warm-start credentials.
+
+        Call this after login + gateway selection to persist the state a reload
+        needs (refresh token + site scope + region), skipping password grant,
+        token exchange, and discovery next time. Raises if no site is selected
+        or no refresh token is available yet.
+        """
+        if (
+            self._selected_site_oid is None
+            or self._selected_region is None
+            or self.context.refresh_token is None
+        ):
+            raise SomfyServiceError(
+                "Cannot snapshot warm-start credentials before a site is "
+                "selected and a refresh token is available."
+            )
+        return SomfyTokenCredentials(
+            refresh_token=self.context.refresh_token,
+            site_oid=self._selected_site_oid,
+            region=self._selected_region,
+            gateway_id=self._selected_gateway,
+            on_token_refresh=on_token_refresh,
+        )
 
     @property
     def endpoint(self) -> str:
@@ -450,6 +518,7 @@ class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
         url = SOMFY_GINAITE_TOKEN_URL
         if self._selected_site_oid:
             url = f"{SOMFY_GINAITE_TOKEN_URL}?siteOID={self._selected_site_oid}"
+        previous_refresh_token = self.context.refresh_token
         form = FormData(
             {
                 "grant_type": "refresh_token",
@@ -464,6 +533,22 @@ class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
                     f"Somfy token refresh failed: {response.status}"
                 )
             self.context.update_from_token(await response.json())
+
+        # Ginaite may omit refresh_token on a refresh; keep the working one
+        # rather than dropping to None (which would break the next warm start).
+        if self.context.refresh_token is None:
+            self.context.refresh_token = previous_refresh_token
+        await self._notify_token_refresh()
+
+    async def _notify_token_refresh(self) -> None:
+        """Let a warm-start caller persist a rotated refresh token (no-op otherwise)."""
+        if (
+            self._on_token_refresh is not None
+            and self.context.refresh_token is not None
+            and self.context.refresh_token != self._persisted_refresh_token
+        ):
+            self._persisted_refresh_token = self.context.refresh_token
+            await self._on_token_refresh(self.context.refresh_token)
 
     async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
         """Return the Bearer header (site-scoped token), or {} before login."""

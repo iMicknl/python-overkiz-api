@@ -248,7 +248,7 @@ SUPPORTED_SERVERS: MappingProxyType[str, ServerConfig] = MappingProxyType(
         Server.SOMFY: ServerConfig(
             server=Server.SOMFY,
             # Region-agnostic multi-site login. The endpoint here is a
-            # placeholder; SomfyMultisiteAuthStrategy overrides it per selected
+            # placeholder; SomfyAccountAuthStrategy overrides it per selected
             # site once the region is resolved.
             name="Somfy",
             endpoint="https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/",

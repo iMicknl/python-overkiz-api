@@ -11,6 +11,7 @@ from pyoverkiz.auth.credentials import (
     LocalTokenCredentials,
     RexelOAuthCodeCredentials,
     RexelTokenCredentials,
+    SomfyTokenCredentials,
     TokenCredentials,
     UsernamePasswordCredentials,
 )
@@ -24,8 +25,8 @@ from pyoverkiz.auth.strategies import (
     RexelAuthStrategy,
     RexelTokenAuthStrategy,
     SessionLoginStrategy,
+    SomfyAccountAuthStrategy,
     SomfyAuthStrategy,
-    SomfyMultisiteAuthStrategy,
 )
 from pyoverkiz.enums import APIType, Server
 from pyoverkiz.models import ServerConfig
@@ -64,8 +65,12 @@ def build_auth_strategy(
         )
 
     if server == Server.SOMFY:
-        return SomfyMultisiteAuthStrategy(
-            _ensure_credentials(credentials, UsernamePasswordCredentials),
+        # Warm start from a persisted site-scoped refresh token, or cold start
+        # from username/password.
+        if not isinstance(credentials, SomfyTokenCredentials):
+            credentials = _ensure_credentials(credentials, UsernamePasswordCredentials)
+        return SomfyAccountAuthStrategy(
+            credentials,
             session,
             server_config,
             ssl_context,

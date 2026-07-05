@@ -2,7 +2,7 @@
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Support Somfy accounts with multiple sites (homes) by adding a region-agnostic `Server.SOMFY` and a `SomfyMultisiteAuthStrategy` that authenticates via Keycloak token exchange, discovers sites from the BOB directory, and scopes tokens per site.
+**Goal:** Support Somfy accounts with multiple sites (homes) by adding a region-agnostic `Server.SOMFY` and a `SomfyAccountAuthStrategy` that authenticates via Keycloak token exchange, discovers sites from the BOB directory, and scopes tokens per site.
 
 **Architecture:** A new auth strategy implements the existing `SupportsGatewaySelection` protocol (same one Rexel uses). It reuses the Somfy Accounts password grant, exchanges the SSO token for a Ginaite (Keycloak) token, lists sites from BOB, and mints a site-scoped token on selection. The Overkiz region is resolved from a static `country → region` map, overriding the strategy's `endpoint` at runtime. No `client.py` changes are needed — the client already reads `self._auth.endpoint` and delegates gateway selection.
 
@@ -24,7 +24,7 @@
 
 - `pyoverkiz/enums/server.py` — add `Server.SOMFY`.
 - `pyoverkiz/const.py` — Ginaite/BOB constants, `SOMFY_COUNTRY_REGION`, `SOMFY_REGION_ENDPOINT`, `SUPPORTED_SERVERS[Server.SOMFY]`.
-- `pyoverkiz/auth/strategies.py` — refactor shared Somfy password-grant helper; add `SomfyMultisiteAuthStrategy`.
+- `pyoverkiz/auth/strategies.py` — refactor shared Somfy password-grant helper; add `SomfyAccountAuthStrategy`.
 - `pyoverkiz/auth/factory.py` — route `Server.SOMFY` to the new strategy.
 - `tests/test_auth.py` — unit tests for constants, strategy, and factory.
 
@@ -119,7 +119,7 @@ BOB_API_KEY = "184638B3FBE874ACD24C14FBD657B"
 # derived from its ISO country. Regions mirror the existing per-region Somfy
 # servers: EMEA=ha101, APAC=ha201 (Oceania), SNABA=ha401 (Americas). Only NL is
 # verified live; other countries are seeded from those groupings. An unmapped
-# country must raise rather than guess (see SomfyMultisiteAuthStrategy).
+# country must raise rather than guess (see SomfyAccountAuthStrategy).
 SOMFY_REGION_ENDPOINT: MappingProxyType[str, str] = MappingProxyType(
     {
         "EMEA": "https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/",
@@ -150,7 +150,7 @@ In `pyoverkiz/const.py`, inside the `SUPPORTED_SERVERS` mapping, add an entry (p
         Server.SOMFY: ServerConfig(
             server=Server.SOMFY,
             # Region-agnostic multi-site login. The endpoint here is a
-            # placeholder; SomfyMultisiteAuthStrategy overrides it per selected
+            # placeholder; SomfyAccountAuthStrategy overrides it per selected
             # site once the region is resolved.
             name="Somfy",
             endpoint="https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/",
@@ -179,7 +179,7 @@ git commit -m "feat: add Server.SOMFY and Somfy multi-site constants"
 - Modify: `pyoverkiz/auth/strategies.py`
 - Test: `tests/test_auth.py`
 
-**Rationale:** Both `SomfyAuthStrategy` and the new `SomfyMultisiteAuthStrategy` need the Somfy Accounts password grant. Extract the request into a module-level async function so neither strategy duplicates it (DRY). The function returns the raw token dict so multi-site can read `access_token` for the exchange.
+**Rationale:** Both `SomfyAuthStrategy` and the new `SomfyAccountAuthStrategy` need the Somfy Accounts password grant. Extract the request into a module-level async function so neither strategy duplicates it (DRY). The function returns the raw token dict so multi-site can read `access_token` for the exchange.
 
 **Interfaces:**
 - Produces: module-level function in `pyoverkiz/auth/strategies.py`:
@@ -258,7 +258,7 @@ async def _somfy_password_token(
 ) -> dict[str, Any]:
     """Perform the Somfy Accounts password grant and return the raw token dict.
 
-    Shared by SomfyAuthStrategy (single-site) and SomfyMultisiteAuthStrategy
+    Shared by SomfyAuthStrategy (single-site) and SomfyAccountAuthStrategy
     (which feeds the returned access_token into the Keycloak token exchange).
     """
     form = FormData(
@@ -343,7 +343,7 @@ git commit -m "refactor: extract shared Somfy password-grant helper"
 
 ---
 
-## Task 3: `SomfyMultisiteAuthStrategy` — login + token exchange
+## Task 3: `SomfyAccountAuthStrategy` — login + token exchange
 
 **Files:**
 - Modify: `pyoverkiz/auth/strategies.py`
@@ -351,7 +351,7 @@ git commit -m "refactor: extract shared Somfy password-grant helper"
 
 **Interfaces:**
 - Consumes: `_somfy_password_token` (Task 2); `AuthContext`, `GatewayCandidate` (from `pyoverkiz.auth.base`); `UsernamePasswordCredentials`; constants from Task 1.
-- Produces: class `SomfyMultisiteAuthStrategy(BaseAuthStrategy)` with:
+- Produces: class `SomfyAccountAuthStrategy(BaseAuthStrategy)` with:
   - `__init__(self, credentials: UsernamePasswordCredentials, session, server, ssl_context)`.
   - attrs: `self.context: AuthContext`, `self._sites: list[GatewayCandidate]`, `self._site_country: dict[str, str]` (gateway_id → country), `self._selected_site_oid: str | None`, `self._selected_gateway: str | None`, `self._endpoint: str | None`.
   - `async def _token_exchange(self, sso_access_token: str) -> None` — POST to `GINAITE_TOKEN_URL`, populate `self.context`. Raises `SomfyServiceError` on non-200.
@@ -363,18 +363,18 @@ Add to `tests/test_auth.py`. First a builder helper (place near `_build_rexel_st
 
 ```python
 def _build_somfy_multisite_strategy():
-    """Return a SomfyMultisiteAuthStrategy with a MagicMock session."""
+    """Return a SomfyAccountAuthStrategy with a MagicMock session."""
     from unittest.mock import MagicMock
 
     from aiohttp import ClientSession
 
     from pyoverkiz.auth.credentials import UsernamePasswordCredentials
-    from pyoverkiz.auth.strategies import SomfyMultisiteAuthStrategy
+    from pyoverkiz.auth.strategies import SomfyAccountAuthStrategy
     from pyoverkiz.const import SUPPORTED_SERVERS
     from pyoverkiz.enums import Server
 
     session = MagicMock(spec=ClientSession)
-    strategy = SomfyMultisiteAuthStrategy(
+    strategy = SomfyAccountAuthStrategy(
         credentials=UsernamePasswordCredentials("user", "pass"),
         session=session,
         server=SUPPORTED_SERVERS[Server.SOMFY],
@@ -433,7 +433,7 @@ async def test_somfy_multisite_token_exchange_error_raises():
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `devcontainer exec --workspace-folder . python -m pytest tests/test_auth.py::test_somfy_multisite_token_exchange_populates_context tests/test_auth.py::test_somfy_multisite_token_exchange_error_raises -v`
-Expected: FAIL — `ImportError` (`SomfyMultisiteAuthStrategy` not defined).
+Expected: FAIL — `ImportError` (`SomfyAccountAuthStrategy` not defined).
 
 - [ ] **Step 3: Implement the class skeleton, `_token_exchange`, and `login`**
 
@@ -458,7 +458,7 @@ from pyoverkiz.const import (
 Add the class (after `SomfyAuthStrategy`):
 
 ```python
-class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
+class SomfyAccountAuthStrategy(BaseAuthStrategy):
     """Somfy multi-site auth: Keycloak token exchange + BOB site directory.
 
     Reuses the Somfy Accounts password grant, exchanges the SSO token for a
@@ -525,7 +525,7 @@ Expected: PASS.
 
 ```bash
 git add pyoverkiz/auth/strategies.py tests/test_auth.py
-git commit -m "feat: add SomfyMultisiteAuthStrategy login and token exchange"
+git commit -m "feat: add SomfyAccountAuthStrategy login and token exchange"
 ```
 
 ---
@@ -538,7 +538,7 @@ git commit -m "feat: add SomfyMultisiteAuthStrategy login and token exchange"
 
 **Interfaces:**
 - Consumes: everything from Task 3; `BOB_SITE_API`, `BOB_API_KEY`, `SOMFY_COUNTRY_REGION`, `SOMFY_REGION_ENDPOINT`.
-- Produces (methods on `SomfyMultisiteAuthStrategy`):
+- Produces (methods on `SomfyAccountAuthStrategy`):
   - `async def discover_gateways(self) -> list[GatewayCandidate]` — GET BOB `/sites`, flatten to candidates; records `self._site_country[gateway_id] = country`.
   - `def select_gateway(self, gateway_id: str) -> None` — sets `_selected_gateway`, looks up the site's `siteOID` (`home_id`) and country, resolves region → sets `self._endpoint`. Minting the site-scoped token happens lazily via `refresh_if_needed` on the next request (the current token is already valid, just not yet site-scoped) — so `select_gateway` also **invalidates** the context expiry to force a scoped refresh. See implementation.
   - `@property selected_gateway -> str | None`.
@@ -697,7 +697,7 @@ Expected: FAIL — `AttributeError` (`discover_gateways` etc. not defined).
 
 - [ ] **Step 3: Implement the methods**
 
-Add to `SomfyMultisiteAuthStrategy` in `pyoverkiz/auth/strategies.py`:
+Add to `SomfyAccountAuthStrategy` in `pyoverkiz/auth/strategies.py`:
 
 ```python
     async def discover_gateways(self) -> list[GatewayCandidate]:
@@ -839,8 +839,8 @@ git commit -m "feat: add Somfy multi-site site discovery and region scoping"
 - Test: `tests/test_auth.py`
 
 **Interfaces:**
-- Consumes: `SomfyMultisiteAuthStrategy` (Task 3/4), `Server.SOMFY` (Task 1).
-- Produces: `build_auth_strategy(..., server=Server.SOMFY, credentials=UsernamePasswordCredentials)` returns a `SomfyMultisiteAuthStrategy`.
+- Consumes: `SomfyAccountAuthStrategy` (Task 3/4), `Server.SOMFY` (Task 1).
+- Produces: `build_auth_strategy(..., server=Server.SOMFY, credentials=UsernamePasswordCredentials)` returns a `SomfyAccountAuthStrategy`.
 
 - [ ] **Step 1: Write the failing test**
 
@@ -849,8 +849,8 @@ Add to `tests/test_auth.py`, inside `class TestAuthFactory`:
 ```python
     @pytest.mark.asyncio
     async def test_build_auth_strategy_somfy_multisite(self):
-        """Server.SOMFY + username/password builds SomfyMultisiteAuthStrategy."""
-        from pyoverkiz.auth.strategies import SomfyMultisiteAuthStrategy
+        """Server.SOMFY + username/password builds SomfyAccountAuthStrategy."""
+        from pyoverkiz.auth.strategies import SomfyAccountAuthStrategy
         from pyoverkiz.const import SUPPORTED_SERVERS
 
         strategy = build_auth_strategy(
@@ -860,13 +860,13 @@ Add to `tests/test_auth.py`, inside `class TestAuthFactory`:
             ssl_context=True,
         )
 
-        assert isinstance(strategy, SomfyMultisiteAuthStrategy)
+        assert isinstance(strategy, SomfyAccountAuthStrategy)
 ```
 
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `devcontainer exec --workspace-folder . python -m pytest "tests/test_auth.py::TestAuthFactory::test_build_auth_strategy_somfy_multisite" -v`
-Expected: FAIL — returns `SessionLoginStrategy` (fallthrough), not `SomfyMultisiteAuthStrategy`.
+Expected: FAIL — returns `SessionLoginStrategy` (fallthrough), not `SomfyAccountAuthStrategy`.
 
 - [ ] **Step 3: Add the factory branch**
 
@@ -876,7 +876,7 @@ In `pyoverkiz/auth/factory.py`, import the strategy:
 from pyoverkiz.auth.strategies import (
     ...
     SomfyAuthStrategy,
-    SomfyMultisiteAuthStrategy,
+    SomfyAccountAuthStrategy,
 )
 ```
 
@@ -884,7 +884,7 @@ Add a branch after the `Server.SOMFY_EUROPE` branch:
 
 ```python
     if server == Server.SOMFY:
-        return SomfyMultisiteAuthStrategy(
+        return SomfyAccountAuthStrategy(
             _ensure_credentials(credentials, UsernamePasswordCredentials),
             session,
             server_config,
@@ -901,7 +901,7 @@ Expected: PASS.
 
 ```bash
 git add pyoverkiz/auth/factory.py tests/test_auth.py
-git commit -m "feat: route Server.SOMFY to SomfyMultisiteAuthStrategy"
+git commit -m "feat: route Server.SOMFY to SomfyAccountAuthStrategy"
 ```
 
 ---

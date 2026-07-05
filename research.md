@@ -168,11 +168,11 @@ BOB_API_KEY = "184638B3FBE874ACD24C14FBD657B"
 **`enums/server.py`** — a new `Server.SOMFY_MULTISITE = "somfy_multisite"` (keep
 `SOMFY_EUROPE` untouched for the single-site legacy path).
 
-**`auth/strategies.py`** — a new `SomfyMultisiteAuthStrategy(BaseAuthStrategy)`
+**`auth/strategies.py`** — a new `SomfyAccountAuthStrategy(BaseAuthStrategy)`
 implementing `SupportsGatewaySelection`:
 
 ```python
-class SomfyMultisiteAuthStrategy(BaseAuthStrategy):
+class SomfyAccountAuthStrategy(BaseAuthStrategy):
     """Somfy multi-site: Keycloak token exchange + BOB site directory."""
 
     def __init__(self, credentials, session, server, ssl_context):
@@ -230,7 +230,7 @@ The region can be discovered by probing `setup/gateways` across regions (as the
 POC's `find_overkiz_region` does), or by mapping `site.country` → region.
 
 **`factory.py`**: route `Server.SOMFY_MULTISITE` +
-`UsernamePasswordCredentials` to `SomfyMultisiteAuthStrategy`.
+`UsernamePasswordCredentials` to `SomfyAccountAuthStrategy`.
 
 ---
 

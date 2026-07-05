@@ -32,6 +32,28 @@ class LocalTokenCredentials(TokenCredentials):
 
 
 @dataclass(slots=True)
+class SomfyTokenCredentials(Credentials):
+    """Warm-start credentials for a previously-selected Somfy site.
+
+    Skips the password grant, Keycloak token exchange, and site discovery on
+    reload: the caller persists the Ginaite ``refresh_token`` plus the selected
+    site's ``site_oid`` and ``region``, and pyoverkiz mints a site-scoped access
+    token directly on the first request. ``gateway_id`` is optional bookkeeping
+    (the id the user selected) and is surfaced via ``selected_gateway``.
+
+    Ginaite rotates the refresh token on refresh, so supply an async
+    ``on_token_refresh`` callback to re-persist the new refresh token; without
+    it a rotated token is only kept in memory and a later reload would fail.
+    """
+
+    refresh_token: str = field(repr=False)
+    site_oid: str
+    region: str
+    gateway_id: str | None = None
+    on_token_refresh: Callable[[str], Awaitable[None]] | None = None
+
+
+@dataclass(slots=True)
 class RexelOAuthCodeCredentials(Credentials):
     """Credentials using Rexel OAuth2 authorization code with PKCE."""
 
