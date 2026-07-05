@@ -5,6 +5,45 @@ from __future__ import annotations
 import re
 from typing import Any, cast
 
+# Keys whose value is an identifier (gateway id, device url, ...).
+_ID_KEYS = frozenset({"gatewayId", "id", "deviceURL"})
+
+# Keys whose value is free text / location data to fully mask.
+_STRING_KEYS = frozenset(
+    {
+        "label",
+        "city",
+        "country",
+        "postalCode",
+        "addressLine1",
+        "addressLine2",
+        "longitude",
+        "latitude",
+    }
+)
+
+# Overkiz attributes/states are {"name": ..., "value": ...} dicts. When "name"
+# is one of these, the sibling "value" holds PII and must be masked.
+_SENSITIVE_STATE_NAMES = frozenset(
+    {
+        "core:NameState",
+        "homekit:SetupCode",
+        "homekit:SetupPayload",
+        "core:SSIDState",
+        "core:NetworkMacState",
+        "internal:CurrentInfraConfigState",
+        "core:LocalIPv4AddressState",
+        "core:IPAddress",
+        "core:MacAddress",
+        "core:SerialNumber",
+        "core:DeviceSerialNumberState",
+        "core:IPAddressState",
+        "core:LabelState",
+        "core:LocationLatitudeState",
+        "core:LocationLongitudeState",
+    }
+)
+
 
 def obfuscate_id(value: str | None) -> str:
     """Mask id."""
@@ -22,57 +61,6 @@ def obfuscate_string(value: str) -> str:
     return re.sub(r"[\w.-]+", "*", str(value), flags=re.UNICODE)
 
 
-def _obfuscate_value(key: str, value: Any, mask_next_value: bool) -> tuple[Any, bool]:
-    """Return (obfuscated_value, mask_next_value) for a single key/value pair."""
-    result = value
-
-    if key in {"gatewayId", "id", "deviceURL"}:
-        result = obfuscate_id(value)
-    elif key in {
-        "label",
-        "city",
-        "country",
-        "postalCode",
-        "addressLine1",
-        "addressLine2",
-        "longitude",
-        "latitude",
-    }:
-        result = obfuscate_string(value)
-    elif mask_next_value and key == "value":
-        result = obfuscate_string(value)
-        return result, False
-
-    if result in (
-        "core:NameState",
-        "homekit:SetupCode",
-        "homekit:SetupPayload",
-        "core:SSIDState",
-        "core:NetworkMacState",
-        "internal:CurrentInfraConfigState",
-        "core:LocalIPv4AddressState",
-        "core:IPAddress",
-        "core:MacAddress",
-        "core:SerialNumber",
-        "core:DeviceSerialNumberState",
-        "core:IPAddressState",
-        "core:LabelState",
-        "core:LocationLatitudeState",
-        "core:LocationLongitudeState",
-    ):
-        mask_next_value = True
-
-    if isinstance(result, dict):
-        result = obfuscate_sensitive_data(result)
-    elif isinstance(result, list):
-        result = [
-            obfuscate_sensitive_data(item) if isinstance(item, dict) else item
-            for item in result
-        ]
-
-    return result, mask_next_value
-
-
 def obfuscate_sensitive_data(
     data: dict[str, Any] | list[dict[str, Any]],
 ) -> dict[str, Any] | list[dict[str, Any]]:
@@ -82,11 +70,24 @@ def obfuscate_sensitive_data(
             list[dict[str, Any]], [obfuscate_sensitive_data(item) for item in data]
         )
 
-    result: dict[str, Any] = {}
-    mask_next_value = False
+    # Decide up front whether this dict's "value" is sensitive, so masking does
+    # not depend on "name" appearing before "value" in the key iteration order.
+    mask_value = data.get("name") in _SENSITIVE_STATE_NAMES
 
+    result: dict[str, Any] = {}
     for key, value in data.items():
-        obfuscated, mask_next_value = _obfuscate_value(key, value, mask_next_value)
-        result[key] = obfuscated
+        if key in _ID_KEYS:
+            result[key] = obfuscate_id(value)
+        elif key in _STRING_KEYS or (key == "value" and mask_value):
+            result[key] = obfuscate_string(value)
+        elif isinstance(value, dict):
+            result[key] = obfuscate_sensitive_data(value)
+        elif isinstance(value, list):
+            result[key] = [
+                obfuscate_sensitive_data(item) if isinstance(item, dict) else item
+                for item in value
+            ]
+        else:
+            result[key] = value
 
     return result
