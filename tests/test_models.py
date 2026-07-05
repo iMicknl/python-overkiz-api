@@ -155,6 +155,18 @@ class TestSetup:
 
         assert setup.id is None
 
+    def test_setup_drops_devices_missing_required_fields(self, caplog):
+        """Devices missing required fields are dropped, not fatal."""
+        raw_setup = json.loads(
+            (FIXTURES_DIR / "setup_local_tahoma_sonos.json").read_text(encoding="utf-8")
+        )
+
+        with caplog.at_level(logging.WARNING):
+            setup = converter.structure(raw_setup, Setup)
+
+        assert len(setup.devices) == 13
+        assert sum("incomplete data from hub" in r.message for r in caplog.records) == 3
+
 
 class TestGateway:
     """Tests for Gateway model parsing, focused on sub_type handling."""

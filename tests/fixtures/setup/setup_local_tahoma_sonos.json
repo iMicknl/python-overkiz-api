@@ -1,0 +1,2883 @@
+{
+  "gateways": [
+    {
+      "gatewayId": "****-****-0576",
+      "connectivity": {
+        "protocolVersion": "2026.3.3-7",
+        "status": "OK"
+      }
+    }
+  ],
+  "devices": [
+    {
+      "attributes": [
+        {
+          "value": "**-**-**-**-**-**:0",
+          "type": 3,
+          "name": "core:SerialNumber"
+        },
+        {
+          "value": "Sonos",
+          "type": 3,
+          "name": "core:Technology"
+        },
+        {
+          "value": "S21",
+          "type": 3,
+          "name": "core:ManufacturerReference"
+        },
+        {
+          "value": "Sonos",
+          "type": 3,
+          "name": "core:Manufacturer"
+        },
+        {
+          "value": [
+            {
+              "commandLess": true,
+              "name": "identification"
+            },
+            {
+              "name": "volumeControl"
+            }
+          ],
+          "type": 10,
+          "name": "ogp:Features"
+        }
+      ],
+      "available": true,
+      "synced": true,
+      "states": [
+        {
+          "value": true,
+          "type": 6,
+          "name": "core:AvailabilityState"
+        },
+        {
+          "value": true,
+          "type": 6,
+          "name": "core:StatusState"
+        },
+        {
+          "value": false,
+          "type": 6,
+          "name": "core:RemovableState"
+        },
+        {
+          "value": "Woonkamer L",
+          "type": 3,
+          "name": "core:NameState"
+        },
+        {
+          "value": false,
+          "type": 6,
+          "name": "core:MuteState"
+        },
+        {
+          "value": 35,
+          "type": 1,
+          "name": "core:VolumeLevelState"
+        }
+      ],
+      "label": "* *",
+      "enabled": true,
+      "deviceURL": "ogp://****-****-0576/7B686B2D"
+    },
+    {
+      "attributes": [
+        {
+          "value": "5164237A10",
+          "type": 3,
+          "name": "core:FirmwareRevision"
+        },
+        {
+          "value": "Somfy",
+          "type": 3,
+          "name": "core:Manufacturer"
+        },
+        {
+          "value": [
+            {
+              "procedureName": "dead_man_down",
+              "params": {
+                "duration": {}
+              }
+            },
+            {
+              "procedureName": "dead_man_impulse_down"
+            },
+            {
+              "procedureName": "dead_man_impulse_up"
+            },
+            {
+              "procedureName": "dead_man_stop"
+            },
+            {
+              "procedureName": "dead_man_up",
+              "params": {
+                "duration": {}
+              }
+            },
+            {
+              "procedureName": "delete_my_position"
+            },
+            {
+              "procedureName": "double_power_cut"
+            },
+            {
+              "procedureName": "eject_from_setting_mode"
+            },
+            {
+              "procedureName": "enter_settings_mode"
+            },
+            {
+              "procedureName": "invert_rotation"
+            },
+            {
+              "procedureName": "reset_actuator"
+            },
+            {
+              "procedureName": "save_lower_end_limit"
+            },
+            {
+              "procedureName": "save_my_position"
+            },
+            {
+              "procedureName": "save_settings"
+            },
+            {
+              "procedureName": "save_upper_end_limit"
+            },
+            {
+              "procedureName": "set_auto_end_limits"
+            },
+            {
+              "procedureName": "set_auto_lower_end_limit"
+            },
+            {
+              "procedureName": "set_auto_upper_end_limit"
+            }
+          ],
+          "type": 10,
+          "name": "core:SupportedManufacturerProcedures"
+        },
+        {
+          "value": [
+            "Nominal_torque",
+            "cde_nb",
+            "client_model_name",
+            "client_model_reference",
+            "current_position",
+            "customer_production_date",
+            "discreet_mode_speed",
+            "eom_name",
+            "nb_of_double_power_cut",
+            "nb_of_factory_mode_due_to_a_prog_7s_on_a_1w_after_a_double_power_cut",
+            "nb_of_obstacle_in_roll",
+            "nb_of_obstacle_in_unroll",
+            "nb_of_rel_reached_in_counting_mode",
+            "nb_of_reset_caused_by_power_on",
+            "nb_of_stops_caused_by_thermal_protection",
+            "nb_of_uel_reached_in_counting_mode",
+            "nominal_mode_speed",
+            "of_nb",
+            "open_level",
+            "paired_1w_controllers",
+            "power_supply_max_rms_value",
+            "power_supply_min_rms_value",
+            "production_date",
+            "roll_end_limit_state",
+            "rotation_direction",
+            "rotation_direction_determination",
+            "security_level",
+            "setting_state",
+            "smart_protect",
+            "smart_protect_sensitivity",
+            "soft_start",
+            "soft_start_in_percent",
+            "soft_stop",
+            "soft_stop_in_percent",
+            "status_of_intermediate_position",
+            "unroll_end_limit_state"
+          ],
+          "type": 10,
+          "name": "core:SupportedReadableManufacturerData"
+        }
+      ],
+      "available": true,
+      "definition": {
+        "widgetName": "PositionableRollerShutterWithLowSpeedManagement",
+        "attributes": [
+          {
+            "name": "core:FirmwareRevision"
+          },
+          {
+            "name": "core:Manufacturer"
+          },
+          {
+            "name": "core:SupportedManufacturerProcedures"
+          },
+          {
+            "name": "core:SupportedReadableManufacturerData"
+          }
+        ],
+        "states": [
+          {
+            "name": "core:CommandLockLevelsState"
+          },
+          {
+            "name": "core:StatusState"
+          },
+          {
+            "name": "core:AdditionalStatusState"
+          },
+          {
+            "name": "core:MovingState"
+          },
+          {
+            "name": "core:TargetClosureState"
+          },
+          {
+            "name": "core:ClosureState"
+          },
+          {
+            "name": "core:SecuredPositionState"
+          },
+          {
+            "name": "core:PriorityLockTimerState"
+          },
+          {
+            "name": "io:PriorityLockLevelState"
+          },
+          {
+            "name": "io:PriorityLockOriginatorState"
+          },
+          {
+            "name": "core:DiscreteRSSILevelState"
+          },
+          {
+            "name": "core:RSSILevelState"
+          },
+          {
+            "name": "core:OpenClosedState"
+          },
+          {
+            "name": "core:Memorized1PositionState"
+          },
+          {
+            "name": "core:NameState"
+          }
+        ],
+        "type": "ACTUATOR",
+        "commands": [
+          {
+            "commandName": "sendIOKey",
+            "nparams": 0
+          },
+          {
+            "commandName": "unpairAllOneWayControllersAndDeleteNode",
+            "nparams": 0
+          },
+          {
+            "commandName": "resetLockLevels",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "removeLockLevel",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "addLockLevel",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "nparams": 1,
+            "commandName": "setConfigState",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "stopIdentify",
+            "nparams": 0
+          },
+          {
+            "commandName": "startIdentify",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "executeManufacturerProcedure",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "nparams": 1,
+            "commandName": "writeManufacturerData",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "readManufacturerData",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "my",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "setClosure",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "refreshMemorized1Position",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "setPosition",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "setMemorized1Position",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "close",
+            "nparams": 0
+          },
+          {
+            "commandName": "down",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "wink",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "advancedRefresh",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "commandName": "open",
+            "nparams": 0
+          },
+          {
+            "commandName": "stop",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "setSecuredPosition",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "setPositionAndLinearSpeed",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "commandName": "up",
+            "nparams": 0
+          },
+          {
+            "commandName": "identify",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "setName",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "setDeployment",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "setClosureAndLinearSpeed",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "commandName": "getName",
+            "nparams": 0
+          },
+          {
+            "commandName": "keepOneWayControllersAndDeleteNode",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "pairOneWayController",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "nparams": 1,
+            "commandName": "delayedStopIdentify",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "unpairAllOneWayControllers",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "unpairOneWayController",
+            "paramsSig": "p1,*p2"
+          }
+        ],
+        "uiClass": "RollerShutter"
+      },
+      "controllableName": "io:RollerShutterWithLowSpeedManagementIOComponent",
+      "type": 1,
+      "enabled": true,
+      "subsystemId": 0,
+      "states": [
+        {
+          "value": 0,
+          "type": 1,
+          "name": "core:PriorityLockTimerState"
+        },
+        {
+          "value": "unknown",
+          "type": 3,
+          "name": "io:PriorityLockOriginatorState"
+        },
+        {
+          "value": [],
+          "type": 11,
+          "name": "core:CommandLockLevelsState"
+        },
+        {
+          "value": "normal",
+          "type": 3,
+          "name": "core:DiscreteRSSILevelState"
+        },
+        {
+          "value": 48,
+          "type": 1,
+          "name": "core:RSSILevelState"
+        },
+        {
+          "value": 0,
+          "type": 1,
+          "name": "core:ClosureState"
+        },
+        {
+          "value": "open",
+          "type": 3,
+          "name": "core:OpenClosedState"
+        },
+        {
+          "value": 0,
+          "type": 1,
+          "name": "core:TargetClosureState"
+        },
+        {
+          "value": false,
+          "type": 6,
+          "name": "core:MovingState"
+        },
+        {
+          "value": "available",
+          "type": 3,
+          "name": "core:StatusState"
+        },
+        {
+          "value": "Slaapkamer CarRa",
+          "type": 3,
+          "name": "core:NameState"
+        },
+        {
+          "value": 85,
+          "type": 1,
+          "name": "core:Memorized1PositionState"
+        }
+      ],
+      "synced": true,
+      "label": "* * *",
+      "deviceURL": "io://****-****-0576/12189845"
+    },
+    {
+      "attributes": [
+        {
+          "value": "Sonos",
+          "type": 3,
+          "name": "core:Technology"
+        },
+        {
+          "value": "Sonos",
+          "type": 3,
+          "name": "core:Manufacturer"
+        },
+        {
+          "value": "Sonos Group",
+          "type": 3,
+          "name": "core:ManufacturerReference"
+        },
+        {
+          "value": [
+            "repeat",
+            "repeatOne",
+            "shuffle",
+            "crossfade"
+          ],
+          "type": 10,
+          "name": "core:SupportedOptions"
+        },
+        {
+          "value": [
+            {
+              "commandLess": true,
+              "name": "group"
+            },
+            {
+              "commandLess": true,
+              "name": "identification"
+            },
+            {
+              "name": "media"
+            },
+            {
+              "name": "nextPrevious"
+            },
+            {
+              "name": "optionControl"
+            },
+            {
+              "name": "pauseResume"
+            },
+            {
+              "name": "start"
+            },
+            {
+              "name": "timelineControl"
+            },
+            {
+              "name": "volumeControl"
+            }
+          ],
+          "type": 10,
+          "name": "ogp:Features"
+        }
+      ],
+      "available": true,
+      "synced": true,
+      "states": [
+        {
+          "value": true,
+          "type": 6,
+          "name": "core:AvailabilityState"
+        },
+        {
+          "value": true,
+          "type": 6,
+          "name": "core:StatusState"
+        },
+        {
+          "value": false,
+          "type": 6,
+          "name": "core:RemovableState"
+        },
+        {
+          "value": [
+            "ogp://2080-2070-0576/9B077C1E"
+          ],
+          "type": 10,
+          "name": "core:GroupMembersState"
+        },
+        {
+          "value": "Woonkamer R",
+          "type": 3,
+          "name": "core:NameState"
+        },
+        {
+          "value": 9,
+          "type": 1,
+          "name": "core:VolumeLevelState"
+        },
+        {
+          "value": false,
+          "type": 6,
+          "name": "core:MuteState"
+        },
+        {
+          "value": false,
+          "type": 6,
+          "name": "core:HasNextState"
+        },
+        {
+          "value": false,
+          "type": 6,
+          "name": "core:HasPreviousState"
+        },
+        {
+          "value": false,
+          "type": 6,
+          "name": "core:PausedState"
+        },
+        {
+          "value": true,
+          "type": 6,
+          "name": "core:StartedStoppedState"
+        },
+        {
+          "value": 0,
+          "type": 1,
+          "name": "core:TimelinePositionState"
+        },
+        {
+          "value": {
+            "metadata": {
+              "explicit": false
+            },
+            "type": "track",
+            "name": "TV Audio"
+          },
+          "type": 11,
+          "name": "core:MediaElementState"
+        }
+      ],
+      "label": "* *",
+      "enabled": true,
+      "deviceURL": "ogp://****-****-0576/1A251985"
+    },
+    {
+      "attributes": [],
+      "available": true,
+      "definition": {
+        "uiClass": "ProtocolGateway",
+        "attributes": [],
+        "states": [],
+        "widgetName": "ZigbeeStack",
+        "commands": [],
+        "type": "PROTOCOL_GATEWAY"
+      },
+      "controllableName": "zigbee:TransceiverV3_0Component",
+      "type": 5,
+      "enabled": true,
+      "subsystemId": 0,
+      "states": [],
+      "synced": true,
+      "label": "* (*)",
+      "deviceURL": "zigbee://****-****-0576/65535"
+    },
+    {
+      "attributes": [
+        {
+          "value": "KNX",
+          "type": 3,
+          "name": "core:Technology"
+        },
+        {
+          "value": "OGP KNX Bridge",
+          "type": 3,
+          "name": "core:ManufacturerReference"
+        },
+        {
+          "value": "Overkiz",
+          "type": 3,
+          "name": "core:Manufacturer"
+        },
+        {
+          "value": [
+            {
+              "name": "private"
+            },
+            {
+              "name": "reset"
+            },
+            {
+              "name": "identification"
+            }
+          ],
+          "type": 10,
+          "name": "ogp:Features"
+        }
+      ],
+      "available": true,
+      "definition": {
+        "widgetName": "DynamicBridge",
+        "attributes": [
+          {
+            "name": "core:Private1"
+          },
+          {
+            "name": "core:Private2"
+          },
+          {
+            "name": "core:Private3"
+          },
+          {
+            "name": "core:Private4"
+          },
+          {
+            "name": "core:Private5"
+          },
+          {
+            "name": "core:Private6"
+          },
+          {
+            "name": "core:Private7"
+          },
+          {
+            "name": "core:Private8"
+          },
+          {
+            "name": "core:Private9"
+          },
+          {
+            "name": "core:Private10"
+          },
+          {
+            "name": "core:Manufacturer"
+          },
+          {
+            "name": "core:ManufacturerReference"
+          },
+          {
+            "name": "core:Technology"
+          },
+          {
+            "name": "core:SerialNumber"
+          },
+          {
+            "name": "core:SubsetId"
+          },
+          {
+            "name": "core:CardinalOrientation"
+          }
+        ],
+        "states": [
+          {
+            "name": "core:Private1State"
+          },
+          {
+            "name": "core:Private2State"
+          },
+          {
+            "name": "core:Private3State"
+          },
+          {
+            "name": "core:Private4State"
+          },
+          {
+            "name": "core:Private5State"
+          },
+          {
+            "name": "core:Private6State"
+          },
+          {
+            "name": "core:Private7State"
+          },
+          {
+            "name": "core:Private8State"
+          },
+          {
+            "name": "core:Private9State"
+          },
+          {
+            "name": "core:Private10State"
+          },
+          {
+            "name": "core:NameState"
+          },
+          {
+            "name": "core:AvailabilityState"
+          },
+          {
+            "name": "core:StatusState"
+          },
+          {
+            "name": "core:RemovableState"
+          }
+        ],
+        "commands": [
+          {
+            "commandName": "sendPrivate",
+            "nparams": 1
+          },
+          {
+            "commandName": "reset",
+            "nparams": 0
+          },
+          {
+            "commandName": "identify",
+            "nparams": 0
+          },
+          {
+            "commandName": "setName",
+            "nparams": 1
+          }
+        ],
+        "type": "ACTUATOR",
+        "uiClass": "ProtocolGateway"
+      },
+      "controllableName": "ogp:Bridge",
+      "type": 1,
+      "enabled": true,
+      "subsystemId": 0,
+      "synced": true,
+      "label": "* (*)",
+      "states": [],
+      "deviceURL": "ogp://****-****-0576/00000BE8"
+    },
+    {
+      "attributes": [],
+      "available": true,
+      "definition": {
+        "widgetName": "IOStack",
+        "attributes": [],
+        "states": [],
+        "type": "PROTOCOL_GATEWAY",
+        "commands": [
+          {
+            "commandName": "discoverSomfyUnsetActuators",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "advancedSomfyDiscover",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "resetNetworkSecurity",
+            "nparams": 0
+          },
+          {
+            "commandName": "joinNetwork",
+            "nparams": 0
+          },
+          {
+            "commandName": "shareNetwork",
+            "nparams": 0
+          },
+          {
+            "nparams": 0,
+            "commandName": "discover1WayController",
+            "paramsSig": "*p1,*p2"
+          },
+          {
+            "nparams": 1,
+            "commandName": "discoverActuators",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "discoverSensors",
+            "paramsSig": "p1"
+          }
+        ],
+        "uiClass": "ProtocolGateway"
+      },
+      "controllableName": "io:StackComponent",
+      "type": 5,
+      "enabled": true,
+      "subsystemId": 0,
+      "states": [],
+      "synced": true,
+      "label": "* (*)",
+      "deviceURL": "io://****-****-0576/14194128"
+    },
+    {
+      "attributes": [
+        {
+          "value": "5164237A10",
+          "type": 3,
+          "name": "core:FirmwareRevision"
+        },
+        {
+          "value": "Somfy",
+          "type": 3,
+          "name": "core:Manufacturer"
+        },
+        {
+          "value": [
+            {
+              "procedureName": "dead_man_down",
+              "params": {
+                "duration": {}
+              }
+            },
+            {
+              "procedureName": "dead_man_impulse_down"
+            },
+            {
+              "procedureName": "dead_man_impulse_up"
+            },
+            {
+              "procedureName": "dead_man_stop"
+            },
+            {
+              "procedureName": "dead_man_up",
+              "params": {
+                "duration": {}
+              }
+            },
+            {
+              "procedureName": "delete_my_position"
+            },
+            {
+              "procedureName": "double_power_cut"
+            },
+            {
+              "procedureName": "eject_from_setting_mode"
+            },
+            {
+              "procedureName": "enter_settings_mode"
+            },
+            {
+              "procedureName": "invert_rotation"
+            },
+            {
+              "procedureName": "reset_actuator"
+            },
+            {
+              "procedureName": "save_lower_end_limit"
+            },
+            {
+              "procedureName": "save_my_position"
+            },
+            {
+              "procedureName": "save_settings"
+            },
+            {
+              "procedureName": "save_upper_end_limit"
+            },
+            {
+              "procedureName": "set_auto_end_limits"
+            },
+            {
+              "procedureName": "set_auto_lower_end_limit"
+            },
+            {
+              "procedureName": "set_auto_upper_end_limit"
+            }
+          ],
+          "type": 10,
+          "name": "core:SupportedManufacturerProcedures"
+        },
+        {
+          "value": [
+            "Nominal_torque",
+            "cde_nb",
+            "client_model_name",
+            "client_model_reference",
+            "current_position",
+            "customer_production_date",
+            "discreet_mode_speed",
+            "eom_name",
+            "nb_of_double_power_cut",
+            "nb_of_factory_mode_due_to_a_prog_7s_on_a_1w_after_a_double_power_cut",
+            "nb_of_obstacle_in_roll",
+            "nb_of_obstacle_in_unroll",
+            "nb_of_rel_reached_in_counting_mode",
+            "nb_of_reset_caused_by_power_on",
+            "nb_of_stops_caused_by_thermal_protection",
+            "nb_of_uel_reached_in_counting_mode",
+            "nominal_mode_speed",
+            "of_nb",
+            "open_level",
+            "paired_1w_controllers",
+            "power_supply_max_rms_value",
+            "power_supply_min_rms_value",
+            "production_date",
+            "roll_end_limit_state",
+            "rotation_direction",
+            "rotation_direction_determination",
+            "security_level",
+            "setting_state",
+            "smart_protect",
+            "smart_protect_sensitivity",
+            "soft_start",
+            "soft_start_in_percent",
+            "soft_stop",
+            "soft_stop_in_percent",
+            "status_of_intermediate_position",
+            "unroll_end_limit_state"
+          ],
+          "type": 10,
+          "name": "core:SupportedReadableManufacturerData"
+        }
+      ],
+      "available": true,
+      "definition": {
+        "widgetName": "PositionableRollerShutterWithLowSpeedManagement",
+        "attributes": [
+          {
+            "name": "core:FirmwareRevision"
+          },
+          {
+            "name": "core:Manufacturer"
+          },
+          {
+            "name": "core:SupportedManufacturerProcedures"
+          },
+          {
+            "name": "core:SupportedReadableManufacturerData"
+          }
+        ],
+        "states": [
+          {
+            "name": "core:CommandLockLevelsState"
+          },
+          {
+            "name": "core:StatusState"
+          },
+          {
+            "name": "core:AdditionalStatusState"
+          },
+          {
+            "name": "core:MovingState"
+          },
+          {
+            "name": "core:TargetClosureState"
+          },
+          {
+            "name": "core:ClosureState"
+          },
+          {
+            "name": "core:SecuredPositionState"
+          },
+          {
+            "name": "core:PriorityLockTimerState"
+          },
+          {
+            "name": "io:PriorityLockLevelState"
+          },
+          {
+            "name": "io:PriorityLockOriginatorState"
+          },
+          {
+            "name": "core:DiscreteRSSILevelState"
+          },
+          {
+            "name": "core:RSSILevelState"
+          },
+          {
+            "name": "core:OpenClosedState"
+          },
+          {
+            "name": "core:Memorized1PositionState"
+          },
+          {
+            "name": "core:NameState"
+          }
+        ],
+        "type": "ACTUATOR",
+        "commands": [
+          {
+            "commandName": "sendIOKey",
+            "nparams": 0
+          },
+          {
+            "commandName": "unpairAllOneWayControllersAndDeleteNode",
+            "nparams": 0
+          },
+          {
+            "commandName": "resetLockLevels",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "removeLockLevel",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "addLockLevel",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "nparams": 1,
+            "commandName": "setConfigState",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "stopIdentify",
+            "nparams": 0
+          },
+          {
+            "commandName": "startIdentify",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "executeManufacturerProcedure",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "nparams": 1,
+            "commandName": "writeManufacturerData",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "readManufacturerData",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "my",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "setClosure",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "refreshMemorized1Position",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "setPosition",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "setMemorized1Position",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "close",
+            "nparams": 0
+          },
+          {
+            "commandName": "down",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "wink",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "advancedRefresh",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "commandName": "open",
+            "nparams": 0
+          },
+          {
+            "commandName": "stop",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "setSecuredPosition",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "setPositionAndLinearSpeed",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "commandName": "up",
+            "nparams": 0
+          },
+          {
+            "commandName": "identify",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "setName",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "setDeployment",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "setClosureAndLinearSpeed",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "commandName": "getName",
+            "nparams": 0
+          },
+          {
+            "commandName": "keepOneWayControllersAndDeleteNode",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "pairOneWayController",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "nparams": 1,
+            "commandName": "delayedStopIdentify",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "unpairAllOneWayControllers",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "unpairOneWayController",
+            "paramsSig": "p1,*p2"
+          }
+        ],
+        "uiClass": "RollerShutter"
+      },
+      "controllableName": "io:RollerShutterWithLowSpeedManagementIOComponent",
+      "type": 1,
+      "enabled": true,
+      "subsystemId": 0,
+      "states": [
+        {
+          "value": 0,
+          "type": 1,
+          "name": "core:PriorityLockTimerState"
+        },
+        {
+          "value": "unknown",
+          "type": 3,
+          "name": "io:PriorityLockOriginatorState"
+        },
+        {
+          "value": [],
+          "type": 11,
+          "name": "core:CommandLockLevelsState"
+        },
+        {
+          "value": "good",
+          "type": 3,
+          "name": "core:DiscreteRSSILevelState"
+        },
+        {
+          "value": 86,
+          "type": 1,
+          "name": "core:RSSILevelState"
+        },
+        {
+          "value": 100,
+          "type": 1,
+          "name": "core:ClosureState"
+        },
+        {
+          "value": "closed",
+          "type": 3,
+          "name": "core:OpenClosedState"
+        },
+        {
+          "value": 100,
+          "type": 1,
+          "name": "core:TargetClosureState"
+        },
+        {
+          "value": false,
+          "type": 6,
+          "name": "core:MovingState"
+        },
+        {
+          "value": "available",
+          "type": 3,
+          "name": "core:StatusState"
+        },
+        {
+          "value": "Slaapkamer CarRa",
+          "type": 3,
+          "name": "core:NameState"
+        },
+        {
+          "value": 85,
+          "type": 1,
+          "name": "core:Memorized1PositionState"
+        }
+      ],
+      "synced": true,
+      "label": "* * *",
+      "deviceURL": "io://****-****-0576/13670072"
+    },
+    {
+      "attributes": [
+        {
+          "value": "5164237A10",
+          "type": 3,
+          "name": "core:FirmwareRevision"
+        },
+        {
+          "value": "Somfy",
+          "type": 3,
+          "name": "core:Manufacturer"
+        },
+        {
+          "value": [
+            {
+              "procedureName": "dead_man_down",
+              "params": {
+                "duration": {}
+              }
+            },
+            {
+              "procedureName": "dead_man_impulse_down"
+            },
+            {
+              "procedureName": "dead_man_impulse_up"
+            },
+            {
+              "procedureName": "dead_man_stop"
+            },
+            {
+              "procedureName": "dead_man_up",
+              "params": {
+                "duration": {}
+              }
+            },
+            {
+              "procedureName": "delete_my_position"
+            },
+            {
+              "procedureName": "double_power_cut"
+            },
+            {
+              "procedureName": "eject_from_setting_mode"
+            },
+            {
+              "procedureName": "enter_settings_mode"
+            },
+            {
+              "procedureName": "invert_rotation"
+            },
+            {
+              "procedureName": "reset_actuator"
+            },
+            {
+              "procedureName": "save_lower_end_limit"
+            },
+            {
+              "procedureName": "save_my_position"
+            },
+            {
+              "procedureName": "save_settings"
+            },
+            {
+              "procedureName": "save_upper_end_limit"
+            },
+            {
+              "procedureName": "set_auto_end_limits"
+            },
+            {
+              "procedureName": "set_auto_lower_end_limit"
+            },
+            {
+              "procedureName": "set_auto_upper_end_limit"
+            }
+          ],
+          "type": 10,
+          "name": "core:SupportedManufacturerProcedures"
+        },
+        {
+          "value": [
+            "Nominal_torque",
+            "cde_nb",
+            "client_model_name",
+            "client_model_reference",
+            "current_position",
+            "customer_production_date",
+            "discreet_mode_speed",
+            "eom_name",
+            "nb_of_double_power_cut",
+            "nb_of_factory_mode_due_to_a_prog_7s_on_a_1w_after_a_double_power_cut",
+            "nb_of_obstacle_in_roll",
+            "nb_of_obstacle_in_unroll",
+            "nb_of_rel_reached_in_counting_mode",
+            "nb_of_reset_caused_by_power_on",
+            "nb_of_stops_caused_by_thermal_protection",
+            "nb_of_uel_reached_in_counting_mode",
+            "nominal_mode_speed",
+            "of_nb",
+            "open_level",
+            "paired_1w_controllers",
+            "power_supply_max_rms_value",
+            "power_supply_min_rms_value",
+            "production_date",
+            "roll_end_limit_state",
+            "rotation_direction",
+            "rotation_direction_determination",
+            "security_level",
+            "setting_state",
+            "smart_protect",
+            "smart_protect_sensitivity",
+            "soft_start",
+            "soft_start_in_percent",
+            "soft_stop",
+            "soft_stop_in_percent",
+            "status_of_intermediate_position",
+            "unroll_end_limit_state"
+          ],
+          "type": 10,
+          "name": "core:SupportedReadableManufacturerData"
+        }
+      ],
+      "available": true,
+      "definition": {
+        "widgetName": "PositionableRollerShutterWithLowSpeedManagement",
+        "attributes": [
+          {
+            "name": "core:FirmwareRevision"
+          },
+          {
+            "name": "core:Manufacturer"
+          },
+          {
+            "name": "core:SupportedManufacturerProcedures"
+          },
+          {
+            "name": "core:SupportedReadableManufacturerData"
+          }
+        ],
+        "states": [
+          {
+            "name": "core:CommandLockLevelsState"
+          },
+          {
+            "name": "core:StatusState"
+          },
+          {
+            "name": "core:AdditionalStatusState"
+          },
+          {
+            "name": "core:MovingState"
+          },
+          {
+            "name": "core:TargetClosureState"
+          },
+          {
+            "name": "core:ClosureState"
+          },
+          {
+            "name": "core:SecuredPositionState"
+          },
+          {
+            "name": "core:PriorityLockTimerState"
+          },
+          {
+            "name": "io:PriorityLockLevelState"
+          },
+          {
+            "name": "io:PriorityLockOriginatorState"
+          },
+          {
+            "name": "core:DiscreteRSSILevelState"
+          },
+          {
+            "name": "core:RSSILevelState"
+          },
+          {
+            "name": "core:OpenClosedState"
+          },
+          {
+            "name": "core:Memorized1PositionState"
+          },
+          {
+            "name": "core:NameState"
+          }
+        ],
+        "type": "ACTUATOR",
+        "commands": [
+          {
+            "commandName": "sendIOKey",
+            "nparams": 0
+          },
+          {
+            "commandName": "unpairAllOneWayControllersAndDeleteNode",
+            "nparams": 0
+          },
+          {
+            "commandName": "resetLockLevels",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "removeLockLevel",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "addLockLevel",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "nparams": 1,
+            "commandName": "setConfigState",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "stopIdentify",
+            "nparams": 0
+          },
+          {
+            "commandName": "startIdentify",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "executeManufacturerProcedure",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "nparams": 1,
+            "commandName": "writeManufacturerData",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "readManufacturerData",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "my",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "setClosure",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "refreshMemorized1Position",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "setPosition",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "setMemorized1Position",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "close",
+            "nparams": 0
+          },
+          {
+            "commandName": "down",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "wink",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "advancedRefresh",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "commandName": "open",
+            "nparams": 0
+          },
+          {
+            "commandName": "stop",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "setSecuredPosition",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "setPositionAndLinearSpeed",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "commandName": "up",
+            "nparams": 0
+          },
+          {
+            "commandName": "identify",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "setName",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "setDeployment",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "setClosureAndLinearSpeed",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "commandName": "getName",
+            "nparams": 0
+          },
+          {
+            "commandName": "keepOneWayControllersAndDeleteNode",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "pairOneWayController",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "nparams": 1,
+            "commandName": "delayedStopIdentify",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "unpairAllOneWayControllers",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "unpairOneWayController",
+            "paramsSig": "p1,*p2"
+          }
+        ],
+        "uiClass": "RollerShutter"
+      },
+      "controllableName": "io:RollerShutterWithLowSpeedManagementIOComponent",
+      "type": 1,
+      "enabled": true,
+      "subsystemId": 0,
+      "states": [
+        {
+          "value": "normal",
+          "type": 3,
+          "name": "core:DiscreteRSSILevelState"
+        },
+        {
+          "value": 48,
+          "type": 1,
+          "name": "core:RSSILevelState"
+        },
+        {
+          "value": 0,
+          "type": 1,
+          "name": "core:ClosureState"
+        },
+        {
+          "value": "open",
+          "type": 3,
+          "name": "core:OpenClosedState"
+        },
+        {
+          "value": 0,
+          "type": 1,
+          "name": "core:TargetClosureState"
+        },
+        {
+          "value": false,
+          "type": 6,
+          "name": "core:MovingState"
+        },
+        {
+          "value": "available",
+          "type": 3,
+          "name": "core:StatusState"
+        },
+        {
+          "value": 0,
+          "type": 1,
+          "name": "core:PriorityLockTimerState"
+        },
+        {
+          "value": "unknown",
+          "type": 3,
+          "name": "io:PriorityLockOriginatorState"
+        },
+        {
+          "value": [],
+          "type": 11,
+          "name": "core:CommandLockLevelsState"
+        },
+        {
+          "value": "Slaapkamer Stijn",
+          "type": 3,
+          "name": "core:NameState"
+        },
+        {
+          "value": 85,
+          "type": 1,
+          "name": "core:Memorized1PositionState"
+        }
+      ],
+      "synced": true,
+      "label": "* * *",
+      "deviceURL": "io://****-****-0576/7151715"
+    },
+    {
+      "attributes": [
+        {
+          "value": "Intesis",
+          "type": 3,
+          "name": "core:Technology"
+        },
+        {
+          "value": "OGP Intesis Bridge",
+          "type": 3,
+          "name": "core:ManufacturerReference"
+        },
+        {
+          "value": "Overkiz",
+          "type": 3,
+          "name": "core:Manufacturer"
+        },
+        {
+          "value": [
+            {
+              "name": "discovery"
+            },
+            {
+              "name": "identification"
+            }
+          ],
+          "type": 10,
+          "name": "ogp:Features"
+        }
+      ],
+      "available": true,
+      "definition": {
+        "widgetName": "DynamicBridge",
+        "attributes": [
+          {
+            "name": "core:Manufacturer"
+          },
+          {
+            "name": "core:ManufacturerReference"
+          },
+          {
+            "name": "core:Technology"
+          },
+          {
+            "name": "core:SerialNumber"
+          },
+          {
+            "name": "core:SubsetId"
+          },
+          {
+            "name": "core:CardinalOrientation"
+          }
+        ],
+        "states": [
+          {
+            "name": "core:NameState"
+          },
+          {
+            "name": "core:AvailabilityState"
+          },
+          {
+            "name": "core:StatusState"
+          },
+          {
+            "name": "core:RemovableState"
+          }
+        ],
+        "commands": [
+          {
+            "commandName": "discover",
+            "nparams": 0
+          },
+          {
+            "commandName": "identify",
+            "nparams": 0
+          },
+          {
+            "commandName": "setName",
+            "nparams": 1
+          }
+        ],
+        "type": "ACTUATOR",
+        "uiClass": "ProtocolGateway"
+      },
+      "controllableName": "ogp:Bridge",
+      "type": 1,
+      "enabled": true,
+      "subsystemId": 0,
+      "synced": true,
+      "label": "* (*)",
+      "states": [],
+      "deviceURL": "ogp://****-****-0576/09E45393"
+    },
+    {
+      "attributes": [
+        {
+          "value": "5173626A04",
+          "type": 3,
+          "name": "core:FirmwareRevision"
+        },
+        {
+          "value": "Somfy",
+          "type": 3,
+          "name": "core:Manufacturer"
+        },
+        {
+          "value": [
+            {
+              "procedureName": "dead_man_down",
+              "params": {
+                "duration": {}
+              }
+            },
+            {
+              "procedureName": "dead_man_impulse_down"
+            },
+            {
+              "procedureName": "dead_man_impulse_up"
+            },
+            {
+              "procedureName": "dead_man_stop"
+            },
+            {
+              "procedureName": "dead_man_up",
+              "params": {
+                "duration": {}
+              }
+            },
+            {
+              "procedureName": "delete_my_position"
+            },
+            {
+              "procedureName": "double_power_cut"
+            },
+            {
+              "procedureName": "eject_from_setting_mode"
+            },
+            {
+              "procedureName": "enter_settings_mode"
+            },
+            {
+              "procedureName": "invert_rotation"
+            },
+            {
+              "procedureName": "reset_actuator"
+            },
+            {
+              "procedureName": "save_lower_end_limit"
+            },
+            {
+              "procedureName": "save_my_position"
+            },
+            {
+              "procedureName": "save_settings"
+            },
+            {
+              "procedureName": "save_upper_end_limit"
+            },
+            {
+              "procedureName": "set_auto_end_limits"
+            },
+            {
+              "procedureName": "set_auto_lower_end_limit"
+            },
+            {
+              "procedureName": "set_auto_upper_end_limit"
+            }
+          ],
+          "type": 10,
+          "name": "core:SupportedManufacturerProcedures"
+        },
+        {
+          "value": [
+            "Nominal_torque",
+            "cde_nb",
+            "client_model_name",
+            "client_model_reference",
+            "current_position",
+            "customer_production_date",
+            "discreet_mode_speed",
+            "eom_name",
+            "nb_of_double_power_cut",
+            "nb_of_factory_mode_due_to_a_prog_7s_on_a_1w_after_a_double_power_cut",
+            "nb_of_obstacle_in_roll",
+            "nb_of_obstacle_in_unroll",
+            "nb_of_rel_reached_in_counting_mode",
+            "nb_of_reset_caused_by_power_on",
+            "nb_of_stops_caused_by_thermal_protection",
+            "nb_of_uel_reached_in_counting_mode",
+            "nominal_mode_speed",
+            "of_nb",
+            "open_level",
+            "paired_1w_controllers",
+            "power_supply_max_rms_value",
+            "power_supply_min_rms_value",
+            "production_date",
+            "roll_end_limit_state",
+            "rotation_direction",
+            "rotation_direction_determination",
+            "security_level",
+            "setting_state",
+            "smart_protect",
+            "smart_protect_sensitivity",
+            "soft_start",
+            "soft_start_in_percent",
+            "soft_stop",
+            "soft_stop_in_percent",
+            "status_of_intermediate_position",
+            "unroll_end_limit_state"
+          ],
+          "type": 10,
+          "name": "core:SupportedReadableManufacturerData"
+        }
+      ],
+      "available": true,
+      "definition": {
+        "widgetName": "PositionableRollerShutterWithLowSpeedManagement",
+        "attributes": [
+          {
+            "name": "core:FirmwareRevision"
+          },
+          {
+            "name": "core:Manufacturer"
+          },
+          {
+            "name": "core:SupportedManufacturerProcedures"
+          },
+          {
+            "name": "core:SupportedReadableManufacturerData"
+          }
+        ],
+        "states": [
+          {
+            "name": "core:CommandLockLevelsState"
+          },
+          {
+            "name": "core:StatusState"
+          },
+          {
+            "name": "core:AdditionalStatusState"
+          },
+          {
+            "name": "core:MovingState"
+          },
+          {
+            "name": "core:TargetClosureState"
+          },
+          {
+            "name": "core:ClosureState"
+          },
+          {
+            "name": "core:SecuredPositionState"
+          },
+          {
+            "name": "core:PriorityLockTimerState"
+          },
+          {
+            "name": "io:PriorityLockLevelState"
+          },
+          {
+            "name": "io:PriorityLockOriginatorState"
+          },
+          {
+            "name": "core:DiscreteRSSILevelState"
+          },
+          {
+            "name": "core:RSSILevelState"
+          },
+          {
+            "name": "core:OpenClosedState"
+          },
+          {
+            "name": "core:Memorized1PositionState"
+          },
+          {
+            "name": "core:NameState"
+          }
+        ],
+        "type": "ACTUATOR",
+        "commands": [
+          {
+            "commandName": "sendIOKey",
+            "nparams": 0
+          },
+          {
+            "commandName": "unpairAllOneWayControllersAndDeleteNode",
+            "nparams": 0
+          },
+          {
+            "commandName": "resetLockLevels",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "removeLockLevel",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "addLockLevel",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "nparams": 1,
+            "commandName": "setConfigState",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "stopIdentify",
+            "nparams": 0
+          },
+          {
+            "commandName": "startIdentify",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "executeManufacturerProcedure",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "nparams": 1,
+            "commandName": "writeManufacturerData",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "readManufacturerData",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "my",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "setClosure",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "refreshMemorized1Position",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "setPosition",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "setMemorized1Position",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "close",
+            "nparams": 0
+          },
+          {
+            "commandName": "down",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "wink",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "advancedRefresh",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "commandName": "open",
+            "nparams": 0
+          },
+          {
+            "commandName": "stop",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "setSecuredPosition",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "setPositionAndLinearSpeed",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "commandName": "up",
+            "nparams": 0
+          },
+          {
+            "commandName": "identify",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "setName",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "setDeployment",
+            "paramsSig": "p1"
+          },
+          {
+            "nparams": 1,
+            "commandName": "setClosureAndLinearSpeed",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "commandName": "getName",
+            "nparams": 0
+          },
+          {
+            "commandName": "keepOneWayControllersAndDeleteNode",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "pairOneWayController",
+            "paramsSig": "p1,*p2"
+          },
+          {
+            "nparams": 1,
+            "commandName": "delayedStopIdentify",
+            "paramsSig": "p1"
+          },
+          {
+            "commandName": "unpairAllOneWayControllers",
+            "nparams": 0
+          },
+          {
+            "nparams": 1,
+            "commandName": "unpairOneWayController",
+            "paramsSig": "p1,*p2"
+          }
+        ],
+        "uiClass": "RollerShutter"
+      },
+      "controllableName": "io:RollerShutterWithLowSpeedManagementIOComponent",
+      "type": 1,
+      "enabled": true,
+      "subsystemId": 0,
+      "states": [
+        {
+          "value": "normal",
+          "type": 3,
+          "name": "core:DiscreteRSSILevelState"
+        },
+        {
+          "value": 54,
+          "type": 1,
+          "name": "core:RSSILevelState"
+        },
+        {
+          "value": 0,
+          "type": 1,
+          "name": "core:ClosureState"
+        },
+        {
+          "value": "open",
+          "type": 3,
+          "name": "core:OpenClosedState"
+        },
+        {
+          "value": 0,
+          "type": 1,
+          "name": "core:TargetClosureState"
+        },
+        {
+          "value": false,
+          "type": 6,
+          "name": "core:MovingState"
+        },
+        {
+          "value": "available",
+          "type": 3,
+          "name": "core:StatusState"
+        },
+        {
+          "value": "Slaapkamer Stijn",
+          "type": 3,
+          "name": "core:NameState"
+        },
+        {
+          "value": 85,
+          "type": 1,
+          "name": "core:Memorized1PositionState"
+        },
+        {
+          "value": [],
+          "type": 11,
+          "name": "core:CommandLockLevelsState"
+        },
+        {
+          "value": 0,
+          "type": 1,
+          "name": "core:PriorityLockTimerState"
+        },
+        {
+          "value": "unknown",
+          "type": 3,
+          "name": "io:PriorityLockOriginatorState"
+        }
+      ],
+      "synced": true,
+      "label": "* * *",
+      "deviceURL": "io://****-****-0576/4374186"
+    },
+    {
+      "attributes": [
+        {
+          "value": "Sonos",
+          "type": 3,
+          "name": "core:Technology"
+        },
+        {
+          "value": "OGP Sonos Bridge",
+          "type": 3,
+          "name": "core:ManufacturerReference"
+        },
+        {
+          "value": "Overkiz",
+          "type": 3,
+          "name": "core:Manufacturer"
+        },
+        {
+          "value": [
+            {
+              "commandLess": true,
+              "name": "identification"
+            },
+            {
+              "name": "discovery"
+            },
+            {
+              "name": "reset"
+            },
+            {
+              "name": "authentication"
+            }
+          ],
+          "type": 10,
+          "name": "ogp:Features"
+        }
+      ],
+      "available": true,
+      "definition": {
+        "widgetName": "DynamicBridge",
+        "attributes": [
+          {
+            "name": "core:Manufacturer"
+          },
+          {
+            "name": "core:ManufacturerReference"
+          },
+          {
+            "name": "core:Technology"
+          },
+          {
+            "name": "core:SerialNumber"
+          },
+          {
+            "name": "core:SubsetId"
+          },
+          {
+            "name": "core:CardinalOrientation"
+          }
+        ],
+        "states": [
+          {
+            "name": "core:NameState"
+          },
+          {
+            "name": "core:AvailabilityState"
+          },
+          {
+            "name": "core:StatusState"
+          },
+          {
+            "name": "core:RemovableState"
+          },
+          {
+            "name": "core:AuthenticationExpiredState"
+          }
+        ],
+        "commands": [
+          {
+            "commandName": "discover",
+            "nparams": 0
+          },
+          {
+            "commandName": "reset",
+            "nparams": 0
+          },
+          {
+            "commandName": "setAuthentication",
+            "nparams": 1
+          }
+        ],
+        "type": "ACTUATOR",
+        "uiClass": "ProtocolGateway"
+      },
+      "controllableName": "ogp:Bridge",
+      "type": 1,
+      "enabled": true,
+      "subsystemId": 0,
+      "synced": true,
+      "label": "* (*)",
+      "states": [],
+      "deviceURL": "ogp://****-****-0576/0003FEF3"
+    },
+    {
+      "attributes": [
+        {
+          "value": "**-**-**-**-**-**:0",
+          "type": 3,
+          "name": "core:SerialNumber"
+        },
+        {
+          "value": "Sonos",
+          "type": 3,
+          "name": "core:Technology"
+        },
+        {
+          "value": "S14",
+          "type": 3,
+          "name": "core:ManufacturerReference"
+        },
+        {
+          "value": "Sonos",
+          "type": 3,
+          "name": "core:Manufacturer"
+        },
+        {
+          "value": [
+            {
+              "commandLess": true,
+              "name": "identification"
+            },
+            {
+              "name": "volumeControl"
+            }
+          ],
+          "type": 10,
+          "name": "ogp:Features"
+        }
+      ],
+      "available": true,
+      "definition": {
+        "widgetName": "DynamicAudioplayer",
+        "attributes": [
+          {
+            "name": "core:Manufacturer"
+          },
+          {
+            "name": "core:ManufacturerReference"
+          },
+          {
+            "name": "core:Technology"
+          },
+          {
+            "name": "core:SerialNumber"
+          },
+          {
+            "name": "core:SubsetId"
+          },
+          {
+            "name": "core:CardinalOrientation"
+          }
+        ],
+        "states": [
+          {
+            "name": "core:NameState"
+          },
+          {
+            "name": "core:AvailabilityState"
+          },
+          {
+            "name": "core:StatusState"
+          },
+          {
+            "name": "core:RemovableState"
+          },
+          {
+            "name": "core:VolumeLevelState"
+          },
+          {
+            "name": "core:MuteState"
+          }
+        ],
+        "commands": [
+          {
+            "commandName": "mute",
+            "nparams": 0
+          },
+          {
+            "commandName": "unmute",
+            "nparams": 0
+          },
+          {
+            "commandName": "setVolume",
+            "nparams": 1
+          }
+        ],
+        "type": "ACTUATOR",
+        "uiClass": "MusicPlayer"
+      },
+      "controllableName": "ogp:Audioplayer",
+      "type": 1,
+      "enabled": true,
+      "subsystemId": 0,
+      "synced": true,
+      "label": "* *",
+      "states": [
+        {
+          "value": true,
+          "type": 6,
+          "name": "core:AvailabilityState"
+        },
+        {
+          "value": true,
+          "type": 6,
+          "name": "core:StatusState"
+        },
+        {
+          "value": false,
+          "type": 6,
+          "name": "core:RemovableState"
+        },
+        {
+          "value": "Woonkamer R",
+          "type": 3,
+          "name": "core:NameState"
+        },
+        {
+          "value": false,
+          "type": 6,
+          "name": "core:MuteState"
+        },
+        {
+          "value": 9,
+          "type": 1,
+          "name": "core:VolumeLevelState"
+        }
+      ],
+      "deviceURL": "ogp://****-****-0576/9B077C1E"
+    },
+    {
+      "attributes": [
+        {
+          "value": "Siegenia",
+          "type": 3,
+          "name": "core:Technology"
+        },
+        {
+          "value": "OGP Siegenia Bridge",
+          "type": 3,
+          "name": "core:ManufacturerReference"
+        },
+        {
+          "value": "Overkiz",
+          "type": 3,
+          "name": "core:Manufacturer"
+        },
+        {
+          "value": [
+            {
+              "name": "discovery"
+            },
+            {
+              "name": "identification"
+            }
+          ],
+          "type": 10,
+          "name": "ogp:Features"
+        }
+      ],
+      "available": true,
+      "definition": {
+        "widgetName": "DynamicBridge",
+        "attributes": [
+          {
+            "name": "core:Manufacturer"
+          },
+          {
+            "name": "core:ManufacturerReference"
+          },
+          {
+            "name": "core:Technology"
+          },
+          {
+            "name": "core:SerialNumber"
+          },
+          {
+            "name": "core:SubsetId"
+          },
+          {
+            "name": "core:CardinalOrientation"
+          }
+        ],
+        "states": [
+          {
+            "name": "core:NameState"
+          },
+          {
+            "name": "core:AvailabilityState"
+          },
+          {
+            "name": "core:StatusState"
+          },
+          {
+            "name": "core:RemovableState"
+          }
+        ],
+        "commands": [
+          {
+            "commandName": "discover",
+            "nparams": 0
+          },
+          {
+            "commandName": "identify",
+            "nparams": 0
+          },
+          {
+            "commandName": "setName",
+            "nparams": 1
+          }
+        ],
+        "type": "ACTUATOR",
+        "uiClass": "ProtocolGateway"
+      },
+      "controllableName": "ogp:Bridge",
+      "type": 1,
+      "enabled": true,
+      "subsystemId": 0,
+      "synced": true,
+      "label": "* (*)",
+      "states": [],
+      "deviceURL": "ogp://****-****-0576/039575E9"
+    },
+    {
+      "attributes": [],
+      "available": true,
+      "definition": {
+        "widgetName": "Pod",
+        "attributes": [],
+        "states": [
+          {
+            "name": "core:CountryCodeState"
+          },
+          {
+            "name": "core:LocalAccessProofState"
+          },
+          {
+            "name": "core:LocalIPv4AddressState"
+          },
+          {
+            "name": "internal:LightingLedPodModeState"
+          },
+          {
+            "name": "internal:Button1State"
+          },
+          {
+            "name": "internal:Button3State"
+          },
+          {
+            "name": "internal:Button2State"
+          },
+          {
+            "name": "core:NameState"
+          },
+          {
+            "name": "internal:UpdateStepAndBootStatusState"
+          },
+          {
+            "name": "core:ConnectivityState"
+          }
+        ],
+        "type": "ACTUATOR",
+        "commands": [
+          {
+            "commandName": "getName",
+            "nparams": 0
+          },
+          {
+            "commandName": "setPodLedOff",
+            "nparams": 0
+          },
+          {
+            "commandName": "setPodLedOn",
+            "nparams": 0
+          },
+          {
+            "paramsSig": "p1",
+            "commandName": "setLightingLedPodMode",
+            "nparams": 1
+          },
+          {
+            "commandName": "deactivateCalendar",
+            "nparams": 0
+          },
+          {
+            "commandName": "activateCalendar",
+            "nparams": 0
+          },
+          {
+            "paramsSig": "p1",
+            "commandName": "setCalendar",
+            "nparams": 1
+          },
+          {
+            "commandName": "refreshUpdateStatus",
+            "nparams": 0
+          },
+          {
+            "commandName": "refreshPodMode",
+            "nparams": 0
+          },
+          {
+            "commandName": "update",
+            "nparams": 0
+          },
+          {
+            "paramsSig": "p1",
+            "commandName": "setCountryCode",
+            "nparams": 1
+          }
+        ],
+        "uiClass": "Pod"
+      },
+      "controllableName": "internal:PodV3Component",
+      "type": 1,
+      "enabled": true,
+      "subsystemId": 0,
+      "states": [
+        {
+          "value": "Box",
+          "type": 3,
+          "name": "core:NameState"
+        },
+        {
+          "value": 1,
+          "type": 1,
+          "name": "internal:LightingLedPodModeState"
+        },
+        {
+          "value": "NL",
+          "type": 3,
+          "name": "core:CountryCodeState"
+        },
+        {
+          "value": "online",
+          "type": 3,
+          "name": "core:ConnectivityState"
+        }
+      ],
+      "synced": true,
+      "label": "*",
+      "deviceURL": "internal://****-****-0576/pod/0"
+    },
+    {
+      "attributes": [],
+      "available": true,
+      "definition": {
+        "widgetName": "Wifi",
+        "attributes": [],
+        "states": [
+          {
+            "name": "internal:SignalStrengthState"
+          },
+          {
+            "name": "internal:CurrentInfraConfigState"
+          },
+          {
+            "name": "internal:WifiModeState"
+          }
+        ],
+        "type": "ACTUATOR",
+        "commands": [
+          {
+            "paramsSig": "p1,p2",
+            "commandName": "setTargetInfraConfig",
+            "nparams": 2
+          },
+          {
+            "paramsSig": "p1",
+            "commandName": "setWifiMode",
+            "nparams": 1
+          },
+          {
+            "commandName": "clearCredentials",
+            "nparams": 0
+          }
+        ],
+        "uiClass": "Wifi"
+      },
+      "controllableName": "internal:WifiComponent",
+      "type": 1,
+      "enabled": true,
+      "subsystemId": 0,
+      "states": [
+        {
+          "value": "infrastructure",
+          "type": 3,
+          "name": "internal:WifiModeState"
+        },
+        {
+          "value": 93,
+          "type": 1,
+          "name": "internal:SignalStrengthState"
+        },
+        {
+          "value": "FamBannink",
+          "type": 3,
+          "name": "internal:CurrentInfraConfigState"
+        }
+      ],
+      "synced": true,
+      "label": "* (*/*)",
+      "deviceURL": "internal://****-****-0576/wifi/0"
+    },
+    {
+      "attributes": [
+        {
+          "value": "Sonos",
+          "type": 3,
+          "name": "core:Technology"
+        },
+        {
+          "value": "Sonos",
+          "type": 3,
+          "name": "core:Manufacturer"
+        },
+        {
+          "value": "Sonos Group",
+          "type": 3,
+          "name": "core:ManufacturerReference"
+        },
+        {
+          "value": [
+            "repeat",
+            "repeatOne",
+            "shuffle",
+            "crossfade"
+          ],
+          "type": 10,
+          "name": "core:SupportedOptions"
+        },
+        {
+          "value": [
+            {
+              "commandLess": true,
+              "name": "group"
+            },
+            {
+              "commandLess": true,
+              "name": "identification"
+            },
+            {
+              "name": "media"
+            },
+            {
+              "name": "nextPrevious"
+            },
+            {
+              "name": "optionControl"
+            },
+            {
+              "name": "pauseResume"
+            },
+            {
+              "name": "start"
+            },
+            {
+              "name": "timelineControl"
+            },
+            {
+              "name": "volumeControl"
+            }
+          ],
+          "type": 10,
+          "name": "ogp:Features"
+        }
+      ],
+      "available": true,
+      "synced": true,
+      "states": [
+        {
+          "value": true,
+          "type": 6,
+          "name": "core:AvailabilityState"
+        },
+        {
+          "value": true,
+          "type": 6,
+          "name": "core:StatusState"
+        },
+        {
+          "value": false,
+          "type": 6,
+          "name": "core:RemovableState"
+        },
+        {
+          "value": [
+            "ogp://2080-2070-0576/7B686B2D"
+          ],
+          "type": 10,
+          "name": "core:GroupMembersState"
+        },
+        {
+          "value": "Woonkamer L",
+          "type": 3,
+          "name": "core:NameState"
+        },
+        {
+          "value": 35,
+          "type": 1,
+          "name": "core:VolumeLevelState"
+        },
+        {
+          "value": false,
+          "type": 6,
+          "name": "core:MuteState"
+        },
+        {
+          "value": false,
+          "type": 6,
+          "name": "core:HasNextState"
+        },
+        {
+          "value": false,
+          "type": 6,
+          "name": "core:HasPreviousState"
+        },
+        {
+          "value": false,
+          "type": 6,
+          "name": "core:PausedState"
+        },
+        {
+          "value": false,
+          "type": 6,
+          "name": "core:StartedStoppedState"
+        },
+        {
+          "value": 0,
+          "type": 1,
+          "name": "core:TimelinePositionState"
+        }
+      ],
+      "label": "* *",
+      "enabled": true,
+      "deviceURL": "ogp://****-****-0576/1FA86CC4"
+    }
+  ]
+}

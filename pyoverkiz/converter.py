@@ -14,16 +14,19 @@ from cattrs.gen import make_dict_structure_fn, override
 
 from pyoverkiz._case import camelize_key
 from pyoverkiz.enums import EventName, GatewaySubType
+from pyoverkiz.exceptions import OverkizError
 from pyoverkiz.models import (
     EVENT_TYPE_BY_NAME,
     CommandDefinition,
     CommandDefinitions,
+    Device,
     Event,
     State,
     StateDefinition,
     StateDefinitions,
     States,
 )
+from pyoverkiz.obfuscate import obfuscate_id
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -154,6 +157,26 @@ def _make_converter() -> cattrs.Converter:
         return events
 
     c.register_structure_hook_func(lambda t: t == list[Event], _structure_event_list)
+
+    def _structure_device_list(val: Any, _: type) -> list[Device]:
+        # Some devices (e.g. OGP Sonos, Velux) are returned without required
+        # fields in Local API; drop those rather than fail the whole setup.
+        if not val:
+            return []
+        devices: list[Device] = []
+        for raw in val:
+            try:
+                devices.append(c.structure(raw, Device))
+            except (ClassValidationError, OverkizError, ValueError, TypeError) as err:
+                device_url = raw.get("deviceURL") if isinstance(raw, dict) else None
+                _LOGGER.warning(
+                    "Skipping device %s: incomplete data from hub (%s)",
+                    obfuscate_id(device_url),
+                    err,
+                )
+        return devices
+
+    c.register_structure_hook_func(lambda t: t == list[Device], _structure_device_list)
 
     return c
 
