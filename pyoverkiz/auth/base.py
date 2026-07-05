@@ -66,6 +66,7 @@ class GatewayCandidate:
     home_id: str | None = None
     label: str | None = None
     external_id: str | None = None
+    country: str | None = None
 
 
 @runtime_checkable

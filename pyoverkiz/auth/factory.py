@@ -65,7 +65,7 @@ def build_auth_strategy(
         )
 
     if server == Server.SOMFY:
-        # Warm start from a persisted site-scoped refresh token, or cold start
+        # Resume from a persisted site-scoped refresh token, or fresh login
         # from username/password.
         if not isinstance(credentials, SomfyTokenCredentials):
             credentials = _ensure_credentials(credentials, UsernamePasswordCredentials)

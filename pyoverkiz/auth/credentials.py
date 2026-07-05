@@ -33,7 +33,7 @@ class LocalTokenCredentials(TokenCredentials):
 
 @dataclass(slots=True)
 class SomfyTokenCredentials(Credentials):
-    """Warm-start credentials for a previously-selected Somfy site.
+    """Resume credentials for a previously-selected Somfy site.
 
     Skips the password grant, Keycloak token exchange, and site discovery on
     reload: the caller persists the Ginaite ``refresh_token`` plus the selected

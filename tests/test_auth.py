@@ -239,7 +239,7 @@ class TestAuthFactory:
         assert isinstance(strategy, SomfyAccountAuthStrategy)
 
     def test_build_auth_strategy_somfy_token_credentials(self):
-        """Server.SOMFY + SomfyTokenCredentials builds the warm-start strategy."""
+        """Server.SOMFY + SomfyTokenCredentials builds the resume strategy."""
         from pyoverkiz.auth.credentials import SomfyTokenCredentials
         from pyoverkiz.auth.strategies import SomfyAccountAuthStrategy
         from pyoverkiz.const import SUPPORTED_SERVERS
@@ -1637,6 +1637,7 @@ async def test_somfy_multisite_discover_flattens_sites():
     assert candidates[0].home_id == "site-a"
     assert candidates[0].label == "My Home"
     assert candidates[0].external_id == "ext-a"
+    assert candidates[0].country == "NL"
 
 
 @pytest.mark.asyncio
@@ -1897,7 +1898,7 @@ async def test_somfy_multisite_relogin_drops_removed_gateway():
     assert strategy.endpoint == strategy.server.endpoint
 
 
-def _build_somfy_warmstart_strategy(**credential_overrides):
+def _build_somfy_resume_strategy(**credential_overrides):
     """Return a SomfyAccountAuthStrategy built from SomfyTokenCredentials."""
     from unittest.mock import MagicMock
 
@@ -1926,9 +1927,9 @@ def _build_somfy_warmstart_strategy(**credential_overrides):
 
 
 @pytest.mark.asyncio
-async def test_somfy_warmstart_login_seeds_scope_without_http():
-    """Warm-start login performs no network calls and seeds the site scope."""
-    strategy, session = _build_somfy_warmstart_strategy()
+async def test_somfy_resume_login_seeds_scope_without_http():
+    """Resuming a session performs no network calls and seeds the site scope."""
+    strategy, session = _build_somfy_resume_strategy()
 
     await strategy.login()
 
@@ -1946,9 +1947,9 @@ async def test_somfy_warmstart_login_seeds_scope_without_http():
 
 
 @pytest.mark.asyncio
-async def test_somfy_warmstart_first_refresh_scopes_to_site():
-    """The first refresh after warm start mints a token via the ?siteOID URL."""
-    strategy, session = _build_somfy_warmstart_strategy()
+async def test_somfy_resume_first_refresh_scopes_to_site():
+    """The first refresh after resuming mints a token via the ?siteOID URL."""
+    strategy, session = _build_somfy_resume_strategy()
     await strategy.login()
 
     session.post = MagicMock(
@@ -1962,8 +1963,8 @@ async def test_somfy_warmstart_first_refresh_scopes_to_site():
 
 
 @pytest.mark.asyncio
-async def test_somfy_warmstart_credentials_roundtrip():
-    """warm_start_credentials() snapshots a cold session's reusable state."""
+async def test_somfy_resume_credentials_roundtrip():
+    """to_credentials() snapshots a fresh session's reusable state."""
     strategy, session = _build_somfy_multisite_strategy()
     strategy.context.access_token = "ginaite-1"
     strategy.context.refresh_token = "r-1"
@@ -1971,7 +1972,7 @@ async def test_somfy_warmstart_credentials_roundtrip():
     await strategy.discover_gateways()
     strategy.select_gateway("1225-0000-0002")
 
-    snapshot = strategy.warm_start_credentials()
+    snapshot = strategy.to_credentials()
 
     assert snapshot.refresh_token == "r-1"
     assert snapshot.site_oid == "site-b"
@@ -1980,25 +1981,25 @@ async def test_somfy_warmstart_credentials_roundtrip():
 
 
 @pytest.mark.asyncio
-async def test_somfy_warmstart_credentials_requires_selection():
+async def test_somfy_resume_credentials_requires_selection():
     """Snapshotting before a site is selected raises rather than half-populating."""
     from pyoverkiz.exceptions import SomfyServiceError
 
     strategy, _ = _build_somfy_multisite_strategy()
 
     with pytest.raises(SomfyServiceError):
-        strategy.warm_start_credentials()
+        strategy.to_credentials()
 
 
 @pytest.mark.asyncio
-async def test_somfy_warmstart_rotated_refresh_token_notifies():
+async def test_somfy_resume_rotated_refresh_token_notifies():
     """A rotated refresh token fires on_token_refresh so the caller can persist."""
     persisted = []
 
     async def _persist(token):
         persisted.append(token)
 
-    strategy, session = _build_somfy_warmstart_strategy(on_token_refresh=_persist)
+    strategy, session = _build_somfy_resume_strategy(on_token_refresh=_persist)
     await strategy.login()
 
     session.post = MagicMock(
@@ -2010,9 +2011,9 @@ async def test_somfy_warmstart_rotated_refresh_token_notifies():
 
 
 @pytest.mark.asyncio
-async def test_somfy_warmstart_missing_refresh_token_preserved():
+async def test_somfy_resume_missing_refresh_token_preserved():
     """A refresh response without a refresh_token keeps the working one."""
-    strategy, session = _build_somfy_warmstart_strategy()
+    strategy, session = _build_somfy_resume_strategy()
     await strategy.login()
 
     # Ginaite may omit refresh_token on refresh; the old one must survive.

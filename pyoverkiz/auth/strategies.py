@@ -19,6 +19,7 @@ if TYPE_CHECKING:
 from aiohttp import ClientResponse, ClientSession, FormData
 
 from pyoverkiz.auth.base import AuthContext, AuthStrategy, GatewayCandidate
+from pyoverkiz.auth.bob import BobSitesResponse, bob_converter
 from pyoverkiz.auth.credentials import (
     LocalTokenCredentials,
     RexelOAuthCodeCredentials,
@@ -300,33 +301,32 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
     ) -> None:
         """Create a Somfy multi-site strategy with a fresh auth context.
 
-        Accepts either ``UsernamePasswordCredentials`` (cold start: password
-        grant + token exchange + discovery) or ``SomfyTokenCredentials`` (warm
-        start: a persisted refresh token scoped to an already-selected site,
-        skipping all three network round trips).
+        Accepts either ``UsernamePasswordCredentials`` (fresh login: password
+        grant + token exchange + discovery) or ``SomfyTokenCredentials``
+        (resumed session: a persisted refresh token scoped to an already-selected
+        site, skipping all three network round trips).
         """
         super().__init__(session, server, ssl_context)
         self.credentials = credentials
         self.context = AuthContext()
         self._sites: list[GatewayCandidate] = []
-        self._site_country: dict[str, str] = {}
         self._selected_site_oid: str | None = None
         self._selected_gateway: str | None = None
         self._selected_region: str | None = None
         self._endpoint: str | None = None
-        # Warm-start refresh-token persistence (no-op for cold start).
+        # Refresh-token persistence for resumed sessions (no-op for fresh login).
         self._on_token_refresh: Callable[[str], Awaitable[None]] | None = None
         self._persisted_refresh_token: str | None = None
 
     async def login(self) -> None:
-        """Cold start (password) or warm start (persisted refresh token).
+        """Fresh login (password) or resumed session (persisted refresh token).
 
-        With ``SomfyTokenCredentials`` this is a warm start: no password grant,
+        With ``SomfyTokenCredentials`` this resumes a session: no password grant,
         no token exchange, no discovery. We seed the context from the stored
         refresh token and site scope, so the first request mints a site-scoped
         access token via the existing refresh path.
 
-        With ``UsernamePasswordCredentials`` this is the cold start: password
+        With ``UsernamePasswordCredentials`` this is a fresh login: password
         grant -> token exchange -> discover, then (re-)select a site. Relogin
         (e.g. after ``NotAuthenticatedError``) mints a fresh, unscoped Ginaite
         token that is not itself expired, so on a multi-site account the
@@ -337,7 +337,7 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
         silently pointing at a gateway that's gone.
         """
         if isinstance(self.credentials, SomfyTokenCredentials):
-            self._warm_start(self.credentials)
+            self._resume_session(self.credentials)
             return
 
         token = await _somfy_password_token(
@@ -356,7 +356,7 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
         elif len(self._sites) == 1:
             self.select_gateway(self._sites[0].gateway_id)
 
-    def _warm_start(self, credentials: SomfyTokenCredentials) -> None:
+    def _resume_session(self, credentials: SomfyTokenCredentials) -> None:
         """Seed site scope from persisted tokens; skip password/exchange/discover.
 
         Sets up exactly the state ``select_gateway`` would have produced, then
@@ -395,30 +395,9 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
     async def discover_gateways(self) -> list[GatewayCandidate]:
         """List the account's sites from BOB, flattened to gateway candidates."""
         data = await self._bob_get("sites?withGateways=true&limit=20&offset=0")
-        candidates: list[GatewayCandidate] = []
-        self._site_country = {}
-        for site in data.get("results", []):
-            site_oid = str(site["siteOID"])
-            label = site.get("name")
-            country = site.get("country")
-            for sub in site.get("subSites", []):
-                external_id = sub.get("externalOID")
-                for gateway in sub.get("gateways", []):
-                    gateway_id = str(gateway["gatewayId"])
-                    if country is not None:
-                        self._site_country[gateway_id] = str(country)
-                    candidates.append(
-                        GatewayCandidate(
-                            gateway_id=gateway_id,
-                            home_id=site_oid,
-                            label=label,
-                            external_id=(
-                                str(external_id) if external_id is not None else None
-                            ),
-                        )
-                    )
-        self._sites = candidates
-        return candidates
+        response = bob_converter.structure(data, BobSitesResponse)
+        self._sites = response.gateway_candidates()
+        return self._sites
 
     def select_gateway(self, gateway_id: str) -> None:
         """Scope subsequent requests to the given gateway's site and region."""
@@ -429,7 +408,7 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
         if site is None:
             raise SomfyServiceError(f"Unknown gateway id: {gateway_id}")
 
-        region = self._region_for_country(self._site_country.get(gateway_id))
+        region = self._region_for_country(site.country)
 
         self._selected_gateway = gateway_id
         self._selected_site_oid = site.home_id
@@ -462,11 +441,11 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
         """Return the currently selected gateway id, or None."""
         return self._selected_gateway
 
-    def warm_start_credentials(
+    def to_credentials(
         self,
         on_token_refresh: Callable[[str], Awaitable[None]] | None = None,
     ) -> SomfyTokenCredentials:
-        """Snapshot the current session as reusable warm-start credentials.
+        """Snapshot the current session as reusable resume credentials.
 
         Call this after login + gateway selection to persist the state a reload
         needs (refresh token + site scope + region), skipping password grant,
@@ -479,7 +458,7 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
             or self.context.refresh_token is None
         ):
             raise SomfyServiceError(
-                "Cannot snapshot warm-start credentials before a site is "
+                "Cannot snapshot resume credentials before a site is "
                 "selected and a refresh token is available."
             )
         return SomfyTokenCredentials(
@@ -534,14 +513,13 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
                 )
             self.context.update_from_token(await response.json())
 
-        # Ginaite may omit refresh_token on a refresh; keep the working one
-        # rather than dropping to None (which would break the next warm start).
+        # refresh_token is optional in a refresh response (RFC 6749); reuse the old one if absent.
         if self.context.refresh_token is None:
             self.context.refresh_token = previous_refresh_token
         await self._notify_token_refresh()
 
     async def _notify_token_refresh(self) -> None:
-        """Let a warm-start caller persist a rotated refresh token (no-op otherwise)."""
+        """Let a resuming caller persist a rotated refresh token (no-op otherwise)."""
         if (
             self._on_token_refresh is not None
             and self.context.refresh_token is not None
