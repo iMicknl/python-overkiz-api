@@ -154,6 +154,7 @@ BRANDT_PARTNER = "brandt-electromenager"
 LOCAL_API_PATH = "/enduser-mobile-web/1/enduserAPI/"
 
 SERVERS_WITH_LOCAL_API = [
+    Server.SOMFY,
     Server.SOMFY_EUROPE,
     Server.SOMFY_OCEANIA,
     Server.SOMFY_AMERICA,
