@@ -1791,6 +1791,29 @@ async def test_somfy_multisite_refresh_scopes_to_selected_site():
 
 
 @pytest.mark.asyncio
+async def test_somfy_multisite_refresh_invalid_grant_raises_bad_credentials():
+    """A revoked refresh token (400 invalid_grant) maps to SomfyBadCredentialsError so callers reauth."""
+    from pyoverkiz.exceptions import SomfyBadCredentialsError
+
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    strategy.context.refresh_token = "r-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+    strategy.select_gateway("2025-0000-0001")  # forces expiry
+
+    session.post = MagicMock(
+        return_value=_json_ctx(
+            {"error": "invalid_grant", "error_description": "token revoked"},
+            status=400,
+        )
+    )
+
+    with pytest.raises(SomfyBadCredentialsError, match="token revoked"):
+        await strategy.refresh_if_needed()
+
+
+@pytest.mark.asyncio
 async def test_somfy_multisite_refresh_without_refresh_token_raises():
     """No refresh_token after site selection must raise, not silently no-op.
 

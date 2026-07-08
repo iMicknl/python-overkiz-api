@@ -466,6 +466,13 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
         async with self.session.post(url, data=form) as response:
             await _raise_for_server_error(response)
             if response.status != HTTPStatus.OK:
+                # A revoked refresh token (e.g. after a password change) is terminal;
+                # surface it as bad credentials so callers trigger reauth instead of retrying.
+                body = await response.json()
+                if body.get("error") == "invalid_grant":
+                    raise SomfyBadCredentialsError(
+                        body.get("error_description", "invalid_grant")
+                    )
                 raise SomfyServiceError(
                     f"Somfy token refresh failed: {response.status}"
                 )
