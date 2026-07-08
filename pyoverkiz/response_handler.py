@@ -21,6 +21,7 @@ from pyoverkiz.exceptions import (
     MaintenanceError,
     MissingAPIKeyError,
     MissingAuthorizationTokenError,
+    NoOverkizUserError,
     NoRegisteredEventListenerError,
     NoSuchActionGroupError,
     NoSuchDeviceError,
@@ -61,6 +62,7 @@ _ERROR_CODE_MESSAGE_MAP: list[tuple[str, str | None, type[BaseOverkizError]]] = 
     ("AUTHENTICATION_ERROR", "API key is required", MissingAPIKeyError),
     ("AUTHENTICATION_ERROR", "No such user account", UnknownUserError),
     ("RESOURCE_ACCESS_DENIED", "Not authenticated", NotAuthenticatedError),
+    ("RESOURCE_ACCESS_DENIED", "No such user account", NoOverkizUserError),
     (
         "RESOURCE_ACCESS_DENIED",
         "Missing authorization token",

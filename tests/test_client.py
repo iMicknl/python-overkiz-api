@@ -631,6 +631,11 @@ class TestOverkizClient:
                 400,
             ),
             (
+                "cloud/no-overkiz-user.json",
+                exceptions.NoOverkizUserError,
+                403,
+            ),
+            (
                 "cloud/no-such-command.json",
                 exceptions.InvalidCommandError,
                 400,
