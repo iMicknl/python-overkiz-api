@@ -128,6 +128,15 @@ class ApplicationNotAllowedError(ResourceAccessDeniedError):
     """Raised when the setup cannot be accessed through the application."""
 
 
+class NoOverkizUserError(ResourceAccessDeniedError):
+    """Raised when the account authenticated but has no Overkiz user on this server.
+
+    Login succeeds, but the token is not bound to an Overkiz user on this
+    endpoint. Seen for Somfy accounts that need the site-scoped multi-account
+    flow rather than the classic single-endpoint login.
+    """
+
+
 # Nexity
 class NexityBadCredentialsError(BadCredentialsError):
     """Raised when invalid credentials are provided to Nexity authentication API."""
