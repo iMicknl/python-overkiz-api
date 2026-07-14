@@ -1739,7 +1739,7 @@ class OverkizCommandParam(StrEnum):
     FULL_CLOSED = "full_closed"
     FULL_OPEN = "full_open"
     FURNACE = "furnace"
-    FURTHER_NOTICE = "furtherNotice"
+    FURTHER_NOTICE = "further_notice"
     GAS_METER = "Gas meter"  # value with space
     GEOFENCING_MODE = "geofencingMode"
     GOOD = "good"
@@ -1888,7 +1888,7 @@ class OverkizCommandParam(StrEnum):
     NAPLUG = "NAPlug"
     NATHERM_1 = "NATherm1"
     NETWORK_ERROR = "networkError"
-    NEXT_MODE = "nextMode"
+    NEXT_MODE = "next_mode"
     NL = "nl"
     NMG = "NMG"
     NMH = "NMH"
