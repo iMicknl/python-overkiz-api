@@ -18,6 +18,12 @@ updates:
       interval: "weekly"
       time: "08:00"
     open-pull-requests-limit: 10
+    groups:
+      # init and analyze are separate action paths but the same repo pinned to
+      # one SHA, so they must bump together in a single PR.
+      codeql-action:
+        patterns:
+          - "github/codeql-action*"
 
   - package-ecosystem: "devcontainers"
     directory: "/"
