@@ -16,6 +16,7 @@ from pyoverkiz.auth import (
     SupportsGatewaySelection,
     UsernamePasswordCredentials,
 )
+from pyoverkiz.auth.base import SupportsSessionResume
 from pyoverkiz.client import OverkizClient, OverkizClientSettings
 from pyoverkiz.const import USER_AGENT
 from pyoverkiz.enums import (
@@ -1396,6 +1397,26 @@ class TestOverkizClient:
         client.select_gateway("g1")
 
         fake_auth.select_gateway.assert_called_once_with("g1")
+
+    def test_to_credentials_delegates_to_strategy(self, client: OverkizClient) -> None:
+        """to_credentials forwards to a resume-capable strategy."""
+        fake_auth = MagicMock(spec=SupportsSessionResume)
+        client._auth = fake_auth
+
+        client.to_credentials()
+
+        fake_auth.to_credentials.assert_called_once()
+
+    def test_to_credentials_raises_for_unsupported_strategy(
+        self, client: OverkizClient
+    ) -> None:
+        """to_credentials raises UnsupportedOperationError when unsupported."""
+        # The SOMFY_EUROPE strategy does not implement SupportsSessionResume.
+        with pytest.raises(
+            exceptions.UnsupportedOperationError,
+            match="does not support session resume",
+        ):
+            client.to_credentials()
 
 
 class TestUserAgent:

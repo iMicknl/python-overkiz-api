@@ -42,6 +42,111 @@ SOMFY_CLIENT_ID = "0d8e920c-1478-11e7-a377-02dd59bd3041_1ewvaqmclfogo4kcsoo0c8k4
 # OAuth client secrets are public by design (embedded in mobile apps)
 SOMFY_CLIENT_SECRET = "12k73w1n540g8o4cokg0cw84cog840k84cwggscwg884004kgk"  # noqa: S105
 
+# Somfy multi-site (Keycloak "Ginaite" realm + BOB back-office directory).
+# The token exchange reuses SOMFY_CLIENT_ID as a PUBLIC client (no secret).
+SOMFY_GINAITE_TOKEN_URL = (
+    "https://ginaite-prod.ovkube.net/realms/somfy-tahoma/protocol/openid-connect/token"  # noqa: S105
+)
+SOMFY_GINAITE_SUBJECT_ISSUER = "somfy-customer"
+SOMFY_GINAITE_TOKEN_EXCHANGE_GRANT = "urn:ietf:params:oauth:grant-type:token-exchange"  # noqa: S105
+SOMFY_GINAITE_SUBJECT_TOKEN_TYPE = "urn:ietf:params:oauth:token-type:access_token"  # noqa: S105
+
+SOMFY_BOB_SITE_API = "https://backoffice-service.ovkube.net/site-api/public/v1"
+SOMFY_BOB_API_KEY = "184638B3FBE874ACD24C14FBD657B"
+
+# Site region derived offline from its ISO country, mirroring the TaHoma app's BusinessArea.fromCountry (EMEA fallback).
+SOMFY_DEFAULT_REGION = "EMEA"
+SOMFY_REGION_ENDPOINT: MappingProxyType[str, str] = MappingProxyType(
+    {
+        "EMEA": "https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+        "APAC": "https://ha201-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+        "SNABA": "https://ha401-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+    }
+)
+SOMFY_COUNTRY_REGION: MappingProxyType[str, str] = MappingProxyType(
+    {
+        # Americas — ha401 (SNABA).
+        "CA": "SNABA",
+        "US": "SNABA",
+        "MX": "SNABA",
+        # Asia-Pacific — ha201 (APAC).
+        "AU": "APAC",
+        "HK": "APAC",
+        "IN": "APAC",
+        "ID": "APAC",
+        "JP": "APAC",
+        "MY": "APAC",
+        "NZ": "APAC",
+        "PH": "APAC",
+        "SG": "APAC",
+        "TW": "APAC",
+        "TH": "APAC",
+        "VN": "APAC",
+        "KR": "APAC",
+        "CN": "APAC",
+        # Europe, Middle East & Africa — ha101 (EMEA).
+        "AL": "EMEA",
+        "AD": "EMEA",
+        "AT": "EMEA",
+        "BY": "EMEA",
+        "BE": "EMEA",
+        "BG": "EMEA",
+        "HR": "EMEA",
+        "CY": "EMEA",
+        "CZ": "EMEA",
+        "DK": "EMEA",
+        "EG": "EMEA",
+        "EE": "EMEA",
+        "FO": "EMEA",
+        "FI": "EMEA",
+        "FR": "EMEA",
+        "GF": "EMEA",
+        "PF": "EMEA",
+        "DE": "EMEA",
+        "GR": "EMEA",
+        "GP": "EMEA",
+        "HU": "EMEA",
+        "IL": "EMEA",
+        "IT": "EMEA",
+        "JE": "EMEA",
+        "JO": "EMEA",
+        "KZ": "EMEA",
+        "KW": "EMEA",
+        "LV": "EMEA",
+        "LB": "EMEA",
+        "LT": "EMEA",
+        "LU": "EMEA",
+        "MQ": "EMEA",
+        "YT": "EMEA",
+        "MC": "EMEA",
+        "MA": "EMEA",
+        "NL": "EMEA",
+        "NO": "EMEA",
+        "NC": "EMEA",
+        "PS": "EMEA",
+        "PL": "EMEA",
+        "PT": "EMEA",
+        "QA": "EMEA",
+        "IE": "EMEA",
+        "RE": "EMEA",
+        "RO": "EMEA",
+        "RU": "EMEA",
+        "BL": "EMEA",
+        "SA": "EMEA",
+        "RS": "EMEA",
+        "SK": "EMEA",
+        "ZA": "EMEA",
+        "ES": "EMEA",
+        "SE": "EMEA",
+        "CH": "EMEA",
+        "TN": "EMEA",
+        "TR": "EMEA",
+        "UA": "EMEA",
+        "AE": "EMEA",
+        "GB": "EMEA",
+    }
+)
+
 # Brandt Smart Control middleware (cookie-session Rails API in front of Overkiz)
 BRANDT_MIDDLEWARE_API = "https://www.smartcontrol-app.com"
 BRANDT_PARTNER = "brandt-electromenager"
@@ -49,6 +154,7 @@ BRANDT_PARTNER = "brandt-electromenager"
 LOCAL_API_PATH = "/enduser-mobile-web/1/enduserAPI/"
 
 SERVERS_WITH_LOCAL_API = [
+    Server.SOMFY,
     Server.SOMFY_EUROPE,
     Server.SOMFY_OCEANIA,
     Server.SOMFY_AMERICA,
@@ -130,6 +236,14 @@ SUPPORTED_SERVERS: MappingProxyType[str, ServerConfig] = MappingProxyType(
         Server.SIMU_LIVEIN2: ServerConfig(  # alias of https://tahomalink.com
             server=Server.SIMU_LIVEIN2,
             name="SIMU (LiveIn2)",
+            endpoint="https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+            manufacturer="Somfy",
+            api_type=APIType.CLOUD,
+        ),
+        Server.SOMFY: ServerConfig(
+            server=Server.SOMFY,
+            name="Somfy",
+            # Placeholder; SomfyAccountAuthStrategy sets the real endpoint per selected site.
             endpoint="https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/",
             manufacturer="Somfy",
             api_type=APIType.CLOUD,

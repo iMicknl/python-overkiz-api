@@ -32,6 +32,22 @@ class LocalTokenCredentials(TokenCredentials):
 
 
 @dataclass(slots=True)
+class SomfyTokenCredentials(Credentials):
+    """Resume credentials for a previously-selected Somfy site (skips login + discovery).
+
+    Persist the ``refresh_token`` plus the site's ``site_oid`` and ``region``.
+    The refresh token rotates, so supply ``on_token_refresh`` to re-persist it;
+    otherwise a later reload fails.
+    """
+
+    refresh_token: str = field(repr=False)
+    site_oid: str
+    region: str
+    gateway_id: str | None = None
+    on_token_refresh: Callable[[str], Awaitable[None]] | None = None
+
+
+@dataclass(slots=True)
 class RexelOAuthCodeCredentials(Credentials):
     """Credentials using Rexel OAuth2 authorization code with PKCE."""
 
