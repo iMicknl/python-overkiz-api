@@ -74,6 +74,77 @@ Use a cloud server when you want to connect through the vendor’s public API. U
     asyncio.run(main())
     ```
 
+=== "Somfy (multi-account cloud)"
+
+    Use `Server.SOMFY` with `UsernamePasswordCredentials` when a single Somfy
+    account owns or is invited to **multiple sites (homes)** — the "multi
+    account sign-in" feature of the TaHoma app. Unlike the region-specific
+    `Server.SOMFY_EUROPE`/`SOMFY_AMERICA`/`SOMFY_OCEANIA` servers, `Server.SOMFY`
+    is region-agnostic: it discovers every site on the account and resolves the
+    correct regional endpoint for the one you select.
+
+    ```python
+    import asyncio
+
+    from pyoverkiz.auth.credentials import UsernamePasswordCredentials
+    from pyoverkiz.client import OverkizClient
+    from pyoverkiz.enums import Server
+
+
+    async def main() -> None:
+        async with OverkizClient(
+            server=Server.SOMFY,
+            credentials=UsernamePasswordCredentials("you@example.com", "password"),
+        ) as client:
+            await client.login()  # auto-selects a sole site
+
+            # Accounts with more than one site must select one explicitly.
+            gateways = await client.discover_gateways()
+            if len(gateways) > 1:
+                client.select_gateway(gateways[0].gateway_id)
+
+            # Client is now scoped to the selected site and ready to use.
+            setup = await client.get_setup()
+            print(f"{len(setup.devices)} device(s)")
+
+    asyncio.run(main())
+    ```
+
+    Each `GatewayCandidate` from `discover_gateways()` carries a human-readable
+    `label` (the site name) and `home_id`, so a multi-site UI can let the user
+    pick before calling `select_gateway`.
+
+    **Resume without a password.** After selecting a site, call
+    `client.to_credentials()` to snapshot the session as `SomfyTokenCredentials`
+    (a refresh token scoped to the selected site). Persist it and pass it back on
+    the next run to log in without the password grant, token exchange, or
+    discovery. The refresh token rotates, so supply an `on_token_refresh`
+    callback to re-persist it.
+
+    ```python
+    import asyncio
+
+    from pyoverkiz.auth.credentials import SomfyTokenCredentials
+    from pyoverkiz.client import OverkizClient
+    from pyoverkiz.enums import Server
+
+
+    async def persist(refresh_token: str) -> None:
+        # Store the rotated refresh token for next time.
+        ...
+
+
+    async def main(stored: SomfyTokenCredentials) -> None:
+        async with OverkizClient(server=Server.SOMFY, credentials=stored) as client:
+            await client.login()  # no network round trips
+            setup = await client.get_setup()
+            print(f"{len(setup.devices)} device(s)")
+
+
+    # `stored` is what you persisted earlier via:
+    #     stored = client.to_credentials(on_token_refresh=persist)
+    ```
+
 === "Somfy (local)"
 
     Local authentication requires a token generated via the official mobile app. For details on obtaining a token, refer to [Somfy TaHoma Developer Mode](https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode).

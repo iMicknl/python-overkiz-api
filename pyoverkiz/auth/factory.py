@@ -11,6 +11,7 @@ from pyoverkiz.auth.credentials import (
     LocalTokenCredentials,
     RexelOAuthCodeCredentials,
     RexelTokenCredentials,
+    SomfyTokenCredentials,
     TokenCredentials,
     UsernamePasswordCredentials,
 )
@@ -24,6 +25,7 @@ from pyoverkiz.auth.strategies import (
     RexelAuthStrategy,
     RexelTokenAuthStrategy,
     SessionLoginStrategy,
+    SomfyAccountAuthStrategy,
     SomfyAuthStrategy,
 )
 from pyoverkiz.enums import APIType, Server
@@ -57,6 +59,18 @@ def build_auth_strategy(
     if server == Server.SOMFY_EUROPE:
         return SomfyAuthStrategy(
             _ensure_credentials(credentials, UsernamePasswordCredentials),
+            session,
+            server_config,
+            ssl_context,
+        )
+
+    if server == Server.SOMFY:
+        # Resume from a persisted site-scoped refresh token, or fresh login
+        # from username/password.
+        if not isinstance(credentials, SomfyTokenCredentials):
+            credentials = _ensure_credentials(credentials, UsernamePasswordCredentials)
+        return SomfyAccountAuthStrategy(
+            credentials,
             session,
             server_config,
             ssl_context,
