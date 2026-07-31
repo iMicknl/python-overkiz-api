@@ -190,6 +190,54 @@ class States(Mapping[str, State]):
             return state.value
         return None
 
+    def get_value_as_int(self, name: StateName) -> int | None:
+        """Return the int value of a state by name, or None if missing.
+
+        Raises TypeError if the state exists but is not an integer.
+        """
+        state = self._index.get(name)
+        return state.value_as_int if state is not None else None
+
+    def get_value_as_float(self, name: StateName) -> float | None:
+        """Return the float value of a state by name, or None if missing.
+
+        Raises TypeError if the state exists but is not a float (int is allowed).
+        """
+        state = self._index.get(name)
+        return state.value_as_float if state is not None else None
+
+    def get_value_as_bool(self, name: StateName) -> bool | None:
+        """Return the bool value of a state by name, or None if missing.
+
+        Raises TypeError if the state exists but is not a boolean.
+        """
+        state = self._index.get(name)
+        return state.value_as_bool if state is not None else None
+
+    def get_value_as_str(self, name: StateName) -> str | None:
+        """Return the str value of a state by name, or None if missing.
+
+        Raises TypeError if the state exists but is not a string.
+        """
+        state = self._index.get(name)
+        return state.value_as_str if state is not None else None
+
+    def get_value_as_dict(self, name: StateName) -> dict[str, Any] | None:
+        """Return the dict value of a state by name, or None if missing.
+
+        Raises TypeError if the state exists but is not a JSON object.
+        """
+        state = self._index.get(name)
+        return state.value_as_dict if state is not None else None
+
+    def get_value_as_list(self, name: StateName) -> list[Any] | None:
+        """Return the list value of a state by name, or None if missing.
+
+        Raises TypeError if the state exists but is not a JSON array.
+        """
+        state = self._index.get(name)
+        return state.value_as_list if state is not None else None
+
     def first(self, names: list[StateName]) -> State | None:
         """Return the first State that exists and has a non-None value, or None."""
         for name in names:
@@ -203,6 +251,54 @@ class States(Mapping[str, State]):
         if state := self.first(names):
             return state.value
         return None
+
+    def first_value_as_int(self, names: list[StateName]) -> int | None:
+        """Return the int value of the first matching state, or None if none match.
+
+        Raises TypeError if the matched state is not an integer.
+        """
+        state = self.first(names)
+        return state.value_as_int if state is not None else None
+
+    def first_value_as_float(self, names: list[StateName]) -> float | None:
+        """Return the float value of the first matching state, or None if none match.
+
+        Raises TypeError if the matched state is not a float (int is allowed).
+        """
+        state = self.first(names)
+        return state.value_as_float if state is not None else None
+
+    def first_value_as_bool(self, names: list[StateName]) -> bool | None:
+        """Return the bool value of the first matching state, or None if none match.
+
+        Raises TypeError if the matched state is not a boolean.
+        """
+        state = self.first(names)
+        return state.value_as_bool if state is not None else None
+
+    def first_value_as_str(self, names: list[StateName]) -> str | None:
+        """Return the str value of the first matching state, or None if none match.
+
+        Raises TypeError if the matched state is not a string.
+        """
+        state = self.first(names)
+        return state.value_as_str if state is not None else None
+
+    def first_value_as_dict(self, names: list[StateName]) -> dict[str, Any] | None:
+        """Return the dict value of the first matching state, or None if none match.
+
+        Raises TypeError if the matched state is not a JSON object.
+        """
+        state = self.first(names)
+        return state.value_as_dict if state is not None else None
+
+    def first_value_as_list(self, names: list[StateName]) -> list[Any] | None:
+        """Return the list value of the first matching state, or None if none match.
+
+        Raises TypeError if the matched state is not a JSON array.
+        """
+        state = self.first(names)
+        return state.value_as_list if state is not None else None
 
     def has_value(self, name: StateName) -> bool:
         """Return True if the state exists and has a non-None value.

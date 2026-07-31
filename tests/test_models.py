@@ -377,6 +377,78 @@ class TestDevice:
         value = device.states.first_value(["nonexistent", "core:ClosureState"])
         assert value == 100
 
+    def test_states_get_value_as_typed_returns_typed_value(self):
+        """get_value_as_* returns the value already typed for matching states."""
+        device = _make_device()
+        # core:ClosureState is an integer (type 1) with value 100
+        closure = device.states.get_value_as_int("core:ClosureState")
+        assert closure == 100
+        assert isinstance(closure, int)
+        # int states are also reachable as float
+        assert device.states.get_value_as_float("core:ClosureState") == 100.0
+        # core:StatusState is a string (type 3)
+        assert device.states.get_value_as_str("core:StatusState") == "available"
+
+    def test_states_get_value_as_typed_returns_none_when_missing(self):
+        """get_value_as_* returns None for a missing state, without raising."""
+        device = _make_device()
+        assert device.states.get_value_as_int("nonexistent") is None
+        assert device.states.get_value_as_float("nonexistent") is None
+        assert device.states.get_value_as_bool("nonexistent") is None
+        assert device.states.get_value_as_str("nonexistent") is None
+        assert device.states.get_value_as_dict("nonexistent") is None
+        assert device.states.get_value_as_list("nonexistent") is None
+
+    def test_states_get_value_as_typed_none_data_type_returns_none(self):
+        """get_value_as_* returns None when the state's data type is NONE."""
+        states = States([State(name="x", type=DataType.NONE, value=None)])
+        assert states.get_value_as_int("x") is None
+        assert states.get_value_as_str("x") is None
+
+    def test_states_get_value_as_typed_raises_on_type_mismatch(self):
+        """get_value_as_* propagates TypeError when the state is the wrong type."""
+        device = _make_device()
+        # core:StatusState is a string, not an integer
+        with pytest.raises(TypeError):
+            device.states.get_value_as_int("core:StatusState")
+
+    def test_states_get_value_as_typed_accepts_enum_keys(self):
+        """get_value_as_* accepts OverkizState enums, not just plain strings."""
+        device = _make_device()
+        assert device.states.get_value_as_int(OverkizState.CORE_CLOSURE) == 100
+
+    def test_states_first_value_as_typed_returns_first_match(self):
+        """first_value_as_* returns the typed value of the first matching state."""
+        device = _make_device()
+        value = device.states.first_value_as_int(["nonexistent", "core:ClosureState"])
+        assert value == 100
+        assert isinstance(value, int)
+
+    def test_states_first_value_as_typed_returns_none_when_no_match(self):
+        """first_value_as_* returns None when no state matches."""
+        device = _make_device()
+        assert device.states.first_value_as_int(["nonexistent", "missing"]) is None
+        assert device.states.first_value_as_str(["nonexistent", "missing"]) is None
+
+    def test_states_first_value_as_typed_raises_on_type_mismatch(self):
+        """first_value_as_* propagates TypeError when the matched state is wrong type."""
+        device = _make_device()
+        with pytest.raises(TypeError):
+            device.states.first_value_as_int(["nonexistent", "core:StatusState"])
+
+    def test_states_value_as_dict_and_list(self):
+        """get_value_as_dict / get_value_as_list return JSON container values."""
+        states = States(
+            [
+                State(name="obj", type=DataType.JSON_OBJECT, value={"a": 1}),
+                State(name="arr", type=DataType.JSON_ARRAY, value=[1, 2, 3]),
+            ]
+        )
+        assert states.get_value_as_dict("obj") == {"a": 1}
+        assert states.get_value_as_list("arr") == [1, 2, 3]
+        assert states.first_value_as_dict(["missing", "obj"]) == {"a": 1}
+        assert states.first_value_as_list(["missing", "arr"]) == [1, 2, 3]
+
     def test_states_has_value(self):
         """device.states.has_value() checks if a single state exists with non-None value."""
         device = _make_device()

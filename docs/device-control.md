@@ -53,6 +53,16 @@ print(f"Orientation: {slats_orientation}")
 slats_orientation = device.states.first_value([OverkizState.CORE_SLATS_ORIENTATION, OverkizState.CORE_SLATE_ORIENTATION])
 print(f"Orientation: {slats_orientation}")
 
+# Get a value already typed, without casting the StateType union
+# get_value_as_* returns the concrete type (or None if the state is missing)
+closure = device.states.get_value_as_int(OverkizState.CORE_CLOSURE)  # int | None
+temperature = device.states.get_value_as_float(OverkizState.CORE_TEMPERATURE)  # float | None
+
+# Typed fallback chains mirror first_value()
+orientation = device.states.first_value_as_int(
+    [OverkizState.CORE_SLATS_ORIENTATION, OverkizState.CORE_SLATE_ORIENTATION]
+)  # int | None
+
 # Check if a single state exists with a non-None value
 if device.states.has_value(OverkizState.CORE_SLATS_ORIENTATION):
     print("Device has a slats orientation")
