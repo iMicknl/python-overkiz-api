@@ -2034,6 +2034,55 @@ async def test_somfy_resume_rotated_refresh_token_notifies():
 
 
 @pytest.mark.asyncio
+async def test_somfy_resume_relogin_keeps_rotated_refresh_token():
+    """A relogin must not fall back to the (already spent) stored refresh token.
+
+    The auth-error retry calls login() again. Re-seeding from the credentials
+    would restore the original refresh token, which Ginaite already invalidated
+    when it rotated it, turning a recoverable 401 into a reauth prompt.
+    """
+    strategy, session = _build_somfy_resume_strategy()
+    await strategy.login()
+
+    session.post = MagicMock(
+        return_value=_json_ctx({"access_token": "scoped-1", "refresh_token": "r-rot"})
+    )
+    await strategy.refresh_if_needed()
+    assert strategy.context.refresh_token == "r-rot"
+
+    await strategy.login()
+
+    assert strategy.context.refresh_token == "r-rot"
+    # Still re-scoped on the next request, and the site scope survives.
+    assert strategy.context.is_expired()
+    assert strategy._selected_site_oid == "site-b"
+
+
+@pytest.mark.asyncio
+async def test_somfy_resume_relogin_does_not_renotify_rotated_token():
+    """Relogin must not re-fire on_token_refresh with an unchanged token."""
+    persisted = []
+
+    async def _persist(token):
+        persisted.append(token)
+
+    strategy, session = _build_somfy_resume_strategy(on_token_refresh=_persist)
+    await strategy.login()
+    session.post = MagicMock(
+        return_value=_json_ctx({"access_token": "scoped-1", "refresh_token": "r-rot"})
+    )
+    await strategy.refresh_if_needed()
+
+    await strategy.login()
+    session.post = MagicMock(
+        return_value=_json_ctx({"access_token": "scoped-2", "refresh_token": "r-rot"})
+    )
+    await strategy.refresh_if_needed()
+
+    assert persisted == ["r-rot"]
+
+
+@pytest.mark.asyncio
 async def test_somfy_resume_missing_refresh_token_preserved():
     """A refresh response without a refresh_token keeps the working one."""
     strategy, session = _build_somfy_resume_strategy()

@@ -336,14 +336,18 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
 
     def _resume_session(self, credentials: SomfyTokenCredentials) -> None:
         """Seed site scope from persisted tokens (no network); first request mints a scoped token."""
-        self.context.refresh_token = credentials.refresh_token
+        # Seed the refresh token only once. Ginaite rotates it on every refresh,
+        # so on a relogin the credentials still hold the original (now spent)
+        # token while the in-memory one is the only valid one.
+        if self.context.refresh_token is None:
+            self.context.refresh_token = credentials.refresh_token
+            self._persisted_refresh_token = credentials.refresh_token
         self.context.expires_at = datetime.datetime.now(datetime.UTC)
         self._selected_site_oid = credentials.site_oid
         self._selected_gateway = credentials.gateway_id
         self._selected_region = credentials.region
         self._endpoint = SOMFY_REGION_ENDPOINT[credentials.region]
         self._on_token_refresh = credentials.on_token_refresh
-        self._persisted_refresh_token = credentials.refresh_token
 
     async def _token_exchange(self, sso_access_token: str) -> None:
         """Exchange a Somfy Accounts SSO token for a Ginaite token (public client)."""
