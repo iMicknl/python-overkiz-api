@@ -1533,6 +1533,85 @@ async def test_somfy_password_token_bad_credentials():
         await _somfy_password_token(session, "user", "bad")
 
 
+def _build_somfy_strategy():
+    """Return a single-site SomfyAuthStrategy with a MagicMock session."""
+    from pyoverkiz.const import SUPPORTED_SERVERS
+
+    session = MagicMock(spec=ClientSession)
+    strategy = SomfyAuthStrategy(
+        credentials=UsernamePasswordCredentials("user", "pass"),
+        session=session,
+        server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE],
+        ssl_context=True,
+    )
+    return strategy, session
+
+
+@pytest.mark.asyncio
+async def test_somfy_login_stores_token_from_password_grant():
+    """login() feeds the password grant straight into the auth context."""
+    strategy, session = _build_somfy_strategy()
+    session.post = MagicMock(
+        return_value=_json_ctx(
+            {"access_token": "a-1", "refresh_token": "r-1", "expires_in": 900}
+        )
+    )
+
+    await strategy.login()
+
+    assert strategy.context.access_token == "a-1"
+    assert await strategy.auth_headers() == {"Authorization": "Bearer a-1"}
+
+
+@pytest.mark.asyncio
+async def test_somfy_refresh_uses_the_refresh_grant():
+    """An expired context with a refresh token exchanges it for a new token."""
+    strategy, session = _build_somfy_strategy()
+    strategy.context.access_token = "a-1"
+    strategy.context.refresh_token = "r-1"
+    strategy.context.expires_at = datetime.datetime.now(datetime.UTC)
+    session.post = MagicMock(
+        return_value=_json_ctx(
+            {"access_token": "a-2", "refresh_token": "r-2", "expires_in": 900}
+        )
+    )
+
+    assert await strategy.refresh_if_needed() is True
+    assert strategy.context.access_token == "a-2"
+    assert strategy.context.refresh_token == "r-2"
+    # Not expired any more, so a second call is a no-op.
+    assert await strategy.refresh_if_needed() is False
+    assert session.post.call_count == 1
+
+
+@pytest.mark.asyncio
+async def test_somfy_refresh_invalid_grant_raises_bad_credentials():
+    """A rejected refresh token maps to SomfyBadCredentialsError."""
+    from pyoverkiz.exceptions import SomfyBadCredentialsError
+
+    strategy, session = _build_somfy_strategy()
+    strategy.context.refresh_token = "r-1"
+    strategy.context.expires_at = datetime.datetime.now(datetime.UTC)
+    session.post = MagicMock(return_value=_json_ctx({"message": "error.invalid.grant"}))
+
+    with pytest.raises(SomfyBadCredentialsError):
+        await strategy.refresh_if_needed()
+
+
+@pytest.mark.asyncio
+async def test_somfy_refresh_without_access_token_raises_service_error():
+    """A refresh response with no access token is a service error."""
+    from pyoverkiz.exceptions import SomfyServiceError
+
+    strategy, session = _build_somfy_strategy()
+    strategy.context.refresh_token = "r-1"
+    strategy.context.expires_at = datetime.datetime.now(datetime.UTC)
+    session.post = MagicMock(return_value=_json_ctx({"token_type": "bearer"}))
+
+    with pytest.raises(SomfyServiceError):
+        await strategy.refresh_if_needed()
+
+
 def _build_somfy_multisite_strategy():
     """Return a SomfyAccountAuthStrategy with a MagicMock session."""
     from unittest.mock import MagicMock
@@ -2039,6 +2118,71 @@ async def test_somfy_multisite_relogin_drops_removed_gateway():
     assert strategy.selected_gateway is None
     assert strategy._selected_site_oid is None
     assert strategy.endpoint == strategy.server.endpoint
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_login_auto_selects_sole_site():
+    """A single-site account needs no explicit selection to be usable."""
+    strategy, session = _build_somfy_multisite_strategy()
+    sole_site = {"totalCount": 1, "results": [_BOB_SITES["results"][0]]}
+    session.get = MagicMock(return_value=_json_ctx(sole_site))
+
+    patch_password, patch_exchange = _patch_somfy_login_tokens(strategy)
+    with patch_password, patch_exchange:
+        await strategy.login()
+
+    assert strategy.selected_gateway == "2025-0000-0001"
+    assert await strategy.auth_headers() == {"Authorization": "Bearer ginaite-fresh"}
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_login_leaves_multiple_sites_unselected():
+    """A multi-site account must not pick a site on the user's behalf."""
+    strategy, session = _build_somfy_multisite_strategy()
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+
+    patch_password, patch_exchange = _patch_somfy_login_tokens(strategy)
+    with patch_password, patch_exchange:
+        await strategy.login()
+
+    assert strategy.selected_gateway is None
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_select_unknown_gateway_raises():
+    """Selecting a gateway that discovery never returned raises."""
+    from pyoverkiz.exceptions import SomfyServiceError
+
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+
+    with pytest.raises(SomfyServiceError, match="Unknown gateway id"):
+        strategy.select_gateway("gw-does-not-exist")
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_bob_error_raises_service_error():
+    """A failed BOB site listing raises SomfyServiceError with the status."""
+    from pyoverkiz.exceptions import SomfyServiceError
+
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(return_value=_json_ctx({"error": "forbidden"}, status=403))
+
+    with pytest.raises(SomfyServiceError, match="403"):
+        await strategy.discover_gateways()
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_refresh_without_selection_is_a_no_op():
+    """An expired unscoped token with no site selected has nothing to refresh."""
+    strategy, _ = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    strategy.context.expires_at = datetime.datetime.now(datetime.UTC)
+
+    assert await strategy.refresh_if_needed() is False
 
 
 def _build_somfy_resume_strategy(**credential_overrides):
