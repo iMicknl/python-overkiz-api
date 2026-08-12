@@ -70,6 +70,14 @@ class GatewayCandidate:
     label: str | None = None
     external_id: str | None = None
     country: str | None = None
+    # Somfy only. Reported, not acted on: a site the account was merely invited
+    # to is listed like any other, and even the most limited access level keeps
+    # control of some devices, so such a site is expected to work in a reduced
+    # form rather than not at all. Filtering would also need an allowlist, and
+    # only `owner` and `secondary` are fixed values -- every custom or installer
+    # role is an opaque id, so unrecognised must not mean unusable. Callers get
+    # the roles to explain the reduction to a user instead.
+    roles: list[str] = field(default_factory=list)
 
 
 @runtime_checkable

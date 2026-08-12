@@ -23,6 +23,20 @@ class BobGateway:
 
 
 @dataclass(slots=True)
+class BobRole:
+    """The authenticated account's role on a site.
+
+    Only ``owner`` and ``secondary`` are fixed wire values (the TaHoma app
+    labels them Administrator and Resident); every other value is a
+    server-issued role id -- custom roles, or the ``pro_full``/``pro_read``
+    installer roles -- which the app lumps together under Guest. There is no
+    client-side id-to-name table, so these stay opaque strings.
+    """
+
+    role_oid: str | None = None
+
+
+@dataclass(slots=True)
 class BobSubSite:
     """A sub-site (setup) grouping one or more gateways."""
 
@@ -37,6 +51,7 @@ class BobSite:
     site_oid: str
     name: str | None = None
     country: str | None = None
+    roles: list[BobRole] = field(default_factory=list)
     sub_sites: list[BobSubSite] = field(default_factory=list)
 
 
@@ -57,6 +72,7 @@ class BobSitesResponse:
                 label=site.name,
                 external_id=sub.external_id,
                 country=site.country,
+                roles=[role.role_oid for role in site.roles if role.role_oid],
             )
             for site in self.results
             for sub in site.sub_sites
@@ -72,6 +88,10 @@ def _make_bob_converter() -> cattrs.Converter:
         make_dict_structure_fn(BobGateway, c, gateway_id=override(rename="gatewayId")),
     )
     c.register_structure_hook(
+        BobRole,
+        make_dict_structure_fn(BobRole, c, role_oid=override(rename="roleOID")),
+    )
+    c.register_structure_hook(
         BobSubSite,
         make_dict_structure_fn(
             BobSubSite, c, external_id=override(rename="externalOID")
@@ -83,6 +103,7 @@ def _make_bob_converter() -> cattrs.Converter:
             BobSite,
             c,
             site_oid=override(rename="siteOID"),
+            roles=override(rename="currentUserRoles"),
             sub_sites=override(rename="subSites"),
         ),
     )

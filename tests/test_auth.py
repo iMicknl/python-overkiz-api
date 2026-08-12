@@ -1722,6 +1722,54 @@ async def test_somfy_multisite_discover_flattens_sites():
     assert candidates[0].label == "My Home"
     assert candidates[0].external_id == "ext-a"
     assert candidates[0].country == "NL"
+    assert candidates[0].roles == ["owner"]
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_discover_reports_roles_without_filtering():
+    """Shared sites are surfaced with their roles, not dropped.
+
+    Only ``owner``/``secondary`` are fixed values; a custom or installer role
+    arrives as an opaque id and must survive parsing just the same.
+    """
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(
+        return_value=_json_ctx(
+            {
+                "totalCount": 3,
+                "results": [
+                    {
+                        "siteOID": "site-custom-role",
+                        "currentUserRoles": [
+                            {"roleOID": "07a4b1e6-0e2f-4d1c-9d38-8a1c4f2b6e55"}
+                        ],
+                        "subSites": [{"gateways": [{"gatewayId": "gw-custom"}]}],
+                    },
+                    {
+                        "siteOID": "site-no-roles",
+                        "subSites": [{"gateways": [{"gatewayId": "gw-no-roles"}]}],
+                    },
+                    {
+                        "siteOID": "site-partial",
+                        "currentUserRoles": [{}, {"roleOID": "secondary"}],
+                        "subSites": [{"gateways": [{"gatewayId": "gw-partial"}]}],
+                    },
+                ],
+            }
+        )
+    )
+
+    candidates = await strategy.discover_gateways()
+
+    assert [c.gateway_id for c in candidates] == [
+        "gw-custom",
+        "gw-no-roles",
+        "gw-partial",
+    ]
+    assert candidates[0].roles == ["07a4b1e6-0e2f-4d1c-9d38-8a1c4f2b6e55"]
+    assert candidates[1].roles == []
+    assert candidates[2].roles == ["secondary"]
 
 
 @pytest.mark.asyncio
