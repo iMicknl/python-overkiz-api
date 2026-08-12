@@ -1992,6 +1992,17 @@ async def test_somfy_resume_login_seeds_scope_without_http():
 
 
 @pytest.mark.asyncio
+async def test_somfy_resume_unknown_region_raises_typed_error():
+    """An unrecognised persisted region raises SomfyServiceError, not KeyError."""
+    from pyoverkiz.exceptions import SomfyServiceError
+
+    strategy, _ = _build_somfy_resume_strategy(region="MOON")
+
+    with pytest.raises(SomfyServiceError, match="Unknown Somfy region"):
+        await strategy.login()
+
+
+@pytest.mark.asyncio
 async def test_somfy_resume_first_refresh_scopes_to_site():
     """The first refresh after resuming mints a token via the ?siteOID URL."""
     strategy, session = _build_somfy_resume_strategy()
