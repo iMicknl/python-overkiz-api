@@ -96,9 +96,11 @@ Use a cloud server when you want to connect through the vendor’s public API. U
             server=Server.SOMFY,
             credentials=UsernamePasswordCredentials("you@example.com", "password"),
         ) as client:
-            await client.login()  # auto-selects a sole site
+            # Skip the event listener: it cannot be registered before a site is
+            # selected, since requests are scoped to the selected site.
+            await client.login(register_event_listener=False)
 
-            # Accounts with more than one site must select one explicitly.
+            # A sole site is auto-selected; otherwise pick one explicitly.
             gateways = await client.discover_gateways()
             if len(gateways) > 1:
                 client.select_gateway(gateways[0].gateway_id)
@@ -107,12 +109,19 @@ Use a cloud server when you want to connect through the vendor’s public API. U
             setup = await client.get_setup()
             print(f"{len(setup.devices)} device(s)")
 
+            # Only needed if you want to poll events.
+            await client.register_event_listener()
+
     asyncio.run(main())
     ```
 
     Each `GatewayCandidate` from `discover_gateways()` carries a human-readable
     `label` (the site name) and `home_id`, so a multi-site UI can let the user
     pick before calling `select_gateway`.
+
+    Requests made before a site is selected raise `NoGatewaySelectedError`: the
+    account-wide token is not site-scoped, so there is no sensible site to talk
+    to yet.
 
     **Resume without a password.** After selecting a site, call
     `client.to_credentials()` to snapshot the session as `SomfyTokenCredentials`

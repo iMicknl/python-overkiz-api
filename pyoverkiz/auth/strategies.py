@@ -499,9 +499,17 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
 
     async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
         """Return the Bearer header (site-scoped token), or {} before login."""
-        if self.context.access_token:
-            return {"Authorization": f"Bearer {self.context.access_token}"}
-        return {}
+        if not self.context.access_token:
+            return {}
+        # Without a site the token is still the unscoped account-wide one, and
+        # `endpoint` is the region placeholder: a request would silently hit an
+        # arbitrary region rather than the user's site.
+        if self._selected_site_oid is None:
+            raise NoGatewaySelectedError(
+                "Multiple Somfy sites available; call discover_gateways() "
+                "and select_gateway() before making requests."
+            )
+        return {"Authorization": f"Bearer {self.context.access_token}"}
 
     async def _bob_get(self, path: str) -> dict[str, Any]:
         """GET a BOB site-directory resource with Bearer + X-Api-Key."""

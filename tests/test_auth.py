@@ -1760,12 +1760,33 @@ async def test_somfy_multisite_endpoint_defaults_to_placeholder_before_select():
 @pytest.mark.asyncio
 async def test_somfy_multisite_auth_headers():
     """auth_headers returns the Bearer token, or {} when absent (no gateway header)."""
-    strategy, _ = _build_somfy_multisite_strategy()
+    strategy, session = _build_somfy_multisite_strategy()
     assert await strategy.auth_headers() == {}
     strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+    strategy.select_gateway("2025-0000-0001")
+
     headers = await strategy.auth_headers()
+
     assert headers == {"Authorization": "Bearer ginaite-1"}
     assert "gatewayId" not in headers
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_auth_headers_raises_when_unselected():
+    """A token without a selected site must raise, not target an arbitrary region.
+
+    The account-wide token is not site-scoped and `endpoint` is still the region
+    placeholder, so serving it would quietly talk to the wrong site.
+    """
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+
+    with pytest.raises(NoGatewaySelectedError):
+        await strategy.auth_headers()
 
 
 @pytest.mark.asyncio
