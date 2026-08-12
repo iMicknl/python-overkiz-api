@@ -1472,6 +1472,10 @@ def test_somfy_multisite_constants_and_server():
     assert SOMFY_COUNTRY_REGION["NL"] == "EMEA"
     assert SOMFY_COUNTRY_REGION["US"] == "SNABA"
     assert SOMFY_COUNTRY_REGION["JP"] == "APAC"
+    # Countries the app's own list omits still resolve without a warning.
+    assert SOMFY_COUNTRY_REGION["SI"] == "EMEA"
+    assert SOMFY_COUNTRY_REGION["IS"] == "EMEA"
+    assert SOMFY_COUNTRY_REGION["KE"] == "EMEA"
     for region in SOMFY_COUNTRY_REGION.values():
         assert region in SOMFY_REGION_ENDPOINT
     assert SOMFY_REGION_ENDPOINT["EMEA"] == (

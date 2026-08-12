@@ -58,7 +58,7 @@ SOMFY_BOB_API_KEY = "184638B3FBE874ACD24C14FBD657B"
 SOMFY_BOB_SITES_PAGE_SIZE = 20
 SOMFY_BOB_SITES_MAX = 200
 
-# Site region derived offline from its ISO country, mirroring the TaHoma app's BusinessArea.fromCountry (EMEA fallback).
+# Site region derived offline from its ISO country, following the TaHoma app's BusinessArea.fromCountry (EMEA fallback).
 SOMFY_DEFAULT_REGION = "EMEA"
 SOMFY_REGION_ENDPOINT: MappingProxyType[str, str] = MappingProxyType(
     {
@@ -148,6 +148,47 @@ SOMFY_COUNTRY_REGION: MappingProxyType[str, str] = MappingProxyType(
         "UA": "EMEA",
         "AE": "EMEA",
         "GB": "EMEA",
+        # Absent from the app's list, but geographically unambiguous. Mapping them
+        # keeps the fallback warning a signal rather than routine noise for an
+        # ordinary market; the resolved region is EMEA either way.
+        "AM": "EMEA",
+        "AO": "EMEA",
+        "AZ": "EMEA",
+        "BA": "EMEA",
+        "BH": "EMEA",
+        "CI": "EMEA",
+        "CM": "EMEA",
+        "DZ": "EMEA",
+        "ET": "EMEA",
+        "GE": "EMEA",
+        "GG": "EMEA",
+        "GH": "EMEA",
+        "GI": "EMEA",
+        "IM": "EMEA",
+        "IQ": "EMEA",
+        "IS": "EMEA",
+        "KE": "EMEA",
+        "KG": "EMEA",
+        "LI": "EMEA",
+        "LY": "EMEA",
+        "MD": "EMEA",
+        "ME": "EMEA",
+        "MG": "EMEA",
+        "MK": "EMEA",
+        "MT": "EMEA",
+        "MU": "EMEA",
+        "NA": "EMEA",
+        "NG": "EMEA",
+        "OM": "EMEA",
+        "SI": "EMEA",
+        "SM": "EMEA",
+        "SN": "EMEA",
+        "TZ": "EMEA",
+        "UG": "EMEA",
+        "UZ": "EMEA",
+        "VA": "EMEA",
+        "ZM": "EMEA",
+        "ZW": "EMEA",
     }
 )
 
