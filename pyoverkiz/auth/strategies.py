@@ -538,12 +538,25 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
     async def _notify_token_refresh(self) -> None:
         """Let a resuming caller persist a rotated refresh token (no-op otherwise)."""
         if (
-            self._on_token_refresh is not None
-            and self.context.refresh_token is not None
-            and self.context.refresh_token != self._persisted_refresh_token
+            self._on_token_refresh is None
+            or self.context.refresh_token is None
+            or self.context.refresh_token == self._persisted_refresh_token
         ):
-            self._persisted_refresh_token = self.context.refresh_token
-            await self._on_token_refresh(self.context.refresh_token)
+            return
+
+        rotated = self.context.refresh_token
+        try:
+            await self._on_token_refresh(rotated)
+        except Exception:
+            # Persistence is the caller's problem, not this request's: the
+            # session keeps working with the rotated token, and only a restart
+            # would fall back to the (now spent) stored one.
+            _LOGGER.exception("Failed to persist the rotated Somfy refresh token")
+            return
+
+        # Recorded only once stored, so a failed store is retried on the next
+        # rotation instead of being remembered as persisted.
+        self._persisted_refresh_token = rotated
 
     async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
         """Return the Bearer header (site-scoped token), or {} before login."""

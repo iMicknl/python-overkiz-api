@@ -2309,6 +2309,67 @@ async def test_somfy_resume_rotated_refresh_token_notifies():
 
 
 @pytest.mark.asyncio
+async def test_somfy_resume_failed_persist_does_not_break_the_request(caplog):
+    """A raising on_token_refresh must not fail the request that refreshed.
+
+    The rotated token already works in memory, so a caller whose store is
+    unavailable (in Home Assistant, an entry removed mid-refresh) should get a
+    logged error, not a failed API call.
+    """
+
+    async def _persist(_token):
+        raise RuntimeError("store unavailable")
+
+    strategy, session = _build_somfy_resume_strategy(on_token_refresh=_persist)
+    await strategy.login()
+
+    session.post = MagicMock(
+        return_value=_json_ctx({"access_token": "scoped-1", "refresh_token": "r-rot"})
+    )
+
+    with caplog.at_level(logging.ERROR):
+        assert await strategy.refresh_if_needed() is True
+
+    assert strategy.context.access_token == "scoped-1"
+    assert strategy.context.refresh_token == "r-rot"
+    assert "store unavailable" in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_somfy_resume_failed_persist_retries_on_next_rotation():
+    """A token is only recorded as persisted once the caller actually stored it.
+
+    Recording it up front would make the next rotation look already-persisted, so
+    a single failed store would silently stop all further notifications.
+    """
+    persisted = []
+    failures = []
+
+    async def _persist(token):
+        if not failures:
+            failures.append(token)
+            raise RuntimeError("store unavailable")
+        persisted.append(token)
+
+    strategy, session = _build_somfy_resume_strategy(on_token_refresh=_persist)
+    await strategy.login()
+
+    session.post = MagicMock(
+        return_value=_json_ctx({"access_token": "scoped-1", "refresh_token": "r-rot-1"})
+    )
+    await strategy.refresh_if_needed()
+    assert persisted == []
+
+    strategy.context.expires_at = datetime.datetime.now(datetime.UTC)
+    session.post = MagicMock(
+        return_value=_json_ctx({"access_token": "scoped-2", "refresh_token": "r-rot-2"})
+    )
+    await strategy.refresh_if_needed()
+
+    assert persisted == ["r-rot-2"]
+
+
+@pytest.mark.asyncio
 async def test_somfy_refresh_is_serialized_across_concurrent_requests():
     """Concurrent expired requests must refresh once, not race for the token.
 
