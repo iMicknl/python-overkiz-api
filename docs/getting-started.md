@@ -154,6 +154,9 @@ Use a cloud server when you want to connect through the vendor’s public API. U
     #     stored = client.to_credentials(on_token_refresh=persist)
     ```
 
+    pyoverkiz owns this refresh cycle and pushes each rotated token to your
+    callback — see [Who owns the tokens](#who-owns-the-tokens).
+
 === "Somfy (local)"
 
     Local authentication requires a token generated via the official mobile app. For details on obtaining a token, refer to [Somfy TaHoma Developer Mode](https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode).
@@ -312,7 +315,8 @@ Use a cloud server when you want to connect through the vendor’s public API. U
     Supply a token in one of two ways:
 
     **Async callback (recommended for long-running apps).** pyoverkiz calls it
-    before each request, so the owner can refresh and persist transparently.
+    before each request, so the owner can refresh and persist transparently —
+    see [Who owns the tokens](#who-owns-the-tokens).
 
     ```python
     import asyncio
@@ -408,3 +412,56 @@ Use a cloud server when you want to connect through the vendor’s public API. U
 
     asyncio.run(main())
     ```
+
+## Who owns the tokens
+
+Two of the servers keep a session alive across restarts without asking for the
+password again, and they split the work in opposite directions. Which one applies
+is not a preference — it follows from whether *you* are able to perform the
+refresh at all.
+
+| | Somfy multi-account (`SomfyTokenCredentials`) | Rexel (`RexelTokenCredentials`) |
+| --- | --- | --- |
+| Who refreshes | pyoverkiz | you |
+| How you're involved | `on_token_refresh(new_token)` is **pushed** to you after each rotation | `access_token_callback()` is **pulled** from you before each request |
+| What you store | the rotated refresh token | whatever your OAuth2 implementation needs |
+
+**Somfy pushes, because only pyoverkiz can refresh.** A Somfy site token is
+minted by a refresh grant scoped with `?siteOID=<site>` against the Ginaite
+realm, and the response only means anything once interpreted as a site-scoped
+token. That is internal knowledge, so pyoverkiz performs the refresh itself and
+hands you the rotated refresh token to store:
+
+```python
+async def persist(refresh_token: str) -> None:
+    # Called only when the token actually changed. Store it.
+    ...
+
+credentials = client.to_credentials(on_token_refresh=persist)
+```
+
+The callback is fired only when the token changed, and only when resuming from
+`SomfyTokenCredentials` — during a fresh password login there is nothing to
+re-persist yet. If your callback raises, the error is logged and the request
+still succeeds: the rotated token keeps working in memory, and the store is
+retried on the next rotation. A restart is the only thing that would fall back
+to the stale token, so a persistent store failure eventually means reauth.
+
+**Rexel pulls, because you can refresh — and probably already do.** Rexel is
+ordinary OAuth2, so a host application (Home Assistant's
+`application_credentials` platform, for instance) already authorizes, refreshes
+and persists tokens with its own implementation. Duplicating that inside
+pyoverkiz would be the wrong answer, so pyoverkiz asks for the current token
+whenever it needs one:
+
+```python
+async def get_access_token() -> str:
+    # Refresh upstream if needed, then return a currently-valid token.
+    ...
+
+credentials = RexelTokenCredentials(access_token_callback=get_access_token)
+```
+
+There is deliberately no pull option for Somfy: supplying a token yourself would
+mean supplying an unscoped one, and requests would silently address the wrong
+site.
