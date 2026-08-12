@@ -309,6 +309,7 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
         # Refresh-token persistence for resumed sessions (no-op for fresh login).
         self._on_token_refresh: Callable[[str], Awaitable[None]] | None = None
         self._persisted_refresh_token: str | None = None
+        self._refresh_lock = asyncio.Lock()
 
     async def login(self) -> None:
         """Fresh login (password grant -> exchange -> discover) or resumed session."""
@@ -451,7 +452,14 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
                     "Cannot mint a site-scoped Somfy token without a refresh token."
                 )
             return False
-        await self._refresh()
+
+        # Ginaite invalidates the refresh token it rotates, so two concurrent
+        # refreshes (e.g. requests gathered in parallel) would leave the loser
+        # holding a spent token and reporting bad credentials.
+        async with self._refresh_lock:
+            if not self.context.is_expired():
+                return False
+            await self._refresh()
         return True
 
     async def _refresh(self) -> None:

@@ -5,6 +5,7 @@
 
 from __future__ import annotations
 
+import asyncio
 import base64
 import datetime
 import importlib.util
@@ -2052,6 +2053,46 @@ async def test_somfy_resume_rotated_refresh_token_notifies():
     await strategy.refresh_if_needed()
 
     assert persisted == ["r-rot"]
+
+
+@pytest.mark.asyncio
+async def test_somfy_refresh_is_serialized_across_concurrent_requests():
+    """Concurrent expired requests must refresh once, not race for the token.
+
+    Requests issued in parallel (``get_diagnostic_data`` gathers two) all see an
+    expired context. Ginaite invalidates the refresh token it rotates, so a
+    second concurrent refresh would present a spent token and report bad
+    credentials, forcing a needless reauth.
+    """
+    strategy, session = _build_somfy_resume_strategy()
+    await strategy.login()
+
+    resp = MagicMock()
+    resp.status = 200
+    resp.json = AsyncMock(
+        return_value={
+            "access_token": "scoped-1",
+            "refresh_token": "r-2",
+            "expires_in": 900,
+        }
+    )
+
+    async def _slow_enter(*_args):
+        await asyncio.sleep(0)  # yield so the second caller reaches the lock
+        return resp
+
+    ctx = MagicMock()
+    ctx.__aenter__ = AsyncMock(side_effect=_slow_enter)
+    ctx.__aexit__ = AsyncMock(return_value=None)
+    session.post = MagicMock(return_value=ctx)
+
+    results = await asyncio.gather(
+        strategy.refresh_if_needed(), strategy.refresh_if_needed()
+    )
+
+    assert session.post.call_count == 1
+    assert sorted(results) == [False, True]
+    assert strategy.context.refresh_token == "r-2"
 
 
 @pytest.mark.asyncio
