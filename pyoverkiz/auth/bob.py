@@ -42,9 +42,11 @@ class BobSite:
 
 @dataclass(slots=True)
 class BobSitesResponse:
-    """The ``/sites`` listing, flattened on demand to gateway candidates."""
+    """One page of the ``/sites`` listing, flattened on demand to gateway candidates."""
 
     results: list[BobSite] = field(default_factory=list)
+    # Sites on the account, not in this page; 0 when BOB omits it.
+    total_count: int = 0
 
     def gateway_candidates(self) -> list[GatewayCandidate]:
         """Flatten the site -> sub-site -> gateway tree into candidates."""
@@ -82,6 +84,12 @@ def _make_bob_converter() -> cattrs.Converter:
             c,
             site_oid=override(rename="siteOID"),
             sub_sites=override(rename="subSites"),
+        ),
+    )
+    c.register_structure_hook(
+        BobSitesResponse,
+        make_dict_structure_fn(
+            BobSitesResponse, c, total_count=override(rename="totalCount")
         ),
     )
     return c

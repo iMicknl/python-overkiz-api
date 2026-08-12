@@ -46,6 +46,8 @@ from pyoverkiz.const import (
     SOMFY_API,
     SOMFY_BOB_API_KEY,
     SOMFY_BOB_SITE_API,
+    SOMFY_BOB_SITES_MAX,
+    SOMFY_BOB_SITES_PAGE_SIZE,
     SOMFY_CLIENT_ID,
     SOMFY_CLIENT_SECRET,
     SOMFY_COUNTRY_REGION,
@@ -395,9 +397,31 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
 
     async def discover_gateways(self) -> list[GatewayCandidate]:
         """List the account's sites from BOB, flattened to gateway candidates."""
-        data = await self._bob_get("sites?withGateways=true&limit=20&offset=0")
-        response = bob_converter.structure(data, BobSitesResponse)
-        self._sites = response.gateway_candidates()
+        candidates: list[GatewayCandidate] = []
+        sites_seen = 0
+        total_count = 0
+
+        for offset in range(0, SOMFY_BOB_SITES_MAX, SOMFY_BOB_SITES_PAGE_SIZE):
+            data = await self._bob_get(
+                f"sites?withGateways=true&limit={SOMFY_BOB_SITES_PAGE_SIZE}"
+                f"&offset={offset}"
+            )
+            page = bob_converter.structure(data, BobSitesResponse)
+            candidates.extend(page.gateway_candidates())
+            sites_seen += len(page.results)
+            total_count = page.total_count
+            if not page.results or sites_seen >= total_count:
+                break
+
+        if sites_seen < total_count:
+            _LOGGER.warning(
+                "Somfy account has %s sites but only the first %s were listed; "
+                "later sites are not selectable",
+                total_count,
+                sites_seen,
+            )
+
+        self._sites = candidates
         return self._sites
 
     def select_gateway(self, gateway_id: str) -> None:

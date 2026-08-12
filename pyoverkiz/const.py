@@ -53,6 +53,10 @@ SOMFY_GINAITE_SUBJECT_TOKEN_TYPE = "urn:ietf:params:oauth:token-type:access_toke
 
 SOMFY_BOB_SITE_API = "https://backoffice-service.ovkube.net/site-api/public/v1"
 SOMFY_BOB_API_KEY = "184638B3FBE874ACD24C14FBD657B"
+# The site listing is paged (same page size as the TaHoma app); the maximum is a
+# runaway guard for an account reporting an implausible site count.
+SOMFY_BOB_SITES_PAGE_SIZE = 20
+SOMFY_BOB_SITES_MAX = 200
 
 # Site region derived offline from its ISO country, mirroring the TaHoma app's BusinessArea.fromCountry (EMEA fallback).
 SOMFY_DEFAULT_REGION = "EMEA"

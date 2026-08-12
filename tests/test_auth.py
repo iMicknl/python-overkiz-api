@@ -1642,6 +1642,80 @@ async def test_somfy_multisite_discover_flattens_sites():
 
 
 @pytest.mark.asyncio
+async def test_somfy_multisite_discover_pages_until_total_count():
+    """discover_gateways follows totalCount instead of truncating at one page."""
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+
+    def _site(oid, gateway_id):
+        return {
+            "siteOID": oid,
+            "name": oid,
+            "country": "NL",
+            "subSites": [
+                {"externalOID": f"ext-{oid}", "gateways": [{"gatewayId": gateway_id}]}
+            ],
+        }
+
+    page_1 = {"totalCount": 3, "results": [_site("s1", "gw-1"), _site("s2", "gw-2")]}
+    page_2 = {"totalCount": 3, "results": [_site("s3", "gw-3")]}
+    session.get = MagicMock(side_effect=[_json_ctx(page_1), _json_ctx(page_2)])
+
+    with patch("pyoverkiz.auth.strategies.SOMFY_BOB_SITES_PAGE_SIZE", 2):
+        candidates = await strategy.discover_gateways()
+
+    assert [c.gateway_id for c in candidates] == ["gw-1", "gw-2", "gw-3"]
+    requested = [call.args[0] for call in session.get.call_args_list]
+    assert "offset=0" in requested[0]
+    assert "offset=2" in requested[1]
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_discover_warns_when_truncated(caplog):
+    """Hitting the page cap warns rather than silently hiding sites."""
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+
+    endless = {
+        "totalCount": 999,
+        "results": [
+            {
+                "siteOID": "s",
+                "name": "s",
+                "country": "NL",
+                "subSites": [{"externalOID": "e", "gateways": [{"gatewayId": "gw"}]}],
+            }
+        ],
+    }
+    session.get = MagicMock(side_effect=lambda *_a, **_kw: _json_ctx(endless))
+
+    with (
+        patch("pyoverkiz.auth.strategies.SOMFY_BOB_SITES_PAGE_SIZE", 1),
+        patch("pyoverkiz.auth.strategies.SOMFY_BOB_SITES_MAX", 3),
+        caplog.at_level(logging.WARNING),
+    ):
+        candidates = await strategy.discover_gateways()
+
+    assert len(candidates) == 3
+    assert "999" in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_discover_stops_without_total_count():
+    """A payload without totalCount is treated as a single complete page."""
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(
+        return_value=_json_ctx({"results": _BOB_SITES["results"]}),
+    )
+
+    candidates = await strategy.discover_gateways()
+
+    assert len(candidates) == 2
+    assert session.get.call_count == 1
+
+
+@pytest.mark.asyncio
 async def test_somfy_multisite_select_resolves_region_endpoint():
     """Selecting a gateway resolves its country to the EMEA endpoint."""
     strategy, session = _build_somfy_multisite_strategy()
