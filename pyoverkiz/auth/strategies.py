@@ -88,6 +88,19 @@ async def _raise_for_server_error(response: ClientResponse) -> None:
         await check_response(response)
 
 
+async def _json_body(response: ClientResponse) -> dict[str, Any]:
+    """Return a response body as a dict, or {} if it is not a JSON object.
+
+    Error responses from a proxy in front of a token endpoint may be HTML or
+    empty, which would otherwise raise while inspecting the error code.
+    """
+    try:
+        body = await response.json(content_type=None)
+    except ValueError:
+        return {}
+    return body if isinstance(body, dict) else {}
+
+
 async def _somfy_password_token(
     session: ClientSession, username: str, password: str
 ) -> dict[str, Any]:
@@ -488,7 +501,7 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
             if response.status != HTTPStatus.OK:
                 # A revoked refresh token (e.g. after a password change) is terminal;
                 # surface it as bad credentials so callers trigger reauth instead of retrying.
-                body = await response.json()
+                body = await _json_body(response)
                 if body.get("error") == "invalid_grant":
                     raise SomfyBadCredentialsError(
                         body.get("error_description", "invalid_grant")

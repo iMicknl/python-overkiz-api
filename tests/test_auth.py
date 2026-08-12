@@ -1836,6 +1836,26 @@ async def test_somfy_multisite_refresh_invalid_grant_raises_bad_credentials():
 
 
 @pytest.mark.asyncio
+async def test_somfy_multisite_refresh_non_json_error_body():
+    """A non-JSON refresh error (proxy HTML) still raises a typed Overkiz error."""
+    from pyoverkiz.exceptions import SomfyServiceError
+
+    strategy, session = _build_somfy_resume_strategy()
+    await strategy.login()
+
+    resp = MagicMock()
+    resp.status = 403
+    resp.json = AsyncMock(side_effect=json.JSONDecodeError("nope", "<html>", 0))
+    ctx = MagicMock()
+    ctx.__aenter__ = AsyncMock(return_value=resp)
+    ctx.__aexit__ = AsyncMock(return_value=None)
+    session.post = MagicMock(return_value=ctx)
+
+    with pytest.raises(SomfyServiceError, match="403"):
+        await strategy.refresh_if_needed()
+
+
+@pytest.mark.asyncio
 async def test_somfy_multisite_refresh_without_refresh_token_raises():
     """No refresh_token after site selection must raise, not silently no-op.
 
