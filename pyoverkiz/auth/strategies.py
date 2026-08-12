@@ -76,6 +76,9 @@ _LOGGER = logging.getLogger(__name__)
 
 MIN_JWT_SEGMENTS = 2
 
+# Assumed lifetime of a Somfy site-scoped token when the response omits expires_in.
+SOMFY_FALLBACK_TOKEN_LIFETIME = datetime.timedelta(minutes=5)
+
 
 async def _raise_for_server_error(response: ClientResponse) -> None:
     """Map a 5xx token-endpoint response to a typed Overkiz exception.
@@ -509,7 +512,15 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
                 raise SomfyServiceError(
                     f"Somfy token refresh failed: {response.status}"
                 )
-            self.context.update_from_token(await response.json())
+            token = await response.json()
+            self.context.update_from_token(token)
+            if "expires_in" not in token:
+                # Selecting a site (and resuming) parks expires_at in the past to
+                # force a re-scope, so a response without an expiry would leave
+                # the context expired and refresh on every single request.
+                self.context.expires_at = (
+                    datetime.datetime.now(datetime.UTC) + SOMFY_FALLBACK_TOKEN_LIFETIME
+                )
 
         # refresh_token is optional in a refresh response (RFC 6749); reuse the old one if absent.
         if self.context.refresh_token is None:

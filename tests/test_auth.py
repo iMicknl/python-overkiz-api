@@ -2186,3 +2186,23 @@ async def test_somfy_resume_missing_refresh_token_preserved():
     await strategy.refresh_if_needed()
 
     assert strategy.context.refresh_token == "stored-r"
+
+
+@pytest.mark.asyncio
+async def test_somfy_refresh_without_expires_in_is_not_immediately_expired():
+    """A refresh response without expires_in must not refresh on every request.
+
+    Site selection and resume park expires_at in the past to force a re-scope, so
+    a response that carries no expiry would leave the context permanently
+    expired and mint a new token for every single request.
+    """
+    strategy, session = _build_somfy_resume_strategy()
+    await strategy.login()
+    assert strategy.context.is_expired()
+
+    session.post = MagicMock(return_value=_json_ctx({"access_token": "scoped-1"}))
+    await strategy.refresh_if_needed()
+
+    assert not strategy.context.is_expired()
+    assert await strategy.refresh_if_needed() is False
+    assert session.post.call_count == 1
