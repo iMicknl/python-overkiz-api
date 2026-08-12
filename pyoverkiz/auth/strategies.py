@@ -236,23 +236,17 @@ class SomfyAuthStrategy(BaseAuthStrategy):
 
     async def login(self) -> None:
         """Perform login using Somfy OAuth2."""
-        await self._request_access_token(
-            grant_type="password",
-            extra_fields={
-                "username": self.credentials.username,
-                "password": self.credentials.password,
-            },
+        token = await _somfy_password_token(
+            self.session, self.credentials.username, self.credentials.password
         )
+        self.context.update_from_token(token)
 
     async def refresh_if_needed(self) -> bool:
         """Refresh Somfy OAuth2 tokens if needed."""
         if not self.context.is_expired() or not self.context.refresh_token:
             return False
 
-        await self._request_access_token(
-            grant_type="refresh_token",
-            extra_fields={"refresh_token": cast(str, self.context.refresh_token)},
-        )
+        await self._refresh(self.context.refresh_token)
         return True
 
     async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
@@ -262,24 +256,14 @@ class SomfyAuthStrategy(BaseAuthStrategy):
 
         return {}
 
-    async def _request_access_token(
-        self, *, grant_type: str, extra_fields: Mapping[str, str]
-    ) -> None:
-        if grant_type == "password":
-            token = await _somfy_password_token(
-                self.session,
-                self.credentials.username,
-                self.credentials.password,
-            )
-            self.context.update_from_token(token)
-            return
-
+    async def _refresh(self, refresh_token: str) -> None:
+        """Exchange a refresh token for a new Somfy access token."""
         form = FormData(
             {
-                "grant_type": grant_type,
+                "grant_type": "refresh_token",
                 "client_id": SOMFY_CLIENT_ID,
                 "client_secret": SOMFY_CLIENT_SECRET,
-                **extra_fields,
+                "refresh_token": refresh_token,
             }
         )
 
