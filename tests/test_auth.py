@@ -1,14 +1,16 @@
 """Tests for authentication module."""
 
-# ruff: noqa: S105, S106
-# S105/S106: Test credentials use dummy values.
+# ruff: noqa: S105, S106, S107
+# S105/S106/S107: Test credentials use dummy values.
 
 from __future__ import annotations
 
+import asyncio
 import base64
 import datetime
 import importlib.util
 import json
+import logging
 import sys
 from unittest.mock import AsyncMock, MagicMock, patch
 
@@ -221,6 +223,38 @@ class TestAuthFactory:
         )
 
         assert isinstance(strategy, SomfyAuthStrategy)
+
+    @pytest.mark.asyncio
+    async def test_build_auth_strategy_somfy_multisite(self):
+        """Server.SOMFY + username/password builds SomfyAccountAuthStrategy."""
+        from pyoverkiz.auth.strategies import SomfyAccountAuthStrategy
+        from pyoverkiz.const import SUPPORTED_SERVERS
+
+        strategy = build_auth_strategy(
+            server_config=SUPPORTED_SERVERS[Server.SOMFY],
+            credentials=UsernamePasswordCredentials("user", "pass"),
+            session=AsyncMock(spec=ClientSession),
+            ssl_context=True,
+        )
+
+        assert isinstance(strategy, SomfyAccountAuthStrategy)
+
+    def test_build_auth_strategy_somfy_token_credentials(self):
+        """Server.SOMFY + SomfyTokenCredentials builds the resume strategy."""
+        from pyoverkiz.auth.credentials import SomfyTokenCredentials
+        from pyoverkiz.auth.strategies import SomfyAccountAuthStrategy
+        from pyoverkiz.const import SUPPORTED_SERVERS
+
+        strategy = build_auth_strategy(
+            server_config=SUPPORTED_SERVERS[Server.SOMFY],
+            credentials=SomfyTokenCredentials(
+                refresh_token="r", site_oid="s", region="EMEA"
+            ),
+            session=AsyncMock(spec=ClientSession),
+            ssl_context=True,
+        )
+
+        assert isinstance(strategy, SomfyAccountAuthStrategy)
 
     @pytest.mark.asyncio
     async def test_build_auth_strategy_cozytouch(self):
@@ -1404,3 +1438,1102 @@ def test_rexel_token_strategy_supports_gateway_selection():
     creds = RexelTokenCredentials(access_token="static-token")
     strategy, _ = _build_rexel_token_strategy([], credentials=creds)
     assert isinstance(strategy, SupportsGatewaySelection)
+
+
+def test_somfy_multisite_constants_and_server():
+    """Server.SOMFY and the Ginaite/BOB constants are defined and consistent."""
+    from pyoverkiz.const import (
+        SOMFY_BOB_API_KEY,
+        SOMFY_BOB_SITE_API,
+        SOMFY_COUNTRY_REGION,
+        SOMFY_GINAITE_SUBJECT_ISSUER,
+        SOMFY_GINAITE_SUBJECT_TOKEN_TYPE,
+        SOMFY_GINAITE_TOKEN_EXCHANGE_GRANT,
+        SOMFY_GINAITE_TOKEN_URL,
+        SOMFY_REGION_ENDPOINT,
+        SUPPORTED_SERVERS,
+    )
+    from pyoverkiz.enums import Server
+
+    assert Server.SOMFY == "somfy"
+    assert SOMFY_GINAITE_TOKEN_URL.endswith("/protocol/openid-connect/token")
+    assert SOMFY_GINAITE_SUBJECT_ISSUER == "somfy-customer"
+    assert SOMFY_GINAITE_TOKEN_EXCHANGE_GRANT == (
+        "urn:ietf:params:oauth:grant-type:token-exchange"
+    )
+    assert (
+        SOMFY_GINAITE_SUBJECT_TOKEN_TYPE
+        == "urn:ietf:params:oauth:token-type:access_token"
+    )
+    assert SOMFY_BOB_SITE_API.endswith("/site-api/public/v1")
+    assert SOMFY_BOB_API_KEY == "184638B3FBE874ACD24C14FBD657B"
+
+    # All three regions are enumerated; every mapped region has an endpoint.
+    assert SOMFY_COUNTRY_REGION["NL"] == "EMEA"
+    assert SOMFY_COUNTRY_REGION["US"] == "SNABA"
+    assert SOMFY_COUNTRY_REGION["JP"] == "APAC"
+    # Countries the app's own list omits still resolve without a warning.
+    assert SOMFY_COUNTRY_REGION["SI"] == "EMEA"
+    assert SOMFY_COUNTRY_REGION["IS"] == "EMEA"
+    assert SOMFY_COUNTRY_REGION["KE"] == "EMEA"
+    for region in SOMFY_COUNTRY_REGION.values():
+        assert region in SOMFY_REGION_ENDPOINT
+    assert SOMFY_REGION_ENDPOINT["EMEA"] == (
+        "https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/"
+    )
+
+    config = SUPPORTED_SERVERS[Server.SOMFY]
+    assert config.server == Server.SOMFY
+    assert config.name == "Somfy"
+
+
+@pytest.mark.asyncio
+async def test_somfy_password_token_returns_token_dict():
+    """_somfy_password_token posts the password grant and returns the token dict."""
+    from unittest.mock import AsyncMock, MagicMock
+
+    from aiohttp import ClientSession
+
+    from pyoverkiz.auth.strategies import _somfy_password_token
+
+    resp = MagicMock()
+    resp.status = 200
+    resp.json = AsyncMock(
+        return_value={"access_token": "sso-abc", "refresh_token": "r1"}
+    )
+    resp.__aenter__ = AsyncMock(return_value=resp)
+    resp.__aexit__ = AsyncMock(return_value=None)
+    session = MagicMock(spec=ClientSession)
+    session.post = MagicMock(return_value=resp)
+
+    token = await _somfy_password_token(session, "user", "pass")
+
+    assert token["access_token"] == "sso-abc"
+
+
+@pytest.mark.asyncio
+async def test_somfy_password_token_bad_credentials():
+    """error.invalid.grant maps to SomfyBadCredentialsError."""
+    from unittest.mock import AsyncMock, MagicMock
+
+    from aiohttp import ClientSession
+
+    from pyoverkiz.auth.strategies import _somfy_password_token
+    from pyoverkiz.exceptions import SomfyBadCredentialsError
+
+    resp = MagicMock()
+    resp.status = 200
+    resp.json = AsyncMock(return_value={"message": "error.invalid.grant"})
+    resp.__aenter__ = AsyncMock(return_value=resp)
+    resp.__aexit__ = AsyncMock(return_value=None)
+    session = MagicMock(spec=ClientSession)
+    session.post = MagicMock(return_value=resp)
+
+    with pytest.raises(SomfyBadCredentialsError):
+        await _somfy_password_token(session, "user", "bad")
+
+
+def _build_somfy_strategy():
+    """Return a single-site SomfyAuthStrategy with a MagicMock session."""
+    from pyoverkiz.const import SUPPORTED_SERVERS
+
+    session = MagicMock(spec=ClientSession)
+    strategy = SomfyAuthStrategy(
+        credentials=UsernamePasswordCredentials("user", "pass"),
+        session=session,
+        server=SUPPORTED_SERVERS[Server.SOMFY_EUROPE],
+        ssl_context=True,
+    )
+    return strategy, session
+
+
+@pytest.mark.asyncio
+async def test_somfy_login_stores_token_from_password_grant():
+    """login() feeds the password grant straight into the auth context."""
+    strategy, session = _build_somfy_strategy()
+    session.post = MagicMock(
+        return_value=_json_ctx(
+            {"access_token": "a-1", "refresh_token": "r-1", "expires_in": 900}
+        )
+    )
+
+    await strategy.login()
+
+    assert strategy.context.access_token == "a-1"
+    assert await strategy.auth_headers() == {"Authorization": "Bearer a-1"}
+
+
+@pytest.mark.asyncio
+async def test_somfy_refresh_uses_the_refresh_grant():
+    """An expired context with a refresh token exchanges it for a new token."""
+    strategy, session = _build_somfy_strategy()
+    strategy.context.access_token = "a-1"
+    strategy.context.refresh_token = "r-1"
+    strategy.context.expires_at = datetime.datetime.now(datetime.UTC)
+    session.post = MagicMock(
+        return_value=_json_ctx(
+            {"access_token": "a-2", "refresh_token": "r-2", "expires_in": 900}
+        )
+    )
+
+    assert await strategy.refresh_if_needed() is True
+    assert strategy.context.access_token == "a-2"
+    assert strategy.context.refresh_token == "r-2"
+    # Not expired any more, so a second call is a no-op.
+    assert await strategy.refresh_if_needed() is False
+    assert session.post.call_count == 1
+
+
+@pytest.mark.asyncio
+async def test_somfy_refresh_invalid_grant_raises_bad_credentials():
+    """A rejected refresh token maps to SomfyBadCredentialsError."""
+    from pyoverkiz.exceptions import SomfyBadCredentialsError
+
+    strategy, session = _build_somfy_strategy()
+    strategy.context.refresh_token = "r-1"
+    strategy.context.expires_at = datetime.datetime.now(datetime.UTC)
+    session.post = MagicMock(return_value=_json_ctx({"message": "error.invalid.grant"}))
+
+    with pytest.raises(SomfyBadCredentialsError):
+        await strategy.refresh_if_needed()
+
+
+@pytest.mark.asyncio
+async def test_somfy_refresh_without_access_token_raises_service_error():
+    """A refresh response with no access token is a service error."""
+    from pyoverkiz.exceptions import SomfyServiceError
+
+    strategy, session = _build_somfy_strategy()
+    strategy.context.refresh_token = "r-1"
+    strategy.context.expires_at = datetime.datetime.now(datetime.UTC)
+    session.post = MagicMock(return_value=_json_ctx({"token_type": "bearer"}))
+
+    with pytest.raises(SomfyServiceError):
+        await strategy.refresh_if_needed()
+
+
+def _build_somfy_multisite_strategy():
+    """Return a SomfyAccountAuthStrategy with a MagicMock session."""
+    from unittest.mock import MagicMock
+
+    from aiohttp import ClientSession
+
+    from pyoverkiz.auth.credentials import UsernamePasswordCredentials
+    from pyoverkiz.auth.strategies import SomfyAccountAuthStrategy
+    from pyoverkiz.const import SUPPORTED_SERVERS
+    from pyoverkiz.enums import Server
+
+    session = MagicMock(spec=ClientSession)
+    strategy = SomfyAccountAuthStrategy(
+        credentials=UsernamePasswordCredentials("user", "pass"),
+        session=session,
+        server=SUPPORTED_SERVERS[Server.SOMFY],
+        ssl_context=True,
+    )
+    return strategy, session
+
+
+def _json_ctx(body, status=200):
+    """A MagicMock aiohttp response context manager returning `body` as JSON."""
+    from unittest.mock import AsyncMock, MagicMock
+
+    resp = MagicMock()
+    resp.status = status
+    resp.json = AsyncMock(return_value=body)
+    resp.text = AsyncMock(return_value=str(body))
+    ctx = MagicMock()
+    ctx.__aenter__ = AsyncMock(return_value=resp)
+    ctx.__aexit__ = AsyncMock(return_value=None)
+    return ctx
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_token_exchange_populates_context():
+    """_token_exchange stores the Ginaite access + refresh token."""
+    strategy, session = _build_somfy_multisite_strategy()
+    session.post = MagicMock(
+        return_value=_json_ctx(
+            {"access_token": "ginaite-1", "refresh_token": "r-1", "expires_in": 900}
+        )
+    )
+
+    await strategy._token_exchange("sso-access")
+
+    assert strategy.context.access_token == "ginaite-1"
+    assert strategy.context.refresh_token == "r-1"
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_token_exchange_error_raises():
+    """A non-200 token exchange raises SomfyServiceError."""
+    from pyoverkiz.exceptions import SomfyServiceError
+
+    strategy, session = _build_somfy_multisite_strategy()
+    session.post = MagicMock(return_value=_json_ctx({"error": "bad"}, status=400))
+
+    with pytest.raises(SomfyServiceError):
+        await strategy._token_exchange("sso-access")
+
+
+_BOB_SITES = {
+    "totalCount": 2,
+    "results": [
+        {
+            "siteOID": "site-a",
+            "name": "My Home",
+            "country": "NL",
+            "currentUserRoles": [{"roleOID": "owner"}],
+            "subSites": [
+                {
+                    "externalOID": "ext-a",
+                    "type": "SETUP",
+                    "gateways": [{"gatewayId": "2025-0000-0001", "type": 98}],
+                }
+            ],
+        },
+        {
+            "siteOID": "site-b",
+            "name": "Holiday Home",
+            "country": "NL",
+            "currentUserRoles": [{"roleOID": "owner"}],
+            "subSites": [
+                {
+                    "externalOID": "ext-b",
+                    "type": "SETUP",
+                    "gateways": [{"gatewayId": "1225-0000-0002", "type": 29}],
+                }
+            ],
+        },
+    ],
+}
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_discover_flattens_sites():
+    """discover_gateways returns one GatewayCandidate per gateway across sites."""
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+
+    candidates = await strategy.discover_gateways()
+
+    assert [c.gateway_id for c in candidates] == ["2025-0000-0001", "1225-0000-0002"]
+    assert candidates[0].home_id == "site-a"
+    assert candidates[0].label == "My Home"
+    assert candidates[0].external_id == "ext-a"
+    assert candidates[0].country == "NL"
+    assert candidates[0].roles == ["owner"]
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_discover_reports_roles_without_filtering():
+    """Shared sites are surfaced with their roles, not dropped.
+
+    Only ``owner``/``secondary`` are fixed values; a custom or installer role
+    arrives as an opaque id and must survive parsing just the same.
+    """
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(
+        return_value=_json_ctx(
+            {
+                "totalCount": 3,
+                "results": [
+                    {
+                        "siteOID": "site-custom-role",
+                        "currentUserRoles": [
+                            {"roleOID": "07a4b1e6-0e2f-4d1c-9d38-8a1c4f2b6e55"}
+                        ],
+                        "subSites": [{"gateways": [{"gatewayId": "gw-custom"}]}],
+                    },
+                    {
+                        "siteOID": "site-no-roles",
+                        "subSites": [{"gateways": [{"gatewayId": "gw-no-roles"}]}],
+                    },
+                    {
+                        "siteOID": "site-partial",
+                        "currentUserRoles": [{}, {"roleOID": "secondary"}],
+                        "subSites": [{"gateways": [{"gatewayId": "gw-partial"}]}],
+                    },
+                ],
+            }
+        )
+    )
+
+    candidates = await strategy.discover_gateways()
+
+    assert [c.gateway_id for c in candidates] == [
+        "gw-custom",
+        "gw-no-roles",
+        "gw-partial",
+    ]
+    assert candidates[0].roles == ["07a4b1e6-0e2f-4d1c-9d38-8a1c4f2b6e55"]
+    assert candidates[1].roles == []
+    assert candidates[2].roles == ["secondary"]
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_discover_pages_until_total_count():
+    """discover_gateways follows totalCount instead of truncating at one page."""
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+
+    def _site(oid, gateway_id):
+        return {
+            "siteOID": oid,
+            "name": oid,
+            "country": "NL",
+            "subSites": [
+                {"externalOID": f"ext-{oid}", "gateways": [{"gatewayId": gateway_id}]}
+            ],
+        }
+
+    page_1 = {"totalCount": 3, "results": [_site("s1", "gw-1"), _site("s2", "gw-2")]}
+    page_2 = {"totalCount": 3, "results": [_site("s3", "gw-3")]}
+    session.get = MagicMock(side_effect=[_json_ctx(page_1), _json_ctx(page_2)])
+
+    with patch("pyoverkiz.auth.strategies.SOMFY_BOB_SITES_PAGE_SIZE", 2):
+        candidates = await strategy.discover_gateways()
+
+    assert [c.gateway_id for c in candidates] == ["gw-1", "gw-2", "gw-3"]
+    requested = [call.args[0] for call in session.get.call_args_list]
+    assert "offset=0" in requested[0]
+    assert "offset=2" in requested[1]
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_discover_warns_when_truncated(caplog):
+    """Hitting the page cap warns rather than silently hiding sites."""
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+
+    endless = {
+        "totalCount": 999,
+        "results": [
+            {
+                "siteOID": "s",
+                "name": "s",
+                "country": "NL",
+                "subSites": [{"externalOID": "e", "gateways": [{"gatewayId": "gw"}]}],
+            }
+        ],
+    }
+    session.get = MagicMock(side_effect=lambda *_a, **_kw: _json_ctx(endless))
+
+    with (
+        patch("pyoverkiz.auth.strategies.SOMFY_BOB_SITES_PAGE_SIZE", 1),
+        patch("pyoverkiz.auth.strategies.SOMFY_BOB_SITES_MAX", 3),
+        caplog.at_level(logging.WARNING),
+    ):
+        candidates = await strategy.discover_gateways()
+
+    assert len(candidates) == 3
+    assert "999" in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_discover_stops_without_total_count():
+    """A payload without totalCount is treated as a single complete page."""
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(
+        return_value=_json_ctx({"results": _BOB_SITES["results"]}),
+    )
+
+    candidates = await strategy.discover_gateways()
+
+    assert len(candidates) == 2
+    assert session.get.call_count == 1
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_select_resolves_region_endpoint():
+    """Selecting a gateway resolves its country to the EMEA endpoint."""
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+
+    strategy.select_gateway("2025-0000-0001")
+
+    assert strategy.selected_gateway == "2025-0000-0001"
+    assert strategy._selected_site_oid == "site-a"
+    assert strategy.endpoint == (
+        "https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/"
+    )
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_select_maps_non_default_region():
+    """A country in the map resolves to its non-default region endpoint."""
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    us_site = {
+        "totalCount": 1,
+        "results": [
+            {
+                "siteOID": "site-us",
+                "name": "Denver",
+                "country": "US",
+                "currentUserRoles": [{"roleOID": "owner"}],
+                "subSites": [
+                    {"externalOID": "ext-us", "gateways": [{"gatewayId": "gw-us"}]}
+                ],
+            }
+        ],
+    }
+    session.get = MagicMock(return_value=_json_ctx(us_site))
+    await strategy.discover_gateways()
+
+    strategy.select_gateway("gw-us")
+
+    assert strategy.endpoint == (
+        "https://ha401-1.overkiz.com/enduser-mobile-web/enduserAPI/"
+    )
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_select_unknown_country_falls_back_to_emea(caplog):
+    """An unknown country resolves to EMEA and logs a warning (matches the app)."""
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    unknown = {
+        "totalCount": 1,
+        "results": [
+            {
+                "siteOID": "site-x",
+                "name": "Mars",
+                "country": "ZZ",
+                "currentUserRoles": [{"roleOID": "owner"}],
+                "subSites": [
+                    {"externalOID": "ext-x", "gateways": [{"gatewayId": "gw-x"}]}
+                ],
+            }
+        ],
+    }
+    session.get = MagicMock(return_value=_json_ctx(unknown))
+    await strategy.discover_gateways()
+
+    with caplog.at_level(logging.WARNING):
+        strategy.select_gateway("gw-x")
+
+    assert strategy.endpoint == (
+        "https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/"
+    )
+    assert "ZZ" in caplog.text
+    assert "EMEA" in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_select_missing_country_falls_back_to_emea(caplog):
+    """A site without a country resolves to EMEA and logs a warning."""
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    missing = {
+        "totalCount": 1,
+        "results": [
+            {
+                "siteOID": "site-x",
+                "name": "Mystery",
+                "currentUserRoles": [{"roleOID": "owner"}],
+                "subSites": [
+                    {"externalOID": "ext-x", "gateways": [{"gatewayId": "gw-x"}]}
+                ],
+            }
+        ],
+    }
+    session.get = MagicMock(return_value=_json_ctx(missing))
+    await strategy.discover_gateways()
+
+    with caplog.at_level(logging.WARNING):
+        strategy.select_gateway("gw-x")
+
+    assert strategy.endpoint == (
+        "https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/"
+    )
+    assert "EMEA" in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_endpoint_defaults_to_placeholder_before_select():
+    """Before selection, endpoint falls back to the server config placeholder."""
+    strategy, _ = _build_somfy_multisite_strategy()
+    assert strategy.endpoint == (
+        "https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/"
+    )
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_auth_headers():
+    """auth_headers returns the Bearer token, or {} when absent (no gateway header)."""
+    strategy, session = _build_somfy_multisite_strategy()
+    assert await strategy.auth_headers() == {}
+    strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+    strategy.select_gateway("2025-0000-0001")
+
+    headers = await strategy.auth_headers()
+
+    assert headers == {"Authorization": "Bearer ginaite-1"}
+    assert "gatewayId" not in headers
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_auth_headers_raises_when_unselected():
+    """A token without a selected site must raise, not target an arbitrary region.
+
+    The account-wide token is not site-scoped and `endpoint` is still the region
+    placeholder, so serving it would quietly talk to the wrong site.
+    """
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+
+    with pytest.raises(NoGatewaySelectedError):
+        await strategy.auth_headers()
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_refresh_scopes_to_selected_site():
+    """refresh_if_needed posts a refresh grant to the ?siteOID URL."""
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    strategy.context.refresh_token = "r-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+    strategy.select_gateway("2025-0000-0001")  # forces expiry
+
+    posted = _json_ctx({"access_token": "scoped-1", "refresh_token": "r-2"})
+    session.post = MagicMock(return_value=posted)
+
+    refreshed = await strategy.refresh_if_needed()
+
+    assert refreshed is True
+    assert strategy.context.access_token == "scoped-1"
+    # The refresh URL must carry ?siteOID=<selected site oid>.
+    called_url = session.post.call_args.args[0]
+    assert "siteOID=site-a" in called_url
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_refresh_invalid_grant_raises_bad_credentials():
+    """A revoked refresh token (400 invalid_grant) maps to SomfyBadCredentialsError so callers reauth."""
+    from pyoverkiz.exceptions import SomfyBadCredentialsError
+
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    strategy.context.refresh_token = "r-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+    strategy.select_gateway("2025-0000-0001")  # forces expiry
+
+    session.post = MagicMock(
+        return_value=_json_ctx(
+            {"error": "invalid_grant", "error_description": "token revoked"},
+            status=400,
+        )
+    )
+
+    with pytest.raises(SomfyBadCredentialsError, match="token revoked"):
+        await strategy.refresh_if_needed()
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_refresh_non_json_error_body():
+    """A non-JSON refresh error (proxy HTML) still raises a typed Overkiz error."""
+    from pyoverkiz.exceptions import SomfyServiceError
+
+    strategy, session = _build_somfy_resume_strategy()
+    await strategy.login()
+
+    resp = MagicMock()
+    resp.status = 403
+    resp.json = AsyncMock(side_effect=json.JSONDecodeError("nope", "<html>", 0))
+    ctx = MagicMock()
+    ctx.__aenter__ = AsyncMock(return_value=resp)
+    ctx.__aexit__ = AsyncMock(return_value=None)
+    session.post = MagicMock(return_value=ctx)
+
+    with pytest.raises(SomfyServiceError, match="403"):
+        await strategy.refresh_if_needed()
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_refresh_without_refresh_token_raises():
+    """No refresh_token after site selection must raise, not silently no-op.
+
+    Without a refresh token, refresh_if_needed() can't mint the site-scoped
+    token, so it must not return False and let auth_headers() keep serving
+    the unscoped global token against the site's region endpoint.
+    """
+    from pyoverkiz.exceptions import SomfyServiceError
+
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    strategy.context.refresh_token = None
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+
+    strategy.select_gateway("2025-0000-0001")  # forces expiry, no refresh_token
+
+    with pytest.raises(SomfyServiceError):
+        await strategy.refresh_if_needed()
+
+
+def _patch_somfy_login_tokens(strategy, *, ginaite_access_token="ginaite-fresh"):
+    """Patch the password grant + token exchange so login() can run offline.
+
+    Returns a context manager patching the module-level password grant to a
+    fixed SSO token, and ``strategy._token_exchange`` to install a fresh,
+    unscoped, non-expired Ginaite token via the real ``update_from_token``.
+    """
+
+    def _install_fresh_token(_sso_access_token):
+        strategy.context.update_from_token(
+            {
+                "access_token": ginaite_access_token,
+                "refresh_token": "r-fresh",
+                "expires_in": 900,
+            }
+        )
+
+    return (
+        patch(
+            "pyoverkiz.auth.strategies._somfy_password_token",
+            AsyncMock(return_value={"access_token": "sso-fresh"}),
+        ),
+        patch.object(
+            strategy,
+            "_token_exchange",
+            AsyncMock(side_effect=_install_fresh_token),
+        ),
+    )
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_relogin_rescopes_selected_gateway():
+    """Relogin on a multi-site account must re-apply site scoping.
+
+    A relogin mints a fresh, unscoped Ginaite token that is NOT expired
+    (expires_in=900), so without re-selecting the previously-selected
+    gateway, refresh_if_needed() would return False and auth_headers() would
+    serve the unscoped global token against the still-selected region
+    endpoint. The fix must re-select the gateway so the context is marked
+    expired again, forcing the next request to mint a site-scoped token.
+    """
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+    strategy.select_gateway("2025-0000-0001")
+    emea_endpoint = strategy.endpoint
+
+    patch_password, patch_exchange = _patch_somfy_login_tokens(strategy)
+    with patch_password, patch_exchange:
+        await strategy.login()
+
+    assert strategy.selected_gateway == "2025-0000-0001"
+    assert strategy.endpoint == emea_endpoint
+    # The fresh token must be treated as stale so the next request re-scopes it.
+    assert strategy.context.is_expired()
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_relogin_drops_removed_gateway():
+    """If the previously-selected gateway disappears on relogin, drop it.
+
+    Rather than silently keep pointing at a gateway/endpoint that's gone
+    (e.g. access revoked), the stale selection state must be cleared.
+    """
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+    strategy.select_gateway("2025-0000-0001")
+
+    reduced_sites = {
+        "totalCount": 1,
+        "results": [_BOB_SITES["results"][1]],  # only site-b / 1225-0000-0002
+    }
+    session.get = MagicMock(return_value=_json_ctx(reduced_sites))
+
+    patch_password, patch_exchange = _patch_somfy_login_tokens(strategy)
+    with patch_password, patch_exchange:
+        await strategy.login()
+
+    assert strategy.selected_gateway is None
+    assert strategy._selected_site_oid is None
+    assert strategy.endpoint == strategy.server.endpoint
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_login_auto_selects_sole_site():
+    """A single-site account needs no explicit selection to be usable."""
+    strategy, session = _build_somfy_multisite_strategy()
+    sole_site = {"totalCount": 1, "results": [_BOB_SITES["results"][0]]}
+    session.get = MagicMock(return_value=_json_ctx(sole_site))
+
+    patch_password, patch_exchange = _patch_somfy_login_tokens(strategy)
+    with patch_password, patch_exchange:
+        await strategy.login()
+
+    assert strategy.selected_gateway == "2025-0000-0001"
+    assert await strategy.auth_headers() == {"Authorization": "Bearer ginaite-fresh"}
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_login_leaves_multiple_sites_unselected():
+    """A multi-site account must not pick a site on the user's behalf."""
+    strategy, session = _build_somfy_multisite_strategy()
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+
+    patch_password, patch_exchange = _patch_somfy_login_tokens(strategy)
+    with patch_password, patch_exchange:
+        await strategy.login()
+
+    assert strategy.selected_gateway is None
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_select_unknown_gateway_raises():
+    """Selecting a gateway that discovery never returned raises."""
+    from pyoverkiz.exceptions import SomfyServiceError
+
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+
+    with pytest.raises(SomfyServiceError, match="Unknown gateway id"):
+        strategy.select_gateway("gw-does-not-exist")
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_bob_error_raises_service_error():
+    """A failed BOB site listing raises SomfyServiceError with the status."""
+    from pyoverkiz.exceptions import SomfyServiceError
+
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(return_value=_json_ctx({"error": "forbidden"}, status=403))
+
+    with pytest.raises(SomfyServiceError, match="403"):
+        await strategy.discover_gateways()
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_refresh_without_selection_is_a_no_op():
+    """An expired unscoped token with no site selected has nothing to refresh."""
+    strategy, _ = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    strategy.context.expires_at = datetime.datetime.now(datetime.UTC)
+
+    assert await strategy.refresh_if_needed() is False
+
+
+def _build_somfy_resume_strategy(**credential_overrides):
+    """Return a SomfyAccountAuthStrategy built from SomfyTokenCredentials."""
+    from unittest.mock import MagicMock
+
+    from aiohttp import ClientSession
+
+    from pyoverkiz.auth.credentials import SomfyTokenCredentials
+    from pyoverkiz.auth.strategies import SomfyAccountAuthStrategy
+    from pyoverkiz.const import SUPPORTED_SERVERS
+    from pyoverkiz.enums import Server
+
+    creds_kwargs = {
+        "refresh_token": "stored-r",
+        "site_oid": "site-b",
+        "region": "EMEA",
+        "gateway_id": "1225-0000-0002",
+    }
+    creds_kwargs.update(credential_overrides)
+    session = MagicMock(spec=ClientSession)
+    strategy = SomfyAccountAuthStrategy(
+        credentials=SomfyTokenCredentials(**creds_kwargs),
+        session=session,
+        server=SUPPORTED_SERVERS[Server.SOMFY],
+        ssl_context=True,
+    )
+    return strategy, session
+
+
+@pytest.mark.asyncio
+async def test_somfy_resume_login_seeds_scope_without_http():
+    """Resuming a session performs no network calls and seeds the site scope."""
+    strategy, session = _build_somfy_resume_strategy()
+
+    await strategy.login()
+
+    # No password grant, no token exchange, no discovery.
+    session.post.assert_not_called()
+    session.get.assert_not_called()
+    assert strategy.selected_gateway == "1225-0000-0002"
+    assert strategy._selected_site_oid == "site-b"
+    assert strategy.endpoint == (
+        "https://ha101-1.overkiz.com/enduser-mobile-web/enduserAPI/"
+    )
+    # Token is marked expired so the first request mints a site-scoped one.
+    assert strategy.context.is_expired()
+    assert strategy.context.refresh_token == "stored-r"
+
+
+@pytest.mark.asyncio
+async def test_somfy_resume_unknown_region_raises_typed_error():
+    """An unrecognised persisted region raises SomfyServiceError, not KeyError."""
+    from pyoverkiz.exceptions import SomfyServiceError
+
+    strategy, _ = _build_somfy_resume_strategy(region="MOON")
+
+    with pytest.raises(SomfyServiceError, match="Unknown Somfy region"):
+        await strategy.login()
+
+
+@pytest.mark.asyncio
+async def test_somfy_resume_first_refresh_scopes_to_site():
+    """The first refresh after resuming mints a token via the ?siteOID URL."""
+    strategy, session = _build_somfy_resume_strategy()
+    await strategy.login()
+
+    session.post = MagicMock(
+        return_value=_json_ctx({"access_token": "scoped-1", "refresh_token": "r-2"})
+    )
+    refreshed = await strategy.refresh_if_needed()
+
+    assert refreshed is True
+    assert strategy.context.access_token == "scoped-1"
+    assert "siteOID=site-b" in session.post.call_args.args[0]
+
+
+@pytest.mark.asyncio
+async def test_somfy_resume_credentials_roundtrip():
+    """to_credentials() snapshots a fresh session's reusable state."""
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    strategy.context.refresh_token = "r-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+    strategy.select_gateway("1225-0000-0002")
+
+    snapshot = strategy.to_credentials()
+
+    assert snapshot.refresh_token == "r-1"
+    assert snapshot.site_oid == "site-b"
+    assert snapshot.region == "EMEA"
+    assert snapshot.gateway_id == "1225-0000-0002"
+
+
+@pytest.mark.asyncio
+async def test_somfy_resume_credentials_requires_selection():
+    """Snapshotting before a site is selected raises rather than half-populating."""
+    from pyoverkiz.exceptions import SomfyServiceError
+
+    strategy, _ = _build_somfy_multisite_strategy()
+
+    with pytest.raises(SomfyServiceError):
+        strategy.to_credentials()
+
+
+@pytest.mark.asyncio
+async def test_somfy_resume_rotated_refresh_token_notifies():
+    """A rotated refresh token fires on_token_refresh so the caller can persist."""
+    persisted = []
+
+    async def _persist(token):
+        persisted.append(token)
+
+    strategy, session = _build_somfy_resume_strategy(on_token_refresh=_persist)
+    await strategy.login()
+
+    session.post = MagicMock(
+        return_value=_json_ctx({"access_token": "scoped-1", "refresh_token": "r-rot"})
+    )
+    await strategy.refresh_if_needed()
+
+    assert persisted == ["r-rot"]
+
+
+@pytest.mark.asyncio
+async def test_somfy_resume_failed_persist_does_not_break_the_request(caplog):
+    """A raising on_token_refresh must not fail the request that refreshed.
+
+    The rotated token already works in memory, so a caller whose store is
+    unavailable (in Home Assistant, an entry removed mid-refresh) should get a
+    logged error, not a failed API call.
+    """
+
+    async def _persist(_token):
+        raise RuntimeError("store unavailable")
+
+    strategy, session = _build_somfy_resume_strategy(on_token_refresh=_persist)
+    await strategy.login()
+
+    session.post = MagicMock(
+        return_value=_json_ctx({"access_token": "scoped-1", "refresh_token": "r-rot"})
+    )
+
+    with caplog.at_level(logging.ERROR):
+        assert await strategy.refresh_if_needed() is True
+
+    assert strategy.context.access_token == "scoped-1"
+    assert strategy.context.refresh_token == "r-rot"
+    assert "store unavailable" in caplog.text
+
+
+@pytest.mark.asyncio
+async def test_somfy_resume_failed_persist_retries_on_next_rotation():
+    """A token is only recorded as persisted once the caller actually stored it.
+
+    Recording it up front would make the next rotation look already-persisted, so
+    a single failed store would silently stop all further notifications.
+    """
+    persisted = []
+    failures = []
+
+    async def _persist(token):
+        if not failures:
+            failures.append(token)
+            raise RuntimeError("store unavailable")
+        persisted.append(token)
+
+    strategy, session = _build_somfy_resume_strategy(on_token_refresh=_persist)
+    await strategy.login()
+
+    session.post = MagicMock(
+        return_value=_json_ctx({"access_token": "scoped-1", "refresh_token": "r-rot-1"})
+    )
+    await strategy.refresh_if_needed()
+    assert persisted == []
+
+    strategy.context.expires_at = datetime.datetime.now(datetime.UTC)
+    session.post = MagicMock(
+        return_value=_json_ctx({"access_token": "scoped-2", "refresh_token": "r-rot-2"})
+    )
+    await strategy.refresh_if_needed()
+
+    assert persisted == ["r-rot-2"]
+
+
+@pytest.mark.asyncio
+async def test_somfy_refresh_is_serialized_across_concurrent_requests():
+    """Concurrent expired requests must refresh once, not race for the token.
+
+    Requests issued in parallel (``get_diagnostic_data`` gathers two) all see an
+    expired context. Ginaite invalidates the refresh token it rotates, so a
+    second concurrent refresh would present a spent token and report bad
+    credentials, forcing a needless reauth.
+    """
+    strategy, session = _build_somfy_resume_strategy()
+    await strategy.login()
+
+    resp = MagicMock()
+    resp.status = 200
+    resp.json = AsyncMock(
+        return_value={
+            "access_token": "scoped-1",
+            "refresh_token": "r-2",
+            "expires_in": 900,
+        }
+    )
+
+    async def _slow_enter(*_args):
+        await asyncio.sleep(0)  # yield so the second caller reaches the lock
+        return resp
+
+    ctx = MagicMock()
+    ctx.__aenter__ = AsyncMock(side_effect=_slow_enter)
+    ctx.__aexit__ = AsyncMock(return_value=None)
+    session.post = MagicMock(return_value=ctx)
+
+    results = await asyncio.gather(
+        strategy.refresh_if_needed(), strategy.refresh_if_needed()
+    )
+
+    assert session.post.call_count == 1
+    assert sorted(results) == [False, True]
+    assert strategy.context.refresh_token == "r-2"
+
+
+@pytest.mark.asyncio
+async def test_somfy_resume_relogin_keeps_rotated_refresh_token():
+    """A relogin must not fall back to the (already spent) stored refresh token.
+
+    The auth-error retry calls login() again. Re-seeding from the credentials
+    would restore the original refresh token, which Ginaite already invalidated
+    when it rotated it, turning a recoverable 401 into a reauth prompt.
+    """
+    strategy, session = _build_somfy_resume_strategy()
+    await strategy.login()
+
+    session.post = MagicMock(
+        return_value=_json_ctx({"access_token": "scoped-1", "refresh_token": "r-rot"})
+    )
+    await strategy.refresh_if_needed()
+    assert strategy.context.refresh_token == "r-rot"
+
+    await strategy.login()
+
+    assert strategy.context.refresh_token == "r-rot"
+    # Still re-scoped on the next request, and the site scope survives.
+    assert strategy.context.is_expired()
+    assert strategy._selected_site_oid == "site-b"
+
+
+@pytest.mark.asyncio
+async def test_somfy_resume_relogin_does_not_renotify_rotated_token():
+    """Relogin must not re-fire on_token_refresh with an unchanged token."""
+    persisted = []
+
+    async def _persist(token):
+        persisted.append(token)
+
+    strategy, session = _build_somfy_resume_strategy(on_token_refresh=_persist)
+    await strategy.login()
+    session.post = MagicMock(
+        return_value=_json_ctx({"access_token": "scoped-1", "refresh_token": "r-rot"})
+    )
+    await strategy.refresh_if_needed()
+
+    await strategy.login()
+    session.post = MagicMock(
+        return_value=_json_ctx({"access_token": "scoped-2", "refresh_token": "r-rot"})
+    )
+    await strategy.refresh_if_needed()
+
+    assert persisted == ["r-rot"]
+
+
+@pytest.mark.asyncio
+async def test_somfy_resume_missing_refresh_token_preserved():
+    """A refresh response without a refresh_token keeps the working one."""
+    strategy, session = _build_somfy_resume_strategy()
+    await strategy.login()
+
+    # Ginaite may omit refresh_token on refresh; the old one must survive.
+    session.post = MagicMock(return_value=_json_ctx({"access_token": "scoped-1"}))
+    await strategy.refresh_if_needed()
+
+    assert strategy.context.refresh_token == "stored-r"
+
+
+@pytest.mark.asyncio
+async def test_somfy_refresh_without_expires_in_is_not_immediately_expired():
+    """A refresh response without expires_in must not refresh on every request.
+
+    Site selection and resume park expires_at in the past to force a re-scope, so
+    a response that carries no expiry would leave the context permanently
+    expired and mint a new token for every single request.
+    """
+    strategy, session = _build_somfy_resume_strategy()
+    await strategy.login()
+    assert strategy.context.is_expired()
+
+    session.post = MagicMock(return_value=_json_ctx({"access_token": "scoped-1"}))
+    await strategy.refresh_if_needed()
+
+    assert not strategy.context.is_expired()
+    assert await strategy.refresh_if_needed() is False
+    assert session.post.call_count == 1

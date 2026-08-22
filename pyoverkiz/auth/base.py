@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 import datetime
-from collections.abc import Mapping
+from collections.abc import Awaitable, Callable, Mapping
 from dataclasses import dataclass, field
-from typing import Any, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
+
+if TYPE_CHECKING:
+    from pyoverkiz.auth.credentials import SomfyTokenCredentials
 
 
 @dataclass(slots=True)
@@ -66,6 +69,15 @@ class GatewayCandidate:
     home_id: str | None = None
     label: str | None = None
     external_id: str | None = None
+    country: str | None = None
+    # Somfy only. Reported, not acted on: a site the account was merely invited
+    # to is listed like any other, and even the most limited access level keeps
+    # control of some devices, so such a site is expected to work in a reduced
+    # form rather than not at all. Filtering would also need an allowlist, and
+    # only `owner` and `secondary` are fixed values -- every custom or installer
+    # role is an opaque id, so unrecognised must not mean unusable. Callers get
+    # the roles to explain the reduction to a user instead.
+    roles: list[str] = field(default_factory=list)
 
 
 @runtime_checkable
@@ -81,3 +93,14 @@ class SupportsGatewaySelection(Protocol):
     @property
     def selected_gateway(self) -> str | None:
         """Return the currently selected gateway id, or None."""
+
+
+@runtime_checkable
+class SupportsSessionResume(Protocol):
+    """Optional capability: snapshot the session for later resume without re-login."""
+
+    def to_credentials(
+        self,
+        on_token_refresh: Callable[[str], Awaitable[None]] | None = None,
+    ) -> SomfyTokenCredentials:
+        """Return resume credentials for the current session."""
