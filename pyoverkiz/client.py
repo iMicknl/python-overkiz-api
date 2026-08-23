@@ -939,6 +939,22 @@ class OverkizClient:
             )
         self._auth.select_gateway(gateway_id)
 
+    @property
+    def selected_gateway(self) -> str | None:
+        """Return the gateway requests are scoped to, or None if none is selected yet.
+
+        ``login()`` auto-selects a sole gateway, so this tells a multi-site
+        caller whether it still has to present a choice.
+
+        Raises:
+            UnsupportedOperationError: When the server does not support gateway selection.
+        """
+        if not isinstance(self._auth, SupportsGatewaySelection):
+            raise UnsupportedOperationError(
+                f"{self.server_config.name} does not support gateway selection."
+            )
+        return self._auth.selected_gateway
+
     def to_credentials(
         self,
         on_token_refresh: Callable[[str], Awaitable[None]] | None = None,

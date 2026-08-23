@@ -1398,6 +1398,30 @@ class TestOverkizClient:
 
         fake_auth.select_gateway.assert_called_once_with("g1")
 
+    def test_selected_gateway_delegates_to_strategy(
+        self, client: OverkizClient
+    ) -> None:
+        """selected_gateway reports the gateway the strategy scoped requests to."""
+        fake_auth = MagicMock(spec=SupportsGatewaySelection)
+        fake_auth.selected_gateway = "g1"
+        client._auth = fake_auth
+
+        assert client.selected_gateway == "g1"
+
+    def test_selected_gateway_raises_for_unsupported_strategy(
+        self, client: OverkizClient
+    ) -> None:
+        """selected_gateway raises UnsupportedOperationError when unsupported.
+
+        Returning None instead would be indistinguishable from a multi-site
+        account with nothing selected yet.
+        """
+        with pytest.raises(
+            exceptions.UnsupportedOperationError,
+            match="does not support gateway selection",
+        ):
+            _ = client.selected_gateway
+
     def test_to_credentials_delegates_to_strategy(self, client: OverkizClient) -> None:
         """to_credentials forwards to a resume-capable strategy."""
         fake_auth = MagicMock(spec=SupportsSessionResume)

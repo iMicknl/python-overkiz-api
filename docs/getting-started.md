@@ -100,9 +100,10 @@ Use a cloud server when you want to connect through the vendor’s public API. U
             # selected, since requests are scoped to the selected site.
             await client.login(register_event_listener=False)
 
-            # A sole site is auto-selected; otherwise pick one explicitly.
-            gateways = await client.discover_gateways()
-            if len(gateways) > 1:
+            # login() auto-selects a sole site, so only a real multi-site
+            # account still needs a choice.
+            if client.selected_gateway is None:
+                gateways = await client.discover_gateways()
                 client.select_gateway(gateways[0].gateway_id)
 
             # Client is now scoped to the selected site and ready to use.
@@ -117,7 +118,16 @@ Use a cloud server when you want to connect through the vendor’s public API. U
 
     Each `GatewayCandidate` from `discover_gateways()` carries a human-readable
     `label` (the site name) and `home_id`, so a multi-site UI can let the user
-    pick before calling `select_gateway`.
+    pick before calling `select_gateway`. After `login()` (and after every
+    `select_gateway`), `client.selected_gateway` reports the gateway requests are
+    scoped to, or `None` when a choice is still pending.
+
+    **Access levels.** A site the account was merely invited to is listed like
+    any other, and its `roles` holds the account's role on that site — `owner`,
+    `secondary`, or an opaque id for a custom or installer role. pyoverkiz does
+    not filter on it: even the most limited access keeps control of some devices,
+    so such a site works in reduced form rather than not at all. Use `roles` to
+    explain that reduction to a user, not to hide the site.
 
     Requests made before a site is selected raise `NoGatewaySelectedError`: the
     account-wide token is not site-scoped, so there is no sensible site to talk
