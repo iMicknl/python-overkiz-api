@@ -518,7 +518,6 @@ class Device:
 
         return [
             SupportedAlias(
-                # The API reports ids as either a string or an integer
                 id=str(alias["id"]),
                 type=alias["type"],
                 features=list(alias.get("features", [])),

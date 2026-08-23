@@ -1685,7 +1685,7 @@ class TestSupportedAliases:
         ]
 
     def test_normalizes_integer_ids_to_string(self):
-        """The API is inconsistent about id typing, so ids are always strings."""
+        """Ids are exposed as strings, since goToAlias takes a string parameter."""
         device = self._device_with_aliases([{"id": 1, "type": "favorite1"}])
 
         alias = device.get_supported_aliases()[0]
