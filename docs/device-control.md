@@ -141,6 +141,27 @@ if cmd_def:
     print(f"Number of parameters: {cmd_def.nparams}")
 ```
 
+#### Resolve supported aliases
+
+Devices that support `goToAlias` advertise their alias slots through the
+`core:SupportedAliases` attribute. A device can list several ids for the same
+type (e.g. six `favorite1` slots), each covering a different subset of features.
+The official app shows a single control per type and targets the most featured
+id, which `get_most_featured_aliases()` reproduces:
+
+```python
+devices = await client.get_devices()
+device = devices[0]
+
+# All alias slots exactly as reported by the API
+for alias in device.get_supported_aliases():
+    print(f"{alias.type} (id {alias.id}): {alias.features}")
+
+# One alias per type, ready to use as a goToAlias parameter
+for alias_type, alias in device.get_most_featured_aliases().items():
+    print(f"{alias_type} -> goToAlias {alias.id}")
+```
+
 #### Access device identifier
 
 Device URLs are automatically parsed into structured identifier components for easier access:

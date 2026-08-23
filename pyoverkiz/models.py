@@ -443,6 +443,15 @@ class DeviceIdentifier:
 
 
 @define(kw_only=True)
+class SupportedAlias:
+    """An alias slot advertised by a device through core:SupportedAliases."""
+
+    id: str
+    type: str
+    features: list[str] = field(factory=list)
+
+
+@define(kw_only=True)
 class Device:
     """Representation of a device in the setup including parsed fields and states."""
 
@@ -499,6 +508,39 @@ class Device:
     ) -> CommandDefinition | None:
         """Return the CommandDefinition for a command, or None if unavailable."""
         return self.definition.commands.get(str(command))
+
+    def get_supported_aliases(self) -> list[SupportedAlias]:
+        """Return the alias slots from core:SupportedAliases, empty when absent."""
+        raw_aliases = self.attributes.get_value(OverkizAttribute.CORE_SUPPORTED_ALIASES)
+
+        if not isinstance(raw_aliases, list):
+            return []
+
+        return [
+            SupportedAlias(
+                # The API reports ids as either a string or an integer
+                id=str(alias["id"]),
+                type=alias["type"],
+                features=list(alias.get("features", [])),
+            )
+            for alias in raw_aliases
+        ]
+
+    def get_most_featured_aliases(self) -> dict[str, SupportedAlias]:
+        """Return the alias to use per type, mirroring how the Somfy app resolves them.
+
+        A device can advertise several ids for the same type, each covering a
+        different subset of features. The app shows a single control per type and
+        targets the most featured id, preferring the earliest one on a tie.
+        """
+        most_featured: dict[str, SupportedAlias] = {}
+
+        for alias in self.get_supported_aliases():
+            current = most_featured.get(alias.type)
+            if current is None or len(alias.features) > len(current.features):
+                most_featured[alias.type] = alias
+
+        return most_featured
 
 
 # ---------------------------------------------------------------------------
