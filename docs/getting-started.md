@@ -168,6 +168,23 @@ Use a cloud server when you want to connect through the vendor’s public API. U
     pyoverkiz owns this refresh cycle and pushes each rotated token to your
     callback — see [Who owns the tokens](#who-owns-the-tokens).
 
+    !!! warning "`Server.SOMFY` is experimental"
+
+        The flow behind it — the Ginaite token exchange, the BOB site directory,
+        and the offline country-to-region map — is reconstructed from the TaHoma
+        app and may change within 2.x.
+
+        What will not change within 2.x: the `SomfyTokenCredentials` fields and
+        the `EMEA`/`APAC`/`SNABA` values of its `region`, so a stored credential
+        stays loadable. Gateway selection and session resume are ordinary
+        capabilities shared with Rexel, not experimental.
+
+        `Server.SOMFY` is expected to replace `Server.SOMFY_EUROPE`,
+        `SOMFY_AMERICA`, and `SOMFY_OCEANIA` eventually. Until then prefer the
+        per-region servers unless the account really has several sites: they are
+        not deprecated, warn about nothing, and are not scheduled for removal in
+        2.x.
+
 === "Somfy (local)"
 
     Local authentication requires a token generated via the official mobile app. For details on obtaining a token, refer to [Somfy TaHoma Developer Mode](https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode).
