@@ -311,6 +311,7 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
         # Refresh-token persistence for resumed sessions (no-op for fresh login).
         self._on_token_refresh: Callable[[str], Awaitable[None]] | None = None
         self._persisted_refresh_token: str | None = None
+        self._warned_missing_refresh_callback = False
         self._refresh_lock = asyncio.Lock()
 
     async def login(self) -> None:
@@ -537,14 +538,14 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
 
     async def _notify_token_refresh(self) -> None:
         """Let a resuming caller persist a rotated refresh token (no-op otherwise)."""
-        if (
-            self._on_token_refresh is None
-            or self.context.refresh_token is None
-            or self.context.refresh_token == self._persisted_refresh_token
-        ):
+        rotated = self.context.refresh_token
+        if rotated is None or rotated == self._persisted_refresh_token:
             return
 
-        rotated = self.context.refresh_token
+        if self._on_token_refresh is None:
+            self._warn_missing_refresh_callback()
+            return
+
         try:
             await self._on_token_refresh(rotated)
         except Exception:
@@ -557,6 +558,25 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
         # Recorded only once stored, so a failed store is retried on the next
         # rotation instead of being remembered as persisted.
         self._persisted_refresh_token = rotated
+
+    def _warn_missing_refresh_callback(self) -> None:
+        """Warn a resuming caller once that the token it stored has just been spent."""
+        # Only a resumed session stores tokens; a password login is expected to
+        # discard the rotated one. Ginaite has already invalidated the stored
+        # token, so without a callback the breakage surfaces on the next resume,
+        # far from its cause. Once is enough: every later rotation is the same
+        # missing callback.
+        if not isinstance(self.credentials, SomfyTokenCredentials):
+            return
+        if self._warned_missing_refresh_callback:
+            return
+
+        self._warned_missing_refresh_callback = True
+        _LOGGER.warning(
+            "Somfy refresh token rotated but no on_token_refresh callback is set; "
+            "the stored token is now spent and resuming will fail. Pass "
+            "on_token_refresh to to_credentials() to persist each rotation."
+        )
 
     async def auth_headers(self, path: str | None = None) -> Mapping[str, str]:
         """Return the Bearer header (site-scoped token), or {} before login."""

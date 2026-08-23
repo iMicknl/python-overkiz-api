@@ -128,7 +128,8 @@ Use a cloud server when you want to connect through the vendor’s public API. U
     (a refresh token scoped to the selected site). Persist it and pass it back on
     the next run to log in without the password grant, token exchange, or
     discovery. The refresh token rotates, so supply an `on_token_refresh`
-    callback to re-persist it.
+    callback to re-persist it — without one, the first rotation spends the token
+    you stored and pyoverkiz logs a warning, since the next resume will fail.
 
     ```python
     import asyncio

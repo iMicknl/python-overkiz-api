@@ -2418,6 +2418,61 @@ async def test_somfy_resume_failed_persist_retries_on_next_rotation():
 
 
 @pytest.mark.asyncio
+async def test_somfy_resume_rotation_without_callback_warns_once(caplog):
+    """A resumed session with no on_token_refresh warns on the first rotation.
+
+    The caller holds a token Ginaite has just invalidated, so the failure only
+    surfaces on the next resume; a warning here points at the actual cause. It
+    warns once, since every later rotation is the same missing callback.
+    """
+    strategy, session = _build_somfy_resume_strategy()
+    await strategy.login()
+
+    with caplog.at_level(logging.WARNING):
+        session.post = MagicMock(
+            return_value=_json_ctx(
+                {"access_token": "scoped-1", "refresh_token": "r-rot-1"}
+            )
+        )
+        await strategy.refresh_if_needed()
+
+        strategy.context.expires_at = datetime.datetime.now(datetime.UTC)
+        session.post = MagicMock(
+            return_value=_json_ctx(
+                {"access_token": "scoped-2", "refresh_token": "r-rot-2"}
+            )
+        )
+        await strategy.refresh_if_needed()
+
+    warnings = [r for r in caplog.records if r.levelno == logging.WARNING]
+    assert len(warnings) == 1
+    assert "on_token_refresh" in warnings[0].getMessage()
+
+
+@pytest.mark.asyncio
+async def test_somfy_fresh_login_rotation_without_callback_does_not_warn(caplog):
+    """A password-login session rotating its token is not worth warning about.
+
+    Nothing was persisted, so the rotated token is expected to be thrown away
+    and the next run logs in with the password again.
+    """
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    strategy.context.refresh_token = "r-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+    strategy.select_gateway("2025-0000-0001")  # forces expiry
+
+    with caplog.at_level(logging.WARNING):
+        session.post = MagicMock(
+            return_value=_json_ctx({"access_token": "scoped-1", "refresh_token": "r-2"})
+        )
+        await strategy.refresh_if_needed()
+
+    assert [r for r in caplog.records if r.levelno == logging.WARNING] == []
+
+
+@pytest.mark.asyncio
 async def test_somfy_refresh_is_serialized_across_concurrent_requests():
     """Concurrent expired requests must refresh once, not race for the token.
 
