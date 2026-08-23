@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
 
 if TYPE_CHECKING:
-    from pyoverkiz.auth.credentials import SomfyTokenCredentials
+    from pyoverkiz.auth.credentials import Credentials
 
 
 @dataclass(slots=True)
@@ -96,11 +96,15 @@ class SupportsGatewaySelection(Protocol):
 
 
 @runtime_checkable
-class SupportsSessionResume(Protocol):
-    """Optional capability: snapshot the session for later resume without re-login."""
+class SupportsSessionResume[CredentialsT: Credentials](Protocol):
+    """Optional capability: snapshot the session for later resume without re-login.
+
+    Parameterised by the credentials type each vendor resumes into, so a second
+    implementation does not have to widen this signature.
+    """
 
     def to_credentials(
         self,
         on_token_refresh: Callable[[str], Awaitable[None]] | None = None,
-    ) -> SomfyTokenCredentials:
+    ) -> CredentialsT:
         """Return resume credentials for the current session."""

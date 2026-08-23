@@ -1440,6 +1440,18 @@ def test_rexel_token_strategy_supports_gateway_selection():
     assert isinstance(strategy, SupportsGatewaySelection)
 
 
+def test_somfy_account_strategy_supports_session_resume():
+    """SomfyAccountAuthStrategy satisfies the SupportsSessionResume protocol.
+
+    Runtime protocol checks only see the method, not its credentials type; the
+    type parameter is enforced by mypy/ty over the library instead.
+    """
+    from pyoverkiz.auth.base import SupportsSessionResume
+
+    strategy, _ = _build_somfy_multisite_strategy()
+    assert isinstance(strategy, SupportsSessionResume)
+
+
 def test_somfy_multisite_constants_and_server():
     """Server.SOMFY and the Ginaite/BOB constants are defined and consistent."""
     from pyoverkiz.const import (
