@@ -15,6 +15,7 @@ from typing import Any, Self, cast
 import backoff
 from aiohttp import (
     ClientConnectorError,
+    ClientError,
     ClientResponse,
     ClientSession,
     ClientTimeout,
@@ -83,12 +84,22 @@ def _get_client_from_invocation(invocation: Details) -> OverkizClient:
 
 async def relogin(invocation: Details) -> None:
     """Re-authenticate using the main `OverkizClient` instance."""
-    await _get_client_from_invocation(invocation).login()
+    client = _get_client_from_invocation(invocation)
+    client.reset_event_listener_id()
+    try:
+        await client.login()
+    except (TimeoutError, ClientError, OSError) as err:
+        _LOGGER.warning("Transient network error during relogin backoff: %s", err)
 
 
 async def refresh_listener(invocation: Details) -> None:
     """Refresh the listener using the main `OverkizClient` instance."""
-    await _get_client_from_invocation(invocation).register_event_listener()
+    client = _get_client_from_invocation(invocation)
+    client.reset_event_listener_id()
+    try:
+        await client.register_event_listener()
+    except (TimeoutError, ClientError, OSError) as err:
+        _LOGGER.warning("Transient network error during refresh_listener backoff: %s", err)
 
 
 retry_on_auth_error = backoff.on_exception(
@@ -203,6 +214,10 @@ class OverkizClient:
         """Return the current event listener ID (read-only)."""
         return self._event_listener_id
 
+    def reset_event_listener_id(self) -> None:
+        """Reset the active event listener ID."""
+        self._event_listener_id = None
+
     def __init__(
         self,
         *,
@@ -306,6 +321,7 @@ class OverkizClient:
             TooManyAttemptsBannedError: When too many failed login attempts have been made.
             TooManyRequestsError: When the API rate limit has been exceeded.
         """
+        self._event_listener_id = None
         await self._auth.login()
 
         if self.server_config.api_type == APIType.LOCAL:
@@ -461,6 +477,8 @@ class OverkizClient:
         )
 
     @retry_on_concurrent_requests
+    @retry_on_connection_failure
+    @retry_on_auth_error
     async def register_event_listener(self) -> str:
         """Register a new setup event listener on the current session and return a new.
 
