@@ -161,7 +161,9 @@ class TestAdversarialTransportAndAuthFaultResilience:
             patch.object(
                 aiohttp.ClientSession,
                 "get",
-                side_effect=exceptions.BadCredentialsError("Invalid username or password"),
+                side_effect=exceptions.BadCredentialsError(
+                    "Invalid username or password"
+                ),
             ),
             pytest.raises(exceptions.BadCredentialsError),
         ):
@@ -180,7 +182,10 @@ class TestAdversarialTransportAndAuthFaultResilience:
         [
             ("exceptions/cloud/503-maintenance.html", exceptions.MaintenanceError),
             ("exceptions/cloud/503-empty.html", exceptions.ServiceUnavailableError),
-            ("exceptions/cloud/502-bad-gateway.html", exceptions.ServiceUnavailableError),
+            (
+                "exceptions/cloud/502-bad-gateway.html",
+                exceptions.ServiceUnavailableError,
+            ),
         ],
     )
     @pytest.mark.asyncio
@@ -223,7 +228,9 @@ class TestAdversarialTransportAndAuthFaultResilience:
                 "_post",
                 side_effect=[
                     exceptions.NotAuthenticatedError("Session expired"),
-                    aiohttp.ClientConnectorError(MagicMock(), OSError("Connection reset")),
+                    aiohttp.ClientConnectorError(
+                        MagicMock(), OSError("Connection reset")
+                    ),
                     {"id": "listener-resilience-ok"},
                 ],
             ) as post_mock,

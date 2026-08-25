@@ -342,7 +342,9 @@ class TestOverkizClient:
                 "_post",
                 new=AsyncMock(
                     side_effect=[
-                        aiohttp.ClientConnectorError(MagicMock(), OSError("Connection reset")),
+                        aiohttp.ClientConnectorError(
+                            MagicMock(), OSError("Connection reset")
+                        ),
                         {"id": "listener-conn-retry"},
                     ]
                 ),
@@ -361,7 +363,9 @@ class TestOverkizClient:
         """Ensure relogin backoff handler resets listener ID and catches transient network error."""
         client._event_listener_id = "old-listener"
         client.login = AsyncMock(
-            side_effect=aiohttp.ClientConnectorError(MagicMock(), OSError("Network down"))
+            side_effect=aiohttp.ClientConnectorError(
+                MagicMock(), OSError("Network down")
+            )
         )
 
         invocation = {"args": (client,)}

@@ -99,7 +99,9 @@ async def refresh_listener(invocation: Details) -> None:
     try:
         await client.register_event_listener()
     except (TimeoutError, ClientError, OSError) as err:
-        _LOGGER.warning("Transient network error during refresh_listener backoff: %s", err)
+        _LOGGER.warning(
+            "Transient network error during refresh_listener backoff: %s", err
+        )
 
 
 retry_on_auth_error = backoff.on_exception(
