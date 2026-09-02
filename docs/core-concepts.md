@@ -102,7 +102,8 @@ Rexel supports two authentication modes:
 
 Both Rexel modes support multiple gateways: after `login()`, call
 `discover_gateways()` and `select_gateway()` to scope requests (a sole gateway
-is auto-selected).
+is auto-selected). `selected_gateway` reports the current scope, or `None` when
+a choice is still pending.
 
 ## Relationship diagram
 

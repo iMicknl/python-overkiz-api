@@ -26,6 +26,10 @@ class Server(StrEnum):
     REXEL = "rexel"
     SAUTER_COZYTOUCH = "sauter_cozytouch"
     SIMU_LIVEIN2 = "simu_livein2"
+    # Experimental: the region-agnostic multi-account flow behind this server is
+    # reconstructed from the TaHoma app and may change within 2.x. The
+    # per-region servers below remain supported.
+    SOMFY = "somfy"
     SOMFY_DEVELOPER_MODE = "somfy_developer_mode"
     SOMFY_EUROPE = "somfy_europe"
     SOMFY_AMERICA = "somfy_america"
