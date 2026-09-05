@@ -16,7 +16,12 @@ from pyoverkiz.auth import (
     SupportsGatewaySelection,
     UsernamePasswordCredentials,
 )
-from pyoverkiz.client import OverkizClient, OverkizClientSettings
+from pyoverkiz.client import (
+    OverkizClient,
+    OverkizClientSettings,
+    refresh_listener,
+    relogin,
+)
 from pyoverkiz.const import USER_AGENT
 from pyoverkiz.enums import (
     APIType,
@@ -297,6 +302,93 @@ class TestOverkizClient:
         assert listener_id == "listener-3"
         assert post_mock.await_count == 2
         assert sleep_mock.await_count == 1
+
+    @pytest.mark.asyncio
+    async def test_register_event_listener_retries_on_auth_error(
+        self, client: OverkizClient
+    ) -> None:
+        """Ensure listener registration backoff retries and triggers login on auth error."""
+        client.login = AsyncMock()
+
+        with (
+            patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
+            patch.object(
+                OverkizClient,
+                "_post",
+                new=AsyncMock(
+                    side_effect=[
+                        exceptions.NotAuthenticatedError("expired"),
+                        {"id": "listener-auth-retry"},
+                    ]
+                ),
+            ) as post_mock,
+        ):
+            listener_id = await client.register_event_listener()
+
+        assert listener_id == "listener-auth-retry"
+        assert post_mock.await_count == 2
+        assert client.login.await_count == 1
+        assert sleep_mock.await_count == 1
+
+    @pytest.mark.asyncio
+    async def test_register_event_listener_retries_on_connection_failure(
+        self, client: OverkizClient
+    ) -> None:
+        """Ensure listener registration retries on transient connection failure."""
+        with (
+            patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
+            patch.object(
+                OverkizClient,
+                "_post",
+                new=AsyncMock(
+                    side_effect=[
+                        aiohttp.ClientConnectorError(
+                            MagicMock(), OSError("Connection reset")
+                        ),
+                        {"id": "listener-conn-retry"},
+                    ]
+                ),
+            ) as post_mock,
+        ):
+            listener_id = await client.register_event_listener()
+
+        assert listener_id == "listener-conn-retry"
+        assert post_mock.await_count == 2
+        assert sleep_mock.await_count == 1
+
+    @pytest.mark.asyncio
+    async def test_relogin_handles_transient_network_error(
+        self, client: OverkizClient
+    ) -> None:
+        """Ensure relogin backoff handler resets listener ID and catches transient network error."""
+        client._event_listener_id = "old-listener"
+        client.login = AsyncMock(
+            side_effect=aiohttp.ClientConnectorError(
+                MagicMock(), OSError("Network down")
+            )
+        )
+
+        invocation = {"args": (client,)}
+        await relogin(invocation)
+
+        assert client._event_listener_id is None
+        assert client.login.await_count == 1
+
+    @pytest.mark.asyncio
+    async def test_refresh_listener_handles_transient_network_error(
+        self, client: OverkizClient
+    ) -> None:
+        """Ensure refresh_listener handler resets listener ID and catches transient network error."""
+        client._event_listener_id = "old-listener"
+        client.register_event_listener = AsyncMock(
+            side_effect=aiohttp.ServerDisconnectedError("Server disconnected")
+        )
+
+        invocation = {"args": (client,)}
+        await refresh_listener(invocation)
+
+        assert client._event_listener_id is None
+        assert client.register_event_listener.await_count == 1
 
     @pytest.mark.parametrize(
         "fixture_name",
