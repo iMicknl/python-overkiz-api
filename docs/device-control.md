@@ -146,8 +146,7 @@ if cmd_def:
 Devices that support `goToAlias` advertise their alias slots through the
 `core:SupportedAliases` attribute. A device can list several ids for the same
 type (e.g. six `favorite1` slots), each covering a different subset of features.
-The official app shows a single control per type and targets the most featured
-id, which `get_most_featured_aliases()` reproduces:
+`get_most_featured_aliases()` returns the alias with the most features for each type:
 
 ```python
 devices = await client.get_devices()

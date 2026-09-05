@@ -1660,7 +1660,9 @@ class TestSupportedAliases:
     """Tests for parsing and resolving the core:SupportedAliases attribute."""
 
     @staticmethod
-    def _device_with_aliases(value: list[dict] | None) -> Device:
+    def _device_with_aliases(
+        value: list[dict[str, str | int | list[str]]] | None,
+    ) -> Device:
         """Create a Device exposing core:SupportedAliases with the given raw value."""
         attributes = (
             [{"name": "core:SupportedAliases", "type": 10, "value": value}]
