@@ -526,12 +526,7 @@ class Device:
         ]
 
     def get_most_featured_aliases(self) -> dict[str, SupportedAlias]:
-        """Return the alias to use per type, mirroring how the Somfy app resolves them.
-
-        A device can advertise several ids for the same type, each covering a
-        different subset of features. The app shows a single control per type and
-        targets the most featured id, preferring the earliest one on a tie.
-        """
+        """Return the alias with the most features for each type."""
         most_featured: dict[str, SupportedAlias] = {}
 
         for alias in self.get_supported_aliases():
