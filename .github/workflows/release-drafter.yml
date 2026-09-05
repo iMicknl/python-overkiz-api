@@ -4,7 +4,8 @@ on:
   push:
     branches:
       - main
-  pull_request:
+  # Fork PRs need a base-repository token to apply labels.
+  pull_request_target:
     types: [opened, reopened, synchronize, edited]
 
 permissions:
@@ -26,8 +27,9 @@ jobs:
   # Apply Conventional-Commit labels from the PR title (PRs only).
   # The autolabeler is a separate sub-action; the main action above only drafts
   # releases and does not apply labels.
+  # Keep this privileged job free of PR code checkout or execution.
   autolabel:
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request_target'
     runs-on: ubuntu-latest
     permissions:
       contents: read
