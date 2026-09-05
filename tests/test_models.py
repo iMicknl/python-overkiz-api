@@ -51,6 +51,7 @@ from pyoverkiz.models import (
     StateDefinition,
     StateDefinitions,
     States,
+    SupportedAlias,
     ZoneCreatedEvent,
     ZoneDeletedEvent,
     ZoneUpdatedEvent,
@@ -1653,3 +1654,95 @@ def test_get_command_definition_empty_definition():
         type=ProductType.ACTUATOR,
     )
     assert device.get_command_definition("open") is None
+
+
+class TestSupportedAliases:
+    """Tests for parsing and resolving the core:SupportedAliases attribute."""
+
+    @staticmethod
+    def _device_with_aliases(
+        value: list[dict[str, str | int | list[str]]] | None,
+    ) -> Device:
+        """Create a Device exposing core:SupportedAliases with the given raw value."""
+        attributes = (
+            [{"name": "core:SupportedAliases", "type": 10, "value": value}]
+            if value is not None
+            else []
+        )
+        return _make_device({**RAW_DEVICES, "attributes": attributes})
+
+    def test_returns_empty_list_when_attribute_is_absent(self):
+        """Devices without the attribute report no aliases instead of raising."""
+        assert self._device_with_aliases(None).get_supported_aliases() == []
+        assert self._device_with_aliases(None).get_most_featured_aliases() == {}
+
+    def test_parses_raw_entries_into_typed_aliases(self):
+        """Each raw entry becomes a SupportedAlias with id, type and features."""
+        device = self._device_with_aliases(
+            [{"id": "55299", "type": "ventilation", "features": ["openClose"]}]
+        )
+
+        assert device.get_supported_aliases() == [
+            SupportedAlias(id="55299", type="ventilation", features=["openClose"])
+        ]
+
+    def test_normalizes_integer_ids_to_string(self):
+        """Ids are exposed as strings, since goToAlias takes a string parameter."""
+        device = self._device_with_aliases([{"id": 1, "type": "favorite1"}])
+
+        alias = device.get_supported_aliases()[0]
+        assert alias.id == "1"
+        assert alias.features == []
+
+    def test_resolves_most_featured_alias_per_type(self):
+        """A duplicated type collapses to the entry advertising the most features."""
+        device = self._device_with_aliases(
+            [
+                {"id": "1", "type": "favorite1", "features": ["openClosePosition"]},
+                {
+                    "id": "3",
+                    "type": "favorite1",
+                    "features": ["openClosePosition", "tiltPosition"],
+                },
+                {"id": "2", "type": "favorite1", "features": ["tiltPosition"]},
+            ]
+        )
+
+        assert device.get_most_featured_aliases() == {
+            "favorite1": SupportedAlias(
+                id="3",
+                type="favorite1",
+                features=["openClosePosition", "tiltPosition"],
+            )
+        }
+
+    def test_breaks_ties_on_array_order(self):
+        """The Somfy app picks the first of equally featured entries, not the lowest id."""
+        device = self._device_with_aliases(
+            [
+                {"id": "6", "type": "favorite1", "features": ["tilt", "openClose"]},
+                {"id": "4", "type": "favorite1", "features": ["tilt", "openClose"]},
+                {"id": "1", "type": "favorite1", "features": ["openClose"]},
+            ]
+        )
+
+        assert device.get_most_featured_aliases()["favorite1"].id == "6"
+
+    def test_keeps_one_alias_for_every_type(self):
+        """Distinct types each resolve independently."""
+        device = self._device_with_aliases(
+            [
+                {"id": "1", "type": "favorite1", "features": ["openClose"]},
+                {"id": "55305", "type": "partial", "features": ["openClose"]},
+                {
+                    "id": "2",
+                    "type": "favorite1",
+                    "features": ["openClose", "tiltPosition"],
+                },
+            ]
+        )
+
+        assert {
+            alias_type: alias.id
+            for alias_type, alias in device.get_most_featured_aliases().items()
+        } == {"favorite1": "2", "partial": "55305"}
