@@ -434,7 +434,6 @@
       "IntrusionEventSensor",
       "IntrusionSensor",
       "Invalid",
-      "JSWCamera",
       "KizOThermBridge",
       "KizOThermV2Bridge",
       "LockUnlockDoorLockWithUnknownPosition",
@@ -5418,22 +5417,22 @@
         "formFactor": false,
         "states": [
           {
+            "name": "core:ActionEventState",
+            "description": "Contains the id of triggered button action (stateless information, makes sense only punctually at a certain time, does not indicate a stable or continuous status).",
+            "valuePrototypes": [
+              {
+                "type": "STRING",
+                "description": "string value"
+              }
+            ]
+          },
+          {
             "name": "core:AvailableActionsState",
             "description": "List of action ids available",
             "valuePrototypes": [
               {
                 "type": "ARRAY",
                 "description": "array value"
-              }
-            ]
-          },
-          {
-            "name": "core:ButtonActionsEventState",
-            "description": "Contains the id of triggered button action (stateless information, makes sense only punctually at a certain time, does not indicate a stable or continuous status).",
-            "valuePrototypes": [
-              {
-                "type": "STRING",
-                "description": "string value"
               }
             ]
           }
@@ -139569,253 +139568,6 @@
         ]
       }
     ],
-    "JSW": [
-      {
-        "typeId": 0,
-        "subsystemId": 0,
-        "localPairing": false,
-        "uiClass": "Camera",
-        "uiWidget": "JSWCamera",
-        "uiProfiles": [
-          "Specific"
-        ],
-        "uiClassifiers": [],
-        "controllableName": "jsw:CameraController",
-        "controllableType": "ACTUATOR",
-        "protocolType": "JSW",
-        "commands": [
-          {
-            "commandName": "downloadRecordedFile",
-            "nparams": 1,
-            "description": "Allow to get an URL to download a recorded file\np1: event time of a recorded file, obtained from listRecordedFiles command\n(The URL is returned asynchronously in a DownloadRecordedFileEvent)\n",
-            "parameters": [
-              {
-                "optional": false,
-                "sensitive": false,
-                "valuePrototypes": [
-                  {
-                    "type": "INT",
-                    "minValue": 0,
-                    "description": "integer value >= 0"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "commandName": "listRecordedFiles",
-            "nparams": 2,
-            "description": "List recorded files in a given time period\np1: start_Time -> unix time format (UTC)\np2: end_Time -> unix time format (UTC) - optional field (defaults to now)\n(The list is returned asynchronously in a ListRecordedFilesEvent)\n",
-            "parameters": [
-              {
-                "optional": false,
-                "sensitive": false,
-                "valuePrototypes": [
-                  {
-                    "type": "INT",
-                    "minValue": 0,
-                    "description": "integer value >= 0"
-                  }
-                ]
-              },
-              {
-                "optional": true,
-                "sensitive": false,
-                "valuePrototypes": [
-                  {
-                    "type": "INT",
-                    "minValue": 0,
-                    "description": "integer value >= 0"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "commandName": "connect",
-            "nparams": 0,
-            "description": "Open a new session on the camera and return a session token\n(The token is returned asynchronously in a JSWConnectTokenObtainedEvent)\n"
-          },
-          {
-            "commandName": "deleteRecordedFile",
-            "nparams": 1,
-            "description": "Delete an recorded file\np1: event time of a recorded file, obtained from returning value of listRecordedFiles command\n",
-            "parameters": [
-              {
-                "optional": false,
-                "sensitive": false,
-                "valuePrototypes": [
-                  {
-                    "type": "INT",
-                    "minValue": 0,
-                    "description": "integer value >= 0"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "commandName": "disconnect",
-            "nparams": 1,
-            "description": "Close a camera session\np1: token obtained by \"connect\" command\n(The session token is invalidated after using this command)\n",
-            "parameters": [
-              {
-                "optional": false,
-                "sensitive": false,
-                "valuePrototypes": [
-                  {
-                    "type": "STRING",
-                    "description": "string value"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "commandName": "getSessionStatus",
-            "nparams": 1,
-            "description": "Refresh the camera status state\np1:token obtained by \"connect\" command\n",
-            "parameters": [
-              {
-                "optional": false,
-                "sensitive": false,
-                "valuePrototypes": [
-                  {
-                    "type": "STRING",
-                    "description": "string value"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "commandName": "playJSWRecordedFile",
-            "nparams": 2,
-            "description": "Play a recorded file\np1: event time of a recorded file, obtained from listRecordedFiles command\np2: token obtained by \"connect\" command\n",
-            "parameters": [
-              {
-                "optional": false,
-                "sensitive": false,
-                "valuePrototypes": [
-                  {
-                    "type": "INT",
-                    "minValue": 0,
-                    "description": "integer value >= 0"
-                  }
-                ]
-              },
-              {
-                "optional": false,
-                "sensitive": false,
-                "valuePrototypes": [
-                  {
-                    "type": "STRING",
-                    "description": "string value"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "commandName": "setPassword",
-            "nparams": 2,
-            "description": "Change the current password\np1:old password\np2:new password\n",
-            "parameters": [
-              {
-                "optional": false,
-                "sensitive": true,
-                "valuePrototypes": [
-                  {
-                    "type": "STRING",
-                    "description": "string value"
-                  }
-                ]
-              },
-              {
-                "optional": false,
-                "sensitive": true,
-                "valuePrototypes": [
-                  {
-                    "type": "STRING",
-                    "description": "string value"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "commandName": "startJSWLiveVideo",
-            "nparams": 1,
-            "description": "Start a live video and get an URL for live streaming\np1: token obtained by \"connect\" command\n",
-            "parameters": [
-              {
-                "optional": false,
-                "sensitive": false,
-                "valuePrototypes": [
-                  {
-                    "type": "STRING",
-                    "description": "string value"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "commandName": "startJSWRecording",
-            "nparams": 0,
-            "description": "Start recording a video. Uses a temporary session for 1 minute.\n"
-          },
-          {
-            "commandName": "stopJSWLiveVideo",
-            "nparams": 1,
-            "description": "Stop live video streaming\np1: token obtained by \"connect\" command, same token that was used for startJSWLiveVideoCommand\n",
-            "parameters": [
-              {
-                "optional": false,
-                "sensitive": false,
-                "valuePrototypes": [
-                  {
-                    "type": "STRING",
-                    "description": "string value"
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "commandName": "stopJSWPlayRecordedFile",
-            "nparams": 1,
-            "description": "Stop playing a recorded file\np1: token obtained by \"connect\" command, same token that was used for playJSWRecordedFileCommand\n",
-            "parameters": [
-              {
-                "optional": false,
-                "sensitive": false,
-                "valuePrototypes": [
-                  {
-                    "type": "STRING",
-                    "description": "string value"
-                  }
-                ]
-              }
-            ]
-          }
-        ],
-        "states": [
-          {
-            "name": "FreeMemoryState",
-            "type": "ContinuousState",
-            "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "TotalMemoryState",
-            "type": "ContinuousState",
-            "eventBased": false,
-            "persistent": false
-          }
-        ]
-      }
-    ],
     "OPENDOORS": [
       {
         "typeId": 16777472,
@@ -199217,6 +198969,11 @@
             ]
           },
           {
+            "commandName": "closeCommissioning",
+            "nparams": 0,
+            "description": "Close the commissioning window.\n"
+          },
+          {
             "commandName": "discover",
             "nparams": 0,
             "description": "Start a new discovery procedure.\n"
@@ -199262,6 +199019,25 @@
             "commandName": "joinSetup",
             "nparams": 0,
             "description": "Join an existing setup\n"
+          },
+          {
+            "commandName": "openCommissioning",
+            "nparams": 1,
+            "description": "Open the commissioning window to let the device be discovered by other controllers.\nDuration in seconds for which the commissioning window will be open.\n",
+            "parameters": [
+              {
+                "optional": false,
+                "sensitive": false,
+                "valuePrototypes": [
+                  {
+                    "type": "INT",
+                    "minValue": 1,
+                    "maxValue": 65535,
+                    "description": "integer value between 1 and 65535"
+                  }
+                ]
+              }
+            ]
           },
           {
             "commandName": "pair",
@@ -199439,9 +199215,29 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
+            "name": "CommissioningWindowCloseTimestampState",
+            "type": "DataState",
+            "eventBased": false,
+            "persistent": false,
+            "valuePrototypes": [
+              {
+                "type": "INT",
+                "minValue": 1,
+                "maxValue": 65535,
+                "description": "integer value between 1 and 65535"
+              }
+            ]
+          },
+          {
+            "name": "CommissioningWindowOpenState",
+            "type": "DataState",
+            "eventBased": false,
+            "persistent": false
+          },
+          {
+            "name": "CredentialsState",
+            "type": "DataState",
+            "eventBased": false,
             "persistent": false
           },
           {
@@ -199822,12 +199618,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -200615,12 +200405,6 @@
             ]
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -201262,12 +201046,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -201970,12 +201748,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -202565,12 +202337,6 @@
             ]
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -203153,12 +202919,6 @@
             ]
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -203687,12 +203447,6 @@
                 "description": "integer value between 0 and 100"
               }
             ]
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
           },
           {
             "name": "ErrorState",
@@ -204257,12 +204011,6 @@
             ]
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -204803,12 +204551,6 @@
             ]
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -205315,12 +205057,6 @@
                 "description": "integer value between 0 and 100"
               }
             ]
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
           },
           {
             "name": "ErrorState",
@@ -205866,12 +205602,6 @@
                 "description": "integer value between 0 and 100"
               }
             ]
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
           },
           {
             "name": "ErrorState",
@@ -206466,12 +206196,6 @@
                 "description": "integer value between 0 and 100"
               }
             ]
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
           },
           {
             "name": "ErrorState",
@@ -207158,12 +206882,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -207683,12 +207401,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -208177,12 +207889,6 @@
             ]
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -208563,12 +208269,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -208931,12 +208631,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -209305,12 +208999,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -209688,12 +209376,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -210050,12 +209732,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -210582,12 +210258,6 @@
                 "description": "integer value between 0 and 100"
               }
             ]
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
           },
           {
             "name": "ErrorState",
@@ -211170,12 +210840,6 @@
             ]
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -211699,12 +211363,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -212190,12 +211848,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -212592,12 +212244,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -212622,7 +212268,7 @@
             "persistent": false
           },
           {
-            "name": "IntrusionDetectionEventState",
+            "name": "IntrusionEventState",
             "type": "DiscreteState",
             "eventBased": true,
             "persistent": false
@@ -213097,12 +212743,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -213133,7 +212773,7 @@
             "persistent": false
           },
           {
-            "name": "IntrusionDetectionEventState",
+            "name": "IntrusionEventState",
             "type": "DiscreteState",
             "eventBased": true,
             "persistent": false
@@ -213251,7 +212891,7 @@
             "persistent": false
           },
           {
-            "name": "SmokeDetectionEventState",
+            "name": "SmokeEventState",
             "type": "DiscreteState",
             "eventBased": true,
             "persistent": false
@@ -213282,13 +212922,7 @@
             "name": "WaterLeakEventState",
             "type": "DiscreteState",
             "eventBased": true,
-            "persistent": false,
-            "valuePrototypes": [
-              {
-                "type": "STRING",
-                "description": "string value"
-              }
-            ]
+            "persistent": false
           },
           {
             "name": "WaterLeakState",
@@ -213610,12 +213244,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -214278,12 +213906,6 @@
             "name": "CycleStageSequenceState",
             "type": "DataState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -215232,12 +214854,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -215912,12 +215528,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -216452,12 +216062,6 @@
                 "description": "integer value between 0 and 100"
               }
             ]
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
           },
           {
             "name": "ErrorState",
@@ -217125,12 +216729,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -217176,12 +216774,6 @@
             "name": "MediaElementState",
             "type": "DataState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "MediaElementsEventState",
-            "type": "DataState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -217785,12 +217377,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -218460,12 +218046,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -218962,12 +218542,6 @@
             ]
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -219289,6 +218863,18 @@
         ],
         "states": [
           {
+            "name": "ActionEventState",
+            "type": "DataState",
+            "eventBased": true,
+            "persistent": false,
+            "valuePrototypes": [
+              {
+                "type": "STRING",
+                "description": "string value"
+              }
+            ]
+          },
+          {
             "name": "ActionState",
             "type": "DataState",
             "eventBased": false,
@@ -219334,24 +218920,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ButtonActionsEventState",
-            "type": "DataState",
-            "eventBased": true,
-            "persistent": false,
-            "valuePrototypes": [
-              {
-                "type": "STRING",
-                "description": "string value"
-              }
-            ]
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -219746,12 +219314,6 @@
             ]
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -220133,12 +219695,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -220489,12 +220045,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -220864,12 +220414,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -221256,6 +220800,18 @@
         ],
         "states": [
           {
+            "name": "ActionEventState",
+            "type": "DataState",
+            "eventBased": true,
+            "persistent": false,
+            "valuePrototypes": [
+              {
+                "type": "STRING",
+                "description": "string value"
+              }
+            ]
+          },
+          {
             "name": "ActionState",
             "type": "DataState",
             "eventBased": false,
@@ -221301,24 +220857,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ButtonActionsEventState",
-            "type": "DataState",
-            "eventBased": true,
-            "persistent": false,
-            "valuePrototypes": [
-              {
-                "type": "STRING",
-                "description": "string value"
-              }
-            ]
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -221692,12 +221230,6 @@
             ]
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -222058,12 +221590,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -222415,12 +221941,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -222538,13 +222058,7 @@
             "name": "WaterLeakEventState",
             "type": "DiscreteState",
             "eventBased": true,
-            "persistent": false,
-            "valuePrototypes": [
-              {
-                "type": "STRING",
-                "description": "string value"
-              }
-            ]
+            "persistent": false
           },
           {
             "name": "WaterLeakState",
@@ -222792,12 +222306,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -222906,7 +222414,7 @@
             "persistent": false
           },
           {
-            "name": "SmokeDetectionEventState",
+            "name": "SmokeEventState",
             "type": "DiscreteState",
             "eventBased": true,
             "persistent": false
@@ -223202,6 +222710,11 @@
             ]
           },
           {
+            "commandName": "closeCommissioning",
+            "nparams": 0,
+            "description": "Close the commissioning window.\n"
+          },
+          {
             "commandName": "discover",
             "nparams": 0,
             "description": "Start a new discovery procedure.\n"
@@ -223247,6 +222760,25 @@
             "commandName": "joinSetup",
             "nparams": 0,
             "description": "Join an existing setup\n"
+          },
+          {
+            "commandName": "openCommissioning",
+            "nparams": 1,
+            "description": "Open the commissioning window to let the device be discovered by other controllers.\nDuration in seconds for which the commissioning window will be open.\n",
+            "parameters": [
+              {
+                "optional": false,
+                "sensitive": false,
+                "valuePrototypes": [
+                  {
+                    "type": "INT",
+                    "minValue": 1,
+                    "maxValue": 65535,
+                    "description": "integer value between 1 and 65535"
+                  }
+                ]
+              }
+            ]
           },
           {
             "commandName": "pair",
@@ -223424,9 +222956,29 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
+            "name": "CommissioningWindowCloseTimestampState",
+            "type": "DataState",
+            "eventBased": false,
+            "persistent": false,
+            "valuePrototypes": [
+              {
+                "type": "INT",
+                "minValue": 1,
+                "maxValue": 65535,
+                "description": "integer value between 1 and 65535"
+              }
+            ]
+          },
+          {
+            "name": "CommissioningWindowOpenState",
+            "type": "DataState",
+            "eventBased": false,
+            "persistent": false
+          },
+          {
+            "name": "CredentialsState",
+            "type": "DataState",
+            "eventBased": false,
             "persistent": false
           },
           {
@@ -223807,12 +223359,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -224600,12 +224146,6 @@
             ]
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -225247,12 +224787,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -225955,12 +225489,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -226550,12 +226078,6 @@
             ]
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -227138,12 +226660,6 @@
             ]
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -227672,12 +227188,6 @@
                 "description": "integer value between 0 and 100"
               }
             ]
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
           },
           {
             "name": "ErrorState",
@@ -228242,12 +227752,6 @@
             ]
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -228788,12 +228292,6 @@
             ]
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -229300,12 +228798,6 @@
                 "description": "integer value between 0 and 100"
               }
             ]
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
           },
           {
             "name": "ErrorState",
@@ -229851,12 +229343,6 @@
                 "description": "integer value between 0 and 100"
               }
             ]
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
           },
           {
             "name": "ErrorState",
@@ -230451,12 +229937,6 @@
                 "description": "integer value between 0 and 100"
               }
             ]
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
           },
           {
             "name": "ErrorState",
@@ -231143,12 +230623,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -231668,12 +231142,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -232162,12 +231630,6 @@
             ]
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -232548,12 +232010,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -232916,12 +232372,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -233290,12 +232740,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -233673,12 +233117,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -234035,12 +233473,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -234567,12 +233999,6 @@
                 "description": "integer value between 0 and 100"
               }
             ]
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
           },
           {
             "name": "ErrorState",
@@ -235155,12 +234581,6 @@
             ]
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -235684,12 +235104,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -236175,12 +235589,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -236577,12 +235985,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -236607,7 +236009,7 @@
             "persistent": false
           },
           {
-            "name": "IntrusionDetectionEventState",
+            "name": "IntrusionEventState",
             "type": "DiscreteState",
             "eventBased": true,
             "persistent": false
@@ -237082,12 +236484,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -237118,7 +236514,7 @@
             "persistent": false
           },
           {
-            "name": "IntrusionDetectionEventState",
+            "name": "IntrusionEventState",
             "type": "DiscreteState",
             "eventBased": true,
             "persistent": false
@@ -237236,7 +236632,7 @@
             "persistent": false
           },
           {
-            "name": "SmokeDetectionEventState",
+            "name": "SmokeEventState",
             "type": "DiscreteState",
             "eventBased": true,
             "persistent": false
@@ -237267,13 +236663,7 @@
             "name": "WaterLeakEventState",
             "type": "DiscreteState",
             "eventBased": true,
-            "persistent": false,
-            "valuePrototypes": [
-              {
-                "type": "STRING",
-                "description": "string value"
-              }
-            ]
+            "persistent": false
           },
           {
             "name": "WaterLeakState",
@@ -237595,12 +236985,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -238263,12 +237647,6 @@
             "name": "CycleStageSequenceState",
             "type": "DataState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -239217,12 +238595,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -239897,12 +239269,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -240437,12 +239803,6 @@
                 "description": "integer value between 0 and 100"
               }
             ]
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
           },
           {
             "name": "ErrorState",
@@ -241110,12 +240470,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -241161,12 +240515,6 @@
             "name": "MediaElementState",
             "type": "DataState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "MediaElementsEventState",
-            "type": "DataState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -241770,12 +241118,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -242445,12 +241787,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -242947,12 +242283,6 @@
             ]
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -243274,6 +242604,18 @@
         ],
         "states": [
           {
+            "name": "ActionEventState",
+            "type": "DataState",
+            "eventBased": true,
+            "persistent": false,
+            "valuePrototypes": [
+              {
+                "type": "STRING",
+                "description": "string value"
+              }
+            ]
+          },
+          {
             "name": "ActionState",
             "type": "DataState",
             "eventBased": false,
@@ -243319,24 +242661,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ButtonActionsEventState",
-            "type": "DataState",
-            "eventBased": true,
-            "persistent": false,
-            "valuePrototypes": [
-              {
-                "type": "STRING",
-                "description": "string value"
-              }
-            ]
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -243731,12 +243055,6 @@
             ]
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -244118,12 +243436,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -244474,12 +243786,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -244849,12 +244155,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -245241,6 +244541,18 @@
         ],
         "states": [
           {
+            "name": "ActionEventState",
+            "type": "DataState",
+            "eventBased": true,
+            "persistent": false,
+            "valuePrototypes": [
+              {
+                "type": "STRING",
+                "description": "string value"
+              }
+            ]
+          },
+          {
             "name": "ActionState",
             "type": "DataState",
             "eventBased": false,
@@ -245286,24 +244598,6 @@
             "name": "BatteryLevelState",
             "type": "ContinuousState",
             "eventBased": false,
-            "persistent": false
-          },
-          {
-            "name": "ButtonActionsEventState",
-            "type": "DataState",
-            "eventBased": true,
-            "persistent": false,
-            "valuePrototypes": [
-              {
-                "type": "STRING",
-                "description": "string value"
-              }
-            ]
-          },
-          {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
             "persistent": false
           },
           {
@@ -245677,12 +244971,6 @@
             ]
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -246043,12 +245331,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -246400,12 +245682,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -246523,13 +245799,7 @@
             "name": "WaterLeakEventState",
             "type": "DiscreteState",
             "eventBased": true,
-            "persistent": false,
-            "valuePrototypes": [
-              {
-                "type": "STRING",
-                "description": "string value"
-              }
-            ]
+            "persistent": false
           },
           {
             "name": "WaterLeakState",
@@ -246777,12 +246047,6 @@
             "persistent": false
           },
           {
-            "name": "ErrorEventState",
-            "type": "DiscreteState",
-            "eventBased": true,
-            "persistent": false
-          },
-          {
             "name": "ErrorState",
             "type": "DataState",
             "eventBased": false,
@@ -246891,7 +246155,7 @@
             "persistent": false
           },
           {
-            "name": "SmokeDetectionEventState",
+            "name": "SmokeEventState",
             "type": "DiscreteState",
             "eventBased": true,
             "persistent": false
@@ -277116,76 +276380,6 @@
       "qualifiedName": "io:WindowOpenerVeluxIOComponent",
       "type": "ACTUATOR"
     },
-    "jsw:CameraController": {
-      "commands": [
-        {
-          "commandName": "downloadRecordedFile",
-          "nparams": 1
-        },
-        {
-          "commandName": "listRecordedFiles",
-          "nparams": 2
-        },
-        {
-          "commandName": "connect",
-          "nparams": 0
-        },
-        {
-          "commandName": "deleteRecordedFile",
-          "nparams": 1
-        },
-        {
-          "commandName": "disconnect",
-          "nparams": 1
-        },
-        {
-          "commandName": "getSessionStatus",
-          "nparams": 1
-        },
-        {
-          "commandName": "playJSWRecordedFile",
-          "nparams": 2
-        },
-        {
-          "commandName": "setPassword",
-          "nparams": 2
-        },
-        {
-          "commandName": "startJSWLiveVideo",
-          "nparams": 1
-        },
-        {
-          "commandName": "startJSWRecording",
-          "nparams": 0
-        },
-        {
-          "commandName": "stopJSWLiveVideo",
-          "nparams": 1
-        },
-        {
-          "commandName": "stopJSWPlayRecordedFile",
-          "nparams": 1
-        }
-      ],
-      "states": [
-        {
-          "type": "ContinuousState",
-          "qualifiedName": "core:FreeMemoryState"
-        },
-        {
-          "type": "ContinuousState",
-          "qualifiedName": "core:TotalMemoryState"
-        }
-      ],
-      "dataProperties": [],
-      "widgetName": "JSWCamera",
-      "uiProfiles": [
-        "Specific"
-      ],
-      "uiClass": "Camera",
-      "qualifiedName": "jsw:CameraController",
-      "type": "ACTUATOR"
-    },
     "modbus:DeDietrichGatewayComponent": {
       "commands": [
         {
@@ -284798,29 +283992,6 @@
           "qualifiedName": "core:CO2ConcentrationState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -285019,29 +284190,6 @@
         {
           "type": "ContinuousState",
           "qualifiedName": "core:ClosureState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
@@ -285269,29 +284417,6 @@
           "qualifiedName": "core:BatteryLevelState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -285315,10 +284440,10 @@
           "eventBased": true,
           "type": "DiscreteState",
           "values": [
-            "panic",
-            "intrusion"
+            "false",
+            "true"
           ],
-          "qualifiedName": "core:IntrusionDetectionEventState"
+          "qualifiedName": "core:IntrusionEventState"
         },
         {
           "type": "DiscreteState",
@@ -285397,9 +284522,10 @@
           "eventBased": true,
           "type": "DiscreteState",
           "values": [
-            "smoke"
+            "false",
+            "true"
           ],
-          "qualifiedName": "core:SmokeDetectionEventState"
+          "qualifiedName": "core:SmokeEventState"
         },
         {
           "eventBased": true,
@@ -285422,7 +284548,8 @@
           "eventBased": true,
           "type": "DiscreteState",
           "values": [
-            "waterLeak"
+            "false",
+            "true"
           ],
           "qualifiedName": "core:WaterLeakEventState"
         },
@@ -285509,29 +284636,6 @@
         {
           "type": "ContinuousState",
           "qualifiedName": "core:BatteryLevelState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
@@ -285778,29 +284882,6 @@
           "qualifiedName": "core:BatteryLevelState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -285831,11 +284912,6 @@
         {
           "type": "DataState",
           "qualifiedName": "core:MediaElementState"
-        },
-        {
-          "eventBased": true,
-          "type": "DataState",
-          "qualifiedName": "core:MediaElementsEventState"
         },
         {
           "type": "DataState",
@@ -286069,29 +285145,6 @@
           "qualifiedName": "core:DeploymentState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -286292,29 +285345,6 @@
           "qualifiedName": "core:ClosureState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -286431,6 +285461,10 @@
           "nparams": 1
         },
         {
+          "commandName": "closeCommissioning",
+          "nparams": 0
+        },
+        {
           "commandName": "discover",
           "nparams": 0
         },
@@ -286449,6 +285483,10 @@
         {
           "commandName": "joinSetup",
           "nparams": 0
+        },
+        {
+          "commandName": "openCommissioning",
+          "nparams": 1
         },
         {
           "commandName": "pair",
@@ -286523,27 +285561,16 @@
           "qualifiedName": "core:CandidatesState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
+          "type": "DataState",
+          "qualifiedName": "core:CommissioningWindowCloseTimestampState"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:CommissioningWindowOpenState"
+        },
+        {
+          "type": "DataState",
+          "qualifiedName": "core:CredentialsState"
         },
         {
           "type": "DataState",
@@ -286696,29 +285723,6 @@
         {
           "type": "ContinuousState",
           "qualifiedName": "core:CO2ConcentrationState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
@@ -286891,29 +285895,6 @@
         {
           "type": "ContinuousState",
           "qualifiedName": "core:BatteryLevelState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
@@ -287105,29 +286086,6 @@
         {
           "type": "ContinuousState",
           "qualifiedName": "core:ClosureState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
@@ -287350,29 +286308,6 @@
           "qualifiedName": "core:BatteryLevelState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -287589,29 +286524,6 @@
           "qualifiedName": "core:ElectricPowerConsumptionState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -287798,29 +286710,6 @@
           "qualifiedName": "core:ClosureState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -287988,29 +286877,6 @@
         {
           "type": "ContinuousState",
           "qualifiedName": "core:BatteryLevelState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
@@ -288205,29 +287071,6 @@
           "qualifiedName": "core:ClosureState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -288411,29 +287254,6 @@
         {
           "type": "ContinuousState",
           "qualifiedName": "core:BatteryLevelState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
@@ -288677,29 +287497,6 @@
           "qualifiedName": "core:ElectricPowerConsumptionState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -288916,29 +287713,6 @@
           "qualifiedName": "core:BatteryLevelState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -289149,29 +287923,6 @@
         {
           "type": "ContinuousState",
           "qualifiedName": "core:BatteryLevelState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
@@ -289470,29 +288221,6 @@
           "qualifiedName": "core:BatteryLevelState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -289729,29 +288457,6 @@
           "qualifiedName": "core:BatteryLevelState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -289771,10 +288476,10 @@
           "eventBased": true,
           "type": "DiscreteState",
           "values": [
-            "panic",
-            "intrusion"
+            "false",
+            "true"
           ],
-          "qualifiedName": "core:IntrusionDetectionEventState"
+          "qualifiedName": "core:IntrusionEventState"
         },
         {
           "type": "DiscreteState",
@@ -290004,29 +288709,6 @@
           "qualifiedName": "core:ElectricPowerConsumptionState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -290205,29 +288887,6 @@
           "qualifiedName": "core:BatteryLevelState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -290382,29 +289041,6 @@
         {
           "type": "ContinuousState",
           "qualifiedName": "core:BatteryLevelState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
@@ -290562,29 +289198,6 @@
         {
           "type": "ContinuousState",
           "qualifiedName": "core:BatteryLevelState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
@@ -290786,29 +289399,6 @@
         {
           "type": "ContinuousState",
           "qualifiedName": "core:ElectricPowerConsumptionState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
@@ -291095,29 +289685,6 @@
         {
           "type": "DataState",
           "qualifiedName": "core:CycleStageSequenceState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
@@ -291493,29 +290060,6 @@
           "qualifiedName": "core:ClosureState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -291702,29 +290246,6 @@
           "qualifiedName": "core:BatteryLevelState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -291889,29 +290410,6 @@
           "qualifiedName": "core:BatteryLevelState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -292038,6 +290536,11 @@
       ],
       "states": [
         {
+          "eventBased": true,
+          "type": "DataState",
+          "qualifiedName": "core:ActionEventState"
+        },
+        {
           "type": "DataState",
           "qualifiedName": "core:ActionState"
         },
@@ -292070,34 +290573,6 @@
         {
           "type": "ContinuousState",
           "qualifiedName": "core:BatteryLevelState"
-        },
-        {
-          "eventBased": true,
-          "type": "DataState",
-          "qualifiedName": "core:ButtonActionsEventState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
@@ -292314,29 +290789,6 @@
           "qualifiedName": "core:ClosureState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -292522,29 +290974,6 @@
           "qualifiedName": "core:BatteryLevelState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -292620,9 +291049,10 @@
           "eventBased": true,
           "type": "DiscreteState",
           "values": [
-            "smoke"
+            "false",
+            "true"
           ],
-          "qualifiedName": "core:SmokeDetectionEventState"
+          "qualifiedName": "core:SmokeEventState"
         },
         {
           "eventBased": true,
@@ -292688,6 +291118,11 @@
       ],
       "states": [
         {
+          "eventBased": true,
+          "type": "DataState",
+          "qualifiedName": "core:ActionEventState"
+        },
+        {
           "type": "DataState",
           "qualifiedName": "core:ActionState"
         },
@@ -292720,34 +291155,6 @@
         {
           "type": "ContinuousState",
           "qualifiedName": "core:BatteryLevelState"
-        },
-        {
-          "eventBased": true,
-          "type": "DataState",
-          "qualifiedName": "core:ButtonActionsEventState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
@@ -292897,29 +291304,6 @@
         {
           "type": "ContinuousState",
           "qualifiedName": "core:BatteryLevelState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
@@ -293124,29 +291508,6 @@
         {
           "type": "ContinuousState",
           "qualifiedName": "core:BatteryLevelState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
@@ -293395,29 +291756,6 @@
         {
           "type": "ContinuousState",
           "qualifiedName": "core:BatteryLevelState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
@@ -293678,29 +292016,6 @@
           "qualifiedName": "core:ClosureState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -293929,29 +292244,6 @@
         {
           "type": "ContinuousState",
           "qualifiedName": "core:BatteryLevelState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
@@ -294245,29 +292537,6 @@
           "qualifiedName": "core:CycleStageSequenceState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -294542,29 +292811,6 @@
           "qualifiedName": "core:BatteryLevelState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -294648,7 +292894,8 @@
           "eventBased": true,
           "type": "DiscreteState",
           "values": [
-            "waterLeak"
+            "false",
+            "true"
           ],
           "qualifiedName": "core:WaterLeakEventState"
         },
@@ -294727,29 +292974,6 @@
         {
           "type": "ContinuousState",
           "qualifiedName": "core:BatteryLevelState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
@@ -294906,29 +293130,6 @@
         {
           "type": "ContinuousState",
           "qualifiedName": "core:BatteryLevelState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
@@ -295141,29 +293342,6 @@
           "qualifiedName": "core:BatteryLevelState"
         },
         {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
-        },
-        {
           "type": "DataState",
           "qualifiedName": "core:ErrorState"
         },
@@ -295372,29 +293550,6 @@
         {
           "type": "ContinuousState",
           "qualifiedName": "core:ClosureState"
-        },
-        {
-          "eventBased": true,
-          "type": "DiscreteState",
-          "values": [
-            "accessLimitation",
-            "internal",
-            "obstacleProtection",
-            "transportBusy",
-            "deviceNoAnswer",
-            "cancelled",
-            "deprecated",
-            "interrupted",
-            "thermalProtection",
-            "maintenanceRequired",
-            "alreadyUpToDate",
-            "notSupported",
-            "hardwareError",
-            "accessDenied",
-            "updateError",
-            "resourceAlreadyExist"
-          ],
-          "qualifiedName": "core:ErrorEventState"
         },
         {
           "type": "DataState",
