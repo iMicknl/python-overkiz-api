@@ -10,7 +10,7 @@ from dataclasses import dataclass
 from http import HTTPStatus
 from pathlib import Path
 from types import TracebackType
-from typing import Any, Self, cast
+from typing import TYPE_CHECKING, Any, Self, cast
 
 import backoff
 from aiohttp import (
@@ -30,6 +30,7 @@ from pyoverkiz.auth import (
     SupportsGatewaySelection,
     build_auth_strategy,
 )
+from pyoverkiz.auth.base import SupportsSessionResume
 from pyoverkiz.const import SUPPORTED_SERVERS, USER_AGENT
 from pyoverkiz.converter import converter
 from pyoverkiz.enums import APIType, ExecutionMode, Protocol, Server
@@ -70,6 +71,11 @@ from pyoverkiz.models import (
 from pyoverkiz.obfuscate import obfuscate_sensitive_data
 from pyoverkiz.response_handler import check_response
 from pyoverkiz.serializers import prepare_payload
+
+if TYPE_CHECKING:
+    from collections.abc import Awaitable, Callable
+
+    from pyoverkiz.auth.credentials import SomfyTokenCredentials
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -932,6 +938,40 @@ class OverkizClient:
                 f"{self.server_config.name} does not support gateway selection."
             )
         self._auth.select_gateway(gateway_id)
+
+    @property
+    def selected_gateway(self) -> str | None:
+        """Return the gateway requests are scoped to, or None if none is selected yet.
+
+        ``login()`` auto-selects a sole gateway, so this tells a multi-site
+        caller whether it still has to present a choice.
+
+        Raises:
+            UnsupportedOperationError: When the server does not support gateway selection.
+        """
+        if not isinstance(self._auth, SupportsGatewaySelection):
+            raise UnsupportedOperationError(
+                f"{self.server_config.name} does not support gateway selection."
+            )
+        return self._auth.selected_gateway
+
+    def to_credentials(
+        self,
+        on_token_refresh: Callable[[str], Awaitable[None]] | None = None,
+    ) -> SomfyTokenCredentials:
+        """Snapshot the session as resume credentials, to log in later without a password.
+
+        Call after login and gateway selection. Supply ``on_token_refresh`` to
+        persist the rotating refresh token.
+
+        Raises:
+            UnsupportedOperationError: When the server does not support session resume.
+        """
+        if not isinstance(self._auth, SupportsSessionResume):
+            raise UnsupportedOperationError(
+                f"{self.server_config.name} does not support session resume."
+            )
+        return self._auth.to_credentials(on_token_refresh)
 
     # -----------------------------------------------------------------------
     # Local token management (cloud API)
