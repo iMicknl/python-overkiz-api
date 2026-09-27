@@ -83,7 +83,7 @@ def _get_client_from_invocation(invocation: Details) -> OverkizClient:
 
 async def relogin(invocation: Details) -> None:
     """Re-authenticate using the main `OverkizClient` instance."""
-    await _get_client_from_invocation(invocation).login()
+    await _get_client_from_invocation(invocation).login(register_event_listener=False)
 
 
 async def refresh_listener(invocation: Details) -> None:
@@ -293,6 +293,12 @@ class OverkizClient:
         await self._auth.close()
         await self.session.close()
 
+    @retry_on_connection_failure
+    async def _authenticate(self) -> None:
+        """Retry authentication without repeating listener registration."""
+        await self._auth.login()
+        self._event_listener_id = None
+
     async def login(
         self,
         register_event_listener: bool = True,
@@ -306,14 +312,15 @@ class OverkizClient:
             TooManyAttemptsBannedError: When too many failed login attempts have been made.
             TooManyRequestsError: When the API rate limit has been exceeded.
         """
-        await self._auth.login()
+        await self._authenticate()
 
         if self.server_config.api_type == APIType.LOCAL:
             if register_event_listener:
                 await self.register_event_listener()
             else:
                 # Validate local API token by calling a simple endpoint
-                await self.get_gateways()
+                # Auth recovery must not recurse through get_gateways' auth decorator.
+                await self._get("setup/gateways")
 
             return
 
@@ -461,6 +468,7 @@ class OverkizClient:
         )
 
     @retry_on_concurrent_requests
+    @retry_on_auth_error
     async def register_event_listener(self) -> str:
         """Register a new setup event listener on the current session and return a new.
 
@@ -471,6 +479,8 @@ class OverkizClient:
         timeout : listening sessions are expected to call the /events/{listenerId}/fetch
         API on a regular basis.
         """
+        # Registration may invalidate the old listener even if its response is lost.
+        self._event_listener_id = None
         response = await self._post("events/register")
         listener_id = cast(str, response.get("id"))
         self._event_listener_id = listener_id
@@ -487,6 +497,9 @@ class OverkizClient:
         Per-session rate-limit : 1 calls per 1 SECONDS period for this particular
         operation (polling).
         """
+        if self.event_listener_id is None:
+            await self.register_event_listener()
+
         response = await self._post(f"events/{self.event_listener_id}/fetch")
         return converter.structure(response, list[Event])
 
