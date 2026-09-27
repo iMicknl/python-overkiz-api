@@ -205,7 +205,6 @@ class UIWidget(UnknownEnumMixin, StrEnum):
     DYNAMIC_ALARM = "DynamicAlarm"
     DYNAMIC_AMBIENT_NOISE_SENSOR = "DynamicAmbientNoiseSensor"
     DYNAMIC_AUDIO_PLAYER = "DynamicAudioPlayer"
-    DYNAMIC_AUDIOPLAYER = "DynamicAudioplayer"
     DYNAMIC_AWNING = "DynamicAwning"
     DYNAMIC_BRIDGE = "DynamicBridge"
     DYNAMIC_CARBON_DIOXIDE_SENSOR = "DynamicCarbonDioxideSensor"
