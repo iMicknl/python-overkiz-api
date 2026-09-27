@@ -14,7 +14,7 @@ so retries always give up rather than looping indefinitely.
 | Failure | Retried | Budget | On retry |
 | --- | --- | --- | --- |
 | Connection errors — `TimeoutError`, `ClientConnectorError`, `ServerDisconnectedError` | yes | 3 tries / ~30s | reopen the connection |
-| `NotAuthenticatedError` (session expired) | yes | 2 tries / ~60s | call `login()` |
+| `NotAuthenticatedError` (session expired) | yes | 2 tries / ~60s | authenticate without registering a listener |
 | `TooManyConcurrentRequestsError` | yes | 5 tries / ~120s | — |
 | `TooManyExecutionsError` | yes | 5 tries / ~300s | — |
 | `ExecutionQueueFullError` | yes | 5 tries / ~120s | — |
@@ -22,6 +22,22 @@ so retries always give up rather than looping indefinitely.
 
 Everything else — `BadCredentialsError`, `TooManyRequestsError`, `MaintenanceError`,
 `UnsupportedOperationError`, and so on — is **not** retried and is raised directly.
+
+### Authentication and listener recovery
+
+Authentication requests use their own connection-retry budget. Listener registration
+uses the existing HTTP request retries, so a registration outage does not restart
+an already completed login or multiply the connection attempts.
+
+Automatic reauthentication invalidates the old listener without registering a new
+one. The next event fetch registers a replacement before fetching events. A failed
+registration also clears the listener ID because the server may have replaced the
+old listener even if its response was lost.
+
+Recovery callbacks propagate failures after their retry budgets are exhausted.
+For example, a login timeout remains a `TimeoutError`; the client does not suppress
+it and retry an unauthenticated request. A failed listener registration similarly
+stops the current fetch, and a later poll can try registration again.
 
 ### Backoff timing
 

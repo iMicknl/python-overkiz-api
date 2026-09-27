@@ -196,6 +196,7 @@ class TestOverkizClient:
         self, client: OverkizClient, fixture_name: str, event_length: int
     ):
         """Parameterised test that fetches events fixture and checks the expected count."""
+        client._event_listener_id = "listener-1"
         with (CURRENT_DIR / "fixtures" / "event" / fixture_name).open(
             encoding="utf-8",
         ) as raw_events:
@@ -208,6 +209,7 @@ class TestOverkizClient:
     @pytest.mark.asyncio
     async def test_fetch_events_simple_cast(self, client: OverkizClient):
         """Check that event state values from the cloud (strings) are cast to appropriate types."""
+        client._event_listener_id = "listener-1"
         with (CURRENT_DIR / "fixtures" / "event" / "events.json").open(
             encoding="utf-8",
         ) as raw_events:
@@ -309,6 +311,7 @@ class TestOverkizClient:
     @pytest.mark.asyncio
     async def test_fetch_events_casting(self, client: OverkizClient, fixture_name: str):
         """Validate that fetched event states are cast to the expected Python types for each data type."""
+        client._event_listener_id = "listener-1"
         with (CURRENT_DIR / "fixtures" / "event" / fixture_name).open(
             encoding="utf-8",
         ) as raw_events:
