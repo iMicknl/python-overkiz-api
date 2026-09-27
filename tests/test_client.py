@@ -1398,6 +1398,19 @@ class TestOverkizClient:
 
         fake_auth.select_gateway.assert_called_once_with("g1")
 
+    def test_select_gateway_drops_cached_setup(self, client: OverkizClient) -> None:
+        """Switching gateway must not serve the previous gateway's cached setup."""
+        client._auth = MagicMock(spec=SupportsGatewaySelection)
+        client.setup = MagicMock()
+        client.devices = [MagicMock()]
+        client.gateways = [MagicMock()]
+
+        client.select_gateway("g2")
+
+        assert client.setup is None
+        assert client.devices == []
+        assert client.gateways == []
+
     def test_selected_gateway_delegates_to_strategy(
         self, client: OverkizClient
     ) -> None:

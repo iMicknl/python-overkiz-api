@@ -938,6 +938,10 @@ class OverkizClient:
                 f"{self.server_config.name} does not support gateway selection."
             )
         self._auth.select_gateway(gateway_id)
+        # The cached setup belongs to the previously selected gateway.
+        self.setup = None
+        self.devices = []
+        self.gateways = []
 
     @property
     def selected_gateway(self) -> str | None:
