@@ -1722,7 +1722,7 @@ _BOB_SITES = {
 
 @pytest.mark.asyncio
 async def test_somfy_multisite_discover_flattens_sites():
-    """discover_gateways returns one GatewayCandidate per gateway across sites."""
+    """discover_gateways returns one GatewayCandidate per sub-site across sites."""
     strategy, session = _build_somfy_multisite_strategy()
     strategy.context.access_token = "ginaite-1"
     session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
@@ -1735,6 +1735,39 @@ async def test_somfy_multisite_discover_flattens_sites():
     assert candidates[0].external_id == "ext-a"
     assert candidates[0].country == "NL"
     assert candidates[0].roles == ["owner"]
+
+
+@pytest.mark.asyncio
+async def test_somfy_multisite_discover_collapses_gateways_of_one_sub_site():
+    """Gateways sharing a sub-site (one setup) yield a single candidate."""
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    session.get = MagicMock(
+        return_value=_json_ctx(
+            {
+                "totalCount": 1,
+                "results": [
+                    {
+                        "siteOID": "site-a",
+                        "subSites": [
+                            {
+                                "externalOID": "ext-a",
+                                "gateways": [
+                                    {"gatewayId": "gw-main"},
+                                    {"gatewayId": "gw-extension"},
+                                ],
+                            },
+                            {"externalOID": "ext-empty", "gateways": []},
+                        ],
+                    }
+                ],
+            }
+        )
+    )
+
+    candidates = await strategy.discover_gateways()
+
+    assert [(c.gateway_id, c.external_id) for c in candidates] == [("gw-main", "ext-a")]
 
 
 @pytest.mark.asyncio

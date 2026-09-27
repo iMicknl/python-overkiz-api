@@ -38,7 +38,7 @@ class BobRole:
 
 @dataclass(slots=True)
 class BobSubSite:
-    """A sub-site (setup) grouping one or more gateways."""
+    """A sub-site (one Overkiz setup) grouping one or more gateways."""
 
     external_id: str | None = None
     gateways: list[BobGateway] = field(default_factory=list)
@@ -64,10 +64,16 @@ class BobSitesResponse:
     total_count: int = 0
 
     def gateway_candidates(self) -> list[GatewayCandidate]:
-        """Flatten the site -> sub-site -> gateway tree into candidates."""
+        """Flatten the site -> sub-site tree into one candidate per sub-site.
+
+        A sub-site is one Overkiz setup, and the site-scoped token returns that
+        whole setup whichever of its gateways is picked. One candidate per
+        gateway would let a caller add the same setup twice, so a sub-site is
+        represented by its first gateway.
+        """
         return [
             GatewayCandidate(
-                gateway_id=gateway.gateway_id,
+                gateway_id=sub.gateways[0].gateway_id,
                 home_id=site.site_oid,
                 label=site.name,
                 external_id=sub.external_id,
@@ -76,7 +82,7 @@ class BobSitesResponse:
             )
             for site in self.results
             for sub in site.sub_sites
-            for gateway in sub.gateways
+            if sub.gateways
         ]
 
 
