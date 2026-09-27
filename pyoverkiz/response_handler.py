@@ -56,6 +56,7 @@ _ERROR_CODE_MESSAGE_MAP: list[tuple[str, str | None, type[BaseOverkizError]]] = 
     ("EXEC_QUEUE_FULL", None, ExecutionQueueFullError),
     ("NO_SUCH_DEVICE", None, NoSuchDeviceError),
     ("NO_SUCH_ACTION_GROUP", None, NoSuchActionGroupError),
+    ("QUOTA_EXCEEDED", None, TooManyRequestsError),
     # --- errorCode + message substring ---
     ("AUTHENTICATION_ERROR", "Too many requests", TooManyRequestsError),
     ("AUTHENTICATION_ERROR", "Bad credentials", BadCredentialsError),
