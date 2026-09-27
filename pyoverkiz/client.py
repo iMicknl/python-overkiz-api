@@ -979,7 +979,8 @@ class OverkizClient:
         """Snapshot the session as resume credentials, to log in later without a password.
 
         Call after login and gateway selection. Supply ``on_token_refresh`` to
-        persist the rotating refresh token. The concrete type depends on the
+        persist the rotating refresh token; it also fires for rotations on this
+        client, which would otherwise spend the snapshot. The concrete type depends on the
         server (`SomfyTokenCredentials` for `Server.SOMFY`); narrow it with
         `isinstance` to read the fields to persist.
 

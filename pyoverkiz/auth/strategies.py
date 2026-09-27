@@ -308,7 +308,11 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
         self._selected_gateway: str | None = None
         self._selected_region: str | None = None
         self._endpoint: str | None = None
-        # Refresh-token persistence for resumed sessions (no-op for fresh login).
+        # BOB lists sites only with an account-wide token, so track which site
+        # (if any) the current access token was minted for.
+        self._token_site_oid: str | None = None
+        # Refresh-token persistence once a token has been handed out, by resuming
+        # or by to_credentials() (no-op before that).
         self._on_token_refresh: Callable[[str], Awaitable[None]] | None = None
         self._persisted_refresh_token: str | None = None
         self._warned_missing_refresh_callback = False
@@ -379,9 +383,11 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
                     f"Somfy token exchange failed: {response.status}"
                 )
             self.context.update_from_token(await response.json())
+            self._token_site_oid = None
 
     async def discover_gateways(self) -> list[GatewayCandidate]:
         """List the account's sites from BOB, flattened to gateway candidates."""
+        await self._ensure_account_token()
         candidates: list[GatewayCandidate] = []
         sites_seen = 0
         total_count = 0
@@ -408,6 +414,25 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
 
         self._sites = candidates
         return self._sites
+
+    async def _ensure_account_token(self) -> None:
+        """Swap in a live account-wide token for BOB, e.g. on re-discovery or after resume."""
+        async with self._refresh_lock:
+            if (
+                self.context.access_token
+                and not self.context.is_expired()
+                and self._token_site_oid is None
+            ):
+                return
+            if not self.context.refresh_token:
+                raise SomfyServiceError(
+                    "Cannot list Somfy sites without a refresh token; log in first."
+                )
+            await self._refresh(site_oid=None)
+
+        # The token is now account-wide, so re-scope before the next site request.
+        if self._selected_site_oid is not None:
+            self.context.expires_at = datetime.datetime.now(datetime.UTC)
 
     def select_gateway(self, gateway_id: str) -> None:
         """Scope subsequent requests to the given gateway's site and region."""
@@ -462,6 +487,11 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
                 "Cannot snapshot resume credentials before a site is "
                 "selected and a refresh token is available."
             )
+        # This session keeps refreshing after the snapshot, and each rotation
+        # spends the token just handed out, so it must report rotations too.
+        self._persisted_refresh_token = self.context.refresh_token
+        if on_token_refresh is not None:
+            self._on_token_refresh = on_token_refresh
         return SomfyTokenCredentials(
             refresh_token=self.context.refresh_token,
             site_oid=self._selected_site_oid,
@@ -492,14 +522,14 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
         async with self._refresh_lock:
             if not self.context.is_expired():
                 return False
-            await self._refresh()
+            await self._refresh(site_oid=self._selected_site_oid)
         return True
 
-    async def _refresh(self) -> None:
-        """Refresh grant scoped to the selected site (?siteOID)."""
+    async def _refresh(self, site_oid: str | None) -> None:
+        """Refresh grant, scoped to `site_oid` (?siteOID) or account-wide if None."""
         url = SOMFY_GINAITE_TOKEN_URL
-        if self._selected_site_oid:
-            url = f"{SOMFY_GINAITE_TOKEN_URL}?siteOID={self._selected_site_oid}"
+        if site_oid:
+            url = f"{SOMFY_GINAITE_TOKEN_URL}?siteOID={site_oid}"
         previous_refresh_token = self.context.refresh_token
         form = FormData(
             {
@@ -530,6 +560,7 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
                 self.context.expires_at = (
                     datetime.datetime.now(datetime.UTC) + SOMFY_FALLBACK_TOKEN_LIFETIME
                 )
+        self._token_site_oid = site_oid
 
         # refresh_token is optional in a refresh response (RFC 6749); reuse the old one if absent.
         if self.context.refresh_token is None:
@@ -560,13 +591,13 @@ class SomfyAccountAuthStrategy(BaseAuthStrategy):
         self._persisted_refresh_token = rotated
 
     def _warn_missing_refresh_callback(self) -> None:
-        """Warn a resuming caller once that the token it stored has just been spent."""
-        # Only a resumed session stores tokens; a password login is expected to
-        # discard the rotated one. Ginaite has already invalidated the stored
-        # token, so without a callback the breakage surfaces on the next resume,
-        # far from its cause. Once is enough: every later rotation is the same
-        # missing callback.
-        if not isinstance(self.credentials, SomfyTokenCredentials):
+        """Warn the caller once that the token it stored has just been spent."""
+        # Only a handed-out token (resumed or snapshotted) is stored; a plain
+        # password login is expected to discard the rotated one. Ginaite has
+        # already invalidated the stored token, so without a callback the
+        # breakage surfaces on the next resume, far from its cause. Once is
+        # enough: every later rotation is the same missing callback.
+        if self._persisted_refresh_token is None:
             return
         if self._warned_missing_refresh_callback:
             return

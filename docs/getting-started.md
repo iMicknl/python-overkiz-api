@@ -468,9 +468,12 @@ async def persist(refresh_token: str) -> None:
 credentials = client.to_credentials(on_token_refresh=persist)
 ```
 
-The callback is fired only when the token changed, and only when resuming from
-`SomfyTokenCredentials` — during a fresh password login there is nothing to
-re-persist yet. If your callback raises, the error is logged and the request
+The callback is fired only when the token changed, and only once a token has
+been handed out — by `to_credentials()` or by resuming from
+`SomfyTokenCredentials`. The client you snapshot keeps refreshing, so it reports
+those rotations too: the credentials you just stored stay valid even if you keep
+using that client. Before the snapshot there is nothing to re-persist. If your
+callback raises, the error is logged and the request
 still succeeds: the rotated token keeps working in memory, and the store is
 retried on the next rotation. A restart is the only thing that would fall back
 to the stale token, so a persistent store failure eventually means reauth.

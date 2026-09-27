@@ -2517,6 +2517,139 @@ async def test_somfy_fresh_login_rotation_without_callback_does_not_warn(caplog)
     assert [r for r in caplog.records if r.levelno == logging.WARNING] == []
 
 
+async def _selected_password_strategy():
+    """Return a password-login strategy with site-a listed and selected."""
+    strategy, session = _build_somfy_multisite_strategy()
+    strategy.context.access_token = "ginaite-1"
+    strategy.context.refresh_token = "r-1"
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+    strategy.select_gateway("2025-0000-0001")
+    return strategy, session
+
+
+@pytest.mark.asyncio
+async def test_somfy_snapshot_rotation_on_same_client_notifies():
+    """A client that keeps running after to_credentials() persists its rotations.
+
+    Ginaite spends the snapshotted token on the next refresh, so without this the
+    credentials just stored would already be dead when the caller resumes.
+    """
+    persisted = []
+
+    async def _persist(token):
+        persisted.append(token)
+
+    strategy, session = await _selected_password_strategy()
+    stored = strategy.to_credentials(on_token_refresh=_persist)
+
+    session.post = MagicMock(
+        return_value=_json_ctx({"access_token": "scoped-1", "refresh_token": "r-2"})
+    )
+    await strategy.refresh_if_needed()
+
+    assert stored.refresh_token == "r-1"
+    assert persisted == ["r-2"]
+
+
+@pytest.mark.asyncio
+async def test_somfy_snapshot_without_callback_warns_on_rotation(caplog):
+    """Snapshotting without on_token_refresh warns once the snapshot is spent."""
+    strategy, session = await _selected_password_strategy()
+    strategy.to_credentials()
+
+    with caplog.at_level(logging.WARNING):
+        session.post = MagicMock(
+            return_value=_json_ctx({"access_token": "scoped-1", "refresh_token": "r-2"})
+        )
+        await strategy.refresh_if_needed()
+
+    warnings = [r for r in caplog.records if r.levelno == logging.WARNING]
+    assert len(warnings) == 1
+    assert "on_token_refresh" in warnings[0].getMessage()
+
+
+@pytest.mark.asyncio
+async def test_somfy_snapshot_without_callback_keeps_resume_callback():
+    """Re-snapshotting a resumed session must not drop its existing callback."""
+    persisted = []
+
+    async def _persist(token):
+        persisted.append(token)
+
+    strategy, session = _build_somfy_resume_strategy(on_token_refresh=_persist)
+    await strategy.login()
+    strategy.to_credentials()
+
+    session.post = MagicMock(
+        return_value=_json_ctx({"access_token": "scoped-1", "refresh_token": "r-rot"})
+    )
+    await strategy.refresh_if_needed()
+
+    assert persisted == ["r-rot"]
+
+
+@pytest.mark.asyncio
+async def test_somfy_rediscovery_swaps_in_an_account_wide_token():
+    """Re-discovery with a site-scoped token lists sites with an unscoped one.
+
+    The scoped token is for one site, not the BOB site directory, and may have
+    expired on a long-running client. Afterwards the next site request must
+    re-scope, since the live token is now account-wide.
+    """
+    strategy, session = await _selected_password_strategy()
+    session.post = MagicMock(
+        return_value=_json_ctx(
+            {"access_token": "scoped-1", "refresh_token": "r-2", "expires_in": 900}
+        )
+    )
+    await strategy.refresh_if_needed()
+
+    session.post = MagicMock(
+        return_value=_json_ctx(
+            {"access_token": "account-2", "refresh_token": "r-3", "expires_in": 900}
+        )
+    )
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+    await strategy.discover_gateways()
+
+    assert "siteOID" not in session.post.call_args.args[0]
+    bob_headers = session.get.call_args.kwargs["headers"]
+    assert bob_headers["Authorization"] == "Bearer account-2"
+    assert strategy.context.is_expired()
+
+
+@pytest.mark.asyncio
+async def test_somfy_resumed_discovery_mints_a_token_first():
+    """A resumed session has no access token yet, so discovery must mint one."""
+    strategy, session = _build_somfy_resume_strategy()
+    await strategy.login()
+    session.post = MagicMock(
+        return_value=_json_ctx(
+            {"access_token": "account-1", "refresh_token": "r-rot", "expires_in": 900}
+        )
+    )
+    session.get = MagicMock(return_value=_json_ctx(_BOB_SITES))
+
+    await strategy.discover_gateways()
+
+    bob_headers = session.get.call_args.kwargs["headers"]
+    assert bob_headers["Authorization"] == "Bearer account-1"
+
+
+@pytest.mark.asyncio
+async def test_somfy_discovery_before_login_raises_service_error():
+    """Discovery with no token at all fails typed instead of sending `Bearer None`."""
+    from pyoverkiz.exceptions import SomfyServiceError
+
+    strategy, session = _build_somfy_multisite_strategy()
+
+    with pytest.raises(SomfyServiceError, match="log in first"):
+        await strategy.discover_gateways()
+
+    session.get.assert_not_called()
+
+
 @pytest.mark.asyncio
 async def test_somfy_refresh_is_serialized_across_concurrent_requests():
     """Concurrent expired requests must refresh once, not race for the token.
