@@ -75,7 +75,7 @@ from pyoverkiz.serializers import prepare_payload
 if TYPE_CHECKING:
     from collections.abc import Awaitable, Callable
 
-    from pyoverkiz.auth.credentials import SomfyTokenCredentials
+    from pyoverkiz.auth.credentials import Credentials
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -962,11 +962,13 @@ class OverkizClient:
     def to_credentials(
         self,
         on_token_refresh: Callable[[str], Awaitable[None]] | None = None,
-    ) -> SomfyTokenCredentials:
+    ) -> Credentials:
         """Snapshot the session as resume credentials, to log in later without a password.
 
         Call after login and gateway selection. Supply ``on_token_refresh`` to
-        persist the rotating refresh token.
+        persist the rotating refresh token. The concrete type depends on the
+        server (`SomfyTokenCredentials` for `Server.SOMFY`); narrow it with
+        `isinstance` to read the fields to persist.
 
         Raises:
             UnsupportedOperationError: When the server does not support session resume.
