@@ -3,9 +3,12 @@
 from __future__ import annotations
 
 import datetime
-from collections.abc import Mapping
+from collections.abc import Awaitable, Callable, Mapping
 from dataclasses import dataclass, field
-from typing import Any, Protocol, runtime_checkable
+from typing import TYPE_CHECKING, Any, Protocol, runtime_checkable
+
+if TYPE_CHECKING:
+    from pyoverkiz.auth.credentials import Credentials
 
 
 @dataclass(slots=True)
@@ -66,6 +69,9 @@ class GatewayCandidate:
     home_id: str | None = None
     label: str | None = None
     external_id: str | None = None
+    country: str | None = None
+    # Somfy only. Informational: even limited roles control some devices.
+    roles: list[str] = field(default_factory=list)
 
 
 @runtime_checkable
@@ -81,3 +87,18 @@ class SupportsGatewaySelection(Protocol):
     @property
     def selected_gateway(self) -> str | None:
         """Return the currently selected gateway id, or None."""
+
+
+@runtime_checkable
+class SupportsSessionResume[CredentialsT: Credentials](Protocol):
+    """Optional capability: snapshot the session for later resume without re-login.
+
+    Parameterised by the credentials type each vendor resumes into, so a second
+    implementation does not have to widen this signature.
+    """
+
+    def to_credentials(
+        self,
+        on_token_refresh: Callable[[str], Awaitable[None]] | None = None,
+    ) -> CredentialsT:
+        """Return resume credentials for the current session."""

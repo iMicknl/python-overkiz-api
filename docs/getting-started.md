@@ -74,6 +74,86 @@ Use a cloud server when you want to connect through the vendor’s public API. U
     asyncio.run(main())
     ```
 
+=== "Somfy (multi-account cloud)"
+
+    !!! warning "Experimental"
+
+        `Server.SOMFY` copies how the TaHoma app signs in and may change within
+        2.x. Stored `SomfyTokenCredentials` will keep working. For an account
+        with a single site, `SOMFY_EUROPE`, `SOMFY_AMERICA` and `SOMFY_OCEANIA`
+        remain the stable choice.
+
+    Use `Server.SOMFY` when one Somfy account has access to several sites
+    (homes). It finds every site on the account and picks the right region.
+
+    ```python
+    import asyncio
+
+    from pyoverkiz.auth.credentials import UsernamePasswordCredentials
+    from pyoverkiz.client import OverkizClient
+    from pyoverkiz.enums import Server
+
+
+    async def main() -> None:
+        async with OverkizClient(
+            server=Server.SOMFY,
+            credentials=UsernamePasswordCredentials("you@example.com", "password"),
+        ) as client:
+            # The event listener needs a selected site.
+            await client.login(register_event_listener=False)
+
+            # login() already selects the site if there is only one.
+            if client.selected_gateway is None:
+                gateways = await client.discover_gateways()
+                client.select_gateway(gateways[0].gateway_id)
+
+            setup = await client.get_setup()
+            print(f"{len(setup.devices)} device(s)")
+
+            # Only needed if you want to poll events.
+            await client.register_event_listener()
+
+    asyncio.run(main())
+    ```
+
+    Each `GatewayCandidate` has a `label` (the site name) and `home_id` you can
+    show in a site picker. `roles` holds the account's role on that site:
+    `owner`, `secondary`, or an id for a custom role. Sites you were invited to
+    are listed too; they may only give access to some devices.
+
+    Requests made before a site is selected raise `NoGatewaySelectedError`.
+
+    **Resume without a password.** After selecting a site, store the result of
+    `client.to_credentials()` and pass it back on the next run. This skips login
+    and site discovery. The refresh token changes over time, so pass
+    `on_token_refresh` to save each new one.
+
+    ```python
+    import asyncio
+
+    from pyoverkiz.auth.credentials import SomfyTokenCredentials
+    from pyoverkiz.client import OverkizClient
+    from pyoverkiz.enums import Server
+
+
+    async def persist(refresh_token: str) -> None:
+        # Store the rotated refresh token for next time.
+        ...
+
+
+    async def main(stored: SomfyTokenCredentials) -> None:
+        async with OverkizClient(server=Server.SOMFY, credentials=stored) as client:
+            await client.login()  # no network round trips
+            setup = await client.get_setup()
+            print(f"{len(setup.devices)} device(s)")
+
+
+    # `stored` is what you persisted earlier via:
+    #     stored = client.to_credentials(on_token_refresh=persist)
+    ```
+
+    See [Who owns the tokens](#who-owns-the-tokens).
+
 === "Somfy (local)"
 
     Local authentication requires a token generated via the official mobile app. For details on obtaining a token, refer to [Somfy TaHoma Developer Mode](https://github.com/Somfy-Developer/Somfy-TaHoma-Developer-Mode).
@@ -232,7 +312,8 @@ Use a cloud server when you want to connect through the vendor’s public API. U
     Supply a token in one of two ways:
 
     **Async callback (recommended for long-running apps).** pyoverkiz calls it
-    before each request, so the owner can refresh and persist transparently.
+    before each request, so the owner can refresh and persist transparently —
+    see [Who owns the tokens](#who-owns-the-tokens).
 
     ```python
     import asyncio
@@ -328,3 +409,40 @@ Use a cloud server when you want to connect through the vendor’s public API. U
 
     asyncio.run(main())
     ```
+
+## Who owns the tokens
+
+Somfy and Rexel can both resume a session without the password, but they
+handle token refresh in opposite ways.
+
+| | Somfy (`SomfyTokenCredentials`) | Rexel (`RexelTokenCredentials`) |
+| --- | --- | --- |
+| Who refreshes | pyoverkiz | you |
+| How | pyoverkiz calls `on_token_refresh(new_token)` after each refresh | pyoverkiz calls `access_token_callback()` before each request |
+| What you store | the latest refresh token | whatever your OAuth2 setup needs |
+
+**Somfy:** pyoverkiz refreshes the token itself, because it has to be scoped to
+the selected site. Save each new token in your callback:
+
+```python
+async def persist(refresh_token: str) -> None:
+    # Called only when the token changed.
+    ...
+
+credentials = client.to_credentials(on_token_refresh=persist)
+```
+
+If the callback raises, the error is logged and the request still succeeds.
+Saving is retried on the next refresh.
+
+**Rexel:** Rexel uses standard OAuth2, so your app (Home Assistant, for
+example) usually refreshes tokens already. pyoverkiz asks for the current token
+when it needs one:
+
+```python
+async def get_access_token() -> str:
+    # Refresh if needed, then return a valid token.
+    ...
+
+credentials = RexelTokenCredentials(access_token_callback=get_access_token)
+```

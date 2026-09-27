@@ -26,6 +26,8 @@ class Server(StrEnum):
     REXEL = "rexel"
     SAUTER_COZYTOUCH = "sauter_cozytouch"
     SIMU_LIVEIN2 = "simu_livein2"
+    # Experimental: may change within 2.x.
+    SOMFY = "somfy"
     SOMFY_DEVELOPER_MODE = "somfy_developer_mode"
     SOMFY_EUROPE = "somfy_europe"
     SOMFY_AMERICA = "somfy_america"
