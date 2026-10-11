@@ -503,6 +503,8 @@ class OverkizClient:
         Per-session rate-limit : 1 calls per 1 SECONDS period for this particular
         operation (polling).
         """
+        # Refresh first: it may re-register the listener and change the id.
+        await retry_on_connection_failure(self._refresh_token_if_expired)()
         if self.event_listener_id is None:
             await self.register_event_listener()
 
@@ -514,6 +516,8 @@ class OverkizClient:
 
         API response status is always 200, even on unknown listener ids.
         """
+        # Bypass re-registration, which would orphan a listener we never unregister.
+        await retry_on_connection_failure(self._auth.refresh_if_needed)()
         await self._post(f"events/{self._event_listener_id}/unregister")
         self._event_listener_id = None
 
