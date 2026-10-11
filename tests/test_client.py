@@ -87,26 +87,29 @@ class TestOverkizClient:
         self, client: OverkizClient
     ) -> None:
         """A command that never reached the server is safe to resend."""
-        resp = MockResponse(json.dumps({"execId": "exec-1"}))
-
-        with (
-            patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
-            patch.object(
-                aiohttp.ClientSession,
-                "post",
-                side_effect=[
-                    aiohttp.ClientConnectorError(MagicMock(), OSError("refused")),
-                    resp,
-                ],
-            ) as post_mock,
+        # `ConnectionTimeoutError` subclasses `TimeoutError` but is raised before sending.
+        for failure in (
+            aiohttp.ClientConnectorError(MagicMock(), OSError("refused")),
+            aiohttp.ConnectionTimeoutError("connect timed out"),
         ):
-            exec_id = await client.execute_action_group(
-                actions=[Action(device_url="io://1234-5678-9012/12345678")],
-            )
+            with (
+                patch("backoff._async.asyncio.sleep", new=AsyncMock()) as sleep_mock,
+                patch.object(
+                    aiohttp.ClientSession,
+                    "post",
+                    side_effect=[
+                        failure,
+                        MockResponse(json.dumps({"execId": "exec-1"})),
+                    ],
+                ) as post_mock,
+            ):
+                exec_id = await client.execute_action_group(
+                    actions=[Action(device_url="io://1234-5678-9012/12345678")],
+                )
 
-        assert exec_id == "exec-1"
-        assert post_mock.call_count == 2
-        assert sleep_mock.await_count == 1
+            assert exec_id == "exec-1"
+            assert post_mock.call_count == 2
+            assert sleep_mock.await_count == 1
 
     @pytest.mark.asyncio
     async def test_command_not_resent_when_server_may_have_received_it(

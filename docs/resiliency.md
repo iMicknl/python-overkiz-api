@@ -14,7 +14,7 @@ so retries always give up rather than looping indefinitely.
 | Failure | Retried | Budget | On retry |
 | --- | --- | --- | --- |
 | Connection not established — `ClientConnectorError`, `ConnectionTimeoutError` | yes | 3 tries / ~30s | reopen the connection |
-| Timeouts and dropped connections — `TimeoutError`, `ServerDisconnectedError` | idempotent requests only (GETs, authentication, event listener register/fetch, reference device search) | 3 tries / ~30s | reopen the connection |
+| Timeouts and dropped connections — `TimeoutError` (other than `ConnectionTimeoutError`), `ServerDisconnectedError` | idempotent requests only (GETs, authentication, event listener register/fetch, reference device search) | 3 tries / ~30s | reopen the connection |
 | `NotAuthenticatedError` (session expired) | yes | 2 tries / ~60s | authenticate without registering a listener |
 | `TooManyConcurrentRequestsError` | yes | 5 tries / ~120s | — |
 | `TooManyExecutionsError` | yes | 5 tries / ~300s | — |
@@ -72,14 +72,15 @@ which raises
 !!! note "`max_time` does not interrupt a hung request"
     The `max_time` budget only bounds the scheduling of retries *between* attempts; it
     cannot cancel a single in-flight request. A request that hangs is bounded by the
-    session timeout (see below), which surfaces as a `TimeoutError` and is then retried.
+    session timeout (see below), which surfaces as a `TimeoutError` and is then retried
+    for idempotent requests only.
 
 ## Request timeout
 
 When pyOverkiz creates its own session, it applies a default per-request timeout
 (`total=15s`, `sock_connect=10s`). This is kept below the connection-retry budget so a
-hung socket fails fast and is retried, instead of blocking on aiohttp's 300-second
-default.
+hung socket fails fast (and is retried for idempotent requests only), instead of blocking
+on aiohttp's 300-second default.
 
 If you pass your own `ClientSession`, **you own its timeout** — pyOverkiz does not
 override it. Configure one explicitly:
