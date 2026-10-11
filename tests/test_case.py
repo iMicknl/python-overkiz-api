@@ -25,5 +25,7 @@ class TestCamelize:
         assert camelize_key("setup_oid") == "setupOID"
         assert camelize_key("place_oid") == "placeOID"
         assert camelize_key("zone_oid") == "zoneOID"
+        assert camelize_key("device_oid") == "deviceOID"
+        assert camelize_key("external_oid") == "externalOID"
         assert camelize_key("device_urls") == "deviceURLs"
         assert camelize_key("place_oids") == "placeOIDs"
