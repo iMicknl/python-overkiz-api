@@ -68,6 +68,7 @@ from pyoverkiz.exceptions import (
     NexityBadCredentialsError,
     NexityServiceError,
     NoGatewaySelectedError,
+    OverkizError,
     SomfyBadCredentialsError,
     SomfyServiceError,
 )
@@ -206,9 +207,15 @@ class SessionLoginStrategy(BaseAuthStrategy):
             ssl=self._ssl,
         ) as response:
             if response.status not in (HTTPStatus.OK, HTTPStatus.NO_CONTENT):
-                raise BadCredentialsError(
-                    f"Login failed for {self.server.name}: {response.status}"
-                )
+                # Surface typed errors (rate limit, ban, maintenance, 5xx) so
+                # callers retry later instead of asking for new credentials;
+                # an unclassified login failure still means bad credentials.
+                try:
+                    await check_response(response)
+                except OverkizError as error:
+                    raise BadCredentialsError(
+                        f"Login failed for {self.server.name}: {response.status}"
+                    ) from error
 
             # A 204 No Content response cannot have a body, so skip JSON parsing.
             if response.status == HTTPStatus.NO_CONTENT:
