@@ -130,6 +130,8 @@ _MESSAGE_FALLBACK_MAP: list[tuple[str, type[BaseOverkizError]]] = [
     ("Invalid event listener id", InvalidEventListenerIdError),
     ("No such resource", NoSuchResourceError),
     ("Execution queue is full on gateway", ExecutionQueueFullError),
+    ("Another action exists on the same device", DuplicateActionOnDeviceError),
+    ("Unable to determine action group setup", ActionGroupSetupNotFoundError),
 ]
 
 # Fallback when errorCode is recognized but no message pattern matched.

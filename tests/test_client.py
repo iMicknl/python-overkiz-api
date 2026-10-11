@@ -839,6 +839,14 @@ class TestOverkizClient:
                 "Execution queue is full on gateway: #1234-5678-9012 (soft limit: 10)",
                 exceptions.ExecutionQueueFullError,
             ),
+            (
+                "Another action exists on the same device : rts://1234-5678-1234/123456",
+                exceptions.DuplicateActionOnDeviceError,
+            ),
+            (
+                "Unable to determine action group setup (no setup for gateway #1234-5678-1234)",
+                exceptions.ActionGroupSetupNotFoundError,
+            ),
         ],
     )
     @pytest.mark.asyncio
@@ -846,7 +854,7 @@ class TestOverkizClient:
         self,
         message: str,
         exception: type[Exception],
-    ):
+    ) -> None:
         """Known messages map to their error even when the errorCode is unexpected."""
         resp = MockResponse(
             json.dumps({"errorCode": "SOME_NEW_ERROR_CODE", "error": message}), 400
