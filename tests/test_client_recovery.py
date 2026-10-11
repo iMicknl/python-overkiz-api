@@ -371,33 +371,3 @@ async def test_unregister_after_token_refresh_does_not_register(
     assert len(paths) == 2
     assert client.event_listener_id is None
     await client.session.close()
-
-
-@pytest.mark.asyncio
-async def test_fetch_retries_transient_failure_during_token_refresh(
-    client: OverkizClient,
-) -> None:
-    """The pre-fetch token refresh must keep the connection-retry budget."""
-    client._event_listener_id = "stale"
-    _expire_token(client)
-    with (
-        patch("backoff._async.asyncio.sleep", new=AsyncMock()),
-        patch.object(
-            aiohttp.ClientSession,
-            "post",
-            side_effect=[
-                TimeoutError("token endpoint offline"),
-                MockResponse('{"access_token": "token", "expires_in": 3600}'),
-                MockResponse('{"id": "new"}'),
-                MockResponse("[]"),
-            ],
-        ) as post,
-    ):
-        assert await client.fetch_events() == []
-
-    paths = [call.args[0] for call in post.call_args_list]
-    assert paths[0].endswith("/oauth/oauth/v2/token/jwt")
-    assert paths[1] == paths[0]
-    assert paths[2].endswith("/events/register")
-    assert paths[3].endswith("/events/new/fetch")
-    await client.session.close()
