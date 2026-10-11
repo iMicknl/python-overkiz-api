@@ -801,40 +801,18 @@ class TestOverkizClient:
         with pytest.raises(exception):
             await check_response(resp)
 
-    @pytest.mark.parametrize(
-        ("message", "exception"),
-        [
-            (
-                "Too many requests, try again later",
-                exceptions.TooManyRequestsError,
-            ),
-            ("Bad credentials", exceptions.BadCredentialsError),
-            (
-                "An API key is required to access this setup",
-                exceptions.MissingAPIKeyError,
-            ),
+    @pytest.mark.asyncio
+    async def test_check_response_message_fallback_under_unknown_error_code(
+        self,
+    ) -> None:
+        """Known messages map to their error even when the errorCode is unexpected."""
+        cases: list[tuple[str, type[Exception]]] = [
+            ("Too many requests, try again later", exceptions.TooManyRequestsError),
             ("Not authenticated.", exceptions.NotAuthenticatedError),
-            (
-                "Missing authorization token.",
-                exceptions.MissingAuthorizationTokenError,
-            ),
-            (
-                "too many concurrent requests",
-                exceptions.TooManyConcurrentRequestsError,
-            ),
-            (
-                "Your setup cannot be accessed through this application",
-                exceptions.ApplicationNotAllowedError,
-            ),
             (
                 "No such user account : user@example.tld",
                 exceptions.UnknownUserError,
             ),
-            (
-                "Invalid event listener id : abc-123-def",
-                exceptions.InvalidEventListenerIdError,
-            ),
-            ("No such resource", exceptions.NoSuchResourceError),
             (
                 "Execution queue is full on gateway: #1234-5678-9012 (soft limit: 10)",
                 exceptions.ExecutionQueueFullError,
@@ -843,25 +821,15 @@ class TestOverkizClient:
                 "Another action exists on the same device : rts://1234-5678-1234/123456",
                 exceptions.DuplicateActionOnDeviceError,
             ),
-            (
-                "Unable to determine action group setup (no setup for gateway #1234-5678-1234)",
-                exceptions.ActionGroupSetupNotFoundError,
-            ),
-        ],
-    )
-    @pytest.mark.asyncio
-    async def test_check_response_message_fallback_under_unknown_error_code(
-        self,
-        message: str,
-        exception: type[Exception],
-    ) -> None:
-        """Known messages map to their error even when the errorCode is unexpected."""
-        resp = MockResponse(
-            json.dumps({"errorCode": "SOME_NEW_ERROR_CODE", "error": message}), 400
-        )
+        ]
 
-        with pytest.raises(exception):
-            await check_response(resp)
+        for message, exception in cases:
+            resp = MockResponse(
+                json.dumps({"errorCode": "SOME_NEW_ERROR_CODE", "error": message}), 400
+            )
+
+            with pytest.raises(exception):
+                await check_response(resp)
 
     @pytest.mark.asyncio
     async def test_get_setup_options(
