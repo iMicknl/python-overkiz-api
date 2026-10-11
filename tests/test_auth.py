@@ -44,14 +44,17 @@ from pyoverkiz.enums import APIType, Server
 from pyoverkiz.exceptions import (
     InvalidTokenError,
     NexityBadCredentialsError,
+    NexityServiceError,
     NoGatewaySelectedError,
+    TooManyRequestsError,
 )
 from pyoverkiz.models import ServerConfig
 
 HAS_NEXITY_DEPS = importlib.util.find_spec("boto3") is not None
 
 if HAS_NEXITY_DEPS:
-    from botocore.exceptions import ClientError
+    from botocore.exceptions import ClientError, EndpointConnectionError
+    from warrant_lite import ForceChangePasswordException
 
 
 class TestAuthContext:
@@ -840,10 +843,9 @@ class TestNexityAuthStrategy:
             with pytest.raises(NexityBadCredentialsError):
                 await strategy.login()
 
-    @pytest.mark.asyncio
-    @pytest.mark.skipif(not HAS_NEXITY_DEPS, reason="nexity extra not installed")
-    async def test_login_propagates_non_auth_client_error(self):
-        """Propagate non-auth Cognito errors to preserve failure context."""
+    @staticmethod
+    async def _login_with_cognito_error(error: Exception) -> None:
+        """Run a Nexity login where `WarrantLite.authenticate_user` raises `error`."""
         server_config = ServerConfig(
             server=Server.NEXITY,
             name="Nexity",
@@ -853,21 +855,64 @@ class TestNexityAuthStrategy:
         )
         credentials = UsernamePasswordCredentials("user", "pass")
         session = AsyncMock(spec=ClientSession)
-
-        service_error = ClientError(
-            error_response={"Error": {"Code": "InternalErrorException"}},
-            operation_name="InitiateAuth",
-        )
         warrant_instance = MagicMock()
-        warrant_instance.authenticate_user.side_effect = service_error
+        warrant_instance.authenticate_user.side_effect = error
 
         with (
             patch("boto3.client", return_value=MagicMock()),
             patch("warrant_lite.WarrantLite", return_value=warrant_instance),
         ):
             strategy = NexityAuthStrategy(credentials, session, server_config, True)
-            with pytest.raises(ClientError, match="InternalErrorException"):
-                await strategy.login()
+            await strategy.login()
+
+    @pytest.mark.asyncio
+    @pytest.mark.skipif(not HAS_NEXITY_DEPS, reason="nexity extra not installed")
+    async def test_login_maps_account_state_errors_to_bad_credentials(self):
+        """Account states the user must fix surface as bad credentials (reauth)."""
+        unconfirmed = ClientError(
+            error_response={"Error": {"Code": "UserNotConfirmedException"}},
+            operation_name="InitiateAuth",
+        )
+        with pytest.raises(NexityBadCredentialsError):
+            await self._login_with_cognito_error(unconfirmed)
+
+        with pytest.raises(NexityBadCredentialsError):
+            await self._login_with_cognito_error(
+                ForceChangePasswordException("Change password before authenticating")
+            )
+
+    @pytest.mark.asyncio
+    @pytest.mark.skipif(not HAS_NEXITY_DEPS, reason="nexity extra not installed")
+    async def test_login_maps_cognito_throttling_to_too_many_requests(self):
+        """Map Cognito throttling to TooManyRequestsError."""
+        throttled = ClientError(
+            error_response={"Error": {"Code": "TooManyRequestsException"}},
+            operation_name="InitiateAuth",
+        )
+        with pytest.raises(TooManyRequestsError):
+            await self._login_with_cognito_error(throttled)
+
+    @pytest.mark.asyncio
+    @pytest.mark.skipif(not HAS_NEXITY_DEPS, reason="nexity extra not installed")
+    async def test_login_maps_other_cognito_errors_to_service_error(self):
+        """Non-credential Cognito and network failures stay in the pyoverkiz hierarchy."""
+        service_error = ClientError(
+            error_response={"Error": {"Code": "InternalErrorException"}},
+            operation_name="InitiateAuth",
+        )
+        with pytest.raises(NexityServiceError) as exc_info:
+            await self._login_with_cognito_error(service_error)
+        assert exc_info.value.__cause__ is service_error
+
+        network_error = EndpointConnectionError(endpoint_url="https://cognito")
+        with pytest.raises(NexityServiceError) as exc_info:
+            await self._login_with_cognito_error(network_error)
+        assert exc_info.value.__cause__ is network_error
+
+        with pytest.raises(NexityServiceError):
+            await self._login_with_cognito_error(
+                NotImplementedError("The SMS_MFA challenge is not supported")
+            )
 
 
 def _server_error_response(status: int = 502):
