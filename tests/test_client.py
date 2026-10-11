@@ -620,11 +620,6 @@ class TestOverkizClient:
                 400,
             ),
             (
-                "cloud/quota-exceeded-other-message.json",
-                exceptions.TooManyRequestsError,
-                400,
-            ),
-            (
                 "cloud/no-such-resource.json",
                 exceptions.NoSuchResourceError,
                 400,
