@@ -70,7 +70,6 @@ from pyoverkiz.exceptions import (
     NoGatewaySelectedError,
     SomfyBadCredentialsError,
     SomfyServiceError,
-    TooManyRequestsError,
 )
 from pyoverkiz.models import ServerConfig
 from pyoverkiz.response_handler import check_response
@@ -736,21 +735,6 @@ class BrandtAuthStrategy(SessionLoginStrategy):
         await self._post_login({"jwt": jwt})
 
 
-# Account states the user can only resolve by fixing their Nexity account and
-# re-entering credentials, so they surface as bad credentials (triggers reauth).
-_NEXITY_CREDENTIAL_ERROR_CODES = frozenset(
-    {
-        "NotAuthorizedException",
-        "UserNotFoundException",
-        "PasswordResetRequiredException",
-        "UserNotConfirmedException",
-    }
-)
-_NEXITY_THROTTLING_ERROR_CODES = frozenset(
-    {"TooManyRequestsException", "LimitExceededException"}
-)
-
-
 class NexityAuthStrategy(SessionLoginStrategy):
     """Authentication strategy using Nexity session-based login."""
 
@@ -775,7 +759,7 @@ class NexityAuthStrategy(SessionLoginStrategy):
             )
 
         try:
-            # Client creation can fail too (e.g. endpoint/credential discovery).
+            # Client creation can raise BotoCoreError (e.g. endpoint discovery).
             client = await loop.run_in_executor(None, _client)
             aws = WarrantLite(
                 username=self.credentials.username,
@@ -787,17 +771,15 @@ class NexityAuthStrategy(SessionLoginStrategy):
             tokens = await loop.run_in_executor(None, aws.authenticate_user)
         except ClientError as error:
             code = error.response.get("Error", {}).get("Code")
-            if code in _NEXITY_CREDENTIAL_ERROR_CODES:
-                raise NexityBadCredentialsError(code) from error
-            if code in _NEXITY_THROTTLING_ERROR_CODES:
-                raise TooManyRequestsError(code) from error
+            if code in ("NotAuthorizedException", "UserNotFoundException"):
+                raise NexityBadCredentialsError from error
             raise NexityServiceError(f"Nexity Cognito error: {code}") from error
-        except ForceChangePasswordException as error:
-            raise NexityBadCredentialsError(
-                "Nexity requires a password change before login."
-            ) from error
-        except (BotoCoreError, NotImplementedError) as error:
-            # NotImplementedError: warrant_lite rejects unsupported Cognito challenges.
+        except (
+            BotoCoreError,
+            ForceChangePasswordException,
+            # warrant_lite raises this for Cognito challenges it cannot answer.
+            NotImplementedError,
+        ) as error:
             raise NexityServiceError(
                 f"Nexity Cognito authentication failed: {error}"
             ) from error
