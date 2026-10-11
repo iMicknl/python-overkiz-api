@@ -774,16 +774,16 @@ class NexityAuthStrategy(SessionLoginStrategy):
                 "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
             )
 
-        client = await loop.run_in_executor(None, _client)
-        aws = WarrantLite(
-            username=self.credentials.username,
-            password=self.credentials.password,
-            pool_id=NEXITY_COGNITO_USER_POOL,
-            client_id=NEXITY_COGNITO_CLIENT_ID,
-            client=client,
-        )
-
         try:
+            # Client creation can fail too (e.g. endpoint/credential discovery).
+            client = await loop.run_in_executor(None, _client)
+            aws = WarrantLite(
+                username=self.credentials.username,
+                password=self.credentials.password,
+                pool_id=NEXITY_COGNITO_USER_POOL,
+                client_id=NEXITY_COGNITO_CLIENT_ID,
+                client=client,
+            )
             tokens = await loop.run_in_executor(None, aws.authenticate_user)
         except ClientError as error:
             code = error.response.get("Error", {}).get("Code")
