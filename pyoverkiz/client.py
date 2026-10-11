@@ -504,8 +504,9 @@ class OverkizClient:
         operation (polling).
         """
         # A token refresh re-registers the listener, so it must happen before
-        # the listener id is baked into the path.
-        await self._refresh_token_if_expired()
+        # the listener id is baked into the path. Only the refresh is retried:
+        # repeating the fetch itself could drop consumed events.
+        await retry_on_connection_failure(self._refresh_token_if_expired)()
         if self.event_listener_id is None:
             await self.register_event_listener()
 
@@ -519,7 +520,7 @@ class OverkizClient:
         """
         # Refresh without re-registering: `_post` would otherwise register a
         # replacement listener that is orphaned once the old id is unregistered.
-        await self._auth.refresh_if_needed()
+        await retry_on_connection_failure(self._auth.refresh_if_needed)()
         await self._post(f"events/{self._event_listener_id}/unregister")
         self._event_listener_id = None
 
