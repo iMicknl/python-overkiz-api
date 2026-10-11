@@ -156,6 +156,37 @@ class TestSetup:
 
         assert setup.id is None
 
+    def test_zone_oids_use_api_acronym_casing(self):
+        """Zones structure into models, mapping the `deviceOID`/`externalOID` keys."""
+        raw_setup = json.loads(
+            (FIXTURES_DIR / "setup_tahoma_1.json").read_text(encoding="utf-8")
+        )
+        raw_setup["zones"] = [
+            {
+                "creationTime": 1785140822080,
+                "lastUpdateTime": 1785140822080,
+                "label": "Ground floor",
+                "type": 0,
+                "items": [
+                    {
+                        "itemType": "device",
+                        "deviceOID": "a8b8c8d8-0000-4000-8000-000000000001",
+                        "deviceURL": "io://1234-5678-9012/12345678",
+                    }
+                ],
+                "externalOID": "ext-zone-1",
+                "metadata": "",
+                "oid": "f1e2d3c4-0000-4000-8000-000000000002",
+            }
+        ]
+
+        setup = converter.structure(raw_setup, Setup)
+
+        assert setup.zones
+        zone = setup.zones[0]
+        assert zone.external_oid == "ext-zone-1"
+        assert zone.items[0].device_oid == "a8b8c8d8-0000-4000-8000-000000000001"
+
     def test_setup_drops_devices_missing_required_fields(self, caplog):
         """Devices missing required fields are dropped, not fatal."""
         raw_setup = json.loads(

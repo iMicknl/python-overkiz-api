@@ -31,17 +31,24 @@ from pyoverkiz.obfuscate import obfuscate_id
 _LOGGER = logging.getLogger(__name__)
 
 
+def _contains_attrs(t: Any) -> bool:
+    """True if `t` is, or is a generic parameterised by, an attrs class."""
+    if isinstance(t, type) and attr.has(t):
+        return True
+    return any(_contains_attrs(arg) for arg in get_args(t))
+
+
 def _is_primitive_union(t: Any) -> bool:
     """True for unions of JSON-native types (e.g. StateType).
 
-    Excludes unions containing attrs classes (e.g. Definition | None) since those
-    need actual structuring by cattrs.
+    Excludes unions containing attrs classes, also nested in generics (e.g.
+    Definition | None, list[Zone] | None), since those need actual structuring by cattrs.
     """
     origin = get_origin(t)
     if origin is not Union and not isinstance(t, types.UnionType):
         return False
     non_none = [arg for arg in get_args(t) if arg is not type(None)]
-    if any(isinstance(arg, type) and attr.has(arg) for arg in non_none):
+    if any(_contains_attrs(arg) for arg in non_none):
         return False
     return not all(isinstance(arg, type) and issubclass(arg, Enum) for arg in non_none)
 
