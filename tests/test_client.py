@@ -802,6 +802,36 @@ class TestOverkizClient:
             await check_response(resp)
 
     @pytest.mark.asyncio
+    async def test_check_response_message_fallback_under_unknown_error_code(
+        self,
+    ) -> None:
+        """Known messages map to their error even when the errorCode is unexpected."""
+        cases: list[tuple[str, type[Exception]]] = [
+            ("Too many requests, try again later", exceptions.TooManyRequestsError),
+            ("Not authenticated.", exceptions.NotAuthenticatedError),
+            (
+                "No such user account : user@example.tld",
+                exceptions.UnknownUserError,
+            ),
+            (
+                "Execution queue is full on gateway: #1234-5678-9012 (soft limit: 10)",
+                exceptions.ExecutionQueueFullError,
+            ),
+            (
+                "Another action exists on the same device : rts://1234-5678-1234/123456",
+                exceptions.DuplicateActionOnDeviceError,
+            ),
+        ]
+
+        for message, exception in cases:
+            resp = MockResponse(
+                json.dumps({"errorCode": "SOME_NEW_ERROR_CODE", "error": message}), 400
+            )
+
+            with pytest.raises(exception):
+                await check_response(resp)
+
+    @pytest.mark.asyncio
     async def test_get_setup_options(
         self,
         client: OverkizClient,

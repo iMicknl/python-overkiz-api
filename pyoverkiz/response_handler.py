@@ -116,6 +116,22 @@ _MESSAGE_FALLBACK_MAP: list[tuple[str, type[BaseOverkizError]]] = [
     ("No registered event listener", NoRegisteredEventListenerError),
     ("Unknown object", UnknownObjectError),
     ("Access denied to gateway", AccessDeniedToGatewayError),
+    # Safety net for messages also keyed by errorCode above, in case the
+    # server reports them under a different errorCode.
+    ("Too many requests", TooManyRequestsError),
+    ("Bad credentials", BadCredentialsError),
+    ("API key is required", MissingAPIKeyError),
+    ("Not authenticated", NotAuthenticatedError),
+    ("Missing authorization token", MissingAuthorizationTokenError),
+    ("too many concurrent requests", TooManyConcurrentRequestsError),
+    ("cannot be accessed through this application", ApplicationNotAllowedError),
+    # Without errorCode context the user/no-Overkiz-user distinction is lost.
+    ("No such user account", UnknownUserError),
+    ("Invalid event listener id", InvalidEventListenerIdError),
+    ("No such resource", NoSuchResourceError),
+    ("Execution queue is full on gateway", ExecutionQueueFullError),
+    ("Another action exists on the same device", DuplicateActionOnDeviceError),
+    ("Unable to determine action group setup", ActionGroupSetupNotFoundError),
 ]
 
 # Fallback when errorCode is recognized but no message pattern matched.
