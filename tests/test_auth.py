@@ -12,6 +12,7 @@ import importlib.util
 import json
 import logging
 import sys
+from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -46,16 +47,19 @@ from pyoverkiz.exceptions import (
     InvalidTokenError,
     MaintenanceError,
     NexityBadCredentialsError,
+    NexityServiceError,
     NoGatewaySelectedError,
     TooManyRequestsError,
 )
 from pyoverkiz.models import ServerConfig
 from tests.helpers import MockResponse
 
-HAS_NEXITY_DEPS = importlib.util.find_spec("boto3") is not None
+HAS_NEXITY_DEPS = all(
+    importlib.util.find_spec(module) is not None for module in ("boto3", "warrant_lite")
+)
 
 if HAS_NEXITY_DEPS:
-    from botocore.exceptions import ClientError
+    from botocore.exceptions import ClientError, EndpointConnectionError
 
 
 class TestAuthContext:
@@ -865,63 +869,60 @@ class TestNexityAuthStrategy:
         ):
             await strategy.login()
 
+    @staticmethod
+    async def _login_with_cognito(
+        error: Exception | None = None, result: dict[str, Any] | None = None
+    ) -> None:
+        """Run a Nexity login; `authenticate_user` raises `error` or returns `result`."""
+        server_config = ServerConfig(
+            server=Server.NEXITY,
+            name="Nexity",
+            endpoint="https://api.nexity.com",
+            manufacturer="Nexity",
+            api_type=APIType.CLOUD,
+        )
+        credentials = UsernamePasswordCredentials("user", "pass")
+        session = AsyncMock(spec=ClientSession)
+        warrant_instance = MagicMock()
+        warrant_instance.authenticate_user.side_effect = error
+        warrant_instance.authenticate_user.return_value = result
+
+        with (
+            patch("boto3.client", return_value=MagicMock()),
+            patch("warrant_lite.WarrantLite", return_value=warrant_instance),
+        ):
+            strategy = NexityAuthStrategy(credentials, session, server_config, True)
+            await strategy.login()
+
     @pytest.mark.asyncio
     @pytest.mark.skipif(not HAS_NEXITY_DEPS, reason="nexity extra not installed")
     async def test_login_maps_invalid_credentials_client_error(self):
         """Map Cognito bad-credential errors to NexityBadCredentialsError."""
-        server_config = ServerConfig(
-            server=Server.NEXITY,
-            name="Nexity",
-            endpoint="https://api.nexity.com",
-            manufacturer="Nexity",
-            api_type=APIType.CLOUD,
-        )
-        credentials = UsernamePasswordCredentials("user", "pass")
-        session = AsyncMock(spec=ClientSession)
-
         bad_credentials_error = ClientError(
             error_response={"Error": {"Code": "NotAuthorizedException"}},
             operation_name="InitiateAuth",
         )
-        warrant_instance = MagicMock()
-        warrant_instance.authenticate_user.side_effect = bad_credentials_error
-
-        with (
-            patch("boto3.client", return_value=MagicMock()),
-            patch("warrant_lite.WarrantLite", return_value=warrant_instance),
-        ):
-            strategy = NexityAuthStrategy(credentials, session, server_config, True)
-            with pytest.raises(NexityBadCredentialsError):
-                await strategy.login()
+        with pytest.raises(NexityBadCredentialsError):
+            await self._login_with_cognito(bad_credentials_error)
 
     @pytest.mark.asyncio
     @pytest.mark.skipif(not HAS_NEXITY_DEPS, reason="nexity extra not installed")
-    async def test_login_propagates_non_auth_client_error(self):
-        """Propagate non-auth Cognito errors to preserve failure context."""
-        server_config = ServerConfig(
-            server=Server.NEXITY,
-            name="Nexity",
-            endpoint="https://api.nexity.com",
-            manufacturer="Nexity",
-            api_type=APIType.CLOUD,
-        )
-        credentials = UsernamePasswordCredentials("user", "pass")
-        session = AsyncMock(spec=ClientSession)
+    async def test_login_maps_other_failures_to_service_error(self):
+        """Other Cognito, network and challenge failures stay in the pyoverkiz hierarchy."""
+        errors: list[Exception] = [
+            ClientError(
+                error_response={"Error": {"Code": "InternalErrorException"}},
+                operation_name="InitiateAuth",
+            ),
+            EndpointConnectionError(endpoint_url="https://cognito"),
+        ]
+        for error in errors:
+            with pytest.raises(NexityServiceError) as exc_info:
+                await self._login_with_cognito(error)
+            assert exc_info.value.__cause__ is error
 
-        service_error = ClientError(
-            error_response={"Error": {"Code": "InternalErrorException"}},
-            operation_name="InitiateAuth",
-        )
-        warrant_instance = MagicMock()
-        warrant_instance.authenticate_user.side_effect = service_error
-
-        with (
-            patch("boto3.client", return_value=MagicMock()),
-            patch("warrant_lite.WarrantLite", return_value=warrant_instance),
-        ):
-            strategy = NexityAuthStrategy(credentials, session, server_config, True)
-            with pytest.raises(ClientError, match="InternalErrorException"):
-                await strategy.login()
+        with pytest.raises(NexityServiceError, match="SMS_MFA"):
+            await self._login_with_cognito(result={"ChallengeName": "SMS_MFA"})
 
 
 def _server_error_response(status: int = 502):

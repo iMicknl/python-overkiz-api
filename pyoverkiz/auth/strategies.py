@@ -750,8 +750,8 @@ class NexityAuthStrategy(SessionLoginStrategy):
         try:
             import boto3
             from botocore.config import Config
-            from botocore.exceptions import ClientError
-            from warrant_lite import WarrantLite
+            from botocore.exceptions import BotoCoreError, ClientError
+            from warrant_lite import ForceChangePasswordException, WarrantLite
         except ImportError as err:
             raise ImportError(
                 "Nexity authentication requires the 'nexity' extra. "
@@ -765,22 +765,37 @@ class NexityAuthStrategy(SessionLoginStrategy):
                 "cognito-idp", config=Config(region_name=NEXITY_COGNITO_REGION)
             )
 
-        client = await loop.run_in_executor(None, _client)
-        aws = WarrantLite(
-            username=self.credentials.username,
-            password=self.credentials.password,
-            pool_id=NEXITY_COGNITO_USER_POOL,
-            client_id=NEXITY_COGNITO_CLIENT_ID,
-            client=client,
-        )
-
         try:
+            # Client creation can raise BotoCoreError (e.g. endpoint discovery).
+            client = await loop.run_in_executor(None, _client)
+            aws = WarrantLite(
+                username=self.credentials.username,
+                password=self.credentials.password,
+                pool_id=NEXITY_COGNITO_USER_POOL,
+                client_id=NEXITY_COGNITO_CLIENT_ID,
+                client=client,
+            )
             tokens = await loop.run_in_executor(None, aws.authenticate_user)
         except ClientError as error:
             code = error.response.get("Error", {}).get("Code")
-            if code in {"NotAuthorizedException", "UserNotFoundException"}:
+            if code in ("NotAuthorizedException", "UserNotFoundException"):
                 raise NexityBadCredentialsError from error
-            raise
+            raise NexityServiceError(f"Nexity Cognito error: {code}") from error
+        except (
+            BotoCoreError,
+            ForceChangePasswordException,
+            # warrant_lite raises this for Cognito challenges it cannot answer.
+            NotImplementedError,
+        ) as error:
+            raise NexityServiceError(
+                f"Nexity Cognito authentication failed: {error}"
+            ) from error
+
+        # Missing when Cognito answers with a further challenge (e.g. MFA).
+        if "AuthenticationResult" not in tokens:
+            raise NexityServiceError(
+                f"Unsupported Nexity Cognito challenge: {tokens.get('ChallengeName')}"
+            )
 
         id_token = tokens["AuthenticationResult"]["IdToken"]
 
