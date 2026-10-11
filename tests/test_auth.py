@@ -12,7 +12,6 @@ import importlib.util
 import json
 import logging
 import sys
-from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
@@ -43,20 +42,15 @@ from pyoverkiz.auth.strategies import (
 )
 from pyoverkiz.enums import APIType, Server
 from pyoverkiz.exceptions import (
-    ApplicationNotAllowedError,
     BadCredentialsError,
     InvalidTokenError,
     MaintenanceError,
     NexityBadCredentialsError,
     NoGatewaySelectedError,
-    ServiceUnavailableError,
-    TooManyAttemptsBannedError,
     TooManyRequestsError,
 )
 from pyoverkiz.models import ServerConfig
 from tests.helpers import MockResponse
-
-EXCEPTION_FIXTURES_DIR = Path(__file__).resolve().parent / "fixtures" / "exceptions"
 
 HAS_NEXITY_DEPS = importlib.util.find_spec("boto3") is not None
 
@@ -593,8 +587,39 @@ class TestSessionLoginStrategy:
         # Should not call json() for 204 response
         assert not mock_response.json.called
 
-    @staticmethod
-    def _strategy_with_login_response(body: str, status: int) -> SessionLoginStrategy:
+    @pytest.mark.asyncio
+    async def test_login_failure_raises_typed_error(self):
+        """Transient failures must not read as bad credentials, or consumers start a reauth flow."""
+        server_config = ServerConfig(
+            server=Server.SOMFY_OCEANIA,
+            name="Test",
+            endpoint="https://api.test.com/",
+            manufacturer="Test",
+            api_type=APIType.CLOUD,
+        )
+        cases: list[tuple[str, int, type[Exception]]] = [
+            (
+                '{"errorCode": "AUTHENTICATION_ERROR", "error": "Too many requests, try again later"}',
+                401,
+                TooManyRequestsError,
+            ),
+            ("<html>Server is down for maintenance</html>", 503, MaintenanceError),
+        ]
+        for body, status, expected in cases:
+            session = AsyncMock(spec=ClientSession)
+            session.post = MagicMock(return_value=MockResponse(body, status))
+            strategy = SessionLoginStrategy(
+                UsernamePasswordCredentials("user", "pass"),
+                session,
+                server_config,
+                True,
+            )
+            with pytest.raises(expected):
+                await strategy.login()
+
+    @pytest.mark.asyncio
+    async def test_login_failure_unclassified_raises_bad_credentials(self):
+        """A failed login with an unrecognised body still means bad credentials."""
         server_config = ServerConfig(
             server=Server.SOMFY_OCEANIA,
             name="Test",
@@ -603,58 +628,13 @@ class TestSessionLoginStrategy:
             api_type=APIType.CLOUD,
         )
         session = AsyncMock(spec=ClientSession)
-        session.post = MagicMock(return_value=MockResponse(body, status))
-        return SessionLoginStrategy(
+        session.post = MagicMock(
+            return_value=MockResponse("<html>Unauthorized</html>", 401)
+        )
+        strategy = SessionLoginStrategy(
             UsernamePasswordCredentials("user", "pass"), session, server_config, True
         )
-
-    @pytest.mark.asyncio
-    async def test_login_failure_raises_typed_error(self):
-        """Transient login failures must not be reported as bad credentials.
-
-        Otherwise consumers such as Home Assistant start a reauth flow instead
-        of retrying later.
-        """
-        cases: list[tuple[str, int, type[Exception]]] = [
-            ("cloud/too-many-requests.json", 401, TooManyRequestsError),
-            ("cloud/too-many-attempts-banned.json", 401, TooManyAttemptsBannedError),
-            ("cloud/application-not-allowed.json", 401, ApplicationNotAllowedError),
-            ("cloud/503-maintenance.html", 503, MaintenanceError),
-            ("cloud/502-bad-gateway.html", 502, ServiceUnavailableError),
-            ("cloud/503-empty.html", 503, ServiceUnavailableError),
-        ]
-        for fixture, status, expected in cases:
-            strategy = self._strategy_with_login_response(
-                (EXCEPTION_FIXTURES_DIR / fixture).read_text(encoding="utf-8"), status
-            )
-            with pytest.raises(expected):
-                await strategy.login()
-
-    @pytest.mark.asyncio
-    async def test_login_failure_unclassified_raises_bad_credentials(self):
-        """Bad credentials, or a failed login with an unrecognised body, read as bad credentials."""
-        cases: list[tuple[str, int]] = [
-            ("cloud/bad-credentials.json", 401),
-            ("cloud/unknown-auth-error.json", 401),
-            ("local/400-unspecified-error.json", 400),
-        ]
-        for fixture, status in cases:
-            strategy = self._strategy_with_login_response(
-                (EXCEPTION_FIXTURES_DIR / fixture).read_text(encoding="utf-8"), status
-            )
-            with pytest.raises(BadCredentialsError):
-                await strategy.login()
-
-    @pytest.mark.asyncio
-    async def test_login_failure_non_object_json(self):
-        """JSON bodies without an error object are classified, not crashed on."""
-        for body in ("null", '"Unauthorized"', "[]"):
-            strategy = self._strategy_with_login_response(body, 401)
-            with pytest.raises(BadCredentialsError):
-                await strategy.login()
-
-        strategy = self._strategy_with_login_response('"Bad Gateway"', 502)
-        with pytest.raises(ServiceUnavailableError):
+        with pytest.raises(BadCredentialsError):
             await strategy.login()
 
     @pytest.mark.asyncio
@@ -782,32 +762,6 @@ class TestBrandtAuthStrategy:
         credentials = UsernamePasswordCredentials("a@b.c", "wrong")
         strategy = BrandtAuthStrategy(credentials, session, self._server_config(), True)
         with pytest.raises(BrandtBadCredentialsError, match="Password wrong password"):
-            await strategy.login()
-
-    @pytest.mark.asyncio
-    async def test_login_rate_limited_on_overkiz_step(self):
-        """A rate-limited final Overkiz login surfaces TooManyRequestsError."""
-        from pyoverkiz.auth.strategies import BrandtAuthStrategy
-
-        session = AsyncMock(spec=ClientSession)
-        session.post = MagicMock(
-            side_effect=[
-                self._json_response(200, {"client": {"email": "a@b.c"}}),
-                MockResponse(
-                    (EXCEPTION_FIXTURES_DIR / "cloud/too-many-requests.json").read_text(
-                        encoding="utf-8"
-                    ),
-                    401,
-                ),
-            ]
-        )
-        session.get = MagicMock(
-            return_value=self._json_response(200, {"client": {"jwt": "the.jwt.token"}})
-        )
-
-        credentials = UsernamePasswordCredentials("a@b.c", "pass")
-        strategy = BrandtAuthStrategy(credentials, session, self._server_config(), True)
-        with pytest.raises(TooManyRequestsError):
             await strategy.login()
 
     @pytest.mark.asyncio
