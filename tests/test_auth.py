@@ -594,9 +594,7 @@ class TestSessionLoginStrategy:
         assert not mock_response.json.called
 
     @staticmethod
-    def _strategy_with_login_response(
-        fixture: str, status: int
-    ) -> SessionLoginStrategy:
+    def _strategy_with_login_response(body: str, status: int) -> SessionLoginStrategy:
         server_config = ServerConfig(
             server=Server.SOMFY_OCEANIA,
             name="Test",
@@ -605,11 +603,7 @@ class TestSessionLoginStrategy:
             api_type=APIType.CLOUD,
         )
         session = AsyncMock(spec=ClientSession)
-        session.post = MagicMock(
-            return_value=MockResponse(
-                (EXCEPTION_FIXTURES_DIR / fixture).read_text(encoding="utf-8"), status
-            )
-        )
+        session.post = MagicMock(return_value=MockResponse(body, status))
         return SessionLoginStrategy(
             UsernamePasswordCredentials("user", "pass"), session, server_config, True
         )
@@ -630,7 +624,9 @@ class TestSessionLoginStrategy:
             ("cloud/503-empty.html", 503, ServiceUnavailableError),
         ]
         for fixture, status, expected in cases:
-            strategy = self._strategy_with_login_response(fixture, status)
+            strategy = self._strategy_with_login_response(
+                (EXCEPTION_FIXTURES_DIR / fixture).read_text(encoding="utf-8"), status
+            )
             with pytest.raises(expected):
                 await strategy.login()
 
@@ -643,9 +639,23 @@ class TestSessionLoginStrategy:
             ("local/400-unspecified-error.json", 400),
         ]
         for fixture, status in cases:
-            strategy = self._strategy_with_login_response(fixture, status)
+            strategy = self._strategy_with_login_response(
+                (EXCEPTION_FIXTURES_DIR / fixture).read_text(encoding="utf-8"), status
+            )
             with pytest.raises(BadCredentialsError):
                 await strategy.login()
+
+    @pytest.mark.asyncio
+    async def test_login_failure_non_object_json(self):
+        """JSON bodies without an error object are classified, not crashed on."""
+        for body in ("null", '"Unauthorized"', "[]"):
+            strategy = self._strategy_with_login_response(body, 401)
+            with pytest.raises(BadCredentialsError):
+                await strategy.login()
+
+        strategy = self._strategy_with_login_response('"Bad Gateway"', 502)
+        with pytest.raises(ServiceUnavailableError):
+            await strategy.login()
 
     @pytest.mark.asyncio
     async def test_refresh_if_needed_no_refresh(self):
