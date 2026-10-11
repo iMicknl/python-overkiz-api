@@ -13,7 +13,8 @@ so retries always give up rather than looping indefinitely.
 
 | Failure | Retried | Budget | On retry |
 | --- | --- | --- | --- |
-| Connection errors — `TimeoutError`, `ClientConnectorError`, `ServerDisconnectedError` | yes | 3 tries / ~30s | reopen the connection |
+| Connection not established — `ClientConnectorError`, `ConnectionTimeoutError` | yes | 3 tries / ~30s | reopen the connection |
+| Timeouts and dropped connections — `TimeoutError`, `ServerDisconnectedError` | idempotent requests only (GETs, authentication, event listener register/fetch, reference device search) | 3 tries / ~30s | reopen the connection |
 | `NotAuthenticatedError` (session expired) | yes | 2 tries / ~60s | authenticate without registering a listener |
 | `TooManyConcurrentRequestsError` | yes | 5 tries / ~120s | — |
 | `TooManyExecutionsError` | yes | 5 tries / ~300s | — |
@@ -56,9 +57,16 @@ the caller than to keep a request hanging for minutes. For a polling loop such a
 `fetch_events()`, letting a call fail and retrying on the next poll tick is usually the
 right behaviour.
 
-A dropped keep-alive socket (`ServerDisconnectedError`) is treated as a connection
-blip and simply retried — it does **not** trigger a re-login. A genuine session expiry
-is reported by the server as a `Not authenticated` response, which raises
+Commands and other writes (`execute_action_group`, cancelling executions, pairing,
+developer mode, and so on) are **not** resent after a `TimeoutError` or
+`ServerDisconnectedError`: the server may already have accepted the request, so a
+resend could run the command twice. Handle these errors yourself, for example by
+checking `get_current_executions()` before trying again.
+
+A dropped keep-alive socket (`ServerDisconnectedError`) on an idempotent request is
+treated as a connection blip and simply retried — it does **not** trigger a re-login.
+A genuine session expiry is reported by the server as a `Not authenticated` response,
+which raises
 `NotAuthenticatedError` and escalates to a re-login through the separate auth policy.
 
 !!! note "`max_time` does not interrupt a hung request"

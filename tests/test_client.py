@@ -83,10 +83,10 @@ class TestOverkizClient:
             assert len(devices) == 23
 
     @pytest.mark.asyncio
-    async def test_backoff_retries_command_on_connection_failure(
+    async def test_backoff_retries_command_when_connection_not_established(
         self, client: OverkizClient
     ) -> None:
-        """Ensure the command path retries a transient connection failure."""
+        """A command that never reached the server is safe to resend."""
         resp = MockResponse(json.dumps({"execId": "exec-1"}))
 
         with (
@@ -94,7 +94,10 @@ class TestOverkizClient:
             patch.object(
                 aiohttp.ClientSession,
                 "post",
-                side_effect=[TimeoutError("timed out"), resp],
+                side_effect=[
+                    aiohttp.ClientConnectorError(MagicMock(), OSError("refused")),
+                    resp,
+                ],
             ) as post_mock,
         ):
             exec_id = await client.execute_action_group(
@@ -104,6 +107,49 @@ class TestOverkizClient:
         assert exec_id == "exec-1"
         assert post_mock.call_count == 2
         assert sleep_mock.await_count == 1
+
+    @pytest.mark.asyncio
+    async def test_command_not_resent_when_server_may_have_received_it(
+        self, client: OverkizClient
+    ) -> None:
+        """A timeout or disconnect after sending must not execute a command twice."""
+        for failure in (TimeoutError("timed out"), aiohttp.ServerDisconnectedError()):
+            with (
+                patch("backoff._async.asyncio.sleep", new=AsyncMock()),
+                patch.object(
+                    aiohttp.ClientSession,
+                    "post",
+                    side_effect=[
+                        failure,
+                        MockResponse(json.dumps({"execId": "exec-1"})),
+                    ],
+                ) as post_mock,
+                pytest.raises(type(failure)),
+            ):
+                await client.execute_action_group(
+                    actions=[Action(device_url="io://1234-5678-9012/12345678")],
+                )
+
+            assert post_mock.call_count == 1
+
+    @pytest.mark.asyncio
+    async def test_idempotent_post_retries_on_timeout(
+        self, client: OverkizClient
+    ) -> None:
+        """Polling events has no device side effects, so timeouts are retried."""
+        client._event_listener_id = "listener-1"
+
+        with (
+            patch("backoff._async.asyncio.sleep", new=AsyncMock()),
+            patch.object(
+                aiohttp.ClientSession,
+                "post",
+                side_effect=[TimeoutError("timed out"), MockResponse("[]")],
+            ) as post_mock,
+        ):
+            assert await client.fetch_events() == []
+
+        assert post_mock.call_count == 2
 
     @pytest.mark.asyncio
     async def test_backoff_gives_up_after_max_tries_on_connection_failure(

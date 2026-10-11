@@ -18,6 +18,7 @@ from aiohttp import (
     ClientResponse,
     ClientSession,
     ClientTimeout,
+    ConnectionTimeoutError,
     ServerDisconnectedError,
 )
 from backoff.types import Details
@@ -107,9 +108,22 @@ retry_on_auth_error = backoff.on_exception(
     logger=_LOGGER,
 )
 
+# The request may already have reached the server, so only idempotent requests
+# may use this; retrying a write could execute it twice.
 retry_on_connection_failure = backoff.on_exception(
     backoff.expo,
     (TimeoutError, ClientConnectorError, ServerDisconnectedError),
+    max_tries=3,
+    max_time=30,
+    jitter=backoff.full_jitter,
+    logger=_LOGGER,
+)
+
+# The connection was never established, so the request was not sent and any
+# method is safe to retry.
+retry_on_unsent_request = backoff.on_exception(
+    backoff.expo,
+    (ClientConnectorError, ConnectionTimeoutError),
     max_tries=3,
     max_time=30,
     jitter=backoff.full_jitter,
@@ -487,7 +501,7 @@ class OverkizClient:
         """
         # Registration may invalidate the old listener even if its response is lost.
         self._event_listener_id = None
-        response = await self._post("events/register")
+        response = await self._post("events/register", idempotent=True)
         listener_id = cast(str, response.get("id"))
         self._event_listener_id = listener_id
 
@@ -506,7 +520,9 @@ class OverkizClient:
         if self.event_listener_id is None:
             await self.register_event_listener()
 
-        response = await self._post(f"events/{self.event_listener_id}/fetch")
+        response = await self._post(
+            f"events/{self.event_listener_id}/fetch", idempotent=True
+        )
         return converter.structure(response, list[Event])
 
     async def unregister_event_listener(self) -> None:
@@ -786,7 +802,9 @@ class OverkizClient:
                 "withManufacturerReferences": True,
             }
         """
-        response = await self._post("reference/devices/search", payload)
+        response = await self._post(
+            "reference/devices/search", payload, idempotent=True
+        )
         return converter.structure(response, DeviceSearchResult)
 
     @retry_on_auth_error
@@ -1096,14 +1114,28 @@ class OverkizClient:
         ) as response:
             return await self._parse_response(response)
 
-    @retry_on_connection_failure
     async def _post(
         self,
         path: str,
         payload: dict[str, Any] | None = None,
         data: dict[str, Any] | None = None,
+        *,
+        idempotent: bool = False,
     ) -> Any:
-        """Make a POST request to the OverKiz API."""
+        """Make a POST request to the OverKiz API.
+
+        Most POSTs have side effects (e.g. `exec/apply`), so timeouts and dropped
+        connections are only retried when `idempotent` is set.
+        """
+        retry = retry_on_connection_failure if idempotent else retry_on_unsent_request
+        return await retry(self._send_post)(path, payload, data)
+
+    async def _send_post(
+        self,
+        path: str,
+        payload: dict[str, Any] | None,
+        data: dict[str, Any] | None,
+    ) -> Any:
         await self._refresh_token_if_expired()
 
         async with self.session.post(
@@ -1115,7 +1147,7 @@ class OverkizClient:
         ) as response:
             return await self._parse_response(response)
 
-    @retry_on_connection_failure
+    @retry_on_unsent_request
     async def _put(self, path: str, payload: dict[str, Any] | None = None) -> Any:
         """Make a PUT request to the OverKiz API."""
         await self._refresh_token_if_expired()
@@ -1128,7 +1160,7 @@ class OverkizClient:
         ) as response:
             return await self._parse_response(response)
 
-    @retry_on_connection_failure
+    @retry_on_unsent_request
     async def _delete(self, path: str) -> None:
         """Make a DELETE request to the OverKiz API."""
         await self._refresh_token_if_expired()
