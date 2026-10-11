@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import datetime
 from unittest.mock import AsyncMock, patch
 
 import aiohttp
@@ -311,4 +312,62 @@ async def test_relogin_preserves_non_transient_client_errors(
     assert raised.value is failure
     assert get.call_count == 1
     assert post.call_count == 1
+    await client.session.close()
+
+
+def _expire_token(client: OverkizClient) -> None:
+    client._auth.context.refresh_token = "refresh"  # type: ignore[attr-defined]  # noqa: S105
+    client._auth.context.expires_at = datetime.datetime.now(  # type: ignore[attr-defined]
+        datetime.UTC
+    ) - datetime.timedelta(minutes=1)
+
+
+@pytest.mark.asyncio
+async def test_fetch_after_token_refresh_uses_new_listener(
+    client: OverkizClient,
+) -> None:
+    """The listener re-registered by a token refresh must be the one fetched."""
+    client._event_listener_id = "stale"
+    _expire_token(client)
+    with patch.object(
+        aiohttp.ClientSession,
+        "post",
+        side_effect=[
+            MockResponse('{"access_token": "token", "expires_in": 3600}'),
+            MockResponse('{"id": "new"}'),
+            MockResponse("[]"),
+        ],
+    ) as post:
+        assert await client.fetch_events() == []
+
+    paths = [call.args[0] for call in post.call_args_list]
+    assert paths[0].endswith("/oauth/oauth/v2/token/jwt")
+    assert paths[1].endswith("/events/register")
+    assert paths[2].endswith("/events/new/fetch")
+    assert client.event_listener_id == "new"
+    await client.session.close()
+
+
+@pytest.mark.asyncio
+async def test_unregister_after_token_refresh_does_not_register(
+    client: OverkizClient,
+) -> None:
+    """Unregistering must not leave a freshly registered listener orphaned."""
+    client._event_listener_id = "stale"
+    _expire_token(client)
+    with patch.object(
+        aiohttp.ClientSession,
+        "post",
+        side_effect=[
+            MockResponse('{"access_token": "token", "expires_in": 3600}'),
+            MockResponse("{}"),
+        ],
+    ) as post:
+        await client.unregister_event_listener()
+
+    paths = [call.args[0] for call in post.call_args_list]
+    assert paths[0].endswith("/oauth/oauth/v2/token/jwt")
+    assert paths[1].endswith("/events/stale/unregister")
+    assert len(paths) == 2
+    assert client.event_listener_id is None
     await client.session.close()
