@@ -68,14 +68,15 @@ is reported by the server as a `Not authenticated` response, which raises
 !!! note "`max_time` does not interrupt a hung request"
     The `max_time` budget only bounds the scheduling of retries *between* attempts; it
     cannot cancel a single in-flight request. A request that hangs is bounded by the
-    session timeout (see below), which surfaces as a `TimeoutError` and is then retried.
+    session timeout (see below), which surfaces as a `TimeoutError` and is then retried
+    for idempotent requests only.
 
 ## Request timeout
 
 When pyOverkiz creates its own session, it applies a default per-request timeout
 (`total=15s`, `sock_connect=10s`). This is kept below the connection-retry budget so a
-hung socket fails fast and is retried, instead of blocking on aiohttp's 300-second
-default.
+hung socket fails fast and is retried for idempotent requests only, instead of blocking
+on aiohttp's 300-second default.
 
 If you pass your own `ClientSession`, **you own its timeout** — pyOverkiz does not
 override it. Configure one explicitly:
