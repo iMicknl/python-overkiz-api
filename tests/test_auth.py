@@ -42,11 +42,15 @@ from pyoverkiz.auth.strategies import (
 )
 from pyoverkiz.enums import APIType, Server
 from pyoverkiz.exceptions import (
+    BadCredentialsError,
     InvalidTokenError,
+    MaintenanceError,
     NexityBadCredentialsError,
     NoGatewaySelectedError,
+    TooManyRequestsError,
 )
 from pyoverkiz.models import ServerConfig
+from tests.helpers import MockResponse
 
 HAS_NEXITY_DEPS = importlib.util.find_spec("boto3") is not None
 
@@ -582,6 +586,56 @@ class TestSessionLoginStrategy:
 
         # Should not call json() for 204 response
         assert not mock_response.json.called
+
+    @pytest.mark.asyncio
+    async def test_login_failure_raises_typed_error(self):
+        """Transient failures must not read as bad credentials, or consumers start a reauth flow."""
+        server_config = ServerConfig(
+            server=Server.SOMFY_OCEANIA,
+            name="Test",
+            endpoint="https://api.test.com/",
+            manufacturer="Test",
+            api_type=APIType.CLOUD,
+        )
+        cases: list[tuple[str, int, type[Exception]]] = [
+            (
+                '{"errorCode": "AUTHENTICATION_ERROR", "error": "Too many requests, try again later"}',
+                401,
+                TooManyRequestsError,
+            ),
+            ("<html>Server is down for maintenance</html>", 503, MaintenanceError),
+        ]
+        for body, status, expected in cases:
+            session = AsyncMock(spec=ClientSession)
+            session.post = MagicMock(return_value=MockResponse(body, status))
+            strategy = SessionLoginStrategy(
+                UsernamePasswordCredentials("user", "pass"),
+                session,
+                server_config,
+                True,
+            )
+            with pytest.raises(expected):
+                await strategy.login()
+
+    @pytest.mark.asyncio
+    async def test_login_failure_unclassified_raises_bad_credentials(self):
+        """A failed login with an unrecognised body still means bad credentials."""
+        server_config = ServerConfig(
+            server=Server.SOMFY_OCEANIA,
+            name="Test",
+            endpoint="https://api.test.com/",
+            manufacturer="Test",
+            api_type=APIType.CLOUD,
+        )
+        session = AsyncMock(spec=ClientSession)
+        session.post = MagicMock(
+            return_value=MockResponse("<html>Unauthorized</html>", 401)
+        )
+        strategy = SessionLoginStrategy(
+            UsernamePasswordCredentials("user", "pass"), session, server_config, True
+        )
+        with pytest.raises(BadCredentialsError):
+            await strategy.login()
 
     @pytest.mark.asyncio
     async def test_refresh_if_needed_no_refresh(self):

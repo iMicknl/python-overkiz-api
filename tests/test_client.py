@@ -1339,6 +1339,15 @@ class TestOverkizClient:
             assert exec_id == "45e52d27-3c08-4fd5-87f2-03d650b67f4b"
 
     @pytest.mark.asyncio
+    async def test_check_response_non_object_json(self):
+        """Valid JSON that is not an object maps like a non-JSON body."""
+        with pytest.raises(exceptions.OverkizError):
+            await check_response(MockResponse("null", status=400))
+
+        with pytest.raises(exceptions.ServiceUnavailableError):
+            await check_response(MockResponse('["error"]', status=503))
+
+    @pytest.mark.asyncio
     async def test_local_no_registered_event_listener(
         self, local_client: OverkizClient
     ):

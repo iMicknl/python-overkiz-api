@@ -147,6 +147,12 @@ async def check_response(response: ClientResponse) -> None:
             f"Unknown error while requesting {response.url}. {response.status} - {result}"
         ) from error
 
+    # Valid JSON that isn't an object (null, string, list) has no errorCode.
+    if not isinstance(result, dict):
+        if response.status >= HTTPStatus.INTERNAL_SERVER_ERROR:
+            raise ServiceUnavailableError(result)
+        raise OverkizError(result)
+
     error_code = result.get("errorCode", "")
 
     if error_code:
