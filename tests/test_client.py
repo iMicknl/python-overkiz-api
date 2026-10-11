@@ -122,10 +122,7 @@ class TestOverkizClient:
                 patch.object(
                     aiohttp.ClientSession,
                     "post",
-                    side_effect=[
-                        failure,
-                        MockResponse(json.dumps({"execId": "exec-1"})),
-                    ],
+                    side_effect=failure,
                 ) as post_mock,
                 pytest.raises(type(failure)),
             ):

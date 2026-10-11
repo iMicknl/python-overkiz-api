@@ -108,8 +108,7 @@ retry_on_auth_error = backoff.on_exception(
     logger=_LOGGER,
 )
 
-# The request may already have reached the server, so only idempotent requests
-# may use this; retrying a write could execute it twice.
+# Idempotent requests only: the server may already have received the request.
 retry_on_connection_failure = backoff.on_exception(
     backoff.expo,
     (TimeoutError, ClientConnectorError, ServerDisconnectedError),
@@ -119,8 +118,7 @@ retry_on_connection_failure = backoff.on_exception(
     logger=_LOGGER,
 )
 
-# The connection was never established, so the request was not sent and any
-# method is safe to retry.
+# Safe for any method: the request was never sent.
 retry_on_unsent_request = backoff.on_exception(
     backoff.expo,
     (ClientConnectorError, ConnectionTimeoutError),
