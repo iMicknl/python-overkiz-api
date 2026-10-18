@@ -1236,6 +1236,35 @@ class TestEvent:
         assert isinstance(event.failure_type_code, FailureType)
         assert event.failure_type_code is FailureType.NO_FAILURE
 
+    def test_failed_commands_device_url_redacted_in_repr(self):
+        """Device URLs inside failed_commands stay raw but are masked in repr."""
+        raw_url = "ogp://1234-5678-9012/1"
+        event = converter.structure(
+            {
+                "name": "ExecutionStateChangedEvent",
+                "timestamp": 123,
+                "execId": "c6f83624-ac10-3e01-653e-2b025fee956d",
+                "newState": "FAILED",
+                "oldState": "IN_PROGRESS",
+                "failureType": "INTERNAL",
+                "failedCommands": [
+                    {
+                        "deviceURL": raw_url,
+                        "detailedStatus": {"message": "Timeout", "error": True},
+                        "rank": 0,
+                        "failureType": "INTERNAL",
+                    }
+                ],
+            },
+            Event,
+        )
+
+        assert isinstance(event, ExecutionStateChangedEvent)
+        assert event.failed_commands is not None
+        assert event.failed_commands[0]["deviceURL"] == raw_url
+        assert raw_url not in repr(event)
+        assert obfuscate_id(raw_url) in repr(event)
+
     def test_optional_enum_fields_none_when_absent(self):
         """Base events do not expose subtype-only enum fields."""
         event = converter.structure(
