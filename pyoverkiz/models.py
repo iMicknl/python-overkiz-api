@@ -32,7 +32,12 @@ from pyoverkiz.enums.protocol import Protocol
 from pyoverkiz.enums.server import APIType, Server
 from pyoverkiz.enums.state import OverkizAttribute, OverkizState
 from pyoverkiz.exceptions import OverkizError
-from pyoverkiz.obfuscate import obfuscate_email, obfuscate_id, obfuscate_string
+from pyoverkiz.obfuscate import (
+    obfuscate_email,
+    obfuscate_id,
+    obfuscate_sensitive_data,
+    obfuscate_string,
+)
 from pyoverkiz.types import DATA_TYPE_TO_PYTHON, CommandParameterValue, StateType
 
 # ---------------------------------------------------------------------------
@@ -750,7 +755,10 @@ class ExecutionStateChangedEvent(ExecutionEvent):
     type: int | None = None
     sub_type: int | None = None
     time_to_next_state: int | None = None
-    failed_commands: list[dict[str, Any]] | None = None
+    failed_commands: list[dict[str, Any]] | None = field(
+        repr=lambda value: repr(value and obfuscate_sensitive_data(value)),
+        default=None,
+    )
     failure_type: str | None = None
     failure_type_code: FailureType | None = None
 
