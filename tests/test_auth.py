@@ -692,10 +692,34 @@ class TestBrandtAuthStrategy:
         )
 
     @staticmethod
-    def _json_response(status, payload):
+    def _json_response(status, payload, *, html: str | None = None):
+        """Return a mock middleware response.
+
+        With `html`, the body is non-JSON and `json()` fails the way aiohttp
+        does: ContentTypeError by default, JSONDecodeError with
+        `content_type=None` (as `check_response` calls it).
+        """
+        from json import JSONDecodeError
+
+        from aiohttp import ContentTypeError
+
         resp = MagicMock()
         resp.status = status
-        resp.json = AsyncMock(return_value=payload)
+        if html is None:
+            resp.json = AsyncMock(return_value=payload)
+        else:
+
+            async def _json(content_type: str | None = "application/json"):
+                if content_type is None:
+                    raise JSONDecodeError("Expecting value", html, 0)
+                raise ContentTypeError(
+                    request_info=MagicMock(),
+                    history=(),
+                    message="Attempt to decode JSON with unexpected mimetype: text/html",
+                )
+
+            resp.json = AsyncMock(side_effect=_json)
+            resp.text = AsyncMock(return_value=html)
         resp.__aenter__ = AsyncMock(return_value=resp)
         resp.__aexit__ = AsyncMock(return_value=None)
         return resp
@@ -766,6 +790,63 @@ class TestBrandtAuthStrategy:
         credentials = UsernamePasswordCredentials("a@b.c", "wrong")
         strategy = BrandtAuthStrategy(credentials, session, self._server_config(), True)
         with pytest.raises(BrandtBadCredentialsError, match="Password wrong password"):
+            await strategy.login()
+
+    @pytest.mark.asyncio
+    async def test_login_sessions_503_raises_service_unavailable(self):
+        """A middleware outage must not be reported as bad credentials."""
+        from pyoverkiz.auth.strategies import BrandtAuthStrategy
+        from pyoverkiz.exceptions import ServiceUnavailableError
+
+        session = AsyncMock(spec=ClientSession)
+        session.post = MagicMock(
+            return_value=self._json_response(
+                503, None, html="<html><title>503 Service Unavailable</title></html>"
+            )
+        )
+
+        credentials = UsernamePasswordCredentials("a@b.c", "pass")
+        strategy = BrandtAuthStrategy(credentials, session, self._server_config(), True)
+        with pytest.raises(ServiceUnavailableError):
+            await strategy.login()
+
+    @pytest.mark.asyncio
+    async def test_login_non_json_401_raises_bad_credentials(self):
+        """A non-JSON 401 (e.g. proxy HTML page) still maps to bad credentials."""
+        from pyoverkiz.auth.strategies import BrandtAuthStrategy
+        from pyoverkiz.exceptions import BrandtBadCredentialsError
+
+        session = AsyncMock(spec=ClientSession)
+        session.post = MagicMock(
+            return_value=self._json_response(
+                401, None, html="<html><title>401 Unauthorized</title></html>"
+            )
+        )
+
+        credentials = UsernamePasswordCredentials("a@b.c", "wrong")
+        strategy = BrandtAuthStrategy(credentials, session, self._server_config(), True)
+        with pytest.raises(BrandtBadCredentialsError, match="bad credentials"):
+            await strategy.login()
+
+    @pytest.mark.asyncio
+    async def test_login_jwt_503_raises_service_unavailable(self):
+        """A 503 from profile/jwt.json raises ServiceUnavailableError."""
+        from pyoverkiz.auth.strategies import BrandtAuthStrategy
+        from pyoverkiz.exceptions import ServiceUnavailableError
+
+        session = AsyncMock(spec=ClientSession)
+        session.post = MagicMock(
+            return_value=self._json_response(200, {"client": {"email": "a@b.c"}})
+        )
+        session.get = MagicMock(
+            return_value=self._json_response(
+                503, None, html="<html><title>503 Service Unavailable</title></html>"
+            )
+        )
+
+        credentials = UsernamePasswordCredentials("a@b.c", "pass")
+        strategy = BrandtAuthStrategy(credentials, session, self._server_config(), True)
+        with pytest.raises(ServiceUnavailableError):
             await strategy.login()
 
     @pytest.mark.asyncio
