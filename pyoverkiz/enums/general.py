@@ -358,6 +358,7 @@ class EventName(UnknownEnumMixin, StrEnum):
     MAIN_ACCOUNT_UPDATED = "MainAccountUpdatedEvent"
     NEW_DEVICE_FOUND = "NewDeviceFoundEvent"
     NOTIFICATION_EVENT_LOG = "NotificationEventLogEvent"
+    OGCP_TOKENS_REFRESH_COMPLETED = "OGCPTokensRefreshCompletedEvent"
     OGP = "OGPEvent"
     OPENDOORS_DISCOVER_COMPLETED = "OpenDoorsDiscoverCompletedEvent"
     OPENDOORS_DISCOVER_FAILED = "OpenDoorsDiscoverFailedEvent"
