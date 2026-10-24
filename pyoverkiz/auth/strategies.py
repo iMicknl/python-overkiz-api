@@ -43,6 +43,7 @@ from pyoverkiz.const import (
     REXEL_OAUTH_SCOPE,
     REXEL_OAUTH_TOKEN_URL,
     REXEL_REQUIRED_CONSENT,
+    SAUTER_PARTNER,
     SOMFY_API,
     SOMFY_BOB_API_KEY,
     SOMFY_BOB_SITE_API,
@@ -698,6 +699,8 @@ class BrandtAuthStrategy(SessionLoginStrategy):
     aiohttp session carries the cookie between the two middleware calls.
     """
 
+    partner: str = BRANDT_PARTNER
+
     async def login(self) -> None:
         """Perform the Brandt middleware login, then Overkiz JWT login."""
         # 1) Middleware session login (sets the devise session cookie).
@@ -707,7 +710,7 @@ class BrandtAuthStrategy(SessionLoginStrategy):
                 "client": {
                     "email": self.credentials.username,
                     "password": self.credentials.password,
-                    "partner": BRANDT_PARTNER,
+                    "partner": self.partner,
                 }
             },
             ssl=self._ssl,
@@ -729,16 +732,22 @@ class BrandtAuthStrategy(SessionLoginStrategy):
             await _raise_for_server_error(response)
             if response.status >= HTTPStatus.BAD_REQUEST:
                 raise BrandtServiceError(
-                    f"Brandt JWT request failed: {response.status}"
+                    f"{self.server.name} JWT request failed: {response.status}"
                 )
             body = await response.json()
             jwt = body.get("client", {}).get("jwt")
 
         if not jwt:
-            raise BrandtServiceError("No Brandt JWT token provided.")
+            raise BrandtServiceError(f"No {self.server.name} JWT token provided.")
 
         # 3) Overkiz cloud login with the JWT only (no apiKey/applicationId).
         await self._post_login({"jwt": jwt})
+
+
+class SauterAuthStrategy(BrandtAuthStrategy):
+    """Sauter Smart Control: Brandt middleware flow with the Sauter partner."""
+
+    partner: str = SAUTER_PARTNER
 
 
 class NexityAuthStrategy(SessionLoginStrategy):

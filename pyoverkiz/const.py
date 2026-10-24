@@ -195,6 +195,8 @@ SOMFY_COUNTRY_REGION: MappingProxyType[str, str] = MappingProxyType(
 # Brandt Smart Control middleware (cookie-session Rails API in front of Overkiz)
 BRANDT_MIDDLEWARE_API = "https://www.smartcontrol-app.com"
 BRANDT_PARTNER = "brandt-electromenager"
+# Sauter Smart Control: same middleware as Brandt, different partner/realm.
+SAUTER_PARTNER = "sauter-electromenager"
 
 LOCAL_API_PATH = "/enduser-mobile-web/1/enduserAPI/"
 
@@ -275,6 +277,13 @@ SUPPORTED_SERVERS: MappingProxyType[str, ServerConfig] = MappingProxyType(
             server=Server.SAUTER_COZYTOUCH,
             name="Sauter Cozytouch",
             endpoint="https://ha110-1.overkiz.com/enduser-mobile-web/enduserAPI/",
+            manufacturer="Sauter",
+            api_type=APIType.CLOUD,
+        ),
+        Server.SAUTER_SMART_CONTROL: ServerConfig(
+            server=Server.SAUTER_SMART_CONTROL,
+            name="Sauter Smart Control",
+            endpoint="https://ha3-1.overkiz.com/enduser-mobile-web/enduserAPI/",
             manufacturer="Sauter",
             api_type=APIType.CLOUD,
         ),
