@@ -10,6 +10,7 @@ on:
       - docs/**
       - mkdocs.yml
       - pyproject.toml
+      - uv.lock
 
 permissions:
   contents: read
