@@ -32,6 +32,7 @@ pyOverkiz is an async Python library for interacting with Overkiz-based platform
 | Nexity Eugénie | ✓ | |
 | Rexel Energeasy Connect † | ✓ | ✓ |
 | Sauter Cozytouch | ✓ | |
+| Sauter Smart Control | ✓ | |
 | Simu LiveIn2 | ✓ | |
 | Somfy | ✓ | ✓ |
 | Thermor Cozytouch | ✓ | |

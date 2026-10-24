@@ -24,6 +24,7 @@ from pyoverkiz.auth.strategies import (
     NexityAuthStrategy,
     RexelAuthStrategy,
     RexelTokenAuthStrategy,
+    SauterAuthStrategy,
     SessionLoginStrategy,
     SomfyAccountAuthStrategy,
     SomfyAuthStrategy,
@@ -98,6 +99,14 @@ def build_auth_strategy(
 
     if server == Server.BRANDT:
         return BrandtAuthStrategy(
+            _ensure_credentials(credentials, UsernamePasswordCredentials),
+            session,
+            server_config,
+            ssl_context,
+        )
+
+    if server == Server.SAUTER_SMART_CONTROL:
+        return SauterAuthStrategy(
             _ensure_credentials(credentials, UsernamePasswordCredentials),
             session,
             server_config,

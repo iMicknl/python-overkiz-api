@@ -26,6 +26,7 @@ Full documentation is available at **[imicknl.github.io/python-overkiz-api](http
 | Nexity Eugénie | ✓ | |
 | Rexel Energeasy Connect † | ✓ | ✓ |
 | Sauter Cozytouch | ✓ | |
+| Sauter Smart Control | ✓ | |
 | Simu LiveIn2 | ✓ | |
 | Somfy | ✓ | ✓ |
 | Thermor Cozytouch | ✓ | |
