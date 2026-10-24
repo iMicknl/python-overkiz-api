@@ -25,6 +25,7 @@ class Server(StrEnum):
     NEXITY = "nexity"
     REXEL = "rexel"
     SAUTER_COZYTOUCH = "sauter_cozytouch"
+    SAUTER_SMART_CONTROL = "sauter_smart_control"
     SIMU_LIVEIN2 = "simu_livein2"
     # Experimental: may change within 2.x.
     SOMFY = "somfy"
