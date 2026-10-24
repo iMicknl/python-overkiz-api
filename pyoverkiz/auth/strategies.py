@@ -715,15 +715,13 @@ class BrandtAuthStrategy(SessionLoginStrategy):
             },
             ssl=self._ssl,
         ) as response:
+            await _raise_for_server_error(response)
             if response.status >= HTTPStatus.BAD_REQUEST:
                 message = "Login failed: bad credentials"
-                try:
-                    body = await response.json()
-                    errors = body.get("error")
-                    if errors:
-                        message = errors[0]
-                except ValueError:
-                    pass
+                body = await _json_body(response)
+                errors = body.get("error")
+                if errors:
+                    message = errors[0]
                 raise BrandtBadCredentialsError(message)
 
         # 2) Fetch the JWT, authenticated purely by the session cookie.
@@ -731,6 +729,7 @@ class BrandtAuthStrategy(SessionLoginStrategy):
             f"{BRANDT_MIDDLEWARE_API}/api/v1/profile/jwt.json",
             ssl=self._ssl,
         ) as response:
+            await _raise_for_server_error(response)
             if response.status >= HTTPStatus.BAD_REQUEST:
                 raise BrandtServiceError(
                     f"{self.server.name} JWT request failed: {response.status}"
