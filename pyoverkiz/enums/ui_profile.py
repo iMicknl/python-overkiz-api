@@ -378,6 +378,13 @@ class UIProfile(UnknownEnumMixin, StrEnum):
     ELECTRIC_ENERGY_CONSUMPTION = "ElectricEnergyConsumption"
 
     #
+    # ElectricEnergyProduction
+    #
+    # States:
+    #   - core:ElectricityEnergyProductionState (int >= 0): Electric energy production index (Wh)
+    ELECTRIC_ENERGY_PRODUCTION = "ElectricEnergyProduction"
+
+    #
     # ElectricPowerMeter
     #
     # States:

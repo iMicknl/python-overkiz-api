@@ -10,7 +10,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 !!! note
     This page is auto-generated from the Overkiz API. Run `uv run utils/generate_device_catalog.py` to regenerate.
 
-**35 protocols**, **661 unique device types** documented below.
+**35 protocols**, **664 unique device types** documented below.
 
 ## Protocols
 
@@ -25,7 +25,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 - [HOMEKIT](#homekit) (1 types)
 - [HUE](#hue) (5 types)
 - [INTERNAL](#internal) (15 types)
-- [IO](#io) (84 types)
+- [IO](#io) (85 types)
 - [JSW](#jsw) (1 types)
 - [KNX](#knx) (50 types)
 - [MODBUS](#modbus) (12 types)
@@ -33,8 +33,8 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 - [MYFOX](#myfox) (9 types)
 - [NEST](#nest) (4 types)
 - [NETATMO](#netatmo) (36 types)
-- [OGCP](#ogcp) (92 types)
-- [OGP](#ogp) (92 types)
+- [OGCP](#ogcp) (93 types)
+- [OGP](#ogp) (93 types)
 - [OPENDOORS](#opendoors) (1 types)
 - [OVP](#ovp) (26 types)
 - [PROFALUX_868](#profalux_868) (5 types)
@@ -2526,7 +2526,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ## IO
 
-84 device types.
+85 device types.
 
 ??? note "AdjustableSlatsRollerShutter/PositionableOrOrientableRollerShutter (ACTUATOR) — 33 commands, 16 states"
 
@@ -2597,7 +2597,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "AdjustableSlatsRollerShutter/PositionableOrOrientableRollerShutter (ACTUATOR) — 32 commands, 14 states"
 
-    **Type IDs:** `131328`, `131330` | **Servers:** `somfy_europe` | **Controllable:** `io:AdjustableSlatsRollerShutterIOComponent` | **Profiles:** `StatefulRockingShutter`, `StatefulOrientableOrCloseable`, `OrientableOrCloseable`, `StatefulCloseable`, `Closeable`, `OpenClose`
+    **Type IDs:** `131328`, `131330` | **Servers:** `somfy_europe` | **Controllable:** `io:AdjustableSlatsRollerShutterIOComponent` | **Profiles:** `StatefulRockingShutter`, `StatefulOrientableOrCloseable`, `OrientableOrCloseable`, `StatefulCloseable`, `Closeable`, `OpenClose`, `UpDown`
 
     **Data Properties**
 
@@ -2843,9 +2843,9 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `StatusState` | DiscreteState | available, unavailable |  |
     | `TargetClosureState` | ContinuousState |  |  |
 
-??? note "Awning/DynamicAwning (ACTUATOR) — 29 commands, 15 states"
+??? note "Awning/DynamicAwning (ACTUATOR) — 29 commands, 16 states"
 
-    **Type IDs:** `18691697868802` | **Servers:** `somfy_europe` | **Controllable:** `io:DynamicAwningIOComponent` | **Profiles:** `StatefulDeployUndeployAwning`, `StatefulDeployUndeploy`, `DeployUndeploy`, `StatefulDeployable`, `Deployable`
+    **Type IDs:** `18691697868802`, `6597070815234` | **Servers:** `somfy_europe` | **Controllable:** `io:DynamicAwningIOComponent` | **Profiles:** `StatefulDeployUndeployAwning`, `StatefulDeployUndeploy`, `DeployUndeploy`, `StatefulDeployable`, `Deployable`
 
     **Data Properties**
 
@@ -2891,6 +2891,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     |-------|------|----------------|-------|
     | `AdditionalStatusState` | DataState |  |  |
     | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
+    | `BatteryLevelState` | ContinuousState |  |  |
     | `CommandLockLevelsState` | DataState |  |  |
     | `DeployedUndeployedState` | DiscreteState | deployed, undeployed |  |
     | `DeploymentState` | ContinuousState | [0..100] |  |
@@ -2907,7 +2908,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Awning/PositionableHorizontalAwning (ACTUATOR) — 35 commands, 15 states"
 
-    **Type IDs:** `1048576` | **Servers:** `somfy_europe` | **Controllable:** `io:HorizontalAwningIOComponent` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `1048576` | **Servers:** `somfy_europe` | **Controllable:** `io:HorizontalAwningIOComponent` | **Profiles:** `StatefulDeployableAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulOpenClose`, `OpenClose`, `UpDown`
 
     **Data Properties**
 
@@ -3598,7 +3599,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorScreen/PositionableScreen (ACTUATOR) — 35 commands, 16 states"
 
-    **Type IDs:** `196608`, `196610` | **Servers:** `somfy_europe` | **Controllable:** `io:VerticalExteriorAwningIOComponent` | **Profiles:** `StatefulDeployableVerticalAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulCloseable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `196608`, `196610` | **Servers:** `somfy_europe` | **Controllable:** `io:VerticalExteriorAwningIOComponent` | **Profiles:** `StatefulDeployableVerticalAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulCloseable`, `StatefulOpenClose`, `OpenClose`, `UpDown`
 
     **Data Properties**
 
@@ -3667,7 +3668,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorScreen/PositionableScreen (ACTUATOR) — 32 commands, 15 states"
 
-    **Type IDs:** `196609` | **Servers:** `somfy_europe` | **Controllable:** `io:VerticalExteriorAwningVeluxIOComponent` | **Profiles:** `StatefulDeployableVerticalAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulCloseable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `196609` | **Servers:** `somfy_europe` | **Controllable:** `io:VerticalExteriorAwningVeluxIOComponent` | **Profiles:** `StatefulDeployableVerticalAwning`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulCloseable`, `StatefulOpenClose`, `OpenClose`, `UpDown`
 
     **Data Properties**
 
@@ -3807,7 +3808,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorVenetianBlind/PositionableExteriorVenetianBlind (ACTUATOR) — 37 commands, 17 states"
 
-    **Type IDs:** `1114112` | **Servers:** `somfy_europe` | **Controllable:** `io:ExteriorVenetianBlindIOComponent` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`
+    **Type IDs:** `1114112` | **Servers:** `somfy_europe` | **Controllable:** `io:ExteriorVenetianBlindIOComponent` | **Profiles:** `StatefulVenetianBlind`, `StatefulOrientableAndCloseable`, `OrientableAndCloseable`, `OpenClose`, `UpDown`
 
     **Data Properties**
 
@@ -4052,7 +4053,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GarageDoor/PositionableGarageDoor (ACTUATOR) — 27 commands, 11 states"
 
-    **Type IDs:** `327680`, `327682` | **Servers:** `somfy_europe` | **Controllable:** `io:GarageOpenerIOComponent` | **Profiles:** `StatefulCloseableGarageOpener`, `StatefulCloseable`, `Closeable`, `OpenClose`
+    **Type IDs:** `327680`, `327682` | **Servers:** `somfy_europe` | **Controllable:** `io:GarageOpenerIOComponent` | **Profiles:** `StatefulCloseableGarageOpener`, `StatefulCloseable`, `Closeable`, `OpenClose`, `UpDown`
 
     **Data Properties**
 
@@ -4108,7 +4109,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "GarageDoor/DiscretePositionableGarageDoor (ACTUATOR) — 26 commands, 10 states"
 
-    **Type IDs:** `342528`, `342530` | **Servers:** `somfy_europe` | **Controllable:** `io:DiscreteGarageOpenerIOComponent` | **Profiles:** `OpenCloseGarageOpener`, `OpenClose`
+    **Type IDs:** `342528`, `342530` | **Servers:** `somfy_europe` | **Controllable:** `io:DiscreteGarageOpenerIOComponent` | **Profiles:** `OpenCloseGarageOpener`, `OpenClose`, `UpDown`
 
     **Data Properties**
 
@@ -4977,7 +4978,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/AtlanticPassAPCZoneControl (ACTUATOR) — 37 commands, 30 states"
 
-    **Type IDs:** `1835020` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCZoneControlMainComponent` | **Profiles:** `Specific`
+    **Type IDs:** `1835020` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:AtlanticPassAPCZoneControlMainComponent` | **Profiles:** `Specific`
 
     **Data Properties**
 
@@ -5062,7 +5063,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "HeatingSystem/AtlanticPassAPCHeatingAndCoolingZone (ACTUATOR) — 35 commands, 26 states"
 
-    **Type IDs:** `1835020` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:AtlanticPassAPCZoneControlZoneComponent` | **Profiles:** `StatefulCoolingThermostat`, `CoolingThermostat`, `StatefulDualThermostat`, `DualThermostat`, `ThermostatTargetReader`
+    **Type IDs:** `1835020` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel` | **Controllable:** `io:AtlanticPassAPCZoneControlZoneComponent` | **Profiles:** `StatefulCoolingThermostat`, `CoolingThermostat`, `StatefulDualThermostat`, `DualThermostat`, `ThermostatTargetReader`
 
     **Commands**
 
@@ -5897,6 +5898,18 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `RSSILevelState` | ContinuousState |  |  |
     | `StatusState` | DiscreteState | available, unavailable |  |
 
+??? note "LightSensor/LuminanceSensor (SENSOR) — 0 commands, 3 states"
+
+    **Type IDs:** `18691697868802`, `6597070815234` | **Servers:** `somfy_europe` | **Controllable:** `io:SunEnergyActuatorSensor` | **Profiles:** `Luminance`
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `LuminanceState` | ContinuousState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+    | `SunEnergyState` | ContinuousState |  |  |
+
 ??? note "OnOff/StatefulOnOff (ACTUATOR) — 20 commands, 9 states"
 
     **Type IDs:** `983040` | **Servers:** `atlantic_cozytouch`, `hi_kumo_europe`, `rexel`, `somfy_europe` | **Controllable:** `io:OnOffIOComponent` | **Profiles:** `StatefulSwitchablePlug`, `StatefulSwitchable`, `Switchable`
@@ -6064,7 +6077,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Pergola/PergolaHorizontalAwning (ACTUATOR) — 35 commands, 15 states"
 
-    **Type IDs:** `1048832`, `1048834` | **Servers:** `somfy_europe` | **Controllable:** `io:PergolaRailGuidedAwningIOComponent` | **Profiles:** `StatefulSlidingPergola`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `1048832`, `1048834` | **Servers:** `somfy_europe` | **Controllable:** `io:PergolaRailGuidedAwningIOComponent` | **Profiles:** `StatefulSlidingPergola`, `StatefulDeployable`, `Deployable`, `DeployUndeploy`, `StatefulOpenClose`, `OpenClose`, `UpDown`
 
     **Data Properties**
 
@@ -6398,7 +6411,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/PositionableRollerShutter (ACTUATOR) — 33 commands, 15 states"
 
-    **Type IDs:** `131072`, `131074` | **Servers:** `somfy_europe` | **Controllable:** `io:RollerShutterGenericIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `131072`, `131074` | **Servers:** `somfy_europe` | **Controllable:** `io:RollerShutterGenericIOComponent` | **Profiles:** `StatefulCloseableShutter`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `UpDown`
 
     **Data Properties**
 
@@ -6588,7 +6601,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Screen/PositionableScreen (ACTUATOR) — 32 commands, 15 states"
 
-    **Type IDs:** `655360`, `655362` | **Servers:** `somfy_europe` | **Controllable:** `io:VerticalInteriorBlindGenericIOComponent` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`
+    **Type IDs:** `655360`, `655362` | **Servers:** `somfy_europe` | **Controllable:** `io:VerticalInteriorBlindGenericIOComponent` | **Profiles:** `StatefulCloseableBlind`, `StatefulCloseable`, `Closeable`, `StatefulOpenClose`, `OpenClose`, `UpDown`
 
     **Data Properties**
 
@@ -7420,7 +7433,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "Window/PositionableAndLockableSlidingWindow (ACTUATOR) — 36 commands, 18 states"
 
-    **Type IDs:** `1769730`, `2199025025282` | **Servers:** `somfy_europe` | **Controllable:** `io:PositionableAndLockableSlidingWindowComponent` | **Profiles:** `StatefulCloseableSlidingWindow`, `StatefulCloseable`, `Closeable`, `StatefulLock`, `LockStatus`, `Lock`, `OpenClose`
+    **Type IDs:** `1769730` | **Servers:** `somfy_europe` | **Controllable:** `io:PositionableAndLockableSlidingWindowComponent` | **Profiles:** `StatefulCloseableSlidingWindow`, `StatefulCloseable`, `Closeable`, `StatefulLock`, `LockStatus`, `Lock`, `OpenClose`
 
     **Data Properties**
 
@@ -10786,7 +10799,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ## OGCP
 
-92 device types.
+93 device types.
 
 ??? note "AirSensor/DynamicAirSensor (SENSOR) — 7 commands, 26 states"
 
@@ -11594,6 +11607,53 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ElectricEnergyConsumptionState` | ContinuousState |  |  |
     | `ElectricPowerConsumptionState` | ContinuousState |  |  |
+    | `ErrorState` | DataState |  |  |
+    | `ErrorsState` | DataState |  |  |
+    | `FirmwareHashState` | DataState |  |  |
+    | `FirmwareRevisionState` | DataState |  |  |
+    | `NameState` | DataState |  |  |
+    | `NewFirmwareAvailableState` | DataState |  |  |
+    | `Private10State` | DataState |  |  |
+    | `Private1State` | DataState |  |  |
+    | `Private2State` | DataState |  |  |
+    | `Private3State` | DataState |  |  |
+    | `Private4State` | DataState |  |  |
+    | `Private5State` | DataState |  |  |
+    | `Private6State` | DataState |  |  |
+    | `Private7State` | DataState |  |  |
+    | `Private8State` | DataState |  |  |
+    | `Private9State` | DataState |  |  |
+    | `RemovableState` | DataState |  |  |
+    | `SignalQualityState` | ContinuousState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+
+??? note "ElectricitySensor/DynamicElectricalSensor (SENSOR) — 7 commands, 26 states"
+
+    **Type IDs:** `324` | **Servers:** `somfy_europe` | **Controllable:** `ogp:ElectricalSensor` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyProduction`, `ElectricEnergyConsumption`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `executeManufacturerProcedure` | STRING; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
+    | `sendPrivate` | OBJECT | send a private command |
+    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
+    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ActivePartitionState` | DataState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
+    | `BatteryLevelState` | ContinuousState |  |  |
+    | `ElectricEnergyConsumptionState` | ContinuousState |  |  |
+    | `ElectricPowerConsumptionState` | ContinuousState |  |  |
+    | `ElectricityEnergyProductionState` | ContinuousState |  |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -16023,7 +16083,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ## OGP
 
-92 device types.
+93 device types.
 
 ??? note "AirSensor/DynamicAirSensor (SENSOR) — 7 commands, 26 states"
 
@@ -16831,6 +16891,53 @@ This page lists all known device types from the Overkiz API, grouped by protocol
     | `BatteryLevelState` | ContinuousState |  |  |
     | `ElectricEnergyConsumptionState` | ContinuousState |  |  |
     | `ElectricPowerConsumptionState` | ContinuousState |  |  |
+    | `ErrorState` | DataState |  |  |
+    | `ErrorsState` | DataState |  |  |
+    | `FirmwareHashState` | DataState |  |  |
+    | `FirmwareRevisionState` | DataState |  |  |
+    | `NameState` | DataState |  |  |
+    | `NewFirmwareAvailableState` | DataState |  |  |
+    | `Private10State` | DataState |  |  |
+    | `Private1State` | DataState |  |  |
+    | `Private2State` | DataState |  |  |
+    | `Private3State` | DataState |  |  |
+    | `Private4State` | DataState |  |  |
+    | `Private5State` | DataState |  |  |
+    | `Private6State` | DataState |  |  |
+    | `Private7State` | DataState |  |  |
+    | `Private8State` | DataState |  |  |
+    | `Private9State` | DataState |  |  |
+    | `RemovableState` | DataState |  |  |
+    | `SignalQualityState` | ContinuousState |  |  |
+    | `StatusState` | DiscreteState | available, unavailable |  |
+
+??? note "ElectricitySensor/DynamicElectricalSensor (SENSOR) — 7 commands, 26 states"
+
+    **Type IDs:** `324` | **Servers:** `somfy_europe` | **Controllable:** `ogp:ElectricalSensor` | **Profiles:** `ElectricEnergyAndPower`, `ElectricPowerMeter`, `ElectricEnergyProduction`, `ElectricEnergyConsumption`
+
+    **Commands**
+
+    | Command | Parameters | Notes |
+    |---------|-----------|-------|
+    | `executeManufacturerProcedure` | STRING; OBJECT (optional) | execute manufacturer procedure command. p1: the procedure name p2: the params associated Example:   p1 = "dead_man_up"   p2 = {"duration": 42} |
+    | `identify` |  | Ask the device to identify itself by doing a slight movement or blink or beep |
+    | `readManufacturerData` | ARRAY | Read manufacturer data values from given names. Example: ["setting1","setting2"]. |
+    | `sendPrivate` | OBJECT | send a private command |
+    | `setName` | STRING | Change the device internal name. Name length may be subject to restrictions depending on the device and underlying protocol. |
+    | `update` |  | Update the gateway software. The update may have to be downloaded first, which can take a while. |
+    | `writeManufacturerData` | OBJECT | Write manufacturer data values. Example:  {     "setting1": true,     "setting2": 42,     "setting3": "overkiz",     "setting4": "Dk8PDr1WD0sfAAAAAAAAAAAAAAAAAAAA",     "setting5": [         "valueA", "valueB", "valueC"     ],     "setting6": {         "value": 15,         "definition": 158     } } |
+
+    **States**
+
+    | State | Type | Range / Values | Notes |
+    |-------|------|----------------|-------|
+    | `ActivePartitionState` | DataState |  |  |
+    | `AvailabilityState` | DiscreteState | available, unavailable |  |
+    | `BatteryDiscreteLevelState` | DiscreteState | good, medium, low, critical |  |
+    | `BatteryLevelState` | ContinuousState |  |  |
+    | `ElectricEnergyConsumptionState` | ContinuousState |  |  |
+    | `ElectricPowerConsumptionState` | ContinuousState |  |  |
+    | `ElectricityEnergyProductionState` | ContinuousState |  |  |
     | `ErrorState` | DataState |  |  |
     | `ErrorsState` | DataState |  |  |
     | `FirmwareHashState` | DataState |  |  |
@@ -22215,7 +22322,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorScreen/UpDownExteriorScreen (ACTUATOR) — 7 commands, 0 states"
 
-    **Type IDs:** `2` | **Servers:** `somfy_europe` | **Controllable:** `profalux868:Profalux868ExteriorScreen` | **Profiles:** `OpenCloseScreen`, `OpenClose`
+    **Type IDs:** `2` | **Servers:** `somfy_europe` | **Controllable:** `profalux868:Profalux868ExteriorScreen` | **Profiles:** `OpenCloseScreen`, `OpenClose`, `UpDown`
 
     **Data Properties**
 
@@ -22235,7 +22342,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorScreen/UpDownExteriorScreen (ACTUATOR) — 6 commands, 0 states"
 
-    **Type IDs:** `5` | **Servers:** `somfy_europe` | **Controllable:** `profalux868:Profalux868ExteriorScreenPlatinum` | **Profiles:** `OpenCloseScreen`, `OpenClose`
+    **Type IDs:** `5` | **Servers:** `somfy_europe` | **Controllable:** `profalux868:Profalux868ExteriorScreenPlatinum` | **Profiles:** `OpenCloseScreen`, `OpenClose`, `UpDown`
 
     **Data Properties**
 
@@ -22254,7 +22361,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "ExteriorVenetianBlind/UpDownExteriorVenetianBlind (ACTUATOR) — 6 commands, 0 states"
 
-    **Type IDs:** `3`, `6` | **Servers:** `somfy_europe` | **Controllable:** `profalux868:Profalux868ExteriorVenetianBlind` | **Profiles:** `OpenCloseBlind`, `OpenClose`
+    **Type IDs:** `3`, `6` | **Servers:** `somfy_europe` | **Controllable:** `profalux868:Profalux868ExteriorVenetianBlind` | **Profiles:** `OpenCloseBlind`, `OpenClose`, `UpDown`
 
     **Data Properties**
 
@@ -22273,7 +22380,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/UpDownRollerShutter (ACTUATOR) — 7 commands, 0 states"
 
-    **Type IDs:** `1` | **Servers:** `somfy_europe` | **Controllable:** `profalux868:Profalux868RollerShutter` | **Profiles:** `OpenCloseShutter`, `OpenClose`
+    **Type IDs:** `1` | **Servers:** `somfy_europe` | **Controllable:** `profalux868:Profalux868RollerShutter` | **Profiles:** `OpenCloseShutter`, `OpenClose`, `UpDown`
 
     **Data Properties**
 
@@ -22293,7 +22400,7 @@ This page lists all known device types from the Overkiz API, grouped by protocol
 
 ??? note "RollerShutter/UpDownRollerShutter (ACTUATOR) — 6 commands, 0 states"
 
-    **Type IDs:** `4` | **Servers:** `somfy_europe` | **Controllable:** `profalux868:Profalux868RollerShutterPlatinum` | **Profiles:** `OpenCloseShutter`, `OpenClose`
+    **Type IDs:** `4` | **Servers:** `somfy_europe` | **Controllable:** `profalux868:Profalux868RollerShutterPlatinum` | **Profiles:** `OpenCloseShutter`, `OpenClose`, `UpDown`
 
     **Data Properties**
 
