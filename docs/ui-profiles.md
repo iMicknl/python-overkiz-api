@@ -10,7 +10,7 @@ UI profiles describe device capabilities through the commands they accept and th
 !!! note
     This page is auto-generated. Run `uv run utils/generate_enums.py` to regenerate.
 
-**205 profiles** documented below.
+**206 profiles** documented below.
 
 ## AirFan
 
@@ -413,6 +413,14 @@ UI profiles describe device capabilities through the commands they accept and th
 | State | Type | Description |
 |-------|------|-------------|
 | `core:ElectricEnergyConsumptionState` | `int` (≥ 0) | Electric energy consumption index (Wh) |
+
+## ElectricEnergyProduction
+
+### States
+
+| State | Type | Description |
+|-------|------|-------------|
+| `core:ElectricityEnergyProductionState` | `int` (≥ 0) | Electric energy production index (Wh) |
 
 ## ElectricPowerMeter
 
