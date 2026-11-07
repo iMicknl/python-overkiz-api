@@ -7,6 +7,7 @@ from pathlib import Path
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import aiohttp
+import backoff._async as backoff_async
 import pytest
 
 from pyoverkiz import exceptions
@@ -223,6 +224,31 @@ class TestOverkizClient:
             assert int_state_event.value == 23247220
             assert isinstance(int_state_event.value, int)
             assert int_state_event.type == DataType.INTEGER
+
+    @pytest.mark.asyncio
+    async def test_fetch_events_does_not_grow_backoff_handlers(
+        self, client: OverkizClient
+    ) -> None:
+        """Repeated polling must not add backoff handlers on every call."""
+        client._event_listener_id = "listener-1"
+        handler_counts: list[int] = []
+        original = backoff_async._ensure_coroutines
+
+        def record(coros_or_funcs):
+            handler_counts.append(len(coros_or_funcs))
+            return original(coros_or_funcs)
+
+        with (
+            patch.object(backoff_async, "_ensure_coroutines", side_effect=record),
+            patch.object(client, "_refresh_token_if_expired", new=AsyncMock()),
+            patch.object(OverkizClient, "_post", new=AsyncMock(return_value=[])),
+        ):
+            await client.fetch_events()
+            first_call = list(handler_counts)
+            for _ in range(5):
+                handler_counts.clear()
+                await client.fetch_events()
+                assert handler_counts == first_call
 
     @pytest.mark.asyncio
     async def test_backoff_relogin_on_auth_error(self, client: OverkizClient):
