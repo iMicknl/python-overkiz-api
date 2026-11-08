@@ -504,7 +504,7 @@ class OverkizClient:
         operation (polling).
         """
         # Refresh first: it may re-register the listener and change the id.
-        await retry_on_connection_failure(self._refresh_token_if_expired)()
+        await self._refresh_token_with_retry()
         if self.event_listener_id is None:
             await self.register_event_listener()
 
@@ -517,7 +517,7 @@ class OverkizClient:
         API response status is always 200, even on unknown listener ids.
         """
         # Bypass re-registration, which would orphan a listener we never unregister.
-        await retry_on_connection_failure(self._auth.refresh_if_needed)()
+        await self._refresh_auth_with_retry()
         await self._post(f"events/{self._event_listener_id}/unregister")
         self._event_listener_id = None
 
@@ -1151,6 +1151,19 @@ class OverkizClient:
         if response.status == HTTPStatus.NO_CONTENT:
             return None
         return await response.json()
+
+    # Decorated once at class level: applying a backoff decorator on every call
+    # appends its log handlers to the shared decorator each time, so the handler
+    # lists (and the cost of every retried call) grow without bound.
+    @retry_on_connection_failure
+    async def _refresh_token_with_retry(self) -> None:
+        """Refresh the token if expired, retrying transient connection failures."""
+        await self._refresh_token_if_expired()
+
+    @retry_on_connection_failure
+    async def _refresh_auth_with_retry(self) -> None:
+        """Refresh the auth if needed, retrying transient connection failures."""
+        await self._auth.refresh_if_needed()
 
     async def _refresh_token_if_expired(self) -> None:
         """Check if token is expired and request a new one."""
