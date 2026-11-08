@@ -179,7 +179,14 @@ def _make_converter() -> cattrs.Converter:
                 _LOGGER.warning(
                     "Skipping device %s: incomplete data from hub (%s)",
                     obfuscate_id(device_url),
-                    err,
+                    "; ".join(
+                        cattrs.transform_error(
+                            err,
+                            format_exception=lambda exception, expected_type: (
+                                type(exception).__name__
+                            ),
+                        )
+                    ),
                 )
         return devices
 

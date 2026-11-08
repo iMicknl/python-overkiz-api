@@ -199,6 +199,26 @@ class TestSetup:
         assert len(setup.devices) == 13
         assert sum("incomplete data from hub" in r.message for r in caplog.records) == 3
 
+    def test_incomplete_device_logs_field_paths_without_private_values(self, caplog):
+        """Rejected devices report field paths without exposing their values."""
+        raw_setup = json.loads(
+            (FIXTURES_DIR / "setup_local.json").read_text(encoding="utf-8")
+        )
+        raw_device = raw_setup["devices"][0]
+        raw_device.pop("definition")
+        raw_device["label"] = "private-device-label"
+        raw_device["type"] = "private-invalid-type"
+
+        with caplog.at_level(logging.WARNING):
+            devices = converter.structure([raw_device], list[Device])
+
+        assert devices == []
+        assert "KeyError @ $.definition" in caplog.text
+        assert "$.type" in caplog.text
+        assert raw_device["deviceURL"] not in caplog.text
+        assert "private-device-label" not in caplog.text
+        assert "private-invalid-type" not in caplog.text
+
 
 class TestGateway:
     """Tests for Gateway model parsing, focused on sub_type handling."""

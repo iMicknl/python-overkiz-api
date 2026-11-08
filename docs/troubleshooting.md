@@ -90,6 +90,13 @@ strategy and for configuring timeouts on a custom session.
 
 ## Logging
 
+Devices with incomplete or invalid required fields are skipped. Their warnings
+include validation paths and error classes, for example `KeyError @ $.definition`.
+Gateway identifiers are masked and validation error values are omitted. Paths use
+Python model field names. This does not relax validation or retry a failed refresh;
+use the reported fields to distinguish missing capabilities from optional metadata
+before changing parsing rules.
+
 Enable debug logging in your application to inspect request/response details.
 
 ```python
