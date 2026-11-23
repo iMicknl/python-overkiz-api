@@ -58,12 +58,15 @@ the caller than to keep a request hanging for minutes. For a polling loop such a
 right behaviour.
 
 Commands and other writes are **not** resent after a timeout or disconnect: the server
-may already have accepted the request, so resending could run it twice.
+may already have accepted the request, so resending could run it twice. The
+`TimeoutError` or `ServerDisconnectedError` is raised to the caller instead; check the
+execution state (for example via `fetch_events()`) before sending the command again.
 
-A dropped keep-alive socket (`ServerDisconnectedError`) is treated as a connection
-blip and simply retried — it does **not** trigger a re-login. A genuine session expiry
-is reported by the server as a `Not authenticated` response, which raises
-`NotAuthenticatedError` and escalates to a re-login through the separate auth policy.
+For idempotent requests, a dropped keep-alive socket (`ServerDisconnectedError`) is
+treated as a connection blip and simply retried — it does **not** trigger a re-login.
+A genuine session expiry is reported by the server as a `Not authenticated` response,
+which raises `NotAuthenticatedError` and escalates to a re-login through the separate
+auth policy.
 
 !!! note "`max_time` does not interrupt a hung request"
     The `max_time` budget only bounds the scheduling of retries *between* attempts; it
