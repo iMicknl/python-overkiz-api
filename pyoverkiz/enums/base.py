@@ -35,4 +35,4 @@ class UnknownEnumMixin:
         """
         message = cls.__missing_message__
         logging.getLogger(cls.__module__).warning(message, value, cls)
-        return cls.UNKNOWN  # type: ignore[attr-defined]  # ty: ignore[unresolved-attribute]
+        return cls.UNKNOWN  # type: ignore[attr-defined]  # ty: ignore[missing-attribute]
