@@ -18,6 +18,7 @@ from aiohttp import (
     ClientResponse,
     ClientSession,
     ClientTimeout,
+    ConnectionTimeoutError,
     ServerDisconnectedError,
 )
 from backoff.types import Details
@@ -107,9 +108,20 @@ retry_on_auth_error = backoff.on_exception(
     logger=_LOGGER,
 )
 
+# Idempotent requests only: the server may already have received the request.
 retry_on_connection_failure = backoff.on_exception(
     backoff.expo,
     (TimeoutError, ClientConnectorError, ServerDisconnectedError),
+    max_tries=3,
+    max_time=30,
+    jitter=backoff.full_jitter,
+    logger=_LOGGER,
+)
+
+# Safe for any method: the request was never sent.
+retry_on_unsent_request = backoff.on_exception(
+    backoff.expo,
+    (ClientConnectorError, ConnectionTimeoutError),
     max_tries=3,
     max_time=30,
     jitter=backoff.full_jitter,
@@ -487,7 +499,7 @@ class OverkizClient:
         """
         # Registration may invalidate the old listener even if its response is lost.
         self._event_listener_id = None
-        response = await self._post("events/register")
+        response = await self._post_idempotent("events/register")
         listener_id = cast(str, response.get("id"))
         self._event_listener_id = listener_id
 
@@ -508,7 +520,7 @@ class OverkizClient:
         if self.event_listener_id is None:
             await self.register_event_listener()
 
-        response = await self._post(f"events/{self.event_listener_id}/fetch")
+        response = await self._post_idempotent(f"events/{self.event_listener_id}/fetch")
         return converter.structure(response, list[Event])
 
     async def unregister_event_listener(self) -> None:
@@ -790,7 +802,7 @@ class OverkizClient:
                 "withManufacturerReferences": True,
             }
         """
-        response = await self._post("reference/devices/search", payload)
+        response = await self._post_idempotent("reference/devices/search", payload)
         return converter.structure(response, DeviceSearchResult)
 
     @retry_on_auth_error
@@ -1100,14 +1112,37 @@ class OverkizClient:
         ) as response:
             return await self._parse_response(response)
 
-    @retry_on_connection_failure
+    @retry_on_unsent_request
     async def _post(
         self,
         path: str,
         payload: dict[str, Any] | None = None,
         data: dict[str, Any] | None = None,
     ) -> Any:
-        """Make a POST request to the OverKiz API."""
+        """Make a POST request to the OverKiz API.
+
+        Most POSTs have side effects (e.g. `exec/apply`), so a timeout or dropped
+        connection is not retried: the server may already have run the request. Use
+        `_post_idempotent` for POSTs that are safe to resend.
+        """
+        return await self._send_post(path, payload, data)
+
+    @retry_on_connection_failure
+    async def _post_idempotent(
+        self,
+        path: str,
+        payload: dict[str, Any] | None = None,
+        data: dict[str, Any] | None = None,
+    ) -> Any:
+        """Make a POST request that is safe to resend after a timeout or disconnect."""
+        return await self._send_post(path, payload, data)
+
+    async def _send_post(
+        self,
+        path: str,
+        payload: dict[str, Any] | None,
+        data: dict[str, Any] | None,
+    ) -> Any:
         await self._refresh_token_if_expired()
 
         async with self.session.post(
@@ -1119,7 +1154,7 @@ class OverkizClient:
         ) as response:
             return await self._parse_response(response)
 
-    @retry_on_connection_failure
+    @retry_on_unsent_request
     async def _put(self, path: str, payload: dict[str, Any] | None = None) -> Any:
         """Make a PUT request to the OverKiz API."""
         await self._refresh_token_if_expired()
@@ -1132,7 +1167,7 @@ class OverkizClient:
         ) as response:
             return await self._parse_response(response)
 
-    @retry_on_connection_failure
+    @retry_on_unsent_request
     async def _delete(self, path: str) -> None:
         """Make a DELETE request to the OverKiz API."""
         await self._refresh_token_if_expired()
