@@ -134,6 +134,29 @@ class TestOverkizClient:
             assert post_mock.call_count == 1
 
     @pytest.mark.asyncio
+    async def test_put_and_delete_not_resent_when_server_may_have_received_them(
+        self, client: OverkizClient
+    ) -> None:
+        """PUT and DELETE writes (firmware update, cancel) are not resent either."""
+        for failure in (TimeoutError("timed out"), aiohttp.ServerDisconnectedError()):
+            with (
+                patch("backoff._async.asyncio.sleep", new=AsyncMock()),
+                patch.object(
+                    aiohttp.ClientSession, "put", side_effect=failure
+                ) as put_mock,
+                patch.object(
+                    aiohttp.ClientSession, "delete", side_effect=failure
+                ) as delete_mock,
+            ):
+                with pytest.raises(type(failure)):
+                    await client.update_all_device_firmwares()
+                with pytest.raises(type(failure)):
+                    await client.cancel_execution("exec-1")
+
+            assert put_mock.call_count == 1
+            assert delete_mock.call_count == 1
+
+    @pytest.mark.asyncio
     async def test_idempotent_post_retries_on_timeout(
         self, client: OverkizClient
     ) -> None:
