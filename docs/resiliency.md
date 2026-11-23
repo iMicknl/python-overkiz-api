@@ -13,7 +13,8 @@ so retries always give up rather than looping indefinitely.
 
 | Failure | Retried | Budget | On retry |
 | --- | --- | --- | --- |
-| Connection errors — `TimeoutError`, `ClientConnectorError`, `ServerDisconnectedError` | yes | 3 tries / ~30s | reopen the connection |
+| Connection not established — `ClientConnectorError`, `ConnectionTimeoutError` | yes | 3 tries / ~30s | reopen the connection |
+| Other `TimeoutError`, `ServerDisconnectedError` | idempotent requests only | 3 tries / ~30s | reopen the connection |
 | `NotAuthenticatedError` (session expired) | yes | 2 tries / ~60s | authenticate without registering a listener |
 | `TooManyConcurrentRequestsError` | yes | 5 tries / ~120s | — |
 | `TooManyExecutionsError` | yes | 5 tries / ~300s | — |
@@ -56,22 +57,29 @@ the caller than to keep a request hanging for minutes. For a polling loop such a
 `fetch_events()`, letting a call fail and retrying on the next poll tick is usually the
 right behaviour.
 
-A dropped keep-alive socket (`ServerDisconnectedError`) is treated as a connection
-blip and simply retried — it does **not** trigger a re-login. A genuine session expiry
-is reported by the server as a `Not authenticated` response, which raises
-`NotAuthenticatedError` and escalates to a re-login through the separate auth policy.
+Commands and other writes are **not** resent after a timeout or disconnect: the server
+may already have accepted the request, so resending could run it twice. The
+`TimeoutError` or `ServerDisconnectedError` is raised to the caller instead; check the
+execution state (for example via `fetch_events()`) before sending the command again.
+
+For idempotent requests, a dropped keep-alive socket (`ServerDisconnectedError`) is
+treated as a connection blip and simply retried — it does **not** trigger a re-login.
+A genuine session expiry is reported by the server as a `Not authenticated` response,
+which raises `NotAuthenticatedError` and escalates to a re-login through the separate
+auth policy.
 
 !!! note "`max_time` does not interrupt a hung request"
     The `max_time` budget only bounds the scheduling of retries *between* attempts; it
     cannot cancel a single in-flight request. A request that hangs is bounded by the
-    session timeout (see below), which surfaces as a `TimeoutError` and is then retried.
+    session timeout (see below), which surfaces as a `TimeoutError` and is then retried
+    for idempotent requests only.
 
 ## Request timeout
 
 When pyOverkiz creates its own session, it applies a default per-request timeout
 (`total=15s`, `sock_connect=10s`). This is kept below the connection-retry budget so a
-hung socket fails fast and is retried, instead of blocking on aiohttp's 300-second
-default.
+hung socket fails fast and is retried for idempotent requests only, instead of blocking
+on aiohttp's 300-second default.
 
 If you pass your own `ClientSession`, **you own its timeout** — pyOverkiz does not
 override it. Configure one explicitly:
